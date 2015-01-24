@@ -181,7 +181,7 @@ String PolycodeToolLauncher::importAssets(String sourceFile, String inFolder, bo
 }
 
 void PolycodeToolLauncher::openExternalEditor(String app, String file, String inFolder) {
-	GenericRunner *runner = new GenericRunner(app, "\""+file+"\"", inFolder);
+	GenericRunner *runner = new GenericRunner("\"" + app + "\"", "\"" + file + "\"", "\"" + inFolder + "\"");
 	CoreServices::getInstance()->getCore()->createThread(runner);
 }
 

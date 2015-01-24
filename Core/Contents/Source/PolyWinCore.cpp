@@ -172,7 +172,9 @@ void Win32Core::captureMouse(bool newval) {
 
 		GetClientRect(core->hWnd, &crect);
 		arect = crect;
-		AdjustWindowRectEx(&arect, WS_CAPTION | WS_BORDER, FALSE, 0);
+		if (!fullScreen){
+			AdjustWindowRectEx(&arect, WS_CAPTION | WS_BORDER, FALSE, 0);
+		}
 
 		rect.left += (crect.left - arect.left);
 		rect.right += (crect.right - arect.right);
