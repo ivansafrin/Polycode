@@ -219,7 +219,7 @@ namespace Polycode {
 			* Returns a bone at the specified index.
 			* @param index Bone index.
 			*/
-			Bone *getBone(int index) const;
+			Bone *getBone(unsigned int index) const;
 		
 		
 		protected:

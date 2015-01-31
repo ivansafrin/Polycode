@@ -59,7 +59,10 @@ Bone *Skeleton::getBoneByName(const String& name) const {
 	return NULL;
 }
 
-Bone *Skeleton::getBone(int index) const {
+Bone *Skeleton::getBone(unsigned int index) const {
+    if(index >= bones.size()) {
+        return NULL;
+    }
 	return bones[index];
 }
 
