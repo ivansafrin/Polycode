@@ -205,10 +205,7 @@ void TrackballCamera::updateCamera() {
 
 		Quaternion q;
 		// yaw
-		if(Vector3(0.0, 1.0, 0.0).dot(currentCamQuat.applyTo(Vector3(0.0, 0.0, -1.0))) > 0.0)
-			q.fromAngleAxis(localMouse.x*2.0, Vector3(0.0, 1.0, 0.0));
-		else
-			q.fromAngleAxis(localMouse.x*-2.0, Vector3(0.0, 1.0, 0.0));
+        q.fromAngleAxis(localMouse.x*-2.0, Vector3(0.0, 1.0, 0.0));
 		currentCamQuat = q * currentCamQuat;
 		trackballEye = q.applyTo(trackballEye);
 
