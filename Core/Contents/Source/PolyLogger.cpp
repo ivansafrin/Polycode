@@ -53,6 +53,7 @@ Logger::~Logger() {
     if(logFile) {
         fclose(logFile);
     }
+    overrideInstance = NULL;
 }
 
 void Logger::logBroadcast(String message) {
