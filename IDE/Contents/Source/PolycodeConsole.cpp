@@ -189,6 +189,8 @@ ConsoleWindow::ConsoleWindow() : UIElement() {
 	hideConsoleButton = new UIImageButton("main/console_hide_button.png", 1.0, 20, 20);
 	addChild(hideConsoleButton);
 	hideConsoleButton->setPosition(7,5);
+    
+    consoleBufferMaxSize = 256;
 	
 }
 
@@ -201,8 +203,42 @@ void ConsoleWindow::Resize(Number width, Number height) {
 	clearButton->setPosition(width - 22, 6);
 
 	consoleTextInput->Resize(width, 25);
-	consoleTextInput->setPosition(0, height-25);	
+	consoleTextInput->setPosition(0, height-25);
+    
+    consoleDirty = false;
+    consoleTimer = 0.0;
+    consoleRefreshInterval = 0.3;
 }
+
+void ConsoleWindow::Update() {
+    consoleTimer += Services()->getCore()->getElapsed();
+    if(consoleTimer > consoleRefreshInterval) {
+        consoleTimer = 0.0;
+        if(consoleDirty) {
+            String fullText;
+            for(int i=0; i < consoleBuffer.size(); i++) {
+                fullText += consoleBuffer[i];
+            }
+            debugTextInput->setText(fullText);
+            debugTextInput->getScrollContainer()->setScrollValue(0, 1.0);
+            consoleDirty = false;
+        }
+    }
+}
+
+void ConsoleWindow::clearBuffer() {
+    consoleBuffer.clear();
+    consoleDirty = true;
+}
+
+void ConsoleWindow::printToBuffer(String msg) {
+    consoleBuffer.push_back(msg);
+    if(consoleBuffer.size() > consoleBufferMaxSize) {
+        consoleBuffer.erase(consoleBuffer.begin());
+    }
+    consoleDirty = true;
+}
+
 
 PolycodeConsole::PolycodeConsole() : UIElement() {
 
@@ -218,7 +254,7 @@ PolycodeConsole::PolycodeConsole() : UIElement() {
 	backtraceWindow = new BackTraceWindow();
 	backtraceSizer->addRightChild(backtraceWindow);
 
-	debugTextInput = consoleWindow->debugTextInput;
+	debugTextInput = consoleWindow->debugTextInput;    
 	consoleTextInput = consoleWindow->consoleTextInput;
 	
 	consoleTextInput->addEventListener(this, Event::COMPLETE_EVENT);
@@ -227,7 +263,7 @@ PolycodeConsole::PolycodeConsole() : UIElement() {
 
 	consoleHistoryPosition = 0;
 	consoleHistoryMaxSize = 15;
-	
+    
 	consoleWindow->clearButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	consoleWindow->hideConsoleButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
@@ -262,7 +298,7 @@ void PolycodeConsole::handleEvent(Event *event) {
 		}
 	} else if(event->getDispatcher() == consoleWindow->clearButton) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
-			debugTextInput->setText("");
+            consoleWindow->clearBuffer();
 		}
 	} else if(event->getDispatcher() == consoleWindow->hideConsoleButton) {
 		globalFrame->hideConsole();
@@ -337,9 +373,8 @@ void PolycodeConsole::_clearBacktraces() {
 }
 
 
-void PolycodeConsole::_print(String msg) {	
-	debugTextInput->setText(debugTextInput->getText()+msg);
-	debugTextInput->getScrollContainer()->setScrollValue(0, 1.0);
+void PolycodeConsole::_print(String msg) {
+    consoleWindow->printToBuffer(msg);
 	printf("%s", msg.c_str());
 }
 
