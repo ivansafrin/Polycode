@@ -82,32 +82,42 @@ void SceneImage::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly
 }
 
 void SceneImage::setImageCoordinates(Number x, Number y, Number width, Number height, Number realWidth, Number realHeight) {
-	
-	Number pixelSizeX = 1/imageWidth;
-	Number pixelSizeY = 1/imageHeight;
+	Number pixelSizeX = 1 / imageWidth;
+	Number pixelSizeY = 1 / imageHeight;
 
-	if(realWidth == -1)
+	if (realWidth == -1)
 		realWidth = width;
-	if(realHeight == -1)
+	if (realHeight == -1)
 		realHeight = height;
 
-
 	setWidth(realWidth);
-	setHeight(realHeight);	
-	setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, getWidth(), getHeight());	
-		
+	setHeight(realHeight);
+
+	Number whalf = realWidth / 2.0f;
+	Number hhalf = realHeight / 2.0f;
+
 	Number xFloat = x * pixelSizeX;
-	Number yFloat = 1 - (y * pixelSizeY);
+	Number yFloat = y * pixelSizeY;
 	Number wFloat = width * pixelSizeX;
 	Number hFloat = height * pixelSizeY;
 
-    mesh->vertexTexCoordArray.data.clear();
-    
-    mesh->addTexCoord(xFloat, yFloat - hFloat);
-    mesh->addTexCoord(xFloat + wFloat, yFloat - hFloat);
-    mesh->addTexCoord(xFloat + wFloat, yFloat);
-    mesh->addTexCoord(xFloat, yFloat);
-	
+	mesh->vertexPositionArray.data.clear();
+	mesh->vertexTexCoordArray.data.clear();
+
+	mesh->setMeshType(Mesh::QUAD_MESH);
+
+	mesh->addVertex(0 - whalf, 0 - hhalf, 0);
+	mesh->addTexCoord(xFloat, (1.0 - yFloat) - hFloat);
+
+	mesh->addVertex(realWidth - whalf, 0 - hhalf, 0);
+	mesh->addTexCoord(xFloat + wFloat, (1.0 - yFloat) - hFloat);
+
+	mesh->addVertex(realWidth - whalf, realHeight - hhalf, 0);
+	mesh->addTexCoord(xFloat + wFloat, 1.0 - yFloat);
+
+	mesh->addVertex(0 - whalf, realHeight - hhalf, 0);
+	mesh->addTexCoord(xFloat, 1.0 - yFloat);
+
 	rebuildTransformMatrix();
 	matrixDirty = true;
 }

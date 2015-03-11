@@ -275,6 +275,7 @@ public:
 
 		bool isFullScreen;
 		bool retinaSupport;
+		bool resizable;
 
 		HDC hDC;
 		HGLRC hRC;

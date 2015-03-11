@@ -298,7 +298,8 @@ PolycodeWinIDEView::PolycodeWinIDEView(HINSTANCE hInstance, int nCmdShow, LPCTST
 		hwnd = CreateWindowEx(WS_EX_APPWINDOW, L"POLYCODEAPPLICATION", windowTitle, WS_OVERLAPPED|WS_SYSMENU, 0, 0, 640, 480, NULL, NULL, hInstance, NULL);
 	}
 
-  windowData = (void*)&hwnd;
+	windowData = (void*)&hwnd;
+	this->resizable = resizable;
 
    ShowWindow(hwnd, nCmdShow);
    UpdateWindow(hwnd);
