@@ -23,7 +23,7 @@ COMMENT "Generating Polycode API documentation with Doxygen" VERBATIM
 
 ADD_CUSTOM_TARGET(doc ALL DEPENDS doc_cmd)
 
-INSTALL(DIRECTORY Doxygen/output/standalone/Polycode
+INSTALL(DIRECTORY Doxygen/output/standalone/Core
         DESTINATION Docs)
 INSTALL(DIRECTORY Doxygen/output/standalone/Physics2D
         DESTINATION Docs/Modules)
