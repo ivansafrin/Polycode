@@ -38,6 +38,8 @@
 #include <shellapi.h>
 #include <commdlg.h>
 
+#include <tchar.h>
+
 #if defined(_MINGW)
 #ifndef MAPVK_VSC_TO_VK_EX
 #define MAPVK_VSC_TO_VK_EX 3
@@ -45,6 +47,8 @@
 #else
 PFNWGLSWAPINTERVALEXTPROC       wglSwapIntervalEXT = NULL;
 PFNWGLGETSWAPINTERVALEXTPROC    wglGetSwapIntervalEXT = NULL;
+PFNWGLCHOOSEPIXELFORMATARBPROC	wglChoosePixelFormatARB = NULL;
+
 #endif
 
 using namespace Polycode;
@@ -82,6 +86,7 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 	: Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
 
 	hWnd = *((HWND*)view->windowData);
+	hInstance = (HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE);
 	core = this;
 	hasCopyDataString = false;
 
@@ -103,7 +108,6 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 
 	hDC = NULL;
 	hRC = NULL;
-	PixelFormat = 0;
 
 	this->aaLevel = 999;
 	
@@ -120,6 +124,8 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 
 	renderer->setBackingResolutionScale(scaleFactor, scaleFactor);
 
+	getWglFunctionPointers();
+
 	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel);
 		
 	WSADATA WsaData;
@@ -129,9 +135,6 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 
 	((OpenGLRenderer*)renderer)->Init();
 
-	wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC) wglGetProcAddress("wglSwapIntervalEXT");
-	wglGetSwapIntervalEXT = (PFNWGLGETSWAPINTERVALEXTPROC) wglGetProcAddress("wglGetSwapIntervalEXT");
-	
 	LARGE_INTEGER li;
 	QueryPerformanceFrequency(&li);
 	pcFreq = double(li.QuadPart)/1000.0;
@@ -288,11 +291,7 @@ void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 	isFullScreen = fullScreen;
 
 	if(resetContext) {
-		initContext(false, 0);
-
-		if(aaLevel > 0) {
-			initMultisample(aaLevel);
-		}
+		initContext(aaLevel);
 	}
 
 	setVSync(vSync);
@@ -303,47 +302,138 @@ void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 	core->dispatchEvent(new Event(), Core::EVENT_CORE_RESIZE);
 }
 
-void Win32Core::initContext(bool usePixelFormat, unsigned int pixelFormat) {
+void Win32Core::getWglFunctionPointers() {
+
+	PIXELFORMATDESCRIPTOR pfd;
+	memset(&pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
+	pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
+	pfd.nVersion = 1;
+	pfd.dwFlags = PFD_DOUBLEBUFFER |
+		PFD_SUPPORT_OPENGL |
+		PFD_DRAW_TO_WINDOW;
+	pfd.iPixelType = PFD_TYPE_RGBA;
+	pfd.cColorBits = 24;
+	pfd.cDepthBits = 16;
+	pfd.cAccumBlueBits = 8;
+	pfd.cAccumRedBits = 8;
+	pfd.cAccumGreenBits = 8;
+	pfd.cAccumAlphaBits = 8;
+	pfd.cAccumBits = 24;
+	pfd.iLayerType = PFD_MAIN_PLANE;
+
+	WNDCLASSEX wcex;
+
+	wcex.cbSize = sizeof(WNDCLASSEX);
+	wcex.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+	wcex.lpfnWndProc = DefWindowProc;
+	wcex.cbClsExtra = 0;
+	wcex.cbWndExtra = 0;
+	wcex.hInstance = hInstance;
+	wcex.hIcon = LoadIcon(hInstance, IDI_APPLICATION);
+	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wcex.hbrBackground = NULL;
+	wcex.lpszMenuName = NULL;
+	wcex.lpszClassName = L"FAKECONTEXTCLASS";
+	wcex.hIconSm = LoadIcon(hInstance, IDI_APPLICATION);
+
+	RegisterClassEx(&wcex);
+
+	HWND tempHWND = CreateWindowEx(WS_EX_APPWINDOW, L"FAKECONTEXTCLASS", L"FAKE", WS_OVERLAPPEDWINDOW | WS_MAXIMIZE | WS_CLIPCHILDREN, 0, 0, 0, 0, NULL, NULL, hInstance, NULL);
+	//CreateWindow(_T("FakeWindow"), _T("FAKE"), WS_OVERLAPPEDWINDOW | WS_MAXIMIZE | WS_CLIPCHILDREN, 0, 0, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, hInstance, NULL);
+
+	HGLRC tempHRC;
+	unsigned int PixelFormat;
+	
+	HDC tempDC = GetDC(tempHWND);
+	PixelFormat = ChoosePixelFormat(tempDC, &pfd);
+	SetPixelFormat(tempDC, PixelFormat, &pfd);
+
+	tempHRC = wglCreateContext(tempDC);
+	wglMakeCurrent(tempDC, tempHRC);
+
+	wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
+	wglGetSwapIntervalEXT = (PFNWGLGETSWAPINTERVALEXTPROC)wglGetProcAddress("wglGetSwapIntervalEXT");
+	wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
+
+	wglMakeCurrent(NULL, NULL);
+	wglDeleteContext(tempHRC);
+	DestroyWindow(tempHWND);
+
+}
+
+void Win32Core::initContext(int aaLevel) {
 
 	destroyContext();
 
-   memset(&pfd, 0, sizeof(PIXELFORMATDESCRIPTOR)) ;
-   pfd.nSize      = sizeof(PIXELFORMATDESCRIPTOR); 
-   pfd.nVersion   = 1 ; 
-   pfd.dwFlags    = PFD_DOUBLEBUFFER |
-                    PFD_SUPPORT_OPENGL |
-                    PFD_DRAW_TO_WINDOW ;
-   pfd.iPixelType = PFD_TYPE_RGBA ;
-   pfd.cColorBits = 24;
-   pfd.cDepthBits = 16;
-   pfd.cAccumBlueBits = 8;	
-   pfd.cAccumRedBits = 8;	
-   pfd.cAccumGreenBits = 8;
-   pfd.cAccumAlphaBits = 8;
-   pfd.cAccumBits = 24;
-   pfd.iLayerType = PFD_MAIN_PLANE ;
+	int pixelFormat;
+	bool intializedAA = false;
 
 
-	if (!(hDC=GetDC(hWnd)))							// Did We Get A Device Context?
-	{
+	if (!(hDC = GetDC(hWnd))) {
 		Logger::log("Can't Create A GL Device Context.\n");
-		return;							// Return FALSE
+		return;
 	}
 
-	if(usePixelFormat) {
-		PixelFormat = pixelFormat;
-	} else {
-		if (!(PixelFormat=ChoosePixelFormat(hDC,&pfd)))				// Did Windows Find A Matching Pixel Format?
+	if (aaLevel > 0) {
+		if (!wglChoosePixelFormatARB) {
+			Logger::log("Multisampling not supported!\n");
+		} else {
+
+			UINT numFormats;
+			float fAttributes[] = { 0, 0 };
+
+			int attributes[] = {
+				WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
+				WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
+				WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
+				WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
+				WGL_COLOR_BITS_ARB, 24,
+				WGL_DEPTH_BITS_ARB, 16,
+				WGL_STENCIL_BITS_ARB, 8,
+				WGL_SAMPLE_BUFFERS_ARB, 1,
+				WGL_SAMPLES_ARB, aaLevel,
+				0
+			};
+
+			if (!wglChoosePixelFormatARB(hDC, attributes, fAttributes, 1, &pixelFormat, &numFormats)) {
+				Logger::log("Invalid pixel format chosen\n");
+
+			} else {
+				intializedAA = true;
+			}
+		}
+	}
+
+	PIXELFORMATDESCRIPTOR pfd;
+
+	if (!intializedAA) {
+		memset(&pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
+		pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
+		pfd.nVersion = 1;
+		pfd.dwFlags = PFD_DOUBLEBUFFER |
+			PFD_SUPPORT_OPENGL |
+			PFD_DRAW_TO_WINDOW;
+		pfd.iPixelType = PFD_TYPE_RGBA;
+		pfd.cColorBits = 24;
+		pfd.cDepthBits = 16;
+		pfd.cAccumBlueBits = 8;
+		pfd.cAccumRedBits = 8;
+		pfd.cAccumGreenBits = 8;
+		pfd.cAccumAlphaBits = 8;
+		pfd.cAccumBits = 24;
+		pfd.iLayerType = PFD_MAIN_PLANE;
+
+		if (!(pixelFormat = ChoosePixelFormat(hDC, &pfd)))				// Did Windows Find A Matching Pixel Format?
 		{
 			Logger::log("Can't Find A Suitable PixelFormat.\n");
 			return;							// Return FALSE
 		}
 	}
 
-	Logger::log("Setting format: %d\n", PixelFormat);
-	if(!SetPixelFormat(hDC,PixelFormat,&pfd))				// Are We Able To Set The Pixel Format?
+	Logger::log("Setting format: %d\n", pixelFormat);
+	if(!SetPixelFormat(hDC,pixelFormat,&pfd))				// Are We Able To Set The Pixel Format?
 	{
-		Logger::log("Can't Set The PixelFormat: %d.\n", PixelFormat);
+		Logger::log("Can't Set The PixelFormat: %d.\n", pixelFormat);
 		return;							// Return FALSE
 	}
 
@@ -357,6 +447,10 @@ void Win32Core::initContext(bool usePixelFormat, unsigned int pixelFormat) {
 	{
 		Logger::log("Can't Activate The GL Rendering Context.\n");
 		return;							// Return FALSE
+	}
+
+	if (intializedAA) {
+		glEnable(GL_MULTISAMPLE_ARB); 
 	}
 }
 
@@ -372,43 +466,6 @@ void Win32Core::destroyContext() {
 	hDC = 0;
 	if (isFullScreen)
 		ChangeDisplaySettings (NULL,0);
-}
-
-void Win32Core::initMultisample(int numSamples) {
-
-	PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB =
-		(PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
-
-	if (!wglChoosePixelFormatARB) {
-		Logger::log("Multisampling not supported!\n");
-		return;
-	}
-	int pixelFormat;
-	UINT numFormats;
-	float fAttributes[] = {0,0};
-
-	int iAttributes[] = { WGL_DRAW_TO_WINDOW_ARB,GL_TRUE,
-		WGL_SUPPORT_OPENGL_ARB,GL_TRUE,
-		WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB,
-		WGL_COLOR_BITS_ARB,24,
-		WGL_DEPTH_BITS_ARB,24,
-		WGL_DOUBLE_BUFFER_ARB,GL_TRUE,
-		WGL_ACCUM_GREEN_BITS_ARB, 8,
-		WGL_ACCUM_RED_BITS_ARB, 8,
-		WGL_ACCUM_BLUE_BITS_ARB, 8,
-		WGL_ACCUM_ALPHA_BITS_ARB, 8,
-		WGL_SAMPLE_BUFFERS_ARB,GL_TRUE,
-		WGL_SAMPLES_ARB, numSamples ,
-		0,0};
-
-		if(!wglChoosePixelFormatARB(hDC,iAttributes,fAttributes,1,&pixelFormat,&numFormats)) {
-			Logger::log("Invalid pixel format chosen\n");
-			return;
-		}
-		
-	//	initContext(true, pixelFormat);
-
-		glEnable(GL_MULTISAMPLE_ARB);
 }
 
 void Win32Core::initKeymap() {
