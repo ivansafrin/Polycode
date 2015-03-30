@@ -116,12 +116,14 @@ Debug
 Release
 /Build
 /Documentation/Doxygen/output/standalone/Polycode
+/Documentation/Doxygen/output/standalone/Core
 /Documentation/Doxygen/output/standalone/Physics2D
 /Documentation/Doxygen/output/standalone/Physics3D
 /Documentation/Doxygen/output/standalone/Networking
 /Documentation/Doxygen/output/standalone/PolycodeUI
 
 /Documentation/Doxygen/output/web/Polycode
+/Documentation/Doxygen/output/web/Core
 /Documentation/Doxygen/output/web/Physics2D
 /Documentation/Doxygen/output/web/Physics3D
 /Documentation/Doxygen/output/web/Networking
