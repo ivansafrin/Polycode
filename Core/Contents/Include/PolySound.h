@@ -43,8 +43,8 @@
 #define ALOtherErrorStr "AL error: unknown error"
 
 #define BUFFER_SIZE 32768
-#define STREAMING_BUFFER_COUNT 2
-#define STREAMING_BUFFER_SIZE 16384
+#define STREAMING_BUFFER_COUNT 4
+#define STREAMING_BUFFER_SIZE 4096
 
 namespace Polycode {
 	

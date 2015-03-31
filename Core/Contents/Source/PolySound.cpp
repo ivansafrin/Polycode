@@ -144,7 +144,12 @@ void Sound::updateStream() {
             alSourceQueueBuffers(soundSource, 1, &buffer);
         }
     }
-    
+
+    ALenum state;
+    alGetSourcei(soundSource, AL_SOURCE_STATE, &state);
+    if(state != AL_PLAYING) {
+        alSourcePlay(soundSource);
+    }
 }
 
 bool Sound::updateALBuffer(ALuint buffer) {
