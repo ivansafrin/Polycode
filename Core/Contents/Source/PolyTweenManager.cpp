@@ -46,6 +46,28 @@ void TweenManager::removeTween(Tween *tween) {
 	}
 }
 
+void TweenManager::removeTweensForTarget(Number *target) {
+    std::vector<Tween*>::iterator iter = tweens.begin();
+    while (iter != tweens.end()) {
+        bool mustRemove = false;
+        if(target == (*iter)->getTarget()) {
+            mustRemove = true;
+            (*iter)->doOnComplete();
+                
+            if((*iter)->deleteOnComplete) {
+                Tween *tween = (*iter);
+                delete tween;
+            }
+        }
+        
+        if(mustRemove) {
+            iter = tweens.erase(iter);
+        } else {	
+            ++iter;						
+        }
+    }
+}
+
 void TweenManager::Update(Number elapsed) {
 
 	std::vector<Tween*>::iterator iter = tweens.begin();

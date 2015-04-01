@@ -36,6 +36,7 @@ namespace Polycode {
 			void addTween(Tween *tween);
 			void Update(Number elapsed);
 			void removeTween(Tween *tween);
+            void removeTweensForTarget(Number *target);
 		
 		private:
 					
