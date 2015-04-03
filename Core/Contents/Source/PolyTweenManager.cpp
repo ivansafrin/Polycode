@@ -52,8 +52,6 @@ void TweenManager::removeTweensForTarget(Number *target) {
         bool mustRemove = false;
         if(target == (*iter)->getTarget()) {
             mustRemove = true;
-            (*iter)->doOnComplete();
-                
             if((*iter)->deleteOnComplete) {
                 Tween *tween = (*iter);
                 delete tween;
