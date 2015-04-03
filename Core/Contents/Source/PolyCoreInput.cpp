@@ -212,10 +212,12 @@ namespace Polycode {
 			std::vector<TouchInfo> touches;
 			touches.push_back(touch);
 
+            /*
 			if(!mouseButtons[MOUSE_BUTTON1]) {
 				mouseButtons[MOUSE_BUTTON1] = true;
 				touchesBegan(touch, touches, ticks);
-			}										
+			}
+             */
 			touchesMoved(touch, touches, ticks);
 		}		
 	}
