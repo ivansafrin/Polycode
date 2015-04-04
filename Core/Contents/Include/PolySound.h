@@ -24,6 +24,7 @@
 #include "PolyGlobals.h"
 #include "PolyVector3.h"
 #include "PolyString.h"
+#include "PolyCoreServices.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
     #include <OpenAL/al.h>
@@ -42,11 +43,31 @@
 #define ALOtherErrorStr "AL error: unknown error"
 
 #define BUFFER_SIZE 32768
+#define STREAMING_BUFFER_COUNT 4
+#define STREAMING_BUFFER_SIZE 4096
 
 namespace Polycode {
 	
 	class String;
-
+    
+    class  AudioStreamingSource {
+        public:
+            AudioStreamingSource(unsigned int channels, unsigned int bps, unsigned int freq);
+        
+            POLYIGNORE virtual unsigned int streamData(char *buffer, unsigned int size);
+        
+            unsigned int getNumChannels();
+            unsigned int getBitsPerSample();
+            unsigned int getFrequency();
+        
+        protected:
+        
+            unsigned int channels;
+            unsigned int bps;
+            unsigned int freq;
+        
+    };
+    
 	/**
 	* Loads and plays a sound. This class can load and play an OGG or WAV sound file.
 	*/
@@ -59,6 +80,8 @@ namespace Polycode {
 		*/ 
 		Sound(const String& fileName, bool generateFloatBuffer = false);
 		Sound(int size, const char *data, int channels = 1, ALsizei freq = 44100, int bps = 16, bool generateFloatBuffer = false);
+        Sound(AudioStreamingSource *streamingSource);
+        
 		virtual ~Sound();
 		
 		void loadFile(String fileName, bool generateFloatBuffer);
@@ -150,13 +173,20 @@ namespace Polycode {
 		static unsigned long readByte32(const unsigned char buffer[4]);		
 		static unsigned short readByte16(const unsigned char buffer[2]);
 		
+        void updateStream();
+        
 		POLYIGNORE std::vector<float> *getFloatBuffer();
 
 	protected:
+        
+        bool updateALBuffer(ALuint buffer);
 	
 		Number referenceDistance;
 		Number maxDistance;
-			
+        
+        bool streamingSound;
+        AudioStreamingSource *streamingSource;
+        
 		Number pitch;
 		Number volume;
 	
@@ -168,6 +198,9 @@ namespace Polycode {
 		ALuint buffer; // Kept around only for deletion purposes
 		ALuint soundSource;
 		int sampleLength;
+        
+        ALuint streamingSources;
+        ALuint streamingBuffers[STREAMING_BUFFER_COUNT];
 		
 		std::vector<float> floatBuffer;
 	};

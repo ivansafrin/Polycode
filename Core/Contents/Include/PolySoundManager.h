@@ -38,6 +38,7 @@ namespace Polycode {
 	/**
 	* Controls global sound settings.
 	*/
+    
 	class _PolyExport SoundManager : public PolyBase{
 	public:
 		SoundManager();
@@ -56,10 +57,13 @@ namespace Polycode {
 		* Sets the global sound volume.
 		*/ 
 		void setGlobalVolume(Number globalVolume);
-		
+        
+        void registerStreamingSound(Sound *sound);
+        void unregisterStreamingSound(Sound *sound);
 		
 	protected:
 		
+        std::vector<Sound*> streamingSounds;
 		ALCdevice* device;
         ALCdevice* captureDevice;
         ALbyte *recordingBuffer;

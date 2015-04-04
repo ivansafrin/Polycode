@@ -137,6 +137,19 @@ Sound *SoundManager::stopRecording(bool generateFloatBuffer) {
     return newSound;
 }
 
+void SoundManager::registerStreamingSound(Sound *sound) {
+    streamingSounds.push_back(sound);
+}
+
+void SoundManager::unregisterStreamingSound(Sound *sound) {
+    for(int i=0; i < streamingSounds.size(); i++) {
+        if(streamingSounds[i] == sound) {
+            streamingSounds.erase(streamingSounds.begin()+i);
+            return;
+        }
+    }
+}
+
 void SoundManager::Update() {
     // if recording sound, save samples
     if(captureDevice) {
@@ -149,6 +162,10 @@ void SoundManager::Update() {
             alcCaptureSamples(captureDevice, (ALCvoid *)(recordingBuffer+recordingBufferSize), samples);
             recordingBufferSize += newBufferSize;
         }
+    }
+    
+    for(int i=0; i < streamingSounds.size(); i++) {
+        streamingSounds[i]->updateStream();
     }
 }
 

@@ -54,6 +54,8 @@ namespace Polycode {
 		Number interpolateTween();
 		virtual void updateCustomTween() {}
 		void doOnComplete();
+        
+        Number *getTarget();
 		
 		/**
 		* Pauses and resumes the tween.

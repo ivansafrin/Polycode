@@ -198,8 +198,10 @@ public:
 
 		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport = true);
 		
-		void initContext(bool usePixelFormat, unsigned int pixelFormat);
+		void initContext(int aaLevel);
 		void destroyContext();
+
+		void getWglFunctionPointers();
 
 		void createThread(Threaded *target);
 
@@ -253,6 +255,7 @@ public:
 		std::vector<GamepadDeviceEntry*> gamepads;
 
 		HWND hWnd;
+		HINSTANCE hInstance;
 		bool hasCopyDataString;
 		String copyDataString;
 
@@ -267,19 +270,15 @@ public:
 
 		std::vector<Win32Event> win32Events;
 
-		void initMultisample(int numSamples);
-
-
 		int lastMouseX;
 		int lastMouseY;
 
 		bool isFullScreen;
 		bool retinaSupport;
+		bool resizable;
 
 		HDC hDC;
 		HGLRC hRC;
-		unsigned int PixelFormat;
-		PIXELFORMATDESCRIPTOR pfd;
 		
 		// frequency of the windows performance counter
 		double pcFreq;

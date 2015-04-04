@@ -92,14 +92,26 @@ class ConsoleWindow : public UIElement {
 		ConsoleWindow();
 		
 		void Resize(Number width, Number height);
+    
+        void clearBuffer();
+        void printToBuffer(String msg);
 		
-		UITextInput *debugTextInput;
+        void Update();
+    
 		UITextInput *consoleTextInput;
 		
 		UIImageButton *clearButton;
 		UIImageButton *hideConsoleButton;
 		
 		UIRect *labelBg;
+    
+        bool consoleDirty;
+        Number consoleTimer;
+        Number consoleRefreshInterval;
+    
+        int consoleBufferMaxSize;
+        std::vector<String> consoleBuffer;
+		UITextInput *debugTextInput;
 };
 
 class PolycodeConsole : public UIElement {

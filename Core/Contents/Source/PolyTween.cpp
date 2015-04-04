@@ -52,6 +52,10 @@ Tween::	Tween(Number *target, int easeType, Number startVal, Number endVal, Numb
 	CoreServices::getInstance()->getTweenManager()->addTween(this);
 }
 
+Number *Tween::getTarget() {
+    return targetVal;
+}
+
 void Tween::Pause(bool pauseVal) {
 	paused = pauseVal;
 }
