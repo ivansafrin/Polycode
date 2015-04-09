@@ -315,7 +315,7 @@ endif()
 	add_custom_command (TARGET StandalonePlayer PRE_BUILD
                       COMMAND cp -R ${Polycode_SOURCE_DIR}/Modules/Bindings/UI/API/UI.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/StandalonePlayer.app/Contents/Resources)
 	add_custom_command (TARGET StandalonePlayer PRE_BUILD
-                      COMMAND cp -R ${Polycode_SOURCE_DIR}/Assets/UIThemes.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/PolycodePlayer.app/Contents/Resources)
+                      COMMAND cp -R ${Polycode_SOURCE_DIR}/Assets/UIThemes.pak ${PROJECT_BINARY_DIR}/Player/Contents/\${CONFIGURATION}/StandalonePlayer.app/Contents/Resources)
 
 
 foreach(xib ${PolycodePlayer_XIBS})
