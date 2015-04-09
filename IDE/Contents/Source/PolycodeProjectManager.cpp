@@ -165,7 +165,8 @@ void PolycodeProjectManager::exportProject(PolycodeProject *project, String expo
 		
 		CoreServices::getInstance()->getCore()->createFolder(appPath);
 		CoreServices::getInstance()->getCore()->createFolder(appPath+"/Contents");
-		CoreServices::getInstance()->getCore()->createFolder(appPath+"/Contents/MacOS");
+        CoreServices::getInstance()->getCore()->createFolder(appPath+"/Contents/MacOS");
+        CoreServices::getInstance()->getCore()->createFolder(appPath+"/Contents/Resources");
 		CoreServices::getInstance()->getCore()->copyDiskItem(publishPath+"/Mac/StandalonePlayer.app/Contents/MacOS/StandalonePlayer", appPath+"/Contents/MacOS/"+project->getProjectName());
 		CoreServices::getInstance()->getCore()->copyDiskItem(publishPath+"/Mac/StandalonePlayer.app/Contents/Resources", appPath+"/Contents/Resources");
 		CoreServices::getInstance()->getCore()->copyDiskItem(publishPath+"/Mac/StandalonePlayer.app/Contents/Info.plist", appPath+"/Contents/Info.plist");
