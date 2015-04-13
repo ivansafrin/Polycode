@@ -616,11 +616,7 @@ SpriteBrowser::SpriteBrowser(SpriteSet *spriteSet) : UIElement () {
     addChild(spriteTreeView);
     
     spriteTreeView->getRootNode()->toggleCollapsed();
-    
     spriteTreeView->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
-    
-	globalFrame->textInputPopup->addEventListener(this, UIEvent::OK_EVENT);
-	globalFrame->yesNoPopup->addEventListener(this, UIEvent::OK_EVENT);
 }
 
 void SpriteBrowser::handleEvent(Event *event) {
@@ -629,6 +625,7 @@ void SpriteBrowser::handleEvent(Event *event) {
 		globalFrame->textInputPopup->setCaption("New sprite name");
 		globalFrame->textInputPopup->setValue("New Sprite");
 		globalFrame->showModal(globalFrame->textInputPopup);
+        globalFrame->textInputPopup->addEventListener(this, UIEvent::OK_EVENT);
     } else if(event->getDispatcher() == globalFrame->textInputPopup) {
         if(event->getEventCode() == UIEvent::OK_EVENT) {
             if(globalFrame->textInputPopup->action == "newSprite") {
@@ -644,6 +641,7 @@ void SpriteBrowser::handleEvent(Event *event) {
                 selectedEntry->setName(globalFrame->textInputPopup->getValue());
                 refreshSprites();
             }
+            globalFrame->textInputPopup->removeAllHandlersForListener(this);
         }
     } else if(event->getDispatcher() == globalFrame->yesNoPopup) {
         if(event->getEventCode() == UIEvent::OK_EVENT) {
@@ -656,10 +654,12 @@ void SpriteBrowser::handleEvent(Event *event) {
                 }
             }
         }
+        globalFrame->yesNoPopup->removeAllHandlersForListener(this);
     } else if(event->getDispatcher() == removeSpriteButton) {
         if(selectedEntry) {
             globalFrame->yesNoPopup->setCaption("Are you sure you want to remove sprite \""+selectedEntry->getName()+"\"?");
             globalFrame->yesNoPopup->action = "removeSprite";
+            globalFrame->yesNoPopup->addEventListener(this, UIEvent::OK_EVENT);
             globalFrame->showModal(globalFrame->yesNoPopup);
 
         }
@@ -674,6 +674,7 @@ void SpriteBrowser::handleEvent(Event *event) {
                 globalFrame->textInputPopup->action = "renameSprite";
                 globalFrame->textInputPopup->setCaption("New sprite name");
                 globalFrame->textInputPopup->setValue(selectedEntry->getName());
+                globalFrame->textInputPopup->addEventListener(this, UIEvent::OK_EVENT);
                 globalFrame->showModal(globalFrame->textInputPopup);
             }
         }
@@ -1509,9 +1510,6 @@ SpriteStateEditor::SpriteStateEditor(SpriteSet *spriteSet) : UIElement() {
     stateTreeView = stateBrowser->stateTreeView;
     stateTreeView->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
     
-	globalFrame->textInputPopup->addEventListener(this, UIEvent::OK_EVENT);
-	globalFrame->yesNoPopup->addEventListener(this, UIEvent::OK_EVENT);
-    
     selectedState = NULL;
     
     visible = false;
@@ -1554,6 +1552,7 @@ void SpriteStateEditor::handleEvent(Event *event) {
         globalFrame->textInputPopup->action = "newState";
 		globalFrame->textInputPopup->setCaption("New state name");
 		globalFrame->textInputPopup->setValue("New State");
+        globalFrame->textInputPopup->addEventListener(this, UIEvent::OK_EVENT);
         globalFrame->showModal(globalFrame->textInputPopup);
         
     } else if(event->getDispatcher() == globalFrame->textInputPopup) {
@@ -1567,6 +1566,7 @@ void SpriteStateEditor::handleEvent(Event *event) {
                 refreshStates();
             }
         }
+        globalFrame->textInputPopup->removeAllHandlersForListener(this);
     } else if(event->getDispatcher() == globalFrame->yesNoPopup) {
         if(event->getEventCode() == UIEvent::OK_EVENT) {
             if(globalFrame->yesNoPopup->action == "removeState") {
@@ -1580,12 +1580,13 @@ void SpriteStateEditor::handleEvent(Event *event) {
                 }
             }
         }
+        globalFrame->yesNoPopup->removeAllHandlersForListener(this);
     } else if(event->getDispatcher() == stateBrowser->removeStateButton) {
         if(selectedState) {
             globalFrame->yesNoPopup->setCaption("Are you sure you want to remove state \""+selectedState->getName()+"\"?");
             globalFrame->yesNoPopup->action = "removeState";
+            globalFrame->yesNoPopup->addEventListener(this, UIEvent::OK_EVENT);
             globalFrame->showModal(globalFrame->yesNoPopup);
-            
         }
     } else if(event->getDispatcher() == stateBrowser->moreButton) {
         stateMoreMenu = globalMenu->showMenuAtMouse(100.0);
@@ -1598,6 +1599,7 @@ void SpriteStateEditor::handleEvent(Event *event) {
                 globalFrame->textInputPopup->action = "renameState";
                 globalFrame->textInputPopup->setCaption("New state name");
                 globalFrame->textInputPopup->setValue(selectedState->getName());
+                globalFrame->textInputPopup->addEventListener(this, UIEvent::OK_EVENT);
                 globalFrame->showModal(globalFrame->textInputPopup);
             }
         }
