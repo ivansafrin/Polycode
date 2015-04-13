@@ -524,10 +524,9 @@ void Sprite::setName(String name) {
 }
 
 
-SpriteSet::SpriteSet(String fileName, ResourcePool *parentPool) : ResourcePool(fileName, parentPool) {
+SpriteSet::SpriteSet(const String &fileName, ResourcePool *parentPool) : ResourcePool(fileName, parentPool) {
     nextFrameIDIndex = 0;
     loadSpriteSet(fileName);
-    
 }
 
 void SpriteSet::loadSpriteSet(String fileName) {
