@@ -491,6 +491,16 @@ void SpriteSheetEditor::handleEvent(Event *event) {
     }
 }
 
+void SpriteSheetEditor::selectAll() {
+    if(previewBg->hasFocus) {
+        clearSelected();
+        for(int i=0; i < sprite->getNumFrames(); i++) {
+            SpriteFrame frame = sprite->getSpriteFrame(i);
+            selectedIDs.push_back(frame.frameID);
+        }
+    }
+}
+
 void SpriteSheetEditor::deleteSelectedFrames() {
  
     for(int i=0; i < selectedIDs.size(); i++) {
@@ -1800,6 +1810,7 @@ void PolycodeSpriteEditor::handleEvent(Event *event) {
             state->rebuildStateMeshes();
         }
     }
+    PolycodeEditor::handleEvent(event);
 }
 
 PolycodeSpriteEditor::~PolycodeSpriteEditor() {
@@ -1863,6 +1874,10 @@ bool PolycodeSpriteEditor::openFile(OSFileEntry filePath) {
     
     PolycodeEditor::openFile(filePath);
     return true;
+}
+
+void PolycodeSpriteEditor::selectAll() {
+    spriteSheetEditor->selectAll();
 }
 
 void PolycodeSpriteEditor::saveFile() {

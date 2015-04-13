@@ -789,8 +789,8 @@ void SpriteSet::clearFrames() {
 
 void SpriteSet::createGridFrames(Number width, Number height, const Vector2 &defaultAnchor) {
     
-    for(Number x = 0.0; x+width <= 1.0; x += width) {
-        for(Number y = 0.0; y+height <= 1.0; y += height) {
+    for(Number y = 0.0; y+height <= 1.0; y += height) {
+        for(Number x = 0.0; x+width <= 1.0; x += width) {
             SpriteFrame frame;
             frame.coordinates = Polycode::Rectangle(x, y, width, height);
             frame.anchorPoint = defaultAnchor;
