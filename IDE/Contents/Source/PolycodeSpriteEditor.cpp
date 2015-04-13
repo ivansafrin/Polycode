@@ -422,6 +422,17 @@ void SpriteSheetEditor::handleEvent(Event *event) {
                             if(!hasSelectedID(frame.frameID)) {
                                 selectedIDs.push_back(frame.frameID);
                                 willCreateFrame = false;
+                            } else {
+                                
+                                if(Services()->getCore()->getInput()->getKeyState(KEY_LSHIFT) ||
+                                   Services()->getCore()->getInput()->getKeyState(KEY_LSHIFT)) {
+                                    for(int f=0; f < selectedIDs.size(); f++) {
+                                        if(selectedIDs[f] == frame.frameID)
+                                        {
+                                            selectedIDs.erase(selectedIDs.begin() + f);
+                                            break;
+                                        }}
+                                }
                             }
                             break;
                         }
@@ -567,7 +578,7 @@ void SpriteSheetEditor::Resize(Number width, Number height) {
 }
 
 void SpriteSheetEditor::Render() {
-    if(sprite->getNumFrames() > 0 && selectedIDs.size() > 0) {
+    if(sprite->getNumFrames() > 0 && selectedIDs.size() == 1) {
         
         transformGrips->visible = true;
         transformGrips->enabled = true;
