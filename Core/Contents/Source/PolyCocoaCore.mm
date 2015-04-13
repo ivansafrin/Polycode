@@ -509,7 +509,16 @@ void CocoaCore::checkEvents() {
 						break;
 					case InputEvent::EVENT_KEYUP:
 						input->setKeyState(event.keyCode, event.unicodeChar, false, getTicks());
-						break;						
+                    break;
+                    case InputEvent::EVENT_TOUCHES_BEGAN:
+                        input->touchesBegan(event.touch, event.touches, getTicks());
+                        break;
+                    case InputEvent::EVENT_TOUCHES_ENDED:
+                        input->touchesEnded(event.touch, event.touches, getTicks());
+                        break;
+                    case InputEvent::EVENT_TOUCHES_MOVED:
+                        input->touchesMoved(event.touch, event.touches, getTicks());
+                    break;
 				}
 				break;
 				case CocoaEvent::FOCUS_EVENT:
