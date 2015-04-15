@@ -33,7 +33,7 @@ ScenePrimitive::ScenePrimitive(int type, Number v1, Number v2, Number v3,Number 
 	this->v3 = v3;
 	this->v4 = v4;
 	this->v5 = v5;
-	
+
 	recreatePrimitive();
 }
 
@@ -65,43 +65,43 @@ void ScenePrimitive::recreatePrimitive() {
 	mesh->clearMesh();
 	switch(type) {
 		case TYPE_PLANE:
-			mesh->createPlane(v1,v2);
+			mesh->createPlane(v1, v2, v3);
             setLocalBoundingBox(v1, 0.001, v2);
 		break;
 		case TYPE_VPLANE:
-			mesh->createVPlane(v1,v2);
+			mesh->createVPlane(v1, v2, v3);
             setLocalBoundingBox(v1, v2, 0.001);
 		break;
 		case TYPE_BOX:
-			mesh->createBox(v1,v2,v3);
+			mesh->createBox(v1, v2, v3, v4);
             setLocalBoundingBox(v1, v2, v3);
 		break;
 		case TYPE_SPHERE:
-			mesh->createSphere(v1,v2,v3);
+			mesh->createSphere(v1, v2, v3, v4);
             setLocalBoundingBox(v1*2, v1*2, v1*2);
 		break;
 		case TYPE_CYLINDER:
-			mesh->createCylinder(v1,v2,v3);
+			mesh->createCylinder(v1, v2, v3, true, v4);
             setLocalBoundingBox(v2*2, v1, v2*2);
 		break;
 		case TYPE_UNCAPPED_CYLINDER:
-			mesh->createCylinder(v1,v2,v3, false);
+			mesh->createCylinder(v1, v2, v3, false, v5);
             setLocalBoundingBox(v2*2, v1, v2*2);
 		break;
 		case TYPE_CONE:
-			mesh->createCone(v1,v2,v3);
+			mesh->createCone(v1, v2, v3, v4);
             setLocalBoundingBox(v2*2, v1, v2*2);
 		break;
 		case TYPE_TORUS:
-			mesh->createTorus(v1,v2,v3,v4);
+			mesh->createTorus(v1, v2, v3, v4, v5);
             setLocalBoundingBox((v1*2) + (v2*2), v2 * 2, (v1*2) + (v2*2));
 		break;
 		case TYPE_CIRCLE:
-			mesh->createCircle(v1, v2, v3);
+			mesh->createCircle(v1, v2, v3, v4);
             setLocalBoundingBox(v1, v2, 0.001);
 		break;
 		case TYPE_LINE_CIRCLE:
-			mesh->createLineCircle(v1, v2, v3);
+			mesh->createLineCircle(v1, v2, v3, v4);
             setLocalBoundingBox(v1, v2, 0.001);
         break;
 		case TYPE_ICOSPHERE:
