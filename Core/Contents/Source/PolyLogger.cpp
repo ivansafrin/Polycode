@@ -75,6 +75,7 @@ void Logger::log(const char *format, ...) {
 		if (Logger::getInstance()->getLogFile()){
 			va_start(args, format);
 			vfprintf(Logger::getInstance()->getLogFile(), format, args);
+            fflush(Logger::getInstance()->getLogFile());
 			va_end(args);
 		} else {
 			time_t t = time(NULL);
