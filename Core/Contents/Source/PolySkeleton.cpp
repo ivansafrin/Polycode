@@ -38,10 +38,17 @@ Skeleton *Skeleton::BlankSkeleton() {
 
 Skeleton::Skeleton(const String& fileName) : Entity() {
     baseAnimation = NULL;
+    bonesEntity	= new Entity();
+    bonesEntity->visible = false;
+    addChild(bonesEntity);        
 	loadSkeleton(fileName);
 }
 
 Skeleton::Skeleton() {
+    baseAnimation = NULL;
+    bonesEntity	= new Entity();
+    bonesEntity->visible = false;
+    addChild(bonesEntity);
 }
 
 Skeleton::~Skeleton() {
@@ -146,15 +153,33 @@ void Skeleton::Update() {
     }
 }
 
+void Skeleton::addBone(Bone *bone) {
+    bones.push_back(bone);
+}
+
+void Skeleton::removeBone(Bone *bone) {
+    for(int i=0; i < bones.size(); i++) {
+        if(bones[i] == bone) {
+            bones.erase(bones.begin()+i);
+            return;
+        }
+    }
+}
+
+unsigned int Skeleton::getBoneIndexByBone(Bone *bone) {
+    for(int i=0; i < bones.size(); i++) {
+        if(bones[i] == bone) {
+            return i;
+        }
+    }
+    return 0;
+}
+
 void Skeleton::loadSkeleton(const String& fileName) {
 	OSFILE *inFile = OSBasics::open(fileName.c_str(), "rb");
 	if(!inFile) {
 		return;
 	}
-	
-	bonesEntity	= new Entity();
-	bonesEntity->visible = false;
-	addChild(bonesEntity);
 	
 	unsigned int numBones;
 	float t[3],rq[4],s[3];

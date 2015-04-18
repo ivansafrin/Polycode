@@ -221,7 +221,11 @@ namespace Polycode {
 			*/
 			Bone *getBone(unsigned int index) const;
 		
-		
+            void addBone(Bone *bone);
+            void removeBone(Bone *bone);
+        
+            unsigned int getBoneIndexByBone(Bone *bone);
+        
 		protected:
 		
 			Entity *bonesEntity;
