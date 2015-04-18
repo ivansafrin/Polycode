@@ -65,6 +65,7 @@ class SpriteSheetEditor : public UIElement {
     
         void deleteSelectedFrames();
     
+        void selectAll();
         void clearSelected();
         bool hasSelectedID(unsigned int frameID);
         std::vector<unsigned int> getSelectedFrameIDs();
@@ -312,6 +313,8 @@ class PolycodeSpriteEditor : public PolycodeEditor {
 		bool openFile(OSFileEntry filePath);
 		void Resize(int x, int y);
 		void saveFile();
+    
+        void selectAll();
 				
 	protected:
 	
