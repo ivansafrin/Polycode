@@ -40,6 +40,7 @@ namespace Polycode {
 	CoreInput::CoreInput() : EventDispatcher() {
 		clearInput();
 		simulateTouchWithMouse = false;
+		simulateTouchAsPen = false;
 		simulateMouseWithTouch = false;
 		ignoreOffScreenTouch = false;
         keyRepeat = true;
@@ -174,7 +175,10 @@ namespace Polycode {
 		if(simulateTouchWithMouse) {
 			TouchInfo touch;
 			touch.position = mousePosition;
-			touch.id = 0;			
+			touch.id = 0;
+			if (simulateTouchAsPen){
+				touch.type = TouchInfo::TYPE_PEN;
+			}
 			std::vector<TouchInfo> touches;
 			touches.push_back(touch);
 			
@@ -203,13 +207,15 @@ namespace Polycode {
 		dispatchEvent(evt, InputEvent::EVENT_MOUSEMOVE);
 		
 		if(simulateTouchWithMouse) {
-		
-		
-		
+
 			TouchInfo touch;
 			touch.position = mousePosition;
 			touch.id = 0;			
+			if (simulateTouchAsPen){
+				touch.type = TouchInfo::TYPE_PEN;
+			}
 			std::vector<TouchInfo> touches;
+
 			touches.push_back(touch);
 
             /*
@@ -294,6 +300,12 @@ namespace Polycode {
 			setMousePosition(touch.position.x, touch.position.y, ticks);
 		}
 	}
+
+
+
+
+
+
 	
 	void CoreInput::touchesEnded(TouchInfo touch, std::vector<TouchInfo> touches, int ticks) {
 		if(ignoreOffScreenTouch) {
