@@ -141,6 +141,9 @@ namespace Polycode {
         
             void rebuildFinalMatrix();
             Matrix4 buildFinalMatrix() const;
+        
+        
+            void intializeBone(const Vector3 &basePosition, const Vector3 &baseScale, const Quaternion &baseRotation, const Vector3 &restPosition, const Vector3 &restScale, const Quaternion &restRotation);
 		
 			/**
 			* Id of the bone.

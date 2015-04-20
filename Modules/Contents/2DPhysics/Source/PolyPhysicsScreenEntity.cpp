@@ -47,7 +47,11 @@ PhysicsScene2DEntity::PhysicsScene2DEntity(Entity *entity, b2World *world, Numbe
 	// Create body definition---------------------------------------
 	b2BodyDef bodyDef;
 	bodyDef.position.Set(compoundMatrix.getPosition().x/worldScale, compoundMatrix.getPosition().y/worldScale);
-	bodyDef.angle = entity->getRoll()*(PI/180.0f);	
+    
+    Number ax,ay,az;
+    compoundMatrix.getEulerAngles(&ax, &ay, &az);
+    
+	bodyDef.angle = az*(PI/180.0f);
 	bodyDef.bullet = isSensor;	
 	bodyDef.fixedRotation = fixedRotation;	
 	if(isStatic)

@@ -272,16 +272,17 @@ void SceneMesh::renderMeshLocally() {
                 if(boneWeight > 0.0) {
                     
                     Bone *bone = skeleton->getBone(mesh->vertexBoneIndexArray.data[(i*4)+b]);
+                    if(bone) {
+                        Vector3 restVert(mesh->vertexPositionArray.data[i*3], mesh->vertexPositionArray.data[(i*3)+1], mesh->vertexPositionArray.data[(i*3)+2]);
                         
-                    Vector3 restVert(mesh->vertexPositionArray.data[i*3], mesh->vertexPositionArray.data[(i*3)+1], mesh->vertexPositionArray.data[(i*3)+2]);
-                    
-                    tPos += bone->finalMatrix * restVert * (boneWeight);
+                        tPos += bone->finalMatrix * restVert * (boneWeight);
+                            
+                        Vector3 nvec(mesh->vertexNormalArray.data[i*3], mesh->vertexNormalArray.data[(i*3)+1], mesh->vertexNormalArray.data[(i*3)+2]);
                         
-                    Vector3 nvec(mesh->vertexNormalArray.data[i*3], mesh->vertexNormalArray.data[(i*3)+1], mesh->vertexNormalArray.data[(i*3)+2]);
-                    
-                    nvec = bone->finalMatrix.rotateVector(nvec);
-                    
-                    norm += nvec * (boneWeight);
+                        nvec = bone->finalMatrix.rotateVector(nvec);
+                        
+                        norm += nvec * (boneWeight);
+                    }
                 }
             }
 
