@@ -203,23 +203,15 @@ namespace Polycode {
 		dispatchEvent(evt, InputEvent::EVENT_MOUSEMOVE);
 		
 		if(simulateTouchWithMouse) {
-		
-		
-		
 			TouchInfo touch;
 			touch.position = mousePosition;
 			touch.id = 0;			
 			std::vector<TouchInfo> touches;
 			touches.push_back(touch);
-
-            /*
-			if(!mouseButtons[MOUSE_BUTTON1]) {
-				mouseButtons[MOUSE_BUTTON1] = true;
-				touchesBegan(touch, touches, ticks);
-			}
-             */
-			touchesMoved(touch, touches, ticks);
-		}		
+			if(mouseButtons[MOUSE_BUTTON1]) {
+                touchesMoved(touch, touches, ticks);
+            }
+		}
 	}
 	
 	Vector2 CoreInput::getMouseDelta() {
