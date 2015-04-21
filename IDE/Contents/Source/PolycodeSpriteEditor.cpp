@@ -285,6 +285,10 @@ void SpriteSheetEditor::handleEvent(Event *event) {
         globalFrame->assetBrowser->addEventListener(this, UIEvent::OK_EVENT);
         std::vector<String> extensions;
         extensions.push_back("png");
+        extensions.push_back("hdr");
+        extensions.push_back("jpg");
+        extensions.push_back("psd");
+        extensions.push_back("tga");
         globalFrame->showAssetBrowser(extensions);
     } else if(event->getDispatcher() == generateFramesButton) {
         if(generateTypeDropdown->getSelectedIndex() == 0) {

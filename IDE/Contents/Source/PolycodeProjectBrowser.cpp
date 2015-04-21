@@ -208,7 +208,7 @@ void PolycodeProjectBrowser::applyBrowserConfig(ObjectEntry *entry) {
 String PolycodeProjectBrowser::getIconForExtension(String extension) {
     if(extension == "mesh") {
         return "treeIcons/mesh.png";
-    } else if(extension == "png") {
+    } else if(extension == "png" || extension == "hdr" || extension == "jpg" || extension == "tga" || extension == "psd") {
         return "treeIcons/image.png";
     } else if(extension == "frag" || extension == "vert") {
         return "treeIcons/shader.png";

@@ -1186,6 +1186,10 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
         globalFrame->assetBrowser->addEventListener(this, UIEvent::OK_EVENT);
         std::vector<String> extensions;
         extensions.push_back("png");
+        extensions.push_back("hdr");
+        extensions.push_back("jpg");
+        extensions.push_back("psd");
+        extensions.push_back("tga");
         globalFrame->showAssetBrowser(extensions);
         return;
     }
@@ -2364,6 +2368,10 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
         if(sceneMesh->getFilename() != "") {
             meshEntry->addChild("file", sceneMesh->getFilename().replace(parentProject->getRootFolder()+"/", ""));
         }
+
+        meshEntry->addChild("alphaTest", sceneMesh->alphaTest);
+        meshEntry->addChild("backfaceCulled", sceneMesh->backfaceCulled);
+        meshEntry->addChild("sendBoneMatricesToMaterial", sceneMesh->sendBoneMatricesToMaterial);
         
         if(sceneMesh->getMaterial()) {
             meshEntry->addChild("material", sceneMesh->getMaterial()->getResourceName());

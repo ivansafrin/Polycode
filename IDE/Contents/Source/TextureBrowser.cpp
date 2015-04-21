@@ -47,7 +47,7 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension, Res
     
 	extension = extension.toLowerCase();
 	
-	if(extension == "png") {
+	if(extension == "png" || extension == "hdr" || extension == "jpg" || extension == "tga" || extension == "psd") {
 		imageShape->loadTexture(assetPath);
 	} else if(extension == "ogg" || extension == "wav") {
 		imageShape->loadTexture("browserIcons/sound_icon.png");
