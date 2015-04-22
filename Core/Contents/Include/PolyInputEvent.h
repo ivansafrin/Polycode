@@ -29,10 +29,26 @@ THE SOFTWARE.
 namespace Polycode {
 
 	class TouchInfo { 
-		public:			
+		public:
+			static const int TYPEBASE = 0x500;
+			static const int TYPE_TOUCH = TYPEBASE + 0;
+			static const int TYPE_PEN = TYPEBASE + 1;
+
+			TouchInfo();
+
 			int id;
 			Vector2 position;
+			int type;
 	};	
+
+	/*
+	class PointerInfo {
+	public:
+		int id;
+		Vector2 position;
+		int flag;
+	};
+	*/
 
 	/**
 	* Event dispatched by CoreInput. This event is dispatched by CoreInput when input happens.
@@ -73,8 +89,7 @@ namespace Polycode {
 		static const int EVENT_TOUCHES_BEGAN = EVENTBASE_INPUTEVENT+20;
 		static const int EVENT_TOUCHES_MOVED = EVENTBASE_INPUTEVENT+21;
 		static const int EVENT_TOUCHES_ENDED = EVENTBASE_INPUTEVENT+22;
-		
-		
+
 		//@}
 		// ----------------------------------------------------------------------------------------------------------------
 		
@@ -110,7 +125,8 @@ namespace Polycode {
 		
 		std::vector<TouchInfo> touches;
 		TouchInfo touch;
-		
+		int touchType;
+
 		unsigned int joystickDeviceID;
 		float joystickAxisValue;
 		unsigned int joystickButton;

@@ -24,6 +24,9 @@
 
 namespace Polycode {
 
+TouchInfo::TouchInfo() : type(TYPE_TOUCH) {
+}
+
 InputEvent::InputEvent() : Event() {
 	eventType = "InputEvent";
 }

@@ -40,6 +40,9 @@
 
 #include <tchar.h>
 
+#include <iostream>   // std::cout
+#include <string>     // std::string, std::to_string
+
 #if defined(_MINGW)
 #ifndef MAPVK_VSC_TO_VK_EX
 #define MAPVK_VSC_TO_VK_EX 3
@@ -648,38 +651,38 @@ void Win32Core::handleKeyUp(LPARAM lParam, WPARAM wParam) {
 
 #ifndef NO_TOUCH_API
 void Win32Core::handleTouchEvent(LPARAM lParam, WPARAM wParam) {
-	
-	// Bail out now if multitouch is not available on this system
-	if ( hasMultiTouch == false )
-	{
-		return;
-	}
-	
-	lockMutex(eventMutex);
 
-	int iNumContacts = LOWORD(wParam);
-	HTOUCHINPUT hInput       = (HTOUCHINPUT)lParam;
-    TOUCHINPUT *pInputs      = new TOUCHINPUT[iNumContacts];
-       
-    if(pInputs != NULL) {
-		if(GetTouchInputInfoFunc(hInput, iNumContacts, pInputs, sizeof(TOUCHINPUT))) {
+		// Bail out now if multitouch is not available on this system
+		if (hasMultiTouch == false)
+		{
+			return;
+		}
 
-			std::vector<TouchInfo> touches;
-			for(int i = 0; i < iNumContacts; i++) {
-				TOUCHINPUT ti = pInputs[i];
-				TouchInfo touchInfo;
-				touchInfo.id = (int) ti.dwID;
+		lockMutex(eventMutex);
 
-				POINT pt;
-				pt.x = TOUCH_COORD_TO_PIXEL(ti.x);
-				pt.y = TOUCH_COORD_TO_PIXEL(ti.y);
-				ScreenToClient(hWnd, &pt);
-				touchInfo.position.x = pt.x; 
-				touchInfo.position.y = pt.y;
+		int iNumContacts = LOWORD(wParam);
+		HTOUCHINPUT hInput = (HTOUCHINPUT)lParam;
+		TOUCHINPUT *pInputs = new TOUCHINPUT[iNumContacts];
 
-				touches.push_back(touchInfo);
-			}
-              for(int i = 0; i < iNumContacts; i++) {
+		if (pInputs != NULL) {
+			if (GetTouchInputInfoFunc(hInput, iNumContacts, pInputs, sizeof(TOUCHINPUT))) {
+
+				std::vector<TouchInfo> touches;
+				for (int i = 0; i < iNumContacts; i++) {
+					TOUCHINPUT ti = pInputs[i];
+					TouchInfo touchInfo;
+					touchInfo.id = (int)ti.dwID;
+
+					POINT pt;
+					pt.x = TOUCH_COORD_TO_PIXEL(ti.x);
+					pt.y = TOUCH_COORD_TO_PIXEL(ti.y);
+					ScreenToClient(hWnd, &pt);
+					touchInfo.position.x = pt.x;
+					touchInfo.position.y = pt.y;
+
+					touches.push_back(touchInfo);
+				}
+				for (int i = 0; i < iNumContacts; i++) {
 					TOUCHINPUT ti = pInputs[i];
 					if (ti.dwFlags & TOUCHEVENTF_UP) {
 						Win32Event newEvent;
@@ -687,15 +690,17 @@ void Win32Core::handleTouchEvent(LPARAM lParam, WPARAM wParam) {
 						newEvent.eventCode = InputEvent::EVENT_TOUCHES_ENDED;
 						newEvent.touches = touches;
 						newEvent.touch = touches[i];
-						win32Events.push_back(newEvent);	
-					} else if(ti.dwFlags & TOUCHEVENTF_MOVE) {
+						win32Events.push_back(newEvent);
+					}
+					else if (ti.dwFlags & TOUCHEVENTF_MOVE) {
 						Win32Event newEvent;
 						newEvent.eventGroup = Win32Event::INPUT_EVENT;
 						newEvent.eventCode = InputEvent::EVENT_TOUCHES_MOVED;
 						newEvent.touches = touches;
 						newEvent.touch = touches[i];
 						win32Events.push_back(newEvent);
-					} else if(ti.dwFlags & TOUCHEVENTF_DOWN) {
+					}
+					else if (ti.dwFlags & TOUCHEVENTF_DOWN) {
 						Win32Event newEvent;
 						newEvent.eventGroup = Win32Event::INPUT_EVENT;
 						newEvent.eventCode = InputEvent::EVENT_TOUCHES_BEGAN;
@@ -703,10 +708,79 @@ void Win32Core::handleTouchEvent(LPARAM lParam, WPARAM wParam) {
 						newEvent.touch = touches[i];
 						win32Events.push_back(newEvent);
 					}
-			  }
+				}
+			}
 		}
+		unlockMutex(eventMutex);
 	}
-	unlockMutex(eventMutex);	
+#endif
+
+#ifndef NO_PEN_API
+void Win32Core::handlePointerUpdate(LPARAM lParam, WPARAM wParam) {
+
+	lockMutex(eventMutex);
+
+	POINTER_PEN_INFO    penInfo;
+	POINTER_INFO        pointerInfo;
+	UINT32              pointerId = GET_POINTERID_WPARAM(wParam);
+	POINTER_INPUT_TYPE  pointerType = PT_POINTER;
+	TouchInfo			tempInfo;
+
+	if (!GetPointerType(pointerId, &pointerType))
+	{} // failure
+	else { // success
+
+		switch (pointerType){
+		case PT_TOUCH:
+		//case PT_MOUSE:
+		//case PT_TOUCHPAD:
+			GetPointerInfo(pointerId, &pointerInfo);
+			tempInfo.type = TouchInfo::TYPE_TOUCH;
+			break;
+		case PT_PEN:
+			!GetPointerPenInfo(pointerId, &penInfo);
+			pointerInfo = penInfo.pointerInfo;
+			tempInfo.type = TouchInfo::TYPE_PEN;
+			break;
+		}
+
+		tempInfo.id = GET_POINTERID_WPARAM(wParam);
+		tempInfo.position.x = pointerInfo.ptPixelLocation.x;
+		tempInfo.position.y = pointerInfo.ptPixelLocation.y;
+
+		Win32Event newEvent;
+		newEvent.eventGroup = Win32Event::INPUT_EVENT;
+
+		if (pointerInfo.pointerFlags & POINTER_FLAG_UPDATE){
+			newEvent.eventCode = InputEvent::EVENT_TOUCHES_MOVED;
+			for (int i = 0; i < pointerTouches.size(); i++) {
+				if (pointerTouches[i].id == tempInfo.id) {
+					pointerTouches[i].position = tempInfo.position;
+					break;
+				}
+			}
+		}
+		else if (pointerInfo.pointerFlags & POINTER_FLAG_DOWN){
+			newEvent.eventCode = InputEvent::EVENT_TOUCHES_BEGAN;
+			pointerTouches.push_back(tempInfo);
+		}
+		else if (pointerInfo.pointerFlags & POINTER_FLAG_UP){
+			newEvent.eventCode = InputEvent::EVENT_TOUCHES_ENDED;
+			for (int i = 0; i < pointerTouches.size(); i++) {
+				if (pointerTouches[i].id == tempInfo.id) {
+					pointerTouches.erase(pointerTouches.begin() + i);
+					break;
+				}
+			}
+		}
+		
+		newEvent.touches = pointerTouches;
+
+		newEvent.touch = tempInfo;
+		win32Events.push_back(newEvent);
+	}
+
+	unlockMutex(eventMutex);
 }
 #endif
 
@@ -720,6 +794,7 @@ void Win32Core::handleMouseMove(LPARAM lParam, WPARAM wParam) {
 	win32Events.push_back(newEvent);
 	unlockMutex(eventMutex);
 }
+
 void Win32Core::handleMouseWheel(LPARAM lParam, WPARAM wParam) {
 	lockMutex(eventMutex);
 	Win32Event newEvent;
@@ -836,7 +911,7 @@ void Win32Core::checkEvents() {
 					break;
 					case InputEvent::EVENT_KEYUP:
 						input->setKeyState(event.keyCode, (char)event.unicodeChar, false, getTicks());
-					break;						
+					break;
 				}
 			break;
 		}

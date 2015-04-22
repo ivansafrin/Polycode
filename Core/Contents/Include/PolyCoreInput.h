@@ -171,6 +171,11 @@ namespace Polycode {
 		*/
 		bool simulateTouchWithMouse;
 
+		/**
+		* If set to true, simulated touches will have type TYPE_PEN.
+		*/
+		bool simulateTouchAsPen;
+
         /**
          * If set to true, will fire mouse events on touch input. Defaults to false.
          */
