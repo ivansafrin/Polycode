@@ -87,6 +87,9 @@ void EventDispatcher::__dispatchEvent(Event *event, int eventCode) {
     for(int i=0;i<handlerEntries.size();i++) {
         if(handlerEntries[i].eventCode == eventCode) {
             handlerEntries[i].handler->handleEvent(event);
+            if(event->cancelEventFlag) {
+                break;
+            }
         }
     }	
 }

@@ -169,6 +169,18 @@ void SceneEntityInstance::applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMes
 		return;
     }
     
+    if((*entry)["sendBoneMatricesToMaterial"]) {
+        sceneMesh->sendBoneMatricesToMaterial = (*entry)["sendBoneMatricesToMaterial"]->boolVal;
+    }
+    
+    if((*entry)["alphaTest"]) {
+        sceneMesh->alphaTest = (*entry)["alphaTest"]->boolVal;
+    }
+    
+    if((*entry)["backfaceCulled"]) {
+        sceneMesh->backfaceCulled = (*entry)["backfaceCulled"]->boolVal;
+    }
+    
     ObjectEntry *materialName =(*entry)["material"];
     if(materialName) {
         sceneMesh->setMaterialByName(materialName->stringVal, topLevelResourcePool);

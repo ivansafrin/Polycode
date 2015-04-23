@@ -30,6 +30,8 @@
 #include <algorithm>
 #include <stdlib.h>
 #include "rgbe.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 using namespace Polycode;
 
@@ -525,6 +527,8 @@ bool Image::loadImage(const String& fileName) {
         return loadPNG(fileName);
     } else if(extension == "hdr") {
         return loadHDR(fileName);
+    } else if(extension == "jpg" || extension == "tga" || extension == "psd") {
+        return loadSTB(fileName);
     } else {
         Logger::log("Error: Invalid image format.\n");
         return false;
@@ -606,62 +610,80 @@ void Image::freeTokens(TokenArray tokens) {
 	free(tokens.tokens);
 }
 
+bool Image::loadSTB(const String &fileName) {
+    
+    OSFILE *infile = OSBasics::open(fileName.c_str(), "rb");
+    
+    if(!infile) {
+        Logger::log("Error opening image file: %s\n", fileName.c_str());
+        return false;
+    }
+    
+    OSBasics::seek(infile, 0, SEEK_END);
+    long bufferLen = OSBasics::tell(infile);
+    OSBasics::seek(infile, 0, SEEK_SET);
+    
+    char *buffer = (char*) malloc(bufferLen);
+    OSBasics::read(buffer, bufferLen, 1, infile);
+    
+    int x,y,n;
+    stbi_uc *data = stbi_load_from_memory((const stbi_uc*)buffer, bufferLen, &x, &y, &n, 4);
+    
+    if(!data) {
+        Logger::log("Error reading image data: %s\n", fileName.c_str());
+        return false;
+    }
+    
+    imageType = Image::IMAGE_RGBA;
+    
+    width = x;
+    height = y;
+    
+    free(buffer);
+    
+    imageData = (char*)data;
+    
+    OSBasics::close(infile);
+
+    return true;
+}
+
 bool Image::loadHDR(const String &fileName) {
-        
-    setPixelType(IMAGE_FP16);
-
-    FILE *file = fopen (fileName.c_str(), "rb");
-	if(!file) {
-		return false;
-    }
-
-    if(RGBE_ReadHeader(file, &width, &height, NULL) != RGBE_RETURN_SUCCESS) {
-        
-        // if ReadHeader failed, try reading info manually.
-        
-        char line [ 128 ];
-        Number exposure;
-        
-        fseek(file, 0, SEEK_SET);
-        
-        while ( fgets ( line, sizeof(line), file ) != NULL ) {
-            TokenArray ta = readTokens(line, "=");
-            if(strcmp(ta.tokens[0], "EXPOSURE") == 0) {
-                exposure = atof(ta.tokens[1]);
-            }
-            if(strcmp(ta.tokens[0], "FORMAT") == 0) {
-                //printf("format is %s\n", ta.tokens[1]);
-            }
-            freeTokens(ta);
-            
-            ta = readTokens(line, " ");
-            if(strcmp(ta.tokens[0], "-Y") == 0) {
-                //printf("image size is %d x %d\n", atoi(ta.tokens[1]), atoi(ta.tokens[3]));
-                width = atoi(ta.tokens[1]);
-                height = atoi(ta.tokens[3]);
-                freeTokens(ta);
-                break;
-            }
-            freeTokens(ta);
-        }
+    
+    imageType = Image::IMAGE_FP16;
+    
+    OSFILE *infile = OSBasics::open(fileName.c_str(), "rb");
+    
+    if(!infile) {
+        Logger::log("Error opening HDR %s\n", fileName.c_str());
+        return false;
     }
     
-    float *data = (float *)malloc(sizeof(float)*3*width*height);
+    OSBasics::seek(infile, 0, SEEK_END);
+    long bufferLen = OSBasics::tell(infile);
+    OSBasics::seek(infile, 0, SEEK_SET);
     
-    RGBE_ReadPixels_RLE(file, data, width, height);
-
-    float *hFloatImageData = (float*) malloc(sizeof(float)*3*width*height);
-/*
-    for(int i=0; i < width*height; i++) {
-		hFloatImageData[i*3] = convertFloatToHFloat(data[i*3]);
-		hFloatImageData[(i*3)+1] = convertFloatToHFloat(data[(i*3)+1]);
-		hFloatImageData[(i*3)+2] = convertFloatToHFloat(data[(i*3)+2]);
+    char *buffer = (char*) malloc(bufferLen);
+    OSBasics::read(buffer, bufferLen, 1, infile);
+    
+    int x,y,n;
+    float *data = stbi_loadf_from_memory((const stbi_uc*)buffer, bufferLen, &x, &y, &n, 0);
+    
+    if(!data) {
+        Logger::log("Error reading image data: %s\n", fileName.c_str());
+        return false;
     }
-*/
-    imageData = (char*) data; //(char*)hFloatImageData;
     
- //   free(data);
-	fclose(file);
+    width = x;
+    height = y;
+    
+    free(buffer);
+    
+    imageData = (char*)data;
+    
+    OSBasics::close(infile);
+    
+    
     return true;
 }
 

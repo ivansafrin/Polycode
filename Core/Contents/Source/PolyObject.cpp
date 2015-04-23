@@ -28,6 +28,15 @@
 
 using namespace Polycode;
 
+ObjectEntry::ObjectEntry() :
+type(UNKNOWN_ENTRY),
+NumberVal(0.0),
+length(0),
+intVal(0)
+{
+    
+}
+
 void ObjectEntry::Clear() {
 	for(int i=0; i < children.size(); i++) {
 		children[i]->Clear();
@@ -132,6 +141,7 @@ TiXmlElement *Object::createElementFromObjectEntry(ObjectEntry *entry) {
 						break;
 						case ObjectEntry::FLOAT_ENTRY: {
 							std::ostringstream o; // Avoid NumberToString, it truncates
+                            o << std::fixed;
 							o << childEntry->NumberVal;
 							newElement->SetAttribute(childTypedName.c_str(), o.str().c_str());
 						} break;

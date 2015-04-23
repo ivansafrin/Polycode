@@ -60,6 +60,9 @@ namespace Polycode {
 			void setEventCode(int eventCode);			
 			void setDispatcher(EventDispatcher *dispatcher);
 			const String& getEventType() const;
+        
+        
+            void cancelEvent();
 			
 			// In order to prevent "namespace" collisions between events of different types, all event integers must be unique.
 			// This is managed by arbitrarily assigning each class a "base" constant, and adding it to all its event type constants.
@@ -91,12 +94,12 @@ namespace Polycode {
 			static const int EVENTBASE_NONPOLYCODE = 0x10000;
 		
 			bool deleteOnDispatch;
-						
+            bool cancelEventFlag;
+        
 		protected:
 			
 			String eventType;
 			EventDispatcher *dispatcher;
 			int eventCode;
-			
 	};
 }

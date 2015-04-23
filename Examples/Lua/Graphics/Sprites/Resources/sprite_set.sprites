@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<sprite_set>
+    <sprite_sheet fileName="Resources/explosion.png">
+        <frames>
+            <frame id="0" x="0" y="0" w="0.0555556" h="1" ax="0" ay="0" />
+            <frame id="1" x="0.0555556" y="0" w="0.0555556" h="1" ax="0" ay="0" />
+            <frame id="2" x="0.111111" y="0" w="0.0555556" h="1" ax="0" ay="0" />
+            <frame id="3" x="0.166667" y="0" w="0.0555556" h="1" ax="0" ay="0" />
+            <frame id="4" x="0.222222" y="0" w="0.0555556" h="1" ax="0" ay="0" />
+            <frame id="5" x="0.277778" y="0" w="0.0555556" h="1" ax="0" ay="0" />
+            <frame id="6" x="0.333333" y="0" w="0.0555556" h="1" ax="0" ay="0" />
+            <frame id="7" x="0.388889" y="0" w="0.0555556" h="1" ax="0" ay="0" />
+            <frame id="8" x="0.444444" y="0" w="0.0555556" h="1" ax="0" ay="0" />
+            <frame id="9" x="0.5" y="0" w="0.0555556" h="1" ax="0" ay="0" />
+            <frame id="10" x="0.555556" y="0" w="0.0555556" h="1" ax="0" ay="0" />
+            <frame id="11" x="0.611111" y="0" w="0.0555556" h="1" ax="0" ay="0" />
+            <frame id="12" x="0.666667" y="0" w="0.0555556" h="1" ax="0" ay="0" />
+            <frame id="13" x="0.722222" y="0" w="0.0555556" h="1" ax="0" ay="0" />
+            <frame id="14" x="0.777778" y="0" w="0.0555556" h="1" ax="0" ay="0" />
+            <frame id="15" x="0.833333" y="0" w="0.0555556" h="1" ax="0" ay="0" />
+            <frame id="16" x="0.888889" y="0" w="0.0555556" h="1" ax="0" ay="0" />
+        </frames>
+    </sprite_sheet>
+    <sprites>
+        <sprite name="Explosion">
+            <states>
+                <state name="default" fps="20" scale="1" width="32" height="32" offset_x="0" offset_y="0" frame_ids="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16" />
+            </states>
+        </sprite>
+    </sprites>
+</sprite_set>

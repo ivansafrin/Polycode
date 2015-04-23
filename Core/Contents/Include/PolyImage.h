@@ -25,6 +25,7 @@ THE SOFTWARE.
 #include "PolyColor.h"
 #include "PolyRectangle.h"
 
+
 namespace Polycode {
 
 	class String;
@@ -92,12 +93,10 @@ namespace Polycode {
 			* @return True if successfully loaded, false otherwise.
 			*/ 			
 			bool loadImage(const String& fileName);
-			bool loadPNG(const String& fileName);
         
             static POLYIGNORE TokenArray readTokens(char *line, const char *tokens);
             static POLYIGNORE void freeTokens(TokenArray tokens);
-            bool loadHDR(const String &fileName);
-			
+        
 			/**
 			* Saves the image to a file. Currently only PNG files are supported.
 			* @param fileName Path to image file to load.	
@@ -275,6 +274,10 @@ namespace Polycode {
 		
 		protected:
 		
+            bool loadHDR(const String &fileName);
+            bool loadPNG(const String& fileName);
+            bool loadSTB(const String &fileName);
+        
         
             static inline hfloat convertFloatToHFloat(float f);
         

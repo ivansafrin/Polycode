@@ -59,6 +59,9 @@ namespace Polycode {
 		int mouseX;
 		int mouseY;
 		
+        std::vector<TouchInfo> touches;
+        TouchInfo touch;
+        
 		PolyKEY keyCode;
 		wchar_t unicodeChar;
 		

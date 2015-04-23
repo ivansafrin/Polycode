@@ -524,10 +524,9 @@ void Sprite::setName(String name) {
 }
 
 
-SpriteSet::SpriteSet(String fileName, ResourcePool *parentPool) : ResourcePool(fileName, parentPool) {
+SpriteSet::SpriteSet(const String &fileName, ResourcePool *parentPool) : ResourcePool(fileName, parentPool) {
     nextFrameIDIndex = 0;
     loadSpriteSet(fileName);
-    
 }
 
 void SpriteSet::loadSpriteSet(String fileName) {
@@ -790,8 +789,8 @@ void SpriteSet::clearFrames() {
 
 void SpriteSet::createGridFrames(Number width, Number height, const Vector2 &defaultAnchor) {
     
-    for(Number x = 0.0; x+width <= 1.0; x += width) {
-        for(Number y = 0.0; y+height <= 1.0; y += height) {
+    for(Number y = 0.0; y+height <= 1.0; y += height) {
+        for(Number x = 0.0; x+width <= 1.0; x += width) {
             SpriteFrame frame;
             frame.coordinates = Polycode::Rectangle(x, y, width, height);
             frame.anchorPoint = defaultAnchor;

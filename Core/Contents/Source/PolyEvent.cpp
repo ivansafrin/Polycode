@@ -26,9 +26,11 @@ namespace Polycode {
 	
 	Event::Event() {
 			deleteOnDispatch = true;
+            cancelEventFlag = false;
 	}
 	
-	Event::Event(int eventCode) {	
+	Event::Event(int eventCode) {
+        cancelEventFlag = false;
 		setEventCode(eventCode);
 	}
 	
@@ -55,4 +57,9 @@ namespace Polycode {
 	void Event::setEventCode(int eventCode) {
 		this->eventCode = eventCode;
 	}
+    
+    void Event::cancelEvent() {
+        cancelEventFlag = true;
+    }
+
 }

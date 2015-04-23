@@ -46,7 +46,9 @@
 	contextLock = [[NSLock alloc] init];
 	
 	[[self window] setAcceptsMouseMovedEvents:YES];
-	[[self window] makeFirstResponder:self];	
+	[[self window] makeFirstResponder:self];
+    
+    [self setAcceptsTouchEvents:YES];
 
 	[[NSNotificationCenter defaultCenter] addObserver:self  selector:@selector(windowResized:) name:NSWindowDidResizeNotification object:[self window]];
 	
@@ -415,6 +417,154 @@
 	core->cocoaEvents.push_back(newEvent);	
 	core->unlockMutex(core->eventMutex);	
 	
+}
+
+- (void)touchesBeganWithEvent:(NSEvent *)event
+{
+    if(core == NULL)
+        return;
+    
+    core->lockMutex(core->eventMutex);
+
+    NSSet *touches = [event touchesMatchingPhase:NSTouchPhaseAny inView:self];
+    NSArray *touchArray = [touches allObjects];
+    
+    std::vector<TouchInfo> touchInfos;
+    
+    for(NSTouch *touch in touchArray) {
+        TouchInfo info;
+        long touchID = (long)[touch identity];
+        info.id = touchID;
+        info.position.x = [touch normalizedPosition].x * core->getXRes();
+        info.position.y = (1.0-[touch normalizedPosition].y) * core->getYRes();
+        touchInfos.push_back(info);
+    }
+
+    unsigned int index = 0;
+    for(NSTouch *touch in touchArray) {
+        if([touch phase] == NSTouchPhaseBegan) {
+            CocoaEvent newEvent;
+            newEvent.eventCode = InputEvent::EVENT_TOUCHES_BEGAN;
+            newEvent.eventGroup = CocoaEvent::INPUT_EVENT;
+            newEvent.touches = touchInfos;
+            newEvent.touch = touchInfos[index];
+            core->cocoaEvents.push_back(newEvent);
+        }
+        index++;
+    }
+    core->unlockMutex(core->eventMutex);	
+
+}
+
+- (void)touchesMovedWithEvent:(NSEvent *)event
+{
+    
+    if(core == NULL)
+        return;
+    
+    core->lockMutex(core->eventMutex);
+    
+    NSSet *touches = [event touchesMatchingPhase:NSTouchPhaseAny inView:self];
+    NSArray *touchArray = [touches allObjects];
+    
+    std::vector<TouchInfo> touchInfos;
+    
+    for(NSTouch *touch in touchArray) {
+        TouchInfo info;
+        long touchID = (long)[touch identity];
+        info.id = touchID;
+        info.position.x = [touch normalizedPosition].x * core->getXRes();
+        info.position.y = (1.0-[touch normalizedPosition].y) * core->getYRes();
+        touchInfos.push_back(info);
+    }
+    
+    unsigned int index = 0;
+    for(NSTouch *touch in touchArray) {
+        if([touch phase] == NSTouchPhaseMoved) {
+            CocoaEvent newEvent;
+            newEvent.eventCode = InputEvent::EVENT_TOUCHES_MOVED;
+            newEvent.eventGroup = CocoaEvent::INPUT_EVENT;
+            newEvent.touches = touchInfos;
+            newEvent.touch = touchInfos[index];
+            core->cocoaEvents.push_back(newEvent);
+        }
+        index++;
+    }
+    core->unlockMutex(core->eventMutex);
+    
+}
+
+- (void)touchesEndedWithEvent:(NSEvent *)event
+{
+    if(core == NULL)
+        return;
+    
+    core->lockMutex(core->eventMutex);
+    
+    NSSet *touches = [event touchesMatchingPhase:NSTouchPhaseAny inView:self];
+    NSArray *touchArray = [touches allObjects];
+    
+    std::vector<TouchInfo> touchInfos;
+    
+    for(NSTouch *touch in touchArray) {
+        TouchInfo info;
+        long touchID = (long)[touch identity];
+        info.id = touchID;
+        info.position.x = [touch normalizedPosition].x * core->getXRes();
+        info.position.y = (1.0-[touch normalizedPosition].y) * core->getYRes();
+        touchInfos.push_back(info);
+    }
+    
+    unsigned int index = 0;
+    for(NSTouch *touch in touchArray) {
+        if([touch phase] == NSTouchPhaseEnded) {
+            CocoaEvent newEvent;
+            newEvent.eventCode = InputEvent::EVENT_TOUCHES_ENDED;
+            newEvent.eventGroup = CocoaEvent::INPUT_EVENT;
+            newEvent.touches = touchInfos;
+            newEvent.touch = touchInfos[index];
+            core->cocoaEvents.push_back(newEvent);
+        }
+        index++;
+    }
+    core->unlockMutex(core->eventMutex);
+    
+}
+
+- (void)touchesCancelledWithEvent:(NSEvent *)event
+{
+    if(core == NULL)
+        return;
+    
+    core->lockMutex(core->eventMutex);
+    
+    NSSet *touches = [event touchesMatchingPhase:NSTouchPhaseAny inView:self];
+    NSArray *touchArray = [touches allObjects];
+    
+    std::vector<TouchInfo> touchInfos;
+    
+    for(NSTouch *touch in touchArray) {
+        TouchInfo info;
+        long touchID = (long)[touch identity];
+        info.id = touchID;
+        info.position.x = [touch normalizedPosition].x * core->getXRes();
+        info.position.y = (1.0-[touch normalizedPosition].y) * core->getYRes();
+        touchInfos.push_back(info);
+    }
+    
+    unsigned int index = 0;
+    for(NSTouch *touch in touchArray) {
+        if([touch phase] == NSTouchPhaseCancelled) {
+            CocoaEvent newEvent;
+            newEvent.eventCode = InputEvent::EVENT_TOUCHES_ENDED;
+            newEvent.eventGroup = CocoaEvent::INPUT_EVENT;
+            newEvent.touches = touchInfos;
+            newEvent.touch = touchInfos[index];
+            core->cocoaEvents.push_back(newEvent);
+        }
+        index++;
+    }
+    core->unlockMutex(core->eventMutex);
 }
 
 - (void) mouseDown:(NSEvent *) event

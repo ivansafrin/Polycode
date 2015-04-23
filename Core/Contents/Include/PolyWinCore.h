@@ -95,8 +95,12 @@
 
 #define EXTENDED_KEYMASK	(1<<24)
 
+//#define NO_TOUCH_API
+//#define NO_PEN_API
+
 #ifdef _MINGW
 #define NO_TOUCH_API 1
+#define NO_PEN_API 1
 #endif
 
 #define POLYCODE_CORE Win32Core
@@ -116,6 +120,7 @@ namespace Polycode {
 		int mouseY;
 		TouchInfo touch;
 		std::vector<TouchInfo> touches;
+		int touchType;
 		PolyKEY keyCode;
 		wchar_t unicodeChar;		
 		char mouseButton;	
@@ -193,6 +198,7 @@ public:
 		void handleMouseDown(int mouseCode,LPARAM lParam, WPARAM wParam);
 		void handleMouseUp(int mouseCode,LPARAM lParam, WPARAM wParam);
 		void handleTouchEvent(LPARAM lParam, WPARAM wParam);
+		void handlePointerUpdate(LPARAM lParam, WPARAM wParam);
 
 		bool isMultiTouchEnabled() { return hasMultiTouch; }
 
@@ -285,6 +291,8 @@ public:
 
 		// Tracks whether the system supports multitouch at runtime
 		bool hasMultiTouch;
+
+		std::vector<TouchInfo> pointerTouches;
 		
 #ifndef NO_TOUCH_API
 		// Create generic reference to any multitouch functions we need, so that we
