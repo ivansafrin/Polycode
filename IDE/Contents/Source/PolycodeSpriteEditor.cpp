@@ -292,9 +292,9 @@ void SpriteSheetEditor::handleEvent(Event *event) {
         globalFrame->showAssetBrowser(extensions);
     } else if(event->getDispatcher() == generateFramesButton) {
         if(generateTypeDropdown->getSelectedIndex() == 0) {
-            Number frameWidth = uniformGridWidthInput->getText().toNumber() / ((Number)sprite->getTexture()->getWidth());
-            Number frameHeight = uniformGridHeightInput->getText().toNumber() / ((Number)sprite->getTexture()->getHeight());
-            sprite->createGridFrames(frameWidth, frameHeight, defaultAnchors[defaultAnchorCombo->getSelectedIndex()]);
+            int numX = floor(sprite->getTexture()->getWidth() / uniformGridWidthInput->getText().toNumber());
+            int numY = floor(sprite->getTexture()->getHeight() / uniformGridHeightInput->getText().toNumber());
+            sprite->createGridFrames(numX, numY, defaultAnchors[defaultAnchorCombo->getSelectedIndex()]);
         } else {
             sprite->createFramesFromIslands(minimumDistanceInput->getText().toInteger(), defaultAnchors[defaultAnchorCombo->getSelectedIndex()]);
         }

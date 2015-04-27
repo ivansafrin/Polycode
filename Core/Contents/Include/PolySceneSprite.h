@@ -146,7 +146,7 @@ namespace Polycode {
         void clearFrames();
         
         // automatic frame generation
-        void createGridFrames(Number width, Number height, const Vector2 &defaultAnchor);
+        void createGridFrames(unsigned int xCount, unsigned int yCount, const Vector2 &defaultAnchor);
         void createFramesFromIslands(unsigned int minDistance, const Vector2 &defaultAnchor);
         
         Sprite *getSpriteByName(String spriteName);
