@@ -1329,26 +1329,32 @@ void Mesh::saveAsOBJ(const String fileName) {
     
 	char buffer[256];
 
-    for(int i=0; i < vertexPositionArray.data.size()-2; i += 3) {
-		sprintf(buffer, "v %f %f %f\n", vertexPositionArray.data[i], vertexPositionArray.data[i+1], vertexPositionArray.data[i+2]);
-        fputs(buffer, f);
+    if(vertexPositionArray.data.size() > 2) {
+        for(int i=0; i < vertexPositionArray.data.size()-2; i += 3) {
+            sprintf(buffer, "v %f %f %f\n", vertexPositionArray.data[i], vertexPositionArray.data[i+1], vertexPositionArray.data[i+2]);
+            fputs(buffer, f);
+        }
     }
     
-    for(int i=0; i < vertexTexCoordArray.data.size()-1; i += 2) {
-		sprintf(buffer, "vt %f %f\n", vertexTexCoordArray.data[i], vertexTexCoordArray.data[i+1]);
-        fputs(buffer, f);
+    if(vertexTexCoordArray.data.size() > 1) {
+        for(int i=0; i < vertexTexCoordArray.data.size()-1; i += 2) {
+            sprintf(buffer, "vt %f %f\n", vertexTexCoordArray.data[i], vertexTexCoordArray.data[i+1]);
+            fputs(buffer, f);
+        }
     }
-    
 
-    for(int i=0; i < vertexNormalArray.data.size()-2; i += 3) {
-		sprintf(buffer, "vn %f %f %f\n", vertexNormalArray.data[i], vertexNormalArray.data[i+1], vertexNormalArray.data[i+2]);
-        fputs(buffer, f);
+    if(vertexNormalArray.data.size() > 2) {
+        for(int i=0; i < vertexNormalArray.data.size()-2; i += 3) {
+            sprintf(buffer, "vn %f %f %f\n", vertexNormalArray.data[i], vertexNormalArray.data[i+1], vertexNormalArray.data[i+2]);
+            fputs(buffer, f);
+        }
     }
     
-    
-    for(int i=0; i < indexArray.data.size()-2; i += 3) {
-		sprintf(buffer, "f %d %d %d\n", indexArray.data[i]+1, indexArray.data[i+1]+1, indexArray.data[i+2]+1);
-        fputs(buffer, f);
+    if(indexArray.data.size() > 2) {
+        for(int i=0; i < indexArray.data.size()-2; i += 3) {
+            sprintf(buffer, "f %d %d %d\n", indexArray.data[i]+1, indexArray.data[i+1]+1, indexArray.data[i+2]+1);
+            fputs(buffer, f);
+        }
     }
     
 	fclose(f);
