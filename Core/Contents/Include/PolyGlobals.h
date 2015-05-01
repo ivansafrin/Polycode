@@ -33,6 +33,10 @@ THE SOFTWARE.
 typedef float PolyRendererVertexType;
 typedef unsigned int PolyRendererIndexType;
 
+#ifdef _WIN32 || _WIN64
+	#define _WINDOWS
+#endif
+
 #ifdef _WINDOWS
 	#define WIN32_LEAN_AND_MEAN
 
