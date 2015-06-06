@@ -42,48 +42,91 @@ Dest[i] = (char)Source[i];
 #endif
 
 void addFileToZip(struct archive *a, String filePath, String pathInZip, bool silent)  {
-    struct archive_entry *entry;
-    struct stat st;
-    int len;
-    FILE *fd;
-    char buff[8192];
-    
-    stat(filePath.c_str(), &st);
-    
-    entry = archive_entry_new();
-    archive_entry_set_pathname(entry, pathInZip.c_str());
-    archive_entry_set_size(entry, st.st_size);
-    archive_entry_set_filetype(entry, AE_IFREG);
-    archive_entry_set_perm(entry, 0644);
-    archive_write_header(a, entry);
-    
-    fd = fopen(filePath.c_str(), "rb");
-    if(fd) {
-        len = fread(buff, 1, sizeof(buff), fd);
-        while ( len > 0 ) {
-            archive_write_data(a, buff, len);
-            len = fread(buff, 1, sizeof(buff), fd);
-        }
-        fclose(fd);
-    }
-    archive_entry_free(entry);
-    
+	struct archive_entry *entry;
+	struct stat st;
+	int len;
+	FILE *fd;
+	char buff[8192];
+
+	entry = archive_entry_new();
+	archive_entry_set_pathname(entry, pathInZip.c_str());
+	archive_entry_set_filetype(entry, AE_IFREG);
+	archive_entry_set_perm(entry, 0644);
+
+	// Are we dealing with a script file?
+	int pos = filePath.rfind(".lua");
+	bool isScript = (pos > -1 && pos == filePath.length() - 4) ? true : false;
+
+	bool copyFile = true;
+
+	if(isScript && getArg("--compileScripts") == "true") {
+		lua_State *L = lua_open();
+		if(L) {
+			luaL_openlibs(L);
+			lua_getglobal(L, "string");
+			lua_getfield(L, -1, "dump");
+
+			if(lua_isfunction(L, -1)) {
+				if(0 == luaL_loadfile(L, filePath.c_str())) {
+					int Largc = 1;
+
+#ifdef POLYCODE_WITH_LUAJIT
+					lua_pushboolean(L, 1);
+					Largc = 2;
+#endif
+
+					if(0 == lua_pcall(L, Largc, 1, 0)) {
+						if(lua_isstring(L, -1)) {
+							size_t sz;
+							const char *str = lua_tolstring(L, -1, &sz);
+
+							archive_entry_set_size(entry, sz);
+							archive_write_header(a, entry);
+							archive_write_data(a, str, sz);
+
+							copyFile = false;
+						}
+					}
+				}
+			}
+
+			lua_close(L);
+		}
+	}
+
+	if(copyFile) {
+		stat(filePath.c_str(), &st);
+		archive_entry_set_size(entry, st.st_size);
+		archive_write_header(a, entry);
+
+		fd = fopen(filePath.c_str(), "rb");
+		if(fd) {
+			len = fread(buff, 1, sizeof(buff), fd);
+			while ( len > 0 ) {
+				archive_write_data(a, buff, len);
+				len = fread(buff, 1, sizeof(buff), fd);
+			}
+			fclose(fd);
+		}
+	}
+
+	archive_entry_free(entry);
 }
 
 void addFolderToZip(struct archive *a, String folderPath, String parentFolder, bool silent) {
 	std::vector<OSFileEntry> files = OSBasics::parseFolder(folderPath, false);
 	for(int i=0; i < files.size(); i++) {
 		if(files[i].type == OSFileEntry::TYPE_FILE) {
-            
+
 			String pathInZip;
 			if(parentFolder == "") {
 				pathInZip = files[i].name;
 			} else {
 				pathInZip = parentFolder + "/" + files[i].name;
 			}
-            
+
 			addFileToZip(a, files[i].fullPath, pathInZip, silent);
-            
+
 		} else {
 			if(parentFolder == "") {
 				addFolderToZip(a, files[i].fullPath.c_str(), files[i].name, silent);
@@ -96,7 +139,7 @@ void addFolderToZip(struct archive *a, String folderPath, String parentFolder, b
 
 
 int main(int argc, char **argv) {
-		
+
 	PHYSFS_init(argv[0]);
 
 #if defined(__APPLE__) && defined(__MACH__)
@@ -116,7 +159,7 @@ int main(int argc, char **argv) {
 	TCHAR tpath[2049];
 	GetModuleFileName(NULL, (LPWSTR)tpath, 2048);
 	wtoc(path, tpath, 2048);
-	
+
 	String basePath = path;
 	vector<String> cpts = basePath.split("\\");
 	String installPath = "";
@@ -146,18 +189,18 @@ int main(int argc, char **argv) {
 		//	printf("arg: %s=%s\n", arg.name.c_str(), arg.value.c_str());
 			args.push_back(arg);
 		}
-		
+
 	}
-	
+
 	if(getArg("--config") == "") {
 		printf("\n\nInput config XML missing. Use --config=path to specify.\n\n");
 		return 1;
 	}
 
-	
+
 	if(getArg("--out") == "") {
 		printf("\n\nOutput file not specified. Use --out=outfile.polyapp to specify.\n\n");
-		return 1;		
+		return 1;
 	}
 
 	char dirPath[4099];
@@ -213,7 +256,7 @@ int main(int argc, char **argv) {
 		entryPoint = configFile.root["entryPoint"]->stringVal;
 	} else {
 		printf("Required parameter: \"entryPoint\" is missing from config file!\n");
-		return 1;		
+		return 1;
 	}
 
 	if(configFile.root["defaultWidth"]) {
@@ -221,7 +264,7 @@ int main(int argc, char **argv) {
 		defaultWidth = configFile.root["defaultWidth"]->intVal;
 	} else {
 		printf("Required parameter: \"defaultWidth\" is missing from config file!\n");
-		return 1;		
+		return 1;
 	}
 
 	if(configFile.root["defaultHeight"]) {
@@ -229,7 +272,7 @@ int main(int argc, char **argv) {
 		defaultHeight = configFile.root["defaultHeight"]->intVal;
 	} else {
 		printf("Required parameter: \"defaultHeight\" is missing from config file!\n");
-		return 1;		
+		return 1;
 	}
 
 	// start optional params
@@ -253,7 +296,7 @@ int main(int argc, char **argv) {
 		printf("Anisotropy level: %d\n", configFile.root["anisotropyLevel"]->intVal);
 		anisotropyLevel = configFile.root["anisotropyLevel"]->intVal;
 	}
-	
+
 	if(configFile.root["vSync"]) {
 		vSync = configFile.root["vSync"]->boolVal;
 		if(vSync) {
@@ -261,7 +304,7 @@ int main(int argc, char **argv) {
 		} else {
 			printf("V-Sync: false\n");
 		}
-	}	
+	}
 
 	if(configFile.root["fullScreen"]) {
 		fullScreen = configFile.root["fullScreen"]->boolVal;
@@ -286,13 +329,13 @@ int main(int argc, char **argv) {
 	}
 
     struct archive *a;
-    
+
     a = archive_write_new();
     archive_write_set_format_zip(a);
     archive_write_open_filename(a, getArg("--out").c_str());
-    
+
 	//zipFile z = zipOpen(getArg("--out").c_str(), 0);
-	
+
 
 	Object runInfo;
 	runInfo.root.name = "PolycodeApp";
@@ -302,10 +345,10 @@ int main(int argc, char **argv) {
 	runInfo.root.addChild("frameRate", frameRate);
 	runInfo.root.addChild("antiAliasingLevel", antiAliasingLevel);
 	runInfo.root.addChild("anisotropyLevel", anisotropyLevel);
-	runInfo.root.addChild("vSync", vSync);	
+	runInfo.root.addChild("vSync", vSync);
 	runInfo.root.addChild("fullScreen", fullScreen);
 	runInfo.root.addChild("textureFiltering", String(textureFiltering));
-		
+
 	ObjectEntry *color = runInfo.root.addChild("backgroundColor");
 	color->addChild("red", backgroundColorR);
 	color->addChild("green", backgroundColorG);
@@ -314,7 +357,7 @@ int main(int argc, char **argv) {
 	if(configFile.root["fonts"]) {
 		runInfo.root.addChild(configFile.root["fonts"]);
 	}
-	
+
 	if(configFile.root["modules"]) {
 #ifdef _WINDOWS
 		String modulesPath = installPath + "Modules\\";
@@ -323,7 +366,7 @@ int main(int argc, char **argv) {
 #endif
 
 		ObjectEntry *modules = configFile.root["modules"];
-		if(modules) {		
+		if(modules) {
 			for(int i=0; i < modules->length; i++) {
 				printf("Adding module: %s\n", (*modules)[i]->stringVal.c_str());
 				String modulePath = modulesPath + (*modules)[i]->stringVal;
@@ -331,15 +374,15 @@ int main(int argc, char **argv) {
 				String moduleAPIPath = modulePath + "\\API";
 				String moduleLibPath = modulePath + "\\Lib";
 				moduleAPIPath = moduleAPIPath.replace("\\", "/");
-				moduleAPIPath = moduleAPIPath.substr(2, moduleAPIPath.length() - 2);	
+				moduleAPIPath = moduleAPIPath.substr(2, moduleAPIPath.length() - 2);
 				moduleLibPath = moduleLibPath.replace("\\", "/");
-				moduleLibPath = moduleLibPath.substr(2, moduleLibPath.length() - 2);	
+				moduleLibPath = moduleLibPath.substr(2, moduleLibPath.length() - 2);
 
 #else
 				String moduleAPIPath = modulePath + "/API";
 				String moduleLibPath = modulePath + "/Lib";
 #endif
-				printf("Path:%s\n", moduleAPIPath.c_str());		
+				printf("Path:%s\n", moduleAPIPath.c_str());
 
 
 				addFolderToZip(a, moduleAPIPath, "", false);
@@ -374,7 +417,7 @@ int main(int argc, char **argv) {
 
 	runInfo.saveToXML("runinfo_tmp_zzzz.polyrun");
 	addFileToZip(a, "runinfo_tmp_zzzz.polyrun", "runinfo.polyrun", true);
-	
+
     archive_write_close(a);
     archive_write_free(a);
 
