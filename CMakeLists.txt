@@ -35,6 +35,8 @@ OPTION(POLYCODE_INSTALL_PLAYER "Install Polycode Player" ${POLYCODE_BUILD_PLAYER
 OPTION(POLYCODE_INSTALL_TEMPLATE "Install Template project" ON)
 OPTION(POLYCODE_INSTALL_DOCS ${POLYCODE_BUILD_DOCS})
 
+OPTION(POLYCODE_WITH_LUAJIT "Build Polycode with LuaJit" OFF)
+
 # Some non-standard CMake modules
 SET(CMAKE_MODULE_PATH ${Polycode_SOURCE_DIR}/CMake)
 
@@ -50,6 +52,10 @@ SET(CMAKE_PREFIX_PATH
     ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies
     ${POLYCODE_RELEASE_DIR}/Framework/Modules/Dependencies
     ${POLYCODE_RELEASE_DIR}/Framework/Tools/Dependencies)
+
+IF(POLYCODE_WITH_LUAJIT)
+    ADD_DEFINITIONS(-DPOLYCODE_WITH_LUAJIT)
+ENDIF(POLYCODE_WITH_LUAJIT)
 
 # Process subdirectories
 ADD_SUBDIRECTORY(Core/Contents)
