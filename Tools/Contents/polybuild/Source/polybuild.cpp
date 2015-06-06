@@ -56,12 +56,12 @@ void addFileToZip(struct archive *a, String filePath, String pathInZip, bool sil
 	// Are we dealing with a script file?
 	int pos = filePath.rfind(".lua");
 	bool isScript = (pos > -1 && pos == filePath.length() - 4) ? true : false;
-
-	bool copyFile = true;
+	bool compiledFile = false;
 
 	if(isScript && getArg("--compileScripts") == "true") {
 		lua_State *L = lua_open();
 		if(L) {
+			// Use string.dump to compile the script to bytecode
 			luaL_openlibs(L);
 			lua_getglobal(L, "string");
 			lua_getfield(L, -1, "dump");
@@ -71,8 +71,11 @@ void addFileToZip(struct archive *a, String filePath, String pathInZip, bool sil
 					int Largc = 1;
 
 #ifdef POLYCODE_WITH_LUAJIT
-					lua_pushboolean(L, 1);
-					Largc = 2;
+					// LuaJit can strip debug info from bytecode
+					if(getArg("--stripDebug") == "true") {
+						lua_pushboolean(L, 1);
+						Largc = 2;
+					}
 #endif
 
 					if(0 == lua_pcall(L, Largc, 1, 0)) {
@@ -80,21 +83,25 @@ void addFileToZip(struct archive *a, String filePath, String pathInZip, bool sil
 							size_t sz;
 							const char *str = lua_tolstring(L, -1, &sz);
 
+							// Write compiled bytecode to archive
 							archive_entry_set_size(entry, sz);
 							archive_write_header(a, entry);
 							archive_write_data(a, str, sz);
 
-							copyFile = false;
+							compiledFile = true;
 						}
 					}
 				}
 			}
 
 			lua_close(L);
+			if(!compiledFile) {
+				printf("Failed to compile script file \"%s\"\n", filePath.c_str());
+			}
 		}
 	}
 
-	if(copyFile) {
+	if(!compiledFile) {
 		stat(filePath.c_str(), &st);
 		archive_entry_set_size(entry, st.st_size);
 		archive_write_header(a, entry);
