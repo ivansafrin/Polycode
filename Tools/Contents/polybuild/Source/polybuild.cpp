@@ -95,9 +95,9 @@ void addFileToZip(struct archive *a, String filePath, String pathInZip, bool sil
 			}
 
 			lua_close(L);
-			if(!compiledFile) {
-				printf("Failed to compile script file \"%s\"\n", filePath.c_str());
-			}
+		}
+		if(!compiledFile) {
+			printf("Failed to compile script file \"%s\"\n", filePath.c_str());
 		}
 	}
 
