@@ -83,6 +83,11 @@ bool PolycodeProject::loadProjectFromFile() {
 		configFile.root.addChild("frameRate", 60);
 	}
 	
+	if (!configFile.root.readBool("logToFile", &(data.logToFile))) {
+		data.logToFile = false;
+		configFile.root.addChild("logToFile", false);
+	}
+
 	data.modules.clear();
 	if(configFile.root["modules"]) {
 		for(int i=0; i < configFile.root["modules"]->length; i++) {
@@ -127,6 +132,13 @@ bool PolycodeProject::loadProjectFromFile() {
 			color->addChild("green", 0.0);
 			color->addChild("blue", 0.0);						
 		}
+	}
+
+	data.logToFile = false;
+	if (configFile.root["logToFile"]){
+		ObjectEntry *logToFileEntry = configFile.root["logToFile"];
+
+		data.logToFile = logToFileEntry->boolVal;
 	}
 
 	return true;
@@ -215,7 +227,8 @@ bool PolycodeProject::saveFile() {
 	configFile.root["antiAliasingLevel"]->intVal = data.aaLevel;
 	configFile.root["anisotropyLevel"]->intVal = data.anisotropy;
 	configFile.root["vSync"]->boolVal = data.vSync;
-	
+	configFile.root["logToFile"]->boolVal = data.logToFile;
+
 	configFile.saveToXML(projectFile);
 
 	return true;

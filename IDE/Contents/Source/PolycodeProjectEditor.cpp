@@ -254,7 +254,11 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	bgColorBox = new UIColorBox(globalColorPicker, Color(1.0, 0.5, 0.0, 0.9), 30,30);
 	bgColorBox->setPosition(label2->getPosition().x, label2->getPosition().y+18);
 	mainSettingsWindow->addChild(bgColorBox);
-	
+
+	logToFileBox = new UICheckBox("Log to file", false);
+	logToFileBox->setPosition(padding, bgColorBox->getPosition().y + bgColorBox->getHeight() + 10);
+	mainSettingsWindow->addChild(logToFileBox);
+
 	vSyncCheckBox->addEventListener(this, UIEvent::CHANGE_EVENT);
 	defaultWidthInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	defaultHeightInput->addEventListener(this, UIEvent::CHANGE_EVENT);
@@ -264,6 +268,7 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	texFilteringComboBox->addEventListener(this, UIEvent::CHANGE_EVENT);
 	entryPointInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	bgColorBox->addEventListener(this, UIEvent::CHANGE_EVENT);
+	logToFileBox->addEventListener(this, UIEvent::CHANGE_EVENT);
 
 	isLoading = false;
 }
@@ -285,7 +290,7 @@ void PolycodeProjectEditor::refreshFontEntries() {
 void PolycodeProjectEditor::handleEvent(Event *event) {
 
 	if(event->getEventType() == "UIEvent") {
-		if(event->getDispatcher() == vSyncCheckBox || event->getDispatcher() == defaultWidthInput || event->getDispatcher() == defaultHeightInput || event->getDispatcher() == framerateInput || event->getDispatcher() == aaLevelComboBox || event->getDispatcher() == afLevelComboBox || event->getDispatcher() == texFilteringComboBox  || event->getDispatcher() == entryPointInput || event->getDispatcher() == bgColorBox) {
+		if (event->getDispatcher() == vSyncCheckBox || event->getDispatcher() == defaultWidthInput || event->getDispatcher() == defaultHeightInput || event->getDispatcher() == framerateInput || event->getDispatcher() == aaLevelComboBox || event->getDispatcher() == afLevelComboBox || event->getDispatcher() == texFilteringComboBox || event->getDispatcher() == entryPointInput || event->getDispatcher() == bgColorBox || event->getDispatcher() == logToFileBox) {
 			if(!isLoading) {
 				setHasChanges(true);
 			}
@@ -391,6 +396,8 @@ bool PolycodeProjectEditor::openFile(OSFileEntry filePath) {
 
 	bgColorBox->setBoxColor(Color(associatedProject->data.backgroundColorR, associatedProject->data.backgroundColorG, associatedProject->data.backgroundColorB, 1.0));	
 	
+	logToFileBox->setChecked(associatedProject->data.logToFile);
+
 	PolycodeEditor::openFile(filePath);	
 	refreshFontEntries();	
 	isLoading = false;	
@@ -443,7 +450,8 @@ void PolycodeProjectEditor::saveFile() {
 	associatedProject->data.aaLevel = aaMap[aaLevelComboBox->getSelectedIndex()];
 	associatedProject->data.anisotropy = afMap[afLevelComboBox->getSelectedIndex()];
 	associatedProject->data.vSync = vSyncCheckBox->isChecked();
-	
+	associatedProject->data.logToFile = logToFileBox->isChecked();
+
 	associatedProject->saveFile();
 	setHasChanges(false);
 }
