@@ -491,6 +491,8 @@ namespace Polycode {
 			bool multiLine;
 			Timer *blinkTimer;
 			UIBox *inputRect;
+            UIBox *inputRectSelected;
+        
 			UIRect *blinkerRect;
 			Vector2 dragMouseStart;
 			

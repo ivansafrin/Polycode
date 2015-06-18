@@ -27,6 +27,7 @@
 	<uiTreeCellPadding>3</uiTreeCellPadding>
 	
 	<textBgSkin>textfield.png</textBgSkin>
+	<textBgSkinFocus>textfield_focus.png</textBgSkinFocus>
 	<textBgSkinMultiline>textfieldMulti.png</textBgSkinMultiline>
 	<textBgSkinT>7</textBgSkinT>
 	<textBgSkinR>7</textBgSkinR>

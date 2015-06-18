@@ -116,7 +116,13 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	} else {
 		inputRect = new UIBox(conf->getStringValue("Polycode", "textBgSkin"),
 						  st,sr,sb,sl,
-						  width+(padding*2), height+(padding*2));	
+						  width+(padding*2), height+(padding*2));
+        
+        inputRectSelected = new UIBox(conf->getStringValue("Polycode", "textBgSkinFocus"),
+                              st,sr,sb,sl,
+                              width+(padding*2), height+(padding*2));
+        inputRectSelected->visible = false;
+        addChild(inputRectSelected);
 	}
 	
 	addChild(inputRect);		
@@ -395,7 +401,7 @@ void UITextInput::updateSelectionRects() {
 				midHeight += lineHeight+lineSpacing;
 			}
 			selectorRectMiddle->Resize(midSize, midHeight);
-			selectorRectMiddle->setPosition(- horizontalPixelScroll, ((lineStart+1) * (lineHeight+lineSpacing)));	
+			selectorRectMiddle->setPosition(- horizontalPixelScroll, ((lineStart+1) * (lineHeight+lineSpacing)));
 			
 		}
 		
@@ -709,6 +715,9 @@ void UITextInput::Resize(Number width, Number height) {
 	didMultilineResize = false;
 	
 	inputRect->resizeBox(width, height);
+    if(!multiLine) {
+        inputRectSelected->resizeBox(width, height);
+    }
 	setWidth(width);
 	setHeight(height);
 	matrixDirty = true;	
@@ -2158,6 +2167,12 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 void UITextInput::Update() {
 	resizeTimer += core->getElapsed();
 	
+    
+    if(!multiLine) {
+        inputRectSelected->visible = hasFocus;
+        inputRect->visible = !hasFocus;
+    }
+    
 	if(draggingSelection) {
 		if(selectionDragMouse != dragMouseStart) {
 			dragSelectionTo(selectionDragMouse.x, selectionDragMouse.y - linesContainer->getPosition().y);	
