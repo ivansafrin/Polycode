@@ -88,6 +88,7 @@ class PolycodeProjectEditor : public PolycodeEditor {
 	UIComboBox *texFilteringComboBox;
 	UITextInput *entryPointInput;	
 	UIColorBox *bgColorBox;
+	UICheckBox *logToFileBox;
 	
 	UIButton *addFontButton;
 	

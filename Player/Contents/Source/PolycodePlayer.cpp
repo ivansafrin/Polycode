@@ -604,8 +604,13 @@ void PolycodePlayer::loadFile(const char *fileName) {
 			}
 
 		}			
+
+		if (configFile.root["logToFile"]){
+			ObjectEntry *logToFileEntry = configFile.root["logToFile"];
+			CoreServices::getInstance()->getLogger()->setLogToFile(logToFileEntry->boolVal);
+		}
 	}
-	
+
 	Logger::log("Mainfile: %s\n", mainFile.c_str());
 	
 	PolycodeDebugEvent *event = new PolycodeDebugEvent();			

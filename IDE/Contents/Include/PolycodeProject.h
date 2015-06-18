@@ -55,7 +55,9 @@ class ProjectData {
 		
 		Number backgroundColorR;
 		Number backgroundColorG;
-		Number backgroundColorB;				
+		Number backgroundColorB;
+
+		bool logToFile;
 };
 
 class PolycodeProject {

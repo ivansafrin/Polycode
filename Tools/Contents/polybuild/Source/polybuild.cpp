@@ -203,6 +203,7 @@ int main(int argc, char **argv) {
 	int anisotropyLevel = 0;
 	bool vSync = false;
 	bool fullScreen = false;
+	bool logToFile = false;
 	float backgroundColorR = 0.2;
 	float backgroundColorG = 0.2;
 	float backgroundColorB = 0.2;
@@ -272,6 +273,15 @@ int main(int argc, char **argv) {
 		}
 	}
 
+	if (configFile.root["logToFile"]) {
+		logToFile = configFile.root["logToFile"]->boolVal;
+		if (logToFile) {
+			printf("Log to file: true\n");
+		} else {
+			printf("Log to file: false\n");
+		}
+	}
+
 	if(configFile.root["backgroundColor"]) {
 		ObjectEntry *color = configFile.root["backgroundColor"];
 		if((*color)["red"] && (*color)["green"] && (*color)["blue"]) {
@@ -304,6 +314,7 @@ int main(int argc, char **argv) {
 	runInfo.root.addChild("anisotropyLevel", anisotropyLevel);
 	runInfo.root.addChild("vSync", vSync);	
 	runInfo.root.addChild("fullScreen", fullScreen);
+	runInfo.root.addChild("logToFile", logToFile);
 	runInfo.root.addChild("textureFiltering", String(textureFiltering));
 		
 	ObjectEntry *color = runInfo.root.addChild("backgroundColor");
