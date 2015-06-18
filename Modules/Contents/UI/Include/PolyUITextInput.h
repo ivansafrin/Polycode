@@ -363,6 +363,8 @@ namespace Polycode {
             void convertIndentToSpaces();
 			
 			void doMultilineResize();
+        
+            virtual void onGainFocus();
 						
 			static void setMenuSingleton(UIGlobalMenu *_globalMenu);
 					

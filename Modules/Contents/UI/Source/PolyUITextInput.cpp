@@ -2610,6 +2610,11 @@ void UITextInput::handleEvent(Event *event) {
     UIElement::handleEvent(event);
 }
 
+void UITextInput::onGainFocus() {
+    blinkerRect->visible  = true;
+    blinkTimer->Reset();
+}
+
 void UITextInput::shiftText(bool left) {
 	if (multiLine && (hasSelection || lines[lineOffset].text != "")) {
 		saveUndoState();
