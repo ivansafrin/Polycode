@@ -40,11 +40,15 @@ TextInputPopup::TextInputPopup() : UIWindow(L"", 300, 80) {
 	okButton->setPosition(padding+300-100, 64);
 	
 	closeOnEscape = true;
-
 }
 
 void TextInputPopup::setCaption(String caption) {
 	setWindowCaption(caption);
+}
+
+void TextInputPopup::onGainFocus() {
+    focusChild(textInput);
+    textInput->selectAll();
 }
 
 String TextInputPopup::getValue() {
@@ -91,6 +95,10 @@ MessagePopup::MessagePopup() : UIWindow("", 300, 80) {
 
 MessagePopup::~MessagePopup() {
     
+}
+
+void MessagePopup::onGainFocus() {
+    focusChild(okButton);
 }
 
 void MessagePopup::setCaption(String caption) {
@@ -141,6 +149,10 @@ YesNoPopup::YesNoPopup() : UIWindow(L"", 300, 80) {
 
 }
 
+void YesNoPopup::onGainFocus() {
+    focusChild(okButton);
+}
+
 void YesNoPopup::setCaption(String caption) {
 	captionLabel->setText(caption);
 	
@@ -171,6 +183,10 @@ void YesNoPopup::handleEvent(Event *event) {
 
 YesNoPopup::~YesNoPopup() {
 	
+}
+
+void YesNoCancelPopup::onGainFocus() {
+    focusChild(okButton);
 }
 
 YesNoCancelPopup::YesNoCancelPopup() : UIWindow(L"", 300, 80) {
@@ -329,6 +345,10 @@ AssetImporterWindow::AssetImporterWindow() : UIWindow("3D Asset Importer", 650, 
 	addChild(overrideMaterialInput);
     overrideMaterialInput->setText("Default");
     
+}
+
+void AssetImporterWindow::onGainFocus() {
+    focusChild(okButton);
 }
 
 void AssetImporterWindow::handleEvent(Event *event) {

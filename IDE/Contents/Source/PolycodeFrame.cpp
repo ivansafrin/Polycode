@@ -1526,9 +1526,8 @@ void PolycodeFrame::showModal(UIWindow *modalChild) {
 	modalChild->addEventListener(this, UIEvent::CLOSE_EVENT);
 	Resize(getWidth(), getHeight());
 	
-	if(modalChild == yesNoPopup) {
-		yesNoPopup->focusChild(yesNoPopup->okButton);
-	}
+    modalChild->focusSelf();
+    
 	CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);	
 }
 
