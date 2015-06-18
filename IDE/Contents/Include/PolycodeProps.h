@@ -54,7 +54,7 @@ class PropProp : public UIElement {
 
 class Vector3Prop : public PropProp {
     public:
-        Vector3Prop(String caption);
+        Vector3Prop(String caption, UIElement *focusParent);
         ~Vector3Prop();
         void handleEvent(Event *event);
         void set(const Vector3 &position);
@@ -80,7 +80,7 @@ class Vector3Prop : public PropProp {
 
 class Vector2Prop : public PropProp {
 	public:
-		Vector2Prop(String caption);
+		Vector2Prop(String caption, UIElement *focusParent);
 		~Vector2Prop();		
 		void handleEvent(Event *event);
 		void set(Vector2 position);
@@ -120,7 +120,7 @@ class SliderProp : public PropProp {
 
 class ButtonProp : public PropProp {
     public:
-        ButtonProp(const String &caption);
+        ButtonProp(const String &caption, UIElement *focusParent);
         ~ButtonProp();
         void setPropWidth(Number width);
         UIButton *getButton();
@@ -133,7 +133,7 @@ class ButtonProp : public PropProp {
 
 class NumberProp : public PropProp {
 	public:
-		NumberProp(String caption);
+		NumberProp(String caption, UIElement *focusParent);
 		~NumberProp();		
 		void handleEvent(Event *event);
 		void set(Number number);
@@ -265,7 +265,7 @@ class CustomProp : public PropProp {
 
 class StringProp : public PropProp {
 	public:
-		StringProp(String caption);
+		StringProp(String caption, UIElement *focusParent);
 		~StringProp();		
 		void handleEvent(Event *event);
 		void set(String str);

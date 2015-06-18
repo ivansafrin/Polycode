@@ -60,7 +60,9 @@ namespace Polycode {
 			virtual void onLoseFocus() {}
 			virtual void onGainFocus() {}
 			
-			void addFocusChild(UIElement *element);			
+			void addFocusChild(UIElement *element);
+			void registerFocusChild(UIElement *element);
+			void unregisterFocusChild(UIElement *element);
 			void setFocusParent(UIElement *element);
 
 			MouseEventResult onMouseMove(const Ray &ray, int timestamp);

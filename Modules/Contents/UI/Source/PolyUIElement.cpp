@@ -403,6 +403,10 @@ UIElement::~UIElement() {
     
     Services()->getInput()->removeAllHandlersForListener(this);
 
+    if(focusParent) {
+        focusParent->unregisterFocusChild(this);
+    }
+    
 	if(UIElement::globalFocusedChild == this) {
 		UIElement::globalFocusedChild = NULL;
 	}
@@ -496,11 +500,24 @@ void UIElement::focusChild(UIElement *child) {
 	}	
 }
 
-void UIElement::addFocusChild(UIElement *element) {
+void UIElement::registerFocusChild(UIElement *element) {
     if(element->isFocusable()) {
         element->setFocusParent(this);
         focusChildren.push_back(element);
     }
+}
+
+void UIElement::unregisterFocusChild(UIElement *element) {
+    for(int i=0; i < focusChildren.size(); i++) {
+        if(focusChildren[i] == element) {
+            focusChildren.erase(focusChildren.begin()+i);
+            return;
+        }
+    }
+}
+
+void UIElement::addFocusChild(UIElement *element) {
+    registerFocusChild(element);
     addChild(element);
 }
 

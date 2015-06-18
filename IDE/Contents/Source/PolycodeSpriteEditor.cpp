@@ -165,7 +165,7 @@ SpriteSheetEditor::SpriteSheetEditor(SpriteSet *sprite) : UIElement() {
     label->setPosition(120.0 - label->getWidth(), 68.0);
     
     uniformGridWidthInput = new UITextInput(false, 100.0, 12);
-    uniformOptions->addChild(uniformGridWidthInput);
+    uniformOptions->addFocusChild(uniformGridWidthInput);
     uniformGridWidthInput->setPosition(130.0, 65.0);
     uniformGridWidthInput->setText("32");
     uniformGridWidthInput->setNumberOnly(true);
@@ -175,7 +175,7 @@ SpriteSheetEditor::SpriteSheetEditor(SpriteSet *sprite) : UIElement() {
     label->setPosition(120.0 - label->getWidth(), 93.0);
     
     uniformGridHeightInput = new UITextInput(false, 100, 12);
-    uniformOptions->addChild(uniformGridHeightInput);
+    uniformOptions->addFocusChild(uniformGridHeightInput);
     uniformGridHeightInput->setPosition(130.0, 90);
     uniformGridHeightInput->setText("32");
     uniformGridHeightInput->setNumberOnly(true);
@@ -185,7 +185,7 @@ SpriteSheetEditor::SpriteSheetEditor(SpriteSet *sprite) : UIElement() {
     label->setPosition(120.0 - label->getWidth(), 68.0);
     
     minimumDistanceInput = new UITextInput(false, 30, 12);
-    detectOptions->addChild(minimumDistanceInput);
+    detectOptions->addFocusChild(minimumDistanceInput);
     minimumDistanceInput->setPosition(130.0, 65.0);
     minimumDistanceInput->setText("0");
     minimumDistanceInput->setNumberOnly(true);
@@ -794,7 +794,7 @@ SpriteStateEditorDetails::SpriteStateEditorDetails(SpriteSet *spriteSet) : UIEle
     addChild(label);
     
     fpsInput = new UITextInput(false, 50.0, 12.0);
-    addChild(fpsInput);
+    addFocusChild(fpsInput);
     fpsInput->setPosition(65.0, 40.0);
     fpsInput->addEventListener(this, UIEvent::CHANGE_EVENT);
     
@@ -803,7 +803,7 @@ SpriteStateEditorDetails::SpriteStateEditorDetails(SpriteSet *spriteSet) : UIEle
     addChild(label);
     
     scaleInput = new UITextInput(false, 50.0, 12.0);
-    addChild(scaleInput);
+    addFocusChild(scaleInput);
     scaleInput->setPosition(65.0, 65.0);
     scaleInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 
@@ -812,7 +812,7 @@ SpriteStateEditorDetails::SpriteStateEditorDetails(SpriteSet *spriteSet) : UIEle
     addChild(label);
     
     bBoxWidthInput = new UITextInput(false, 50.0, 12.0);
-    addChild(bBoxWidthInput);
+    addFocusChild(bBoxWidthInput);
     bBoxWidthInput->setPosition(65.0, 90.0);
     bBoxWidthInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 
@@ -821,7 +821,7 @@ SpriteStateEditorDetails::SpriteStateEditorDetails(SpriteSet *spriteSet) : UIEle
     addChild(label);
     
     bBoxHeightInput = new UITextInput(false, 50.0, 12.0);
-    addChild(bBoxHeightInput);
+    addFocusChild(bBoxHeightInput);
     bBoxHeightInput->setPosition(65.0, 115.0);
     bBoxHeightInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 
@@ -830,7 +830,7 @@ SpriteStateEditorDetails::SpriteStateEditorDetails(SpriteSet *spriteSet) : UIEle
     addChild(label);
     
     offsetXInput = new UITextInput(false, 50.0, 12.0);
-    addChild(offsetXInput);
+    addFocusChild(offsetXInput);
     offsetXInput->setPosition(65.0, 140.0);
     offsetXInput->addEventListener(this, UIEvent::CHANGE_EVENT);
     
@@ -839,7 +839,7 @@ SpriteStateEditorDetails::SpriteStateEditorDetails(SpriteSet *spriteSet) : UIEle
     addChild(label);
     
     offsetYInput = new UITextInput(false, 50.0, 12.0);
-    addChild(offsetYInput);
+    addFocusChild(offsetYInput);
     offsetYInput->setPosition(65.0, 165.0);
     offsetYInput->addEventListener(this, UIEvent::CHANGE_EVENT);
     

@@ -353,9 +353,10 @@ PropProp::~PropProp() {
 
 }
 
-ButtonProp::ButtonProp(const String &caption) : PropProp("", "ButtonProp") {
+ButtonProp::ButtonProp(const String &caption, UIElement *focusParent) : PropProp("", "ButtonProp") {
     button = new UIButton(caption, 100);
-    addFocusChild(button);
+    addChild(button);
+    focusParent->registerFocusChild(button);
     setHeight(25);
 }
 
@@ -372,7 +373,7 @@ void ButtonProp::setPropWidth(Number width) {
 }
 
 
-Vector3Prop::Vector3Prop(String caption) : PropProp(caption, "Vector3") {
+Vector3Prop::Vector3Prop(String caption, UIElement *focusParent) : PropProp(caption, "Vector3") {
     
     xInput = NULL;
     yInput = NULL;
@@ -380,38 +381,41 @@ Vector3Prop::Vector3Prop(String caption) : PropProp(caption, "Vector3") {
     
 	labelX = new UILabel("X:", 11);
 	labelX->color.a = 1.0;
-	propContents->addFocusChild(labelX);
+	propContents->addChild(labelX);
 	labelX->setPosition(-20, 5);
     
 	labelY = new UILabel("Y:", 11);
 	labelY->color.a = 1.0;
-	propContents->addFocusChild(labelY);
+	propContents->addChild(labelY);
 	labelY->setPosition(-20, 25);
 
     labelZ = new UILabel("Z:", 11);
 	labelZ->color.a = 1.0;
-	propContents->addFocusChild(labelZ);
+	propContents->addChild(labelZ);
 	labelZ->setPosition(-20, 45);
     
 	xInput = new UITextInput(false, 50, 12);
 	xInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	xInput->setText("0");
 	xInput->setNumberOnly(true);
-	propContents->addFocusChild(xInput);
+	propContents->addChild(xInput);
+    focusParent->registerFocusChild(xInput);
 	xInput->setPosition(0, 0);
 
    	yInput = new UITextInput(false, 50, 12);
 	yInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	yInput->setText("0");
 	yInput->setNumberOnly(true);
-	propContents->addFocusChild(yInput);
+	propContents->addChild(yInput);
+    focusParent->registerFocusChild(yInput);
 	yInput->setPosition(0, 20);
 
     zInput = new UITextInput(false, 50, 12);
 	zInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	zInput->setText("0");
 	zInput->setNumberOnly(true);
-	propContents->addFocusChild(zInput);
+	propContents->addChild(zInput);
+    focusParent->registerFocusChild(zInput);
 	zInput->setPosition(0, 40);
 
 	setHeight(65);
@@ -463,16 +467,16 @@ Vector3Prop::~Vector3Prop() {
     
 }
 
-Vector2Prop::Vector2Prop(String caption) : PropProp(caption, "Vector2") {
+Vector2Prop::Vector2Prop(String caption, UIElement *focusParent) : PropProp(caption, "Vector2") {
 
 	labelX = new UILabel("X:", 11);
 	labelX->color.a = 1.0;
-	propContents->addFocusChild(labelX);
+	propContents->addChild(labelX);
 	labelX->setPosition(-20, 6);	
 
 	labelY = new UILabel("Y:", 11);
 	labelY->color.a = 1.0;
-	propContents->addFocusChild(labelY);
+	propContents->addChild(labelY);
 	labelY->setPosition(60, 6);	
 	
 	positionX = NULL;
@@ -482,14 +486,16 @@ Vector2Prop::Vector2Prop(String caption) : PropProp(caption, "Vector2") {
 	positionX->addEventListener(this, UIEvent::CHANGE_EVENT);
 	positionX->setText("0");
 	positionX->setNumberOnly(true);
-	propContents->addFocusChild(positionX);
+	propContents->addChild(positionX);
+    focusParent->registerFocusChild(positionX);
 	positionX->setPosition(0, 0);
 
 	positionY = new UITextInput(false, 50, 12);
 	positionY->setText("0");
 	positionY->addEventListener(this, UIEvent::CHANGE_EVENT);	
 	positionY->setNumberOnly(true);
-	propContents->addFocusChild(positionY);
+	propContents->addChild(positionY);
+    focusParent->registerFocusChild(positionY);
 	positionY->setPosition(80, 0);
 
 	setHeight(25);
@@ -758,12 +764,13 @@ String CustomProp::getKey() {
 }
 
 
-StringProp::StringProp(String caption) : PropProp(caption, "String") {
+StringProp::StringProp(String caption, UIElement *focusParent) : PropProp(caption, "String") {
 
 	stringEntry = new UITextInput(false, 150, 12);
 	stringEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
 	stringEntry->setText("");
-	propContents->addFocusChild(stringEntry);
+	propContents->addChild(stringEntry);
+    focusParent->registerFocusChild(stringEntry);
 	stringEntry->setPosition(0, 0);
 	setHeight(25);
 }
@@ -866,13 +873,14 @@ SliderProp::~SliderProp() {
 
 }
 
-NumberProp::NumberProp(String caption) : PropProp(caption, "Number") {
+NumberProp::NumberProp(String caption, UIElement *focusParent) : PropProp(caption, "Number") {
 
 	numberEntry = new UITextInput(false, 50, 20);
 	numberEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
 	numberEntry->setText("0");
 	numberEntry->setNumberOnly(true);
-	propContents->addFocusChild(numberEntry);
+	propContents->addChild(numberEntry);
+    focusParent->registerFocusChild(numberEntry);
 	numberEntry->setPosition(0, 2);
 
 	setHeight(25);
@@ -1869,7 +1877,7 @@ void RenderTargetProp::handleEvent(Event *event) {
 ShaderPassesSheet::ShaderPassesSheet(ResourcePool *resourcePool) : PropSheet("SHADER PASSES", "shaderPasses") {
     this->resourcePool = resourcePool;
 	propHeight = 70;
-	addButton = new ButtonProp("Add Shader Pass");
+	addButton = new ButtonProp("Add Shader Pass", this);
 	addButton->getButton()->addEventListener(this, UIEvent::CLICK_EVENT);
     addProp(addButton);
 	
@@ -1960,7 +1968,7 @@ void ShaderPassesSheet::handleEvent(Event *event) {
 }
 
 TargetBindingsSheet::TargetBindingsSheet() : PropSheet("TEXTURE BINDINGS", "targetBindings") {
-	addButton = new ButtonProp("Add Render Target");
+	addButton = new ButtonProp("Add Render Target", this);
 	addButton->getButton()->addEventListener(this, UIEvent::CLICK_EVENT);
     addProp(addButton);
 	customUndoHandler = true;
@@ -2046,7 +2054,7 @@ void TargetBindingsSheet::handleEvent(Event *event) {
 
 RenderTargetsSheet::RenderTargetsSheet() : PropSheet("RENDER TARGETS", "renderTargets") {
 	propHeight = 70;
-	addButton = new ButtonProp("Add Render Target");
+	addButton = new ButtonProp("Add Render Target", this);
 	addButton->getButton()->addEventListener(this, UIEvent::CLICK_EVENT);
     addProp(addButton);
     
@@ -2136,7 +2144,7 @@ void RenderTargetsSheet::handleEvent(Event *event) {
 
 EntityPropSheet::EntityPropSheet() : PropSheet("CUSTOM PROPERTIES", "entityProps"){
 	
-    addButtonProp = new ButtonProp("Add Property");
+    addButtonProp = new ButtonProp("Add Property", this);
     addProp(addButtonProp);
     addButtonProp->getButton()->addEventListener(this, UIEvent::CLICK_EVENT);
 
@@ -2321,7 +2329,7 @@ void ShaderOptionsSheet::setOptionsFromParams(std::vector<ProgramParam> &params)
 					case ProgramParam::PARAM_NUMBER:
 					{
 						String paramName = params[i].name;
-						NumberProp *numberProp = new NumberProp(paramName);
+						NumberProp *numberProp = new NumberProp(paramName, this);
 						addProp(numberProp);
 												
                         LocalShaderParam *param = binding->getLocalParamByName(params[i].name);
@@ -2487,13 +2495,13 @@ void ShaderTexturesSheet::setShader(Shader *shader, Material *material, ShaderBi
 TransformSheet::TransformSheet() : PropSheet("TRANSFORM", "entity_transform") {
     entity = NULL;
     
-    positionProp = new Vector3Prop("Position");
+    positionProp = new Vector3Prop("Position", this);
     addProp(positionProp);
     
-    scaleProp = new Vector3Prop("Scale");
+    scaleProp = new Vector3Prop("Scale", this);
     addProp(scaleProp);
     
-    rotationProp = new Vector3Prop("Rotation");
+    rotationProp = new Vector3Prop("Rotation", this);
     addProp(rotationProp);
     
     propHeight = 235;
@@ -2560,16 +2568,16 @@ ParticleEmitterSheet::ParticleEmitterSheet() : PropSheet("PARTICLE EMITTER", "pa
     typeProp->comboEntry->addComboItem("Quad");
     addProp(typeProp);
 
-    countProp = new NumberProp("Count");
+    countProp = new NumberProp("Count", this);
     addProp(countProp);
     
-    lifetimeProp = new NumberProp("Lifetime");
+    lifetimeProp = new NumberProp("Lifetime", this);
     addProp(lifetimeProp);
 
-    particleSizeProp = new NumberProp("Size");
+    particleSizeProp = new NumberProp("Size", this);
     addProp(particleSizeProp);
     
-    particleSpeedProp = new NumberProp("Speed");
+    particleSpeedProp = new NumberProp("Speed", this);
     addProp(particleSpeedProp);
     
     worldParticlesProp = new BoolProp("World space");
@@ -2578,25 +2586,25 @@ ParticleEmitterSheet::ParticleEmitterSheet() : PropSheet("PARTICLE EMITTER", "pa
     loopingProp = new BoolProp("Loop");
     addProp(loopingProp);
     
-    particleRotaionProp = new Vector3Prop("Rotation");
+    particleRotaionProp = new Vector3Prop("Rotation", this);
     addProp(particleRotaionProp);
     
-    gravityProp = new Vector3Prop("Gravity");
+    gravityProp = new Vector3Prop("Gravity", this);
     addProp(gravityProp);
     
-    directionProp = new Vector3Prop("Direction");
+    directionProp = new Vector3Prop("Direction", this);
     addProp(directionProp);
 
-    deviationProp = new Vector3Prop("Deviation");
+    deviationProp = new Vector3Prop("Deviation", this);
     addProp(deviationProp);
 
-    sizeProp = new Vector3Prop("Emitter size");
+    sizeProp = new Vector3Prop("Emitter size", this);
     addProp(sizeProp);
 
     perlinProp = new BoolProp("Movement noise");
     addProp(perlinProp);
     
-    perlinSizeProp = new Vector3Prop("Noise amount");
+    perlinSizeProp = new Vector3Prop("Noise amount", this);
     addProp(perlinSizeProp);
 
     useColorCurvesProp = new BoolProp("Use color curves");
@@ -2703,7 +2711,7 @@ SceneLightSheet::SceneLightSheet() : PropSheet("LIGHT", "scene_light") {
     typeProp->comboEntry->addComboItem("Spot");
     addProp(typeProp);
     
-    importanceProp = new NumberProp("Importance");
+    importanceProp = new NumberProp("Importance", this);
     addProp(importanceProp);
     
     lightColorProp = new ColorProp("Light color");
@@ -2712,7 +2720,7 @@ SceneLightSheet::SceneLightSheet() : PropSheet("LIGHT", "scene_light") {
     specularColorProp = new ColorProp("Specular color");
     addProp(specularColorProp);
     
-    intensityProp = new NumberProp("Intensity");
+    intensityProp = new NumberProp("Intensity", this);
     addProp(intensityProp);
     
     constantAttenuationProp = new SliderProp("Constant att.", 0.0, 1.0);
@@ -2736,7 +2744,7 @@ SceneLightSheet::SceneLightSheet() : PropSheet("LIGHT", "scene_light") {
     shadowMapFOVProp = new SliderProp("Shadow FOV", 1.0, 180.0);
     addProp(shadowMapFOVProp);
     
-    shadowResolutionProp = new NumberProp("Shadowmap res.");
+    shadowResolutionProp = new NumberProp("Shadowmap res.", this);
     addProp(shadowResolutionProp);
 
     propHeight = 365;
@@ -2911,19 +2919,19 @@ ScenePrimitiveSheet::ScenePrimitiveSheet() : PropSheet("PRIMITIVE", "scene_primi
     
     addProp(typeProp);
     
-    option1Prop = new NumberProp("");
+    option1Prop = new NumberProp("", this);
     addProp(option1Prop);
     
-    option2Prop = new NumberProp("");
+    option2Prop = new NumberProp("", this);
     addProp(option2Prop);
     
-    option3Prop = new NumberProp("");
+    option3Prop = new NumberProp("", this);
     addProp(option3Prop);
     
-    option4Prop = new NumberProp("");
+    option4Prop = new NumberProp("", this);
     addProp(option4Prop);
 
-    option5Prop = new NumberProp("");
+    option5Prop = new NumberProp("", this);
     addProp(option5Prop);
 
     propHeight = 240;
@@ -3200,10 +3208,10 @@ EntitySheet::EntitySheet() : PropSheet("ENTITY", "entity"){
     layersProp = new ComboProp("Layer");
     addProp(layersProp);
     
-	idProp = new StringProp("ID");
+	idProp = new StringProp("ID", this);
 	addProp(idProp);
 
-	tagProp = new StringProp("Tags (foo,bar)");
+	tagProp = new StringProp("Tags (foo,bar)", this);
 	addProp(tagProp);
 
 	colorProp = new ColorProp("Color");
@@ -3212,7 +3220,7 @@ EntitySheet::EntitySheet() : PropSheet("ENTITY", "entity"){
 	blendingProp = new ComboProp("Blend mode");
 	addProp(blendingProp);
     
-    bBoxProp = new Vector3Prop("Bounding box");
+    bBoxProp = new Vector3Prop("Bounding box", this);
 	addProp(bBoxProp);
     
     blendingProp->comboEntry->addComboItem("None");
@@ -3309,19 +3317,19 @@ CameraSheet::CameraSheet() : PropSheet("CAMERA", "camera") {
     enabled = false;
     camera = NULL;
     
-    exposureProp = new NumberProp("Exposure");
+    exposureProp = new NumberProp("Exposure", this);
     addProp(exposureProp);
 
-    nearClipPlane = new NumberProp("Near clip");
+    nearClipPlane = new NumberProp("Near clip", this);
     addProp(nearClipPlane);
     
-    farClipPlane = new NumberProp("Far clip");
+    farClipPlane = new NumberProp("Far clip", this);
     addProp(farClipPlane);
     
     orthoProp = new BoolProp("Orthographic");
     addProp(orthoProp);
 
-    fovProp = new NumberProp("FOV");
+    fovProp = new NumberProp("FOV", this);
     addProp(fovProp);
 
     orthoSizeTypeProp = new ComboProp("Size mode");
@@ -3332,10 +3340,10 @@ CameraSheet::CameraSheet() : PropSheet("CAMERA", "camera") {
     
     addProp(orthoSizeTypeProp);
     
-    orthoWidthProp = new NumberProp("Ortho width");
+    orthoWidthProp = new NumberProp("Ortho width", this);
     addProp(orthoWidthProp);
 
-    orthoHeightProp = new NumberProp("Ortho height");
+    orthoHeightProp = new NumberProp("Ortho height", this);
     addProp(orthoHeightProp);
     
     propHeight = 260;
@@ -3442,7 +3450,7 @@ SceneCurveSheet::SceneCurveSheet() : PropSheet("CURVE", "SceneCurve") {
     curve = NULL;
     enabled = false;
     
-    addPointProp = new ButtonProp("Add Curve Point");
+    addPointProp = new ButtonProp("Add Curve Point", this);
     addProp(addPointProp);
     addPointProp->getButton()->addEventListener(this, UIEvent::CLICK_EVENT);
 
@@ -3450,7 +3458,7 @@ SceneCurveSheet::SceneCurveSheet() : PropSheet("CURVE", "SceneCurve") {
     addProp(renderProp);
     renderProp->addEventListener(this, Event::CHANGE_EVENT);
 
-    numPointsProp = new NumberProp("Resolution");
+    numPointsProp = new NumberProp("Resolution", this);
     addProp(numPointsProp);
     numPointsProp->addEventListener(this, Event::CHANGE_EVENT);
 
@@ -3637,15 +3645,15 @@ SceneLabelSheet::SceneLabelSheet() : PropSheet("LABEL", "UILabel") {
 	label = NULL;
     enabled = false;
 	
-	caption = new StringProp("Contents");
+	caption = new StringProp("Contents", this);
 	caption->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(caption);
 
-	size = new NumberProp("Size (px)");
+	size = new NumberProp("Size (px)", this);
 	size->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(size);	
 
-    actualHeight = new NumberProp("Actual height");
+    actualHeight = new NumberProp("Actual height", this);
 	actualHeight->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(actualHeight);
 
@@ -3757,7 +3765,7 @@ void SceneLabelSheet::handleEvent(Event *event) {
 LayerSheet::LayerSheet() : PropSheet("VISIBILITY LAYERS", "layers") {
     
     
-    addLayerProp = new ButtonProp("Add new layer");
+    addLayerProp = new ButtonProp("Add new layer", this);
     addProp(addLayerProp);
     addLayerProp->getButton()->addEventListener(this, UIEvent::CLICK_EVENT);
     
@@ -3837,7 +3845,7 @@ void LayerSheet::handleEvent(Event *event) {
 
 LinkedMaterialsSheet::LinkedMaterialsSheet() : PropSheet("LINKED RESOURCE POOLS", "linked_materials") {
     
-    addMaterialProp = new ButtonProp("Link resource pool");
+    addMaterialProp = new ButtonProp("Link resource pool", this);
     addProp(addMaterialProp);
     addMaterialProp->getButton()->addEventListener(this, UIEvent::CLICK_EVENT);
     
@@ -3958,11 +3966,11 @@ SoundSheet::SoundSheet() : PropSheet("SOUND", "sound") {
 	soundProp->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(soundProp);
 	
-	referenceDistance = new NumberProp("Reference dist");
+	referenceDistance = new NumberProp("Reference dist", this);
 	referenceDistance->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(referenceDistance);
     
-	maxDistance = new NumberProp("Max dist");
+	maxDistance = new NumberProp("Max dist", this);
 	maxDistance->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(maxDistance);
     
