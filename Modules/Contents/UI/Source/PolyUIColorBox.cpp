@@ -115,7 +115,7 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	
 	rTextInput = new UITextInput(false, 40, 12);
 	rTextInput->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 30, topPadding+padding);
-	addChild(rTextInput);
+	addFocusChild(rTextInput);
 	rTextInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 
 	label = new UILabel(L"G:", fontSize, fontName);
@@ -125,7 +125,7 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	
 	gTextInput = new UITextInput(false, 40, 12);
 	gTextInput->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 30, topPadding+padding + 30);
-	addChild(gTextInput);
+	addFocusChild(gTextInput);
 	gTextInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
 	label = new UILabel(L"B:", fontSize, fontName);
@@ -135,7 +135,7 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	
 	bTextInput = new UITextInput(false, 40, 12);
 	bTextInput->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 30, topPadding+padding + 60);
-	addChild(bTextInput);
+	addFocusChild(bTextInput);
 	bTextInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
 	label = new UILabel(L"A:", fontSize, fontName);
@@ -145,7 +145,7 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	
 	aTextInput = new UITextInput(false, 40, 12);
 	aTextInput->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 30, topPadding+padding + 90);
-	addChild(aTextInput);
+	addFocusChild(aTextInput);
 	aTextInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
 	setHue(0.0);
