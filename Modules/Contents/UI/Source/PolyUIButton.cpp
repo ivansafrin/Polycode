@@ -169,4 +169,6 @@ void UIButton::handleEvent(Event *event) {
 			break;
 		}
 	}
+    
+    UIElement::handleEvent(event);    
 }

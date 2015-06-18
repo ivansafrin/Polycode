@@ -194,4 +194,6 @@ void UIComboBox::handleEvent(Event *event) {
 			break;
 		}
 	}
+    
+    UIElement::handleEvent(event);    
 }

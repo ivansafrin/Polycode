@@ -39,7 +39,7 @@ bool PolycodeFontEditor::openFile(OSFileEntry filePath) {
 	
 	CoreServices::getInstance()->getFontManager()->registerFont(filePath.fullPath, filePath.fullPath);
 		
-	anchor = new Entity();
+	anchor = new UIElement();
 	addChild(anchor);
 	anchor->snapToPixels = true;
 	

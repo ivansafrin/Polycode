@@ -131,13 +131,7 @@ UIWindow::~UIWindow() {
 	CoreServices::getInstance()->getCore()->getInput()->removeAllHandlersForListener(this);
 }
 
-void UIWindow::onKeyDown(PolyKEY key, wchar_t charCode) {
-	if(key == KEY_TAB) {
-		if(hasFocus) {
-			focusNextChild();
-		}
-	}
-	
+void UIWindow::onKeyDown(PolyKEY key, wchar_t charCode) {	
 	if(key == KEY_ESCAPE && closeOnEscape) {
 		onClose();
 		dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);		

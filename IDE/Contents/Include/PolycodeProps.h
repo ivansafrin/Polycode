@@ -46,7 +46,7 @@ class PropProp : public UIElement {
     
 		String propType;
 		UILabel *label;
-		Entity *propContents;				
+		UIElement *propContents;
 		
 		bool suppressChangeEvent;		
 		bool settingFromData;
@@ -491,7 +491,7 @@ class PropSheet : public UIElement {
 		String type;
 		
 		Number propHeight;				
-		Entity *contents;
+		UIElement *contents;
 		
 		UIRect *bg;
 		
@@ -958,7 +958,7 @@ class PropList : public UIElement {
 		UIScrollContainer *scrollContainer;		
 	protected:
 	
-		Entity *propContents;
+		UIElement *propContents;
 	
 		std::vector<PropSheet*> props;	
 		UIRect *bg;

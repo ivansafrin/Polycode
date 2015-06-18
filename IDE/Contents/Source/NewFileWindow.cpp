@@ -67,18 +67,18 @@ NewFileWindow::NewFileWindow() : UIWindow(L"Create New File", 580, 280) {
 	label2->setPosition(padding+270, templateContainer->getPosition().y-5);			
 	
 	fileNameInput = new UITextInput(false, 550-padding-210-padding-padding, 12);	
-	addChild(fileNameInput);
+	addFocusChild(fileNameInput);
 	fileNameInput->setPosition(label2->getPosition().x, label2->getPosition().y+30);
 	
 	
 	cancelButton = new UIButton(L"Cancel", 100);
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	addChild(cancelButton);
+	addFocusChild(cancelButton);
 	cancelButton->setPosition(600-100-padding-100-10, 265);
 			
 	okButton = new UIButton(L"Create File", 100);
 	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	addChild(okButton);
+	addFocusChild(okButton);
 	okButton->setPosition(600-100-padding, 265);	
 }
 

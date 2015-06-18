@@ -46,19 +46,19 @@ ProjectFontEntry::ProjectFontEntry(String fontPath, String fontName) : UIElement
 	removeButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
 	removeButton->setPosition(0, 5);
 	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	addChild(removeButton);
+	addFocusChild(removeButton);
 
 	fontNameInput = new UITextInput(false, 100, 13);
 	fontNameInput->setText(fontName);
 	fontNameInput->setPosition(20, 0);
 	fontNameInput->addEventListener(this, UIEvent::CHANGE_EVENT);
-	addChild(fontNameInput);
+	addFocusChild(fontNameInput);
 	
 	OSFileEntry entry = OSFileEntry(fontPath, OSFileEntry::TYPE_FILE);
 	
 	fontFileLabel = new UILabel(entry.name, 12);
 	fontFileLabel->color.a = 1.0;
-	addChild(fontFileLabel);
+	addFocusChild(fontFileLabel);
 	fontFileLabel->setPosition(140, 3);
 	
 	CoreServices::getInstance()->getFontManager()->registerFont(fontName, fontPath);
@@ -97,26 +97,26 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 		
 
 	headerBg = new UIRect(10,10);
-	addChild(headerBg);
+	addFocusChild(headerBg);
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
 	UILabel *label = new UILabel("PROJECT SETTINGS", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	
-	addChild(label);
+	addFocusChild(label);
 	label->setPosition(10, 3);
 
 	moduleSettingsWindow = new UIElement();
 	moduleSettingsWindow->setPosition(350,10);
-	addChild(moduleSettingsWindow);
+	addFocusChild(moduleSettingsWindow);
 	
 	
 	Number lastYPos = 40;
 
 	label = new UILabel("PROJECT MODULES", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.setColorHexFromString(conf->getStringValue("Polycode", "uiSectionFontColor"));
-	moduleSettingsWindow->addChild(label);
+	moduleSettingsWindow->addFocusChild(label);
 	label->setPosition(0, lastYPos);
 
 	lastYPos += 40;
@@ -130,7 +130,7 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 			UICheckBox *moduleCheckBox = new UICheckBox(entry.name, false);
 			moduleCheckBox->setPosition(0, lastYPos);
 			lastYPos += moduleCheckBox->getHeight() + 5;
-			moduleSettingsWindow->addChild(moduleCheckBox);
+			moduleSettingsWindow->addFocusChild(moduleCheckBox);
 			moduleCheckboxes.push_back(moduleCheckBox);
 		}
 	}
@@ -139,49 +139,49 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 
 	label = new UILabel("PROJECT FONTS", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.setColorHexFromString(conf->getStringValue("Polycode", "uiSectionFontColor"));
-	moduleSettingsWindow->addChild(label);
+	moduleSettingsWindow->addFocusChild(label);
 	label->setPosition(0, lastYPos);
 	
 	lastYPos += 30;
 	
 	fontEntryBase = new UIElement();
-	moduleSettingsWindow->addChild(fontEntryBase);	
+	moduleSettingsWindow->addFocusChild(fontEntryBase);	
 	fontEntryBase->setPosition(0, lastYPos);
 			
 	addFontButton = new UIButton("Add Font", 100);
-	fontEntryBase->addChild(addFontButton);
+	fontEntryBase->addFocusChild(addFontButton);
 	addFontButton->addEventListener(this, UIEvent::CLICK_EVENT);
 
 	mainSettingsWindow = new UIElement();
 	mainSettingsWindow->setPosition(0,10);
-	addChild(mainSettingsWindow);
+	addFocusChild(mainSettingsWindow);
 	
 	UILabel *label2 = new UILabel(L"DEFAULT VIDEO OPTIONS", 18, "section", Label::ANTIALIAS_FULL);	
 	label2->color.setColorHexFromString(conf->getStringValue("Polycode", "uiSectionFontColor"));
-	mainSettingsWindow->addChild(label2);
+	mainSettingsWindow->addFocusChild(label2);
 	label2->setPosition(padding, 40);		
 
 		
 	label2 = new UILabel(L"Width", fontSize, fontName, Label::ANTIALIAS_FULL);
-	mainSettingsWindow->addChild(label2);
+	mainSettingsWindow->addFocusChild(label2);
 	label2->setPosition(padding + 6, 80);		
 	
 	defaultWidthInput = new UITextInput(false, 60, 12);	
-	mainSettingsWindow->addChild(defaultWidthInput);
+	mainSettingsWindow->addFocusChild(defaultWidthInput);
 	defaultWidthInput->setPosition(label2->getPosition().x-6, label2->getPosition().y+18);
 	defaultWidthInput->setNumberOnly(true);
 
 	label2 = new UILabel(L"Height", fontSize, fontName, Label::ANTIALIAS_FULL);
-	mainSettingsWindow->addChild(label2);
+	mainSettingsWindow->addFocusChild(label2);
 	label2->setPosition(padding + 80 + 6, 80);		
 	
 	defaultHeightInput = new UITextInput(false, 60, 12);	
-	mainSettingsWindow->addChild(defaultHeightInput);
+	mainSettingsWindow->addFocusChild(defaultHeightInput);
 	defaultHeightInput->setPosition(label2->getPosition().x-6, label2->getPosition().y+18);
 	defaultHeightInput->setNumberOnly(true);
 	
 	label2 = new UILabel(L"Anti-aliasing", fontSize, fontName, Label::ANTIALIAS_FULL);
-	mainSettingsWindow->addChild(label2);
+	mainSettingsWindow->addFocusChild(label2);
 	label2->setPosition(padding + 160 + 6, 80);		
 	
 	aaLevelComboBox = new UIComboBox(globalMenu, 120);		
@@ -192,7 +192,7 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	aaLevelComboBox->setPosition(label2->getPosition().x-6, label2->getPosition().y+18);
 
 	label2 = new UILabel(L"Texture filtering mode:", fontSize, fontName, Label::ANTIALIAS_FULL);
-	mainSettingsWindow->addChild(label2);
+	mainSettingsWindow->addFocusChild(label2);
 	label2->setPosition(padding + 6, defaultHeightInput->getPosition().y+30);		
 	
 	texFilteringComboBox = new UIComboBox(globalMenu, 280);		
@@ -202,7 +202,7 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	
 
 	label2 = new UILabel(L"Anisotropic filtering:", fontSize, fontName, Label::ANTIALIAS_FULL);	
-	mainSettingsWindow->addChild(label2);
+	mainSettingsWindow->addFocusChild(label2);
 	label2->setPosition(padding + 6, texFilteringComboBox->getPosition().y+30);		
 	
 	afLevelComboBox = new UIComboBox(globalMenu, 280);		
@@ -215,45 +215,45 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	afLevelComboBox->setPosition(label2->getPosition().x-6, label2->getPosition().y+18);
 
 	label2 = new UILabel(L"Framerate", fontSize, fontName, Label::ANTIALIAS_FULL);
-	mainSettingsWindow->addChild(label2);
+	mainSettingsWindow->addFocusChild(label2);
 	label2->setPosition(padding + 6, afLevelComboBox->getPosition().y+30);		
 	
 	framerateInput = new UITextInput(false, 60, 12);	
-	mainSettingsWindow->addChild(framerateInput);
+	mainSettingsWindow->addFocusChild(framerateInput);
 	framerateInput->setPosition(label2->getPosition().x-6, label2->getPosition().y+18);
 	framerateInput->setNumberOnly(true);
 
 	vSyncCheckBox = new UICheckBox("V-Sync", false);
 	vSyncCheckBox->setPosition(label2->getPosition().x + 80, label2->getPosition().y+18);
-	mainSettingsWindow->addChild(vSyncCheckBox);
+	mainSettingsWindow->addFocusChild(vSyncCheckBox);
 	
 	label2 = new UILabel(L"STARTUP OPTIONS", 18, "section", Label::ANTIALIAS_FULL);	
 	label2->color.setColorHexFromString(conf->getStringValue("Polycode", "uiSectionFontColor"));
-	mainSettingsWindow->addChild(label2);
+	mainSettingsWindow->addFocusChild(label2);
 	label2->setPosition(padding, vSyncCheckBox->getPosition().y+vSyncCheckBox->getHeight()+20);		
 	
 	
 	label2 = new UILabel(L"Entry point file", fontSize, fontName, Label::ANTIALIAS_FULL);
-	mainSettingsWindow->addChild(label2);
+	mainSettingsWindow->addFocusChild(label2);
 	label2->setPosition(padding + 6, vSyncCheckBox->getPosition().y+80);		
 	
 	entryPointInput = new UITextInput(false, 200, 12);	
-	mainSettingsWindow->addChild(entryPointInput);
+	mainSettingsWindow->addFocusChild(entryPointInput);
 	entryPointInput->setPosition(label2->getPosition().x - 6, label2->getPosition().y+18);
 
 
-	mainSettingsWindow->addChild(afLevelComboBox);			
-	mainSettingsWindow->addChild(aaLevelComboBox);		
-	mainSettingsWindow->addChild(texFilteringComboBox);	
+	mainSettingsWindow->addFocusChild(afLevelComboBox);			
+	mainSettingsWindow->addFocusChild(aaLevelComboBox);		
+	mainSettingsWindow->addFocusChild(texFilteringComboBox);	
 
 	label2 = new UILabel(L"Background color:", fontSize, fontName, Label::ANTIALIAS_FULL);
-	mainSettingsWindow->addChild(label2);
+	mainSettingsWindow->addFocusChild(label2);
 	label2->setPosition(padding, entryPointInput->getPosition().y+entryPointInput->getHeight()+10);		
 
 
 	bgColorBox = new UIColorBox(globalColorPicker, Color(1.0, 0.5, 0.0, 0.9), 30,30);
 	bgColorBox->setPosition(label2->getPosition().x, label2->getPosition().y+18);
-	mainSettingsWindow->addChild(bgColorBox);
+	mainSettingsWindow->addFocusChild(bgColorBox);
 	
 	vSyncCheckBox->addEventListener(this, UIEvent::CHANGE_EVENT);
 	defaultWidthInput->addEventListener(this, UIEvent::CHANGE_EVENT);
@@ -315,7 +315,7 @@ void PolycodeProjectEditor::handleEvent(Event *event) {
 		if(!hasFont) {
 			ProjectFontEntry *newEntry = new ProjectFontEntry(newFontPath, "font_name");
 			newEntry->addEventListener(this, Event::CHANGE_EVENT);
-			fontEntryBase->addChild(newEntry);
+			fontEntryBase->addFocusChild(newEntry);
 			fontEntries.push_back(newEntry);
 			refreshFontEntries();
 		}
@@ -371,7 +371,7 @@ bool PolycodeProjectEditor::openFile(OSFileEntry filePath) {
 
 		ProjectFontEntry *newEntry = new ProjectFontEntry(fontData.fontPath, fontData.fontName);
 		newEntry->addEventListener(this, Event::CHANGE_EVENT);
-		fontEntryBase->addChild(newEntry);
+		fontEntryBase->addFocusChild(newEntry);
 		fontEntries.push_back(newEntry);
 		
 	}

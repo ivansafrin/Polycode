@@ -81,7 +81,7 @@ class YesNoPopup : public UIWindow {
 	
 		UILabel *captionLabel;
 	
-		Entity *buttonAnchor;
+		UIElement *buttonAnchor;
 		UIButton *cancelButton;
 		UIButton *okButton;	
 };
@@ -101,7 +101,7 @@ class YesNoCancelPopup : public UIWindow {
 	
 		UILabel *captionLabel;
 	
-		Entity *buttonAnchor;
+		UIElement *buttonAnchor;
 		UIButton *cancelButton;
 		UIButton *noButton;		
 		UIButton *okButton;
@@ -152,7 +152,7 @@ class AssetImporterWindow : public UIWindow {
         UICheckBox *overrideMaterial;
         UITextInput *overrideMaterialInput;
     
-		Entity *filesAnchor;
+		UIElement *filesAnchor;
 		UIScrollContainer *filesScroller;
 
 		UILabel *filesToImportLabel;

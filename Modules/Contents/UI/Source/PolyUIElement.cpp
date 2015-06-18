@@ -25,6 +25,8 @@
 #include "PolyCoreServices.h"
 #include "PolyTexture.h"
 #include "PolyConfig.h"
+#include "PolyCoreInput.h"
+#include "PolyInputEvent.h"
 
 using namespace Polycode;
 
@@ -308,7 +310,8 @@ UIElement::UIElement() : Entity() {
 	hasDragLimits = false;
 	dragged = false;
 	depthTest = false;
-	depthWrite = false;			
+	depthWrite = false;
+    Services()->getInput()->addEventListenerUnique(this, InputEvent::EVENT_KEYDOWN);
 }
 
 UIElement::UIElement(Number width, Number height) : Entity() {
@@ -316,20 +319,30 @@ UIElement::UIElement(Number width, Number height) : Entity() {
 	processInputEvents = true;
 	focusParent = NULL;
 	hasFocus = false;
-	hasDragLimits = false;	
+	hasDragLimits = false;
+	focusable = false;
 	dragged = false;	
 	depthTest = false;
 	depthWrite = false;		
 	setWidth(width);
 	setHeight(height);
+    Services()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 }
 
-void UIElement::addChild(Entity *child) {
-	UIElement* uiChild = dynamic_cast<UIElement*>(child);
-	if(uiChild) {
-		addFocusChild(uiChild);
-	}
-	Entity::addChild(child);
+void UIElement::handleEvent(Event *event) {
+    if(event->getDispatcher() == Services()->getInput() && event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
+        if(hasFocus && focusParent) {
+            InputEvent *inputEvent = (InputEvent*) event;
+            if(inputEvent->key == KEY_TAB) {
+                if(Services()->getInput()->getKeyState(KEY_RSHIFT) || Services()->getInput()->getKeyState(KEY_LSHIFT)) {
+                    focusParent->focusPreviousChild();
+                } else {
+                    focusParent->focusNextChild();
+                }
+                inputEvent->cancelEvent();
+            }
+        }
+    }
 }
 
 void UIElement::setDragLimits(Rectangle rect) {
@@ -387,10 +400,44 @@ MouseEventResult UIElement::onMouseMove(const Ray &ray, int timestamp) {
 }
 
 UIElement::~UIElement() {
+    
+    Services()->getInput()->removeAllHandlersForListener(this);
+
 	if(UIElement::globalFocusedChild == this) {
 		UIElement::globalFocusedChild = NULL;
 	}
 }
+
+void UIElement::focusPreviousChild() {
+    
+    int j = 0;
+    bool hasFocusedChild = false;
+    if(UIElement::globalFocusedChild) {
+        for(int i=0; i < focusChildren.size(); i++) {
+            if(focusChildren[i] == UIElement::globalFocusedChild) {
+                j = i;
+                hasFocusedChild = true;
+            }
+        }
+    }
+    
+    if(!hasFocusedChild) {
+        return;
+    }
+    
+    for(int i=0; i < focusChildren.size(); i++) {
+        if(focusChildren[j]->isFocusable() && focusChildren[j] != UIElement::globalFocusedChild) {
+            focusChild(focusChildren[j]);
+            return;
+        }
+        
+        j--;
+        if(j == -1) {
+            j = focusChildren.size()-1;
+        }
+    }
+}
+
 
 void UIElement::focusNextChild() {
 
@@ -405,8 +452,9 @@ void UIElement::focusNextChild() {
 		}
 	}
 
-	if(!hasFocusedChild)
+    if(!hasFocusedChild) {
 		return;
+    }
 
 	for(int i=0; i < focusChildren.size(); i++) {
 		if(focusChildren[j]->isFocusable() && focusChildren[j] != UIElement::globalFocusedChild) {
@@ -415,8 +463,9 @@ void UIElement::focusNextChild() {
 		}
 
 		j++;
-		if(j == focusChildren.size())
+        if(j == focusChildren.size()) {
 			j = 0;
+        }
 	}
 }
 
@@ -448,8 +497,11 @@ void UIElement::focusChild(UIElement *child) {
 }
 
 void UIElement::addFocusChild(UIElement *element) {
-	element->setFocusParent(element);
-	focusChildren.push_back(element);
+    if(element->isFocusable()) {
+        element->setFocusParent(this);
+        focusChildren.push_back(element);
+    }
+    addChild(element);
 }
 
 void UIElement::setFocusParent(UIElement *element) {

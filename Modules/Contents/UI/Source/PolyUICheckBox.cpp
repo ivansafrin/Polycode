@@ -110,4 +110,5 @@ void UICheckBox::handleEvent(Event *event) {
 			break;
 		}
 	}
+    UIElement::handleEvent(event);    
 }

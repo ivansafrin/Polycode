@@ -679,15 +679,15 @@ FindBar::FindBar() : UIElement() {
 	processInputEvents = true;
 	
 	findInput = new UITextInput(false, 120, 12);
-	addChild(findInput);
+	addFocusChild(findInput);
 	findInput->setPosition(60, 4);
 
 	replaceInput = new UITextInput(false, 120, 12);
-	addChild(replaceInput);
+	addFocusChild(replaceInput);
 	replaceInput->setPosition(280, 4);
 	
 	replaceAllButton = new UIButton("Replace All", 100);
-	addChild(replaceAllButton);
+	addFocusChild(replaceAllButton);
 	replaceAllButton->setPosition(420, 3);
 
 	UIImage *functionIcon = new UIImage("main/function_icon.png", 11, 17);

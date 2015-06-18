@@ -43,16 +43,17 @@ namespace Polycode {
 			bool hasFocus;
 			bool focusable;
 			
-			void addChild(Entity *child);
-			
 			void setDragLimits(Rectangle rect);
 			void clearDragLimits();
 			bool isDragged();
 			void startDrag(Number xOffset, Number yOffset);
 			void stopDrag();
+        
+            void handleEvent(Event *event);
 			
 			void focusChild(UIElement *child);
 			void focusNextChild();
+			void focusPreviousChild();
 			bool isFocusable();
 			void focusSelf();
 									

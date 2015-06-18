@@ -43,7 +43,7 @@ NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 480, 280)
 	templateContainer->getRootNode()->setUserData(data);			
 	
 	
-	addChild(templateContainer);		
+	addChild(templateContainer);
 	templateContainer->setPosition(padding,topPadding+padding);	
 	templateContainer->getRootNode()->toggleCollapsed();
 	
@@ -70,7 +70,7 @@ NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 480, 280)
 	label2->setPosition(padding+220, templateContainer->getPosition().y-2);		
 
 	projectNameInput = new UITextInput(false, 500-padding-210-padding-padding, 12);	
-	addChild(projectNameInput);
+	addFocusChild(projectNameInput);
 	projectNameInput->setPosition(label2->getPosition().x-6, label2->getPosition().y + 25);
 	
 	UILabel *label3 = new UILabel(L"PROJECT LOCATION", 18, "section", Label::ANTIALIAS_FULL);
@@ -79,25 +79,25 @@ NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 480, 280)
 	label3->setPosition(padding+220, templateContainer->getPosition().y+65);		
 	
 	projectLocationInput = new UITextInput(false, 500-padding-210-padding-padding, 12);	
-	addChild(projectLocationInput);
+	addFocusChild(projectLocationInput);
 	projectLocationInput->setPosition(label3->getPosition().x-6, label3->getPosition().y+25);
 
 	
 	locationSelectButton = new UIButton(L"Choose...", 100);
 	locationSelectButton->addEventListener(this, UIEvent::CLICK_EVENT);	
-	addChild(locationSelectButton);
+	addFocusChild(locationSelectButton);
 	locationSelectButton->setPosition(500-103-padding, projectLocationInput->getPosition().y+projectLocationInput->getHeight()+10);
 	
 	
 	cancelButton = new UIButton(L"Cancel", 100);
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	addChild(cancelButton);
+	addFocusChild(cancelButton);
 	cancelButton->setPosition(500-100-padding-100-10, 265);
 		
 	
 	okButton = new UIButton(L"Create Project", 100);
 	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	addChild(okButton);
+	addFocusChild(okButton);
 	okButton->setPosition(500-100-padding, 265);
 }
 

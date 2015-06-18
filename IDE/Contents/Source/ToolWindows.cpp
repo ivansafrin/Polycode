@@ -26,17 +26,17 @@
 TextInputPopup::TextInputPopup() : UIWindow(L"", 300, 80) {
 	
 	textInput = new UITextInput(false, 290, 12);	
-	addChild(textInput);
+	addFocusChild(textInput);
 	textInput->setPosition(padding, 35);
 		
 	cancelButton = new UIButton(L"Cancel", 100);
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	addChild(cancelButton);
+	addFocusChild(cancelButton);
 	cancelButton->setPosition(padding+300-100-100-10, 64);		
 	
 	okButton = new UIButton(L"OK", 100);
 	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	addChild(okButton);
+	addFocusChild(okButton);
 	okButton->setPosition(padding+300-100, 64);
 	
 	closeOnEscape = true;
@@ -82,12 +82,12 @@ TextInputPopup::~TextInputPopup() {
 
 MessagePopup::MessagePopup() : UIWindow("", 300, 80) {
     captionLabel = new UILabel("This is a caption", 12);
-	addChild(captionLabel);
+	addFocusChild(captionLabel);
 	captionLabel->setPosition(padding, 35);
     
 	okButton = new UIButton(L"OK", 100);
 	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
-    addChild(okButton);
+    addFocusChild(okButton);
 	okButton->setPosition(120, 60);
 	
 	closeOnEscape = true;
@@ -128,21 +128,21 @@ void MessagePopup::handleEvent(Event *event) {
 YesNoPopup::YesNoPopup() : UIWindow(L"", 300, 80) {
 	
 	captionLabel = new UILabel("This is a caption", 12);	
-	addChild(captionLabel);
+	addFocusChild(captionLabel);
 	captionLabel->setPosition(padding, 35);
 		
-	buttonAnchor = new Entity();
+	buttonAnchor = new UIElement();
 	buttonAnchor->processInputEvents = true;
-	addChild(buttonAnchor);
+	addFocusChild(buttonAnchor);
 			
 	cancelButton = new UIButton(L"No", 100);
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	buttonAnchor->addChild(cancelButton);
+	buttonAnchor->addFocusChild(cancelButton);
 	cancelButton->setPosition(0, 60);		
 	
 	okButton = new UIButton(L"Yes", 100);
 	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	buttonAnchor->addChild(okButton);
+	buttonAnchor->addFocusChild(okButton);
 	okButton->setPosition(120, 60);
 	
 	closeOnEscape = true;
@@ -192,26 +192,26 @@ void YesNoCancelPopup::onGainFocus() {
 YesNoCancelPopup::YesNoCancelPopup() : UIWindow(L"", 300, 80) {
 	
 	captionLabel = new UILabel("This is a caption", 12);	
-	addChild(captionLabel);
+	addFocusChild(captionLabel);
 	captionLabel->setPosition(padding, 35);
 		
-	buttonAnchor = new Entity();
+	buttonAnchor = new UIElement();
 	buttonAnchor->processInputEvents = true;
-	addChild(buttonAnchor);
+	addFocusChild(buttonAnchor);
 	
 	noButton = new UIButton(L"No", 100);
 	noButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	buttonAnchor->addChild(noButton);
+	buttonAnchor->addFocusChild(noButton);
 	noButton->setPosition(0, 60);		
 	
 	okButton = new UIButton(L"Yes", 100);
 	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	buttonAnchor->addChild(okButton);
+	buttonAnchor->addFocusChild(okButton);
 	okButton->setPosition(120, 60);
 	
 	cancelButton = new UIButton(L"Cancel", 100);
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	buttonAnchor->addChild(cancelButton);
+	buttonAnchor->addFocusChild(cancelButton);
 	cancelButton->setPosition(240, 60);		
 
 	closeOnEscape = true;
@@ -256,93 +256,93 @@ YesNoCancelPopup::~YesNoCancelPopup() {
 
 AssetImporterWindow::AssetImporterWindow() : UIWindow("3D Asset Importer", 650, 330) {
 	filesToImportLabel = new UILabel("Files that will be imported:", 12);
-	addChild(filesToImportLabel);
+	addFocusChild(filesToImportLabel);
 	filesToImportLabel->setPosition(padding, 35);
 	
-	filesAnchor = new Entity();	
+	filesAnchor = new UIElement();	
 		
 	filesScroller = new UIScrollContainer(filesAnchor, true, true, 270, 200);
-	addChild(filesScroller);
+	addFocusChild(filesScroller);
 	filesScroller->setPosition(padding, 60);
 		
 	cancelButton = new UIButton(L"Cancel", 100);
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	addChild(cancelButton);
+	addFocusChild(cancelButton);
 	cancelButton->setPosition(padding+650-100-100-10-10, 315);
 	
 	okButton = new UIButton(L"OK", 100);
 	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	addChild(okButton);
+	addFocusChild(okButton);
 	okButton->setPosition(padding+650-100-10, 315);
 	
 	closeOnEscape = true;
 
 	prefixInput = new UITextInput(false, 200, 16);
 	prefixInput->setPosition(290, 30);
-	addChild(prefixInput); 
+	addFocusChild(prefixInput); 
 	prefixInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 		
 	usePrefixCheckbox = new UICheckBox("Custom filename prefix", false);
 	usePrefixCheckbox->setPosition(290, 60);
-	addChild(usePrefixCheckbox);
+	addFocusChild(usePrefixCheckbox);
 	usePrefixCheckbox->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
 	addMeshesCheckbox = new UICheckBox("Add all meshes to a single mesh", false);
 	addMeshesCheckbox->setPosition(290, 90);
-	addChild(addMeshesCheckbox); 
+	addFocusChild(addMeshesCheckbox); 
 	addMeshesCheckbox->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
 	generateNormalsCheckbox = new UICheckBox("Generate normals", false);
 	generateNormalsCheckbox->setPosition(290, 120);
-	addChild(generateNormalsCheckbox);
+	addFocusChild(generateNormalsCheckbox);
     
 	generateTangensCheckbox = new UICheckBox("Generate tangents", true);
 	generateTangensCheckbox->setPosition(290, 150);
-	addChild(generateTangensCheckbox);
+	addFocusChild(generateTangensCheckbox);
 
 	swapZYAxisCheckbox = new UICheckBox("Swap Z/Y axis (e.g. for Blender)", false);
 	swapZYAxisCheckbox->setPosition(290, 180);
-	addChild(swapZYAxisCheckbox);
+	addFocusChild(swapZYAxisCheckbox);
     
     exportNormals = new UICheckBox("Vertex normals", true);
 	exportNormals->setPosition(520, 30);
-	addChild(exportNormals);
+	addFocusChild(exportNormals);
     
     exportTangents = new UICheckBox("Vertex tangents", true);
 	exportTangents->setPosition(520, 60);
-	addChild(exportTangents);
+	addFocusChild(exportTangents);
     
     exportColors = new UICheckBox("Vertex colors", false);
 	exportColors->setPosition(520, 90);
-	addChild(exportColors);
+	addFocusChild(exportColors);
     
     exportBoneWeights = new UICheckBox("Bone weights", false);
 	exportBoneWeights->setPosition(520, 120);
-	addChild(exportBoneWeights);
+	addFocusChild(exportBoneWeights);
     
     exportUVs = new UICheckBox("UV coordinates", true);
 	exportUVs->setPosition(520, 150);
-	addChild(exportUVs);
+	addFocusChild(exportUVs);
     
     exportSecondaryUVs = new UICheckBox("Secondary UVs", false);
 	exportSecondaryUVs->setPosition(520, 180);
-	addChild(exportSecondaryUVs);
+	addFocusChild(exportSecondaryUVs);
 
     exportScene = new UICheckBox("Export Entity file", false);
 	exportScene->setPosition(290, 240);
-	addChild(exportScene);
+	addFocusChild(exportScene);
 
     generateMatFile = new UICheckBox("Generate material file", false);
 	generateMatFile->setPosition(450, 240);
-	addChild(generateMatFile);
+	addFocusChild(generateMatFile);
 
     overrideMaterial = new UICheckBox("Override materials:", false);
 	overrideMaterial->setPosition(290, 270);
-	addChild(overrideMaterial);
+	addFocusChild(overrideMaterial);
 
     overrideMaterialInput = new UITextInput(false, 200, 16);
 	overrideMaterialInput->setPosition(450, 265);
-	addChild(overrideMaterialInput);
+	addFocusChild(overrideMaterialInput);
     overrideMaterialInput->setText("Default");
     
 }
@@ -383,7 +383,7 @@ void AssetImporterWindow::clearFiles() {
 
 void AssetImporterWindow::addFile(String fileName) {
 	UILabel *fileLabel = new UILabel(fileName, 12);
-	filesAnchor->addChild(fileLabel);
+	filesAnchor->addFocusChild(fileLabel);
 	fileLabel->setPosition(0.0, 14 * fileLabels.size());
 
 	if(fileLabel->getWidth() > filesScroller->getContentSize().x) {

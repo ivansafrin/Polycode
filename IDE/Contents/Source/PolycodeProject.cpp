@@ -125,7 +125,7 @@ bool PolycodeProject::loadProjectFromFile() {
 			if(!color) color = configFile.root.addChild("backgroundColor");			
 			color->addChild("red", 0.0);
 			color->addChild("green", 0.0);
-			color->addChild("blue", 0.0);						
+			color->addChild("blue", 0.0);
 		}
 	}
 

@@ -219,8 +219,8 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	indentSpacing = 4;
 	indentType = INDENT_TAB;
 	
-	core->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
-	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEUP);
+	core->getInput()->addEventListenerUnique(this, InputEvent::EVENT_KEYDOWN);
+	core->getInput()->addEventListenerUnique(this, InputEvent::EVENT_MOUSEUP);
 }
 
 void UITextInput::checkBufferLines() {
@@ -2607,6 +2607,7 @@ void UITextInput::handleEvent(Event *event) {
 		}
 	}
 	
+    UIElement::handleEvent(event);
 }
 
 void UITextInput::shiftText(bool left) {

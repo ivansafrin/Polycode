@@ -121,7 +121,7 @@ PropList::PropList(String caption) : UIElement() {
 	bg->setAnchorPoint(-1.0, -1.0, 0.0);
 	bg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiBgColor"));
 	
-	addChild(bg);
+	addFocusChild(bg);
 	bg->blockMouseInput = true;
 	bg->processInputEvents = true;
 	
@@ -131,19 +131,19 @@ PropList::PropList(String caption) : UIElement() {
 	bg2->setAnchorPoint(-1.0, -1.0, 0.0);
 	bg2->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
-	addChild(bg2);
+	addFocusChild(bg2);
 
 	UILabel *label = new UILabel(caption, 18, "section", Label::ANTIALIAS_FULL);
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
-	addChild(label);
+	addFocusChild(label);
 	label->setPosition(10, 3);
 
-	propContents = new Entity();
+	propContents = new UIElement();
 	propContents->processInputEvents = true;
 		
 	scrollContainer = new UIScrollContainer(propContents, false, true, 100, 100);
 	scrollContainer->setPosition(0, 30);
-	addChild(scrollContainer);
+	addFocusChild(scrollContainer);
     
     ownsChildren = true;
 }
@@ -200,7 +200,7 @@ void PropList::handleEvent(Event *event) {
 }
 
 void PropList::addPropSheet(PropSheet *sheet) {
-	propContents->addChild(sheet);
+	propContents->addFocusChild(sheet);
 	props.push_back(sheet);
 	Resize(getWidth(), getHeight());
 	sheet->addEventListener(this, Event::COMPLETE_EVENT);
@@ -214,27 +214,27 @@ PropSheet::PropSheet(String caption, String type) : UIElement() {
 	customUndoHandler = false;
 	
 	bg = new UIRect(30,30);
-	addChild(bg);
+	addFocusChild(bg);
 	bg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiSmallHeaderBgColor"));
 	bg->setAnchorPoint(-1.0, -1.0, 0.0);
 	
 	UILabel *label = new UILabel(caption, 18, "section", Label::ANTIALIAS_FULL);
 	label->color.a = 1.0;
-	addChild(label);
+	addFocusChild(label);
 	label->setPosition(25, 3);	
 	
-	contents = new Entity();
+	contents = new UIElement();
 	contents->processInputEvents = true;
-	addChild(contents);
+	addFocusChild(contents);
 	contents->setPosition(20,35);
 	
 	collapseButton = new UIImageButton("main/collapse.png", 1.0, 12, 12);
-	addChild(collapseButton);
+	addFocusChild(collapseButton);
 	collapseButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	collapseButton->setPosition(5, 9);
 
 	expandButton = new UIImageButton("main/expand.png", 1.0, 12, 12);
-	addChild(expandButton);
+	addFocusChild(expandButton);
 	expandButton->addEventListener(this, UIEvent::CLICK_EVENT);	
 	expandButton->setPosition(5, 9);
 	expandButton->enabled = false;
@@ -317,7 +317,7 @@ void PropSheet::layoutProps() {
 }
 
 void PropSheet::addProp(PropProp *prop) {
-	contents->addChild(prop);
+	contents->addFocusChild(prop);
 	props.push_back(prop);
 	prop->addEventListener(this, Event::CHANGE_EVENT);
 	prop->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);	
@@ -339,11 +339,11 @@ PropProp::PropProp(String caption, String type) : UIElement() {
 	propType = type;
 	label = new UILabel(caption, 11);
 	label->setPosition(0, 5);
-	addChild(label);
+	addFocusChild(label);
 	
-	propContents = new Entity();
+	propContents = new UIElement();
 	propContents->processInputEvents = true;
-	addChild(propContents);
+	addFocusChild(propContents);
 	propContents->setPosition(100, 0);
 	
 	setHeight(20);
@@ -355,7 +355,7 @@ PropProp::~PropProp() {
 
 ButtonProp::ButtonProp(const String &caption) : PropProp("", "ButtonProp") {
     button = new UIButton(caption, 100);
-    addChild(button);
+    addFocusChild(button);
     setHeight(25);
 }
 
@@ -380,38 +380,38 @@ Vector3Prop::Vector3Prop(String caption) : PropProp(caption, "Vector3") {
     
 	labelX = new UILabel("X:", 11);
 	labelX->color.a = 1.0;
-	propContents->addChild(labelX);
+	propContents->addFocusChild(labelX);
 	labelX->setPosition(-20, 5);
     
 	labelY = new UILabel("Y:", 11);
 	labelY->color.a = 1.0;
-	propContents->addChild(labelY);
+	propContents->addFocusChild(labelY);
 	labelY->setPosition(-20, 25);
 
     labelZ = new UILabel("Z:", 11);
 	labelZ->color.a = 1.0;
-	propContents->addChild(labelZ);
+	propContents->addFocusChild(labelZ);
 	labelZ->setPosition(-20, 45);
     
 	xInput = new UITextInput(false, 50, 12);
 	xInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	xInput->setText("0");
 	xInput->setNumberOnly(true);
-	propContents->addChild(xInput);
+	propContents->addFocusChild(xInput);
 	xInput->setPosition(0, 0);
 
    	yInput = new UITextInput(false, 50, 12);
 	yInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	yInput->setText("0");
 	yInput->setNumberOnly(true);
-	propContents->addChild(yInput);
+	propContents->addFocusChild(yInput);
 	yInput->setPosition(0, 20);
 
     zInput = new UITextInput(false, 50, 12);
 	zInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	zInput->setText("0");
 	zInput->setNumberOnly(true);
-	propContents->addChild(zInput);
+	propContents->addFocusChild(zInput);
 	zInput->setPosition(0, 40);
 
 	setHeight(65);
@@ -467,12 +467,12 @@ Vector2Prop::Vector2Prop(String caption) : PropProp(caption, "Vector2") {
 
 	labelX = new UILabel("X:", 11);
 	labelX->color.a = 1.0;
-	propContents->addChild(labelX);
+	propContents->addFocusChild(labelX);
 	labelX->setPosition(-20, 6);	
 
 	labelY = new UILabel("Y:", 11);
 	labelY->color.a = 1.0;
-	propContents->addChild(labelY);
+	propContents->addFocusChild(labelY);
 	labelY->setPosition(60, 6);	
 	
 	positionX = NULL;
@@ -482,14 +482,14 @@ Vector2Prop::Vector2Prop(String caption) : PropProp(caption, "Vector2") {
 	positionX->addEventListener(this, UIEvent::CHANGE_EVENT);
 	positionX->setText("0");
 	positionX->setNumberOnly(true);
-	propContents->addChild(positionX);
+	propContents->addFocusChild(positionX);
 	positionX->setPosition(0, 0);
 
 	positionY = new UITextInput(false, 50, 12);
 	positionY->setText("0");
 	positionY->addEventListener(this, UIEvent::CHANGE_EVENT);	
 	positionY->setNumberOnly(true);
-	propContents->addChild(positionY);
+	propContents->addFocusChild(positionY);
 	positionY->setPosition(80, 0);
 
 	setHeight(25);
@@ -548,12 +548,12 @@ Vector2Prop::~Vector2Prop() {
 RemovableStringProp::RemovableStringProp(const String &caption) : PropProp("", "RemovableStringProp") {
     
     label = new UILabel(caption, 12);
-    addChild(label);
+    addFocusChild(label);
     label->setPositionX(30);
     
    	removeButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
 	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);
-    addChild(removeButton);
+    addFocusChild(removeButton);
 	removeButton->setPosition(0, 2);
 
 	setHeight(25);
@@ -579,7 +579,7 @@ LayerProp::LayerProp(SceneEntityInstance *instance, SceneEntityInstanceLayer *la
     bgRect = new UIRect(1.0, 1.0);
     bgRect->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 
-    propContents->addChild(bgRect);
+    propContents->addFocusChild(bgRect);
     
     this->layer = layer;
     this->instance = instance;
@@ -587,32 +587,32 @@ LayerProp::LayerProp(SceneEntityInstance *instance, SceneEntityInstanceLayer *la
     layerID = layer->layerID;
     
     removeLayerButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
-    propContents->addChild(removeLayerButton);
+    propContents->addFocusChild(removeLayerButton);
     removeLayerButton->setPosition(-95, 5.0);
     removeLayerButton->addEventListener(this, UIEvent::CLICK_EVENT);
     
     hideLayerButton = new UIImageButton("entityEditor/visible_button.png", 1.0, 24, 24);
-    propContents->addChild(hideLayerButton);
+    propContents->addFocusChild(hideLayerButton);
     hideLayerButton->setPosition(-95, 0.0);
     hideLayerButton->addEventListener(this, UIEvent::CLICK_EVENT);
 
     
     showLayerButton = new UIImageButton("entityEditor/invisible_button.png", 1.0, 24, 24);
-    propContents->addChild(showLayerButton);
+    propContents->addFocusChild(showLayerButton);
     showLayerButton->setPosition(-95, 0.0);
     showLayerButton->addEventListener(this, UIEvent::CLICK_EVENT);
     showLayerButton->visible = false;
     showLayerButton->enabled = false;
     
     moreButton = new UIImageButton("entityEditor/button_more.png", 1.0, 24, 24);
-    propContents->addChild(moreButton);
+    propContents->addFocusChild(moreButton);
     moreButton->setPosition(-70, 0.0);
     moreButton->addEventListener(this, UIEvent::CLICK_EVENT);
     
     
     layerName = new UILabel(layer->name, 12);
     layerName->setColor(1.0, 1.0, 1.0, 1.0);
-    propContents->addChild(layerName);
+    propContents->addFocusChild(layerName);
     layerName->setPosition(-40, 5.0);
     
     if(layerID == 0) {
@@ -701,18 +701,18 @@ CustomProp::CustomProp(String key, String value) : PropProp("", "Custom") {
 	keyEntry = new UITextInput(false, 120, 12);
 	keyEntry->setText(key);
 	keyEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
-	propContents->addChild(keyEntry);
+	propContents->addFocusChild(keyEntry);
 	keyEntry->setPosition(-90, 0);
 
 	valueEntry = new UITextInput(false, 120, 12);
 	valueEntry->setText(value);	
 	valueEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
-	propContents->addChild(valueEntry);
+	propContents->addFocusChild(valueEntry);
 	valueEntry->setPosition(45, 0);
 	
 	removeButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
 	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);	
-	propContents->addChild(removeButton);
+	propContents->addFocusChild(removeButton);
 	removeButton->setPosition(-110, 6);
 	
 	setHeight(25);
@@ -763,7 +763,7 @@ StringProp::StringProp(String caption) : PropProp(caption, "String") {
 	stringEntry = new UITextInput(false, 150, 12);
 	stringEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
 	stringEntry->setText("");
-	propContents->addChild(stringEntry);
+	propContents->addFocusChild(stringEntry);
 	stringEntry->setPosition(0, 0);
 	setHeight(25);
 }
@@ -813,10 +813,10 @@ SliderProp::SliderProp(String caption, Number min, Number max) : PropProp(captio
 	slider->addEventListener(this, UIEvent::CHANGE_EVENT);
 	slider->setPosition(0, 8);
     slider->setContinuous(false);
-	propContents->addChild(slider);
+	propContents->addFocusChild(slider);
 	
 	valueLabel = new UILabel("0.0", 10);
-	propContents->addChild(valueLabel);
+	propContents->addFocusChild(valueLabel);
 	valueLabel->setPosition(120, 5);
 	valueLabel->color.a = 1.0;
 	setHeight(25);
@@ -872,7 +872,7 @@ NumberProp::NumberProp(String caption) : PropProp(caption, "Number") {
 	numberEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
 	numberEntry->setText("0");
 	numberEntry->setNumberOnly(true);
-	propContents->addChild(numberEntry);
+	propContents->addFocusChild(numberEntry);
 	numberEntry->setPosition(0, 2);
 
 	setHeight(25);
@@ -923,7 +923,7 @@ ColorProp::ColorProp(String caption) : PropProp(caption, "Color") {
 	colorEntry = new UIColorBox(globalColorPicker, Color(), 45, 25);
 	colorEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
 	colorEntry->setPosition(-2, 0);
-	propContents->addChild(colorEntry);
+	propContents->addFocusChild(colorEntry);
 	setHeight(25);
 
 }
@@ -968,7 +968,7 @@ ColorProp::~ColorProp() {
 ComboProp::ComboProp(String caption) : PropProp(caption, "Combo") {
 	comboEntry = new UIComboBox(globalMenu, 150);
 	comboEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
-	propContents->addChild(comboEntry);
+	propContents->addFocusChild(comboEntry);
 	comboEntry->setPosition(-3, 0);
 	setHeight(25);
 }
@@ -1015,7 +1015,7 @@ BoolProp::BoolProp(String caption) : PropProp(caption, "Bool") {
 	checkEntry = new UICheckBox("", false);
 	checkEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
 	checkEntry->setPosition(0, 4);
-	propContents->addChild(checkEntry);
+	propContents->addFocusChild(checkEntry);
 	setHeight(25);
 
 }
@@ -1056,17 +1056,17 @@ SoundProp::SoundProp(String caption) : PropProp(caption, "Sound"){
 
 	soundFile = new UILabel("", 11);
 	soundFile->setPosition(0, 5);
-	propContents->addChild(soundFile);	
+	propContents->addFocusChild(soundFile);	
 	soundFile->color.a = 1.0;
 
 	playButton = new UIButton("Play", 50);
-	propContents->addChild(playButton);
+	propContents->addFocusChild(playButton);
 	playButton->setPosition(0, 25);
 	playButton->addEventListener(this, UIEvent::CLICK_EVENT);
 
 
 	changeButton = new UIButton("Change", 80);
-	propContents->addChild(changeButton);
+	propContents->addFocusChild(changeButton);
 	changeButton->setPosition(60, 25);
 	changeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	setHeight(70);
@@ -1139,7 +1139,7 @@ BezierRGBACurveProp::BezierRGBACurveProp(String caption) : PropProp(caption, "Be
 
 
 	changeButton = new UIButton("Edit", 120);
-	propContents->addChild(changeButton);
+	propContents->addFocusChild(changeButton);
 	changeButton->setPosition(0, 0);
 	changeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 
@@ -1173,7 +1173,7 @@ BezierCurveProp::BezierCurveProp(String caption, String curveName) : PropProp(ca
 	this->curveName = curveName;
 
 	changeButton = new UIButton("Edit", 120);
-	propContents->addChild(changeButton);
+	propContents->addFocusChild(changeButton);
 	changeButton->setPosition(0, 0);
 	changeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 
@@ -1202,15 +1202,15 @@ MaterialProp::MaterialProp(const String &caption) : PropProp(caption, "Material"
 	previewShape = new UIRect(48, 48);
 	previewShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	previewShape->setPosition(2, 1);
-	propContents->addChild(previewShape);
+	propContents->addFocusChild(previewShape);
     
 	changeButton = new UIButton("Change", 80);
-	propContents->addChild(changeButton);
+	propContents->addFocusChild(changeButton);
 	changeButton->setPosition(60, 5);
 	changeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
 	materialLabel = new UILabel("", 12, "sans");
-	propContents->addChild(materialLabel);
+	propContents->addFocusChild(materialLabel);
 	materialLabel->setPosition(-100, 32);
 	materialLabel->color.a = 1.0;
     
@@ -1318,15 +1318,15 @@ TextureProp::TextureProp(String caption) : PropProp(caption, "Texture"){
 	previewShape = new UIRect(48, 48);
 	previewShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	previewShape->setPosition(2, 1);
-	propContents->addChild(previewShape);
+	propContents->addFocusChild(previewShape);
 
 	changeButton = new UIButton("Change", 80);
-	propContents->addChild(changeButton);
+	propContents->addFocusChild(changeButton);
 	changeButton->setPosition(60, 5);
 	changeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
 	textureLabel = new UILabel("", 12, "sans");
-	propContents->addChild(textureLabel);
+	propContents->addFocusChild(textureLabel);
 	textureLabel->setPosition(-100, 32);
 	textureLabel->color.a = 1.0;
 		
@@ -1398,13 +1398,13 @@ SceneSpriteProp::SceneSpriteProp(String caption) : PropProp(caption, "SceneSprit
 	previewSprite = NULL;
     
 	changeButton = new UIButton("Change", 80);
-	propContents->addChild(changeButton);
+	propContents->addFocusChild(changeButton);
 	changeButton->setPosition(60, 5);
 	changeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	setHeight(55);
     
 	spriteName = new UILabel("", 12, "sans");
-	propContents->addChild(spriteName);
+	propContents->addFocusChild(spriteName);
 	spriteName->setPosition(-100, 32);
 	spriteName->color.a = 1.0;
     
@@ -1511,7 +1511,7 @@ SceneEntityInstanceProp::SceneEntityInstanceProp(String caption) : PropProp(capt
 	propContents->addChild(previewInstance);
 
 	changeButton = new UIButton("Change", 80);
-	propContents->addChild(changeButton);
+	propContents->addFocusChild(changeButton);
 	changeButton->setPosition(60, 5);
 	changeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	setHeight(50);
@@ -1576,12 +1576,12 @@ ShaderPassProp::ShaderPassProp(Material *material, int shaderIndex) : PropProp("
 	
 	removeButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
 	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);	
-	propContents->addChild(removeButton);
+	propContents->addFocusChild(removeButton);
 	removeButton->setPosition(-110, 6);
 	
 	shaderComboBox = new UIComboBox(globalMenu, 100);
 	shaderComboBox->addEventListener(this, UIEvent::CHANGE_EVENT);
-	propContents->addChild(shaderComboBox);
+	propContents->addFocusChild(shaderComboBox);
 	
 	int index = 0;
 	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
@@ -1598,7 +1598,7 @@ ShaderPassProp::ShaderPassProp(Material *material, int shaderIndex) : PropProp("
 	
 	editButton = new UIButton("Options", 30);
 	editButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	propContents->addChild(editButton);
+	propContents->addFocusChild(editButton);
 	setHeight(25);
 }
 
@@ -1641,7 +1641,7 @@ TargetBindingProp::TargetBindingProp(Shader *shader, Material *material, ShaderB
 		
 	removeButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
 	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);	
-	propContents->addChild(removeButton);
+	propContents->addFocusChild(removeButton);
 	removeButton->setPosition(-110, 6);
 
 	typeComboBox = new UIComboBox(globalMenu, 100);
@@ -1651,7 +1651,7 @@ TargetBindingProp::TargetBindingProp(Shader *shader, Material *material, ShaderB
 	typeComboBox->addComboItem("DEPTH");		
 	typeComboBox->setSelectedIndex(targetBinding->mode);
 	typeComboBox->addEventListener(this, UIEvent::CHANGE_EVENT);
-	propContents->addChild(typeComboBox);
+	propContents->addFocusChild(typeComboBox);
 
 	targetComboBox = new UIComboBox(globalMenu, 100);	
 	for(int i=0; i < material->getNumShaderRenderTargets(); i++) {
@@ -1662,7 +1662,7 @@ TargetBindingProp::TargetBindingProp(Shader *shader, Material *material, ShaderB
 		}
 	}
 	targetComboBox->addEventListener(this, UIEvent::CHANGE_EVENT);
-	propContents->addChild(targetComboBox);
+	propContents->addFocusChild(targetComboBox);
 	
 	textureComboBox = new UIComboBox(globalMenu, 100);	
 	for(int i=0; i < shader->expectedTextures.size(); i++) {
@@ -1673,7 +1673,7 @@ TargetBindingProp::TargetBindingProp(Shader *shader, Material *material, ShaderB
 	}
 		
 	textureComboBox->addEventListener(this, UIEvent::CHANGE_EVENT);
-	propContents->addChild(textureComboBox);
+	propContents->addFocusChild(textureComboBox);
 	
 	setHeight(25);
 	
@@ -1774,26 +1774,26 @@ RenderTargetProp::RenderTargetProp(ShaderRenderTarget *renderTarget, Material *m
 
 	removeButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
 	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);	
-	propContents->addChild(removeButton);
+	propContents->addFocusChild(removeButton);
 	removeButton->setPosition(-110, 6);
 	
 	nameInput = new UITextInput(false, 20, 12);
 	nameInput->addEventListener(this, UIEvent::CHANGE_EVENT);
-	propContents->addChild(nameInput);
+	propContents->addFocusChild(nameInput);
 	nameInput->setText(renderTarget->id);
 	nameInput->setCaretPosition(0);
 	
 	widthInput = new UITextInput(false, 20, 12);
 	widthInput->setNumberOnly(true);
 	widthInput->setText(String::NumberToString(renderTarget->width));
-	propContents->addChild(widthInput);
+	propContents->addFocusChild(widthInput);
 	widthInput->setCaretPosition(0);
 	widthInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 		
 	heightInput = new UITextInput(false, 20, 12);
 	heightInput->setNumberOnly(true);
 	heightInput->setText(String::NumberToString(renderTarget->height));	
-	propContents->addChild(heightInput);
+	propContents->addFocusChild(heightInput);
 	heightInput->setCaretPosition(0);
 	heightInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 			
@@ -1802,7 +1802,7 @@ RenderTargetProp::RenderTargetProp(ShaderRenderTarget *renderTarget, Material *m
 	typeComboBox->addComboItem("Norm.");
 	typeComboBox->setSelectedIndex(renderTarget->sizeMode);	
 	typeComboBox->addEventListener(this, UIEvent::CHANGE_EVENT);
-	propContents->addChild(typeComboBox);
+	propContents->addFocusChild(typeComboBox);
 	
 	setHeight(25);
 }

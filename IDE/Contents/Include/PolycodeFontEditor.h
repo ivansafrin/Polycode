@@ -38,7 +38,7 @@ public:
 	
 protected:
 		
-	Entity *anchor;
+	UIElement *anchor;
 	UILabel *editorLabel;
 	UILabel *editorLabel2;
 	UILabel *editorLabel3;
