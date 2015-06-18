@@ -42,6 +42,7 @@ class PropProp : public UIElement {
 		virtual void setPropData(PolycodeEditorPropActionData* data) {}
 		
 		virtual void setPropWidth(Number width) {}
+        virtual void updateFocusVisibility() {}
         void setPropName(String newName);
     
 		String propType;
@@ -138,9 +139,10 @@ class NumberProp : public PropProp {
 		void handleEvent(Event *event);
 		void set(Number number);
 		Number get();
-		
+    
 		void setPropWidth(Number width);
-		
+        void updateFocusVisibility();
+    
 		void setPropData(PolycodeEditorPropActionData* data);
 				
 		UITextInput *numberEntry;

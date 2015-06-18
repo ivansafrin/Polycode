@@ -2613,6 +2613,9 @@ void UITextInput::handleEvent(Event *event) {
 void UITextInput::onGainFocus() {
     blinkerRect->visible  = true;
     blinkTimer->Reset();
+    if(!multiLine) {
+        selectAll();
+    }
 }
 
 void UITextInput::shiftText(bool left) {

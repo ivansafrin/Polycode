@@ -430,7 +430,7 @@ void UIElement::focusPreviousChild() {
     }
     
     for(int i=0; i < focusChildren.size(); i++) {
-        if(focusChildren[j]->isFocusable() && focusChildren[j] != UIElement::globalFocusedChild) {
+        if(focusChildren[j]->isFocusable() && focusChildren[j] != UIElement::globalFocusedChild && focusChildren[j]->enabled && focusChildren[j]->visible) {
             focusChild(focusChildren[j]);
             return;
         }
@@ -461,7 +461,7 @@ void UIElement::focusNextChild() {
     }
 
 	for(int i=0; i < focusChildren.size(); i++) {
-		if(focusChildren[j]->isFocusable() && focusChildren[j] != UIElement::globalFocusedChild) {
+		if(focusChildren[j]->isFocusable() && focusChildren[j] != UIElement::globalFocusedChild && focusChildren[j]->enabled && focusChildren[j]->visible) {
 			focusChild(focusChildren[j]);
 			return;
 		}

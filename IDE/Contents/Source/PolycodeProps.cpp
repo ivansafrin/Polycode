@@ -306,7 +306,9 @@ void PropSheet::layoutProps() {
             props[i]->setPosition(0, yOffset);
             props[i]->setPropWidth(getWidth());
             yOffset += props[i]->getHeight();
+        } else {
         }
+        props[i]->updateFocusVisibility();        
 	}
     Number newPropHeight = yOffset + contents->getPosition().y;
     if(newPropHeight != propHeight) {
@@ -890,6 +892,11 @@ NumberProp::NumberProp(String caption, UIElement *focusParent) : PropProp(captio
 void NumberProp::setPropWidth(Number width) {
     numberEntry->Resize(width-PROP_PADDING-propContents->getPosition().x, numberEntry->getHeight());
 	numberEntry->setPosition(0.0, 2);
+}
+
+void NumberProp::updateFocusVisibility() {
+    numberEntry->enabled = enabled;
+    numberEntry->visible = visible;
 }
 
 void NumberProp::setPropData(PolycodeEditorPropActionData* data) {
@@ -2956,7 +2963,6 @@ void ScenePrimitiveSheet::updatePrimitiveLabels() {
     option5Prop->enabled = false;
     option5Prop->visible = false;
     
-
     switch(primitive->getPrimitiveType()) {
         case ScenePrimitive::TYPE_BOX:
             option1Prop->setPropName("Width");

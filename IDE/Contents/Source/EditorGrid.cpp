@@ -40,7 +40,7 @@ EditorGridSettingsWindow::EditorGridSettingsWindow(EditorGrid *grid) : UIWindow(
     label->setPosition(10, 70);
     
     sizeInput = new UITextInput(false, 50, 10);
-    addChild(sizeInput);
+    addFocusChild(sizeInput);
     sizeInput->setPosition(60, 68);
     sizeInput->setNumberOnly(true);
     sizeInput->setText(String::NumberToString(grid->getGridSize()));
@@ -52,7 +52,7 @@ EditorGridSettingsWindow::EditorGridSettingsWindow(EditorGrid *grid) : UIWindow(
     label->setPosition(10, 100);
 
     countInput = new UITextInput(false, 50, 10);
-    addChild(countInput);
+    addFocusChild(countInput);
     countInput->setPosition(60, 98);
     countInput->setNumberOnly(true);
     countInput->setText(String::IntToString(grid->getGridLen()));
