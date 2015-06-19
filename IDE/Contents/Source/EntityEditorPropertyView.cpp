@@ -93,6 +93,10 @@ EntityEditorPropertyView::EntityEditorPropertyView() : UIElement() {
     
 }
 
+PropList *EntityEditorPropertyView::getEntityProps() {
+    return entityProps;
+}
+
 void EntityEditorPropertyView::setEntityInstance(SceneEntityInstance *instance) {
     materialSheet->setEntityInstance(instance);
     entitySheet->setEntityInstance(instance);
@@ -142,7 +146,7 @@ void EntityEditorPropertyView::updateShaderOptions() {
     }
 }
 
-void EntityEditorPropertyView::setEntity(Entity *entity) {
+void EntityEditorPropertyView::setEntity(Entity *entity, bool rootEntityMode) {
     
     targetEntity = entity;
     
@@ -183,8 +187,13 @@ void EntityEditorPropertyView::setEntity(Entity *entity) {
 
     entitySheet->setEntity(entity);
     propSheet->setEntity(entity);
-    transformSheet->setEntity(entity);
-        
+    
+    if(!rootEntityMode) {
+        transformSheet->setEntity(entity);
+    } else {
+        transformSheet->setEntity(NULL);
+    }
+    
     Resize(getWidth(), getHeight());
 }
 

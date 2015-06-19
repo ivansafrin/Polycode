@@ -133,7 +133,7 @@ PropList::PropList(String caption) : UIElement() {
 	
 	addFocusChild(bg2);
 
-	UILabel *label = new UILabel(caption, 18, "section", Label::ANTIALIAS_FULL);
+	label = new UILabel(caption, 18, "section", Label::ANTIALIAS_FULL);
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addFocusChild(label);
 	label->setPosition(10, 3);
@@ -146,6 +146,10 @@ PropList::PropList(String caption) : UIElement() {
 	addFocusChild(scrollContainer);
     
     ownsChildren = true;
+}
+
+void PropList::setCaption(const String &newCaption) {
+    label->setText(newCaption);
 }
 
 PropList::~PropList() {

@@ -38,10 +38,11 @@ class EntityEditorPropertyView : public UIElement {
         ~EntityEditorPropertyView();
     
         void setEntityInstance(SceneEntityInstance *instance);
-        void setEntity(Entity *entity);
+        void setEntity(Entity *entity, bool rootEntityMode = false);
         void handleEvent(Event *event);
         void updateShaderOptions();
     
+        PropList *getEntityProps();
         void Resize(Number width, Number height);
     
     protected:

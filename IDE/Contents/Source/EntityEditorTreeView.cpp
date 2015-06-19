@@ -152,10 +152,10 @@ void EntityEditorTreeSheet::handleEvent(Event *event) {
 	if(event->getDispatcher() == treeContainer->getRootNode()) {
 		if(event->getEventCode() == UITreeEvent::SELECTED_EVENT){
 			if(!dontSendSelectionEvent) {
-                if(treeContainer->getRootNode()->getSelectedNode() != treeContainer->getRootNode()) {
+//                if(treeContainer->getRootNode()->getSelectedNode() != treeContainer->getRootNode()) {
                     selectedEntity = (Entity*)treeContainer->getRootNode()->getSelectedNode()->getUserData();
                     dispatchEvent(new Event(), Event::CHANGE_EVENT);
-                }
+//                }
 			}
 			dontSendSelectionEvent = false;
 		}
@@ -169,7 +169,12 @@ void EntityEditorTreeView::setEntityInstance(SceneEntityInstance *instance) {
 }
 
 void EntityEditorTreeSheet::refreshTree() {
-    syncNodeToEntity(treeContainer->getRootNode(), rootEntity);
+    if(selectedEntity == rootEntity) {
+        dontSendSelectionEvent = true;
+        treeContainer->getRootNode()->setSelected();
+    } else {
+        syncNodeToEntity(treeContainer->getRootNode(), rootEntity);
+    }
 }
 
 EntityEditorTreeSheet::~EntityEditorTreeSheet() {

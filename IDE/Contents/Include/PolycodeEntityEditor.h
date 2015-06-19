@@ -259,7 +259,7 @@ class EntityEditorMainView : public UIElement {
     
             void didPlaceEntity(Entity *entity);
     
-            void setBBox();
+            void setBBox(Entity *targetEntity = NULL);
     
             Entity *getObjectRoot();
             void setObjectRoot(SceneEntityInstance *entity);

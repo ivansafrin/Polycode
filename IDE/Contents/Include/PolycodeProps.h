@@ -953,6 +953,7 @@ class PropList : public UIElement {
 		void updateProps();
 		void updateSize();
     
+        void setCaption(const String &newCaption);
 		void addPropSheet(PropSheet *sheet);
 		void handleEvent(Event *event);
 		void Resize(Number width, Number height);
@@ -961,7 +962,7 @@ class PropList : public UIElement {
 	protected:
 	
 		UIElement *propContents;
-	
+        UILabel *label;
 		std::vector<PropSheet*> props;	
 		UIRect *bg;
 		UIRect *bg2;				

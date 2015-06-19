@@ -993,7 +993,13 @@ void EntityEditorMainView::Update() {
         }
     }
     
-    setBBox();
+    if(selectedEntities.size() > 0) {
+        setBBox();
+        bBoxVis->wireFrameColor = Color(0.3, 0.5, 1.0, 0.5);
+    } else {
+        setBBox(getObjectRoot());
+        bBoxVis->wireFrameColor = Color(0.5, 1.0, 0.3, 0.5);
+    }
 }
 
 void EntityEditorMainView::createIcon(Entity *entity, String iconFile) {
@@ -1493,24 +1499,6 @@ void EntityEditorMainView::handleEvent(Event *event) {
                     didPlaceEntity(newSprite);
                     selectEntity(newSprite, false, false);
                 }
-                
-                /*
-                SceneSprite *newSprite = new SceneSprite(globalFrame->assetBrowser->getSelectedAssetPath());
-                
-                if(newSprite->getNumAnimations()) {
-                    newSprite->playAnimation(newSprite->getAnimationAtIndex(0)->name, 0, false);
-                }
-                
-                newSprite->setMaterialByName("Unlit");
-                if(newSprite->getLocalShaderOptions()) {
-                    newSprite->getLocalShaderOptions()->addTexture("diffuse", newSprite->getTexture());
-                }
-                sceneObjectRoot->addChild(newSprite);
-                setEditorProps(newSprite);
-                newSprite->setPosition(cursorPosition);
-                didPlaceEntity(newSprite);
-                selectEntity(newSprite, false, false);
-                 */
             } else if(assetSelectType == "entity") {
                 SceneEntityInstance *newEntity = new SceneEntityInstance(mainScene, globalFrame->assetBrowser->getSelectedAssetPath());
                 sceneObjectRoot->addChild(newEntity);
@@ -1626,7 +1614,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
             Entity* targetEntity = (Entity*) event->getDispatcher();
             
             
-            if(inputEvent->mouseButton == CoreInput::MOUSE_BUTTON2 && targetEntity->visible) {
+            if(inputEvent->mouseButton == CoreInput::MOUSE_BUTTON2 && targetEntity->visible && targetEntity != getObjectRoot()) {
 
                 
                 // if it's an icon, select the entity linked to the icon
@@ -1890,19 +1878,25 @@ void EntityEditorMainView::selectEntity(Entity *targetEntity, bool addToSelectio
     
 }
 
-void EntityEditorMainView::setBBox() {
-    if(selectedEntities.size() > 0) {
+void EntityEditorMainView::setBBox(Entity *targetEntity) {
+    
+    if(!targetEntity) {
+        if(selectedEntities.size() > 0) {
+            targetEntity = selectedEntities[0];
+        }
+    }
+    
+    if(!targetEntity) {
+        bBoxVis->visible = false;
+        return;
+    } else {
+    
         bBoxVis->visible = true;
-        
-        Entity *targetEntity = selectedEntities[0];
         bBoxVis->setPrimitiveOptions(ScenePrimitive::TYPE_BOX, targetEntity->getLocalBoundingBox().x, targetEntity->getLocalBoundingBox().y, targetEntity->getLocalBoundingBox().z);
         
         Matrix4 mat = targetEntity->getConcatenatedMatrix();
         bBoxVis->setTransformByMatrixPure(mat);
         bBoxVis->dirtyMatrix(false);
-        
-    } else {
-        bBoxVis->visible = false;
     }
 }
 
@@ -2049,14 +2043,26 @@ PolycodeEntityEditor::PolycodeEntityEditor() : PolycodeEditor(true){
 void PolycodeEntityEditor::handleEvent(Event *event) {
     
     if(event->getDispatcher() == treeView->getTreeSheet()) {
-        mainView->selectEntity(treeView->getTreeSheet()->getSelectedEntity());
+        if(treeView->getTreeSheet()->getSelectedEntity() == mainView->getObjectRoot()) {
+            mainView->selectNone(true);
+        } else {
+            mainView->selectEntity(treeView->getTreeSheet()->getSelectedEntity());
+        }
     }
     
     if(event->getDispatcher() == mainView) {
         switch(event->getEventCode()) {
             case Event::CHANGE_EVENT:
-                propertyView->setEntity(mainView->getSelectedEntity());
-                treeView->getTreeSheet()->setSelectedEntity(mainView->getSelectedEntity());
+                if(mainView->getSelectedEntity()) {
+                    propertyView->setEntity(mainView->getSelectedEntity());
+                    treeView->getTreeSheet()->setSelectedEntity(mainView->getSelectedEntity());
+                    propertyView->getEntityProps()->setCaption("PROPERTIES");
+                } else {
+                    propertyView->setEntity(mainView->getObjectRoot(), true);
+                    treeView->getTreeSheet()->setSelectedEntity(mainView->getObjectRoot());
+                    propertyView->getEntityProps()->setCaption("ROOT ENTITY");
+                    mainView->setBBox(mainView->getObjectRoot());
+                }
             break;
         }
     }
@@ -2105,6 +2111,8 @@ bool PolycodeEntityEditor::openFile(OSFileEntry filePath) {
     treeView->setEntityInstance(loadedInstance);
     propertyView->setEntityInstance(loadedInstance);
     settingsView->setEntityInstance(loadedInstance);
+    
+    mainView->dispatchEvent(new Event(), Event::CHANGE_EVENT);
     
 	return true;
 }
