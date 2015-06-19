@@ -64,7 +64,7 @@ UITreeContainer::UITreeContainer(String icon, String text, Number treeWidth, Num
 	
 	Resize(getWidth(), getHeight());
 
-	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
+	CoreServices::getInstance()->getCore()->getInput()->addEventListenerUnique(this, InputEvent::EVENT_KEYDOWN);
 	this->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	this->addEventListener(this, InputEvent::EVENT_MOUSEOVER);
 	this->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);	
@@ -109,8 +109,7 @@ void UITreeContainer::handleEvent(Event *event) {
 		
 		if (!hasFocus) {
 			if (event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
-				if (focusParent && isFocusable())
-					focusParent->focusChild(this);
+                focusSelf();
 			} else if (event->getEventCode() == InputEvent::EVENT_MOUSEOVER) {
 				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);
 			}
