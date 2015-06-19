@@ -654,6 +654,7 @@ void SpriteBrowser::handleEvent(Event *event) {
     } else if(event->getDispatcher() == globalFrame->textInputPopup) {
         if(event->getEventCode() == UIEvent::OK_EVENT) {
             if(globalFrame->textInputPopup->action == "newSprite") {
+                
                 Sprite *newEntry = new Sprite(globalFrame->textInputPopup->getValue());
                 
                 SpriteState *defaultState = new SpriteState(spriteSet, "default");
@@ -662,6 +663,15 @@ void SpriteBrowser::handleEvent(Event *event) {
                 spriteSet->addSpriteEntry(newEntry);
                 selectedEntry = newEntry;
                 refreshSprites();
+
+                PolycodeSpriteEditorActionData *beforeData = new PolycodeSpriteEditorActionData();
+                beforeData->sprite = newEntry;
+                
+                PolycodeSpriteEditorActionData *data = new PolycodeSpriteEditorActionData();
+                data->sprite = newEntry;
+                data->reverse = false;
+                editor->didAction("new_sprite", beforeData, data);
+                
             } else if(globalFrame->textInputPopup->action == "renameSprite") {
                 selectedEntry->setName(globalFrame->textInputPopup->getValue());
                 refreshSprites();
@@ -1868,6 +1878,7 @@ bool PolycodeSpriteEditor::openFile(OSFileEntry filePath) {
     spriteSheetEditor->addEventListener(this, Event::CHANGE_EVENT);
     
     spriteBrowser = new SpriteBrowser(sprite);
+    spriteBrowser->editor = this;
     bottomSizer->addLeftChild(spriteBrowser);
     spriteBrowser->addEventListener(this, Event::CHANGE_EVENT);
     
@@ -1893,6 +1904,24 @@ bool PolycodeSpriteEditor::openFile(OSFileEntry filePath) {
 
 void PolycodeSpriteEditor::selectAll() {
     spriteSheetEditor->selectAll();
+}
+
+void PolycodeSpriteEditor::doAction(String actionName, PolycodeEditorActionData *data) {
+
+    PolycodeSpriteEditorActionData *spriteData = (PolycodeSpriteEditorActionData*)data;
+    
+    if(actionName == "new_sprite") {
+        if(spriteData->reverse) {
+            sprite->removeSprite(spriteData->sprite);
+            stateEditor->setSpriteEntry(NULL);
+        } else {
+            sprite->addSpriteEntry(spriteData->sprite);
+            stateEditor->setSpriteEntry(spriteData->sprite);
+        }
+        spriteBrowser->refreshSprites();
+        stateEditor->refreshStates();
+        
+    }
 }
 
 void PolycodeSpriteEditor::saveFile() {

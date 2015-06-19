@@ -29,6 +29,19 @@
 
 using namespace Polycode;
 
+class PolycodeSpriteEditorActionData : public PolycodeEditorActionData {
+public:
+    PolycodeSpriteEditorActionData() {
+        reverse = true;
+    }
+    
+    ~PolycodeSpriteEditorActionData() {
+    }
+
+    Sprite *sprite;
+    bool reverse;
+};
+
 class SpritePreview : public UIElement {
     public:
         SpritePreview(SpriteSet *spriteSet);
@@ -139,7 +152,9 @@ class SpriteBrowser : public UIElement {
     
         Sprite *getSelectedSpriteEntry();
     
+        PolycodeEditor *editor;
     protected:
+    
     
         UIRect *headerBg;
         SpriteSet *spriteSet;
@@ -314,6 +329,7 @@ class PolycodeSpriteEditor : public PolycodeEditor {
 		void Resize(int x, int y);
 		void saveFile();
     
+        void doAction(String actionName, PolycodeEditorActionData *data);
         void selectAll();
 				
 	protected:
@@ -323,6 +339,8 @@ class PolycodeSpriteEditor : public PolycodeEditor {
         UIHSizer *topSizer;
     
         UIHSizer *bottomSizer;
+    
+        PolycodeSpriteEditorActionData *beforeData;
     
         SpriteSheetEditor *spriteSheetEditor;
         SpriteBrowser *spriteBrowser;
