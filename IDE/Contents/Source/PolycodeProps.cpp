@@ -3293,7 +3293,8 @@ void EntitySheet::refreshLayers() {
         SceneEntityInstanceLayer *layer = instance->getLayerAtIndex(i);
         layersProp->comboEntry->addComboItem(layer->name, (void*)layer);
         if(layer->layerID == entity->layerID) {
-            layersProp->comboEntry->setSelectedIndex(i);
+            layersProp->suppressChangeEvent = true;
+            layersProp->set(i);
         }
     }
 }

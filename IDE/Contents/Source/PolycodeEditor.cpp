@@ -139,7 +139,7 @@ void PolycodeEditor::handleEvent(Event *event) {
 
 void PolycodeEditor::didAction(String actionName, PolycodeEditorActionData *beforeData, PolycodeEditorActionData *afterData, bool setFileChanged) {
 
-//	printf("DID ACTION (pos: %d): %s\n", currentUndoPosition, actionName.c_str());
+	printf("DID ACTION (pos: %d): %s\n", currentUndoPosition, actionName.c_str());
 	
 	if(setFileChanged) {
 		setHasChanges(true);

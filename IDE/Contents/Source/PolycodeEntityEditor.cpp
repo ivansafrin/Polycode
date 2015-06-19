@@ -1866,7 +1866,7 @@ void EntityEditorMainView::selectEntity(Entity *targetEntity, bool addToSelectio
         for(int i=0; i < selectedEntities.size(); i++) {
             data->entries.push_back(PolycodeSceneEditorActionDataEntry(selectedEntities[i]));
         }
-        editor->didAction("select", beforeData, data);
+        editor->didAction("select", beforeData, data, false);
         beforeData = NULL;
     }
     
