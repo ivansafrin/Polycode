@@ -88,7 +88,7 @@ btCollisionShape *CollisionEntity::createCollisionShape(Entity *entity, int type
 	btCollisionShape *collisionShape = NULL;	
 	
     Vector3 scale = entity->getCompoundScale();
-    Vector3 bBox = entity->getLocalBoundingBox() * scale;
+    Vector3 bBox = entity->getLocalBoundingBox();// * scale;
 	
     Number largestSize = bBox.x;
     if(bBox.y > largestSize) {
@@ -146,22 +146,21 @@ btCollisionShape *CollisionEntity::createCollisionShape(Entity *entity, int type
 	}
     
     
-    //collisionShape->setLocalScaling(btVector3(scale.x, scale.y, scale.z));
+    collisionShape->setLocalScaling(btVector3(scale.x, scale.y, scale.z));
     
 	return collisionShape; 
 }
 
-void CollisionEntity::Update() {	
-	entity->rebuildTransformMatrix();
+void CollisionEntity::Update() {
 
-	btScalar mat[16];		
-	Matrix4 ent_mat = entity->getConcatenatedMatrix();
-	
-	for(int i=0; i < 16; i++) {
-			mat[i] = ent_mat.ml[i];
-	}			
-
-	collisionObject->getWorldTransform().setFromOpenGLMatrix(mat);
+    Vector3 pos = entity->getConcatenatedMatrix().getPosition();
+    Quaternion quat = entity->getConcatenatedQuat();
+    
+    btVector3 btPos(pos.x, pos.y, pos.z);
+    btQuaternion btQuat(quat.x, quat.y, quat.z, quat.w);
+    
+    collisionObject->getWorldTransform().setOrigin(btPos);
+    collisionObject->getWorldTransform().setRotation(btQuat);
 }
 
 Entity *CollisionEntity::getEntity() {
