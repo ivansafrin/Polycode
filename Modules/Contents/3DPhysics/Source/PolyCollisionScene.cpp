@@ -102,8 +102,8 @@ bool CollisionScene::isColliding(Entity *ent1) {
         {
             btPersistentManifold* contactManifold = world->getDispatcher()->getManifoldByIndexInternal(i);
           
-            btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
-            btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
+            btCollisionObject* obA = (btCollisionObject*)contactManifold->getBody0();
+            btCollisionObject* obB = (btCollisionObject*)contactManifold->getBody1();
             
             if(obA == cEnt1->collisionObject || obB == cEnt1->collisionObject) {
                 return true;
@@ -130,8 +130,8 @@ CollisionResult CollisionScene::testCollisionOnCollisionChild_Convex(CollisionEn
 	for (int i=0;i<numManifolds;i++)
 	{
 		btPersistentManifold* contactManifold = world->getDispatcher()->getManifoldByIndexInternal(i);
-		btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
-		btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
+		btCollisionObject* obA = (btCollisionObject*)contactManifold->getBody0();
+		btCollisionObject* obB = (btCollisionObject*)contactManifold->getBody1();
  		if((obA == cEnt1->collisionObject && obB == cEnt2->collisionObject) ||
 		   (obA == cEnt2->collisionObject && obB == cEnt1->collisionObject)) {
 //			contactManifold->refreshContactPoints(obA->getWorldTransform(), obB->getWorldTransform());
@@ -177,7 +177,7 @@ RayTestResult CollisionScene::getFirstEntityInRay(const Vector3 &origin,  const 
 	world->rayTest (fromVec, toVec, cb);	
 	
 	if (cb.hasHit ()) {
-		CollisionEntity *retEnt = getCollisionEntityByObject(cb.m_collisionObject);
+		CollisionEntity *retEnt = getCollisionEntityByObject((btCollisionObject*)cb.m_collisionObject);
 		if(retEnt) {
 			ret.entity = retEnt->getEntity();
 			ret.position = Vector3(cb.m_hitPointWorld.getX(), cb.m_hitPointWorld.getY(), cb.m_hitPointWorld.getZ());

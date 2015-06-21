@@ -116,8 +116,8 @@ void PhysicsScene::processWorldCollisions() {
 	for (int i=0;i<numManifolds;i++)
 	{
 		btPersistentManifold* contactManifold =  world->getDispatcher()->getManifoldByIndexInternal(i);
-		btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
-		btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
+		btCollisionObject* obA = (btCollisionObject*)contactManifold->getBody0();
+		btCollisionObject* obB = (btCollisionObject*)contactManifold->getBody1();
 	
 		
 		int numContacts = contactManifold->getNumContacts();
@@ -207,7 +207,7 @@ PhysicsCharacter *PhysicsScene::trackCharacterChild(Entity *newEntity, Number ma
 	
 	physicsWorld->getBroadphase()->getOverlappingPairCache()->cleanProxyFromPairs(newPhysicsEntity->ghostObject->getBroadphaseHandle(),physicsWorld->getDispatcher());
 	
-	newPhysicsEntity->character->reset ();	
+	newPhysicsEntity->character->reset (world);
 	newPhysicsEntity->character->setUseGhostSweepTest(false);
 	
 	physicsChildren.push_back(newPhysicsEntity);

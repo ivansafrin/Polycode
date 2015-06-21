@@ -12,6 +12,10 @@ SET(bullet_CMAKE_ARGS
     -DINSTALL_LIBS=ON
     -DUSE_MSVC_RUNTIME_LIBRARY_DLL=ON
     -DBUILD_DEMOS=OFF
+    -DBUILD_CPU_DEMOS=OFF
+    -DBUILD_OPENGL3_DEMOS=OFF
+    -DBUILD_BULLET2_DEMOS=OFF
+    -DBUILD_BULLET3=OFF
     -DBUILD_EXTRAS=OFF
     -DBUILD_UNIT_TESTS=OFF
 )
@@ -26,8 +30,8 @@ ExternalProject_Add(bullet
     
     DOWNLOAD_DIR ${POLYCODE_DEPS_DOWNLOAD_DIR}
 
-    URL http://bullet.googlecode.com/files/bullet-2.78.zip
-    URL_MD5 99d4070864c9f73521481ba9cda25038
+    URL https://github.com/bulletphysics/bullet3/archive/2.83.5.tar.gz
+    URL_MD5 87e42fad2216801d5cef0af7e547ce08
 
     INSTALL_DIR ${POLYCODE_DEPS_MODULES_PREFIX} 
     CMAKE_ARGS ${bullet_CMAKE_ARGS}
