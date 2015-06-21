@@ -211,6 +211,9 @@ PhysicsEntity::PhysicsEntity(Entity *entity, int type, Number mass, Number frict
 		rigidBody->setRestitution(restitution);
 		rigidBody->setUserPointer((void*)this);
 	}
+    
+    delete collisionObject;
+    collisionObject = rigidBody;
 }
 
 void PhysicsEntity::setFriction(Number friction) {
@@ -290,6 +293,5 @@ void PhysicsEntity::warpTo(Vector3 position, bool resetRotation) {
 }
 
 PhysicsEntity::~PhysicsEntity() {
-	delete rigidBody;
 	delete myMotionState;	
 }

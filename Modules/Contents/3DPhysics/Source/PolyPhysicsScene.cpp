@@ -77,6 +77,7 @@ void PhysicsScene::initPhysicsScene(Vector3 size) {
 	collisionConfiguration = new btDefaultCollisionConfiguration();	
 	btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);	
 	
+    
 	solver = new btSequentialImpulseConstraintSolver();
 	
 	btVector3 worldMin(-size.x * 0.5, -size.y * 0.5, -size.z * 0.5);
@@ -85,7 +86,6 @@ void PhysicsScene::initPhysicsScene(Vector3 size) {
 	
 	broadphase = new btDbvtBroadphase();	
 	physicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
-	
     
 //	physicsWorld->getSolverInfo().m_solverMode |= SOLVER_RANDMIZE_ORDER;
 	physicsWorld->setGravity(btVector3(0,-10,0));
@@ -451,3 +451,4 @@ PhysicsEntity *PhysicsScene::addPhysicsChild(Entity *newEntity, int type, Number
 	addEntity(newEntity);	
 	return trackPhysicsChild(newEntity, type, mass, friction, restitution, group, compoundChildren);	
 }
+

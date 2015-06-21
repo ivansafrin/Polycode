@@ -246,7 +246,7 @@ CollisionEntity *CollisionScene::trackCollision(Entity *newEntity, int type, int
 //	if(type == CollisionEntity::CHARACTER_CONTROLLER) {
 //		world->addCollisionObject(newCollisionEntity->collisionObject,btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);		
 //	} else {
-//		newCollisionEntity->collisionObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
+		newCollisionEntity->collisionObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
 		world->addCollisionObject(newCollisionEntity->collisionObject, group);
 //	}
 	
