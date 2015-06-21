@@ -1,6 +1,7 @@
 INCLUDE(PolycodeIncludes)
 
 SET(polycode3DPhysics_SRCS
+    Source/PolyPhysicsConstraint.cpp
     Source/PolyPhysicsSceneEntity.cpp
     Source/PolyPhysicsScene.cpp
     Source/PolyCollisionSceneEntity.cpp
@@ -8,6 +9,7 @@ SET(polycode3DPhysics_SRCS
 )
 
 SET(polycode3DPhysics_HDRS
+    Include/PolyPhysicsConstraint.h
     Include/PolyPhysicsSceneEntity.h
     Include/Polycode3DPhysics.h
     Include/PolyCollisionScene.h

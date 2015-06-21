@@ -313,40 +313,37 @@ void PhysicsScene::removeEntity(Entity *entity) {
 	}
 }
 
-void PhysicsScene::removeConstraint(PhysicsHingeConstraint *constraint) {
+
+void PhysicsScene::removeConstraint(PhysicsConstraint *constraint) {
 	physicsWorld->removeConstraint(constraint->btConstraint);
 }
 
-PhysicsHingeConstraint::~PhysicsHingeConstraint() {
-	delete btConstraint;
-}
-
 void PhysicsHingeConstraint::setLimits(Number minLimit, Number maxLimit) {
-	btConstraint->setLimit(minLimit, maxLimit);
+	btHingeConstraint->setLimit(minLimit, maxLimit);
 }
 
 Number PhysicsHingeConstraint::getAngle() {
-	return btConstraint->getHingeAngle();
+	return btHingeConstraint->getHingeAngle();
 }
 
 void PhysicsGenericConstraint::setLinearLowerLimit(Vector3 limit) {
 	btVector3 btLimit = btVector3(limit.x, limit.y, limit.z);
-	btConstraint->setLinearLowerLimit(btLimit);
+	btGenericConstraint->setLinearLowerLimit(btLimit);
 }
 
 void PhysicsGenericConstraint::setLinearUpperLimit(Vector3 limit) {
 	btVector3 btLimit = btVector3(limit.x, limit.y, limit.z);
-	btConstraint->setLinearUpperLimit(btLimit);
+	btGenericConstraint->setLinearUpperLimit(btLimit);
 }
 
 void PhysicsGenericConstraint::setAngularLowerLimit(Vector3 limit) {
 	btVector3 btLimit = btVector3(limit.x, limit.y, limit.z);
-	btConstraint->setAngularLowerLimit(btLimit);
+	btGenericConstraint->setAngularLowerLimit(btLimit);
 }
 
 void PhysicsGenericConstraint::setAngularUpperLimit(Vector3 limit) {
 	btVector3 btLimit = btVector3(limit.x, limit.y, limit.z);
-	btConstraint->setAngularUpperLimit(btLimit);
+	btGenericConstraint->setAngularUpperLimit(btLimit);
 }
 
 PhysicsGenericConstraint *PhysicsScene::createGenericConstraint(Entity *entity) {
@@ -361,10 +358,33 @@ PhysicsGenericConstraint *PhysicsScene::createGenericConstraint(Entity *entity) 
 	btTransform frame;
 	frame.setIdentity();
 	
-	constraint->btConstraint = new btGeneric6DofConstraint(*pEnt->rigidBody, frame, true);
+	constraint->btGenericConstraint = new btGeneric6DofConstraint(*pEnt->rigidBody, frame, true);
+    constraint->btConstraint = constraint->btGenericConstraint;
 	physicsWorld->addConstraint(constraint->btConstraint);
-	
-	return constraint;
+    return constraint;
+}
+
+PhysicsPointToPointConstraint *PhysicsScene::createPointToPointConstraint(Entity *entity1, Entity *entity2, const Vector3 &pivot1, const Vector3 &pivot2) {
+    
+    PhysicsPointToPointConstraint *constraint = new PhysicsPointToPointConstraint();
+    
+    PhysicsEntity *pEnt1 = getPhysicsEntityByEntity(entity1);
+    PhysicsEntity *pEnt2 = getPhysicsEntityByEntity(entity2);
+    
+    if(!pEnt1 || !pEnt2) {
+        return NULL;
+    }
+    
+    btVector3 btPivot1 = btVector3(pivot1.x, pivot1.y, pivot1.z);
+    btVector3 btPivot2 = btVector3(pivot2.x, pivot2.y, pivot2.z);
+    
+    constraint->btPointToPointConstraint = new btPoint2PointConstraint(*pEnt1->rigidBody,
+                            *pEnt2->rigidBody,
+                            btPivot1,
+                            btPivot2);
+    constraint->btConstraint = constraint->btPointToPointConstraint;
+	physicsWorld->addConstraint(constraint->btConstraint);
+    return constraint;
 }
 
 PhysicsHingeConstraint * PhysicsScene::createHingeConstraint(Entity *entity, Vector3 pivot, Vector3 axis, Number minLimit, Number maxLimit) {
@@ -379,10 +399,11 @@ PhysicsHingeConstraint * PhysicsScene::createHingeConstraint(Entity *entity, Vec
 	
 	btHingeConstraint *hingeConstraint = new btHingeConstraint( *pEnt->rigidBody, btPivot, btAxis );
 	hingeConstraint->setLimit(minLimit, maxLimit);
+	
+	constraint->btHingeConstraint = hingeConstraint;
+	
+    constraint->btConstraint = constraint->btHingeConstraint;
 	physicsWorld->addConstraint(hingeConstraint);
-	
-	constraint->btConstraint = hingeConstraint;
-	
 	return constraint;
 }
 
@@ -404,10 +425,9 @@ PhysicsHingeConstraint *PhysicsScene::createHingeJoint(Entity *entity1, Entity *
 
 	btHingeConstraint *hingeConstraint = new btHingeConstraint(*pEnt1->rigidBody, *pEnt2->rigidBody, btPivot1, btPivot2, btAxis1, btAxis2 );
 	hingeConstraint->setLimit(minLimit, maxLimit);
-	physicsWorld->addConstraint(hingeConstraint);
 	
 	constraint->btConstraint = hingeConstraint;
-	
+	physicsWorld->addConstraint(hingeConstraint);
 	return constraint;	
 	
 }

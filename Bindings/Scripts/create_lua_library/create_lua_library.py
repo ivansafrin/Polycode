@@ -154,7 +154,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	# Iterate, process each input file
 	for fileName in filteredFiles:
 		# "Package owned" classes that ship with Polycode
-		inheritInModule = ["PhysicsEntity", "CollisionScene", "CollisionEntity", "UIElement", "UIWindow", "UIMenuItem", "UIImage", "UIRect"]
+		inheritInModule = ["PhysicsGenericConstraint", "PhysicsHingeConstraint", "PhysicsPointToPointConstraint", "PhysicsConstraint", "PhysicsEntity", "CollisionScene", "CollisionEntity", "UIElement", "UIWindow", "UIMenuItem", "UIImage", "UIRect"]
 		
 		# A file or comma-separated list of files can be given to specify classes which are "package owned"
 		# and should not be inherited out of Polycode/. The files should contain one class name per line,

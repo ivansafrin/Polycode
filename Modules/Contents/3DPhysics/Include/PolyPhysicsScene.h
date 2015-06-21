@@ -23,6 +23,7 @@ THE SOFTWARE.
 #pragma once
 #include "PolyGlobals.h"
 #include "PolyCollisionScene.h"
+#include "PolyPhysicsConstraint.h"
 #include <vector>
 
 class btDiscreteDynamicsWorld;
@@ -31,6 +32,7 @@ class btSequentialImpulseConstraintSolver;
 class btGhostPairCallback;
 class btTypedConstraint;
 class btHingeConstraint;
+class btPoint2PointConstraint;
 class btGeneric6DofConstraint;
 
 namespace Polycode {
@@ -61,7 +63,7 @@ namespace Polycode {
 			Vector3 worldNormalOnB;				
 	};
 	
-	class _PolyExport PhysicsGenericConstraint {
+    class _PolyExport PhysicsGenericConstraint : public PhysicsConstraint {
 		public:
 			
 			void setLinearLowerLimit(Vector3 limit);
@@ -70,17 +72,21 @@ namespace Polycode {
 			void setAngularLowerLimit(Vector3 limit);
 			void setAngularUpperLimit(Vector3 limit);
 					
-			btGeneric6DofConstraint *btConstraint;
+			btGeneric6DofConstraint *btGenericConstraint;
 	};
 
-	class _PolyExport PhysicsHingeConstraint  {
+	class _PolyExport PhysicsHingeConstraint  : public PhysicsConstraint {
 		public:
-			~PhysicsHingeConstraint();
 			void setLimits(Number minLimit, Number maxLimit);
 			Number getAngle();
 			
-			btHingeConstraint *btConstraint;
+			btHingeConstraint *btHingeConstraint;
 	};
+    
+    class _PolyExport PhysicsPointToPointConstraint : public PhysicsConstraint {
+        public:
+            btPoint2PointConstraint *btPointToPointConstraint;
+    };
 
 	/**
 	* A scene subclass that simulates physics for its children.
@@ -116,7 +122,9 @@ namespace Polycode {
 		PhysicsCharacter *trackCharacterChild(Entity *newEntity, Number mass, Number friction, Number stepSize, int group  = 1);
         
 		void removeCharacterChild(PhysicsCharacter *character);
-		
+
+        PhysicsPointToPointConstraint *createPointToPointConstraint(Entity *entity1, Entity *entity2, const Vector3 &pivot1, const Vector3 &pivot2);
+        
 		PhysicsHingeConstraint *createHingeConstraint(Entity *entity, Vector3 pivot, Vector3 axis, Number minLimit, Number maxLimit);
 
 		PhysicsHingeConstraint *createHingeJoint(Entity *entity1, Entity *entity2, Vector3 pivot1, Vector3 axis1, Vector3 pivot2, Vector3 axis2, Number minLimit, Number maxLimit);
@@ -128,7 +136,7 @@ namespace Polycode {
 				
 		void warpEntity(Entity *entity, Vector3 position, bool resetRotation = false);
 		
-		void removeConstraint(PhysicsHingeConstraint *constraint);
+		void removeConstraint(PhysicsConstraint *constraint);
 		
 		void applyImpulse(Entity *entity, Vector3 force, Vector3 point);
 		
