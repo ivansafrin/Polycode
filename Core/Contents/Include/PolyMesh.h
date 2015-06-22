@@ -131,14 +131,14 @@ namespace Polycode {
 			* @param w Width of plane.
 			* @param h Depth of plane.			
 			*/ 
-			void createPlane(Number w, Number h);
+			void createPlane(Number w, Number h, Number tilingValue = 1.0);
 			
 			/**
 			* Creates a vertical plane mesh of specified size.
 			* @param w Width of plane.
 			* @param h Depth of plane.			
 			*/ 
-			void createVPlane(Number w, Number h);
+			void createVPlane(Number w, Number h, Number tilingValue = 1.0);
 
 			/**
 			* Creates a 2D circle.
@@ -146,7 +146,7 @@ namespace Polycode {
 			* @param h Height of plane.			
 			* @param numSegments Number of segments 			
 			*/ 
-			void createCircle(Number w, Number h, unsigned int numSegments);
+			void createCircle(Number w, Number h, unsigned int numSegments, Number tilingValue = 1.0);
 
             /**
              * Creates a 2D circle with normals pointing outwards from vertices.
@@ -154,7 +154,7 @@ namespace Polycode {
              * @param h Height of plane.
              * @param numSegments Number of segments
              */
-            void createLineCircle(Number w, Number h, unsigned int numSegments);
+			void createLineCircle(Number w, Number h, unsigned int numSegments, Number tilingValue = 1.0);
 
 			/**
 			* Creates a torus.
@@ -163,7 +163,7 @@ namespace Polycode {
 			* @param rSegments Number of radial segments.
 			* @param tSegments Number of tube segments.
 			*/ 	
-			void createTorus(Number radius, Number tubeRadius, int segmentsW, int segmentsH);
+			void createTorus(Number radius, Number tubeRadius, int segmentsW, int segmentsH, Number tilingValue = 1.0);
 			
 			/**
 			* Creates a cube mesh of specified size.
@@ -171,7 +171,7 @@ namespace Polycode {
 			* @param d Depth of cube.			
 			* @param h Height of cube.
 			*/ 			
-			void createBox(Number w, Number d, Number h);
+			void createBox(Number w, Number d, Number h, Number tilingValue = 1.0);
 			
 			/**
 			* Creates a sphere mesh of specified size.
@@ -179,7 +179,7 @@ namespace Polycode {
 			* @param numRings Number of rings.	
 			* @param numSegments Number of segments.
 			*/ 						
-			void createSphere(Number radius, int numRings, int numSegments);
+			void createSphere(Number radius, int numRings, int numSegments, Number tilingValue = 1.0);
 
 			/**
 			* Creates an icosphere of specified radius
@@ -202,7 +202,7 @@ namespace Polycode {
 			* @param numSegments Number of segments.
 			* @param capped Create the end caps.
 			*/ 								
-			void createCylinder(Number height, Number radius, int numSegments, bool capped=true);
+			void createCylinder(Number height, Number radius, int numSegments, bool capped = true, Number tilingValue = 1.0);
 
 			/**
 			* Creates a cone mesh.
@@ -210,7 +210,7 @@ namespace Polycode {
 			* @param radius Radius of the cone.
 			* @param numSegments Number of segments.
 			*/ 								
-			void createCone(Number height, Number radius, int numSegments);
+			void createCone(Number height, Number radius, int numSegments, Number tilingValue = 1.0);
 
 		
 			/**

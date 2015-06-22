@@ -43,10 +43,10 @@ namespace Polycode {
 			* @param v4 See the constant primitive types for values for these parameters									
 			* @param v5 See the constant primitive types for values for these parameters												
 			*/
-			ScenePrimitive(int type, Number v1=1.0f, Number v2=1.0f, Number v3=1.0f,Number v4=0.0f,Number v5=0.0f);
+			ScenePrimitive(int type, Number v1=1.0f, Number v2=1.0f, Number v3=1.0f,Number v4=1.0f,Number v5=1.0f);
 			virtual ~ScenePrimitive();
 
-			void setPrimitiveOptions(int type, Number v1=1.0f, Number v2=1.0f, Number v3=1.0f,Number v4=0.0f,Number v5=0.0f);
+			void setPrimitiveOptions(int type, Number v1=1.0f, Number v2=1.0f, Number v3=1.0f,Number v4=1.0f,Number v5=1.0f);
 
 			void recreatePrimitive();
 		
@@ -54,14 +54,16 @@ namespace Polycode {
 			* A cube.
 			* v1 - X size
 			* v2 - Y size
-			* v3 - Z size						
+			* v3 - Z size
+			* v4 - # of tiles
 			*/
 			static const int TYPE_BOX = 0;		
 
 			/**
 			* A horizontal plane.
 			* v1 - X size
-			* v2 - Z size			
+			* v2 - Z size
+			* v3 - # of tiles
 			*/			
 			static const int TYPE_PLANE = 1;			
 
@@ -69,6 +71,7 @@ namespace Polycode {
              * A vertical plane.
              * v1 - X size
              * v2 - Y size
+			 * v3 - # of tiles
              */
             static const int TYPE_VPLANE = 2;
         
@@ -77,6 +80,7 @@ namespace Polycode {
 			* v1 - Cylinder length			
 			* v2 - Cylinder radius
 			* v3 - Number of segments.
+			* v4 - # of tiles
 			*/			
 			static const int TYPE_CYLINDER = 3;
 
@@ -85,6 +89,7 @@ namespace Polycode {
              * v1 - Cylinder length
              * v2 - Cylinder radius
              * v3 - Number of segments.
+			 * v4 - # of tiles
              */
             static const int TYPE_UNCAPPED_CYLINDER = 4;
 
@@ -93,6 +98,7 @@ namespace Polycode {
              * v1 - Sphere radius
              * v2 - Lat segments
              * v3 - Long segments
+			 * v4 - # of tiles
              */
             static const int TYPE_SPHERE = 5;
 
@@ -101,7 +107,8 @@ namespace Polycode {
 			* v1 - Torus radius.
 			* v2 - Pipe radius.
 			* v3 - Number of ring segments.			
-			* v4- Number of pipe segments.
+			* v4 - Number of pipe segments.
+			* v5 - # of tiles
 			*/			
 			static const int TYPE_TORUS = 6;	
 			     
@@ -110,6 +117,7 @@ namespace Polycode {
              * v1 - Cone length.
              * v2 - Cone raidus.
              * v3 - Number of segments.
+			 * v4 - # of tiles
              */
             static const int TYPE_CONE = 7;
 
@@ -118,6 +126,7 @@ namespace Polycode {
 			* v1 - X size
 			* v2 - Y size
 			* v3 - Number of segments
+			* v4 - # of tiles
 			*/			
 			static const int TYPE_CIRCLE = 8;			
         
@@ -140,6 +149,7 @@ namespace Polycode {
              * v1 - X size
              * v2 - Y size
              * v3 - Number of segments
+			 * v4 - # of tiles
              */
             static const int TYPE_LINE_CIRCLE = 11;
 
@@ -162,7 +172,7 @@ namespace Polycode {
 			Number v2;
 			Number v3;
 			Number v4;
-			Number v5;			
+			Number v5;
 												
 	};
 	

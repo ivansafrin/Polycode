@@ -519,7 +519,7 @@ void Mesh::loadMesh(const String& fileName) {
     OSBasics::close(inFile);	
 }
 
-void Mesh::createCircle(Number w, Number h, unsigned int numSegments) {
+void Mesh::createCircle(Number w, Number h, unsigned int numSegments, Number tilingValue) {
     setMeshType(Mesh::TRI_MESH);
     indexedMesh = false;
 
@@ -534,9 +534,9 @@ void Mesh::createCircle(Number w, Number h, unsigned int numSegments) {
         Number y = cos(pos) * h * 0.5;
         
         if(i > 0) {
-            addVertexWithUVAndNormal(0,0,0,0.5,0.5, 0.0, 0.0, 1.0);
-            addVertexWithUVAndNormal(x,y,0, 0.5+(y/h*0.5), 0.5+(x/w*0.5), 0.0, 0.0, 1.0);
-            addVertexWithUVAndNormal(lastx,lasty,0, 0.5+(lasty/h*0.5), 0.5+(lastx/w*0.5), 0.0, 0.0, 1.0);
+			addVertexWithUVAndNormal(0, 0, 0, 0.5*tilingValue, 0.5*tilingValue, 0.0, 0.0, 1.0);
+			addVertexWithUVAndNormal(x, y, 0, (0.5 + (y / h*0.5))*tilingValue, (0.5 + (x / w*0.5))*tilingValue, 0.0, 0.0, 1.0);
+			addVertexWithUVAndNormal(lastx, lasty, 0, (0.5 + (lasty / h*0.5))*tilingValue, (0.5 + (lastx / w*0.5))*tilingValue, 0.0, 0.0, 1.0);
         }
         lastx = x;
         lastv = v;
@@ -551,7 +551,7 @@ Mesh *Mesh::Copy() const {
     return newMesh;
 }
 
-void Mesh::createLineCircle(Number w, Number h, unsigned int numSegments) {
+void Mesh::createLineCircle(Number w, Number h, unsigned int numSegments, Number tilingValue) {
     setMeshType(Mesh::TRIFAN_MESH);
     indexedMesh = false;
     
@@ -562,7 +562,7 @@ void Mesh::createLineCircle(Number w, Number h, unsigned int numSegments) {
         step = 1;
     }
     
-    addVertexWithUV(cosf(0)*(w/2),sinf(0)*(h/2), 0, (cosf(0)*0.5) + 0.5,(sinf(0) * 0.5)+ 0.5);
+	addVertexWithUV(cosf(0)*(w / 2), sinf(0)*(h / 2), 0, ((cosf(0)*0.5) + 0.5)*tilingValue, ((sinf(0) * 0.5) + 0.5)*tilingValue);
     addNormal(0.0, 0.0, 0.0);
     
     for (int i=0; i < 361; i+= step) {
@@ -571,7 +571,7 @@ void Mesh::createLineCircle(Number w, Number h, unsigned int numSegments) {
         Number x = cos(degInRad)*(w/2);
         Number y = sin(degInRad)*(h/2);
         
-        addVertexWithUV(x, y, 0, (cos(degInRad) * 0.5)+ 0.5 , 1.0- ((sin(degInRad) * 0.5)+ 0.5));
+		addVertexWithUV(x, y, 0, ((cos(degInRad) * 0.5) + 0.5)*tilingValue, (1.0 - ((sin(degInRad) * 0.5) + 0.5))*tilingValue);
         
         Vector3 normal(x,y, 0.0);
         normal.Normalize();
@@ -579,33 +579,33 @@ void Mesh::createLineCircle(Number w, Number h, unsigned int numSegments) {
     }
 }
 
-void Mesh::createVPlane(Number w, Number h) {
+void Mesh::createVPlane(Number w, Number h, Number tilingValue) {
     setMeshType(Mesh::TRI_MESH);
     indexedMesh = false;
     
     addVertexWithUVAndNormal(0 - (w/2.0f),0 - (h/2.0f), 0,0,0, 0.0, 0.0, 1.0);
-    addVertexWithUVAndNormal(w - (w/2.0f), 0- (h/2.0f), 0, 1, 0, 0.0, 0.0, 1.0);
-    addVertexWithUVAndNormal(w- (w/2.0f), h- (h/2.0f), 0, 1, 1, 0.0, 0.0, 1.0);
+    addVertexWithUVAndNormal(w - (w/2.0f), 0- (h/2.0f), 0, tilingValue, 0, 0.0, 0.0, 1.0);
+    addVertexWithUVAndNormal(w- (w/2.0f), h- (h/2.0f), 0, tilingValue, tilingValue, 0.0, 0.0, 1.0);
     
     addVertexWithUVAndNormal(0 - (w/2.0f),0- (h/2.0f), 0,0,0, 0.0, 0.0, 1.0);
-    addVertexWithUVAndNormal(w - (w/2.0f),h - (h/2.0f), 0, 1, 1, 0.0, 0.0, 1.0);
-    addVertexWithUVAndNormal(0 - (w/2.0f),h - (h/2.0f), 0,0,1, 0.0, 0.0, 1.0);
+    addVertexWithUVAndNormal(w - (w/2.0f),h - (h/2.0f), 0, tilingValue, tilingValue, 0.0, 0.0, 1.0);
+	addVertexWithUVAndNormal(0 - (w / 2.0f), h - (h / 2.0f), 0, 0, tilingValue, 0.0, 0.0, 1.0);
     
     calculateNormals();
     calculateTangents();
 }	
 
-void Mesh::createPlane(Number w, Number h) {
+void Mesh::createPlane(Number w, Number h, Number tilingValue) {
     setMeshType(Mesh::TRI_MESH);
     indexedMesh = false;
     
-    addVertexWithUV(0- (w/2.0f),0,h- (h/2.0f),0,0);
-    addVertexWithUV(w- (w/2.0f),0,h- (h/2.0f), 1, 0);
-    addVertexWithUV(w- (w/2.0f),0,0- (h/2.0f), 1, 1);
+	addVertexWithUV(0 - (w / 2.0f), 0, h - (h / 2.0f), 0, 0);
+	addVertexWithUV(w - (w / 2.0f), 0, h - (h / 2.0f), 1 * tilingValue, 0);
+	addVertexWithUV(w - (w / 2.0f), 0, 0 - (h / 2.0f), 1 * tilingValue, 1 * tilingValue);
     
-    addVertexWithUV(0- (w/2.0f),0,h- (h/2.0f),0,0);
-    addVertexWithUV(w- (w/2.0f),0,0- (h/2.0f), 1, 1);
-    addVertexWithUV(0- (w/2.0f),0,0- (h/2.0f),0,1);
+	addVertexWithUV(0 - (w / 2.0f), 0, h - (h / 2.0f), 0, 0);
+	addVertexWithUV(w - (w / 2.0f), 0, 0 - (h / 2.0f), 1 * tilingValue, 1 * tilingValue);
+	addVertexWithUV(0 - (w / 2.0f), 0, 0 - (h / 2.0f), 0, 1 * tilingValue);
 
     calculateNormals();
     calculateTangents();
@@ -674,7 +674,7 @@ Vector3 Mesh::calculateBBox() {
     return retVec*2;
 }
 
-void Mesh::createSphere(Number radius, int segmentsH, int segmentsW) {
+void Mesh::createSphere(Number radius, int segmentsH, int segmentsW, Number tilingValue) {
 
     segmentsH++;
     segmentsW++;
@@ -697,7 +697,7 @@ void Mesh::createSphere(Number radius, int segmentsH, int segmentsW) {
             addVertex(v.x, v.y, v.z);
             v.Normalize();
             addNormal(v.x, v.y, v.z);
-            addTexCoord(-theta/(360.f) , (phi+90.f)/180.f);
+			addTexCoord((-theta / (360.f))*tilingValue, ((phi + 90.f) / 180.f)*tilingValue);
             theta += tdelta;
         }
         phi += pdelta;
@@ -896,7 +896,7 @@ unsigned int Mesh::getIndexCount() {
     return indexArray.data.size();
 }
 
-void Mesh::createTorus(Number radius, Number tubeRadius, int segmentsW, int segmentsH) {
+void Mesh::createTorus(Number radius, Number tubeRadius, int segmentsW, int segmentsH, Number tilingValue) {
 
     segmentsH++;
     segmentsW++;
@@ -919,7 +919,7 @@ void Mesh::createTorus(Number radius, Number tubeRadius, int segmentsW, int segm
             v.z = (radius + tubeRadius*cos(phi*TORADIANS))*sin(theta*TORADIANS);
             
             addVertex(v.x, v.y, v.z);
-            addTexCoord(-theta/(360.f) , (phi/(360.f)) + 0.5);
+			addTexCoord((-theta / (360.f))*tilingValue, ((phi / (360.f)) + 0.5)*tilingValue);
             theta += tdelta;
         }
         phi += pdelta;
@@ -937,7 +937,7 @@ void Mesh::createTorus(Number radius, Number tubeRadius, int segmentsW, int segm
     calculateTangents();
 }
 
-void Mesh::createCylinder(Number height, Number radius, int numSegments, bool capped) {
+void Mesh::createCylinder(Number height, Number radius, int numSegments, bool capped, Number tilingValue) {
 
     setMeshType(Mesh::TRI_MESH);
     indexedMesh = true;
@@ -949,8 +949,8 @@ void Mesh::createCylinder(Number height, Number radius, int numSegments, bool ca
     numSegments++;
     
     if(capped) {
-        addVertexWithUVAndNormal(0,0 - (height/2.0f),0,0.5,0.5, 0.0, -1.0, 0.0);
-        addVertexWithUVAndNormal(0,height - (height/2.0f),0,0.5,0.5, 0.0, 1.0, 0.0);
+		addVertexWithUVAndNormal(0, 0 - (height / 2.0f), 0, 0.5*tilingValue, 0.5*tilingValue, 0.0, -1.0, 0.0);
+		addVertexWithUVAndNormal(0, height - (height / 2.0f), 0, 0.5*tilingValue, 0.5*tilingValue, 0.0, 1.0, 0.0);
     }
     
     for (int i=0 ; i < numSegments; i++) {
@@ -959,12 +959,12 @@ void Mesh::createCylinder(Number height, Number radius, int numSegments, bool ca
         Number x = sin(pos);
         Number z = cos(pos);
         
-        addVertexWithUVAndNormal(x*radius,0 - (height/2.0f),z*radius, v, 0, x, 0, z);
-        addVertexWithUVAndNormal(x*radius,height - (height/2.0f),z*radius, v, 1, x,0,z);
+		addVertexWithUVAndNormal(x*radius, 0 - (height / 2.0f), z*radius, v*tilingValue, 0, x, 0, z);
+		addVertexWithUVAndNormal(x*radius, height - (height / 2.0f), z*radius, v*tilingValue, tilingValue, x, 0, z);
         
         if(capped) {
-            addVertexWithUVAndNormal(x*radius,0 - (height/2.0f),z*radius, 0.5+(z*0.5), 0.5+(x*0.5), 0.0, -1.0, 0.0);
-            addVertexWithUVAndNormal(x*radius,height - (height/2.0f),z*radius, 0.5+(z*0.5), 0.5+(x*0.5), 0.0, 1.0, 0.0);
+			addVertexWithUVAndNormal(x*radius, 0 - (height / 2.0f), z*radius, (0.5 + (z*0.5))*tilingValue, (0.5 + (x*0.5))*tilingValue, 0.0, -1.0, 0.0);
+			addVertexWithUVAndNormal(x*radius, height - (height / 2.0f), z*radius, (0.5 + (z*0.5))*tilingValue, (0.5 + (x*0.5))*tilingValue, 0.0, 1.0, 0.0);
         }
 
         lastx = x;
@@ -996,7 +996,7 @@ void Mesh::createCylinder(Number height, Number radius, int numSegments, bool ca
     calculateTangents();
 }
 
-void Mesh::createCone(Number height, Number radius, int numSegments) {
+void Mesh::createCone(Number height, Number radius, int numSegments, Number tilingValue) {
     
     setMeshType(Mesh::TRI_MESH);
     indexedMesh = true;
@@ -1010,7 +1010,7 @@ void Mesh::createCone(Number height, Number radius, int numSegments) {
         numSegments++;
     }
     
-    addVertexWithUVAndNormal(0,0- (height/2.0f),0,0.5,0.5, 0.0, -1.0, 0.0);
+	addVertexWithUVAndNormal(0, 0 - (height / 2.0f), 0, 0.5*tilingValue, 0.5*tilingValue, 0.0, -1.0, 0.0);
     
     for (int i=0 ; i < numSegments; i++) {
         Number pos = ((PI*2.0)/((Number)numSegments-1)) * i;
@@ -1018,10 +1018,10 @@ void Mesh::createCone(Number height, Number radius, int numSegments) {
         Number z = cos(pos);
 
         if(!(i % 2)) {
-            addVertexWithUVAndNormal(x*radius,0- (height/2.0f),z*radius, 0.5+(z*0.5), 0.5+(x*0.5), x, 0.0, z);
-            addVertexWithUVAndNormal(x*radius,0- (height/2.0f),z*radius, 0.5+(z*0.5), 0.5+(x*0.5), 0.0, -1.0, 0.0);
+			addVertexWithUVAndNormal(x*radius, 0 - (height / 2.0f), z*radius, (0.5 + (z*0.5))*tilingValue, (0.5 + (x*0.5))*tilingValue, x, 0.0, z);
+			addVertexWithUVAndNormal(x*radius, 0 - (height / 2.0f), z*radius, (0.5 + (z*0.5))*tilingValue, (0.5 + (x*0.5))*tilingValue, 0.0, -1.0, 0.0);
         } else {
-            addVertexWithUVAndNormal(0,height- (height/2.0f),0, 0.5, 0.5, 0.0, 1.0, 0.0);
+			addVertexWithUVAndNormal(0, height - (height / 2.0f), 0, 0.5*tilingValue, 0.5*tilingValue, 0.0, 1.0, 0.0);
         }
         
         lastx = x;
@@ -1134,56 +1134,56 @@ int Mesh::removeUnusedVertices() {
 	return removals;
 }
 
-void Mesh::createBox(Number w, Number d, Number h) {
+void Mesh::createBox(Number w, Number d, Number h, Number tilingValue) {
     setMeshType(Mesh::TRI_MESH);
     indexedMesh = false;
     
-    addVertexWithUV(w,0,h, 1, 1);
-    addVertexWithUV(0,0,h, 1, 0);
+    addVertexWithUV(w,0,h, tilingValue, tilingValue);
+    addVertexWithUV(0,0,h, tilingValue, 0);
     addVertexWithUV(0,0,0,0,0);
     
-    addVertexWithUV(w,0,h, 1, 1);
+    addVertexWithUV(w,0,h, tilingValue, tilingValue);
     addVertexWithUV(0,0,0,0,0);
-    addVertexWithUV(w,0,0,0,1);
+    addVertexWithUV(w,0,0,0,tilingValue);
     
-    addVertexWithUV(w,d,h, 1, 1);
-    addVertexWithUV(w,d,0, 1, 0);
+    addVertexWithUV(w,d,h, tilingValue, tilingValue);
+    addVertexWithUV(w,d,0, tilingValue, 0);
     addVertexWithUV(0,d,0,0,0);
     
-    addVertexWithUV(w,d,h, 1, 1);
+    addVertexWithUV(w,d,h, tilingValue, tilingValue);
     addVertexWithUV(0,d,0,0,0);
-    addVertexWithUV(0,d,h,0,1);
+    addVertexWithUV(0,d,h,0,tilingValue);
     
-    addVertexWithUV(0,d,0,0,1);
-    addVertexWithUV(w,d,0, 1, 1);
-    addVertexWithUV(w,0,0, 1, 0);
+    addVertexWithUV(0,d,0,0,tilingValue);
+    addVertexWithUV(w,d,0, tilingValue, tilingValue);
+    addVertexWithUV(w,0,0, tilingValue, 0);
     
-    addVertexWithUV(0,d,0,0,1);
-    addVertexWithUV(w,0,0, 1, 0);
+    addVertexWithUV(0,d,0,0,tilingValue);
+    addVertexWithUV(w,0,0, tilingValue, 0);
     addVertexWithUV(0,0,0,0,0);
     
     addVertexWithUV(0,0,h,0,0);
-    addVertexWithUV(w,0,h, 1, 0);
-    addVertexWithUV(w,d,h, 1, 1);
+    addVertexWithUV(w,0,h, tilingValue, 0);
+    addVertexWithUV(w,d,h, tilingValue, tilingValue);
     
     addVertexWithUV(0,0,h,0,0);
-    addVertexWithUV(w,d,h, 1, 1);
-    addVertexWithUV(0,d,h,0,1);
+    addVertexWithUV(w,d,h, tilingValue, tilingValue);
+    addVertexWithUV(0,d,h,0,tilingValue);
     
-    addVertexWithUV(0,0,h,0,1);
-    addVertexWithUV(0,d,h, 1, 1);
-    addVertexWithUV(0,d,0, 1, 0);
+    addVertexWithUV(0,0,h,0,tilingValue);
+    addVertexWithUV(0,d,h, tilingValue, tilingValue);
+    addVertexWithUV(0,d,0, tilingValue, 0);
     
-    addVertexWithUV(0,0,h,0,1);
-    addVertexWithUV(0,d,0, 1, 0);
+    addVertexWithUV(0,0,h,0,tilingValue);
+    addVertexWithUV(0,d,0, tilingValue, 0);
     addVertexWithUV(0,0,0,0,0);
     
-    addVertexWithUV(w,0,h,0,1);
-    addVertexWithUV(w,0,0, 1, 1);
-    addVertexWithUV(w,d,0, 1, 0);
+    addVertexWithUV(w,0,h,0,tilingValue);
+    addVertexWithUV(w,0,0, tilingValue, tilingValue);
+    addVertexWithUV(w,d,0, tilingValue, 0);
     
-    addVertexWithUV(w,0,h,0,1);
-    addVertexWithUV(w,d,0, 1, 0);
+    addVertexWithUV(w,0,h,0,tilingValue);
+    addVertexWithUV(w,d,0, tilingValue, 0);
     addVertexWithUV(w,d,h,0,0);
     
     for(int i=0; i < vertexPositionArray.data.size()-2; i += 3) {
