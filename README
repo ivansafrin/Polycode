@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ivansafrin/Polycode.svg?branch=master)](https://travis-ci.org/ivansafrin/Polycode)
+
 Polycode is a cross-platform framework for creative code. You can use it as a C++ API or as a standalone scripting language to get easy and simple access to accelerated 2D and 3D graphics, hardware shaders, sound and network programming, physics engines and more.
 
 The core Polycode API is written in C++ and can be used to create portable native applications.
