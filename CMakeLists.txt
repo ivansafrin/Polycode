@@ -52,9 +52,8 @@ SET(CMAKE_PREFIX_PATH
     ${POLYCODE_RELEASE_DIR}/Framework/Tools/Dependencies)
 
 # Process subdirectories
-ADD_SUBDIRECTORY(Core/Contents)
-ADD_SUBDIRECTORY("Assets/Default asset pack")
-ADD_SUBDIRECTORY("Assets/Templates")
+ADD_SUBDIRECTORY("Core/Contents")
+ADD_SUBDIRECTORY("Assets")
 ADD_SUBDIRECTORY("Documentation")
 
 IF(POLYCODE_BUILD_BINDINGS)
