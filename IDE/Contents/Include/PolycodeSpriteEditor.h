@@ -33,14 +33,25 @@ class PolycodeSpriteEditorActionData : public PolycodeEditorActionData {
 public:
     PolycodeSpriteEditorActionData() {
         reverse = true;
+        sprite = NULL;
+        state = NULL;
     }
     
     ~PolycodeSpriteEditorActionData() {
+        
     }
 
     Sprite *sprite;
     SpriteState *state;
     String name;
+    
+    Number stateFPS;
+    Number stateScale;
+    Vector2 stateBBox;
+    Vector2 stateOffset;
+    
+    std::vector<unsigned int> frameIDs;
+    std::vector<SpriteFrame> spriteFrames;
     bool reverse;
 };
 
@@ -87,6 +98,11 @@ class SpriteSheetEditor : public UIElement {
     
         void Resize(Number width, Number height);
     
+        PolycodeEditor *editor;
+    
+        SpriteSet *sprite;
+        UIRect *previewImage;
+    
     protected:
     
         UIRect *headerBg;
@@ -108,8 +124,6 @@ class SpriteSheetEditor : public UIElement {
         Vector2 panMouseBase;
         bool panning;
     
-        SpriteSet *sprite;
-        UIRect *previewImage;
     
         std::vector<Vector2> defaultAnchors;
     
@@ -196,6 +210,8 @@ class SpriteStateEditBar : public UIElement {
         void setSceneSprite(SceneSprite *sprite);
         void setSpriteState(SpriteState *state);
     
+        PolycodeEditor *editor;
+    
     protected:
     
         Vector2 clickBaseCoord;
@@ -255,11 +271,15 @@ class SpriteStateEditorDetails : public UIElement {
         SpriteState *getSpriteState();
     
         void setSceneSprite(SceneSprite *spritePreview);
+
+        PolycodeSpriteEditorActionData *makeStateData();
     
         void refreshState();
     
         UIButton *getAppendFramesButton();
         SpriteStateEditBar *getEditBar();
+    
+        PolycodeEditor *editor;
     
     protected:
     
