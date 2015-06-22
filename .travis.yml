@@ -1,5 +1,7 @@
 language: cpp
 
+sudo: required
+
 install: ./setup-travis.sh
 
 script: ./BuildLinux.sh
