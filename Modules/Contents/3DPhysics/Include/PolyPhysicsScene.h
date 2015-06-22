@@ -80,7 +80,7 @@ namespace Polycode {
 			void setLimits(Number minLimit, Number maxLimit);
 			Number getAngle();
 			
-			btHingeConstraint *btHingeConstraint;
+			btHingeConstraint *_btHingeConstraint;
 	};
     
     class _PolyExport PhysicsPointToPointConstraint : public PhysicsConstraint {

@@ -319,11 +319,11 @@ void PhysicsScene::removeConstraint(PhysicsConstraint *constraint) {
 }
 
 void PhysicsHingeConstraint::setLimits(Number minLimit, Number maxLimit) {
-	btHingeConstraint->setLimit(minLimit, maxLimit);
+	_btHingeConstraint->setLimit(minLimit, maxLimit);
 }
 
 Number PhysicsHingeConstraint::getAngle() {
-	return btHingeConstraint->getHingeAngle();
+	return _btHingeConstraint->getHingeAngle();
 }
 
 void PhysicsGenericConstraint::setLinearLowerLimit(Vector3 limit) {
@@ -400,9 +400,9 @@ PhysicsHingeConstraint * PhysicsScene::createHingeConstraint(Entity *entity, Vec
 	btHingeConstraint *hingeConstraint = new btHingeConstraint( *pEnt->rigidBody, btPivot, btAxis );
 	hingeConstraint->setLimit(minLimit, maxLimit);
 	
-	constraint->btHingeConstraint = hingeConstraint;
+	constraint->_btHingeConstraint = hingeConstraint;
 	
-    constraint->btConstraint = constraint->btHingeConstraint;
+    constraint->btConstraint = constraint->_btHingeConstraint;
 	physicsWorld->addConstraint(hingeConstraint);
 	return constraint;
 }
