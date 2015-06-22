@@ -28,7 +28,8 @@ TextInputPopup::TextInputPopup() : UIWindow(L"", 300, 80) {
 	textInput = new UITextInput(false, 290, 12);	
 	addFocusChild(textInput);
 	textInput->setPosition(padding, 35);
-		
+	textInput->addEventListener(this, Event::COMPLETE_EVENT);
+    
 	cancelButton = new UIButton(L"Cancel", 100);
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addFocusChild(cancelButton);
@@ -71,7 +72,11 @@ void TextInputPopup::handleEvent(Event *event) {
 				dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);				
 			}									
 		}
-	}
+    } else {
+        if(event->getDispatcher() == textInput && event->getEventCode() == Event::COMPLETE_EVENT) {
+            dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
+        }
+    }
 	UIWindow::handleEvent(event);	
 }
 

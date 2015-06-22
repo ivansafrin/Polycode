@@ -39,6 +39,8 @@ public:
     }
 
     Sprite *sprite;
+    SpriteState *state;
+    String name;
     bool reverse;
 };
 
@@ -235,6 +237,7 @@ class SpriteStateBrowser : public UIElement {
         UIImageButton *newStateButton;
         UIImageButton *removeStateButton;
         UIImageButton *moreButton;
+        PolycodeEditor *editor;
     
 };
 
@@ -296,9 +299,10 @@ class SpriteStateEditor : public UIElement {
         void Resize(Number width, Number height);
     
         SpriteStateEditorDetails *getDetailsEditor();
-    
+        SpriteStateBrowser *getStateBrowser();
         SpriteState *getSelectedState();
-
+        PolycodeEditor *editor;
+    
     protected:
         UITreeContainer *stateTreeView;
         SpriteSet *spriteSet;

@@ -673,7 +673,19 @@ void SpriteBrowser::handleEvent(Event *event) {
                 editor->didAction("new_sprite", beforeData, data);
                 
             } else if(globalFrame->textInputPopup->action == "renameSprite") {
+                
+                PolycodeSpriteEditorActionData *beforeData = new PolycodeSpriteEditorActionData();
+                beforeData->sprite = selectedEntry;
+                beforeData->name = selectedEntry->getName();
+                
                 selectedEntry->setName(globalFrame->textInputPopup->getValue());
+                
+                PolycodeSpriteEditorActionData *data = new PolycodeSpriteEditorActionData();
+                data->sprite = selectedEntry;
+                data->reverse = false;
+                data->name = selectedEntry->getName();
+                editor->didAction("rename_sprite", beforeData, data);
+                
                 refreshSprites();
             }
             globalFrame->textInputPopup->removeAllHandlersForListener(this);
@@ -683,6 +695,15 @@ void SpriteBrowser::handleEvent(Event *event) {
             if(globalFrame->yesNoPopup->action == "removeSprite") {
                 if(selectedEntry) {
                     spriteSet->removeSprite(selectedEntry);
+                    
+                    PolycodeSpriteEditorActionData *beforeData = new PolycodeSpriteEditorActionData();
+                    beforeData->sprite = selectedEntry;
+                    
+                    PolycodeSpriteEditorActionData *data = new PolycodeSpriteEditorActionData();
+                    data->sprite = selectedEntry;
+                    data->reverse = false;
+                    editor->didAction("remove_sprite", beforeData, data);
+
                     selectedEntry = NULL;
                     refreshSprites();
                     dispatchEvent(new Event(), Event::CHANGE_EVENT);
@@ -1559,6 +1580,10 @@ SpriteStateEditorDetails *SpriteStateEditor::getDetailsEditor() {
     return stateDetails;
 }
 
+SpriteStateBrowser *SpriteStateEditor::getStateBrowser() {
+    return stateBrowser;
+}
+
 void SpriteStateEditor::setSpriteEntry(Sprite *entry) {
     
     if(!entry) {
@@ -1595,10 +1620,37 @@ void SpriteStateEditor::handleEvent(Event *event) {
             if(globalFrame->textInputPopup->action == "newState") {
                 SpriteState *newState = new SpriteState(spriteSet, globalFrame->textInputPopup->getValue());
                 spriteSetEntry->addSpriteState(newState);
+                
+                PolycodeSpriteEditorActionData *beforeData = new PolycodeSpriteEditorActionData();
+                beforeData->sprite = spriteSetEntry;
+                beforeData->state = newState;
+                
+                PolycodeSpriteEditorActionData *data = new PolycodeSpriteEditorActionData();
+                data->sprite = spriteSetEntry;
+                data->state = newState;
+                data->reverse = false;
+                editor->didAction("new_state", beforeData, data);
+                
                 refreshStates();
             } else if(globalFrame->textInputPopup->action == "renameState") {
+                
+                
+                PolycodeSpriteEditorActionData *beforeData = new PolycodeSpriteEditorActionData();
+                beforeData->state = selectedState;
+                beforeData->sprite = spriteSetEntry;
+                beforeData->name = selectedState->getName();
+                
                 selectedState->setName(globalFrame->textInputPopup->getValue());
                 refreshStates();
+                
+                PolycodeSpriteEditorActionData *data = new PolycodeSpriteEditorActionData();
+                data->sprite = spriteSetEntry;
+                data->state = selectedState;
+                data->name = selectedState->getName();
+                data->reverse = false;
+                editor->didAction("rename_state", beforeData, data);
+                
+                
             }
         }
         globalFrame->textInputPopup->removeAllHandlersForListener(this);
@@ -1607,10 +1659,21 @@ void SpriteStateEditor::handleEvent(Event *event) {
             if(globalFrame->yesNoPopup->action == "removeState") {
                 if(selectedState) {
                     spriteSetEntry->removeSpriteState(selectedState);
-                    delete selectedState;
+
+                    PolycodeSpriteEditorActionData *beforeData = new PolycodeSpriteEditorActionData();
+                    beforeData->state = selectedState;
+                    beforeData->sprite = spriteSetEntry;
+                    
+                    PolycodeSpriteEditorActionData *data = new PolycodeSpriteEditorActionData();
+                    data->sprite = spriteSetEntry;
+                    data->state = selectedState;
+                    data->reverse = false;
+                    editor->didAction("remove_state", beforeData, data);
+                    
                     selectedState = NULL;
                     stateDetails->setSpriteState(NULL);
                     refreshStates();
+                    
                     dispatchEvent(new Event(), Event::CHANGE_EVENT);
                 }
             }
@@ -1884,6 +1947,7 @@ bool PolycodeSpriteEditor::openFile(OSFileEntry filePath) {
     
     stateEditor = new SpriteStateEditor(sprite);
     bottomSizer->addRightChild(stateEditor);
+    stateEditor->editor = this;
     
     addFramesButton = stateEditor->getDetailsEditor()->getAppendFramesButton();
     addFramesButton->addEventListener(this, UIEvent::CLICK_EVENT);
@@ -1921,7 +1985,47 @@ void PolycodeSpriteEditor::doAction(String actionName, PolycodeEditorActionData 
         spriteBrowser->refreshSprites();
         stateEditor->refreshStates();
         
+    } else if(actionName == "remove_sprite") {
+        if(spriteData->reverse) {
+            sprite->addSpriteEntry(spriteData->sprite);
+            stateEditor->setSpriteEntry(spriteData->sprite);
+        } else {
+            sprite->removeSprite(spriteData->sprite);
+            stateEditor->setSpriteEntry(NULL);
+        }
+        spriteBrowser->refreshSprites();
+        stateEditor->refreshStates();
+    } else if(actionName == "rename_sprite") {
+        spriteData->sprite->setName(spriteData->name);
+        spriteBrowser->refreshSprites();
+        stateEditor->refreshStates();
+    } else if(actionName == "new_state") {
+
+        if(spriteData->reverse) {
+            spriteData->sprite->removeSpriteState(spriteData->state);
+            stateEditor->getDetailsEditor()->setSpriteState(NULL);
+        } else {
+            spriteData->sprite->addSpriteState(spriteData->state);
+            stateEditor->getDetailsEditor()->setSpriteState(spriteData->state);
+        }
+        stateEditor->refreshStates();
+ 
+    } else if(actionName == "remove_state") {
+        
+        if(spriteData->reverse) {
+            spriteData->sprite->addSpriteState(spriteData->state);
+            stateEditor->getDetailsEditor()->setSpriteState(spriteData->state);
+        } else {
+            spriteData->sprite->removeSpriteState(spriteData->state);
+            stateEditor->getDetailsEditor()->setSpriteState(NULL);
+        }
+        stateEditor->refreshStates();
+    } else if(actionName == "rename_state") {
+        
+        spriteData->state->setName(spriteData->name);
+        stateEditor->refreshStates();
     }
+
 }
 
 void PolycodeSpriteEditor::saveFile() {
@@ -1981,6 +2085,7 @@ void PolycodeSpriteEditor::saveFile() {
         
     }
     fileObject.saveToXML(filePath);
+    setHasChanges(false);
 }
 
 void PolycodeSpriteEditor::Resize(int x, int y) {
