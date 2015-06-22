@@ -1,3 +1,5 @@
 language: cpp
 
+install: ./setup-travis.sh
+
 script: ./BuildLinux.sh
