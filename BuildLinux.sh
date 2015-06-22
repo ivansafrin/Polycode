@@ -2,6 +2,7 @@
 # ~/bin/build-polycode
 
 mkdir -p Dependencies/Build/Debug Dependencies/Build/Release Build/Debug Build/Release Standalone/Build
+mkdir -p Documentation/Doxygen/output/standalone/Polycode
 cd Dependencies/Build/Debug
 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug ../..
 make
