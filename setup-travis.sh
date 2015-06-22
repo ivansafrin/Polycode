@@ -12,5 +12,5 @@ else
   #install a newer cmake since at this time Travis only has version 2.8.7
   echo "yes" | sudo add-apt-repository ppa:kalakris/cmake
   sudo apt-get update -qq
-  sudo apt-get install cmake
+  sudo apt-get install cmake libsdl1.2-dev python-ply
 fi
