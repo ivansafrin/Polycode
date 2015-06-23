@@ -35,7 +35,7 @@ GenericRunner::GenericRunner(String app, String file, String inFolder) : Threade
 void GenericRunner::runThread() {
 #if defined(__APPLE__) && defined(__MACH__)
 	CocoaCore *cocoaCore = (CocoaCore*) CoreServices::getInstance()->getCore();
-	cocoaCore->openFileWithApplication(file, app);
+	cocoaCore->openFileWithApplication(file.replace("\"", ""), app.replace("\"", ""));
 #else
 	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(app, file, inFolder);	
 #endif
