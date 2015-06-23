@@ -271,6 +271,9 @@ void Label::precacheGlyphs(String text, GlyphData *glyphData) {
 		glyphData->positions[glyphData->num_glyphs].y = pen_y;
 
 		switch(antiAliasMode) {
+            case ANTIALIAS_LCD:
+                error = FT_Load_Glyph( face, glyph_index, FT_LOAD_TARGET_LCD);
+            break;
 			case ANTIALIAS_FULL:
 			case ANTIALIAS_STRONG:
 				error = FT_Load_Glyph( face, glyph_index, FT_LOAD_TARGET_LIGHT);			
@@ -315,6 +318,26 @@ void Label::drawGlyphBitmap(FT_Bitmap *bitmap, unsigned int x, unsigned int y, C
 	}
 
 	switch(antiAliasMode) {
+			case ANTIALIAS_LCD:
+            {
+                unsigned char *src = bitmap->buffer;
+                for(int j=0; j < bitmap->rows;j++) {
+                    unsigned char b;
+                    unsigned char *bptr =  src;
+                    for(int k=0; k < bitmap->width ; k+=3){
+                        imageData[xoff+lineoffset] = *(bptr);
+                        imageData[xoff+lineoffset+1] =  *(bptr+1);
+                        imageData[xoff+lineoffset+2] =  *(bptr+2);
+                        imageData[xoff+lineoffset+3] = 255; //((*(bptr)) + (*(bptr+1)) + (*(bptr+2))) / 3;
+                        bptr += 3;
+                        xoff += 4;
+                    }
+                    lineoffset -= ((width*4)+(bitmap->width * 4 / 3));
+                    src += bitmap->pitch;
+                }
+                
+            }
+            break;
 			case ANTIALIAS_FULL:
 			case ANTIALIAS_STRONG:			
 				for(int j = 0; j < ((bitmap->width * bitmap->rows)); j++) {
@@ -386,7 +409,9 @@ void Label::renderGlyphs(GlyphData *glyphData) {
 		pen.x = (start_x + glyphData->positions[n].x) * 64;
 		pen.y = (start_y + glyphData->positions[n].y) * 64;		
 
-		if(antiAliasMode == ANTIALIAS_FULL || antiAliasMode == ANTIALIAS_STRONG) {
+        if(antiAliasMode == ANTIALIAS_LCD) {
+			error = FT_Glyph_To_Bitmap( &image, FT_RENDER_MODE_LCD, &pen, 0 );
+        } else if(antiAliasMode == ANTIALIAS_FULL || antiAliasMode == ANTIALIAS_STRONG) {
 			error = FT_Glyph_To_Bitmap( &image, FT_RENDER_MODE_LIGHT, &pen, 0 );		
 		} else {
 			error = FT_Glyph_To_Bitmap( &image, FT_RENDER_MODE_MONO, &pen, 0 );				
@@ -417,7 +442,7 @@ void Label::setText(const String& text) {
 		return;
 	if(!font->isValid())
 		return;
-
+    
 	this->text = text;
 
 	precacheGlyphs(text, &labelData);

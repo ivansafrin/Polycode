@@ -3982,6 +3982,7 @@
 					"\"$(SRCROOT)/../../Modules/Dependencies/include/bullet\"",
 					"\"$(SRCROOT)/Contents\"",
 					/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
+					"\"$(SRCROOT)/../../Core/Dependencies/include/freetype2\"",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4018,6 +4019,7 @@
 					"\"$(SRCROOT)/../../Modules/Dependencies/include/bullet\"",
 					"\"$(SRCROOT)/Contents\"",
 					/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
+					"\"$(SRCROOT)/../../Core/Dependencies/include/freetype2\"",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

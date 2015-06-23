@@ -178,7 +178,7 @@ namespace Polycode {
 			static const int ANTIALIAS_FULL = 0;
 			static const int ANTIALIAS_NONE = 1;
 			static const int ANTIALIAS_STRONG = 2;			
-			
+			static const int ANTIALIAS_LCD = 3;
             /**
              * Returns the pixel distance from top of image to the baseline of the rendered text.
              */
