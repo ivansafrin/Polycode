@@ -37,7 +37,7 @@ void UITextInput::setMenuSingleton(UIGlobalMenu *_globalMenu) {
 	globalMenuSingleton = _globalMenu;
 }
 
-UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElement(width, height) {
+UITextInput::UITextInput(bool multiLine, Number width, Number height, int customFontSize, const String &customFont, int customLineSpacing) : UIElement(width, height) {
 	this->multiLine = multiLine;
 	processInputEvents = true;
 	isNumberOnly = false;
@@ -72,16 +72,23 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	setAnchorPoint(0.0, 0.0, 0.0);
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	
+    if(customFont != "") {
+        fontName = customFont;
+    } else {
 	if(multiLine)
 		fontName = conf->getStringValue("Polycode", "uiTextInputFontNameMultiLine");
 	else
 		fontName = conf->getStringValue("Polycode", "uiTextInputFontName");
-	
-	if(multiLine)
-		fontSize = conf->getNumericValue("Polycode", "uiTextInputFontSizeMultiline");	
-	else
-		fontSize = conf->getNumericValue("Polycode", "uiTextInputFontSize");
-	
+    }
+    if(customFontSize != -1) {
+        fontSize = customFontSize;
+    } else {
+        if(multiLine)
+            fontSize = conf->getNumericValue("Polycode", "uiTextInputFontSizeMultiline");	
+        else
+            fontSize = conf->getNumericValue("Polycode", "uiTextInputFontSize");
+    }
+    
 	Number rectHeight = height;
 	if(!multiLine) {
 		rectHeight = fontSize+10;
@@ -90,8 +97,13 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height) : UIElemen
 	linesContainer = new Entity();	
 	linesContainer->processInputEvents = true;
 	linesContainer->ownsChildren = true;
-	lineSpacing = conf->getNumericValue("Polycode", "textEditLineSpacing");
-	
+    
+    if(customLineSpacing != -1) {
+        lineSpacing = customLineSpacing;
+    } else {
+        lineSpacing = conf->getNumericValue("Polycode", "textEditLineSpacing");
+    }
+    
 	st = conf->getNumericValue("Polycode", "textBgSkinT");
 	sr = conf->getNumericValue("Polycode", "textBgSkinR");
 	sb = conf->getNumericValue("Polycode", "textBgSkinB");

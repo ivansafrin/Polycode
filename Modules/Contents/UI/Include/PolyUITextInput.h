@@ -146,7 +146,7 @@ namespace Polycode {
 			 * @param width The width of the element.
 			 * @param height The height of the element.
 			 */
-			UITextInput(bool multiLine, Number width, Number height);
+			UITextInput(bool multiLine, Number width, Number height, int customFontSize=-1, const String &customFont="", int customLineSpacing=-1);
 			virtual ~UITextInput();
 		
 			void handleEvent(Event *event);
