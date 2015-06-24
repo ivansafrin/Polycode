@@ -46,12 +46,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)..\..\..\Core\include;$(SolutionDir)..\..\..\Core\Dependencies\include;$(SolutionDir)..\..\..\Core\PolycodeView;$(SolutionDir)..\..\..\Core\Dependencies\include\AL;$(SolutionDir)..\Contents\3DPhysics_Character;$(SolutionDir)..\..\..\Modules\include;$(SolutionDir)..\..\..\Modules\Dependencies\include\bullet;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\..\..\Core\include;$(SolutionDir)..\..\..\Core\Dependencies\include;$(SolutionDir)..\..\..\Core\Dependencies\include\freetype2;$(SolutionDir)..\..\..\Core\PolycodeView;$(SolutionDir)..\..\..\Core\Dependencies\include\AL;$(SolutionDir)..\Contents\3DPhysics_Character;$(SolutionDir)..\..\..\Modules\include;$(SolutionDir)..\..\..\Modules\Dependencies\include\bullet;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\..\..\Core\lib;$(SolutionDir)..\..\..\Core\Dependencies\lib;$(SolutionDir)..\..\..\Modules\lib;$(SolutionDir)..\..\..\Modules\Dependencies\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)..\..\..\Core\include;$(SolutionDir)..\..\..\Core\Dependencies\include;$(SolutionDir)..\..\..\Core\PolycodeView;$(SolutionDir)..\..\..\Core\Dependencies\include\AL;$(SolutionDir)..\Contents\3DPhysics_Character;$(SolutionDir)..\..\..\Modules\include;$(SolutionDir)..\..\..\Modules\Dependencies\include\bullet;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\..\..\Core\include;$(SolutionDir)..\..\..\Core\Dependencies\include;$(SolutionDir)..\..\..\Core\Dependencies\include\freetype2;$(SolutionDir)..\..\..\Core\PolycodeView;$(SolutionDir)..\..\..\Core\Dependencies\include\AL;$(SolutionDir)..\Contents\3DPhysics_Character;$(SolutionDir)..\..\..\Modules\include;$(SolutionDir)..\..\..\Modules\Dependencies\include\bullet;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\..\..\Core\lib;$(SolutionDir)..\..\..\Core\Dependencies\lib;$(SolutionDir)..\..\..\Modules\lib;$(SolutionDir)..\..\..\Modules\Dependencies\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
