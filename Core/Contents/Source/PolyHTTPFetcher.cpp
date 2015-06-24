@@ -160,7 +160,7 @@ void HTTPFetcher::updateThread(){
 		event->errorCode = WSAGetLastError();
 #elif PLATFORM == PLATFORM_MAC || PLATFORM == PLATFORM_UNIX
         Logger::log("HTTP Fetcher: Send failed: %s\n",strerror(errno));
-		event->errorCode = strerror(errno);
+		event->errorCode = errno;
 #endif
 		createSocket();
 		dispatchEvent(event, HTTPFetcherEvent::EVENT_HTTP_ERROR);
@@ -179,7 +179,7 @@ void HTTPFetcher::updateThread(){
 #elif PLATFORM == PLATFORM_MAC || PLATFORM == PLATFORM_UNIX
 		if ((recv_size = recv(s, rec, DEFAULT_PAGE_BUF_SIZE, 0)) == -1) {
 			Logger::log("HTTP Fetcher: recv failed: %s\n", strerror(errno));
-			event->errorCode = strerror(errno);
+			event->errorCode = errno;
 #endif
 			dispatchEvent(event, HTTPFetcherEvent::EVENT_HTTP_ERROR);
 			killThread();
@@ -242,7 +242,7 @@ void HTTPFetcher::updateThread(){
 #elif PLATFORM == PLATFORM_MAC || PLATFORM == PLATFORM_UNIX
 		if ((recv_size = recv(s, rec, DEFAULT_PAGE_BUF_SIZE, 0)) == -1) {
 			Logger::log("HTTP Fetcher: recv failed: %s\n", strerror(errno));
-			event->errorCode = strerror(errno);
+			event->errorCode = errno;
 #endif
 			dispatchEvent(event, HTTPFetcherEvent::EVENT_HTTP_ERROR);
 			killThread();
