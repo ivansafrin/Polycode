@@ -8,9 +8,10 @@
 # py-ply
 # pkgconfig
 # libsdl (1.2)
+# cmake
 #
 # With macports you can easily install most of the needed libs with the following command:
-# sudo port install py-ply pkgconfig libsdl
+# sudo port install py-ply pkgconfig libsdl cmake
 #
 
 #
