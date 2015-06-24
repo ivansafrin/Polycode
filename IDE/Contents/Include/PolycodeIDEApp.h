@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#pragma once
+
 #if defined(__APPLE__) && defined(__MACH__)
 #import "PolycodeView.h"
 #elif defined(_WINDOWS)
@@ -72,7 +74,7 @@ public:
 	void openFile(OSFileEntry file);
 	
 	void stopProject();
-	
+
 	// menu commands
 	void renameFile();
 	void removeFile();
@@ -120,12 +122,15 @@ public:
 	const static int EVENT_SHOW_MENU = 1;
 	
 	Core *core;
-	
+	HTTPFetcher *updater;
+
 	void saveFiles(std::vector<PolycodeEditor*> editors);
 	void closeFiles(std::vector<PolycodeEditor*> editors, String saveMsg="");
 	bool filesHaveChanges(std::vector<PolycodeEditor*> editors);
 	
 protected:
+
+	void checkUpdates(const String updateFile);
 
 	bool quittingApp;
 	bool runNextFrame;
@@ -140,6 +145,8 @@ protected:
 	PolycodeRemoteDebugger *debugger;
 
 	UIMenuBar *menuBar;
+
+	UpdaterWindow *updaterWindow;
 	
 private:
 

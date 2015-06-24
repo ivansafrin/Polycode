@@ -51,3 +51,15 @@ class SettingsWindow : public UIWindow {
 		UIButton *cancelButton;
 		UIButton *okButton;
 };
+
+class UpdaterWindow : public UIWindow {
+public:
+	UpdaterWindow();
+	~UpdaterWindow();
+
+	void handleEvent(Event *e);
+	void openUpdate(String pathToUpdate);
+
+	UIMultilineLabel *updateNot;
+	UIButton *openDownloadButton;
+};
