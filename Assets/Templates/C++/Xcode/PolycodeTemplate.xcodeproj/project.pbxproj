@@ -311,6 +311,7 @@
 					"\"$(SRCROOT)/../../Core/Dependencies/Include\"",
 					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
 					/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
+					"\"$(SRCROOT)/../../Core/Dependencies/include/freetype2\"",
 				);
 				INFOPLIST_FILE = "PolycodeTemplate/PolycodeTemplate-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
@@ -340,6 +341,7 @@
 					"\"$(SRCROOT)/../../Core/Dependencies/Include\"",
 					/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
 					/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk/System/Library/Frameworks/OpenAL.framework/Headers,
+					"\"$(SRCROOT)/../../Core/Dependencies/include/freetype2\"",
 				);
 				INFOPLIST_FILE = "PolycodeTemplate/PolycodeTemplate-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
