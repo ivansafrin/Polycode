@@ -13,6 +13,10 @@
 # sudo port install py-ply pkgconfig cmake
 #
 
+# Note: Building with macports versions will require changing your python version to the macports version
+# so that the lua binding build
+# sudo port select python python27
+
 #
 # Start
 #
