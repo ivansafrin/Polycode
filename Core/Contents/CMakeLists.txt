@@ -80,6 +80,7 @@ SET(polycore_SRCS
     Source/PolyPeer.cpp
     Source/PolyClient.cpp
     Source/PolyServer.cpp
+	Source/PolyHTTPFetcher.cpp
     Source/PolyRay.cpp
     Source/PolySceneSprite.cpp
     Source/PolySceneEntityInstance.cpp
@@ -169,6 +170,7 @@ SET(polycore_HDRS
     Include/PolyClient.h
     Include/PolyServer.h
     Include/PolyServerWorld.h
+	Include/PolyHTTPFetcher.h
     Include/PolyRay.h
     Include/PolySceneSprite.h
     Include/PolySceneEntityInstance.h
