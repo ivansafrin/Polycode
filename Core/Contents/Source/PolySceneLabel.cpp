@@ -35,9 +35,9 @@ bool SceneLabel::defaultPositionAtBaseline = false;
 bool SceneLabel::defaultSnapToPixels = false;
 bool SceneLabel::createMipmapsForLabels = true;
 
-SceneLabel::SceneLabel(const String& text, int size, const String& fontName, int amode, Number actualHeight, bool premultiplyAlpha) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1){
+SceneLabel::SceneLabel(const String& text, int size, const String& fontName, int amode, Number actualHeight, bool premultiplyAlpha, const Color &backgroundColor, const Color &foregroundColor) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1){
 
-	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size * CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), amode, premultiplyAlpha);
+	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size * CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), amode, premultiplyAlpha, backgroundColor, foregroundColor);
     
 	positionAtBaseline = SceneLabel::defaultPositionAtBaseline;
 	setAnchorPoint(SceneLabel::defaultAnchor);	
@@ -46,7 +46,7 @@ SceneLabel::SceneLabel(const String& text, int size, const String& fontName, int
 }
 
 Entity *SceneLabel::Clone(bool deepClone, bool ignoreEditorOnly) const {
-	SceneLabel *newLabel = new SceneLabel(label->getText(), label->getSize(), label->getFont()->getFontName(), actualHeight, label->getPremultiplyAlpha());
+	SceneLabel *newLabel = new SceneLabel(label->getText(), label->getSize(), label->getFont()->getFontName(), label->getAntialiasMode(), actualHeight, label->getPremultiplyAlpha(), label->getBackgroundColor(), label->getForegroundColor());
     applyClone(newLabel, deepClone, ignoreEditorOnly);
     return newLabel;
 }
@@ -61,6 +61,8 @@ void SceneLabel::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly
     cloneLabel->getLabel()->setFont(label->getFont());
     cloneLabel->getLabel()->setPremultiplyAlpha(label->getPremultiplyAlpha());
     cloneLabel->setLabelActualHeight(actualHeight);
+    cloneLabel->getLabel()->setBackgroundColor(label->getBackgroundColor());
+    cloneLabel->getLabel()->setForegroundColor(label->getForegroundColor());
     cloneLabel->positionAtBaseline = positionAtBaseline;
     cloneLabel->setText(label->getText());
     

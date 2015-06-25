@@ -72,7 +72,7 @@ namespace Polycode {
              * @param premultiplyAlpha If set to true, will premultiply alpha in the label image.
              * @see Font
              */
-			Label(Font *font, const String& text, int size, int antiAliasMode, bool premultiplyAlpha = false);
+			Label(Font *font, const String& text, int size, int antiAliasMode, bool premultiplyAlpha = false, const Color &backgroundColor = Color(0.0, 0.0, 0.0, 1.0), const Color &foregroundColor = Color(0.0, 0.0, 0.0, 1.0));
 			virtual ~Label();
         
             /**
@@ -188,6 +188,9 @@ namespace Polycode {
             void setBackgroundColor(const Color &color);
             void setForegroundColor(const Color &color);
             void setColors(const Color &backgroundColor, const Color &foregroundColor);
+        
+            Color getBackgroundColor();
+            Color getForegroundColor();
         
 			bool optionsChanged();
 			

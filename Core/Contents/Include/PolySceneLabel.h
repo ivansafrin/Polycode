@@ -39,7 +39,7 @@ namespace Polycode {
 		public:
 			
 			
-			SceneLabel(const String& text, int size, const String& fontName = "sans", int amode = 0, Number actualHeight = 0.0, bool premultiplyAlpha = false);
+			SceneLabel(const String& text, int size, const String& fontName = "sans", int amode = 0, Number actualHeight = 0.0, bool premultiplyAlpha = false, const Color &backgroundColor = Color(0.0, 0.0, 0.0, 1.0), const Color &foregroundColor = Color(0.0, 0.0, 0.0, 1.0));
 			
 			String getText();
         

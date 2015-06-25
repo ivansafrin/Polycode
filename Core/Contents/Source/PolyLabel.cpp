@@ -58,7 +58,7 @@ ColorRange::ColorRange(Color color, unsigned int rangeStart, unsigned int rangeE
 }
 
 
-Label::Label(Font *font, const String& text, int size, int antiAliasMode, bool premultiplyAlpha) : Image(), _optionsChanged(false), backgroundColor(0.0 ,0.0, 0.0, 0.0), foregroundColor(1.0, 1.0, 1.0, 1.0) {
+Label::Label(Font *font, const String& text, int size, int antiAliasMode, bool premultiplyAlpha, const Color &backgroundColor, const Color &foregroundColor) : Image(), backgroundColor(backgroundColor), foregroundColor(foregroundColor), _optionsChanged(false) {
 		setPixelType(Image::IMAGE_RGBA);
 		this->font = font;
 		this->size = size;
@@ -301,6 +301,14 @@ void Label::precacheGlyphs(String text, GlyphData *glyphData) {
 		glyphData->num_glyphs++;
 		
 	}
+}
+
+Color Label::getBackgroundColor() {
+    return backgroundColor;
+}
+
+Color Label::getForegroundColor() {
+    return foregroundColor;
 }
 
 void Label::setBackgroundColor(const Color &color) {
