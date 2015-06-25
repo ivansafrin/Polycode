@@ -58,7 +58,7 @@ ColorRange::ColorRange(Color color, unsigned int rangeStart, unsigned int rangeE
 }
 
 
-Label::Label(Font *font, const String& text, int size, int antiAliasMode, bool premultiplyAlpha) : Image(), _optionsChanged(false) {
+Label::Label(Font *font, const String& text, int size, int antiAliasMode, bool premultiplyAlpha) : Image(), _optionsChanged(false), backgroundColor(0.0 ,0.0, 0.0, 0.0), foregroundColor(1.0, 1.0, 1.0, 1.0) {
 		setPixelType(Image::IMAGE_RGBA);
 		this->font = font;
 		this->size = size;
@@ -218,7 +218,7 @@ Color Label::getColorForIndex(unsigned int index) {
 			return colorRanges[i].color;
 		}
 	}
-	return Color(1.0,1.0,1.0,1.0);
+	return foregroundColor;
 }
 
 void Label::precacheGlyphs(String text, GlyphData *glyphData) {
@@ -272,14 +272,14 @@ void Label::precacheGlyphs(String text, GlyphData *glyphData) {
 
 		switch(antiAliasMode) {
             case ANTIALIAS_LCD:
-                error = FT_Load_Glyph( face, glyph_index, FT_LOAD_TARGET_LCD);
+                error = FT_Load_Glyph( face, glyph_index, FT_LOAD_DEFAULT);
             break;
 			case ANTIALIAS_FULL:
 			case ANTIALIAS_STRONG:
-				error = FT_Load_Glyph( face, glyph_index, FT_LOAD_TARGET_LIGHT);			
+				error = FT_Load_Glyph( face, glyph_index, FT_LOAD_TARGET_LIGHT);
 			break;
 			default:
-				error = FT_Load_Glyph( face, glyph_index, FT_LOAD_DEFAULT);			
+				error = FT_Load_Glyph( face, glyph_index, FT_LOAD_DEFAULT);
 			break;
 		}
 		
@@ -303,11 +303,27 @@ void Label::precacheGlyphs(String text, GlyphData *glyphData) {
 	}
 }
 
+void Label::setBackgroundColor(const Color &color) {
+    backgroundColor = color;
+    _optionsChanged = true;
+}
+
+void Label::setForegroundColor(const Color &color) {
+    foregroundColor = color;
+    _optionsChanged = true;
+}
+
+void Label::setColors(const Color &backgroundColor, const Color &foregroundColor) {
+    this->backgroundColor = backgroundColor;
+    this->foregroundColor = foregroundColor;
+    _optionsChanged = true;
+}
+
 int Label::getBaselineAdjust() {
 	return baseLineAdjust;
 }
 
-void Label::drawGlyphBitmap(FT_Bitmap *bitmap, unsigned int x, unsigned int y, Color glyphColor) {
+void Label::drawGlyphBitmap(FT_Bitmap *bitmap, unsigned int x, unsigned int y, const Color &glyphColor) {
 
 	int lineoffset = (height-y) * (width*4);
 	int xoff = (x*4);
@@ -322,13 +338,30 @@ void Label::drawGlyphBitmap(FT_Bitmap *bitmap, unsigned int x, unsigned int y, C
             {
                 unsigned char *src = bitmap->buffer;
                 for(int j=0; j < bitmap->rows;j++) {
-                    unsigned char b;
                     unsigned char *bptr =  src;
                     for(int k=0; k < bitmap->width ; k+=3){
-                        imageData[xoff+lineoffset] = *(bptr);
-                        imageData[xoff+lineoffset+1] =  *(bptr+1);
-                        imageData[xoff+lineoffset+2] =  *(bptr+2);
-                        imageData[xoff+lineoffset+3] = 255; //((*(bptr)) + (*(bptr+1)) + (*(bptr+2))) / 3;
+                        
+                        // dst = alpha * src + (1 - alpha) * dst
+                        
+                        Number nVal = (((Number)(*(bptr)))/255.0);
+                        Number destVal = ((Number)(unsigned char)imageData[xoff+lineoffset]) / 255.0;
+
+                        Number final = (nVal * glyphColor.r) + ((1.0-nVal) * destVal);
+                        
+                        imageData[xoff+lineoffset] = (int)(final * 255.0);
+
+                        nVal = (((Number)(*(bptr+1)))/255.0);
+                        destVal = ((Number)(unsigned char)imageData[xoff+lineoffset+1]) / 255.0;
+                        final = (nVal * glyphColor.g) + ((1.0-nVal) * destVal);
+                        
+                        imageData[xoff+lineoffset+1] = (int)(final * 255.0);
+                        
+                        nVal = (((Number)(*(bptr+2)))/255.0);
+                        destVal = ((Number)(unsigned char)imageData[xoff+lineoffset+2]) / 255.0;
+                        final = (nVal * glyphColor.b) + ((1.0-nVal) * destVal);
+                        imageData[xoff+lineoffset+2] = (int)(final * 255.0);
+
+                        imageData[xoff+lineoffset+3] = 255;
                         bptr += 3;
                         xoff += 4;
                     }
@@ -353,9 +386,9 @@ void Label::drawGlyphBitmap(FT_Bitmap *bitmap, unsigned int x, unsigned int y, C
 						imageData[xoff+lineoffset+3] = newVal;
 
 						if(premultiplyAlpha) {
-							imageData[xoff+lineoffset] = (int)((255.0 * glyphColor.r) * ((Number)imageData[xoff+lineoffset+3])/255.0);
-							imageData[xoff+lineoffset+1] =  (int)((255.0 * glyphColor.g) * ((Number)imageData[xoff+lineoffset+3])/255.0);
-							imageData[xoff+lineoffset+2] =  (int)((255.0 * glyphColor.b) * ((Number)imageData[xoff+lineoffset+3])/255.0);
+							imageData[xoff+lineoffset] = (int)((255.0 * glyphColor.r) * ((Number)(unsigned char)imageData[xoff+lineoffset+3])/255.0);
+							imageData[xoff+lineoffset+1] =  (int)((255.0 * glyphColor.g) * ((Number)(unsigned char)imageData[xoff+lineoffset+3])/255.0);
+							imageData[xoff+lineoffset+2] =  (int)((255.0 * glyphColor.b) * ((Number)(unsigned char)imageData[xoff+lineoffset+3])/255.0);
 						} else {
 							imageData[xoff+lineoffset] = (int)(255.0 * glyphColor.r);
 							imageData[xoff+lineoffset+1] =  (int)(255.0 * glyphColor.g);
@@ -393,7 +426,7 @@ void Label::renderGlyphs(GlyphData *glyphData) {
 		useColorRanges = true;
 	}
 	
-	Color glyphColor = Color(1.0, 1.0, 1.0, 1.0);
+    Color glyphColor = foregroundColor;
 
 	int start_x = 0; //( ( my_target_width  - string_width  ) / 2 ) * 64;
 	int start_y = 0; //( ( my_target_height - string_height ) / 2 ) * 64;
@@ -424,7 +457,7 @@ void Label::renderGlyphs(GlyphData *glyphData) {
 			
 			FT_BitmapGlyph  bit = (FT_BitmapGlyph)image;
 			drawGlyphBitmap(&bit->bitmap,
-					bit->left - xAdjustOffset,
+					bit->left - xAdjustOffset + 1,
 					height - bit->top + baseLineOffset, glyphColor);
 					
 			FT_Done_Glyph( image );
@@ -450,12 +483,13 @@ void Label::setText(const String& text) {
 	FT_BBox bbox;
 	computeStringBbox(&labelData, &bbox);	
 	
-	unsigned int textWidth = (bbox.xMax -  bbox.xMin)+1;
+	unsigned int textWidth = (bbox.xMax -  bbox.xMin)+2;
 	unsigned int textHeight = (bbox.yMax -  bbox.yMin)+1;
 
 	baseLineOffset = bbox.yMin;
 	xAdjustOffset = bbox.xMin;
 	baseLineAdjust = bbox.yMax;
+    
     
 	if(textWidth % 2 ){
 		textWidth++;
@@ -466,7 +500,7 @@ void Label::setText(const String& text) {
 	}
 
 	
-	createEmpty(textWidth,textHeight);	
+	createEmpty(textWidth,textHeight, backgroundColor);
 	renderGlyphs(&labelData);
 	_optionsChanged = false;	
 }

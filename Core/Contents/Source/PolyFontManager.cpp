@@ -22,11 +22,13 @@
 
 #include "PolyFontManager.h"
 #include "PolyFont.h"
+#include FT_LCD_FILTER_H
 
 using namespace Polycode;
 
 FontManager::FontManager() {
-    FT_Init_FreeType(&FTLibrary);	
+    FT_Init_FreeType(&FTLibrary);
+    FT_Library_SetLcdFilter(FTLibrary, FT_LCD_FILTER_DEFAULT);
 }
 
 FontManager::~FontManager() {

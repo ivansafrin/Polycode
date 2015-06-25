@@ -119,13 +119,13 @@ namespace Polycode {
 			* @param width Width of the image to create.
 			* @param height Height of the image to create.			
 			*/ 						
-			void createEmpty(int width, int height);
+			void createEmpty(int width, int height, const Color &fillColor);
 
 			/**
 			* Fills the image with the specified color values.
 			* @param color The color to fill it with.
 			*/ 									
-			void fill(Color color);
+			void fill(const Color &color);
 			
 			/**
 			* Sets a pixel at specified coordinates to specified color.

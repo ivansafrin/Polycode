@@ -23,6 +23,7 @@ THE SOFTWARE.
 #pragma once
 #include "PolyString.h"
 #include "PolyGlobals.h"
+#include "PolyColor.h"
 #include "PolyImage.h"
 
 #include "PolyFont.h"
@@ -184,14 +185,21 @@ namespace Polycode {
              */
 			int getBaselineAdjust();
         
+            void setBackgroundColor(const Color &color);
+            void setForegroundColor(const Color &color);
+            void setColors(const Color &backgroundColor, const Color &foregroundColor);
+        
 			bool optionsChanged();
 			
 		protected:
         
+            Color backgroundColor;
+            Color foregroundColor;
+        
             void computeStringBbox(GlyphData *glyphData, FT_BBox *abbox);
             void precacheGlyphs(String text, GlyphData *glyphData);
             void renderGlyphs(GlyphData *glyphData);
-            void drawGlyphBitmap(FT_Bitmap *bitmap, unsigned int x, unsigned int y, Color glyphColor);
+            void drawGlyphBitmap(FT_Bitmap *bitmap, unsigned int x, unsigned int y, const Color &glyphColor);
 		
 			bool _optionsChanged;
 			GlyphData labelData;

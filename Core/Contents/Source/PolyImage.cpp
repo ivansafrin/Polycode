@@ -80,7 +80,7 @@ bool Image::isLoaded() const {
 
 Image::Image(int width, int height, int type) : imageData(NULL) {
 	setPixelType(type);
-	createEmpty(width, height);
+	createEmpty(width, height, Color(0.0, 0.0, 0.0, 0.0));
 }
 
 Image::Image(Image *copyImage) {
@@ -171,14 +171,14 @@ int Image::getHeight() const {
 	return height;
 }
 
-void Image::createEmpty(int width, int height) {
+void Image::createEmpty(int width, int height, const Color &fillColor) {
 	free(imageData);
 		
 	imageData = (char*)malloc(width*height*pixelSize);
 	this->width = width;
 	this->height = height;
 	
-	fill(Color(0,0,0,0));
+	fill(fillColor);
 }
 
 void Image::perlinNoise(int seed, bool alpha) {
@@ -394,7 +394,7 @@ void Image::drawLine(int x0, int y0, int x1, int y1, Color col) {
 	}
 }
 
-void Image::fill(Color color) {
+void Image::fill(const Color &color) {
 	if(imageType == Image::IMAGE_RGB) {
 		for(int i = 0; i < width*height*pixelSize; i+=3) {
 			imageData[i] = color.r;
