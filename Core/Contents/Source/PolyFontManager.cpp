@@ -28,7 +28,7 @@ using namespace Polycode;
 
 FontManager::FontManager() {
     FT_Init_FreeType(&FTLibrary);
-    FT_Library_SetLcdFilter(FTLibrary, FT_LCD_FILTER_DEFAULT);
+    FT_Library_SetLcdFilter(FTLibrary, FT_LCD_FILTER_LIGHT);
 }
 
 FontManager::~FontManager() {

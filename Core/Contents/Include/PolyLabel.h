@@ -31,6 +31,8 @@ THE SOFTWARE.
 #include FT_GLYPH_H
 #include FT_IMAGE_H
 
+#define LCD_BLEND_GAMMA 2.2
+
 namespace Polycode {
 
 	class Font;	
@@ -72,7 +74,7 @@ namespace Polycode {
              * @param premultiplyAlpha If set to true, will premultiply alpha in the label image.
              * @see Font
              */
-			Label(Font *font, const String& text, int size, int antiAliasMode, bool premultiplyAlpha = false, const Color &backgroundColor = Color(0.0, 0.0, 0.0, 1.0), const Color &foregroundColor = Color(0.0, 0.0, 0.0, 1.0));
+			Label(Font *font, const String& text, int size, int antiAliasMode, bool premultiplyAlpha = false, const Color &backgroundColor = Color(0.0, 0.0, 0.0, 0.0), const Color &foregroundColor = Color(1.0, 1.0, 1.0, 1.0));
 			virtual ~Label();
         
             /**
@@ -180,6 +182,8 @@ namespace Polycode {
 			static const int ANTIALIAS_NONE = 1;
 			static const int ANTIALIAS_STRONG = 2;			
 			static const int ANTIALIAS_LCD = 3;
+			static const int ANTIALIAS_LCD_HINT = 4;
+			static const int ANTIALIAS_FULL_HINT = 5;
             /**
              * Returns the pixel distance from top of image to the baseline of the rendered text.
              */

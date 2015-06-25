@@ -21,7 +21,8 @@
 */
 
 #include "PolyLabel.h"
-  
+#include <math.h>
+
 using namespace Polycode;
 
 //#define NORMAL_FT_FLAGS FT_LOAD_TARGET_LIGHT
@@ -271,8 +272,12 @@ void Label::precacheGlyphs(String text, GlyphData *glyphData) {
 		glyphData->positions[glyphData->num_glyphs].y = pen_y;
 
 		switch(antiAliasMode) {
-            case ANTIALIAS_LCD:
+            case ANTIALIAS_LCD_HINT:
+            case ANTIALIAS_FULL_HINT:
                 error = FT_Load_Glyph( face, glyph_index, FT_LOAD_DEFAULT);
+            break;
+            case ANTIALIAS_LCD:
+                error = FT_Load_Glyph( face, glyph_index, FT_LOAD_TARGET_LIGHT);
             break;
 			case ANTIALIAS_FULL:
 			case ANTIALIAS_STRONG:
@@ -342,6 +347,7 @@ void Label::drawGlyphBitmap(FT_Bitmap *bitmap, unsigned int x, unsigned int y, c
 	}
 
 	switch(antiAliasMode) {
+            case ANTIALIAS_LCD_HINT:
 			case ANTIALIAS_LCD:
             {
                 unsigned char *src = bitmap->buffer;
@@ -352,21 +358,21 @@ void Label::drawGlyphBitmap(FT_Bitmap *bitmap, unsigned int x, unsigned int y, c
                         // dst = alpha * src + (1 - alpha) * dst
                         
                         Number nVal = (((Number)(*(bptr)))/255.0);
-                        Number destVal = ((Number)(unsigned char)imageData[xoff+lineoffset]) / 255.0;
+                        Number destVal = pow(((Number)(unsigned char)imageData[xoff+lineoffset]) / 255.0, LCD_BLEND_GAMMA);
 
-                        Number final = (nVal * glyphColor.r) + ((1.0-nVal) * destVal);
+                        Number final = pow((nVal * pow(glyphColor.r, LCD_BLEND_GAMMA)) + ((1.0-nVal) * destVal), 1.0/LCD_BLEND_GAMMA);
                         
                         imageData[xoff+lineoffset] = (int)(final * 255.0);
 
                         nVal = (((Number)(*(bptr+1)))/255.0);
-                        destVal = ((Number)(unsigned char)imageData[xoff+lineoffset+1]) / 255.0;
-                        final = (nVal * glyphColor.g) + ((1.0-nVal) * destVal);
+                        destVal = pow(((Number)(unsigned char)imageData[xoff+lineoffset+1]) / 255.0, LCD_BLEND_GAMMA);
+                        final = pow((nVal * pow(glyphColor.g, LCD_BLEND_GAMMA)) + ((1.0-nVal) * destVal), 1.0/LCD_BLEND_GAMMA);
                         
                         imageData[xoff+lineoffset+1] = (int)(final * 255.0);
                         
                         nVal = (((Number)(*(bptr+2)))/255.0);
-                        destVal = ((Number)(unsigned char)imageData[xoff+lineoffset+2]) / 255.0;
-                        final = (nVal * glyphColor.b) + ((1.0-nVal) * destVal);
+                        destVal = pow(((Number)(unsigned char)imageData[xoff+lineoffset+2]) / 255.0, LCD_BLEND_GAMMA);
+                        final = pow((nVal * pow(glyphColor.b, LCD_BLEND_GAMMA)) + ((1.0-nVal) * destVal), 1.0/LCD_BLEND_GAMMA);
                         imageData[xoff+lineoffset+2] = (int)(final * 255.0);
 
                         imageData[xoff+lineoffset+3] = 255;
@@ -380,7 +386,8 @@ void Label::drawGlyphBitmap(FT_Bitmap *bitmap, unsigned int x, unsigned int y, c
             }
             break;
 			case ANTIALIAS_FULL:
-			case ANTIALIAS_STRONG:			
+			case ANTIALIAS_STRONG:
+            case ANTIALIAS_FULL_HINT:
 				for(int j = 0; j < ((bitmap->width * bitmap->rows)); j++) {
 					if(!(j % bitmap->width) && j !=0)
 						lineoffset -= ((width*4)+(bitmap->width * 4));
@@ -450,10 +457,10 @@ void Label::renderGlyphs(GlyphData *glyphData) {
 		pen.x = (start_x + glyphData->positions[n].x) * 64;
 		pen.y = (start_y + glyphData->positions[n].y) * 64;		
 
-        if(antiAliasMode == ANTIALIAS_LCD) {
+        if(antiAliasMode == ANTIALIAS_LCD || antiAliasMode == ANTIALIAS_LCD_HINT) {
 			error = FT_Glyph_To_Bitmap( &image, FT_RENDER_MODE_LCD, &pen, 0 );
-        } else if(antiAliasMode == ANTIALIAS_FULL || antiAliasMode == ANTIALIAS_STRONG) {
-			error = FT_Glyph_To_Bitmap( &image, FT_RENDER_MODE_LIGHT, &pen, 0 );		
+        } else if(antiAliasMode == ANTIALIAS_FULL || antiAliasMode == ANTIALIAS_STRONG || antiAliasMode == ANTIALIAS_FULL_HINT) {
+			error = FT_Glyph_To_Bitmap( &image, FT_RENDER_MODE_NORMAL, &pen, 0 );		
 		} else {
 			error = FT_Glyph_To_Bitmap( &image, FT_RENDER_MODE_MONO, &pen, 0 );				
 		}
