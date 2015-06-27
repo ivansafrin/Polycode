@@ -53,8 +53,9 @@ void main() {
     jointInfluence(skeletonMatrix[int(vBoneIndices.z)], vBoneWeights.z, inVert, outVert, inNormal, outNormal);
     jointInfluence(skeletonMatrix[int(vBoneIndices.w)], vBoneWeights.w, inVert, outVert, inNormal, outNormal);
 
+	outVert.w = 1.0;
 
-	normal = gl_NormalMatrix * outNormal;	
+	normal = gl_NormalMatrix * normalize(outNormal);	
 	gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * outVert;
 	pos = gl_ModelViewMatrix * outVert;
 	rawpos = outVert;
