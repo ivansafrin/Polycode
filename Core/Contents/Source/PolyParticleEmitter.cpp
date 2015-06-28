@@ -28,10 +28,9 @@
 
 using namespace Polycode;
 
-SceneParticleEmitter::SceneParticleEmitter(unsigned int particleCount, Number lifetime, Number speed) : SceneMesh(Mesh::POINT_MESH), particleCount(particleCount), particleSpeed(speed), lifetime(lifetime), directionVector(0.0, 1.0, 0.0), cyclesLeftOver(0.0), useFloorPlane(false), floorPlaneOffset(-1.0), floorDamping(0.5), particlesInWorldSpace(false), perlinEnabled(false), perlinValue(1.0,1.0,1.0), particleType(SceneParticleEmitter::PARTICLE_TYPE_QUAD), particleSize(0.1), particleRotationSpeed(0.0, 0.0, 0.0), useColorCurves(false), useScaleCurve(false), loopParticles(true){
+SceneParticleEmitter::SceneParticleEmitter(unsigned int particleCount, Number lifetime, Number speed) : SceneMesh(Mesh::POINT_MESH), particleCount(particleCount), particleSpeed(speed), lifetime(lifetime), directionVector(0.0, 1.0, 0.0), useFloorPlane(false), floorPlaneOffset(-1.0), floorDamping(0.5), particlesInWorldSpace(false), perlinEnabled(false), perlinValue(1.0,1.0,1.0), particleType(SceneParticleEmitter::PARTICLE_TYPE_QUAD), particleSize(0.1), particleRotationSpeed(0.0, 0.0, 0.0), useColorCurves(false), useScaleCurve(false), loopParticles(true){
     
     core = CoreServices::getInstance()->getCore();
-	timeStep = core->getRefreshIntervalMs() / 1000.0f;
     motionPerlin = new Perlin(3,5,1.0,RANDOM_NUMBER);
     mesh->useVertexColors = true;
     depthWrite = false;
@@ -115,22 +114,28 @@ void SceneParticleEmitter::resetParticle(unsigned int index) {
         particles[index].varianceIndex = 0;
     }
     
-    q.fromAxes(-directionDeviation.x + (directionDeviation.x * RANDOM_NUMBER * 2.0), -directionDeviation.y + (directionDeviation.y * RANDOM_NUMBER * 2.0), -directionDeviation.z + (directionDeviation.z * RANDOM_NUMBER * 2.0));
-    particles[index].velocity = q.applyTo(directionVector);
-    particles[index].position = Vector3(-emitterSize.x + (emitterSize.x * RANDOM_NUMBER * 2.0), -emitterSize.y + (emitterSize.y * RANDOM_NUMBER * 2.0), -emitterSize.z + (emitterSize.z * RANDOM_NUMBER * 2.0));
+    positionParticle(index);
     
     particles[index].rotation = Vector3(RANDOM_NUMBER * 360.0 *particleRotationSpeed.x, RANDOM_NUMBER * 360.0 *particleRotationSpeed.y, RANDOM_NUMBER * 360.0 *particleRotationSpeed.z);
     
-    if(particlesInWorldSpace) {
-        particles[index].position = systemTrasnformMatrix * particles[index].position;
-        particles[index].velocity = systemTrasnformMatrix.rotateVector( particles[index].velocity);
-    }
     
     particles[index].color = Color(1.0 - (RANDOM_NUMBER*colorDeviation.r),
                                    1.0 - (RANDOM_NUMBER*colorDeviation.g),
                                    1.0 - (RANDOM_NUMBER*colorDeviation.b),
                                    1.0 - (RANDOM_NUMBER*colorDeviation.a));
 }
+
+void SceneParticleEmitter::positionParticle(unsigned int index) {
+    q.fromAxes(-directionDeviation.x + (directionDeviation.x * RANDOM_NUMBER * 2.0), -directionDeviation.y + (directionDeviation.y * RANDOM_NUMBER * 2.0), -directionDeviation.z + (directionDeviation.z * RANDOM_NUMBER * 2.0));
+    particles[index].velocity = q.applyTo(directionVector);
+    particles[index].position = Vector3(-emitterSize.x + (emitterSize.x * RANDOM_NUMBER * 2.0), -emitterSize.y + (emitterSize.y * RANDOM_NUMBER * 2.0), -emitterSize.z + (emitterSize.z * RANDOM_NUMBER * 2.0));
+    
+    if(particlesInWorldSpace) {
+        particles[index].position = systemTrasnformMatrix * particles[index].position;
+        particles[index].velocity = systemTrasnformMatrix.rotateVector( particles[index].velocity);
+    }
+}
+
 
 void SceneParticleEmitter::setParticleCount(unsigned int newParticleCount) {
     particleCount = newParticleCount;
@@ -185,6 +190,10 @@ bool SceneParticleEmitter::getLoopParticles() const {
 }
 
 void SceneParticleEmitter::enableParticleSystem(bool val) {
+    if(systemEnabled == val) {
+        return;
+    }
+
     systemEnabled = val;
     if(val) {
         for(int i=0; i < particles.size(); i++) {
@@ -421,7 +430,12 @@ void SceneParticleEmitter::updateParticles() {
     Number normLife;
     Vector3 newBBox;
     
+    Number timeStep = core->getFixedTimestep();
+    
     for(int i=0; i < particles.size(); i++) {
+        if(particles[i].lifetime < 0.0 && particles[i].lifetime + timeStep >= 0.0) {
+            positionParticle(i);
+        }
         particles[i].lifetime += timeStep;
         if(particles[i].lifetime > lifetime) {
             if(loopParticles && systemEnabled) {
@@ -484,18 +498,13 @@ void SceneParticleEmitter::updateParticles() {
 }
 
 void SceneParticleEmitter::Render() {
+    systemTrasnformMatrix = getConcatenatedMatrix();    
     rebuildParticles();
     SceneMesh::Render();
 }
 
-void SceneParticleEmitter::Update() {
+void SceneParticleEmitter::fixedUpdate() {
     systemTrasnformMatrix = getConcatenatedMatrix();
-    Number elapsed = core->getElapsed() + cyclesLeftOver;
-    
-    while(elapsed > timeStep) {
-        elapsed -= timeStep;
-        updateParticles();
-    }
-    cyclesLeftOver = elapsed;
+    updateParticles();
     SceneMesh::Update();
 }

@@ -62,7 +62,7 @@ namespace Polycode {
             void setGravity(const Vector3 &newGravity);
             Vector3 getGravity() const;
         
-            void Update();
+            void fixedUpdate();
             void Render();
         
             void updateParticles();
@@ -141,6 +141,8 @@ namespace Polycode {
             Mesh *getSourcesMeshAtIndex(int index);
             void removeSourceMeshAtIndex(int index);
         
+            void positionParticle(unsigned int index);
+        
             virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
             virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
         
@@ -155,8 +157,6 @@ namespace Polycode {
             std::vector<SceneParticle> particles;
             Number particleSpeed;
             Number lifetime;
-            Number timeStep;
-            Number cyclesLeftOver;
         
             Vector3 directionVector;
             Vector3 directionDeviation;
