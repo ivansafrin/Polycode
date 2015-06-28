@@ -436,7 +436,10 @@ void SceneParticleEmitter::updateParticles() {
         if(particles[i].lifetime < 0.0 && particles[i].lifetime + timeStep >= 0.0) {
             positionParticle(i);
         }
-        particles[i].lifetime += timeStep;
+
+        if(particles[i].lifetime >= 0.0 || (particles[i].lifetime < 0.0 && systemEnabled)) {
+            particles[i].lifetime += timeStep;
+        }
         if(particles[i].lifetime > lifetime) {
             if(loopParticles && systemEnabled) {
                 resetParticle(i);
@@ -498,7 +501,7 @@ void SceneParticleEmitter::updateParticles() {
 }
 
 void SceneParticleEmitter::Render() {
-    systemTrasnformMatrix = getConcatenatedMatrix();    
+    systemTrasnformMatrix = getConcatenatedMatrix();
     rebuildParticles();
     SceneMesh::Render();
 }
