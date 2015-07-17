@@ -74,6 +74,10 @@ void SceneManager::setRenderer(Renderer *renderer) {
 }
 
 void SceneManager::renderVirtual() {
+    
+        // RENDERER_TODO
+    /*
+    
 	bool anyVirtualsRendered = false;
 	for(int i=0;i<renderTextures.size();i++) {
 		if(renderTextures[i]->enabled) {
@@ -85,21 +89,22 @@ void SceneManager::renderVirtual() {
 	if (anyVirtualsRendered) {
 		renderer->clearScreen();
 	}
+     */
 }
 
-void SceneManager::Render() {
+void SceneManager::Render(const Polycode::Rectangle &viewport) {    
 	for(int i=0;i<scenes.size();i++) {
 		if(scenes[i]->isEnabled() && !scenes[i]->isVirtual()) {
-			renderer->loadIdentity();
 			Scene *scene = scenes[i];
 			if(scene->getActiveCamera()->hasFilterShader()) {
 				scene->getActiveCamera()->drawFilter();
 			} else {
+                scene->getActiveCamera()->setViewport(viewport);
 				scene->Render();
 			}
 		}
-		renderer->loadIdentity();			
 	}
+
 }
 
 void SceneManager::fixedUpdate() {

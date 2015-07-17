@@ -72,7 +72,18 @@ namespace Polycode {
 			int weekDay;
 			int year;
 			int yearDay;
-	};	
+	};
+    
+    class VideoModeChangeInfo {
+    public:
+        int xRes;
+        int yRes;
+        bool fullScreen;
+        bool vSync;
+        int aaLevel;
+        int anisotropyLevel;
+        bool retinaSupport;
+    };
 
 	/**
 	* The main core of the framework. The core deals with system-level functions, such as window initialization and OS interaction. Each platform has its own implementation of this base class. NOTE: SOME OF THE FUNCTIONALITY IN THE CORE IS NOT FULLY IMPLEMENTED!!
@@ -282,7 +293,9 @@ namespace Polycode {
 		
 		virtual String saveFilePicker(std::vector<CoreFileExtension> extensions) = 0;
 
-		
+        virtual void handleVideoModeChange(VideoModeChangeInfo *modeInfo) = 0;
+        virtual void flushRenderContext() = 0;
+        
 		/**
 		* Sets a new video mode.
 		* @param xRes New horizontal resolution of the renderer.
@@ -290,7 +303,7 @@ namespace Polycode {
 		* @param fullScreen True to launch in fullscreen, false to launch in window.
 		* @param aaLevel Level of anti-aliasing. Possible values are 2,4 and 6.
 		*/																									
-		virtual void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport=true) = 0;
+		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport=true);
 		
 		/**
 		* Resizes the renderer.
@@ -397,7 +410,7 @@ namespace Polycode {
 	protected:	
 	
 		virtual bool checkSpecialKeyEvents(PolyKEY key) { return false; }
-	
+        
 		void loseFocus();
 		void gainFocus();
 		
@@ -431,7 +444,7 @@ namespace Polycode {
 		
 		bool mouseEnabled;
 		bool mouseCaptured;
-		
+        int anisotropyLevel;
 		unsigned int lastSleepFrameTicks;
 		
 		std::vector<Threaded*> threads;
@@ -439,7 +452,8 @@ namespace Polycode {
 		
 		int xRes;
 		int yRes;
-				
+        bool vSync;
+        
 		int monitorIndex;
 		
 		int frames;

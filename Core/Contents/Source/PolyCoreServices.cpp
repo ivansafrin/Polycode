@@ -25,7 +25,6 @@
 #include "PolyCoreInput.h"
 #include "PolyInputEvent.h"
 #include "PolyLogger.h"
-#include "PolyModule.h"
 #include "PolyResourceManager.h"
 #include "PolyMaterialManager.h"
 #include "PolyRenderer.h"
@@ -103,20 +102,6 @@ Logger *CoreServices::getLogger() {
 	return logger;
 }
 
-void CoreServices::installModule(PolycodeModule *module)  {
-	modules.push_back(module);
-	if(module->requiresUpdate()) {
-		updateModules.push_back(module);
-	}
-	
-	switch(module->getType()) {
-		case PolycodeModule::TYPE_SHADER:
-			materialManager->addShaderModule((PolycodeShaderModule*) module);
-			renderer->addShaderModule((PolycodeShaderModule*) module);
-		break;
-	}
-}
-
 void CoreServices::setupBasicListeners() {
 	this->setCore(this->core);	
 }
@@ -145,10 +130,6 @@ CoreServices::~CoreServices() {
     delete config;
     delete renderer;
 
-    for(std::size_t i = 0; i < modules.size(); i++) {
-        delete modules[i];
-    }
-    
 	instanceMap.clear();
 	overrideInstance = NULL;
 }
@@ -177,14 +158,12 @@ Renderer *CoreServices::getRenderer() {
 	return renderer;
 }
 
-void CoreServices::Render() {
-	if(renderer->doClearBuffer)		
-		renderer->clearScreen();
+void CoreServices::Render(const Polycode::Rectangle &viewport) {
 
-	renderer->setPerspectiveDefaults();
+//	renderer->setPerspectiveDefaults();
 	sceneManager->renderVirtual();
-	sceneManager->Render();
-	renderer->clearLights();
+	sceneManager->Render(viewport);
+//	renderer->clearLights();
 }
 
 void CoreServices::fixedUpdate() {
@@ -192,10 +171,6 @@ void CoreServices::fixedUpdate() {
 }
 
 void CoreServices::Update(int elapsed) {
-	
-	for(int i=0; i < updateModules.size(); i++) {
-		updateModules[i]->Update(elapsed);
-	}
 	resourceManager->Update(elapsed);
 	timerManager->Update();	
 	tweenManager->Update(elapsed);	

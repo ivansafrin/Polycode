@@ -319,7 +319,25 @@ namespace Polycode {
 			 * @param n The number of dimensions in matrix A.
 			 */
 			static Number generalDeterminant(Number const* const*a, int n);
-		
+        
+            // projection stuff
+        
+            inline void setOrthoProjection(Number left, Number right, Number bottom, Number top, Number zNear, Number zFar) {
+                m[0][0] = 2.0/(right-left);
+                m[1][1] = 2.0/(top-bottom);
+                m[2][2] = -2.0/(zFar-zNear);
+            }
+
+            inline void setProjection(Number fov, Number aspect, Number zNear, Number zFar) {
+                m[0][0] = 1.0f/tanf(fov/2.0)/aspect;
+                m[1][1] = 1.0f/tanf(fov/2.0);
+                m[2][2] = (zFar+zNear)/(zNear-zFar);
+                m[3][2] = (2.0f*zFar*zNear)/(zNear-zFar);
+                m[2][3] = -1.0f;
+                m[3][3] = 0.0f;
+            }
+        
+        
 		protected:
 		
 	};

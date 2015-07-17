@@ -1,5 +1,6 @@
+    
 /*
-Copyright (C) 2011 by Ivan Safrin
+Copyright (C) 2015 by Ivan Safrin
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,38 +21,49 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#pragma once
 
-#include "PolyModule.h"
+#pragma once
+#include "PolyGlobals.h"
+#include "PolyRenderer.h"
+#include "PolyTexture.h"
+
+#ifdef _WINDOWS
+#include <windows.h>
+#endif
+
+#if defined(__APPLE__) && defined(__MACH__)
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+#include <OpenGL/glu.h>
+#else
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glext.h>
+
+#if defined(_WINDOWS) && !defined(_MINGW)
+#include <GL/wglext.h>
+#endif
+#endif
+
 
 namespace Polycode {
-	
-	class GLSLProgram;
-	class ProgramParam;
-	class GLSLShader;
-	class ShaderProgram;
-    class ResourcePool;
+	class _PolyExport OpenGLGraphicsInterface : public GraphicsInterface {
+		
+	public:
+		
+		OpenGLGraphicsInterface();
+		~OpenGLGraphicsInterface();
 
-	class _PolyExport GLSLShaderModule : public PolycodeShaderModule {
-		public:
-			GLSLShaderModule();
-			virtual ~GLSLShaderModule();
-		
-			bool acceptsExtension(const String& extension);
-			ShaderProgram* createProgramFromFile(const String& extension, const String& fullPath);
-			void reloadPrograms();
-			String getShaderType();
-			Shader *createShader(ResourcePool *resourcePool, TiXmlNode *node);
-			Shader *createShader(ResourcePool *resourcePool, String name, String vpName, String fpName);
-			bool applyShaderMaterial(Renderer *renderer, Material *material, ShaderBinding *localOptions, unsigned int shaderIndex);	
-			void clearShader();
-		
+		// implementation
+        
+        void executeDrawCall(const GPUDrawCall& drawCall);
+        void createTexture(Texture *texture, int filteringMode, int anisotropy, bool createMipmaps);
+        void setViewport(unsigned int x,unsigned  int y,unsigned  int width, unsigned height);
+        void clearBuffers(bool colorBuffer, bool depthBuffer, bool stencilBuffer);
+        
 	protected:
 		
-		GLSLProgram *createGLSLProgram(const String& fileName, int type);
-		void updateGLSLParam(Renderer *renderer, GLSLShader *glslShader, ProgramParam &param, ShaderBinding *materialOptions, ShaderBinding *localOptions);			
-		
-		std::vector<GLSLProgram*> programs;
+        
 	};
-	
 }
+

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 by Ivan Safrin
+ Copyright (C) 2015 by Ivan Safrin
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -18,29 +18,48 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
-*/
+ */
 
-#include "PolyModule.h"
+#pragma once
 
-using namespace Polycode;
+#include "PolyMesh.h"
+#include "PolyShader.h"
+#include "PolyRectangle.h"
 
-PolycodeModule::PolycodeModule() {
-	type = TYPE_GENERIC;
-	_requiresUpdate = false;
-}
-
-PolycodeModule::~PolycodeModule() {
-	
-}
-
-bool PolycodeModule::requiresUpdate() {
-	return _requiresUpdate;
-}
-
-PolycodeShaderModule::PolycodeShaderModule() : PolycodeModule() {
-	type = TYPE_SHADER;
-}
-
-PolycodeShaderModule::~PolycodeShaderModule() {
-
+namespace Polycode {
+    
+    class _PolyExport GPUDrawOptions {
+    public:
+        bool depthTest;
+        bool depthWrite;
+        float linePointSize;
+        bool alphaTest;
+        bool backfaceCull;
+        bool depthOnly;
+        Color drawColor;
+    };
+    
+    class _PolyExport GPUDrawCall {
+    public:
+        unsigned int numVertices;
+        unsigned char type;
+        bool ownsAttributes;
+        GPUDrawOptions options;
+        
+        Matrix4 modelMatrix;
+        
+        std::vector<RenderDataArray*> attributeArrays;
+        std::vector<LocalShaderParam> uniforms;
+    };
+    
+    
+    class _PolyExport GPUDrawBuffer {
+    public:
+        GPUDrawBuffer();
+        ~GPUDrawBuffer();
+        
+        Matrix4 projectionMatrix;        
+        Polycode::Rectangle viewport;
+        std::vector<GPUDrawCall> drawCalls;
+    };
 }

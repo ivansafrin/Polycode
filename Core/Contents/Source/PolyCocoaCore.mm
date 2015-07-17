@@ -107,15 +107,10 @@ CocoaCore::CocoaCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, 
 	
 	initTime = mach_absolute_time();					
 
-	modeChangeInfo.needResolutionChange = false;
-
-	renderer = new OpenGLRenderer();
-	services->setRenderer(renderer);			
-	_setVideoMode(xRes,yRes,fullScreen, vSync, aaLevel, anisotropyLevel);
-	renderer->Init();
-
-	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
-
+    renderer = new Renderer();
+    renderer->setGraphicsInterface(this, new OpenGLGraphicsInterface());
+    services->setRenderer(renderer);
+    setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
 }
 
 void CocoaCore::copyStringToClipboard(const String& str) {
@@ -125,12 +120,6 @@ void CocoaCore::copyStringToClipboard(const String& str) {
     [pb declareTypes:types owner:nil];
 	
 	NSString *nsstr = [NSString stringWithCString: str.c_str() encoding:NSUTF8StringEncoding];
-	/*
-	char* data = (char*)str.c_str();
-	unsigned size = str.size() * sizeof(char);
-	
-	NSString* nsstr = [[[NSString alloc] initWithBytes:data length:size encoding:NSUTF32LittleEndianStringEncoding] autorelease];
-	*/
     [pb setString: nsstr forType:NSStringPboardType];	
 }
 
@@ -138,18 +127,6 @@ String CocoaCore::getClipboardString() {
 	NSPasteboard *pb = [NSPasteboard generalPasteboard];		
 	NSString* retString = [pb stringForType:NSStringPboardType];
 	return [retString UTF8String];
-}
-
-void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport) {
-    this->retinaSupport = retinaSupport;
-	// hack to make sure there are no window race conditions
-	modeChangeInfo.needResolutionChange = true;
-	modeChangeInfo.xRes = xRes;
-	modeChangeInfo.yRes = yRes;
-	modeChangeInfo.fullScreen = fullScreen;
-	modeChangeInfo.vSync = vSync;
-	modeChangeInfo.aaLevel = aaLevel;
-	modeChangeInfo.anisotropyLevel = anisotropyLevel;	
 }
 
 Number CocoaCore::getBackingXRes() {
@@ -168,10 +145,11 @@ Number CocoaCore::getBackingYRes() {
     return backingBounds.size.height;
 }
 
-void CocoaCore::_setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel) {
-	this->xRes = xRes;
-	this->yRes = yRes;
-
+void CocoaCore::handleVideoModeChange(VideoModeChangeInfo *modeInfo) {
+	this->xRes = modeInfo->xRes;
+	this->yRes = modeInfo->yRes;
+    this->retinaSupport = modeInfo->retinaSupport;
+    
     NSRect backingBounds;
     if(retinaSupport) {
         [glView setWantsBestResolutionOpenGLSurface:YES];
@@ -186,8 +164,9 @@ void CocoaCore::_setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, i
     }
     
 	bool _wasFullscreen = this->fullScreen;
-	this->fullScreen = fullScreen;
-	this->aaLevel = aaLevel;
+	this->fullScreen = modeInfo->fullScreen;
+	this->aaLevel = modeInfo->aaLevel;
+    this->vSync = modeInfo->vSync;
 	
 	NSOpenGLPixelFormatAttribute attrs[32];
 	
@@ -271,14 +250,14 @@ void CocoaCore::_setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, i
 		CGLDisable(ctx, kCGLCESurfaceBackingSize);		
 	}
     
-	renderer->Resize(xRes, yRes);
+        // RENDERER_TODO
+	//renderer->Resize(xRes, yRes);
 
 	if(aaLevel > 0) {
 		glEnable( GL_MULTISAMPLE_ARB );
 	} else {
 		glDisable( GL_MULTISAMPLE_ARB );			
 	}
-	
 }
 
 void CocoaCore::openFileWithApplication(String file, String application) {
@@ -327,7 +306,8 @@ String CocoaCore::executeExternalCommand(String command,  String args, String in
 void CocoaCore::resizeTo(int xRes, int yRes) {
 	this->xRes = xRes;
 	this->yRes = yRes;
-	renderer->Resize(xRes, yRes);	
+    // RENDERER_TODO
+//	renderer->Resize(xRes, yRes);
 	dispatchEvent(new Event(), EVENT_CORE_RESIZE);	
 }
 
@@ -648,31 +628,18 @@ vector<String> CocoaCore::openFilePicker(vector<CoreFileExtension> extensions, b
 }
 
 void CocoaCore::Render() {
-	lockMutex(CoreServices::getRenderMutex());
-	
-	if(!paused) {	
-		renderer->BeginRender();
-	}
+    services->Render(Polycode::Rectangle(0, 0, getBackingXRes(), getBackingYRes()));
+    renderer->flushContext();
+}
 
-	services->Render();
-
-	if(!paused) {		
-		renderer->EndRender();
-		[context flushBuffer];
-	}
-	
-	unlockMutex(CoreServices::getRenderMutex());
+void CocoaCore::flushRenderContext() {
+    [context flushBuffer];
 }
 
 bool CocoaCore::systemUpdate() {
 	if(!running)
 		return false;
 	doSleep();
-	
-	if(modeChangeInfo.needResolutionChange) {
-		_setVideoMode(modeChangeInfo.xRes, modeChangeInfo.yRes, modeChangeInfo.fullScreen, modeChangeInfo.vSync, modeChangeInfo.aaLevel, modeChangeInfo.anisotropyLevel);
-		modeChangeInfo.needResolutionChange = false;
-	}
 							
 	updateCore();
 	checkEvents();

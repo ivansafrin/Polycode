@@ -22,6 +22,7 @@
 
 #include "PolyCore.h"
 #include "PolyCoreInput.h"
+#include "PolyRenderer.h"
 #include "PolyCoreServices.h"
 
 #ifdef _WINDOWS
@@ -56,6 +57,9 @@ namespace Polycode {
 		int _hz;
 		getScreenInfo(&defaultScreenWidth, &defaultScreenHeight, &_hz);
 	
+        
+        this->aaLevel = aaLevel;
+        this->anisotropyLevel = anisotropyLevel;
 		services = CoreServices::getInstance();
 		input = new CoreInput();
 		services->setCore(this);
@@ -68,6 +72,7 @@ namespace Polycode {
 		elapsed = 0;
 		xRes = _xRes;
 		yRes = _yRes;
+        this->vSync = vSync;
 		paused = false;
 		pauseOnLoseFocus = false;
 		if (fullScreen && !xRes && !yRes) {
@@ -83,7 +88,24 @@ namespace Polycode {
 		
 		setFramerate(frameRate);
 		threadedEventMutex = NULL;
+        
 	}
+    
+    void Core::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport) {
+        
+        VideoModeChangeInfo *modeChangeInfo =  new VideoModeChangeInfo();
+        
+        modeChangeInfo->retinaSupport = retinaSupport;
+        modeChangeInfo->xRes = xRes;
+        modeChangeInfo->yRes = yRes;
+        modeChangeInfo->fullScreen = fullScreen;
+        modeChangeInfo->vSync = vSync;
+        modeChangeInfo->aaLevel = aaLevel;
+        modeChangeInfo->anisotropyLevel = anisotropyLevel;
+        
+        renderer->getRenderThread()->enqueueJob(RenderThread::JOB_REQUEST_CONTEXT_CHANGE, modeChangeInfo);
+    }
+    
     
     int Core::getScreenWidth() {
         int width, height, hz;

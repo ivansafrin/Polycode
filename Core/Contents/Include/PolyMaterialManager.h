@@ -33,7 +33,6 @@ namespace Polycode {
 	
 	class Cubemap;
 	class Material;
-	class PolycodeShaderModule;
 	class Texture;
 	class SceneRenderTexture;
 	class Shader;
@@ -51,10 +50,6 @@ namespace Polycode {
 			
 			void Update(int elapsed);
 
-			/**
-			* Creates a new framebuffer texture.
-			*/ 
-			Texture *createFramebufferTexture(int width, int height, int type);
 			Texture *createTexture(int width, int height, char *imageData, bool clamp=false, bool createMipmaps = true, int type=Image::IMAGE_RGBA);
 			Texture *createNewTexture(int width, int height, bool clamp=false, bool createMipmaps = true, int type=Image::IMAGE_RGBA);
 			Texture *createTextureFromImage(Image *image, bool clamp=false, bool createMipmaps = true);
@@ -64,9 +59,7 @@ namespace Polycode {
 			void reloadTextures();
 			
 			void reloadProgramsAndTextures();
-			void reloadPrograms();		
-		
-			void addShaderModule(PolycodeShaderModule *module);		
+			void reloadPrograms();
 		
 			//SceneRenderTexture *createRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight);
 			Texture *getTextureByResourcePath(const String& resourcePath) const;
@@ -107,7 +100,6 @@ namespace Polycode {
 			std::vector<Texture*> textures;
 			std::vector<Material*> materials;
 			std::vector<Shader*> shaders;
-		
-			std::vector <PolycodeShaderModule*> shaderModules;
+
 	};
 };

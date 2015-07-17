@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 by Ivan Safrin
+ Copyright (C) 2015 by Ivan Safrin
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -20,49 +20,14 @@
  THE SOFTWARE.
  */
 
-#pragma once
-#include "PolyString.h"
-#include "PolyGlobals.h"
-#include "PolyResource.h"
-#include "PolyImage.h"
+#include "PolyGPUDrawBuffer.h"
 
-namespace Polycode {
+using namespace Polycode;
 
-	class _PolyExport Texture : public Resource {
-		public:
-		Texture(unsigned int width, unsigned int height, char *textureData,bool clamp, bool createMipmaps, int type=Image::IMAGE_RGBA);
-			Texture(Image *image);
-			virtual ~Texture();
+GPUDrawBuffer::GPUDrawBuffer() {
+    
+}
 
-			Number scrollSpeedX;
-			Number scrollSpeedY;
-			
-			void reloadResource();
-			
-			void setImageData(Image *data);
-			char *getTextureData() const { return textureData;}
-			
-			int getWidth() const;
-			int getHeight() const;
-
-			void setCreateMipmaps(bool createMipmapsIn) { createMipmaps = createMipmapsIn; }
-			bool getCreateMipmaps() const { return createMipmaps; }
-		
-			bool clamp;
-			char *textureData;
-        
-            void *platformData;
-            int type;
-        
-		protected:
-
-			int pixelSize;
-			int filteringMode;
-		
-			bool createMipmaps;
-			int width;
-			int height;
-			Number scrollOffsetX;
-			Number scrollOffsetY;
-	};
+GPUDrawBuffer::~GPUDrawBuffer() {
+    
 }

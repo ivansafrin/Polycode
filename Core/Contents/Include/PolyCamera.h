@@ -176,10 +176,8 @@ namespace Polycode {
              */
             Scene *getParentScene() const;
 			
-            /**
-             * Sets the renderer viewport and projection/modelview matrices based on the camera's setting and transform.
-             */
-			void doCameraTransform();
+
+            Matrix4 createProjectionMatrix();
 
             /**
              * Check if camera has a post filter material applied
@@ -275,7 +273,9 @@ namespace Polycode {
              * Return's the camera's pixel viewport based on the last render pass.
              */
 			Polycode::Rectangle getViewport();
-			
+
+			void setViewport(const Polycode::Rectangle &viewport);
+        
 			/**
 			* Toggles the frustum culling of the camera. (Defaults to true).
 			*/
@@ -314,6 +314,8 @@ namespace Polycode {
 
 		protected:
 
+            void setOrthoMatrix(Matrix4 &matrix, Number xSize, Number ySize, Number _near, Number _far, bool centered);
+        
             bool useGlobalFramebuffer;
 			int projectionMode;
         

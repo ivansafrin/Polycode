@@ -178,7 +178,7 @@ namespace Polycode {
         void setCurrentFrame(unsigned int frameIndex);
         unsigned int getCurrentFrame();
         void Update();
-        void Render();
+        void Render(GPUDrawBuffer *buffer);
         
         Vector3 getSpriteBoundingBox() const;
         

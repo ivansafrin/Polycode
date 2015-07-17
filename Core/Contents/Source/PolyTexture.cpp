@@ -31,7 +31,8 @@ Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool
 	this->height = height;
 	this->clamp = clamp;
 	this->createMipmaps = createMipmaps;
-	
+    this->type = type;
+    
 	switch(type) {
 		case Image::IMAGE_RGB:
 			pixelSize = 3;			
@@ -56,12 +57,13 @@ Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool
 	scrollSpeedY = 0;
 	scrollOffsetX = 0;
 	scrollOffsetY = 0;
+    
+    platformData = NULL;
 }
 
 void Texture::reloadResource() {
 	Image *image = new Image(getResourcePath());
 	setImageData(image);
-	recreateFromImageData();
 	delete image;
 	Resource::reloadResource();	
 }
@@ -102,7 +104,6 @@ void Texture::setImageData(Image *data) {
 		free(this->textureData);
 	this->textureData = (char*)malloc(width*height*pixelSize);
 	memcpy(this->textureData, data->getPixels(), width*height*pixelSize);
-//	setTextureData(data->getPixels());
 
 }
 
@@ -111,18 +112,4 @@ Texture::Texture(Image *image) : Resource(Resource::RESOURCE_TEXTURE) {
 	this->textureData = (char*)malloc(image->getWidth()*image->getHeight()*pixelSize);
 	memcpy(this->textureData, image->getPixels(), image->getWidth()*image->getHeight()*pixelSize);	
 
-}
-
-void Texture::updateScroll(int elapsed) {
-	Number ef = ((Number)(elapsed))/1000.0f;
-	scrollOffsetX += scrollSpeedX*ef;
-	scrollOffsetY += scrollSpeedY*ef;
-}
-
-Number Texture::getScrollOffsetX() const {
-	return scrollOffsetX;
-}
-
-Number Texture::getScrollOffsetY() const {
-	return scrollOffsetY;
 }

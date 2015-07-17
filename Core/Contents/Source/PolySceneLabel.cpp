@@ -119,16 +119,20 @@ void SceneLabel::updateFromLabel() {
 	
     setLocalBoundingBox(label->getWidth()*labelScale / CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), label->getHeight()*labelScale/ CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), 0.001);
     
+        // RENDERER_TODO
+    /*
 	if(useVertexBuffer)
 		CoreServices::getInstance()->getRenderer()->createVertexBufferForMesh(mesh);
+     */
 	
 }
 
-void SceneLabel::Render() {
+void SceneLabel::Render(GPUDrawBuffer *buffer) {
 	if(positionAtBaseline) {
-		CoreServices::getInstance()->getRenderer()->translate2D(0.0, (((Number)label->getSize()*labelScale) * -1.0 / CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleY()) + (((Number)label->getBaselineAdjust())*labelScale/CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleY()));
+        // RENDERER_TODO
+		//CoreServices::getInstance()->getRenderer()->translate2D(0.0, (((Number)label->getSize()*labelScale) * -1.0 / CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleY()) + (((Number)label->getBaselineAdjust())*labelScale/CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleY()));
 	}
-	ScenePrimitive::Render();
+	ScenePrimitive::Render(buffer);
 }
 
 int SceneLabel::getTextWidthForString(String text) {

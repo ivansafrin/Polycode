@@ -25,6 +25,7 @@ THE SOFTWARE.
 #include "PolyEntity.h"
 #include "PolyShader.h"
 #include "PolyRenderDataArray.h"
+#include "PolyRenderer.h"
 
 namespace Polycode {
 
@@ -71,7 +72,7 @@ namespace Polycode {
 						
 			virtual ~SceneMesh();
 			
-			void Render();
+			void Render(GPUDrawBuffer *buffer);
 			
             /**
              * Returns the local material binding options for this mesh.
@@ -149,11 +150,6 @@ namespace Polycode {
 			Skeleton *getSkeleton();
 		
 			void renderMeshLocally();
-			
-			/**
-			* If this is set to true, the mesh will be cached to a hardware vertex buffer if those are available. This can dramatically speed up rendering.
-			*/
-			void cacheToVertexBuffer(bool cache);
 			
             /**
              * Sets the line width for line-based meshes.

@@ -52,9 +52,7 @@ void Scene::initScene(int sceneType, bool virtualScene) {
 	core = CoreServices::getInstance()->getCore();
 	this->sceneType = sceneType;
 	defaultCamera = new Camera(this);
-	activeCamera = defaultCamera;	
-	fogEnabled = false;
-	fogMode = Renderer::FOG_LINEAR;
+	activeCamera = defaultCamera;
     overrideMaterial = NULL;
 	lightingEnabled = false;
 	enabled = true;
@@ -152,7 +150,9 @@ Scene::~Scene() {
 
 void Scene::enableLighting(bool enable) {
 	lightingEnabled = enable;
-	CoreServices::getInstance()->getRenderer()->enableLighting(enable);
+
+    // RENDERER_TODO
+//	CoreServices::getInstance()->getRenderer()->enableLighting(enable);
 }
 
 void Scene::enableFog(bool enable) {
@@ -215,14 +215,19 @@ void Scene::setEntityVisibility(Entity *entity, Camera *camera) {
     }
 }
 
-void Scene::Render(Camera *targetCamera) {	
-	if(!targetCamera && !activeCamera)
-		return;
+void Scene::Render(Camera *targetCamera) {
+    if(!targetCamera && !activeCamera)
+        return;
+    if(!targetCamera)
+        targetCamera = activeCamera;
     
-    renderer->setOverrideMaterial(overrideMaterial);
+    GPUDrawBuffer *drawBuffer = new GPUDrawBuffer();
+    
+    drawBuffer->viewport = targetCamera->getViewport();
+///    drawBuffer->projectionMatrix = targetCamera->
+
+   // renderer->setOverrideMaterial(overrideMaterial);
 	
-	if(!targetCamera)
-		targetCamera = activeCamera;
 		
 	//make these the closest
 	
@@ -231,17 +236,14 @@ void Scene::Render(Camera *targetCamera) {
 	
 	
 	targetCamera->rebuildTransformMatrix();
-		
+    drawBuffer->projectionMatrix = targetCamera->getProjectionMatrix();
+    
+/*
 	if(useClearColor) {
 		CoreServices::getInstance()->getRenderer()->setClearColor(clearColor.r,clearColor.g,clearColor.b, clearColor.a);	
 	}
-	if (useClearColor || useClearDepth) {
-		CoreServices::getInstance()->getRenderer()->clearScreen(useClearColor, useClearDepth);
-	}
-	
-	CoreServices::getInstance()->getRenderer()->setAmbientColor(ambientColor.r,ambientColor.g,ambientColor.b);		
-	
-	CoreServices::getInstance()->getRenderer()->clearLights();
+	CoreServices::getInstance()->getRenderer()->setAmbientColor(ambientColor.r,ambientColor.g,ambientColor.b);
+*/
 	
 	for(int i=0; i < lights.size(); i++) {
 		SceneLight *light = lights[i];
@@ -261,8 +263,6 @@ void Scene::Render(Camera *targetCamera) {
 		Texture *shadowMapTexture = NULL;
 		if(light->areShadowsEnabled()) {
 			if(light->getType() == SceneLight::SPOT_LIGHT) {
-//				textureMatrix.identity();
-				
 				Matrix4 matTexAdj(0.5f,	0.0f,	0.0f,	0.0f,
 								  0.0f,	0.5f,	0.0f,	0.0f,
 								  0.0f,	0.0f,	0.5f,	0.0f,
@@ -270,8 +270,7 @@ void Scene::Render(Camera *targetCamera) {
 				
 				light->renderDepthMap(this);
 				textureMatrix = light->getLightViewMatrix() * matTexAdj;				
-				matrixPtr = &textureMatrix;				
-			//	CoreServices::getInstance()->getRenderer()->addShadowMap(light->getZBufferTexture());
+				matrixPtr = &textureMatrix;
 				shadowMapTexture = light->getZBufferTexture();
 			}
 		}
@@ -280,28 +279,26 @@ void Scene::Render(Camera *targetCamera) {
 		if(light->getParentEntity() != NULL) {
 			position = light->getParentEntity()->getConcatenatedMatrix() * position;			
 		}
-		CoreServices::getInstance()->getRenderer()->addLight(light->getLightImportance(), position, direction, light->getLightType(), light->lightColor, light->specularLightColor, light->getConstantAttenuation(), light->getLinearAttenuation(), light->getQuadraticAttenuation(), light->getIntensity(), light->getSpotlightCutoff(), light->getSpotlightExponent(), light->areShadowsEnabled(), matrixPtr, shadowMapTexture);
+        
+		//CoreServices::getInstance()->getRenderer()->addLight(light->getLightImportance(), position, direction, light->getLightType(), light->lightColor, light->specularLightColor, light->getConstantAttenuation(), light->getLinearAttenuation(), light->getQuadraticAttenuation(), light->getIntensity(), light->getSpotlightCutoff(), light->getSpotlightExponent(), light->areShadowsEnabled(), matrixPtr, shadowMapTexture);
 	}	
 		
-	targetCamera->doCameraTransform();
-    
-	CoreServices::getInstance()->getRenderer()->enableFog(fogEnabled);
-	if(fogEnabled) {
-		CoreServices::getInstance()->getRenderer()->setFogProperties(fogMode, fogColor, fogDensity, fogStartDepth, fogEndDepth);
-	} else {
-		CoreServices::getInstance()->getRenderer()->setFogProperties(fogMode, fogColor, 0.0, fogStartDepth, fogEndDepth);	
-	}
-	
+    	
     if(_doVisibilityChecking) {
         targetCamera->buildFrustumPlanes();
         setEntityVisibility(&rootEntity, targetCamera);
     }
-	rootEntity.transformAndRender();		
+	rootEntity.transformAndRender(drawBuffer);
+
+    
+    renderer->processDrawBuffer(drawBuffer);
+    
 }
 
 
 void Scene::RenderDepthOnly(Camera *targetCamera) {
-	
+    // RENDERER_TODO
+    /*
 	CoreServices::getInstance()->getRenderer()->cullFrontFaces(true);
 
 	targetCamera->rebuildTransformMatrix();	
@@ -318,10 +315,13 @@ void Scene::RenderDepthOnly(Camera *targetCamera) {
 	
 	CoreServices::getInstance()->getRenderer()->enableShaders(true);
 	CoreServices::getInstance()->getRenderer()->cullFrontFaces(false);	
+     */
 }
 
 Ray Scene::projectRayFromCameraAndViewportCoordinate(Camera *camera, Vector2 coordinate) {
 
+        // RENDERER_TODO
+    /*
 	Polycode::Rectangle viewport = camera->getViewport();
     
     if(remapMouse) {
@@ -375,7 +375,9 @@ Ray Scene::projectRayFromCameraAndViewportCoordinate(Camera *camera, Vector2 coo
 		break;		
 	}
 
+
 	return Ray(pos, dir);
+*/     
 }
 
 

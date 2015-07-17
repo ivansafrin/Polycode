@@ -163,7 +163,7 @@ void Camera::buildFrustumPlanes() {
 	Matrix4 mvp;
 	Number t;
 
-    mv = renderer->getModelviewMatrix();
+   // mv = renderer->getModelviewMatrix();
 
     //
     // Concatenate the projection matrix and the model-view matrix to produce 
@@ -342,6 +342,9 @@ void Camera::removePostFilter() {
 }
 
 void Camera::setPostFilter(Material *shaderMaterial) {
+    
+    // RENDERER_TODO
+    /*
 	if(!shaderMaterial)
 		return;
 	if(shaderMaterial->getNumShaders() == 0)
@@ -359,6 +362,7 @@ void Camera::setPostFilter(Material *shaderMaterial) {
 	}
 
 	_hasFilterShader = true;
+     */
 }
 
 bool Camera::hasFilterShader() {
@@ -367,6 +371,8 @@ bool Camera::hasFilterShader() {
 
 void Camera::drawFilter(Texture *targetTexture, Number targetTextureWidth, Number targetTextureHeight, Texture *targetColorTexture, Texture *targetZTexture) {
 
+    // RENDERER_TODO
+/*
 	if(!filterShaderMaterial)
 		return;
 		
@@ -430,8 +436,8 @@ void Camera::drawFilter(Texture *targetTexture, Number targetTextureWidth, Numbe
 					renderer->bindFrameBufferTexture(targetTexture);								
 					renderer->clearScreen();
 					renderer->loadIdentity();
-
-					renderer->drawScreenQuad(targetTextureWidth, targetTextureHeight);
+                    // RENDERER_TODO
+					//renderer->drawScreenQuad(targetTextureWidth, targetTextureHeight);
 					renderer->unbindFramebuffers();									
 				} else {
                     // global framebuffer ONLY used for input
@@ -444,15 +450,18 @@ void Camera::drawFilter(Texture *targetTexture, Number targetTextureWidth, Numbe
 					renderer->setViewportSize(renderer->getXRes(), renderer->getYRes());
 					renderer->clearScreen();
 					renderer->loadIdentity();
-					renderer->drawScreenQuad(renderer->getXRes(), renderer->getYRes());
+                    // RENDERER_TODO
+
+					//renderer->drawScreenQuad(renderer->getXRes(), renderer->getYRes());
 				}
 		} else {
 			for(int j=0; j < materialBinding->getNumOutTargetBindings(); j++) {
 				Texture *bindingTexture = materialBinding->getOutTargetBinding(j)->texture;
 				if(bindingTexture) {
 					renderer->setViewportSize(bindingTexture->getWidth(), bindingTexture->getHeight());
-					renderer->bindFrameBufferTexture(bindingTexture);				
-					renderer->drawScreenQuad(bindingTexture->getWidth(), bindingTexture->getHeight());
+					renderer->bindFrameBufferTexture(bindingTexture);
+                    // RENDERER_TODO
+					//renderer->drawScreenQuad(bindingTexture->getWidth(), bindingTexture->getHeight());
 					renderer->unbindFramebuffers();
 				}
 			}		
@@ -460,6 +469,7 @@ void Camera::drawFilter(Texture *targetTexture, Number targetTextureWidth, Numbe
 		renderer->clearShader();
 		renderer->loadIdentity();
 	}
+ */
 }
 
 Matrix4 Camera::getProjectionMatrix() {
@@ -468,6 +478,10 @@ Matrix4 Camera::getProjectionMatrix() {
 
 Polycode::Rectangle Camera::getViewport() {
 	return viewport;
+}
+
+void Camera::setViewport(const Polycode::Rectangle &viewport) {
+    this->viewport = viewport;
 }
 
 Number Camera::getNearClippingPlane() {
@@ -486,19 +500,57 @@ void Camera::setProjectionMatrix(Matrix4 matrix) {
     projectionMatrix = matrix;
 }
 
-void Camera::doCameraTransform() {
-	
+void Camera::setOrthoMatrix(Matrix4 &matrix, Number xSize, Number ySize, Number _near, Number _far, bool centered) {
+
+    if(centered) {
+        matrix.setOrthoProjection(-xSize*0.5, xSize*0.5, -ySize*0.5, ySize*0.5, _near, _far);
+    } else {
+        matrix.setOrthoProjection(0.0f, xSize, 0, ySize, _near, _far);
+    }
+}
+
+Matrix4 Camera::createProjectionMatrix() {
+    
+    Matrix4 retMatrix;
+    
+    switch (projectionMode) {
+        case PERSPECTIVE_FOV:
+            retMatrix.setProjection(fov * TORADIANS, (viewport.w/viewport.h), nearClipPlane, farClipPlane);
+            break;
+        case PERSPECTIVE_FRUSTUM:
+            // TODO
+          //  renderer->setProjectionFromFrustum(leftFrustum, rightFrustum, bottomFrustum, topFrustum, nearClipPlane, farClipPlane);
+            break;
+        case ORTHO_SIZE_MANUAL:
+            setOrthoMatrix(retMatrix, orthoSizeX, orthoSizeY, nearClipPlane, farClipPlane, !topLeftOrtho);
+            break;
+        case ORTHO_SIZE_LOCK_HEIGHT:
+            setOrthoMatrix(retMatrix, orthoSizeY * (viewport.w/viewport.h), orthoSizeY, nearClipPlane, farClipPlane, !topLeftOrtho);
+            break;
+        case ORTHO_SIZE_LOCK_WIDTH:
+            setOrthoMatrix(retMatrix, orthoSizeX, orthoSizeX * (viewport.h/viewport.w), nearClipPlane, farClipPlane, !topLeftOrtho);
+            break;
+        case ORTHO_SIZE_VIEWPORT:
+            setOrthoMatrix(retMatrix, viewport.w / renderer->getBackingResolutionScaleX(), viewport.h / renderer->getBackingResolutionScaleY(), nearClipPlane, farClipPlane, !topLeftOrtho);
+            break;
+        case MANUAL_MATRIX:
+            retMatrix = projectionMatrix;
+            break;
+    }
+    
+    return retMatrix;
+    
+    // RENDERER_TODO
+	/*
     viewport = renderer->getViewport();
 
 	switch (projectionMode) {
 		case PERSPECTIVE_FOV:
 			renderer->setViewportShift(cameraShift.x, cameraShift.y);
 			renderer->setProjectionFromFoV(fov, nearClipPlane, farClipPlane);
-			renderer->setPerspectiveDefaults();
 		break;
 		case PERSPECTIVE_FRUSTUM:
 			renderer->setProjectionFromFrustum(leftFrustum, rightFrustum, bottomFrustum, topFrustum, nearClipPlane, farClipPlane);
-			renderer->setPerspectiveDefaults();
 		break;
 		case ORTHO_SIZE_MANUAL:
 			renderer->setProjectionOrtho(orthoSizeX, orthoSizeY, nearClipPlane, farClipPlane, !topLeftOrtho);
@@ -530,4 +582,5 @@ void Camera::doCameraTransform() {
 	renderer->setCameraMatrix(camMatrix);	
 	camMatrix = camMatrix.Inverse();
 	renderer->multModelviewMatrix(camMatrix);
+     */
 }

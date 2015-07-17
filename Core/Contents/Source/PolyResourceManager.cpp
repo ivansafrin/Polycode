@@ -24,7 +24,6 @@
 #include "PolyCoreServices.h"
 #include "PolyCubemap.h"
 #include "PolyMaterialManager.h"
-#include "PolyModule.h"
 #include "PolyFontManager.h"
 #include "PolyLogger.h"
 #include "PolyMaterial.h"

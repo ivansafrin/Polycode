@@ -19,15 +19,10 @@ SET(polycore_SRCS
     Source/PolyEventHandler.cpp
     Source/PolyFixedShader.cpp
     Source/PolyFont.cpp
-	Source/PolyFontGlyphSheet.cpp
+    Source/PolyFontGlyphSheet.cpp
     Source/PolyFontManager.cpp
-    Source/PolyGLCubemap.cpp
-    Source/PolyGLRenderer.cpp
-    Source/PolyGLSLProgram.cpp
-    Source/PolyGLSLShader.cpp
-    Source/PolyGLSLShaderModule.cpp
-    Source/PolyGLTexture.cpp
-    Source/PolyGLVertexBuffer.cpp
+    Source/PolyGPUDrawBuffer.cpp
+    Source/PolyOpenGLGraphicsInterface.cpp
     Source/PolyImage.cpp
     Source/PolyInputEvent.cpp
     Source/PolyLabel.cpp
@@ -36,7 +31,6 @@ SET(polycore_SRCS
     Source/PolyMaterialManager.cpp
     Source/PolyMatrix4.cpp
     Source/PolyMesh.cpp
-    Source/PolyModule.cpp
     Source/PolyObject.cpp
     Source/PolyParticleEmitter.cpp
     Source/PolyPerlin.cpp
@@ -109,15 +103,9 @@ SET(polycore_HDRS
     Include/PolyFont.h
 	Include/PolyFontGlyphSheet.h
     Include/PolyFontManager.h
-    Include/PolyGLCubemap.h
-    Include/PolyGLHeaders.h
     Include/PolyGlobals.h
-    Include/PolyGLRenderer.h
-    Include/PolyGLSLProgram.h
-    Include/PolyGLSLShader.h
-    Include/PolyGLSLShaderModule.h
-    Include/PolyGLTexture.h
-    Include/PolyGLVertexBuffer.h
+    Include/PolyGPUDrawBuffer.h
+    Include/PolyOpenGLGraphicsInterface.h
     Include/PolyImage.h
     Include/PolyInputEvent.h
     Include/PolyInputKeys.h
@@ -127,7 +115,6 @@ SET(polycore_HDRS
     Include/PolyMaterialManager.h
     Include/PolyMatrix4.h
     Include/PolyMesh.h
-    Include/PolyModule.h
     Include/PolyObject.h
     Include/PolyParticleEmitter.h
     Include/PolyPerlin.h

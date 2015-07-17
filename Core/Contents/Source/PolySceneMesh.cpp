@@ -135,10 +135,6 @@ void SceneMesh::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly)
     Mesh *newMesh = mesh->Copy();
     _clone->setMesh(newMesh);
     
-    if(useVertexBuffer) {
-        _clone->cacheToVertexBuffer(true);
-    }
-    
     _clone->setMaterial(material);
     if(material) {
         localShaderOptions->copyTo(_clone->getLocalShaderOptions());
@@ -252,6 +248,7 @@ Skeleton *SceneMesh::getSkeleton() {
 }
 
 void SceneMesh::renderMeshLocally() {
+    /*
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
 
 	
@@ -317,14 +314,7 @@ void SceneMesh::renderMeshLocally() {
     } else {
         renderer->drawArrays(mesh->getMeshType(), NULL);
     }
-}
-
-void SceneMesh::cacheToVertexBuffer(bool cache) {
-
-	if(cache && !mesh->hasVertexBuffer()) {
-		CoreServices::getInstance()->getRenderer()->createVertexBufferForMesh(mesh);
-	}
-	useVertexBuffer = cache;
+     */
 }
 
 bool SceneMesh::customHitDetection(const Ray &ray) {
@@ -359,19 +349,20 @@ bool SceneMesh::customHitDetection(const Ray &ray) {
 	return false;
 }
 
-void SceneMesh::Render() {
-	
-	Renderer *renderer = CoreServices::getInstance()->getRenderer();
-	
-    renderer->enableAlphaTest(alphaTest);
-	renderer->enableBackfaceCulling(backfaceCulled);
+void SceneMesh::Render(GPUDrawBuffer *buffer) {
     
-	renderer->setLineSize(lineWidth);
-	renderer->setLineSmooth(lineSmooth);
-	renderer->setPointSize(pointSize);
-	renderer->setPointSmooth(pointSmooth);
-	
-	if(material) {
+    drawCall.options.alphaTest = alphaTest;
+    drawCall.options.linePointSize = lineWidth;
+    drawCall.options.backfaceCull = backfaceCulled;
+    drawCall.options.depthTest = depthTest;
+    drawCall.options.depthWrite = depthWrite;
+    drawCall.ownsAttributes = false;
+    
+    drawCall.attributeArrays.push_back(&mesh->vertexPositionArray);
+    drawCall.numVertices = mesh->getVertexCount();
+    
+    /*
+   	if(material) {
         
 		renderer->applyMaterial(material, localShaderOptions,0, forceMaterial);
 	} else {
@@ -429,4 +420,5 @@ void SceneMesh::Render() {
 		renderer->enableDepthTest(depthTestVal);
 	}	
     renderer->setWireframePolygonMode(false);    
+     */
 }

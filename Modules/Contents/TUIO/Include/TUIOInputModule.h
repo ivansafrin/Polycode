@@ -3,7 +3,6 @@
 
 #include <PolyInputEvent.h>
 #include <PolyCore.h>
-#include <PolyModule.h>
 
 #include "TuioListener.h"
 #include "TuioClient.h"
@@ -21,7 +20,7 @@ class TUIOEvent {
 		TouchInfo touch;
 };
 
-class TUIOInputModule : public PolycodeModule, TuioListener {
+class TUIOInputModule : public TuioListener {
 	public:
 		TUIOInputModule(int port);
 		virtual ~TUIOInputModule();

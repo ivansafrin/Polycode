@@ -30,11 +30,10 @@
 #include <vector>
 #include <OpenGL/gl.h>
 #include <OpenGL/OpenGL.h>
-#include "PolyGLRenderer.h"
+#include "PolyOpenGLGraphicsInterface.h"
 #include <mach/mach_time.h>
 #include <unistd.h>
 #include "PolyInputEvent.h"
-#include "PolyGLSLShaderModule.h"
 #include <IOKit/hid/IOHIDLib.h>
 #import <Cocoa/Cocoa.h>
 
@@ -103,30 +102,20 @@ namespace Polycode {
 			CoreInput *input;		
 	};
 	
-	class VideoModeChangeInfo {
-		public:
-		int xRes;
-		int yRes;
-		bool fullScreen;
-		bool vSync;
-		int aaLevel;
-		int anisotropyLevel;
-		bool needResolutionChange;
-	};
-	
 	class _PolyExport CocoaCore : public Core {		
 	public:
 		
 		CocoaCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex=-1, bool retinaSupport=false);
 		virtual ~CocoaCore();
 		
+        bool createRenderContext();
+        
 		void enableMouse(bool newval);
 		unsigned int getTicks();		
 		bool systemUpdate();
 		
 		void Render();
 								
-		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport = true);
 		void resizeTo(int xRes, int yRes);
 		void createThread(Threaded *target);		
 		
@@ -177,17 +166,15 @@ namespace Polycode {
         Number getBackingXRes();
         Number getBackingYRes();
         
-								
+        void handleVideoModeChange(VideoModeChangeInfo *modeInfo);
+        void flushRenderContext();
+        
 	protected:	
-		
-		void _setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel);
 	
 		PolycodeView *glView;
 		uint64_t initTime;
         bool retinaSupport;
-		
-		VideoModeChangeInfo modeChangeInfo;
-		
+				
 		IOHIDManagerRef hidManager;
 	};
 }

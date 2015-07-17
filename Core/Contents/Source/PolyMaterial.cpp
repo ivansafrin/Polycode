@@ -83,6 +83,9 @@ void Material::recreateRenderTargets() {
 }
 
 void Material::recreateRenderTarget(ShaderRenderTarget *renderTarget) {
+    
+    // RENDERER_TODO
+    /*
 	int textureWidth;
 	int textureHeight;
 	Texture *newTexture;
@@ -113,6 +116,7 @@ void Material::recreateRenderTarget(ShaderRenderTarget *renderTarget) {
 	}
 	
 	CoreServices::getInstance()->getRenderer()->createRenderTextures(&newTexture, NULL, textureWidth, textureHeight, fp16RenderTargets);
+    
 	newTexture->setResourceName(renderTarget->id);
 	
 	Texture *oldTexture = renderTarget->texture;
@@ -132,9 +136,12 @@ void Material::recreateRenderTarget(ShaderRenderTarget *renderTarget) {
 		
 		CoreServices::getInstance()->getRenderer()->destroyTexture(oldTexture);
 	}
+    */
 }
 
 void Material::handleEvent(Event *event) {
+    // RENDERER_TODO
+    /*
 	//Fix the bindings when we detect a reload
 	for (int i = 0; i < materialShaders.size(); i++) {
 		Shader* shader = materialShaders[i];
@@ -148,6 +155,7 @@ void Material::handleEvent(Event *event) {
 		}
 	}
 	dispatchEvent(new Event(), Event::RESOURCE_RELOAD_EVENT);	
+     */
 }
 
 void Material::removeShader(int shaderIndex) {
@@ -158,6 +166,8 @@ void Material::removeShader(int shaderIndex) {
 }
 
 void Material::addShaderAtIndex(Shader *shader,ShaderBinding *shaderBinding, int shaderIndex) {
+        // RENDERER_TODO
+    /*
 	materialShaders.insert(materialShaders.begin()+shaderIndex, shader);
 	shaderBindings.insert(shaderBindings.begin()+shaderIndex, shaderBinding);
 	
@@ -169,9 +179,12 @@ void Material::addShaderAtIndex(Shader *shader,ShaderBinding *shaderBinding, int
 			shaderBinding->addParam(shader->expectedParams[i].type, shader->expectedParams[i].name);
 		}
 	}
+     */
 }
 			
 void Material::addShader(Shader *shader,ShaderBinding *shaderBinding) {
+    // RENDERER_TODO
+    /*
 	materialShaders.push_back(shader);
 	shaderBindings.push_back(shaderBinding);
 	
@@ -183,6 +196,7 @@ void Material::addShader(Shader *shader,ShaderBinding *shaderBinding) {
 			shaderBinding->addParam(shader->expectedParams[i].type, shader->expectedParams[i].name);
 		}
 	}	
+     */
 }
 
 

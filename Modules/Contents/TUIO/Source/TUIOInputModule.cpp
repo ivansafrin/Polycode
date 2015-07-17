@@ -3,13 +3,12 @@
 #include <Polycode.h>
 
 
-TUIOInputModule::TUIOInputModule(int port) : PolycodeModule(), TuioListener() {
+TUIOInputModule::TUIOInputModule(int port) : TuioListener() {
 	tuioClient = new TuioClient(port);
 	tuioClient->addTuioListener(this);
 	tuioClient->connect();
 	
 	eventMutex = CoreServices::getInstance()->getCore()->createMutex();
-	_requiresUpdate = true;
 
 }
 

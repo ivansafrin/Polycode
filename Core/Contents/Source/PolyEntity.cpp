@@ -59,7 +59,7 @@ void Entity::initEntity() {
 	billboardMode = false;
 	billboardRoll = false;
 	billboardIgnoreScale = false;
-	depthOnly = false;
+	drawCall.options.depthOnly = false;
 	depthWrite = true;
 	ignoreParentMatrix = false;
 	blendingMode = Entity::defaultBlendingMode;
@@ -116,7 +116,6 @@ void Entity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) co
 	clone->blendingMode = blendingMode;
 	clone->colorAffectsChildren = colorAffectsChildren;
 	clone->visibilityAffectsChildren = visibilityAffectsChildren;
-	clone->depthOnly = depthOnly;
 	clone->setUserData(getUserData());
 	clone->entityProps = entityProps;
 	clone->bBox = bBox;
@@ -127,6 +126,8 @@ void Entity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) co
 	clone->snapToPixels = snapToPixels;
     clone->setAnchorPoint(anchorPoint);
     clone->layerID = layerID;
+    
+    clone->drawCall.options = drawCall.options;
     
 	clone->id = id;
 	if(tags == NULL) {
@@ -455,7 +456,8 @@ Matrix4 Entity::getConcatenatedRollMatrix() const {
 
 Vector2 Entity::getScreenPosition(const Matrix4 &projectionMatrix, const Matrix4 &cameraMatrix, const Polycode::Rectangle &viewport) {
 	if(renderer){
-		return renderer->Project(cameraMatrix, projectionMatrix, viewport, getConcatenatedMatrix().getPosition());
+        // RENDERER_TODO
+		//return renderer->Project(cameraMatrix, projectionMatrix, viewport, getConcatenatedMatrix().getPosition());
 	} else {
 		return Vector2();
 	}
@@ -463,13 +465,22 @@ Vector2 Entity::getScreenPosition(const Matrix4 &projectionMatrix, const Matrix4
 
 Vector2 Entity::getScreenPositionForMainCamera() {
 	if(renderer) {
-		return getScreenPosition(renderer->getProjectionMatrix(), renderer->getCameraMatrix(), renderer->getViewport());
+        // RENDERER_TODO
+		//return getScreenPosition(renderer->getProjectionMatrix(), renderer->getCameraMatrix(), renderer->getViewport());
 	} else {
 		return Vector2();
 	}
 }
 
-void Entity::transformAndRender() {
+void Entity::setDepthOnly(bool val) {
+    drawCall.options.depthOnly = true;
+}
+
+bool Entity::getDepthOnly() {
+    
+}
+
+void Entity::transformAndRender(GPUDrawBuffer *buffer) {
 	if(!renderer || !enabled)
 		return;
 
@@ -477,10 +488,9 @@ void Entity::transformAndRender() {
 		rebuildTransformMatrix();
     }
     
-	if(depthOnly) {
-		renderer->drawToColorBuffer(false);
-	}
+    
 	
+    /*
 	bool isScissorEnabled;
 	Polycode::Rectangle oldScissorBox;
 	
@@ -498,14 +508,15 @@ void Entity::transformAndRender() {
 
 		renderer->setScissorBox(finalScissorBox);
 	}
+     */
 		
-	renderer->pushMatrix();
-	if(ignoreParentMatrix && parentEntity) {
-		renderer->multModelviewMatrix(parentEntity->getConcatenatedMatrix().Inverse());
-	}
+	if(ignoreParentMatrix) {
+        drawCall.modelMatrix = transformMatrix;
+    } else {
+        drawCall.modelMatrix = getConcatenatedMatrix();
+    }
 
-    renderer->multModelviewMatrix(transformMatrix);
-	
+    /*
 	if(billboardMode) {
 		if(billboardIgnoreScale) {
 			renderer->billboardMatrix();
@@ -516,48 +527,20 @@ void Entity::transformAndRender() {
 			renderer->multModelviewMatrix(getConcatenatedRollMatrix());
 		}
 	}
-	
-	if(!depthWrite)
-		renderer->enableDepthWrite(false);
-	else
-		renderer->enableDepthWrite(true);
-	
-	if(!depthTest) 
-		renderer->enableDepthTest(false);
-	else
-		renderer->enableDepthTest(true);
-	
-    renderer->pushVertexColor();
-	renderer->multiplyVertexColor(color);
-	
-	renderer->setBlendingMode(blendingMode);
-	   
+*/
+    
+    
 	if(visible && rendererVis) {
-		renderer->pushMatrix();		
-		renderer->translate3D(-anchorPoint.x * bBox.x * 0.5, -anchorPoint.y * bBox.y * 0.5 * yAdjust, -anchorPoint.z * bBox.z * 0.5);
-		Render();
-		renderer->popMatrix();
+		Render(buffer);
 	}
     
-    if(!colorAffectsChildren) {
-        renderer->pushVertexColor();
-        renderer->loadVertexColorIdentity();
-        if(visible || (!visible && !visibilityAffectsChildren)) {
-            renderChildren();
-        }
-        renderer->popVertexColor();
-    } else {
-        if(visible || (!visible && !visibilityAffectsChildren)) {
-            renderChildren();
-        }
+    if(visible || (!visible && !visibilityAffectsChildren)) {
+        renderChildren(buffer);
     }
-		
+/*
     renderer->popVertexColor();
     
 	renderer->popMatrix();
-	
-	if(!depthWrite)
-		renderer->enableDepthWrite(true);
 	
 	
 	if(depthOnly) {
@@ -568,6 +551,7 @@ void Entity::transformAndRender() {
 		renderer->enableScissor(isScissorEnabled);
 		renderer->setScissorBox(oldScissorBox);
 	}
+*/
 }
 
 void Entity::setRenderer(Renderer *renderer) {
@@ -578,9 +562,9 @@ void Entity::setRenderer(Renderer *renderer) {
 }
 
 
-void Entity::renderChildren() {
+void Entity::renderChildren(GPUDrawBuffer *buffer) {
 	for(int i=0;i<children.size();i++) {
-		children[i]->transformAndRender();
+		children[i]->transformAndRender(buffer);
 	}
 }
 

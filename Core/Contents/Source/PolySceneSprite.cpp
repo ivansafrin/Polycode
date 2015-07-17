@@ -249,7 +249,7 @@ unsigned int SceneSprite::getCurrentFrame() {
     return currentFrame;
 }
 
-void SceneSprite::Render() {
+void SceneSprite::Render(GPUDrawBuffer *buffer) {
     
     if(!currentSprite || !currentSpriteState) {
         return;
@@ -264,7 +264,7 @@ void SceneSprite::Render() {
         useVertexBuffer = false;
     }
     
-    SceneMesh::Render();
+    SceneMesh::Render(buffer);
 }
 
 SceneSprite::~SceneSprite() {

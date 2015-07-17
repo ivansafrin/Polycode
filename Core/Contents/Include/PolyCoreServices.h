@@ -67,7 +67,7 @@ namespace Polycode {
 			
 			void Update(int elapsed);
             void fixedUpdate();
-			void Render();
+			void Render(const Polycode::Rectangle &viewport);
 			
 			void setCore(Core *core);
 		
@@ -91,14 +91,7 @@ namespace Polycode {
             CoreInput *getInput();
 			
 			void handleEvent(Event *event);
-		
-			/**
-			* Installs a plugin module at runtime.
-			* @param module Plugin module to install. See PolygonModule for more details on modules.
-			@see PolycodeModule
-			*/
-			void installModule(PolycodeModule *module);
-			
+
 			/**
 			* Returns the material manager. The material manager is responsible for loading and managing textures, shaders and materials.
 			* @return Material manager.
@@ -175,9 +168,6 @@ namespace Polycode {
 			static CoreServices* overrideInstance;
 			static std::map <long, CoreServices*> instanceMap;
 			static CoreMutex *renderMutex;
-		
-			std::vector<PolycodeModule*> modules;
-			std::vector<PolycodeModule*> updateModules;
 					
 			Core *core;
 			Config *config;

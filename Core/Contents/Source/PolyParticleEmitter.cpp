@@ -227,7 +227,8 @@ void SceneParticleEmitter::rebuildParticles() {
         case PARTICLE_TYPE_MESH:
         case PARTICLE_TYPE_QUAD:
         {
-            Matrix4 cameraMatrix = renderer->getCameraMatrix();
+            // RENDERER_TODO
+            Matrix4 cameraMatrix;// = renderer->getCameraMatrix();
             Quaternion q;
             
             Color vertexColor;
@@ -313,10 +314,6 @@ void SceneParticleEmitter::rebuildParticles() {
         }
             break;
             
-    }
-    
-    if(useVertexBuffer) {
-		CoreServices::getInstance()->getRenderer()->createVertexBufferForMesh(mesh);
     }
 }
 

@@ -46,7 +46,7 @@ namespace Polycode {
             void setLabelActualHeight(Number actualHeight);
             Number getLabelActualHeight();
 			
-			void Render();
+			void Render(GPUDrawBuffer *buffer);
 
             int getTextWidthForString(String text);
         

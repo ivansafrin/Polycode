@@ -22,6 +22,7 @@ THE SOFTWARE.
 
 #pragma once
 #include "PolyGlobals.h"
+#include "PolyRectangle.h"
 
 #include <vector>
 
@@ -52,7 +53,7 @@ namespace Polycode {
         // Polycode internal
 		void Update();
 		void fixedUpdate();
-		void Render();
+		void Render(const Polycode::Rectangle &viewport);
 		void renderVirtual();
 		void registerRenderTexture(SceneRenderTexture *renderTexture);
 		void unregisterRenderTexture(SceneRenderTexture *renderTexture);

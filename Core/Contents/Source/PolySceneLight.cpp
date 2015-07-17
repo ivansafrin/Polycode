@@ -70,6 +70,8 @@ int SceneLight::getLightImportance() const {
 }
 
 void SceneLight::enableShadows(bool val, unsigned int resolution) {
+        // RENDERER_TODO
+    /*
 	if(val) {
         if(zBufferTexture) {
             CoreServices::getInstance()->getMaterialManager()->deleteTexture(zBufferTexture);
@@ -77,10 +79,6 @@ void SceneLight::enableShadows(bool val, unsigned int resolution) {
         CoreServices::getInstance()->getRenderer()->createRenderTextures(NULL, &zBufferTexture, resolution, resolution, false);
 		if(!spotCamera) {
 			spotCamera = new Camera(parentScene);
-            /*
-            spotCamera->setProjectionMode(Camera::ORTHO_SIZE_MANUAL);
-            spotCamera->setOrthoSize(5.0, 5.0);
-             */
             spotCamera->editorOnly = true;
             spotCamera->setClippingPlanes(0.01, 100.0);
 //            spotCamera->setPitch(90.0);
@@ -91,6 +89,7 @@ void SceneLight::enableShadows(bool val, unsigned int resolution) {
 	} else {
 		shadowsEnabled = false;
 	}
+*/
 }
 
 bool SceneLight::areShadowsEnabled() const {
@@ -128,6 +127,8 @@ unsigned int SceneLight::getShadowMapResolution() const {
 }
 
 void SceneLight::renderDepthMap(Scene *scene) {
+        // RENDERER_TODO
+    /*
     spotCamera->setFOV(shadowMapFOV);
 	Renderer* renderer = CoreServices::getInstance()->getRenderer();
 	renderer->pushMatrix();
@@ -145,6 +146,7 @@ void SceneLight::renderDepthMap(Scene *scene) {
 	renderer->unbindFramebuffers();
 	renderer->popMatrix();
 	renderer->setViewportSize(vpW , vpH);
+     */
 }
 
 Entity *SceneLight::Clone(bool deepClone, bool ignoreEditorOnly) const {

@@ -24,7 +24,6 @@
 #include "PolyCoreServices.h"
 #include "PolyCubemap.h"
 #include "PolyMaterial.h"
-#include "PolyModule.h"
 #include "PolyRenderer.h"
 #include "PolyResourceManager.h"
 #include "PolyFixedShader.h"
@@ -46,9 +45,7 @@ MaterialManager::~MaterialManager() {
 }
 
 void MaterialManager::Update(int elapsed) {
-	for(int i=0;i < textures.size(); i++) {
-		textures[i]->updateScroll(elapsed);
-	}
+
 }
 
 Texture *MaterialManager::getTextureByResourcePath(const String& resourcePath) const {
@@ -70,10 +67,7 @@ void MaterialManager::deleteTexture(Texture *texture) {
 }
 
 void MaterialManager::reloadPrograms() {
-	for(int m=0; m < shaderModules.size(); m++) {
-		PolycodeShaderModule *shaderModule = shaderModules[m];
-		shaderModule->reloadPrograms();
-	}
+
 	vector<Resource *> shaders = CoreServices::getInstance()->getResourceManager()->getResources(Resource::RESOURCE_SHADER);
 	for(int s = 0; s < shaders.size(); s++) {
 		Shader *shader = (Shader *)shaders[s];
@@ -106,7 +100,9 @@ void MaterialManager::loadMaterialLibraryIntoPool(ResourcePool *pool, const Stri
 
 ShaderProgram *MaterialManager::createProgramFromFile(String programPath) {
 	OSFileEntry entry(programPath, OSFileEntry::TYPE_FILE);
-	   
+
+    // RENDERER_TODO
+    /*
 	for(int m=0; m < shaderModules.size(); m++) {
 		PolycodeShaderModule *shaderModule = shaderModules[m];
 		if(shaderModule->acceptsExtension(entry.extension)) {
@@ -118,11 +114,8 @@ ShaderProgram *MaterialManager::createProgramFromFile(String programPath) {
 			return newProgram;
 		}
 	}
+     */
 	return NULL;
-}
-
-void MaterialManager::addShaderModule(PolycodeShaderModule *module) {
-	shaderModules.push_back(module);
 }
 
 #define DEFAULT_TEXTURE "default/default.png"
@@ -157,11 +150,6 @@ Texture *MaterialManager::createTextureFromFile(const String& fileName, bool cla
 	}
 		
 	delete image;
-	return newTexture;
-}
-
-Texture *MaterialManager::createFramebufferTexture(int width, int height, int type) {
-	Texture *newTexture = CoreServices::getInstance()->getRenderer()->createFramebufferTexture(width, height);
 	return newTexture;
 }
 
@@ -202,7 +190,8 @@ void MaterialManager::reloadProgramsAndTextures() {
 void MaterialManager::reloadTextures() {
 	for(int i=0; i < textures.size(); i++) {
 		Texture *texture = textures[i];
-		texture->recreateFromImageData();
+        //RENDERER_TODO
+//		texture->recreateFromImageData();
 	}
 }
 
@@ -220,12 +209,7 @@ Shader *MaterialManager::getShaderByIndex(unsigned int index) {
 Shader *MaterialManager::createShader(ResourcePool *resourcePool, String shaderType, String name, String vpName, String fpName, bool screenShader) {
 	Shader *retShader = NULL;
 	
-	for(int m=0; m < shaderModules.size(); m++) {
-		PolycodeShaderModule *shaderModule = shaderModules[m];
-		if(shaderModule->getShaderType() == shaderType) {
-			retShader = shaderModule->createShader(resourcePool, name, vpName, fpName);
-		}
-	}
+    // RENDERER_TODO
 	
 	if(retShader) {
 		retShader->screenShader = screenShader;
@@ -243,15 +227,7 @@ Shader *MaterialManager::createShaderFromXMLNode(ResourcePool *resourcePool, TiX
 	
 	Shader *retShader = NULL;
 	
-	if(nodeElement->Attribute("type")) {
-		String shaderType = nodeElement->Attribute("type");
-		for(int m=0; m < shaderModules.size(); m++) {
-			PolycodeShaderModule *shaderModule = shaderModules[m];
-			if(shaderModule->getShaderType() == shaderType) {
-				retShader = shaderModule->createShader(resourcePool, node);
-			}
-		}		
-	}
+    // RENDERER_TODO
 	
 	if (!retShader)
 		return NULL;
@@ -470,8 +446,13 @@ Material *MaterialManager::materialFromXMLNode(ResourcePool *resourcePool, TiXml
 				if(strcmp(pChild->Value(), "rendertarget") == 0) {
 					ShaderRenderTarget *newTarget = new ShaderRenderTarget;
 					newTarget->id = pChildElement->Attribute("id");
+                    
+                    // RENDERER_TODO
+                    /*
 					newTarget->width = CoreServices::getInstance()->getRenderer()->getXRes();
 					newTarget->height = CoreServices::getInstance()->getRenderer()->getYRes();
+                    */
+                    
 					newTarget->sizeMode = ShaderRenderTarget::SIZE_MODE_PIXELS;					
 					if(pChildElement->Attribute("width") && pChildElement->Attribute("height")) {
 						newTarget->width = atof(pChildElement->Attribute("width"));
@@ -517,7 +498,9 @@ Material *MaterialManager::materialFromXMLNode(ResourcePool *resourcePool, TiXml
 
 							if(strcmp(pChild2->Value(), "param") == 0){
 								String pname =  pChild2Element->Attribute("name");
-								
+
+                                    // RENDERER_TODO
+                                /*
 								if(!CoreServices::getInstance()->getRenderer()->getDataPointerForName(pname)) {								
                                     String pvalue =  pChild2Element->Attribute("value");
                                     int type = materialShader->getExpectedParamType(pname);
@@ -526,6 +509,7 @@ Material *MaterialManager::materialFromXMLNode(ResourcePool *resourcePool, TiXml
                                         param->setParamValueFromString(type, pvalue);
                                     }
 								}
+                                 */
 							}						
 						}
 					}

@@ -266,6 +266,9 @@ Texture *UIRect::getTexture() {
 }
 
 void UIRect::Render() {
+    
+    // RENDERER_TODO
+    /*
 	renderer->clearShader();
 	renderer->setTexture(texture);
     
@@ -273,6 +276,7 @@ void UIRect::Render() {
     renderer->pushRenderDataArray(&rectMesh->vertexTexCoordArray);
 
 	renderer->drawArrays(Mesh::QUAD_MESH, NULL);
+     */
 }
 
 void UIRect::Resize(Number width, Number height) {

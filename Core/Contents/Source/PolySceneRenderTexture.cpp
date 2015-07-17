@@ -72,6 +72,9 @@ Camera *SceneRenderTexture::getTargetCamera() {
 }
 
 void SceneRenderTexture::Render() {
+    
+    // RENDERER_TODO
+    /*
     renderer->setViewportSize(targetTexture->getWidth(), targetTexture->getHeight());
     renderer->loadIdentity();
     if(targetCamera->hasFilterShader()) {
@@ -82,10 +85,13 @@ void SceneRenderTexture::Render() {
         renderer->unbindFramebuffers();
     }
     renderer->loadIdentity();
+     */
 }
 
 Image *SceneRenderTexture::saveToImage() {
-    return renderer->renderBufferToImage(targetTexture);
+    //RENDERER_TODO
+    //return renderer->renderBufferToImage(targetTexture);
+    return NULL;
 }
 
 Texture *SceneRenderTexture::getTargetTexture() {

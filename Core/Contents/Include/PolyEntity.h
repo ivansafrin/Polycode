@@ -30,6 +30,7 @@
 #include "PolyRectangle.h"
 #include "PolyRay.h"
 #include "PolyEventDispatcher.h"
+#include "PolyGPUDrawBuffer.h"
 #include <vector>
 
 namespace Polycode {
@@ -88,16 +89,16 @@ namespace Polycode {
 			/**
 			* Main render method. Override this to do your own drawing.
 			*/
-			virtual void Render(){};
+			virtual void Render(GPUDrawBuffer *buffer){};
 			/**
 			* Main update method. Override this to do your updates before the render cycle.
 			*/			
 			virtual void Update(){};			
 			virtual void fixedUpdate(){};
         
-			void transformAndRender();		
+            void transformAndRender(GPUDrawBuffer *drawBuffer);
 
-			void renderChildren();					
+			void renderChildren(GPUDrawBuffer *buffer);
 		
 			
 			/**
@@ -666,7 +667,9 @@ namespace Polycode {
 			/**
 			* If this flag is set to true, this entity will render only into the depth buffer. This, effectively, means that it will be invisible, but still obscuring other entities.
 			*/
-			bool depthOnly;		
+
+            void setDepthOnly(bool val);
+            bool getDepthOnly();
 			
 			/**
 			* If this flag is set to true, this entity's transformations will not take into account its parent, making its transforms always relative to 0.
@@ -897,9 +900,11 @@ namespace Polycode {
 
             std::vector <EntityProp> entityProps;
         
-		protected:
+            GPUDrawCall drawCall;
         
-		
+		protected:
+
+        
             AABB aabb;
             Vector3 bBox;
         
