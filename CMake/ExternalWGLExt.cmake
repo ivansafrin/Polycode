@@ -1,7 +1,7 @@
 # download some headers missing from Windows
 IF(NOT EXISTS ${POLYCODE_DEPS_DOWNLOAD_DIR}/wglext.h)
     #MESSAGE("Downloading http://www.opengl.org/registry/api/wglext.h")
-    FILE(DOWNLOAD https://dl.dropboxusercontent.com/u/97161424/wglext.h 
+    FILE(DOWNLOAD https://dl.dropboxusercontent.com/s/6xwfpaki8rd5rs7/wglext.h 
         ${POLYCODE_DEPS_DOWNLOAD_DIR}/wglext.h
         SHOW_PROGRESS)
 ENDIF()

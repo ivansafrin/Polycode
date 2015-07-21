@@ -2,7 +2,7 @@
 
 IF(NOT EXISTS ${POLYCODE_DEPS_DOWNLOAD_DIR}/glext.h)
     #MESSAGE("Downloading http://www.opengl.org/registry/api/glext.h")
-    FILE(DOWNLOAD https://dl.dropboxusercontent.com/u/97161424/glext.h 
+    FILE(DOWNLOAD https://dl.dropboxusercontent.com/s/6xwfpaki8rd5rs7/glext.h 
         ${POLYCODE_DEPS_DOWNLOAD_DIR}/glext.h
         SHOW_PROGRESS)
 ENDIF()

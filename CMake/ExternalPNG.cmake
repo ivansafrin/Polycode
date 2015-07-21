@@ -18,7 +18,7 @@ EXTERNALPROJECT_ADD(zlib
     PREFIX ${libpng_PREFIX}
 
     DOWNLOAD_DIR ${POLYCODE_DEPS_DOWNLOAD_DIR}
-    URL https://dl.dropboxusercontent.com/u/97161424/zlib-1.2.8.tar.gz
+    URL https://dl.dropboxusercontent.com/s/6xwfpaki8rd5rs7/zlib-1.2.8.tar.gz
     URL_MD5 44d667c142d7cda120332623eab69f40
 
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PolycodeDependencies_SOURCE_DIR}/../CMake/zlib.cmake <SOURCE_DIR>/CMakeLists.txt && ${CMAKE_COMMAND} -E remove <SOURCE_DIR>/zconf.h
@@ -42,7 +42,7 @@ EXTERNALPROJECT_ADD(libpng
     PREFIX ${libpng_PREFIX}
 
     DOWNLOAD_DIR ${POLYCODE_DEPS_DOWNLOAD_DIR}
-    URL https://dl.dropboxusercontent.com/u/97161424/libpng-1.5.10.tar.gz
+    URL https://dl.dropboxusercontent.com/s/6xwfpaki8rd5rs7/libpng-1.5.10.tar.gz
     URL_MD5 9e5d864bce8f06751bbd99962ecf4aad
 
     INSTALL_DIR ${POLYCODE_DEPS_CORE_PREFIX}
