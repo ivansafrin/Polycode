@@ -19,7 +19,7 @@ ExternalProject_Add(openal
     
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PolycodeDependencies_SOURCE_DIR}/../CMake/openal.cmake <SOURCE_DIR>/CMakeLists.txt
 
-    URL https://dl.dropboxusercontent.com/s/6xwfpaki8rd5rs7/openal-soft-1.14.tar.bz2
+    URL https://dl.dropboxusercontent.com/s/82ivysn1vz5mjc6/openal-soft-1.14.tar.bz2
     URL_MD5 3d8b86c21a2f87a2a5e60f78f3b3f03d
     
     INSTALL_DIR ${POLYCODE_DEPS_CORE_PREFIX}
