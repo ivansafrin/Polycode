@@ -16,7 +16,7 @@ EXTERNALPROJECT_ADD(freetype
     PREFIX ${freetype_PREFIX}
 
     DOWNLOAD_DIR ${POLYCODE_DEPS_DOWNLOAD_DIR}
-    URL http://download.savannah.gnu.org/releases/freetype/freetype-2.6.tar.gz
+    URL https://dl.dropboxusercontent.com/u/97161424/freetype-2.6.tar.gz
     URL_MD5 1d733ea6c1b7b3df38169fbdbec47d2b
 
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PolycodeDependencies_SOURCE_DIR}/../CMake/freetype/ftoption.h <SOURCE_DIR>/include/config/ftoption.h

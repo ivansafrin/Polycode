@@ -17,7 +17,7 @@ ExternalProject_Add(lua51
 
     DOWNLOAD_DIR ${POLYCODE_DEPS_DOWNLOAD_DIR}
 
-    URL http://www.lua.org/ftp/lua-5.1.4.tar.gz
+    URL https://dl.dropboxusercontent.com/u/97161424/lua-5.1.4.tar.gz
     URL_MD5 d0870f2de55d59c1c8419f36e8fac150
 
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PolycodeDependencies_SOURCE_DIR}/../CMake/lua51.cmake <SOURCE_DIR>/CMakeLists.txt

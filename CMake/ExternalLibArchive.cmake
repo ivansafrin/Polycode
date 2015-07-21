@@ -20,7 +20,7 @@ ExternalProject_Add(libarchive
 
     DOWNLOAD_DIR ${POLYCODE_DEPS_DOWNLOAD_DIR}
     
-    URL http://www.libarchive.org/downloads/libarchive-3.1.2.tar.gz
+    URL https://dl.dropboxusercontent.com/u/97161424/libarchive-3.1.2.tar.gz
     URL_MD5 efad5a503f66329bb9d2f4308b5de98a
     
     INSTALL_DIR ${POLYCODE_DEPS_TOOLS_PREFIX}

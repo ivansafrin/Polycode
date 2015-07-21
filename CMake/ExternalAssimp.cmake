@@ -28,7 +28,7 @@ ExternalProject_Add(assimp
 
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PolycodeDependencies_SOURCE_DIR}/../CMake/assimp.cmake <SOURCE_DIR>/code/CMakeLists.txt && ${CMAKE_COMMAND} -E copy_if_different ${PolycodeDependencies_SOURCE_DIR}/../CMake/assimp_patch/Vertex.h <SOURCE_DIR>/code/Vertex.h  && ${CMAKE_COMMAND} -E copy_if_different ${PolycodeDependencies_SOURCE_DIR}/../CMake/assimp_patch/BlenderModifier.cpp <SOURCE_DIR>/code/BlenderModifier.cpp  && ${CMAKE_COMMAND} -E copy_if_different ${PolycodeDependencies_SOURCE_DIR}/../CMake/assimp_patch/LWOAnimation.cpp <SOURCE_DIR>/code/LWOAnimation.cpp
     
-    URL http://download.sourceforge.net/assimp/assimp--2.0.863-sdk.zip
+    URL https://dl.dropboxusercontent.com/u/97161424/assimp--2.0.863-sdk.zip
     URL_MD5 9f41662501bd9d9533c4cf03b7c25d5b
 
     INSTALL_DIR ${POLYCODE_DEPS_TOOLS_PREFIX} 

@@ -15,7 +15,7 @@ EXTERNALPROJECT_ADD(libogg
     PREFIX ${oggvorbis_PREFIX}
 
     DOWNLOAD_DIR ${POLYCODE_DEPS_DOWNLOAD_DIR}
-    URL http://downloads.xiph.org/releases/ogg/libogg-1.2.2.tar.gz
+    URL https://dl.dropboxusercontent.com/u/97161424/libogg-1.2.2.tar.gz
     URL_MD5 5a9fcabc9a1b7c6f1cd75ddc78f36c56
 
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PolycodeDependencies_SOURCE_DIR}/../CMake/libogg.cmake <SOURCE_DIR>/CMakeLists.txt
@@ -39,7 +39,7 @@ EXTERNALPROJECT_ADD(libvorbis
     PREFIX ${oggvorbis_PREFIX}
 
     DOWNLOAD_DIR ${POLYCODE_DEPS_DOWNLOAD_DIR}
-    URL http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.2.tar.gz
+    URL https://dl.dropboxusercontent.com/u/97161424/libvorbis-1.3.2.tar.gz
     URL_MD5 c870b9bd5858a0ecb5275c14486d9554
 
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PolycodeDependencies_SOURCE_DIR}/../CMake/libvorbis.cmake <SOURCE_DIR>/CMakeLists.txt
