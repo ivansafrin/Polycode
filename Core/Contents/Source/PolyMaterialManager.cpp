@@ -26,7 +26,7 @@
 #include "PolyMaterial.h"
 #include "PolyRenderer.h"
 #include "PolyResourceManager.h"
-#include "PolyFixedShader.h"
+#include "PolyTexture.h"
 
 #include "tinyxml.h"
 
@@ -99,23 +99,8 @@ void MaterialManager::loadMaterialLibraryIntoPool(ResourcePool *pool, const Stri
 }
 
 ShaderProgram *MaterialManager::createProgramFromFile(String programPath) {
-	OSFileEntry entry(programPath, OSFileEntry::TYPE_FILE);
-
-    // RENDERER_TODO
-    /*
-	for(int m=0; m < shaderModules.size(); m++) {
-		PolycodeShaderModule *shaderModule = shaderModules[m];
-		if(shaderModule->acceptsExtension(entry.extension)) {
-			ShaderProgram *newProgram = shaderModule->createProgramFromFile(entry.extension, entry.fullPath);
-			if(newProgram) {
-				newProgram->setResourcePath(programPath);
-				newProgram->setResourceName(programPath);
-			}
-			return newProgram;
-		}
-	}
-     */
-	return NULL;
+    ShaderProgram *program = Services()->getRenderer()->createProgram(programPath);
+    return program;
 }
 
 #define DEFAULT_TEXTURE "default/default.png"
@@ -208,8 +193,15 @@ Shader *MaterialManager::getShaderByIndex(unsigned int index) {
 
 Shader *MaterialManager::createShader(ResourcePool *resourcePool, String shaderType, String name, String vpName, String fpName, bool screenShader) {
 	Shader *retShader = NULL;
-	
-    // RENDERER_TODO
+    
+    ShaderProgram *vertexProgram = (ShaderProgram*)resourcePool->getResourceByPath(vpName);
+    ShaderProgram *fragmentProgram = (ShaderProgram*)resourcePool->getResourceByPath(fpName);
+    
+    if(vertexProgram != NULL && fragmentProgram != NULL) {
+        retShader = Services()->getRenderer()->createShader(vertexProgram, fragmentProgram);
+        retShader->setName(name);
+        shaders.push_back(retShader);
+    }
 	
 	if(retShader) {
 		retShader->screenShader = screenShader;
@@ -226,8 +218,47 @@ Shader *MaterialManager::createShaderFromXMLNode(ResourcePool *resourcePool, TiX
 	if (!nodeElement) return NULL; // Skip comment nodes
 	
 	Shader *retShader = NULL;
-	
-    // RENDERER_TODO
+    TiXmlNode* pChild;
+    ShaderProgram *vp = NULL;
+    ShaderProgram *fp = NULL;
+    
+    for (pChild = node->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
+        TiXmlElement *pChildElement = pChild->ToElement();
+        if (!pChildElement) continue; // Skip comment nodes
+        
+        if(strcmp(pChild->Value(), "vp") == 0) {
+            String vpFileName = String(pChildElement->Attribute("source"));
+            vp = (ShaderProgram*)resourcePool->getResourceByPath(vpFileName);
+            if(!vp) {
+                vp = (ShaderProgram*)CoreServices::getInstance()->getMaterialManager()->createProgramFromFile(vpFileName);
+                if(vp) {
+                    vp->setResourcePath(vpFileName);
+                    OSFileEntry entry = OSFileEntry(vpFileName, OSFileEntry::TYPE_FILE);
+                    vp->setResourceName(entry.name);
+                    resourcePool->addResource(vp);
+                }
+            }
+        }
+        if(strcmp(pChild->Value(), "fp") == 0) {
+            String fpFileName = String(pChildElement->Attribute("source"));
+            fp = (ShaderProgram*)resourcePool->getResourceByPath(fpFileName);
+            if(!fp) {
+                fp = (ShaderProgram*)CoreServices::getInstance()->getMaterialManager()->createProgramFromFile(fpFileName);
+                if(fp) {
+                    fp->setResourcePath(fpFileName);
+                    OSFileEntry entry = OSFileEntry(fpFileName, OSFileEntry::TYPE_FILE);
+                    fp->setResourceName(entry.name);
+                    resourcePool->addResource(fp);				
+                }
+            }			
+        }
+        
+    }
+    if(vp != NULL && fp != NULL) {
+        retShader = Services()->getRenderer()->createShader(vp, fp);
+        retShader->setName(String(nodeElement->Attribute("name")));
+        shaders.push_back(retShader);
+    }
 	
 	if (!retShader)
 		return NULL;
@@ -260,19 +291,8 @@ Shader *MaterialManager::createShaderFromXMLNode(ResourcePool *resourcePool, TiX
 
 Shader *MaterialManager::setShaderFromXMLNode(ResourcePool *resourcePool, TiXmlNode *node) {
 	TiXmlElement *nodeElement = node->ToElement();
-	if (!nodeElement) return NULL; // Skip comment nodes
-	
-	Shader *retShader = NULL;
-	if(nodeElement->Attribute("type")) {
-		String shaderType = nodeElement->Attribute("type");
-		if(shaderType == "fixed") {
-			FixedShader *fShader =  new FixedShader();		
-			retShader = fShader;
-		}
-	} else {
-		retShader = (Shader*)resourcePool->getResource(Resource::RESOURCE_SHADER, nodeElement->Attribute("name"));
-	}
-	return retShader;
+	if (!nodeElement) return NULL; // Skip comment nodes	
+	return (Shader*)resourcePool->getResource(Resource::RESOURCE_SHADER, nodeElement->Attribute("name"));;
 }
 
 Cubemap *MaterialManager::cubemapFromXMLNode(TiXmlNode *node) {

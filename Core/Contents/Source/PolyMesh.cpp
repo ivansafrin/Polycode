@@ -33,14 +33,14 @@ using std::vector;
 using namespace Polycode;
 
 Mesh::Mesh(const String& fileName)
-: vertexPositionArray(RenderDataArray::VERTEX_DATA_ARRAY),
-vertexColorArray(RenderDataArray::COLOR_DATA_ARRAY),
-vertexNormalArray(RenderDataArray::NORMAL_DATA_ARRAY),
-vertexTexCoordArray(RenderDataArray::TEXCOORD_DATA_ARRAY),
-vertexTexCoord2Array(RenderDataArray::TEXCOORD2_DATA_ARRAY),
-vertexTangentArray(RenderDataArray::TANGENT_DATA_ARRAY),
-vertexBoneWeightArray(RenderDataArray::BONE_WEIGHT_DATA_ARRAY),
-vertexBoneIndexArray(RenderDataArray::BONE_INDEX_DATA_ARRAY),
+: vertexPositionArray(3, RenderDataArray::VERTEX_DATA_ARRAY),
+vertexColorArray(4, RenderDataArray::COLOR_DATA_ARRAY),
+vertexNormalArray(3, RenderDataArray::NORMAL_DATA_ARRAY),
+vertexTexCoordArray(2, RenderDataArray::TEXCOORD_DATA_ARRAY),
+vertexTexCoord2Array(2, RenderDataArray::TEXCOORD2_DATA_ARRAY),
+vertexTangentArray(3, RenderDataArray::TANGENT_DATA_ARRAY),
+vertexBoneWeightArray(4, RenderDataArray::BONE_WEIGHT_DATA_ARRAY),
+vertexBoneIndexArray(4, RenderDataArray::BONE_INDEX_DATA_ARRAY),
 indexArray(RenderDataArray::INDEX_DATA_ARRAY)
 {
 
@@ -53,14 +53,14 @@ indexArray(RenderDataArray::INDEX_DATA_ARRAY)
 }
 
 Mesh::Mesh(int meshType)
-: vertexPositionArray(RenderDataArray::VERTEX_DATA_ARRAY),
-vertexColorArray(RenderDataArray::COLOR_DATA_ARRAY),
-vertexNormalArray(RenderDataArray::NORMAL_DATA_ARRAY),
-vertexTexCoordArray(RenderDataArray::TEXCOORD_DATA_ARRAY),
-vertexTexCoord2Array(RenderDataArray::TEXCOORD2_DATA_ARRAY),
-vertexTangentArray(RenderDataArray::TANGENT_DATA_ARRAY),
-vertexBoneWeightArray(RenderDataArray::BONE_WEIGHT_DATA_ARRAY),
-vertexBoneIndexArray(RenderDataArray::BONE_INDEX_DATA_ARRAY),
+: vertexPositionArray(3, RenderDataArray::VERTEX_DATA_ARRAY),
+vertexColorArray(4, RenderDataArray::COLOR_DATA_ARRAY),
+vertexNormalArray(3, RenderDataArray::NORMAL_DATA_ARRAY),
+vertexTexCoordArray(2, RenderDataArray::TEXCOORD_DATA_ARRAY),
+vertexTexCoord2Array(2, RenderDataArray::TEXCOORD2_DATA_ARRAY),
+vertexTangentArray(3, RenderDataArray::TANGENT_DATA_ARRAY),
+vertexBoneWeightArray(4, RenderDataArray::BONE_WEIGHT_DATA_ARRAY),
+vertexBoneIndexArray(4, RenderDataArray::BONE_INDEX_DATA_ARRAY),
 indexArray(RenderDataArray::INDEX_DATA_ARRAY)
 {
 

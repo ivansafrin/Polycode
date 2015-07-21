@@ -60,7 +60,6 @@
 #include "PolyMesh.h"
 #include "PolyTextMesh.h"
 #include "PolyShader.h"
-#include "PolyFixedShader.h"
 #include "PolySceneManager.h"
 #include "PolyCoreServices.h"
 #include "PolyCamera.h"

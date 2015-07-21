@@ -79,13 +79,16 @@ namespace Polycode {
          */
         static const int TEXCOORD2_DATA_ARRAY = 8;
         
+        
     };
 
     class VertexDataArray : public RenderDataArray {
     public:
-        VertexDataArray(unsigned int type) : RenderDataArray(type) {
+        VertexDataArray(unsigned char countPerVertex, unsigned int type) : RenderDataArray(type), countPerVertex(countPerVertex) {
         }
         
+        unsigned char getCountPerVertex();
+        unsigned char countPerVertex;
         std::vector<PolyRendererVertexType> data;
         virtual void *getArrayData();
         virtual unsigned int getDataSize();

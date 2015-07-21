@@ -56,13 +56,18 @@ namespace Polycode {
 
 		// implementation
         
-        void executeDrawCall(const GPUDrawCall& drawCall);
         void createTexture(Texture *texture, int filteringMode, int anisotropy, bool createMipmaps);
         void setViewport(unsigned int x,unsigned  int y,unsigned  int width, unsigned height);
         void clearBuffers(bool colorBuffer, bool depthBuffer, bool stencilBuffer);
+        void setParamInShader(Shader *shader, const ProgramParam &param, LocalShaderParam *localParam);
+        void createProgram(ShaderProgram *program);
+        void createShader(Shader *shader);
         
 	protected:
 		
+        static int getPolycodeParamType(int glType);
+        static int getAttributeSize(int glType);
+        void setUniformMatrix(GLint paramLocation, const Polycode::Matrix4& matrix);
         
 	};
 }

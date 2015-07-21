@@ -17,7 +17,6 @@ SET(polycore_SRCS
     Source/PolyEvent.cpp
     Source/PolyEventDispatcher.cpp
     Source/PolyEventHandler.cpp
-    Source/PolyFixedShader.cpp
     Source/PolyFont.cpp
     Source/PolyFontGlyphSheet.cpp
     Source/PolyFontManager.cpp
@@ -99,7 +98,6 @@ SET(polycore_HDRS
     Include/PolyEventDispatcher.h
     Include/PolyEvent.h
     Include/PolyEventHandler.h
-    Include/PolyFixedShader.h
     Include/PolyFont.h
 	Include/PolyFontGlyphSheet.h
     Include/PolyFontManager.h

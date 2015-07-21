@@ -25,6 +25,7 @@
 #include "PolyMesh.h"
 #include "PolyShader.h"
 #include "PolyRectangle.h"
+#include "PolyMaterial.h"
 
 namespace Polycode {
     
@@ -48,6 +49,9 @@ namespace Polycode {
         
         Matrix4 modelMatrix;
         
+        Material *material;
+        ShaderBinding *shaderBinding;
+        
         std::vector<RenderDataArray*> attributeArrays;
         std::vector<LocalShaderParam> uniforms;
     };
@@ -58,7 +62,7 @@ namespace Polycode {
         GPUDrawBuffer();
         ~GPUDrawBuffer();
         
-        Matrix4 projectionMatrix;        
+        Matrix4 projectionMatrix;
         Polycode::Rectangle viewport;
         std::vector<GPUDrawCall> drawCalls;
     };

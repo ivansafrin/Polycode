@@ -53,12 +53,7 @@ Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool
 		memcpy(this->textureData, textureData, width*height*pixelSize);	
 	else
 		memset(this->textureData, 0, width*height*pixelSize);	
-	scrollSpeedX = 0;
-	scrollSpeedY = 0;
-	scrollOffsetX = 0;
-	scrollOffsetY = 0;
-    
-    platformData = NULL;
+
 }
 
 void Texture::reloadResource() {

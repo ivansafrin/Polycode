@@ -39,19 +39,25 @@ namespace Polycode {
 	class _PolyExport ProgramParam {
 		public:
 	
-	String name;
-	int type;
+        String name;
+        int type;
 
-	static void *createParamData(int type);
-	
-	static const int PARAM_UNKNOWN = 0;	
-	static const int PARAM_NUMBER = 1;
-	static const int PARAM_VECTOR2 = 2;		
-	static const int PARAM_VECTOR3 = 3;
-	static const int PARAM_COLOR = 4;
-	static const int PARAM_MATRIX = 5;
+        static void *createParamData(int type);
+        
+        static const int PARAM_UNKNOWN = 0;	
+        static const int PARAM_NUMBER = 1;
+        static const int PARAM_VECTOR2 = 2;		
+        static const int PARAM_VECTOR3 = 3;
+        static const int PARAM_COLOR = 4;
+        static const int PARAM_MATRIX = 5;
 	};
 	
+    class _PolyExport ProgramAttribute {
+        public:
+            int size;
+            String name;
+    };
+    
 	typedef struct {
 		Texture *texture;
 		String name;
@@ -64,23 +70,19 @@ namespace Polycode {
 
 	class _PolyExport ShaderProgram : public Resource {
 		public:
-			explicit ShaderProgram(int type);
+			explicit ShaderProgram(const String &fileName);
 			virtual ~ShaderProgram();
 			
 			virtual void reloadProgram() {}
-			
 			static const int TYPE_VERT = 0;
-			static const int TYPE_FRAG = 1;		
-			
+			static const int TYPE_FRAG = 1;
 			int type;
-			
 			void reloadResource();
-			
 	};
 
 	class _PolyExport Shader : public Resource {
 		public:
-			explicit Shader(int type);
+			explicit Shader();
 			virtual ~Shader();
 
 			int getType() const;
@@ -94,9 +96,6 @@ namespace Polycode {
 			
 			virtual void setVertexProgram(ShaderProgram *vp) {}
 			virtual void setFragmentProgram(ShaderProgram *fp) {}
-			
-			static const int FIXED_SHADER = 0;
-			static const int MODULE_SHADER = 1;
 
 			int numSpotLights;
 			int numPointLights;
@@ -104,17 +103,14 @@ namespace Polycode {
 			std::vector<String> expectedTextures;
 			std::vector<String> expectedCubemaps;			
 			std::vector<ProgramParam> expectedParams;
+			std::vector<ProgramAttribute> expectedAttributes;
 								
 			bool screenShader;
 			
-			ShaderProgram *vp;
-			ShaderProgram *fp;			
-			
-		protected:
-		
+			ShaderProgram *vertexProgram;
+			ShaderProgram *fragmentProgram;
 		
 			String name;
-			int type;
 	};
 	
 	class _PolyExport ShaderRenderTarget : public PolyBase {

@@ -67,8 +67,9 @@ void *ProgramParam::createParamData(int type) {
 	}
 }
 
-ShaderProgram::ShaderProgram(int type) : Resource(Resource::RESOURCE_PROGRAM) {
-	this->type = type;
+ShaderProgram::ShaderProgram(const String &fileName) : Resource(Resource::RESOURCE_PROGRAM) {
+    setResourcePath(fileName);
+    setResourceName(fileName);
 }
 
 ShaderProgram::~ShaderProgram() {
@@ -242,12 +243,11 @@ RenderTargetBinding *ShaderBinding::getDepthTargetBinding(unsigned int index) {
 }
 
 
-Shader::Shader(int type) : Resource(Resource::RESOURCE_SHADER) {
+Shader::Shader() : Resource(Resource::RESOURCE_SHADER) {
 	numSpotLights = 0;
 	numPointLights = 0;
-	this->type = type;
-	vp = NULL;
-	fp = NULL;
+	vertexProgram = NULL;
+	fragmentProgram = NULL;
 }
 
 int Shader::getExpectedParamType(String name) {

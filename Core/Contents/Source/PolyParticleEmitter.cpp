@@ -497,10 +497,10 @@ void SceneParticleEmitter::updateParticles() {
     setLocalBoundingBox((newBBox + Vector3(particleSize, particleSize, particleSize))* 2.0);
 }
 
-void SceneParticleEmitter::Render() {
+void SceneParticleEmitter::Render(GPUDrawBuffer *buffer) {
     systemTrasnformMatrix = getConcatenatedMatrix();
     rebuildParticles();
-    SceneMesh::Render();
+    SceneMesh::Render(buffer);
 }
 
 void SceneParticleEmitter::fixedUpdate() {

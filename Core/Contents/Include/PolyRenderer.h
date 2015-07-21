@@ -40,13 +40,12 @@ namespace Polycode {
     class _PolyExport GraphicsInterface : public PolyBase {
         public:
             GraphicsInterface();
-            virtual void executeDrawCall(const GPUDrawCall& drawCall) = 0;
+            virtual void setParamInShader(Shader *shader, const ProgramParam &param, LocalShaderParam *localParam) = 0;
             virtual void createTexture(Texture *texture, int filteringMode, int anisotropy, bool createMipmaps) = 0;
             virtual void setViewport(unsigned int x,unsigned  int y,unsigned  int width, unsigned height) = 0;
             virtual void clearBuffers(bool colorBuffer, bool depthBuffer, bool stencilBuffer) = 0;
-        
-        protected:
-        
+            virtual void createProgram(ShaderProgram *program) = 0;
+            virtual void createShader(Shader *shader) = 0;
     };
     
     class _PolyExport RendererThreadJob {
@@ -71,10 +70,14 @@ namespace Polycode {
             void enqueueJob(int jobType, void *data);
             void processJob(const RendererThreadJob &job);
         
+            void processDrawBuffer(GPUDrawBuffer *buffer);
+        
             static const int JOB_REQUEST_CONTEXT_CHANGE = 0;
             static const int JOB_CREATE_TEXTURE = 1;
             static const int JOB_PROCESS_DRAW_BUFFER = 2;
             static const int JOB_FLUSH_CONTEXT = 3;
+            static const int JOB_CREATE_PROGRAM = 4;
+            static const int JOB_CREATE_SHADER = 5;
         
         protected:
             Core *core;
@@ -103,6 +106,8 @@ namespace Polycode {
         void setBackingResolutionScale(Number xScale, Number yScale);
         Number getBackingResolutionScaleX();
         Number getBackingResolutionScaleY();
+        ShaderProgram *createProgram(const String &fileName);
+        Shader *createShader(ShaderProgram *vertexProgram, ShaderProgram *fragmentProgram);
         
         void setAnisotropyAmount(Number amount);
         Number getAnisotropyAmount();
@@ -124,6 +129,7 @@ namespace Polycode {
         
         
 	protected:
+        
       
         Number backingResolutionScaleX;
         Number backingResolutionScaleY;

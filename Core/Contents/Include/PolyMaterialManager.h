@@ -61,11 +61,8 @@ namespace Polycode {
 			void reloadProgramsAndTextures();
 			void reloadPrograms();
 		
-			//SceneRenderTexture *createRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight);
 			Texture *getTextureByResourcePath(const String& resourcePath) const;
-			
-			ShaderProgram *createProgramFromFile(String programPath);
-			
+			ShaderProgram *createProgramFromFile(String programPath);			
             void loadMaterialLibraryIntoPool(ResourcePool *pool, const String &materialFile);
         
 			// cubemaps

@@ -169,7 +169,7 @@ namespace Polycode {
         void handleVideoModeChange(VideoModeChangeInfo *modeInfo);
         void flushRenderContext();
         
-	protected:	
+	protected:
 	
 		PolycodeView *glView;
 		uint64_t initTime;

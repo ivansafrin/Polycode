@@ -52,3 +52,7 @@ void *IndexDataArray::getArrayData() {
 unsigned int IndexDataArray::getDataSize() {
     return data.size();
 }
+
+unsigned char VertexDataArray::getCountPerVertex() {
+    return countPerVertex;
+}

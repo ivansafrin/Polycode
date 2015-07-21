@@ -1,8 +1,13 @@
+attribute vec4 position;
+attribute vec2 texCoord;
 
-varying vec4 vertexColor;
+uniform mat4 modelView;
+uniform mat4 projection;
+varying vec2 texCoordVar;
+
 void main()
 {
-    gl_TexCoord[0] = gl_MultiTexCoord0;		
-    vertexColor = gl_Color;
-    gl_Position = ftransform();
+	vec4 p = modelView * position;
+	gl_Position = projection * p;
+	texCoordVar = texCoord;
 }

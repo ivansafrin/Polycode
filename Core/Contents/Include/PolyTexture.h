@@ -30,12 +30,9 @@ namespace Polycode {
 
 	class _PolyExport Texture : public Resource {
 		public:
-		Texture(unsigned int width, unsigned int height, char *textureData,bool clamp, bool createMipmaps, int type=Image::IMAGE_RGBA);
+            Texture(unsigned int width, unsigned int height, char *textureData,bool clamp, bool createMipmaps, int type=Image::IMAGE_RGBA);
 			Texture(Image *image);
 			virtual ~Texture();
-
-			Number scrollSpeedX;
-			Number scrollSpeedY;
 			
 			void reloadResource();
 			
@@ -50,8 +47,6 @@ namespace Polycode {
 		
 			bool clamp;
 			char *textureData;
-        
-            void *platformData;
             int type;
         
 		protected:
@@ -62,7 +57,5 @@ namespace Polycode {
 			bool createMipmaps;
 			int width;
 			int height;
-			Number scrollOffsetX;
-			Number scrollOffsetY;
 	};
 }

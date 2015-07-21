@@ -43,7 +43,7 @@ SceneMesh *SceneMesh::SceneMeshWithType(int meshType) {
 	return new SceneMesh(meshType);
 }
 
-SceneMesh::SceneMesh(const String& fileName) : Entity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL), mesh(NULL), skeletalVertexPositions(RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(RenderDataArray::NORMAL_DATA_ARRAY) {
+SceneMesh::SceneMesh(const String& fileName) : Entity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL), mesh(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
     loadFromFile(fileName);
 	useVertexBuffer = false;
 	lineSmooth = false;
@@ -60,7 +60,7 @@ SceneMesh::SceneMesh(const String& fileName) : Entity(), texture(NULL), material
     sendBoneMatricesToMaterial = false;
 }
 
-SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL), skeletalVertexPositions(RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(RenderDataArray::NORMAL_DATA_ARRAY) {
+SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
 	this->mesh = mesh;
 	setLocalBoundingBox(mesh->calculateBBox());
 	useVertexBuffer = false;
@@ -78,7 +78,7 @@ SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skel
     sendBoneMatricesToMaterial = false;
 }
 
-SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL), skeletalVertexPositions(RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(RenderDataArray::NORMAL_DATA_ARRAY) {
+SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
 	mesh = new Mesh(meshType);
 	setLocalBoundingBox(mesh->calculateBBox());
 	useVertexBuffer = false;	
@@ -360,6 +360,7 @@ void SceneMesh::Render(GPUDrawBuffer *buffer) {
     
     drawCall.attributeArrays.push_back(&mesh->vertexPositionArray);
     drawCall.numVertices = mesh->getVertexCount();
+    
     
     /*
    	if(material) {

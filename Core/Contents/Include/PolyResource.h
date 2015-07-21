@@ -68,6 +68,8 @@ namespace Polycode {
 						
 			//@}
 			
+            void *platformData;
+        
 		protected:
 
 			

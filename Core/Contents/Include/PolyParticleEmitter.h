@@ -63,7 +63,7 @@ namespace Polycode {
             Vector3 getGravity() const;
         
             void fixedUpdate();
-            void Render();
+            void Render(GPUDrawBuffer *buffer);
         
             void updateParticles();
             void rebuildParticles();

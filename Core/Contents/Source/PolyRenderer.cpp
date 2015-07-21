@@ -36,7 +36,6 @@ GPUDrawBuffer::~GPUDrawBuffer() {
     
 }
 
-
 GraphicsInterface::GraphicsInterface() {
 }
 
@@ -61,6 +60,61 @@ void RenderThread::runThread() {
     }
 }
 
+void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
+    interface->setViewport(buffer->viewport.x, buffer->viewport.y, buffer->viewport.w, buffer->viewport.h);
+    interface->clearBuffers(true, true, true);
+    
+    for(int i=0; i < buffer->drawCalls.size(); i++) {
+        if(buffer->drawCalls[i].material) {
+            
+            ShaderBinding *localShaderBinding = buffer->drawCalls[i].shaderBinding;
+            
+            for(int s=0; s < buffer->drawCalls[i].material->getNumShaders(); s++) {
+                
+                Shader *shader = buffer->drawCalls[i].material->getShader(s);
+                ShaderBinding *materialShaderBinding = buffer->drawCalls[i].material->getShaderBinding(s);
+
+                
+             
+                
+                // !!!!!!!!!!!!!!!!!!!!!!!!
+                // TODO: Don't do string lookups on every frame for all this stuff, find a better way!!
+                // !!!!!!!!!!!!!!!!!!!!!!!!
+                
+                // set shader uniforms
+                
+                for(int p=0; p < shader->expectedParams.size(); p++) {
+                    ProgramParam param = shader->expectedParams[p];
+
+                    LocalShaderParam *localParam = NULL;
+                    localParam = materialShaderBinding->getLocalParamByName(param.name);
+                    
+                    // local options override material options
+                    
+                    LocalShaderParam *localOptionsParam = localShaderBinding->getLocalParamByName(param.name);
+                    if(localOptionsParam) {
+                        localParam = localOptionsParam;
+                    }
+                    
+                    interface->setParamInShader(shader, param, localParam);
+                }
+                
+                 for(int a=0; a < shader->expectedAttributes.size(); a++) {
+                     ProgramAttribute attribute = shader->expectedAttributes[a];
+
+                 }
+                
+                // set shader attributes
+                
+//                glVertexAttribPointer(texCoordAttribute, 2, GL_FLOAT, false, 0, uvs);
+  //              glEnableVertexAttribArray(texCoordAttribute);
+                
+                // render with shader
+            }
+        }
+    }
+}
+
 void RenderThread::processJob(const RendererThreadJob &job) {
     switch(job.jobType) {
         case JOB_REQUEST_CONTEXT_CHANGE:
@@ -79,14 +133,25 @@ void RenderThread::processJob(const RendererThreadJob &job) {
         case JOB_PROCESS_DRAW_BUFFER:
         {
             GPUDrawBuffer *buffer = (GPUDrawBuffer*) job.data;
-            interface->setViewport(buffer->viewport.x, buffer->viewport.y, buffer->viewport.w, buffer->viewport.h);
-            interface->clearBuffers(true, true, true);
+            processDrawBuffer(buffer);
             delete buffer;
         }
         break;
         case JOB_FLUSH_CONTEXT:
         {
             core->flushRenderContext();
+        }
+        break;
+        case JOB_CREATE_PROGRAM:
+        {
+            ShaderProgram *program = (ShaderProgram*) job.data;
+            interface->createProgram(program);
+        }
+        break;
+        case JOB_CREATE_SHADER:
+        {
+            Shader *shader = (Shader*) job.data;
+            interface->createShader(shader);
         }
         break;
     }
@@ -163,6 +228,29 @@ Texture *Renderer::createTexture(unsigned int width, unsigned int height, char *
     Texture *texture = new Texture(width, height, textureData, clamp, createMipmaps, type);
     renderThread->enqueueJob(RenderThread::JOB_CREATE_TEXTURE, (void*)texture);
     return texture;
+}
+
+Shader *Renderer::createShader(ShaderProgram *vertexProgram, ShaderProgram *fragmentProgram) {
+    Shader *shader = new Shader();
+    shader->vertexProgram = vertexProgram;
+    shader->fragmentProgram = fragmentProgram;
+    renderThread->enqueueJob(RenderThread::JOB_CREATE_SHADER, (void*)shader);
+    return shader;
+}
+
+ShaderProgram *Renderer::createProgram(const String &fileName) {
+    ShaderProgram *program = new ShaderProgram(fileName);
+    
+    OSFileEntry fileEntry(program->getResourcePath(), OSFileEntry::TYPE_FILE);
+    
+    if(fileEntry.extension == "vert" ) {
+        program->type = ShaderProgram::TYPE_VERT;
+    } else {
+        program->type = ShaderProgram::TYPE_FRAG;
+    }
+    
+    renderThread->enqueueJob(RenderThread::JOB_CREATE_PROGRAM, (void*)program);
+    return program;
 }
 
 void Renderer::destroyTexture(Texture *texture) {

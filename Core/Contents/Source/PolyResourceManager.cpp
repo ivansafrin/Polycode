@@ -253,13 +253,15 @@ void ResourceManager::parseProgramsIntoPool(ResourcePool *pool, const String& di
 	for(int i=0; i < resourceDir.size(); i++) {	
 		if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
 			MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
-			
-			ShaderProgram *newProgram = materialManager->createProgramFromFile(resourceDir[i].fullPath);
-			if(newProgram) {
-				newProgram->setResourceName(resourceDir[i].name);
-				newProgram->setResourcePath(resourceDir[i].fullPath);
-				pool->addResource(newProgram);
-			}			
+            
+            if(resourceDir[i].extension == "vert" || resourceDir[i].extension == "frag") {
+                ShaderProgram *newProgram = materialManager->createProgramFromFile(resourceDir[i].fullPath);
+                if(newProgram) {
+                    newProgram->setResourceName(resourceDir[i].name);
+                    newProgram->setResourcePath(resourceDir[i].fullPath);
+                    pool->addResource(newProgram);
+                }
+            }
 		} else {
 			if(recursive)
 				parseProgramsIntoPool(pool, dirPath+"/"+resourceDir[i].name, true);
