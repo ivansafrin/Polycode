@@ -232,7 +232,7 @@ Number UIRect::getImageHeight() const {
 }
 
 void UIRect::initRect(Number width, Number height) {
-	rectMesh = new Mesh(Mesh::QUAD_MESH);
+	rectMesh = new Mesh(Mesh::TRI_MESH);
 	processInputEvents = true;
 
 	setAnchorPoint(-1.0, -1.0, 0.0);
@@ -246,6 +246,10 @@ void UIRect::initRect(Number width, Number height) {
 	rectMesh->addVertexWithUV(-whalf+width,-hhalf,0, 1, 0);
 	rectMesh->addVertexWithUV(-whalf+width,-hhalf+height,0, 1, 1);
 	rectMesh->addVertexWithUV(-whalf,-hhalf+height,0,0,1);
+    
+    rectMesh->indexedMesh = true;
+    rectMesh->addIndexedFace(0, 1, 2);
+    rectMesh->addIndexedFace(0, 2, 3);
 }
 
 UIRect::~UIRect() {

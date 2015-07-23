@@ -185,7 +185,11 @@ void SceneMesh::setMaterial(Material *material) {
 			return;
 		
 	this->material = material;
-	localShaderOptions = material->getShader(0)->createBinding();
+    localShaderOptions = new ShaderBinding();
+    
+    localShaderOptions->addAttributeBinding("texCoord", &mesh->vertexTexCoordArray);
+    localShaderOptions->addAttributeBinding("position", &mesh->vertexPositionArray);
+    
 	if(texture) {
 		localShaderOptions->clearTexture("diffuse");
 		localShaderOptions->addTexture("diffuse", texture);
@@ -356,11 +360,24 @@ void SceneMesh::Render(GPUDrawBuffer *buffer) {
     drawCall.options.backfaceCull = backfaceCulled;
     drawCall.options.depthTest = depthTest;
     drawCall.options.depthWrite = depthWrite;
-    drawCall.ownsAttributes = false;
+
+    drawCall.mode = mesh->getMeshType();
     
-    drawCall.attributeArrays.push_back(&mesh->vertexPositionArray);
+    
     drawCall.numVertices = mesh->getVertexCount();
     
+    if(mesh->indexedMesh) {
+        drawCall.indexed = true;
+        drawCall.indexArray = &mesh->indexArray;
+    } else {
+        drawCall.indexed = false;
+    }
+    
+    
+    drawCall.material = material;
+    drawCall.shaderBinding = localShaderOptions;
+    
+    buffer->drawCalls.push_back(drawCall);
     
     /*
    	if(material) {

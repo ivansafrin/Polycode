@@ -43,9 +43,7 @@ SceneLight::SceneLight(int type, Scene *parentScene, Number intensity, Number co
 		
     shadowMapRes = 256;
 	this->depthWrite = false;
-	lightMesh = new Mesh(Mesh::QUAD_MESH);
-	lightMesh->createBox(0.1,0.1,0.1);
-	setLocalBoundingBox(lightMesh->calculateBBox());
+	    
 	shadowMapFOV = 60.0f;
 	zBufferTexture = NULL;
 	spotCamera = NULL;

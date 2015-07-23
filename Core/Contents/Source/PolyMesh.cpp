@@ -1227,9 +1227,6 @@ void Mesh::calculateTangents() {
     vertexTangentArray.data.clear();
     
     int polySize = 3;
-    if(meshType == Mesh::QUAD_MESH) {
-        polySize = 4;
-    }
     
     for(int i=0; i < vertexPositionArray.data.size() / 3; i++) {
         addTangent(0.0, 0.0, 0.0);
@@ -1273,9 +1270,6 @@ void Mesh::calculateTangents() {
 void Mesh::calculateNormals() {
 
     int polySize = 3;
-    if(meshType == Mesh::QUAD_MESH) {
-        polySize = 4;
-    }
     
     vertexNormalArray.data.clear();
     

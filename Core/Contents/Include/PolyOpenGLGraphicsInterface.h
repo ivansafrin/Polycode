@@ -60,11 +60,21 @@ namespace Polycode {
         void setViewport(unsigned int x,unsigned  int y,unsigned  int width, unsigned height);
         void clearBuffers(bool colorBuffer, bool depthBuffer, bool stencilBuffer);
         void setParamInShader(Shader *shader, const ProgramParam &param, LocalShaderParam *localParam);
+        void setAttributeInShader(Shader *shader, const ProgramAttribute &attribute, AttributeBinding *attributeBinding);
+        void disableAttribute(Shader *shader, const ProgramAttribute &attribute);
+        void useShader(Shader *shader);
         void createProgram(ShaderProgram *program);
         void createShader(Shader *shader);
         
+        void drawIndices(int type, IndexDataArray *indexArray);
+        void drawArrays(int type, unsigned int vertexCount);
+        
+        void enableDepthTest(bool val);
+        void enableDepthWrite(bool val);
+        
 	protected:
 		
+        static GLenum getGLDrawMode(int polycodeMode);
         static int getPolycodeParamType(int glType);
         static int getAttributeSize(int glType);
         void setUniformMatrix(GLint paramLocation, const Polycode::Matrix4& matrix);

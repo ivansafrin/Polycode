@@ -110,7 +110,64 @@ void OpenGLGraphicsInterface::setParamInShader(Shader *shader, const ProgramPara
             }
             break;
     }
+}
+
+void OpenGLGraphicsInterface::useShader(Shader *shader) {
+    GLuint shaderID = *((GLuint*) shader->platformData);
+    glUseProgram(shaderID);
+}
+
+void OpenGLGraphicsInterface::setAttributeInShader(Shader *shader, const ProgramAttribute &attribute, AttributeBinding *attributeBinding) {
+    // TODO: ALSO DO NOT LOOK UP BY STRING!
+    GLuint shaderID = *((GLuint*) shader->platformData);
+    int attribLocation = glGetAttribLocation(shaderID, attribute.name.c_str());
     
+    glVertexAttribPointer(attribLocation, attributeBinding->vertexData->countPerVertex, GL_FLOAT, false, 0, attributeBinding->vertexData->data.data());
+    glEnableVertexAttribArray(attribLocation);
+}
+
+void OpenGLGraphicsInterface::disableAttribute(Shader *shader, const ProgramAttribute &attribute) {
+    
+    // TODO: ALSO DO NOT LOOK UP BY STRING!
+    GLuint shaderID = *((GLuint*) shader->platformData);
+    int attribLocation = glGetAttribLocation(shaderID, attribute.name.c_str());
+    glDisableVertexAttribArray(attribLocation);
+}
+
+GLenum OpenGLGraphicsInterface::getGLDrawMode(int polycodeMode) {
+    switch(polycodeMode) {
+        case Mesh::POINT_MESH:
+            return GL_POINTS;
+        break;
+        case Mesh::LINE_STRIP_MESH:
+            return GL_LINE_STRIP;
+        break;
+        case Mesh::LINE_LOOP_MESH:
+            return GL_LINE_LOOP;
+        break;
+        case Mesh::LINE_MESH:
+            return GL_LINES;
+        break;
+        case Mesh::TRISTRIP_MESH:
+            return GL_TRIANGLE_STRIP;
+        break;
+        case Mesh::TRIFAN_MESH:
+            return GL_TRIANGLE_FAN;
+        break;
+        case Mesh::TRI_MESH:
+            return GL_TRIANGLES;
+        break;
+    }
+    
+    return GL_TRIANGLES;
+}
+
+void OpenGLGraphicsInterface::drawIndices(int type, IndexDataArray *indexArray) {
+     glDrawElements(getGLDrawMode(type), indexArray->data.size(), GL_UNSIGNED_INT, indexArray->data.data());
+}
+
+void OpenGLGraphicsInterface::drawArrays(int type, unsigned int vertexCount) {
+    glDrawArrays(getGLDrawMode(type), 0, vertexCount);
 }
 
 void OpenGLGraphicsInterface::createTexture(Texture *texture, int filteringMode, int anisotropy, bool createMipmaps) {
@@ -324,6 +381,23 @@ void OpenGLGraphicsInterface::createShader(Shader *shader) {
     
 }
 
+void OpenGLGraphicsInterface::enableDepthTest(bool val) {
+    if(val) {
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc( GL_LEQUAL );
+    } else {
+        glDisable(GL_DEPTH_TEST);
+    }
+}
+
+void OpenGLGraphicsInterface::enableDepthWrite(bool val) {
+    if(val) {
+        glDepthMask(GL_TRUE);
+    } else {
+        glDepthMask(GL_FALSE);
+    }
+}
+
 void OpenGLGraphicsInterface::clearBuffers(bool colorBuffer, bool depthBuffer, bool stencilBuffer) {
     GLbitfield clearMask = 0;
     
@@ -340,6 +414,7 @@ void OpenGLGraphicsInterface::clearBuffers(bool colorBuffer, bool depthBuffer, b
     }
     
     
+    glClearColor(0.5, 0.5, 0.5, 1.0);
     glClear(clearMask);
 }
 

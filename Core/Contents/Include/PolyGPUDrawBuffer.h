@@ -43,17 +43,14 @@ namespace Polycode {
     class _PolyExport GPUDrawCall {
     public:
         unsigned int numVertices;
-        unsigned char type;
-        bool ownsAttributes;
+        unsigned char mode;
+        bool indexed;
+        
         GPUDrawOptions options;
-        
         Matrix4 modelMatrix;
-        
         Material *material;
         ShaderBinding *shaderBinding;
-        
-        std::vector<RenderDataArray*> attributeArrays;
-        std::vector<LocalShaderParam> uniforms;
+        IndexDataArray *indexArray;
     };
     
     
@@ -63,6 +60,8 @@ namespace Polycode {
         ~GPUDrawBuffer();
         
         Matrix4 projectionMatrix;
+        Matrix4 viewMatrix;
+        
         Polycode::Rectangle viewport;
         std::vector<GPUDrawCall> drawCalls;
     };

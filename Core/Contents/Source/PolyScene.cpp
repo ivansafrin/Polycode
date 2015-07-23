@@ -236,8 +236,9 @@ void Scene::Render(Camera *targetCamera) {
 	
 	
 	targetCamera->rebuildTransformMatrix();
-    drawBuffer->projectionMatrix = targetCamera->getProjectionMatrix();
     
+    drawBuffer->projectionMatrix = targetCamera->createProjectionMatrix();
+    drawBuffer->viewMatrix = targetCamera->getConcatenatedMatrix().Inverse();
 /*
 	if(useClearColor) {
 		CoreServices::getInstance()->getRenderer()->setClearColor(clearColor.r,clearColor.g,clearColor.b, clearColor.a);	
@@ -283,11 +284,12 @@ void Scene::Render(Camera *targetCamera) {
 		//CoreServices::getInstance()->getRenderer()->addLight(light->getLightImportance(), position, direction, light->getLightType(), light->lightColor, light->specularLightColor, light->getConstantAttenuation(), light->getLinearAttenuation(), light->getQuadraticAttenuation(), light->getIntensity(), light->getSpotlightCutoff(), light->getSpotlightExponent(), light->areShadowsEnabled(), matrixPtr, shadowMapTexture);
 	}	
 		
-    	
+    	/*
     if(_doVisibilityChecking) {
         targetCamera->buildFrustumPlanes();
         setEntityVisibility(&rootEntity, targetCamera);
     }
+         */
 	rootEntity.transformAndRender(drawBuffer);
 
     

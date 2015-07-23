@@ -45,11 +45,18 @@ RenderThread::RenderThread() : interface(NULL) {
     options.anisotropy = 0;
     options.createMipmaps = true;
     
+    rendererShaderBinding = new ShaderBinding();
+    
+    projectionMatrixParam = rendererShaderBinding->addParam(ProgramParam::PARAM_MATRIX, "projectionMatrix");
+    modelMatrixParam = rendererShaderBinding->addParam(ProgramParam::PARAM_MATRIX, "modelMatrix");
+    viewMatrixParam = rendererShaderBinding->addParam(ProgramParam::PARAM_MATRIX, "viewMatrix");
+    
     jobQueueMutex = Services()->getCore()->createMutex();
 }
 
 void RenderThread::runThread() {
     while(threadRunning) {
+        
         Services()->getCore()->lockMutex(jobQueueMutex);
         if(jobQueue.size() > 0) {
             RendererThreadJob nextJob = jobQueue.front();
@@ -64,18 +71,29 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
     interface->setViewport(buffer->viewport.x, buffer->viewport.y, buffer->viewport.w, buffer->viewport.h);
     interface->clearBuffers(true, true, true);
     
+    
+    projectionMatrixParam->setMatrix4(buffer->projectionMatrix);
+    viewMatrixParam->setMatrix4(buffer->viewMatrix);
+    
     for(int i=0; i < buffer->drawCalls.size(); i++) {
+        
+        
+        interface->enableDepthTest(buffer->drawCalls[i].options.depthTest);
+        interface->enableDepthWrite(buffer->drawCalls[i].options.depthWrite);
+        
+        modelMatrixParam->setMatrix4(buffer->drawCalls[i].modelMatrix);
+        
         if(buffer->drawCalls[i].material) {
-            
             ShaderBinding *localShaderBinding = buffer->drawCalls[i].shaderBinding;
             
             for(int s=0; s < buffer->drawCalls[i].material->getNumShaders(); s++) {
                 
                 Shader *shader = buffer->drawCalls[i].material->getShader(s);
+                
+                interface->useShader(shader);
+                
                 ShaderBinding *materialShaderBinding = buffer->drawCalls[i].material->getShaderBinding(s);
 
-                
-             
                 
                 // !!!!!!!!!!!!!!!!!!!!!!!!
                 // TODO: Don't do string lookups on every frame for all this stuff, find a better way!!
@@ -83,11 +101,19 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                 
                 // set shader uniforms
                 
+   
                 for(int p=0; p < shader->expectedParams.size(); p++) {
                     ProgramParam param = shader->expectedParams[p];
-
+                    
                     LocalShaderParam *localParam = NULL;
-                    localParam = materialShaderBinding->getLocalParamByName(param.name);
+                    localParam = rendererShaderBinding->getLocalParamByName(param.name);
+
+                    // material options override renderer options
+                    
+                    LocalShaderParam *materialOptionsParam = materialShaderBinding->getLocalParamByName(param.name);
+                    if(materialOptionsParam) {
+                        localParam = materialOptionsParam;
+                    }
                     
                     // local options override material options
                     
@@ -97,19 +123,43 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                     }
                     
                     interface->setParamInShader(shader, param, localParam);
+                    
                 }
                 
                  for(int a=0; a < shader->expectedAttributes.size(); a++) {
                      ProgramAttribute attribute = shader->expectedAttributes[a];
+                     
+                     
+                     AttributeBinding *attributeBinding = NULL;
+                     attributeBinding = materialShaderBinding->getAttributeBindingByName(attribute.name);
+                     
+                     // local options override material options
+                     
+                     AttributeBinding *localAttributeBinding = localShaderBinding->getAttributeBindingByName(attribute.name);
+                     
+                     if(localAttributeBinding) {
+                         attributeBinding = localAttributeBinding;
+                     }
+                     
+                     if(attributeBinding) {
+                         interface->setAttributeInShader(shader, attribute, attributeBinding);
+                     }
 
                  }
                 
-                // set shader attributes
+                if(buffer->drawCalls[i].indexed) {
+                    interface->drawIndices(buffer->drawCalls[i].mode, buffer->drawCalls[i].indexArray);
+                } else {
+                    interface->drawArrays(buffer->drawCalls[i].mode, buffer->drawCalls[i].numVertices);
+                }
                 
-//                glVertexAttribPointer(texCoordAttribute, 2, GL_FLOAT, false, 0, uvs);
-  //              glEnableVertexAttribArray(texCoordAttribute);
                 
-                // render with shader
+                for(int a=0; a < shader->expectedAttributes.size(); a++) {
+                    ProgramAttribute attribute = shader->expectedAttributes[a];
+                    interface->disableAttribute(shader, attribute);
+                }
+                
+
             }
         }
     }

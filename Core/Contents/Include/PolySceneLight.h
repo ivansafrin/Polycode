@@ -219,6 +219,5 @@ namespace Polycode {
 			bool shadowsEnabled;
 		
 			Number distance;
-			Mesh *lightMesh;
 	};
 }

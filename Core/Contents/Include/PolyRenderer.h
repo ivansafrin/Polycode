@@ -41,11 +41,21 @@ namespace Polycode {
         public:
             GraphicsInterface();
             virtual void setParamInShader(Shader *shader, const ProgramParam &param, LocalShaderParam *localParam) = 0;
+            virtual void setAttributeInShader(Shader *shader, const ProgramAttribute &attribute, AttributeBinding *attributeBinding) = 0;
+            virtual void disableAttribute(Shader *shader, const ProgramAttribute &attribute) = 0;
             virtual void createTexture(Texture *texture, int filteringMode, int anisotropy, bool createMipmaps) = 0;
             virtual void setViewport(unsigned int x,unsigned  int y,unsigned  int width, unsigned height) = 0;
             virtual void clearBuffers(bool colorBuffer, bool depthBuffer, bool stencilBuffer) = 0;
             virtual void createProgram(ShaderProgram *program) = 0;
             virtual void createShader(Shader *shader) = 0;
+            virtual void useShader(Shader *shader) = 0;
+        
+            virtual void drawIndices(int type, IndexDataArray *indexArray) = 0;
+            virtual void drawArrays(int type, unsigned int vertexCount) = 0;
+        
+            virtual void enableDepthTest(bool val) = 0;
+            virtual void enableDepthWrite(bool val) = 0;
+        
     };
     
     class _PolyExport RendererThreadJob {
@@ -85,6 +95,11 @@ namespace Polycode {
             CoreMutex *jobQueueMutex;
             std::queue<RendererThreadJob> jobQueue;
             GraphicsInterface *interface;
+        
+            ShaderBinding *rendererShaderBinding;
+            LocalShaderParam *projectionMatrixParam;
+            LocalShaderParam *viewMatrixParam;
+            LocalShaderParam *modelMatrixParam;
     };
     
     class _PolyExport Renderer : public PolyBase {

@@ -283,7 +283,10 @@ void SceneParticleEmitter::rebuildParticles() {
                     }
                     
                 } else {
-                    mesh->setMeshType(Mesh::QUAD_MESH);
+                    mesh->setMeshType(Mesh::TRI_MESH);
+                    mesh->indexedMesh = true;
+                    
+                    int vertexCount = mesh->getVertexCount();
                     
                     Vector3 vertexPosition = Vector3(-finalParticleSize, -finalParticleSize, 0.0);
                     vertexPosition = q.applyTo(vertexPosition);
@@ -308,6 +311,10 @@ void SceneParticleEmitter::rebuildParticles() {
                     vertexPosition = cameraMatrix.rotateVector(vertexPosition);
                     mesh->addVertexWithUV(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 0.0, 1.0);
                     mesh->addColor(vertexColor);
+                    
+
+                    mesh->addIndexedFace(vertexCount, vertexCount+1, vertexCount+2);
+                    mesh->addIndexedFace(vertexCount, vertexCount+2, vertexCount+3);
                 }
 
             }

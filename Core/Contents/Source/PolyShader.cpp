@@ -82,8 +82,7 @@ void ShaderProgram::reloadResource() {
 }
 
 
-ShaderBinding::ShaderBinding(Shader *shader) {
-	this->shader = shader;
+ShaderBinding::ShaderBinding() {
 }
 
 ShaderBinding::~ShaderBinding() {
@@ -112,6 +111,16 @@ LocalShaderParam *ShaderBinding::getLocalParamByName(const String& name) {
 	}
 	return NULL;
 }
+
+AttributeBinding *ShaderBinding::getAttributeBindingByName(const String &name) {
+    for(int i=0; i < attributes.size(); i++) {
+        if(attributes[i]->name == name) {
+            return attributes[i];
+        }
+    }
+    return NULL;
+}
+
 
 LocalShaderParam * ShaderBinding::addParam(int type, const String& name) {
 	void *defaultData = ProgramParam::createParamData(type);
@@ -257,10 +266,6 @@ int Shader::getExpectedParamType(String name) {
 		}
 	}
 	return ProgramParam::PARAM_UNKNOWN;
-}
-
-ShaderBinding *Shader::createBinding() {
-    return new ShaderBinding(this);
 }
 
 Shader::~Shader() {
@@ -412,6 +417,14 @@ LocalShaderParam *LocalShaderParam::Copy() {
         break;
     }
     return copyParam;
+}
+
+AttributeBinding *ShaderBinding::addAttributeBinding(const String &name, VertexDataArray *dataArray) {
+    AttributeBinding *binding = new AttributeBinding();
+    binding->name = name;
+    binding->vertexData = dataArray;
+    attributes.push_back(binding);
+    return binding;
 }
 
 void LocalShaderParam::setParamValueFromString(int type, String pvalue) {

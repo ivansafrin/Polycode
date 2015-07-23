@@ -31,7 +31,7 @@ using std::vector;
 using namespace Polycode;
 
 
-SceneSprite::SceneSprite(SpriteSet *spriteSet) : SceneMesh(Mesh::QUAD_MESH) {
+SceneSprite::SceneSprite(SpriteSet *spriteSet) : SceneMesh(Mesh::TRI_MESH) {
     currentSprite = NULL;
     currentSpriteState = NULL;
     this->spriteSet = NULL;
@@ -383,7 +383,7 @@ void SpriteState::rebuildStateMeshes() {
     largestFrameBoundingBox = Vector3();
     
     for(int i=0; i < frameIDs.size(); i++) {
-        Mesh *frameMesh = new Mesh(Mesh::QUAD_MESH);
+        Mesh *frameMesh = new Mesh(Mesh::TRI_MESH);
         SpriteFrame frame = spriteSet->getSpriteFrameByID(frameIDs[i]);
         
         frameMesh->indexedMesh = true;
@@ -428,10 +428,9 @@ void SpriteState::rebuildStateMeshes() {
                 largestFrameBoundingBox.z = val;
             }
         }
-        frameMesh->addIndexedFace(0,1);
-        frameMesh->addIndexedFace(1,2);
-        frameMesh->addIndexedFace(2,3);
-        frameMesh->addIndexedFace(3,0);
+        
+        frameMesh->addIndexedFace(0, 1, 2);
+        frameMesh->addIndexedFace(0, 2, 3);
         
         frameMeshes.push_back(frameMesh);
     }

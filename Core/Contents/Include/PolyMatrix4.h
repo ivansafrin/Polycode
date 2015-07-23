@@ -329,6 +329,7 @@ namespace Polycode {
             }
 
             inline void setProjection(Number fov, Number aspect, Number zNear, Number zFar) {
+                
                 m[0][0] = 1.0f/tanf(fov/2.0)/aspect;
                 m[1][1] = 1.0f/tanf(fov/2.0);
                 m[2][2] = (zFar+zNear)/(zNear-zFar);

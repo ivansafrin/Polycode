@@ -409,7 +409,7 @@ Material *MaterialManager::createMaterial(ResourcePool *resourcePool, String mat
 	Shader *retShader = (Shader*)resourcePool->getResource(Resource::RESOURCE_SHADER, shaderName);
 	
 	if(retShader) {
-		ShaderBinding *newShaderBinding = retShader->createBinding();
+		ShaderBinding *newShaderBinding = new ShaderBinding();
 		newMaterial->addShader(retShader, newShaderBinding);
 	}
 	
@@ -504,7 +504,7 @@ Material *MaterialManager::materialFromXMLNode(ResourcePool *resourcePool, TiXml
 		if(strcmp(pChild3->Value(), "shader") == 0) {
 			materialShader = setShaderFromXMLNode(resourcePool, pChild3);
 			if(materialShader) {
-				newShaderBinding = materialShader->createBinding();
+                newShaderBinding = new ShaderBinding();
 				materialShaders.push_back(materialShader);
 				newShaderBindings.push_back(newShaderBinding);
 				for (pChild = pChild3->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {

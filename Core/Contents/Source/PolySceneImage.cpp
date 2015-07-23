@@ -103,8 +103,11 @@ void SceneImage::setImageCoordinates(Number x, Number y, Number width, Number he
 
 	mesh->vertexPositionArray.data.clear();
 	mesh->vertexTexCoordArray.data.clear();
+    mesh->indexArray.data.clear();
+    
+    mesh->indexedMesh = true;
 
-	mesh->setMeshType(Mesh::QUAD_MESH);
+	mesh->setMeshType(Mesh::TRI_MESH);
 
 	mesh->addVertex(0 - whalf, 0 - hhalf, 0);
 	mesh->addTexCoord(xFloat, (1.0 - yFloat) - hFloat);
@@ -118,6 +121,10 @@ void SceneImage::setImageCoordinates(Number x, Number y, Number width, Number he
 	mesh->addVertex(0 - whalf, realHeight - hhalf, 0);
 	mesh->addTexCoord(xFloat, 1.0 - yFloat);
 
+    
+    mesh->addIndexedFace(0, 1, 2);
+    mesh->addIndexedFace(0, 2, 3);
+    
 	rebuildTransformMatrix();
 	matrixDirty = true;
 }

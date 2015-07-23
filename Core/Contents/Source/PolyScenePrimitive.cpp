@@ -25,7 +25,7 @@
 
 using namespace Polycode;
 
-ScenePrimitive::ScenePrimitive(int type, Number v1, Number v2, Number v3,Number v4,Number v5) : SceneMesh(Mesh::QUAD_MESH) {
+ScenePrimitive::ScenePrimitive(int type, Number v1, Number v2, Number v3,Number v4,Number v5) : SceneMesh(Mesh::TRI_MESH) {
 
 	this->type = type;
 	this->v1 = v1;

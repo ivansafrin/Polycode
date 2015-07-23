@@ -58,7 +58,6 @@
 #include "PolyTexture.h"
 #include "PolyMaterial.h"
 #include "PolyMesh.h"
-#include "PolyTextMesh.h"
 #include "PolyShader.h"
 #include "PolySceneManager.h"
 #include "PolyCoreServices.h"

@@ -59,7 +59,7 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	addChild(alphaSlider);
 	alphaSlider->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
-	mainColorRect = new SceneMesh(Mesh::QUAD_MESH);
+	mainColorRect = new SceneMesh(Mesh::TRI_MESH);
     mainColorRect->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	mainColorRect->setWidth(mainFrame->getWidth());
 	mainColorRect->setHeight(mainFrame->getWidth());
@@ -69,7 +69,12 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	mainColorRect->getMesh()->addVertexWithUV(mainFrame->getWidth()/2,mainFrame->getHeight()/2.0,0, 1, 0);
 	mainColorRect->getMesh()->addVertexWithUV(mainFrame->getWidth()/2,-mainFrame->getHeight()/2.0,0, 1, 1);
 	mainColorRect->getMesh()->addVertexWithUV(-mainFrame->getWidth()/2,-mainFrame->getHeight()/2.0,0,0,1);
-	
+    
+    mainColorRect->getMesh()->indexedMesh = true;
+    
+    mainColorRect->getMesh()->addIndexedFace(0, 1, 2);
+    mainColorRect->getMesh()->addIndexedFace(0, 2, 3);
+    
 	mainColorRect->backfaceCulled = false;	
 
 	mainColorRect->setAnchorPoint(-1.0, -1.0, 0.0);

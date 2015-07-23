@@ -77,7 +77,7 @@ namespace Polycode {
 			
 			/**
 			* Construct with an empty mesh of specified type.
-			* @param meshType Type of mesh. Possible values are: Mesh::QUAD_MESH, Mesh::TRI_MESH, Mesh::TRIFAN_MESH, Mesh::TRISTRIP_MESH, Mesh::LINE_MESH, Mesh::POINT_MESH.
+			* @param meshType Type of mesh. Possible values are: Mesh::TRISTRIP_MESH, Mesh::TRI_MESH, Mesh::TRIFAN_MESH, Mesh::TRISTRIP_MESH, Mesh::LINE_MESH, Mesh::POINT_MESH.
 			*/			
 			explicit Mesh(int meshType);
 					
@@ -289,13 +289,12 @@ namespace Polycode {
 			
 			/**
 			* Sets a new mesh type.
-			* @param newType New mesh type. Possible values are: Mesh::QUAD_MESH, Mesh::TRI_MESH, Mesh::TRIFAN_MESH, Mesh::TRISTRIP_MESH, Mesh::LINE_MESH, Mesh::POINT_MESH.
+			* @param newType New mesh type. Possible values are: Mesh::TRISTRIP_MESH, Mesh::TRI_MESH, Mesh::TRIFAN_MESH, Mesh::TRISTRIP_MESH, Mesh::LINE_MESH, Mesh::POINT_MESH.
 			*/ 
 			void setMeshType(int newType);
 
 			inline unsigned int getIndexGroupSize() {
 				switch (meshType) {
-				case QUAD_MESH: return 4;
 				case TRI_MESH: return 3;
 				case LINE_MESH: return 2;
 				default: return 1;
@@ -316,7 +315,7 @@ namespace Polycode {
 			/**
 			* Quad based mesh.
 			*/
-			static const int QUAD_MESH = 0;			
+			static const int TRISTRIP_MESH = 0;
 			
 			/**
 			* Triangle based mesh.
@@ -367,7 +366,7 @@ namespace Polycode {
 			 * @param vertexRemovalCount Number of elements to remove from the vertex array */
 			void removeVertexRange(unsigned int beginRemoveVertex, int vertexRemovalCount = 3);
 
-			/** Removes a face from the mesh. Face is defined as a quad for QUAD_MESH, a triangle for TRI_MESH, a line for LI
+			/** Removes a face from the mesh. Face is defined as a triangle for TRI_MESH, or a line for LI
 			 *  In indexedMesh mode this may result in orphaned vertices.
 			 * @param faceIndex The 0-indexed face of the mesh (and NOT the index into the indices array!) */
 			void removeFace(unsigned int faceIndex);

@@ -167,13 +167,13 @@ void Material::removeShader(int shaderIndex) {
 
 void Material::addShaderAtIndex(Shader *shader,ShaderBinding *shaderBinding, int shaderIndex) {
         // RENDERER_TODO
-    /*
+
 	materialShaders.insert(materialShaders.begin()+shaderIndex, shader);
 	shaderBindings.insert(shaderBindings.begin()+shaderIndex, shaderBinding);
 	
 	shader->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);	
-	CoreServices::getInstance()->getRenderer()->setRendererShaderParams(shader, shaderBinding);	
 	
+    /*
 	for(int i=0; i < shader->expectedParams.size(); i++) {
 		if(!shaderBinding->getLocalParamByName(shader->expectedParams[i].name)) {
 			shaderBinding->addParam(shader->expectedParams[i].type, shader->expectedParams[i].name);
@@ -183,14 +183,11 @@ void Material::addShaderAtIndex(Shader *shader,ShaderBinding *shaderBinding, int
 }
 			
 void Material::addShader(Shader *shader,ShaderBinding *shaderBinding) {
-    // RENDERER_TODO
-    /*
+
 	materialShaders.push_back(shader);
 	shaderBindings.push_back(shaderBinding);
-	
-	shader->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);	
-	CoreServices::getInstance()->getRenderer()->setRendererShaderParams(shader, shaderBinding);	
-	
+	shader->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);
+    /*
 	for(int i=0; i < shader->expectedParams.size(); i++) {
 		if(!shaderBinding->getLocalParamByName(shader->expectedParams[i].name)) {
 			shaderBinding->addParam(shader->expectedParams[i].type, shader->expectedParams[i].name);
