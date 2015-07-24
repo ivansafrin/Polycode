@@ -109,11 +109,13 @@ void SceneLabel::updateFromLabel() {
 		texture = materialManager->createTextureFromImage(label, materialManager->clampDefault, false);		
 	}
 
+    // RENDERER_TODO
+    /*
 	if(material) {
 		localShaderOptions->clearTexture("diffuse");
 		localShaderOptions->addTexture("diffuse", texture);	
 	}
-
+     */
 
 	setPrimitiveOptions(type, label->getWidth()*labelScale/CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(),label->getHeight()*labelScale/CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
 	

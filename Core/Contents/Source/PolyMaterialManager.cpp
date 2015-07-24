@@ -568,7 +568,8 @@ Material *MaterialManager::materialFromXMLNode(ResourcePool *resourcePool, TiXml
 								}
 								
 								if(newBinding->mode == RenderTargetBinding::MODE_IN) {
-									newShaderBinding->addTexture(newBinding->name, newBinding->texture);
+                                    // RENDERER_TODO
+									//newShaderBinding->addTexture(newBinding->name, newBinding->texture);
 								}
 							}						
 						}
@@ -584,7 +585,8 @@ Material *MaterialManager::materialFromXMLNode(ResourcePool *resourcePool, TiXml
 									tname =  pChild2Element->Attribute("name");
 								}
 								Texture *texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(pChild2Element->GetText());
-								newShaderBinding->addTexture(tname,texture);
+                                    // RENDERER_TODO
+								//newShaderBinding->addTexture(tname,texture);
 //								newShaderBinding->addTexture(tname, (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, pChild2Element->GetText()));
 							}
 							
@@ -593,7 +595,8 @@ Material *MaterialManager::materialFromXMLNode(ResourcePool *resourcePool, TiXml
 								if(pChild2Element->Attribute("name")) {
 									tname =  pChild2Element->Attribute("name");
 								}
-								newShaderBinding->addCubemap(tname, (Cubemap*)resourcePool->getResource(Resource::RESOURCE_CUBEMAP, pChild2Element->GetText()));
+                                // RENDERER_TODO
+								//newShaderBinding->addCubemap(tname, (Cubemap*)resourcePool->getResource(Resource::RESOURCE_CUBEMAP, pChild2Element->GetText()));
 							}
 							
 						}

@@ -65,6 +65,7 @@ namespace Polycode {
         void useShader(Shader *shader);
         void createProgram(ShaderProgram *program);
         void createShader(Shader *shader);
+        void beginDrawCall();
         
         void drawIndices(int type, IndexDataArray *indexArray);
         void drawArrays(int type, unsigned int vertexCount);
@@ -74,6 +75,7 @@ namespace Polycode {
         
 	protected:
 		
+        int textureIndex;
         static GLenum getGLDrawMode(int polycodeMode);
         static int getPolycodeParamType(int glType);
         static int getAttributeSize(int glType);

@@ -83,25 +83,11 @@ namespace Polycode {
 			* Returns the Mesh instance of the actual mesh.
 			*/
 			Mesh *getMesh();
-		
-			/**
-			* Returns the texture applied.
-			*/				
-			Texture *getTexture() const;
 			
 			/**
 			* Returns the material applied.
 			*/							
 			Material *getMaterial();
-			
-			/**
-			* Loads a simple texture from a file name and applies it to the mesh.
-			* @param fileName Filename to load the mesh from.
-			* @param clamp If true, clamps the texture to edges. See Texture for details on that.
-			*/
-			void loadTexture(const String& fileName);
-
-			void loadTextureFromImage(Image *image);
 			
 			/**
 			* Loads a skeleton from a file and applies it to the scene mesh.

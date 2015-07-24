@@ -132,11 +132,13 @@ void SceneSprite::setSpriteSet(SpriteSet *spriteSet) {
     
     setTexture(spriteSet->getTexture());
     
+    // RENDERER_TODO
+    /*
     if(getLocalShaderOptions()) {
         getLocalShaderOptions()->clearTexture("diffuse");
         getLocalShaderOptions()->addTexture("diffuse", getTexture());
     }
-    
+    */
     currentSprite = NULL;
     currentSpriteState = NULL;
 }

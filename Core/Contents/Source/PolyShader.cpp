@@ -196,19 +196,10 @@ void ShaderBinding::removeRenderTargetBinding(RenderTargetBinding *binding) {
 }
 
 void ShaderBinding::copyTo(ShaderBinding *targetBinding) {
-    for(int i=0; i < textures.size(); i++) {
-        targetBinding->textures.push_back(textures[i]);
-    }
-    
-    for(int i=0; i < cubemaps.size(); i++) {
-        targetBinding->cubemaps.push_back(cubemaps[i]);
-    }
-
     for(int i=0; i < localParams.size(); i++) {
         LocalShaderParam *copyParam = localParams[i]->Copy();
         targetBinding->localParams.push_back(copyParam);
     }
-    
 }
 
 unsigned int ShaderBinding::getNumRenderTargetBindings() {
@@ -360,6 +351,14 @@ LocalShaderParam::LocalShaderParam() {
     ownsPointer = true;
 }
 
+void LocalShaderParam::setTexture(Texture *texture) {
+    data = (void*) texture;
+}
+
+Texture *LocalShaderParam::getTexture() {
+    return (Texture*) data;
+}
+
 LocalShaderParam::~LocalShaderParam() {
     if(ownsPointer) {
         switch(type) {
@@ -465,54 +464,4 @@ void LocalShaderParam::setParamValueFromString(int type, String pvalue) {
             }
                 break;
         }
-}
-
-Cubemap *ShaderBinding::getCubemap(const String& name) {
-	for(int i=0; i < cubemaps.size(); i++) {
-		if(cubemaps[i].name == name) {
-			return cubemaps[i].cubemap;
-		}
-	}
-	return NULL;
-}
-
-Texture *ShaderBinding::getTexture(const String& name) {
-	for(int i=0; i < textures.size(); i++) {
-		if(textures[i].name == name) {
-			return textures[i].texture;
-		}
-	}
-	return NULL;
-}
-
-void ShaderBinding::addTexture(const String& name, Texture *texture) {
-	TextureBinding binding;
-	binding.name = name;
-	binding.texture = texture;
-	textures.push_back(binding);
-}
-
-void ShaderBinding::addCubemap(const String& name, Cubemap *cubemap) {
-	CubemapBinding binding;
-	binding.cubemap = cubemap;
-	binding.name = name;
-	cubemaps.push_back(binding);
-}
-
-void ShaderBinding::clearCubemap(const String& name) {
-	for(int i=0; i < cubemaps.size(); i++) {
-		if(cubemaps[i].name == name) {
-			cubemaps.erase(cubemaps.begin()+i);
-			return;
-		}
-	}
-}
-
-void ShaderBinding::clearTexture(const String& name) {
-	for(int i=0; i < textures.size(); i++) {
-		if(textures[i].name == name) {
-			textures.erase(textures.begin()+i);
-			return;
-		}
-	}
 }

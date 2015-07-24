@@ -188,12 +188,7 @@ void SceneMesh::setMaterial(Material *material) {
     localShaderOptions = new ShaderBinding();
     
     localShaderOptions->addAttributeBinding("texCoord", &mesh->vertexTexCoordArray);
-    localShaderOptions->addAttributeBinding("position", &mesh->vertexPositionArray);
-    
-	if(texture) {
-		localShaderOptions->clearTexture("diffuse");
-		localShaderOptions->addTexture("diffuse", texture);
-	}
+    localShaderOptions->addAttributeBinding("position", &mesh->vertexPositionArray);    
 	
 }
 
@@ -207,21 +202,6 @@ void SceneMesh::setMaterialByName(const String& materialName, ResourcePool *reso
         
     }
     setMaterial(material);
-}
-
-Texture *SceneMesh::getTexture() const {
-	return texture;
-}
-
-
-void SceneMesh::loadTexture(const String& fileName) {
-	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
-	texture = materialManager->createTextureFromFile(fileName, materialManager->clampDefault, materialManager->mipmapsDefault);
-}
-
-void SceneMesh::loadTextureFromImage(Image *image) {
-	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
-	texture = materialManager->createTextureFromImage(image, materialManager->clampDefault, materialManager->mipmapsDefault);	
 }
 
 ShaderBinding *SceneMesh::getLocalShaderOptions() {

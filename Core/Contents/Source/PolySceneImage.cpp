@@ -35,7 +35,9 @@ SceneImage* SceneImage::SceneImageWithTexture(Texture *texture) {
 }
 
 SceneImage::SceneImage(const String& fileName) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1) {
-	loadTexture(fileName);
+    
+    // RENDERER_TODO
+	//loadTexture(fileName);
 
 	imageWidth = texture->getWidth();
 	imageHeight = texture->getHeight();
@@ -46,7 +48,8 @@ SceneImage::SceneImage(const String& fileName) : ScenePrimitive(ScenePrimitive::
 }
 
 SceneImage::SceneImage(Image *image) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1) {
-	loadTextureFromImage(image);
+    // RENDERER_TODO
+	//loadTextureFromImage(image);
 
 	imageWidth = texture->getWidth();
 	imageHeight = texture->getHeight();
@@ -72,9 +75,11 @@ SceneImage::~SceneImage() {
 }
 
 Entity *SceneImage::Clone(bool deepClone, bool ignoreEditorOnly) const {
-	SceneImage *newImage = new SceneImage(getTexture()->getResourcePath());
-	applyClone(newImage, deepClone, ignoreEditorOnly);
-	return newImage;
+    // RENDERER_TODO
+	//SceneImage *newImage = new SceneImage(getTexture()->getResourcePath());
+//	applyClone(newImage, deepClone, ignoreEditorOnly);
+//	return newImage;
+    return NULL;
 }
 
 void SceneImage::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {

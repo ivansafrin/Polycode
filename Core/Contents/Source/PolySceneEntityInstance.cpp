@@ -204,12 +204,18 @@ void SceneEntityInstance::applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMes
                                             Cubemap *cubemap;
                                             
                                             cubemap = (Cubemap*)topLevelResourcePool->getResource(Resource::RESOURCE_CUBEMAP, textureEntry->stringVal);
-                                                
-                                                                                      if(cubemap) {
+                                            
+                                            // RENDERER_TODO
+                                            /*
+                                            if(cubemap) {
                                                 sceneMesh->getLocalShaderOptions()->addCubemap(nameEntry->stringVal, cubemap);
                                             }
+                                             */
                                         } else {
+                                             // RENDERER_TODO
+                                            /*
                                             sceneMesh->getLocalShaderOptions()->addTexture(nameEntry->stringVal, CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(textureEntry->stringVal));
+                                             */
                                         }
                                     }
                                 }
@@ -356,10 +362,14 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
             label->snapToPixels = false;
             label->positionAtBaseline = false;
             applySceneMesh((*entry)["SceneMesh"], label);
+            
+            // RENDERER_TODO
+            /*
             if(label->getLocalShaderOptions()) {
                 label->getLocalShaderOptions()->clearTexture("diffuse");
                 label->getLocalShaderOptions()->addTexture("diffuse", label->getTexture());
             }
+            */
             
 			entity = label;
         } else if(entityType->stringVal == "SceneParticleEmitter") {

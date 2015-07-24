@@ -56,6 +56,8 @@ namespace Polycode {
             virtual void enableDepthTest(bool val) = 0;
             virtual void enableDepthWrite(bool val) = 0;
         
+            virtual void beginDrawCall() = 0;
+        
     };
     
     class _PolyExport RendererThreadJob {

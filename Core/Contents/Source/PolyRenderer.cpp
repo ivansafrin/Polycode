@@ -77,7 +77,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
     
     for(int i=0; i < buffer->drawCalls.size(); i++) {
         
-        
+        interface->beginDrawCall();
         interface->enableDepthTest(buffer->drawCalls[i].options.depthTest);
         interface->enableDepthWrite(buffer->drawCalls[i].options.depthWrite);
         
@@ -100,7 +100,6 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                 // !!!!!!!!!!!!!!!!!!!!!!!!
                 
                 // set shader uniforms
-                
    
                 for(int p=0; p < shader->expectedParams.size(); p++) {
                     ProgramParam param = shader->expectedParams[p];

@@ -51,6 +51,8 @@ namespace Polycode {
         static const int PARAM_VECTOR3 = 3;
         static const int PARAM_COLOR = 4;
         static const int PARAM_MATRIX = 5;
+        static const int PARAM_TEXTURE = 6;
+        static const int PARAM_CUBEMAP = 7;
 	};
 	
     class _PolyExport ProgramAttribute {
@@ -155,6 +157,9 @@ namespace Polycode {
             void setMatrix4(Matrix4 x);
             void setColor(Color x);
         
+            void setTexture(Texture *texture);
+            Texture *getTexture();
+        
             void setParamValueFromString(int type, String pvalue);
 	};
     
@@ -182,13 +187,6 @@ namespace Polycode {
 			virtual ~ShaderBinding();
         
             void copyTo(ShaderBinding *targetBinding);
-
-            Texture *getTexture(const String& name);
-            Cubemap *getCubemap(const String& name);
-			void clearTexture(const String& name);
-			void clearCubemap(const String& name);
-            void addTexture(const String& name, Texture *texture);
-            void addCubemap(const String& name, Cubemap *cubemap);
         
 			LocalShaderParam *addParam(int type, const String& name);
 			LocalShaderParam *addParamPointer(int type, const String& name, void *ptr);        
@@ -216,12 +214,10 @@ namespace Polycode {
 
 			unsigned int getNumOutTargetBindings();
 			RenderTargetBinding *getOutTargetBinding(unsigned int index);
-			            
-            std::vector<TextureBinding> textures;
-            std::vector<CubemapBinding> cubemaps;
-	
+        
 			std::vector<LocalShaderParam*> localParams;
 			std::vector<AttributeBinding*> attributes;
+        
 			std::vector<RenderTargetBinding*> renderTargetBindings;
 			std::vector<RenderTargetBinding*> inTargetBindings;
 			std::vector<RenderTargetBinding*> outTargetBindings;

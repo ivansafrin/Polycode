@@ -108,8 +108,29 @@ void OpenGLGraphicsInterface::setParamInShader(Shader *shader, const ProgramPara
                 Matrix4 defaultMatrix;
                 setUniformMatrix(paramLocation, defaultMatrix);
             }
-            break;
+        break;
+        case ProgramParam::PARAM_TEXTURE:
+            
+            glUniform1i(paramLocation, textureIndex);
+            glActiveTexture(GL_TEXTURE0 + textureIndex);
+            
+            if(localParam) {
+                Texture* texture = localParam->getTexture();
+                glBindTexture(GL_TEXTURE_2D, *((GLuint*) texture->platformData));
+            } else {
+                glBindTexture(GL_TEXTURE_2D, 0);
+            }
+            
+            textureIndex++;
+        break;
+        case ProgramParam::PARAM_CUBEMAP:
+            // RENDERER_TODO
+        break;
     }
+}
+
+void OpenGLGraphicsInterface::beginDrawCall() {
+    textureIndex = 0;
 }
 
 void OpenGLGraphicsInterface::useShader(Shader *shader) {
@@ -341,21 +362,11 @@ void OpenGLGraphicsInterface::createShader(Shader *shader) {
         char name[128];
         glGetActiveUniform(shaderID, GLuint(i), sizeof(name)-1, &name_len, &num, &type, name );
         name[name_len] = 0;
-        
-        switch(type) {
-            case GL_SAMPLER_2D:
-                shader->expectedTextures.push_back(String(name));
-                break;
-            case GL_SAMPLER_CUBE:
-                shader->expectedCubemaps.push_back(String(name));
-                break;
-            default:
-                ProgramParam param;
-                param.name = String(name);
-                param.type = getPolycodeParamType(type);
-                shader->expectedParams.push_back(param);
-            break;
-        }
+   
+        ProgramParam param;
+        param.name = String(name);
+        param.type = getPolycodeParamType(type);
+        shader->expectedParams.push_back(param);
     }
     
     total = -1;
@@ -492,8 +503,14 @@ int OpenGLGraphicsInterface::getPolycodeParamType(int glType) {
         case GL_FLOAT_MAT4:
             return ProgramParam::PARAM_MATRIX;		
             break;
+        case GL_SAMPLER_2D:
+            return ProgramParam::PARAM_TEXTURE;
+        break;
+        case GL_SAMPLER_CUBE:
+            return ProgramParam::PARAM_CUBEMAP;
+        break;
         default:
             return ProgramParam::PARAM_UNKNOWN;
-            break;
+        break;
     }
 }
