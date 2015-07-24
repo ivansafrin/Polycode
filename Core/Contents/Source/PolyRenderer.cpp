@@ -83,7 +83,6 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
     
     for(int i=0; i < buffer->drawCalls.size(); i++) {
         
-        interface->beginDrawCall();
         
         interface->setBlendingMode(buffer->drawCalls[i].options.blendingMode);
         interface->enableDepthTest(buffer->drawCalls[i].options.depthTest);
@@ -93,23 +92,77 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
         
         if(buffer->drawCalls[i].material) {
             
+            ShaderBinding *localShaderBinding = buffer->drawCalls[i].shaderBinding;
+            
             for(int s=0; s < buffer->drawCalls[i].material->getNumShaders(); s++) {
         
                 ++currentDebugFrameInfo.drawCallsProcessed;
+                interface->beginDrawCall();
                 
                 Shader *shader = buffer->drawCalls[i].material->getShader(s);
                 interface->useShader(shader);
                 
+                ShaderBinding *materialShaderBinding = buffer->drawCalls[i].material->getShaderBinding(s);
+
+                
                 // set shader uniforms
+                
+                for(int p=0; p < rendererShaderBinding->getNumLocalParams(); p++) {
+                    
+                    LocalShaderParam *localParam = rendererShaderBinding->getLocalParam(p);
+                    if(localParam) {
+                        if(!localParam->param) {
+                            localParam->param = shader->getParamPointer(localParam->name);
+                        }
+                        if(localParam->param) {
+                            interface->setParamInShader(shader, localParam->param, localParam);
+                        }
+                    }
+                    
+                }
    
-                for(int p=0; p < buffer->drawCalls[i].shaderParams.size(); p++) {
-                    interface->setParamInShader(shader, buffer->drawCalls[i].shaderParams[p].programParam, buffer->drawCalls[i].shaderParams[p].localParam);
+                for(int p=0; p < materialShaderBinding->getNumLocalParams(); p++) {
+                    
+                    LocalShaderParam *localParam = materialShaderBinding->getLocalParam(p);
+                    if(localParam) {
+                        if(!localParam->param) {
+                            localParam->param = shader->getParamPointer(localParam->name);
+                        }
+                        if(localParam->param) {
+                            interface->setParamInShader(shader, localParam->param, localParam);
+                        }
+                    }
+
+                }
+                
+                for(int p=0; p < localShaderBinding->getNumLocalParams(); p++) {
+                    
+                    LocalShaderParam *localParam = localShaderBinding->getLocalParam(p);
+                    if(localParam) {
+                        if(!localParam->param) {
+                            localParam->param = shader->getParamPointer(localParam->name);
+                        }
+                        if(localParam->param) {
+                            interface->setParamInShader(shader, localParam->param, localParam);
+                        }
+                    }
                     
                 }
                 
-                 for(int a=0; a < buffer->drawCalls[i].shaderAttributes.size(); a++) {
-                        interface->setAttributeInShader(shader, buffer->drawCalls[i].shaderAttributes[a].programAttribute,  buffer->drawCalls[i].shaderAttributes[a].attributeBinding);
-                 }
+                for(int a=0; a < localShaderBinding->getNumAttributeBindings(); a++) {
+                    
+                    AttributeBinding *attributeBinding = localShaderBinding->getAttributeBinding(a);
+                    
+                    if(attributeBinding) {
+                        if(!attributeBinding->attribute) {
+                            attributeBinding->attribute = shader->getAttribPointer(attributeBinding->name);
+                        }
+                        if(attributeBinding->attribute) {
+                             interface->setAttributeInShader(shader, attributeBinding->attribute, attributeBinding);
+                        }
+                    }
+                    
+                }
                 
                 if(buffer->drawCalls[i].indexed) {
                     interface->drawIndices(buffer->drawCalls[i].mode, buffer->drawCalls[i].indexArray);
@@ -151,16 +204,19 @@ void RenderThread::processJob(const RendererThreadJob &job) {
             delete buffer;
         }
         break;
-        case JOB_FLUSH_CONTEXT:
+        case JOB_BEGIN_FRAME:
         {
-            core->flushRenderContext();
-            
-            currentDebugFrameInfo.timeTaken = Services()->getCore()->getTicks() - frameStart;
-            lastFrameDebugInfo = currentDebugFrameInfo;
             currentDebugFrameInfo.buffersProcessed = 0;
             currentDebugFrameInfo.drawCallsProcessed = 0;
             currentDebugFrameInfo.timeTaken = 0;
             frameStart = Services()->getCore()->getTicks();
+        }
+        break;
+        case JOB_END_FRAME:
+        {
+            core->flushRenderContext();
+            currentDebugFrameInfo.timeTaken = Services()->getCore()->getTicks() - frameStart;
+            lastFrameDebugInfo = currentDebugFrameInfo;
         }
         break;
         case JOB_CREATE_PROGRAM:
@@ -179,7 +235,11 @@ void RenderThread::processJob(const RendererThreadJob &job) {
 }
 
 RenderThreadDebugInfo RenderThread::getFrameInfo() {
-    return lastFrameDebugInfo;
+    RenderThreadDebugInfo info;
+    Services()->getCore()->lockMutex(jobQueueMutex);
+    info = lastFrameDebugInfo;
+    Services()->getCore()->unlockMutex(jobQueueMutex);
+    return info;
 }
 
 void RenderThread::enqueueJob(int jobType, void *data) {
@@ -245,8 +305,12 @@ void Renderer::processDrawBuffer(GPUDrawBuffer *buffer) {
     renderThread->enqueueJob(RenderThread::JOB_PROCESS_DRAW_BUFFER, buffer);
 }
 
-void Renderer::flushContext() {
-    renderThread->enqueueJob(RenderThread::JOB_FLUSH_CONTEXT, NULL);
+void Renderer::beginFrame() {
+    renderThread->enqueueJob(RenderThread::JOB_BEGIN_FRAME, NULL);
+}
+
+void Renderer::endFrame() {
+    renderThread->enqueueJob(RenderThread::JOB_END_FRAME, NULL);
 }
 
 Texture *Renderer::createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type) {

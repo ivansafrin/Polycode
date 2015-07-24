@@ -105,6 +105,13 @@ unsigned int ShaderBinding::getNumLocalParams() {
 	return localParams.size();
 }
 
+unsigned int ShaderBinding::getNumAttributeBindings() {
+    return attributes.size();
+}
+
+AttributeBinding *ShaderBinding::getAttributeBinding(unsigned int index) {
+    return attributes[index];
+}
 
 LocalShaderParam *ShaderBinding::getLocalParam(unsigned int index) {
 	return localParams[index];
@@ -135,6 +142,7 @@ LocalShaderParam * ShaderBinding::addParam(int type, const String& name) {
 	newParam->data = defaultData;
 	newParam->name = name;
     newParam->type = type;
+    newParam->param = NULL;
 	localParams.push_back(newParam);
 	return newParam;
 }
@@ -144,6 +152,7 @@ LocalShaderParam *ShaderBinding::addParamPointer(int type, const String& name, v
     newParam->name = name;
     newParam->data = ptr;
     newParam->type = type;
+    newParam->param = NULL;
     newParam->ownsPointer = false;
     localParams.push_back(newParam);
     return newParam;
@@ -256,6 +265,25 @@ Shader::Shader() : Resource(Resource::RESOURCE_SHADER) {
 	vertexProgram = NULL;
 	fragmentProgram = NULL;
 }
+
+ProgramParam *Shader::getParamPointer(const String &name) {
+    for(int i=0; i < expectedParams.size(); i++) {
+        if(expectedParams[i].name == name) {
+            return &expectedParams[i];
+        }
+    }
+    return NULL;
+}
+
+ProgramAttribute *Shader::getAttribPointer(const String &name) {
+    for(int i=0; i < expectedAttributes.size(); i++) {
+        if(expectedAttributes[i].name == name) {
+            return &expectedAttributes[i];
+        }
+    }
+    return NULL;
+}
+
 
 int Shader::getExpectedParamType(String name) {
 	for(int i=0; i < expectedParams.size(); i++) {
@@ -428,6 +456,7 @@ LocalShaderParam *LocalShaderParam::Copy() {
 AttributeBinding *ShaderBinding::addAttributeBinding(const String &name, VertexDataArray *dataArray) {
     AttributeBinding *binding = new AttributeBinding();
     binding->name = name;
+    binding->attribute = NULL;
     binding->vertexData = dataArray;
     attributes.push_back(binding);
     return binding;

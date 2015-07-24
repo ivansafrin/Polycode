@@ -42,17 +42,6 @@ namespace Polycode {
         Color drawColor;
     };
     
-    class _PolyExport GPUShaderParam {
-    public:
-        ProgramParam *programParam;
-        LocalShaderParam *localParam;
-    };
-    
-    class _PolyExport GPUShaderAttribute {
-    public:
-        ProgramAttribute *programAttribute;
-        AttributeBinding *attributeBinding;
-    };
     
     class _PolyExport GPUDrawCall {
     public:
@@ -63,8 +52,6 @@ namespace Polycode {
         GPUDrawOptions options;
         Matrix4 modelMatrix;
         Material *material;
-        std::vector<GPUShaderParam> shaderParams;
-        std::vector<GPUShaderAttribute> shaderAttributes;
         ShaderBinding *shaderBinding;
         IndexDataArray *indexArray;
     };

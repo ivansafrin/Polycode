@@ -225,8 +225,6 @@ namespace Polycode {
             bool backfaceCulled;
         
             bool sendBoneMatricesToMaterial;
-        
-            void cacheShaderParams();
 			
 		protected:
 		
@@ -237,9 +235,6 @@ namespace Polycode {
 			Skeleton *skeleton;
 			ShaderBinding *localShaderOptions;
             String fileName;
-            std::vector<GPUShaderParam> shaderParams;
-            std::vector<GPUShaderAttribute> shaderAttributes;
-        
             std::vector<Matrix4> materialBoneMatrices;
         
             VertexDataArray skeletalVertexPositions;

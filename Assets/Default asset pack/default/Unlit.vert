@@ -8,7 +8,7 @@ varying vec2 texCoordVar;
 
 void main()
 {
-	vec4 p = modelMatrix * viewMatrix * position;
+	vec4 p = viewMatrix * modelMatrix  * position;
 	gl_Position = projectionMatrix * p;
 	texCoordVar = texCoord;
 }

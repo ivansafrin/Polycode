@@ -628,8 +628,9 @@ vector<String> CocoaCore::openFilePicker(vector<CoreFileExtension> extensions, b
 }
 
 void CocoaCore::Render() {
+    renderer->beginFrame();
     services->Render(Polycode::Rectangle(0, 0, getBackingXRes(), getBackingYRes()));
-    renderer->flushContext();
+    renderer->endFrame();
 }
 
 void CocoaCore::flushRenderContext() {

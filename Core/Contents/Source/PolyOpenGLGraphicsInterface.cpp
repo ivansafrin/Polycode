@@ -117,7 +117,6 @@ void OpenGLGraphicsInterface::setParamInShader(Shader *shader, ProgramParam *par
             } else {
                 glBindTexture(GL_TEXTURE_2D, 0);
             }
-            
             textureIndex++;
         break;
         case ProgramParam::PARAM_CUBEMAP:
@@ -161,7 +160,10 @@ void OpenGLGraphicsInterface::beginDrawCall() {
 
 void OpenGLGraphicsInterface::useShader(Shader *shader) {
     GLuint shaderID = *((GLuint*) shader->platformData);
-    glUseProgram(shaderID);
+    if(shaderID != currentShaderID) {
+        glUseProgram(shaderID);
+        currentShaderID = shaderID;
+    }
 }
 
 void OpenGLGraphicsInterface::setAttributeInShader(Shader *shader, ProgramAttribute *attribute, AttributeBinding *attributeBinding) {

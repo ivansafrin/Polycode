@@ -99,10 +99,10 @@ namespace Polycode {
             static const int JOB_REQUEST_CONTEXT_CHANGE = 0;
             static const int JOB_CREATE_TEXTURE = 1;
             static const int JOB_PROCESS_DRAW_BUFFER = 2;
-            static const int JOB_FLUSH_CONTEXT = 3;
+            static const int JOB_END_FRAME = 3;
             static const int JOB_CREATE_PROGRAM = 4;
             static const int JOB_CREATE_SHADER = 5;
-        
+            static const int JOB_BEGIN_FRAME = 6;
         
         protected:
         
@@ -147,7 +147,8 @@ namespace Polycode {
         void setAnisotropyAmount(Number amount);
         Number getAnisotropyAmount();
         
-        void flushContext();
+        void beginFrame();
+        void endFrame();
         
         static const int BLEND_MODE_NONE = 0;
         static const int BLEND_MODE_NORMAL = 1;

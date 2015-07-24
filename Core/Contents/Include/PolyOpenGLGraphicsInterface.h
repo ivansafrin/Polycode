@@ -76,6 +76,7 @@ namespace Polycode {
         
 	protected:
 		
+        GLuint currentShaderID;
         int textureIndex;
         static GLenum getGLDrawMode(int polycodeMode);
         static int getPolycodeParamType(int glType);

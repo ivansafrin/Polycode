@@ -336,73 +336,6 @@ bool SceneMesh::customHitDetection(const Ray &ray) {
 	return false;
 }
 
-void SceneMesh::cacheShaderParams() {
-    
-    shaderParams.clear();
-    shaderAttributes.clear();
-    
-    if(!material) {
-        return;
-    }
-    
-    if(material->getNumShaders() == 0) {
-        return;
-    }
-    
-    // TODO: do this for every shader
-    
-    Shader *shader = material->getShader(0);
-    ShaderBinding *materialShaderBinding = material->getShaderBinding(0);
-    ShaderBinding *rendererShaderBinding = Services()->getRenderer()->getRenderThread()->getShaderBinding();
-    
-    for(int p=0; p < shader->expectedParams.size(); p++) {
-        
-        LocalShaderParam *localParam = NULL;
-        localParam = rendererShaderBinding->getLocalParamByName(shader->expectedParams[p].name);
-        
-        // material options override renderer options
-        
-        LocalShaderParam *materialOptionsParam = materialShaderBinding->getLocalParamByName(shader->expectedParams[p].name);
-        if(materialOptionsParam) {
-            localParam = materialOptionsParam;
-        }
-        
-        // local options override material options
-        LocalShaderParam *localOptionsParam = localShaderOptions->getLocalParamByName(shader->expectedParams[p].name);
-        if(localOptionsParam) {
-            localParam = localOptionsParam;
-        }
-        
-        GPUShaderParam shaderParam;
-        shaderParam.programParam = &shader->expectedParams[p];
-        shaderParam.localParam = localParam;
-        shaderParams.push_back(shaderParam);
-        
-    }
-    
-    for(int a=0; a < shader->expectedAttributes.size(); a++) {
-        
-        AttributeBinding *attributeBinding = NULL;
-        attributeBinding = materialShaderBinding->getAttributeBindingByName(shader->expectedAttributes[a].name);
-        
-        // local options override material options
-        
-        AttributeBinding *localAttributeBinding = localShaderOptions->getAttributeBindingByName(shader->expectedAttributes[a].name);
-        
-        if(localAttributeBinding) {
-            attributeBinding = localAttributeBinding;
-        }
-        
-        if(attributeBinding) {
-            GPUShaderAttribute attribute;
-            attribute.attributeBinding = attributeBinding;
-            attribute.programAttribute = &shader->expectedAttributes[a];
-            shaderAttributes.push_back(attribute);
-        }
-        
-    }
-    
-}
 
 void SceneMesh::Render(GPUDrawBuffer *buffer) {
     
@@ -427,9 +360,6 @@ void SceneMesh::Render(GPUDrawBuffer *buffer) {
     
     drawCall.material = material;
     drawCall.shaderBinding = localShaderOptions;
-    
-    drawCall.shaderParams = shaderParams;
-    drawCall.shaderAttributes = shaderAttributes;
     
     buffer->drawCalls.push_back(drawCall);
     

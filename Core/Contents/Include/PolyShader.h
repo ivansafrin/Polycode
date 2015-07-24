@@ -98,6 +98,9 @@ namespace Polycode {
 			void setName(const String& name);
 			const String& getName() const;
 			
+            ProgramParam *getParamPointer(const String &name);
+            ProgramAttribute *getAttribPointer(const String &name);
+        
 			virtual void reload() {}
 			
 			int getExpectedParamType(String name);
@@ -150,7 +153,8 @@ namespace Polycode {
 			int type;
             bool ownsPointer;
             unsigned int arraySize;
-		
+            ProgramParam *param;
+        
             // Convenience getters/setters for Lua users
             Number getNumber();
             Vector2 getVector2();
@@ -173,6 +177,7 @@ namespace Polycode {
         public:
             String name;
             VertexDataArray *vertexData;
+            ProgramAttribute *attribute;
     };
 	
 	class RenderTargetBinding : public PolyBase {
@@ -199,6 +204,11 @@ namespace Polycode {
 			unsigned int getNumLocalParams();
 			LocalShaderParam *getLocalParam(unsigned int index);
 			LocalShaderParam *getLocalParamByName(const String& name);
+
+        
+            unsigned int getNumAttributeBindings();
+            AttributeBinding *getAttributeBinding(unsigned int index);
+
         
             AttributeBinding *addAttributeBinding(const String &name, VertexDataArray *dataArray);
             AttributeBinding *getAttributeBindingByName(const String &name);
