@@ -111,7 +111,7 @@ namespace Polycode {
         bool createRenderContext();
         
 		void enableMouse(bool newval);
-		unsigned int getTicks();		
+		unsigned int getTicks();
 		bool systemUpdate();
 		
 		void Render();

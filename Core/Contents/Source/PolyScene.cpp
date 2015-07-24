@@ -222,6 +222,9 @@ void Scene::Render(Camera *targetCamera) {
         targetCamera = activeCamera;
     
     GPUDrawBuffer *drawBuffer = new GPUDrawBuffer();
+    drawBuffer->clearColor = clearColor;
+    drawBuffer->clearColorBuffer = useClearColor;
+    drawBuffer->clearDepthBuffer = useClearDepth;
     
     drawBuffer->viewport = targetCamera->getViewport();
 ///    drawBuffer->projectionMatrix = targetCamera->

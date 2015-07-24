@@ -40,8 +40,11 @@ namespace Polycode {
 	class _PolyExport ProgramParam {
 		public:
 	
+        ProgramParam();
+        
         String name;
         int type;
+        void *platformData;
 
         static void *createParamData(int type);
         
@@ -57,8 +60,11 @@ namespace Polycode {
 	
     class _PolyExport ProgramAttribute {
         public:
+            ProgramAttribute();
+        
             int size;
             String name;
+            void *platformData;
     };
     
 	typedef struct {

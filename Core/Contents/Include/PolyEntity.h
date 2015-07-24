@@ -647,13 +647,7 @@ namespace Polycode {
 			* If this flag is set to false, this entity will not check the depth buffer when it's rendering.
 			*/			
 			bool depthTest;
-			
-			/**
-			* Entity blending mode. Possible values are Renderer::BLEND_MODE_NONE, Renderer::BLEND_MODE_NORMAL, Renderer::BLEND_MODE_LIGHTEN, Renderer::BLEND_MODE_COLOR, Renderer::BLEND_MODE_PREMULTIPLIED, Renderer::BLEND_MODE_MULTIPLY. See the Renderer class for details on individual blending modes.
-                This blending mode is overridden by the material.
-			*/
-			int blendingMode;	
-			
+
 			/**
 			* If set to false, the children of this entity will not multiply by this entity's color. Set to true by default.
 			*/ 
@@ -694,8 +688,10 @@ namespace Polycode {
 			* @param newBlendingMode New blending mode to set. Possible values are Renderer::BLEND_MODE_NORMAL, Renderer::BLEND_MODE_LIGHTEN, Renderer::BLEND_MODE_COLOR, Renderer::BLEND_MODE_PREMULTIPLIED, Renderer::BLEND_MODE_MULTIPLY. See the Renderer class for details on individual blending modes.
 			* @see Renderer			
 			*/
-			void setBlendingMode(int newBlendingMode);
-			
+			void setBlendingMode(unsigned int newBlendingMode);
+
+			unsigned int getBlendingMode();
+        
             /**
              * Returns the first child entity that has the specified string id.
              * @param id Specified id to search for.

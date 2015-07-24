@@ -49,14 +49,11 @@ void OpenGLGraphicsInterface::setUniformMatrix(GLint paramLocation, const Polyco
 #endif
 }
 
-void OpenGLGraphicsInterface::setParamInShader(Shader *shader, const ProgramParam &param, LocalShaderParam *localParam) {
+void OpenGLGraphicsInterface::setParamInShader(Shader *shader, ProgramParam *param, LocalShaderParam *localParam) {
 
-    // TODO: ALSO DO NOT LOOK UP BY STRING!
+    GLuint paramLocation = *((GLuint*) param->platformData);
     
-    GLuint shaderID = *((GLuint*) shader->platformData);
-    int paramLocation = glGetUniformLocation(shaderID, param.name.c_str());
-    
-    switch(param.type) {
+    switch(param->type) {
         case ProgramParam::PARAM_NUMBER:
             if(localParam) {
                 glUniform1f(paramLocation, localParam->getNumber());
@@ -110,7 +107,7 @@ void OpenGLGraphicsInterface::setParamInShader(Shader *shader, const ProgramPara
             }
         break;
         case ProgramParam::PARAM_TEXTURE:
-            
+            glEnable(GL_TEXTURE_2D);
             glUniform1i(paramLocation, textureIndex);
             glActiveTexture(GL_TEXTURE0 + textureIndex);
             
@@ -129,6 +126,35 @@ void OpenGLGraphicsInterface::setParamInShader(Shader *shader, const ProgramPara
     }
 }
 
+void OpenGLGraphicsInterface::setBlendingMode(unsigned int blendingMode) {
+    if(blendingMode == Renderer::BLEND_MODE_NONE) {
+        glDisable(GL_BLEND);
+    } else {
+        glEnable(GL_BLEND);
+    }
+    
+    switch(blendingMode) {
+        case Renderer::BLEND_MODE_NORMAL:
+            glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            break;
+        case Renderer::BLEND_MODE_LIGHTEN:
+            glBlendFunc (GL_SRC_ALPHA, GL_ONE);
+            break;
+        case Renderer::BLEND_MODE_COLOR:
+            glBlendFunc (GL_DST_COLOR, GL_SRC_COLOR);
+            break;
+        case Renderer::BLEND_MODE_PREMULTIPLIED:
+            glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+            break;
+        case Renderer::BLEND_MODE_MULTIPLY:
+            glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+            break;
+        default:
+            glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            break;
+    }
+}
+
 void OpenGLGraphicsInterface::beginDrawCall() {
     textureIndex = 0;
 }
@@ -138,20 +164,14 @@ void OpenGLGraphicsInterface::useShader(Shader *shader) {
     glUseProgram(shaderID);
 }
 
-void OpenGLGraphicsInterface::setAttributeInShader(Shader *shader, const ProgramAttribute &attribute, AttributeBinding *attributeBinding) {
-    // TODO: ALSO DO NOT LOOK UP BY STRING!
-    GLuint shaderID = *((GLuint*) shader->platformData);
-    int attribLocation = glGetAttribLocation(shaderID, attribute.name.c_str());
-    
+void OpenGLGraphicsInterface::setAttributeInShader(Shader *shader, ProgramAttribute *attribute, AttributeBinding *attributeBinding) {
+    GLuint attribLocation = *((GLuint*) attribute->platformData);
     glVertexAttribPointer(attribLocation, attributeBinding->vertexData->countPerVertex, GL_FLOAT, false, 0, attributeBinding->vertexData->data.data());
     glEnableVertexAttribArray(attribLocation);
 }
 
 void OpenGLGraphicsInterface::disableAttribute(Shader *shader, const ProgramAttribute &attribute) {
-    
-    // TODO: ALSO DO NOT LOOK UP BY STRING!
-    GLuint shaderID = *((GLuint*) shader->platformData);
-    int attribLocation = glGetAttribLocation(shaderID, attribute.name.c_str());
+    GLuint attribLocation = *((GLuint*) attribute.platformData);
     glDisableVertexAttribArray(attribLocation);
 }
 
@@ -363,8 +383,12 @@ void OpenGLGraphicsInterface::createShader(Shader *shader) {
         glGetActiveUniform(shaderID, GLuint(i), sizeof(name)-1, &name_len, &num, &type, name );
         name[name_len] = 0;
    
+        int paramLocation = glGetUniformLocation(shaderID, name);
+        
         ProgramParam param;
         param.name = String(name);
+        param.platformData = (void*) new GLuint;
+        *((GLuint*)param.platformData) = paramLocation;
         param.type = getPolycodeParamType(type);
         shader->expectedParams.push_back(param);
     }
@@ -381,8 +405,12 @@ void OpenGLGraphicsInterface::createShader(Shader *shader) {
         glGetActiveAttrib(shaderID, i, sizeof(name)-1, &name_len, &num, &type, name);
         name[name_len] = 0;
 
+        int attribLocation = glGetAttribLocation(shaderID, name);
+        
         ProgramAttribute attribute;
         attribute.name = String(name);
+        attribute.platformData = (void*) new GLuint;
+        *((GLuint*)attribute.platformData) = attribLocation;
         attribute.size = getAttributeSize(type);
         shader->expectedAttributes.push_back(attribute);
     }
@@ -409,7 +437,7 @@ void OpenGLGraphicsInterface::enableDepthWrite(bool val) {
     }
 }
 
-void OpenGLGraphicsInterface::clearBuffers(bool colorBuffer, bool depthBuffer, bool stencilBuffer) {
+void OpenGLGraphicsInterface::clearBuffers(const Color &clearColor, bool colorBuffer, bool depthBuffer, bool stencilBuffer) {
     GLbitfield clearMask = 0;
     
     if(colorBuffer) {
@@ -425,7 +453,7 @@ void OpenGLGraphicsInterface::clearBuffers(bool colorBuffer, bool depthBuffer, b
     }
     
     
-    glClearColor(0.5, 0.5, 0.5, 1.0);
+    glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
     glClear(clearMask);
 }
 

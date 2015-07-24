@@ -50,7 +50,7 @@ namespace Polycode {
 
             int getTextWidthForString(String text);
         
-			virtual ~SceneLabel();			
+			virtual ~SceneLabel();
 		
 			/**
 			* Sets new text for the labe.

@@ -40,15 +40,16 @@ namespace Polycode {
     class _PolyExport GraphicsInterface : public PolyBase {
         public:
             GraphicsInterface();
-            virtual void setParamInShader(Shader *shader, const ProgramParam &param, LocalShaderParam *localParam) = 0;
-            virtual void setAttributeInShader(Shader *shader, const ProgramAttribute &attribute, AttributeBinding *attributeBinding) = 0;
+            virtual void setParamInShader(Shader *shader, ProgramParam *param, LocalShaderParam *localParam) = 0;
+            virtual void setAttributeInShader(Shader *shader, ProgramAttribute *attribute, AttributeBinding *attributeBinding) = 0;
             virtual void disableAttribute(Shader *shader, const ProgramAttribute &attribute) = 0;
             virtual void createTexture(Texture *texture, int filteringMode, int anisotropy, bool createMipmaps) = 0;
             virtual void setViewport(unsigned int x,unsigned  int y,unsigned  int width, unsigned height) = 0;
-            virtual void clearBuffers(bool colorBuffer, bool depthBuffer, bool stencilBuffer) = 0;
+            virtual void clearBuffers(const Color &clearColor, bool colorBuffer, bool depthBuffer, bool stencilBuffer) = 0;
             virtual void createProgram(ShaderProgram *program) = 0;
             virtual void createShader(Shader *shader) = 0;
             virtual void useShader(Shader *shader) = 0;
+            virtual void setBlendingMode(unsigned int blendingMode) = 0;
         
             virtual void drawIndices(int type, IndexDataArray *indexArray) = 0;
             virtual void drawArrays(int type, unsigned int vertexCount) = 0;
@@ -74,6 +75,13 @@ namespace Polycode {
         bool createMipmaps;
     };
     
+    class RenderThreadDebugInfo {
+        public:
+            unsigned int buffersProcessed;
+            unsigned int drawCallsProcessed;
+            unsigned int timeTaken;
+    };
+    
     class _PolyExport RenderThread : public Threaded {
         public:
             RenderThread();
@@ -82,7 +90,11 @@ namespace Polycode {
             void enqueueJob(int jobType, void *data);
             void processJob(const RendererThreadJob &job);
         
+            ShaderBinding *getShaderBinding();
+        
             void processDrawBuffer(GPUDrawBuffer *buffer);
+        
+            RenderThreadDebugInfo getFrameInfo();
         
             static const int JOB_REQUEST_CONTEXT_CHANGE = 0;
             static const int JOB_CREATE_TEXTURE = 1;
@@ -91,7 +103,13 @@ namespace Polycode {
             static const int JOB_CREATE_PROGRAM = 4;
             static const int JOB_CREATE_SHADER = 5;
         
+        
         protected:
+        
+            unsigned int frameStart;
+            RenderThreadDebugInfo lastFrameDebugInfo;
+            RenderThreadDebugInfo currentDebugFrameInfo;
+        
             Core *core;
             RendererOptions options;
             CoreMutex *jobQueueMutex;

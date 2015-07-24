@@ -26,6 +26,7 @@
 #include "PolyShader.h"
 #include "PolyRectangle.h"
 #include "PolyMaterial.h"
+#include "PolyColor.h"
 
 namespace Polycode {
     
@@ -37,7 +38,20 @@ namespace Polycode {
         bool alphaTest;
         bool backfaceCull;
         bool depthOnly;
+        unsigned int blendingMode;
         Color drawColor;
+    };
+    
+    class _PolyExport GPUShaderParam {
+    public:
+        ProgramParam *programParam;
+        LocalShaderParam *localParam;
+    };
+    
+    class _PolyExport GPUShaderAttribute {
+    public:
+        ProgramAttribute *programAttribute;
+        AttributeBinding *attributeBinding;
     };
     
     class _PolyExport GPUDrawCall {
@@ -49,10 +63,11 @@ namespace Polycode {
         GPUDrawOptions options;
         Matrix4 modelMatrix;
         Material *material;
+        std::vector<GPUShaderParam> shaderParams;
+        std::vector<GPUShaderAttribute> shaderAttributes;
         ShaderBinding *shaderBinding;
         IndexDataArray *indexArray;
     };
-    
     
     class _PolyExport GPUDrawBuffer {
     public:
@@ -61,6 +76,9 @@ namespace Polycode {
         
         Matrix4 projectionMatrix;
         Matrix4 viewMatrix;
+        Color clearColor;
+        bool clearDepthBuffer;
+        bool clearColorBuffer;
         
         Polycode::Rectangle viewport;
         std::vector<GPUDrawCall> drawCalls;

@@ -67,10 +67,16 @@ void RenderThread::runThread() {
     }
 }
 
+ShaderBinding *RenderThread::getShaderBinding() {
+    return rendererShaderBinding;
+}
+
 void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
-    interface->setViewport(buffer->viewport.x, buffer->viewport.y, buffer->viewport.w, buffer->viewport.h);
-    interface->clearBuffers(true, true, true);
     
+    ++currentDebugFrameInfo.buffersProcessed;
+    
+    interface->setViewport(buffer->viewport.x, buffer->viewport.y, buffer->viewport.w, buffer->viewport.h);
+    interface->clearBuffers(buffer->clearColor, buffer->clearColorBuffer, buffer->clearDepthBuffer, true);
     
     projectionMatrixParam->setMatrix4(buffer->projectionMatrix);
     viewMatrixParam->setMatrix4(buffer->viewMatrix);
@@ -78,72 +84,31 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
     for(int i=0; i < buffer->drawCalls.size(); i++) {
         
         interface->beginDrawCall();
+        
+        interface->setBlendingMode(buffer->drawCalls[i].options.blendingMode);
         interface->enableDepthTest(buffer->drawCalls[i].options.depthTest);
         interface->enableDepthWrite(buffer->drawCalls[i].options.depthWrite);
         
         modelMatrixParam->setMatrix4(buffer->drawCalls[i].modelMatrix);
         
         if(buffer->drawCalls[i].material) {
-            ShaderBinding *localShaderBinding = buffer->drawCalls[i].shaderBinding;
             
             for(int s=0; s < buffer->drawCalls[i].material->getNumShaders(); s++) {
+        
+                ++currentDebugFrameInfo.drawCallsProcessed;
                 
                 Shader *shader = buffer->drawCalls[i].material->getShader(s);
-                
                 interface->useShader(shader);
-                
-                ShaderBinding *materialShaderBinding = buffer->drawCalls[i].material->getShaderBinding(s);
-
-                
-                // !!!!!!!!!!!!!!!!!!!!!!!!
-                // TODO: Don't do string lookups on every frame for all this stuff, find a better way!!
-                // !!!!!!!!!!!!!!!!!!!!!!!!
                 
                 // set shader uniforms
    
-                for(int p=0; p < shader->expectedParams.size(); p++) {
-                    ProgramParam param = shader->expectedParams[p];
-                    
-                    LocalShaderParam *localParam = NULL;
-                    localParam = rendererShaderBinding->getLocalParamByName(param.name);
-
-                    // material options override renderer options
-                    
-                    LocalShaderParam *materialOptionsParam = materialShaderBinding->getLocalParamByName(param.name);
-                    if(materialOptionsParam) {
-                        localParam = materialOptionsParam;
-                    }
-                    
-                    // local options override material options
-                    
-                    LocalShaderParam *localOptionsParam = localShaderBinding->getLocalParamByName(param.name);
-                    if(localOptionsParam) {
-                        localParam = localOptionsParam;
-                    }
-                    
-                    interface->setParamInShader(shader, param, localParam);
+                for(int p=0; p < buffer->drawCalls[i].shaderParams.size(); p++) {
+                    interface->setParamInShader(shader, buffer->drawCalls[i].shaderParams[p].programParam, buffer->drawCalls[i].shaderParams[p].localParam);
                     
                 }
                 
-                 for(int a=0; a < shader->expectedAttributes.size(); a++) {
-                     ProgramAttribute attribute = shader->expectedAttributes[a];
-                     
-                     
-                     AttributeBinding *attributeBinding = NULL;
-                     attributeBinding = materialShaderBinding->getAttributeBindingByName(attribute.name);
-                     
-                     // local options override material options
-                     
-                     AttributeBinding *localAttributeBinding = localShaderBinding->getAttributeBindingByName(attribute.name);
-                     
-                     if(localAttributeBinding) {
-                         attributeBinding = localAttributeBinding;
-                     }
-                     
-                     if(attributeBinding) {
-                         interface->setAttributeInShader(shader, attribute, attributeBinding);
-                     }
-
+                 for(int a=0; a < buffer->drawCalls[i].shaderAttributes.size(); a++) {
+                        interface->setAttributeInShader(shader, buffer->drawCalls[i].shaderAttributes[a].programAttribute,  buffer->drawCalls[i].shaderAttributes[a].attributeBinding);
                  }
                 
                 if(buffer->drawCalls[i].indexed) {
@@ -189,6 +154,13 @@ void RenderThread::processJob(const RendererThreadJob &job) {
         case JOB_FLUSH_CONTEXT:
         {
             core->flushRenderContext();
+            
+            currentDebugFrameInfo.timeTaken = Services()->getCore()->getTicks() - frameStart;
+            lastFrameDebugInfo = currentDebugFrameInfo;
+            currentDebugFrameInfo.buffersProcessed = 0;
+            currentDebugFrameInfo.drawCallsProcessed = 0;
+            currentDebugFrameInfo.timeTaken = 0;
+            frameStart = Services()->getCore()->getTicks();
         }
         break;
         case JOB_CREATE_PROGRAM:
@@ -204,6 +176,10 @@ void RenderThread::processJob(const RendererThreadJob &job) {
         }
         break;
     }
+}
+
+RenderThreadDebugInfo RenderThread::getFrameInfo() {
+    return lastFrameDebugInfo;
 }
 
 void RenderThread::enqueueJob(int jobType, void *data) {

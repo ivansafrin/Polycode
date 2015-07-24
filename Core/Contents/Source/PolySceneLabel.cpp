@@ -97,6 +97,7 @@ Number SceneLabel::getLabelActualHeight() {
     return actualHeight;
 }
 
+
 void SceneLabel::updateFromLabel() {
 
 	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
@@ -109,17 +110,18 @@ void SceneLabel::updateFromLabel() {
 		texture = materialManager->createTextureFromImage(label, materialManager->clampDefault, false);		
 	}
 
-    // RENDERER_TODO
-    /*
-	if(material) {
-		localShaderOptions->clearTexture("diffuse");
-		localShaderOptions->addTexture("diffuse", texture);	
-	}
-     */
-
 	setPrimitiveOptions(type, label->getWidth()*labelScale/CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(),label->getHeight()*labelScale/CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
 	
     setLocalBoundingBox(label->getWidth()*labelScale / CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), label->getHeight()*labelScale/ CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), 0.001);
+    
+    
+    if(localShaderOptions) {
+        LocalShaderParam *diffuseParam = localShaderOptions->getLocalParamByName("diffuse");
+        if(!diffuseParam) {
+            diffuseParam = localShaderOptions->addParam(ProgramParam::PARAM_TEXTURE, "diffuse");
+        }
+        diffuseParam->setTexture(texture);
+    }
     
         // RENDERER_TODO
     /*

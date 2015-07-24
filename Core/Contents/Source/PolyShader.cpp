@@ -29,6 +29,13 @@ ShaderRenderTarget::ShaderRenderTarget() : PolyBase() {
 	texture = NULL;
 }
 
+ProgramParam::ProgramParam() : type(PARAM_UNKNOWN), platformData(NULL) {
+}
+
+ProgramAttribute::ProgramAttribute() : platformData(NULL) {
+    
+}
+
 void *ProgramParam::createParamData(int type) {
 	switch (type) {
 		case PARAM_NUMBER:

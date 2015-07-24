@@ -1,8 +1,6 @@
-uniform sampler2D texture;
-uniform vec2 scroll;
-
+uniform sampler2D diffuse;
 varying vec2 texCoordVar;
 
 void main() {
-	gl_FragColor = texture2D( texture, texCoordVar + scroll);
+	gl_FragColor = texture2D(diffuse, texCoordVar);
 }

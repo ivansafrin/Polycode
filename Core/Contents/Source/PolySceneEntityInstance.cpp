@@ -532,7 +532,7 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 
 
 	if(!targetEntity) {	
-		entity->blendingMode = (*entry)["blendMode"]->intVal;
+		entity->setBlendingMode((*entry)["blendMode"]->intVal);
 
         entity->setScale((*entry)["sX"]->NumberVal, (*entry)["sY"]->NumberVal, (*entry)["sZ"]->NumberVal);
         entity->setPosition((*entry)["pX"]->NumberVal, (*entry)["pY"]->NumberVal, (*entry)["pZ"]->NumberVal);

@@ -60,9 +60,9 @@ void Entity::initEntity() {
 	billboardRoll = false;
 	billboardIgnoreScale = false;
 	drawCall.options.depthOnly = false;
+	drawCall.options.blendingMode = Entity::defaultBlendingMode;    
 	depthWrite = true;
 	ignoreParentMatrix = false;
-	blendingMode = Entity::defaultBlendingMode;
 	lockMatrix = false;
 	colorAffectsChildren = true;
 	visibilityAffectsChildren = true;
@@ -113,7 +113,6 @@ void Entity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) co
 	clone->billboardRoll = billboardRoll;
 	clone->depthWrite = depthWrite;
 	clone->depthTest = depthTest;
-	clone->blendingMode = blendingMode;
 	clone->colorAffectsChildren = colorAffectsChildren;
 	clone->visibilityAffectsChildren = visibilityAffectsChildren;
 	clone->setUserData(getUserData());
@@ -336,8 +335,12 @@ void Entity::setColor(Number r, Number g, Number b, Number a) {
 	color.setColor(r,g,b,a);
 }
 
-void Entity::setBlendingMode(int newBlendingMode) {
-	blendingMode = newBlendingMode;
+void Entity::setBlendingMode(unsigned int newBlendingMode) {
+	drawCall.options.blendingMode = newBlendingMode;
+}
+
+unsigned int Entity::getBlendingMode() {
+    return drawCall.options.blendingMode;
 }
 
 Entity::~Entity() {
