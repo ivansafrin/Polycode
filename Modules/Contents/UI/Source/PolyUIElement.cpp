@@ -23,6 +23,7 @@
 #include "PolyUIElement.h"
 #include "PolyRenderer.h"
 #include "PolyCoreServices.h"
+#include "PolyResourceManager.h"
 #include "PolyTexture.h"
 #include "PolyConfig.h"
 #include "PolyCoreInput.h"
@@ -159,6 +160,7 @@ Label *UILabel::getLabel() {
 
 UIRect::UIRect(String fileName, Number width, Number height) : UIElement() {
 	texture = NULL;
+    localShaderOptions = NULL;
 	loadTexture(fileName);
     initRect(width, height);
     imageWidth = width;
@@ -167,6 +169,7 @@ UIRect::UIRect(String fileName, Number width, Number height) : UIElement() {
 
 UIRect::UIRect(String fileName) : UIElement() {
 	texture = NULL;
+    localShaderOptions = NULL;
 	loadTexture(fileName);
 	if(texture) {	
 		initRect(texture->getWidth(), texture->getHeight());
@@ -183,6 +186,7 @@ UIRect::UIRect(String fileName) : UIElement() {
 
 UIRect::UIRect(Number width, Number height) : UIElement() {
 	texture = NULL;
+    localShaderOptions = NULL;
 	initRect(width, height);
 	imageWidth = 0;
 	imageHeight = 0;
@@ -204,8 +208,8 @@ void UIRect::setImageCoordinates(Number x, Number y, Number width, Number height
 	Number wFloat = width * pixelSizeX * imageScale;
 	Number hFloat = height * pixelSizeY * imageScale;
 
-    rectMesh->vertexPositionArray.data.clear();
-    rectMesh->vertexTexCoordArray.data.clear();
+    rectMesh->clearMesh();
+    rectMesh->indexedMesh = true;
     
 	rectMesh->addVertex(-whalf,-hhalf,0);
 	rectMesh->addTexCoord(xFloat, (1.0-yFloat) - hFloat);
@@ -219,6 +223,10 @@ void UIRect::setImageCoordinates(Number x, Number y, Number width, Number height
 	rectMesh->addVertex(-whalf,-hhalf+height,0);
 	rectMesh->addTexCoord(xFloat, 1.0-yFloat);
 
+    rectMesh->addIndexedFace(0, 1, 2);
+    rectMesh->addIndexedFace(0, 2, 3);
+    
+    
 	rebuildTransformMatrix();
 	matrixDirty = true;
 }
@@ -250,37 +258,62 @@ void UIRect::initRect(Number width, Number height) {
     rectMesh->indexedMesh = true;
     rectMesh->addIndexedFace(0, 1, 2);
     rectMesh->addIndexedFace(0, 2, 3);
+    
+    material =  (Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit");
+    localShaderOptions = new ShaderBinding();
+    
+    localShaderOptions->addAttributeBinding("texCoord", &rectMesh->vertexTexCoordArray);
+    localShaderOptions->addAttributeBinding("position", &rectMesh->vertexPositionArray);
+
+    if(texture) {
+        localShaderOptions->setTextureForParam("diffuse", texture);
+    }
 }
 
 UIRect::~UIRect() {
 	delete rectMesh;
+    delete localShaderOptions;
 }
 
 void UIRect::loadTexture(String fileName) {
+
 	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
 	texture = materialManager->createTextureFromFile(fileName, materialManager->clampDefault, false);
+    if(localShaderOptions) {
+        localShaderOptions->setTextureForParam("diffuse", texture);
+    }
 }
 
 void UIRect::setTexture(Texture *texture) {
 	this->texture = texture;
+    if(localShaderOptions) {
+        localShaderOptions->setTextureForParam("diffuse", texture);
+    }
 }	
 
 Texture *UIRect::getTexture() {
 	return texture;
 }
 
-void UIRect::Render() {
+void UIRect::Render(GPUDrawBuffer *buffer) {
     
-    // RENDERER_TODO
-    /*
-	renderer->clearShader();
-	renderer->setTexture(texture);
+    drawCall.options.depthTest = depthTest;
+    drawCall.options.depthWrite = depthWrite;
     
-    renderer->pushRenderDataArray(&rectMesh->vertexPositionArray);
-    renderer->pushRenderDataArray(&rectMesh->vertexTexCoordArray);
-
-	renderer->drawArrays(Mesh::QUAD_MESH, NULL);
-     */
+    drawCall.mode = rectMesh->getMeshType();
+    drawCall.numVertices = rectMesh->getVertexCount();
+    
+    if(rectMesh->indexedMesh) {
+        drawCall.indexed = true;
+        drawCall.indexArray = &rectMesh->indexArray;
+    } else {
+        drawCall.indexed = false;
+    }
+    
+    drawCall.material = material;
+    drawCall.shaderBinding = localShaderOptions;
+    
+    buffer->drawCalls.push_back(drawCall);
 }
 
 void UIRect::Resize(Number width, Number height) {
@@ -291,12 +324,16 @@ void UIRect::Resize(Number width, Number height) {
 	Number whalf = width/2.0f;
 	Number hhalf = height/2.0f;
 
-    rectMesh->vertexPositionArray.data.clear();
+    rectMesh->clearMesh();
+    rectMesh->indexedMesh = true;
 
     rectMesh->addVertex(-whalf,-hhalf,0);
     rectMesh->addVertex(-whalf+width,-hhalf,0);
     rectMesh->addVertex(-whalf+width,-hhalf+height,0);
     rectMesh->addVertex(-whalf,-hhalf+height,0);
+    
+    rectMesh->addIndexedFace(0, 1, 2);
+    rectMesh->addIndexedFace(0, 2, 3);
 }
 
 UIImage::UIImage(String imagePath, int width, int height) : UIRect(imagePath, width, height) {

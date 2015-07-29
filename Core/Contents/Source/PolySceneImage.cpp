@@ -23,6 +23,7 @@
 #include "PolySceneImage.h"
 #include "PolyMesh.h"
 #include "PolyTexture.h"
+#include "PolyCoreServices.h"
 
 using namespace Polycode;
 
@@ -37,7 +38,7 @@ SceneImage* SceneImage::SceneImageWithTexture(Texture *texture) {
 SceneImage::SceneImage(const String& fileName) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1) {
     
     // RENDERER_TODO
-	//loadTexture(fileName);
+    Texture *texture = localShaderOptions->loadTextureForParam("diffuse", fileName);
 
 	imageWidth = texture->getWidth();
 	imageHeight = texture->getHeight();
@@ -50,6 +51,8 @@ SceneImage::SceneImage(const String& fileName) : ScenePrimitive(ScenePrimitive::
 SceneImage::SceneImage(Image *image) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1) {
     // RENDERER_TODO
 	//loadTextureFromImage(image);
+    Texture *texture = Services()->getMaterialManager()->createTextureFromImage(image);
+    localShaderOptions->setTextureForParam("diffuse", texture);
 
 	imageWidth = texture->getWidth();
 	imageHeight = texture->getHeight();
@@ -60,7 +63,7 @@ SceneImage::SceneImage(Image *image) : ScenePrimitive(ScenePrimitive::TYPE_VPLAN
 }
 
 SceneImage::SceneImage(Texture *texture) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1)  {
-	setTexture(texture);
+    localShaderOptions->setTextureForParam("diffuse", texture);
 
 	imageWidth = texture->getWidth();
 	imageHeight = texture->getHeight();

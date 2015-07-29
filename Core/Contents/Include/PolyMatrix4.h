@@ -226,6 +226,20 @@ namespace Polycode {
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------
 
+        
+            /**
+             * Translates the position in the matrix.
+             * @param x X coordinate.
+             * @param y Y coordinate.
+             * @param z Z coordinate.
+             */
+            inline void Translate(Number x, Number y, Number z) {
+                m[3][0] += x;
+                m[3][1] += y;
+                m[3][2] += z;
+            }
+        
+        
 			/**
 			* Sets the position in the matrix.
 			* @param x X coordinate.
@@ -326,6 +340,10 @@ namespace Polycode {
                 m[0][0] = 2.0/(right-left);
                 m[1][1] = 2.0/(top-bottom);
                 m[2][2] = -2.0/(zFar-zNear);
+                
+                m[3][0] = -((right+left)/(right-left));
+                m[3][1] = -((top+bottom)/(top-bottom));
+                m[3][2] = -((zFar+zNear)/(zFar-zNear));
             }
 
             inline void setProjection(Number fov, Number aspect, Number zNear, Number zFar) {

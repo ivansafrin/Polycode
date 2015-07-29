@@ -94,12 +94,6 @@ namespace Polycode {
 			* @param fileName Filename to load the skeleton from.
 			*/
 			Skeleton *loadSkeleton(const String& fileName);
-			
-			/**
-			* Sets the texture from an existing Texture instance.
-			* @param texture Texture to set.
-			*/			
-			void setTexture(Texture *texture);
 
 			/**
 			* Clears the currently applied material
@@ -230,7 +224,6 @@ namespace Polycode {
 		
 			bool useVertexBuffer;
 			Mesh *mesh;
-			Texture *texture;
 			Material *material;
 			Skeleton *skeleton;
 			ShaderBinding *localShaderOptions;

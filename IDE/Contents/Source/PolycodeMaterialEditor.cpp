@@ -275,9 +275,10 @@ void CubemapEditorPane::setCubemap(Cubemap *cubemap) {
 	currentCubemap = cubemap;
 	
 	nameProp->set(cubemap->getResourceName());
-	
-	cubemapPreview->previewPrimitive->getLocalShaderOptions()->clearCubemap("lightCube");
-	cubemapPreview->previewPrimitive->getLocalShaderOptions()->addCubemap("lightCube", cubemap);	
+
+    // RENDERER_TODO
+//	cubemapPreview->previewPrimitive->getLocalShaderOptions()->clearCubemap("lightCube");
+//	cubemapPreview->previewPrimitive->getLocalShaderOptions()->addCubemap("lightCube", cubemap);
 	
 	yPosTexture->set(cubemap->getTexture(Cubemap::CUBEMAP_YPOS));
 	yNegTexture->set(cubemap->getTexture(Cubemap::CUBEMAP_YNEG));
@@ -486,6 +487,8 @@ void ShaderEditorPane::reloadPrograms() {
 		
 	std::vector<Resource*> programs = CoreServices::getInstance()->getResourceManager()->getResources(Resource::RESOURCE_PROGRAM);
 	
+    // RENDERER_TODO
+    /*
 	for(int i=0; i < programs.size(); i++) {
 		ShaderProgram* program = (ShaderProgram*) programs[i];
 		if(program->type == ShaderProgram::TYPE_VERT) {
@@ -500,6 +503,7 @@ void ShaderEditorPane::reloadPrograms() {
 			}			
 		}
 	}	
+     */
 }
 
 void ShaderEditorPane::setShader(Shader *shader) {
@@ -511,6 +515,8 @@ void ShaderEditorPane::setShader(Shader *shader) {
 		
 	nameProp->set(shader->getName());
 	
+    // RENDERER_TODO
+    /*
 	for(int i=0; i < vertexProgramProp->comboEntry->getNumItems(); i++) {
 		ShaderProgram* program = (ShaderProgram*) vertexProgramProp->comboEntry->getItemAtIndex(i)->data;
 		if(program == shader->vp) {
@@ -524,7 +530,7 @@ void ShaderEditorPane::setShader(Shader *shader) {
 			fragmentProgramProp->comboEntry->setSelectedIndex(i);
 		}
 	}
-	
+	*/
 	screenShaderProp->set(shader->screenShader);
 	
 	pointLightsProp->set(shader->numPointLights);
@@ -714,7 +720,7 @@ MaterialPreviewBox::MaterialPreviewBox() : UIElement() {
 	previewBg->setMaterialByName("Unlit");
 	Texture *tex = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile("materialEditor/material_grid.png");
 	if(previewBg->getLocalShaderOptions()) {
-	previewBg->getLocalShaderOptions()->addTexture("diffuse", tex);
+        previewBg->getLocalShaderOptions()->setTextureForParam("diffuse", tex);
 	}
 	previewScene->addChild(previewBg);
 	
@@ -949,7 +955,7 @@ void MaterialEditorPane::handleEvent(Event *event) {
 				currentMaterial->clearShaders();
 				materialPreview->clearMaterial();
 				
-				ShaderBinding *newShaderBinding = selectedShader->createBinding();				
+                ShaderBinding *newShaderBinding = new ShaderBinding();
 				currentMaterial->addShader(selectedShader, newShaderBinding);
 				materialPreview->setMaterial(currentMaterial);					
 			}
@@ -1206,8 +1212,8 @@ bool PolycodeMaterialEditor::openFile(OSFileEntry filePath) {
     for(int i=0; i < res.size(); i++) {
         Shader *shader = (Shader*)res[i];
 		materialBrowser->addShader(shader);
-		shader->vp->reloadOnFileModify = true;
-		shader->fp->reloadOnFileModify = true;
+		shader->vertexProgram->reloadOnFileModify = true;
+		shader->fragmentProgram->reloadOnFileModify = true;
         shaders.push_back(shader);
     }
     
@@ -1362,6 +1368,8 @@ void PolycodeMaterialEditor::saveMaterials(ObjectEntry *materialsEntry, std::vec
 					}
 				}
 				
+                // RENDERER_TODO
+                /*
 				for(int j=0; j < shader->expectedTextures.size(); j++) {
 					Texture *texture = shaderBinding->getTexture(shader->expectedTextures[j]);
 					
@@ -1390,7 +1398,7 @@ void PolycodeMaterialEditor::saveMaterials(ObjectEntry *materialsEntry, std::vec
 						cubemapEntry->addChild("name", shader->expectedCubemaps[j]);
 					}
 				}
-				
+				*/
 				
 				if(shader->expectedParams.size() > 0 || shader->expectedParams.size() > 0) {
 					ObjectEntry *paramsEntry = shaderEntry->addChild("params");
@@ -1423,12 +1431,12 @@ void PolycodeMaterialEditor::saveFile() {
 		shaderEntry->addChild("screen", shaders[i]->screenShader);
 
 		ObjectEntry *vpEntry = shaderEntry->addChild("vp");
-		String sourcePath = shaders[i]->vp->getResourcePath();
+		String sourcePath = shaders[i]->vertexProgram->getResourcePath();
 		sourcePath = sourcePath.replace(parentProject->getRootFolder()+"/", "");
 		vpEntry->addChild("source", sourcePath);
 				
 		ObjectEntry *fpEntry = shaderEntry->addChild("fp");
-		sourcePath = shaders[i]->fp->getResourcePath();
+		sourcePath = shaders[i]->fragmentProgram->getResourcePath();
 		sourcePath = sourcePath.replace(parentProject->getRootFolder()+"/", "");		
 		fpEntry->addChild("source", sourcePath);
 	}

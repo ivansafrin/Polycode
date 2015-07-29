@@ -138,7 +138,9 @@ bool PolycodeMeshEditor::openFile(OSFileEntry filePath) {
 	PolycodeEditor::openFile(filePath);
 
 	previewMesh->alphaTest = true;
-	CoreServices::getInstance()->getRenderer()->alphaTestValue = 0.9;
+    
+    // RENDERER_TODO
+	//CoreServices::getInstance()->getRenderer()->alphaTestValue = 0.9;
 				
 	trackballCamera->setCameraDistance(previewMesh->getLocalBoundingBox().x);
 	return true;

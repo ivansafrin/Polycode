@@ -56,7 +56,7 @@ namespace Polycode {
 
 		// implementation
         
-        void createTexture(Texture *texture, int filteringMode, int anisotropy, bool createMipmaps);
+        void createTexture(Texture *texture);
         void setViewport(unsigned int x,unsigned  int y,unsigned  int width, unsigned height);
         void clearBuffers(const Color &clearColor, bool colorBuffer, bool depthBuffer, bool stencilBuffer);
         void setParamInShader(Shader *shader, ProgramParam *param, LocalShaderParam *localParam);
@@ -76,6 +76,7 @@ namespace Polycode {
         
         void enableDepthTest(bool val);
         void enableDepthWrite(bool val);
+        void enableBackfaceCulling(bool val);
         
 	protected:
 		

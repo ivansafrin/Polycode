@@ -209,7 +209,6 @@ void CocoaCore::handleVideoModeChange(VideoModeChangeInfo *modeInfo) {
 	[context setView: (NSView*)glView];					
 		
 	renderer->setAnisotropyAmount(anisotropyLevel);
-	dispatchEvent(new Event(), EVENT_CORE_RESIZE);	
 
 	[[glView window] setContentSize: NSMakeSize(xRes, yRes)];
 		
@@ -258,6 +257,8 @@ void CocoaCore::handleVideoModeChange(VideoModeChangeInfo *modeInfo) {
 	} else {
 		glDisable( GL_MULTISAMPLE_ARB );			
 	}
+    
+    coreResized = true;
 }
 
 void CocoaCore::openFileWithApplication(String file, String application) {
@@ -308,7 +309,7 @@ void CocoaCore::resizeTo(int xRes, int yRes) {
 	this->yRes = yRes;
     // RENDERER_TODO
 //	renderer->Resize(xRes, yRes);
-	dispatchEvent(new Event(), EVENT_CORE_RESIZE);	
+    coreResized = true;
 }
 
 CocoaCore::~CocoaCore() {

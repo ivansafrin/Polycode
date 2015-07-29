@@ -60,10 +60,12 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 			
 	globalClipboard = new PolycodeClipboard();
 	
-	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_NEAREST);
+	CoreServices::getInstance()->getMaterialManager()->setTextureFilteringMode(Texture::FILTERING_NEAREST);
 				
 	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
-	CoreServices::getInstance()->getResourceManager()->addDirResource("default");	
+	CoreServices::getInstance()->getResourceManager()->addDirResource("default");
+    
+    
 
 	CoreServices::getInstance()->getResourceManager()->addArchive("hdr.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("hdr");
@@ -79,8 +81,7 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 	CoreServices::getInstance()->getFontManager()->registerFont("section", "Fonts/RobotoCondensed-Bold.ttf");
 
 
-	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_LINEAR);
-//	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_NEAREST);
+	CoreServices::getInstance()->getMaterialManager()->setTextureFilteringMode(Texture::FILTERING_LINEAR);
 	
 	loadConfigFile();	
 
@@ -1206,7 +1207,7 @@ void PolycodeIDEApp::loadConfigFile() {
 	
 	String uiThemeName = "dark";
 	
-	CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_LINEAR);
+	CoreServices::getInstance()->getMaterialManager()->setTextureFilteringMode(Texture::FILTERING_LINEAR);
 	
 	ObjectEntry *texture_filtering_mode = configFile.root["texture_filtering_mode"];
 	config->setStringValue("Polycode", "textureFilteringMode", "linear");	
@@ -1214,7 +1215,7 @@ void PolycodeIDEApp::loadConfigFile() {
 	if(texture_filtering_mode) {
 		if(texture_filtering_mode->stringVal == "nearest") {
 		config->setStringValue("Polycode", "textureFilteringMode", "nearest");		
-			CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_NEAREST);
+			CoreServices::getInstance()->getMaterialManager()->setTextureFilteringMode(Texture::FILTERING_NEAREST);
 		}
 	}
 	
@@ -1273,13 +1274,13 @@ void PolycodeIDEApp::applyFinalConfig() {
 		int newYRes = appHeight->intVal;		
 		if(newXRes > 100 && newYRes > 100) {
 			setResFromConfig = true;
-			core->setVideoMode(newXRes, newYRes, false, true, 0, 0);
+//			core->setVideoMode(newXRes, newYRes, false, true, 0, 0);
 			frame->Resize(newXRes, newYRes);
 		}
 	}
 	
 	if(!setResFromConfig) {
-		core->setVideoMode(1100, 700, false, true, 0, 0);
+	//	core->setVideoMode(1100, 700, false, true, 0, 0);
 		frame->Resize(1100, 700);			
 	}
 

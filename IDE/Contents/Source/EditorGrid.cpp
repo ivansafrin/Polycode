@@ -202,7 +202,8 @@ void EditorGrid::rebuildGrid() {
     
     grid->setLocalBoundingBox(grid->getMesh()->calculateBBox());
     
-    grid->cacheToVertexBuffer(true);
+    // RENDERER_TODO
+//    grid->cacheToVertexBuffer(true);
 }
 
 void EditorGrid::setGridMode(int mode) {

@@ -1011,7 +1011,7 @@ void EntityEditorMainView::createIcon(Entity *entity, String iconFile) {
     iconPrimitive->setMaterialByName("Unlit");
 	Texture *tex = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile("entityEditor/"+iconFile);
 	if(iconPrimitive->getLocalShaderOptions()) {
-        iconPrimitive->getLocalShaderOptions()->addTexture("diffuse", tex);
+        iconPrimitive->getLocalShaderOptions()->setTextureForParam("diffuse", tex);
 	}
     
     iconBase->addChild(iconPrimitive);
@@ -1458,7 +1458,10 @@ void EntityEditorMainView::handleEvent(Event *event) {
         if(event->getEventCode() == UIEvent::OK_EVENT) {
             if(assetSelectType == "mesh") {
                 SceneMesh *newMesh = new SceneMesh(globalFrame->assetBrowser->getSelectedAssetPath());
-                newMesh->cacheToVertexBuffer(true);
+                
+                // RENDERER_TODO
+                //newMesh->cacheToVertexBuffer(true);
+                
                 sceneObjectRoot->addChild(newMesh);
                 setEditorProps(newMesh);
                 newMesh->setMaterialByName("Default");
@@ -1467,10 +1470,6 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 selectEntity(newMesh, false, false);
             } else if(assetSelectType == "image") {
                 SceneImage *newImage = new SceneImage(globalFrame->assetBrowser->getSelectedAssetPath());
-                newImage->setMaterialByName("Unlit");
-                if(newImage->getLocalShaderOptions()) {
-                    newImage->getLocalShaderOptions()->addTexture("diffuse", newImage->getTexture());
-                }
                 sceneObjectRoot->addChild(newImage);
                 setEditorProps(newImage);
                 newImage->setPosition(cursorPosition);
@@ -1489,10 +1488,6 @@ void EntityEditorMainView::handleEvent(Event *event) {
                         newSprite->setSpriteState(sprite->getState(0), 0, false);
                     }
                     
-                    newSprite->setMaterialByName("Unlit");
-                    if(newSprite->getLocalShaderOptions()) {
-                        newSprite->getLocalShaderOptions()->addTexture("diffuse", newSprite->getTexture());
-                    }
                     sceneObjectRoot->addChild(newSprite);
                     setEditorProps(newSprite);
                     newSprite->setPosition(cursorPosition);
@@ -2395,7 +2390,7 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
     entry->addChild("cG", entity->color.g);
     entry->addChild("cB", entity->color.b);
     entry->addChild("cA", entity->color.a);
-    entry->addChild("blendMode", entity->blendingMode);
+    entry->addChild("blendMode", (int)entity->getBlendingMode());
     
     entry->addChild("sX", entity->getScale().x);
     entry->addChild("sY", entity->getScale().y);
@@ -2436,6 +2431,8 @@ void PolycodeEntityEditor::saveShaderOptionsToEntry(ObjectEntry *entry, Material
             ObjectEntry *shaderEntry = entry->addChild("shader");
             ObjectEntry *texturesEntry = shaderEntry->addChild("textures");
             
+            // RENDERER_TODO
+            /*
             for(int j=0; j < shader->expectedTextures.size(); j++) {
                 Texture *texture = binding->getTexture(shader->expectedTextures[j]);
                 if(texture) {
@@ -2454,7 +2451,7 @@ void PolycodeEntityEditor::saveShaderOptionsToEntry(ObjectEntry *entry, Material
                     cubemapEntry->addChild("name", shader->expectedCubemaps[j]);
                 }
             }
-            
+            */
             
             if(shader->expectedParams.size() > 0 || shader->expectedParams.size() > 0) {
                 ObjectEntry *paramsEntry = shaderEntry->addChild("params");

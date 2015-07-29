@@ -41,10 +41,6 @@ GraphicsInterface::GraphicsInterface() {
 
 RenderThread::RenderThread() : interface(NULL) {
     
-    options.filteringMode = Renderer::TEX_FILTERING_LINEAR;
-    options.anisotropy = 0;
-    options.createMipmaps = true;
-    
     rendererShaderBinding = new ShaderBinding();
     
     projectionMatrixParam = rendererShaderBinding->addParam(ProgramParam::PARAM_MATRIX, "projectionMatrix");
@@ -87,6 +83,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
         interface->setBlendingMode(buffer->drawCalls[i].options.blendingMode);
         interface->enableDepthTest(buffer->drawCalls[i].options.depthTest);
         interface->enableDepthWrite(buffer->drawCalls[i].options.depthWrite);
+        interface->enableBackfaceCulling(buffer->drawCalls[i].options.backfaceCull);
         
         modelMatrixParam->setMatrix4(buffer->drawCalls[i].modelMatrix);
         
@@ -198,7 +195,7 @@ void RenderThread::processJob(const RendererThreadJob &job) {
         case JOB_CREATE_TEXTURE:
         {
             Texture *texture = (Texture*) job.data;
-            interface->createTexture(texture, options.filteringMode, options.anisotropy, options.createMipmaps);
+            interface->createTexture(texture);
         }
         break;
         case JOB_PROCESS_DRAW_BUFFER:
@@ -328,8 +325,10 @@ void Renderer::endFrame() {
     renderThread->enqueueJob(RenderThread::JOB_END_FRAME, NULL);
 }
 
-Texture *Renderer::createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type) {
+Texture *Renderer::createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type, unsigned int filteringMode, unsigned int anisotropy) {
     Texture *texture = new Texture(width, height, textureData, clamp, createMipmaps, type);
+    texture->filteringMode = filteringMode;
+    texture->anisotropy = anisotropy;
     renderThread->enqueueJob(RenderThread::JOB_CREATE_TEXTURE, (void*)texture);
     return texture;
 }
@@ -364,7 +363,7 @@ void Renderer::createVertexBuffers(Mesh *mesh) {
 void Renderer::destroyTexture(Texture *texture) {
     
 }
-void createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height, bool floatingPointBuffer) {
+void Renderer::createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height, bool floatingPointBuffer) {
     
 }
 

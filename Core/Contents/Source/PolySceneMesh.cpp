@@ -43,7 +43,7 @@ SceneMesh *SceneMesh::SceneMeshWithType(int meshType) {
 	return new SceneMesh(meshType);
 }
 
-SceneMesh::SceneMesh(const String& fileName) : Entity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL), mesh(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
+SceneMesh::SceneMesh(const String& fileName) : Entity(), material(NULL), skeleton(NULL), localShaderOptions(NULL), mesh(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
     loadFromFile(fileName);
 	useVertexBuffer = false;
 	lineSmooth = false;
@@ -61,7 +61,7 @@ SceneMesh::SceneMesh(const String& fileName) : Entity(), texture(NULL), material
     setMaterialByName("Unlit");
 }
 
-SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
+SceneMesh::SceneMesh(Mesh *mesh) : Entity(), material(NULL), skeleton(NULL), localShaderOptions(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
 	this->mesh = mesh;
 	setLocalBoundingBox(mesh->calculateBBox());
 	useVertexBuffer = false;
@@ -80,7 +80,7 @@ SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skel
     setMaterialByName("Unlit");
 }
 
-SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
+SceneMesh::SceneMesh(int meshType) : material(NULL), skeleton(NULL), localShaderOptions(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
 	mesh = new Mesh(meshType);
 	setLocalBoundingBox(mesh->calculateBBox());
 	useVertexBuffer = false;	
@@ -165,10 +165,6 @@ Mesh *SceneMesh::getMesh() {
 	return mesh;
 }
 
-void SceneMesh::setTexture(Texture *texture) {
-	this->texture = texture;
-}
-
 void SceneMesh::clearMaterial() {
 	if(localShaderOptions)
 		delete localShaderOptions;
@@ -197,7 +193,6 @@ void SceneMesh::setMaterial(Material *material) {
 }
 
 void SceneMesh::setMaterialByName(const String& materialName, ResourcePool *resourcePool) {
-    
     Material *material;
     if(resourcePool) {
         material =  (Material*)resourcePool->getResource(Resource::RESOURCE_MATERIAL, materialName);        

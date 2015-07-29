@@ -108,9 +108,8 @@ void OpenGLGraphicsInterface::setParamInShader(Shader *shader, ProgramParam *par
         break;
         case ProgramParam::PARAM_TEXTURE:
             glEnable(GL_TEXTURE_2D);
-            glUniform1i(paramLocation, textureIndex);
             glActiveTexture(GL_TEXTURE0 + textureIndex);
-            
+            glUniform1i(paramLocation, textureIndex);
             if(localParam) {
                 Texture* texture = localParam->getTexture();
                 glBindTexture(GL_TEXTURE_2D, *((GLuint*) texture->platformData));
@@ -229,7 +228,7 @@ void OpenGLGraphicsInterface::drawArrays(int type, unsigned int vertexCount) {
     glDrawArrays(getGLDrawMode(type), 0, vertexCount);
 }
 
-void OpenGLGraphicsInterface::createTexture(Texture *texture, int filteringMode, int anisotropy, bool createMipmaps) {
+void OpenGLGraphicsInterface::createTexture(Texture *texture) {
     if(!texture->platformData) {
         texture->platformData = (void*) new GLuint;
         glGenTextures(1, (GLuint*)texture->platformData);
@@ -270,35 +269,43 @@ void OpenGLGraphicsInterface::createTexture(Texture *texture, int filteringMode,
     }
     
     
-    switch(filteringMode) {
-        case Renderer::TEX_FILTERING_LINEAR:
+    switch(texture->filteringMode) {
+        case Texture::FILTERING_LINEAR:
             
-            if(anisotropy > 0) {
-                glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropy);
+            if(texture->anisotropy > 0) {
+                glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, texture->anisotropy);
             }
             
-            if(createMipmaps) {
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            
+            if(texture->createMipmaps) {
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-                if(texture->getTextureData()) {
-                    gluBuild2DMipmaps(GL_TEXTURE_2D, glTextureFormat, texture->getWidth(), texture->getHeight(), glTextureType, pixelType, texture->getTextureData());
-                }
             } else {
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                if(texture->getTextureData()) {
-                    glTexImage2D(GL_TEXTURE_2D, 0, glTextureFormat, texture->getWidth(), texture->getHeight(), 0, glTextureType, pixelType, texture->getTextureData());
-                }
             }
+            
             break;
-        case Renderer::TEX_FILTERING_NEAREST:
+        case Texture::FILTERING_NEAREST:
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);		
-            if(texture->getTextureData()) {
-                glTexImage2D(GL_TEXTURE_2D, 0, glTextureFormat, texture->getWidth(), texture->getHeight(), 0, glTextureType, pixelType, texture->getTextureData());
-            }			
+            
+            if(texture->createMipmaps) {
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+            } else {
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            }
             break;
     }
+    
+    if(texture->getTextureData()) {
+        glTexImage2D(GL_TEXTURE_2D, 0, glTextureFormat, texture->getWidth(), texture->getHeight(), 0, glTextureType, pixelType, texture->getTextureData());
+    }
+    
+    
+    if(texture->createMipmaps) {
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void OpenGLGraphicsInterface::setViewport(unsigned int x,unsigned  int y,unsigned  int width, unsigned height) {
@@ -469,6 +476,14 @@ void OpenGLGraphicsInterface::createShader(Shader *shader) {
     
      *((GLuint*)shader->platformData) = shaderID;
     
+}
+
+void OpenGLGraphicsInterface::enableBackfaceCulling(bool val) {
+    if(val) {
+        glEnable(GL_CULL_FACE);
+    } else {
+        glDisable(GL_CULL_FACE);
+    }
 }
 
 void OpenGLGraphicsInterface::enableDepthTest(bool val) {

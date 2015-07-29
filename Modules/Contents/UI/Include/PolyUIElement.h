@@ -92,7 +92,7 @@ namespace Polycode {
 			void initRect(Number width, Number height);
 			~UIRect();
 			void Resize(Number width, Number height);
-			void Render();
+			void Render(GPUDrawBuffer *buffer);
 			void loadTexture(String fileName);
 			void setTexture(Texture *texture);
 			void setImageCoordinates(Number x, Number y, Number width, Number height, Number imageScale = 1.0);
@@ -104,6 +104,9 @@ namespace Polycode {
 		
 			Number imageWidth;
 			Number imageHeight;
+        
+            Material *material;
+            ShaderBinding *localShaderOptions;
 			
 			Mesh *rectMesh;
 			Texture *texture;

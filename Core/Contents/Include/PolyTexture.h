@@ -48,13 +48,16 @@ namespace Polycode {
 			bool clamp;
 			char *textureData;
             int type;
+            int filteringMode;
+            bool createMipmaps;
+            unsigned int anisotropy;
+        
+            static const int FILTERING_NEAREST = 0;
+            static const int FILTERING_LINEAR = 1;
         
 		protected:
 
 			int pixelSize;
-			int filteringMode;
-		
-			bool createMipmaps;
 			int width;
 			int height;
 	};

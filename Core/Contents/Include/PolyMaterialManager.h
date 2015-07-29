@@ -81,6 +81,9 @@ namespace Polycode {
 			std::vector<Material*> loadMaterialsFromFile(ResourcePool *resourcePool, const String &fileName);
 			std::vector<Shader*> loadShadersFromFile(ResourcePool *resourcePool, String fileName);
 			std::vector<Cubemap*> loadCubemapsFromFile(String fileName);
+        
+            void setAnisotropyAmount(unsigned int anisotropy);
+            void setTextureFilteringMode(unsigned int textureFilteringMode);
 						
 			void addMaterial(Material *material);
 			void addShader(Shader *shader);
@@ -94,6 +97,10 @@ namespace Polycode {
 			bool keepTextureData;
 			
 		private:
+        
+            unsigned int textureFilteringMode;
+            unsigned int anisotropyAmount;
+        
 			std::vector<Texture*> textures;
 			std::vector<Material*> materials;
 			std::vector<Shader*> shaders;

@@ -501,11 +501,10 @@ void Camera::setProjectionMatrix(Matrix4 matrix) {
 }
 
 void Camera::setOrthoMatrix(Matrix4 &matrix, Number xSize, Number ySize, Number _near, Number _far, bool centered) {
-
     if(centered) {
         matrix.setOrthoProjection(-xSize*0.5, xSize*0.5, -ySize*0.5, ySize*0.5, _near, _far);
     } else {
-        matrix.setOrthoProjection(0.0f, xSize, 0, ySize, _near, _far);
+        matrix.setOrthoProjection(0.0f, xSize, 0.0, ySize, _near, _far);
     }
 }
 

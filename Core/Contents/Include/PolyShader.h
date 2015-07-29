@@ -170,6 +170,9 @@ namespace Polycode {
             void setTexture(Texture *texture);
             Texture *getTexture();
         
+            void setCubemap(Cubemap *cubemap);
+            Cubemap *getCubemap();
+        
             void setParamValueFromString(int type, String pvalue);
 	};
     
@@ -206,11 +209,15 @@ namespace Polycode {
 			unsigned int getNumLocalParams();
 			LocalShaderParam *getLocalParam(unsigned int index);
 			LocalShaderParam *getLocalParamByName(const String& name);
-
+        
+            void removeParam(const String &name);
+        
+            Texture *loadTextureForParam(const String &paramName, const String &fileName);
+            void setTextureForParam(const String &paramName, Texture *texture);
+            void setCubemapForParam(const String &paramName, Cubemap *cubemap);
         
             unsigned int getNumAttributeBindings();
             AttributeBinding *getAttributeBinding(unsigned int index);
-
         
             AttributeBinding *addAttributeBinding(const String &name, VertexDataArray *dataArray);
             AttributeBinding *getAttributeBindingByName(const String &name);

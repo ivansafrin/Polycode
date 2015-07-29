@@ -148,13 +148,21 @@ Texture *MaterialManager::createNewTexture(int width, int height, bool clamp, bo
 }
 
 Texture *MaterialManager::createTexture(int width, int height, char *imageData, bool clamp, bool createMipmaps, int type) {
-	Texture *newTexture = CoreServices::getInstance()->getRenderer()->createTexture(width, height, imageData,clamp, createMipmaps, type);
+	Texture *newTexture = CoreServices::getInstance()->getRenderer()->createTexture(width, height, imageData,clamp, createMipmaps, type, textureFilteringMode, anisotropyAmount);
 	textures.push_back(newTexture);
     if(!keepTextureData) {
         free(newTexture->textureData);
         newTexture->textureData = NULL;
     }
 	return newTexture;
+}
+
+void MaterialManager::setAnisotropyAmount(unsigned int anisotropy) {
+    this->anisotropyAmount = anisotropy;
+}
+
+void MaterialManager::setTextureFilteringMode(unsigned int textureFilteringMode) {
+    this->textureFilteringMode = textureFilteringMode;
 }
 
 Texture *MaterialManager::createTextureFromImage(Image *image, bool clamp, bool createMipmaps) {

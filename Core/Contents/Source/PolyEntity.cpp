@@ -519,6 +519,8 @@ void Entity::transformAndRender(GPUDrawBuffer *buffer) {
         drawCall.modelMatrix = getConcatenatedMatrix();
     }
 
+    drawCall.modelMatrix.Translate(-anchorPoint.x * bBox.x * 0.5, -anchorPoint.y * bBox.y * 0.5 * yAdjust, -anchorPoint.z * bBox.z * 0.5);
+    
     /*
 	if(billboardMode) {
 		if(billboardIgnoreScale) {

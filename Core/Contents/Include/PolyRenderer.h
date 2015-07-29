@@ -43,13 +43,12 @@ namespace Polycode {
             virtual void setParamInShader(Shader *shader, ProgramParam *param, LocalShaderParam *localParam) = 0;
             virtual void setAttributeInShader(Shader *shader, ProgramAttribute *attribute, AttributeBinding *attributeBinding) = 0;
             virtual void disableAttribute(Shader *shader, const ProgramAttribute &attribute) = 0;
-            virtual void createTexture(Texture *texture, int filteringMode, int anisotropy, bool createMipmaps) = 0;
+            virtual void createTexture(Texture *texture) = 0;
             virtual void setViewport(unsigned int x,unsigned  int y,unsigned  int width, unsigned height) = 0;
             virtual void clearBuffers(const Color &clearColor, bool colorBuffer, bool depthBuffer, bool stencilBuffer) = 0;
             virtual void createProgram(ShaderProgram *program) = 0;
             virtual void createShader(Shader *shader) = 0;
             virtual void useShader(Shader *shader) = 0;
-            virtual void setBlendingMode(unsigned int blendingMode) = 0;
         
             virtual void createVertexBuffer(VertexDataArray *dataArray) = 0;
             virtual void createIndexBuffer(IndexDataArray *dataArray) = 0;
@@ -60,6 +59,8 @@ namespace Polycode {
         
             virtual void enableDepthTest(bool val) = 0;
             virtual void enableDepthWrite(bool val) = 0;
+            virtual void setBlendingMode(unsigned int blendingMode) = 0;
+            virtual void enableBackfaceCulling(bool val) = 0;
         
             virtual void beginDrawCall() = 0;
         
@@ -69,14 +70,6 @@ namespace Polycode {
         public:
             int jobType;
             void *data;
-    };
-    
-    class _PolyExport RendererOptions {
-        public:
-        
-        int filteringMode;
-        int anisotropy;
-        bool createMipmaps;
     };
     
     class RenderThreadDebugInfo {
@@ -116,7 +109,6 @@ namespace Polycode {
             RenderThreadDebugInfo currentDebugFrameInfo;
         
             Core *core;
-            RendererOptions options;
             CoreMutex *jobQueueMutex;
             std::queue<RendererThreadJob> jobQueue;
             GraphicsInterface *interface;
@@ -137,7 +129,7 @@ namespace Polycode {
         RenderThread *getRenderThread();
 
         Cubemap *createCubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4, Texture *t5);
-        Texture *createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type=Image::IMAGE_RGBA);
+        Texture *createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type, unsigned int filteringMode, unsigned int anisotropy);
         void destroyTexture(Texture *texture);
         void createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height, bool floatingPointBuffer);
         
@@ -165,9 +157,6 @@ namespace Polycode {
         
         static const int DEPTH_FUNCTION_GREATER = 0;
         static const int DEPTH_FUNCTION_LEQUAL = 1;
-        
-        static const int TEX_FILTERING_NEAREST = 0;
-        static const int TEX_FILTERING_LINEAR = 1;
         
         
 	protected:

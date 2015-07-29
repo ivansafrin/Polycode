@@ -22,6 +22,7 @@
 
 #include "PolyShader.h"
 #include "PolyMatrix4.h"
+#include "PolyCoreServices.h"
 
 using namespace Polycode;
 
@@ -258,6 +259,40 @@ RenderTargetBinding *ShaderBinding::getDepthTargetBinding(unsigned int index) {
 	return depthTargetBindings[index];
 }
 
+Texture *ShaderBinding::loadTextureForParam(const String &paramName, const String &fileName) {
+    Texture *texture = Services()->getMaterialManager()->createTextureFromFile(fileName);
+    setTextureForParam(paramName, texture);
+    return texture;
+}
+
+void ShaderBinding::setTextureForParam(const String &paramName, Texture *texture) {
+    if(!texture) {
+        removeParam(paramName);
+        return;
+    }
+    LocalShaderParam *textureParam = getLocalParamByName(paramName);
+    if(!textureParam) {
+        textureParam = addParam(ProgramParam::PARAM_TEXTURE, paramName);
+    }
+    textureParam->setTexture(texture);
+}
+
+void ShaderBinding::setCubemapForParam(const String &paramName, Cubemap *cubemap) {
+    LocalShaderParam *textureParam = getLocalParamByName(paramName);
+    if(!textureParam) {
+        textureParam = addParam(ProgramParam::PARAM_CUBEMAP, paramName);
+    }
+    textureParam->setCubemap(cubemap);
+}
+
+void ShaderBinding::removeParam(const String &name) {
+    for(int i=0; i < localParams.size(); i++) {
+        if(localParams[i]->name == name) {
+            delete localParams[i];
+            localParams.erase(localParams.begin()+i);
+        }
+    }
+}
 
 Shader::Shader() : Resource(Resource::RESOURCE_SHADER) {
 	numSpotLights = 0;
@@ -392,6 +427,14 @@ void LocalShaderParam::setTexture(Texture *texture) {
 
 Texture *LocalShaderParam::getTexture() {
     return (Texture*) data;
+}
+
+void LocalShaderParam::setCubemap(Cubemap *cubemap) {
+    data = (void*) cubemap;
+}
+
+Cubemap *LocalShaderParam::getCubemap() {
+    return (Cubemap*) data;
 }
 
 LocalShaderParam::~LocalShaderParam() {

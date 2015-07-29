@@ -57,6 +57,7 @@ namespace Polycode {
 		int _hz;
 		getScreenInfo(&defaultScreenWidth, &defaultScreenHeight, &_hz);
 	
+        coreResized = false;
         
         this->aaLevel = aaLevel;
         this->anisotropyLevel = anisotropyLevel;
@@ -260,6 +261,11 @@ namespace Polycode {
         
         if(fixedElapsed > maxFixedElapsed) {
             fixedElapsed = maxFixedElapsed;
+        }
+        
+        if(coreResized) {
+            coreResized = false;
+            dispatchEvent(new Event(), EVENT_CORE_RESIZE);
         }
         
 		services->Update(elapsed);

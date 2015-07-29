@@ -454,6 +454,8 @@ namespace Polycode {
 		int yRes;
         bool vSync;
         
+        bool coreResized;
+        
 		int monitorIndex;
 		
 		int frames;

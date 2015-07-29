@@ -26,12 +26,7 @@
 
 using namespace Polycode;
 
-Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool clamp, bool createMipmaps, int type) : Resource(Resource::RESOURCE_TEXTURE) {
-	this->width = width;
-	this->height = height;
-	this->clamp = clamp;
-	this->createMipmaps = createMipmaps;
-    this->type = type;
+Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool clamp, bool createMipmaps, int type) : Resource(Resource::RESOURCE_TEXTURE), width(width), height(height), clamp(clamp), type(type), createMipmaps(createMipmaps), filteringMode(FILTERING_NEAREST), anisotropy(0) {
     
 	switch(type) {
 		case Image::IMAGE_RGB:

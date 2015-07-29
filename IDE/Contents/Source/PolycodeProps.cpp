@@ -1244,7 +1244,7 @@ MaterialProp::MaterialProp(const String &caption) : PropProp(caption, "Material"
 	previewBg->setMaterialByName("Unlit");
 	Texture *tex = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile("materialEditor/material_grid.png");
 	if(previewBg->getLocalShaderOptions()) {
-        previewBg->getLocalShaderOptions()->addTexture("diffuse", tex);
+        previewBg->getLocalShaderOptions()->setTextureForParam("diffuse", tex);
 	}
 	previewScene->addChild(previewBg);
 	
@@ -1635,7 +1635,7 @@ void ShaderPassProp::handleEvent(Event *event) {
 		if(selectedShader) {
 			if(material->getShader(shaderIndex) != selectedShader) {
 				material->removeShader(shaderIndex);				
-				ShaderBinding *newShaderBinding = selectedShader->createBinding();				
+                ShaderBinding *newShaderBinding = new ShaderBinding();
 				material->addShaderAtIndex(selectedShader, newShaderBinding, shaderIndex);
 				dispatchEvent(new Event(), Event::CHANGE_EVENT);
 			}
@@ -1722,7 +1722,7 @@ void TargetBindingProp::handleEvent(Event *event) {
 	if(event->getDispatcher() == removeButton && event->getEventCode() == UIEvent::CLICK_EVENT) {
 		dispatchEvent(new Event(), Event::REMOVE_EVENT);
 	} else if(event->getDispatcher() == typeComboBox && event->getEventCode() == UIEvent::CHANGE_EVENT) {
-		binding->clearTexture(targetBinding->name);	
+		binding->removeParam(targetBinding->name);
 		
 		if(typeComboBox->getSelectedIndex() == 1) {
 			textureComboBox->enabled = false;
@@ -1730,7 +1730,7 @@ void TargetBindingProp::handleEvent(Event *event) {
 		} else {
 			textureComboBox->enabled = true;
 			textureComboBox->visible = true;
-			binding->addTexture(targetBinding->name, targetBinding->texture);	
+			binding->setTextureForParam(targetBinding->name, targetBinding->texture);
 		}		
 		
 		if(typeComboBox->getSelectedIndex() == 2 || typeComboBox->getSelectedIndex() == 3) {
@@ -1755,9 +1755,9 @@ void TargetBindingProp::handleEvent(Event *event) {
 		binding->removeRenderTargetBinding(targetBinding);		
 		binding->addRenderTargetBinding(targetBinding);		
 
-		binding->clearTexture(targetBinding->name);
+		binding->removeParam(targetBinding->name);
 		if(targetBinding->mode == RenderTargetBinding::MODE_IN) {
-			binding->addTexture(targetBinding->name, targetBinding->texture);		
+			binding->setTextureForParam(targetBinding->name, targetBinding->texture);
 		}
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);		
 	} else if(event->getDispatcher() == textureComboBox && event->getEventCode() == UIEvent::CHANGE_EVENT) {
@@ -1766,8 +1766,8 @@ void TargetBindingProp::handleEvent(Event *event) {
 		binding->removeRenderTargetBinding(targetBinding);		
 		binding->addRenderTargetBinding(targetBinding);		
 
-		binding->clearTexture(targetBinding->name);
-		binding->addTexture(targetBinding->name, targetBinding->texture);
+		binding->removeParam(targetBinding->name);
+		binding->setTextureForParam(targetBinding->name, targetBinding->texture);
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 }
@@ -1952,7 +1952,7 @@ void ShaderPassesSheet::handleEvent(Event *event) {
 	
 		Shader *defaultShader = (Shader*)resourcePool->getResource(Resource::RESOURCE_SHADER, "PassThrough");
 		if(defaultShader) {	
-			ShaderBinding *newShaderBinding = defaultShader->createBinding();		
+            ShaderBinding *newShaderBinding = new ShaderBinding();
 			material->addShader(defaultShader, newShaderBinding);
 		}
 		refreshPasses();
@@ -2334,45 +2334,42 @@ void ShaderOptionsSheet::clearShader() {
 void ShaderOptionsSheet::setOptionsFromParams(std::vector<ProgramParam> &params) {
 
 	for(int i=0; i < params.size(); i++) {
-		if(!CoreServices::getInstance()->getRenderer()->getDataPointerForName(params[i].name)) {			
-				switch (params[i].type) {
-				
-					case ProgramParam::PARAM_NUMBER:
-					{
-						String paramName = params[i].name;
-						NumberProp *numberProp = new NumberProp(paramName, this);
-						addProp(numberProp);
-												
-                        LocalShaderParam *param = binding->getLocalParamByName(params[i].name);
-                        Number numberValue = 0.0;
-                        if(param) {
-                            numberValue = (*(Number*)param->data);
-                        }
-						numberProp->set(numberValue);
-						propHeight += 30;
-					}
-					break;					
-					case ProgramParam::PARAM_COLOR:
-					{
-						String paramName = params[i].name;
+        switch (params[i].type) {
+            case ProgramParam::PARAM_NUMBER:
+            {
+                String paramName = params[i].name;
+                NumberProp *numberProp = new NumberProp(paramName, this);
+                addProp(numberProp);
+                                        
+                LocalShaderParam *param = binding->getLocalParamByName(params[i].name);
+                Number numberValue = 0.0;
+                if(param) {
+                    numberValue = (*(Number*)param->data);
+                }
+                numberProp->set(numberValue);
+                propHeight += 30;
+            }
+            break;					
+            case ProgramParam::PARAM_COLOR:
+            {
+                String paramName = params[i].name;
 
-                        LocalShaderParam *param = binding->getLocalParamByName(params[i].name);
+                LocalShaderParam *param = binding->getLocalParamByName(params[i].name);
 
-						ColorProp *colorProp = new ColorProp(paramName);
-						addProp(colorProp);
-						
-						Color colorValue;
-                        if(param) {
-                            colorValue = (*(Color*)param->data);
-                        }
-						colorProp->set(colorValue);
-						
-						propHeight += 40;				
-					}
-					break;
-				}	
-			}
-		}	
+                ColorProp *colorProp = new ColorProp(paramName);
+                addProp(colorProp);
+                
+                Color colorValue;
+                if(param) {
+                    colorValue = (*(Color*)param->data);
+                }
+                colorProp->set(colorValue);
+                
+                propHeight += 40;				
+            }
+            break;
+        }
+    }
 }
 
 void ShaderOptionsSheet::setShader(Shader *shader, Material *material, ShaderBinding *binding) {
@@ -2409,17 +2406,17 @@ void ShaderTexturesSheet::handleEvent(Event *event) {
 	if(event->getEventCode() == Event::CHANGE_EVENT) {
 		for(int i=0; i < textureProps.size(); i++) {
 			if(event->getDispatcher() == textureProps[i]) {
-				binding->clearTexture(textureProps[i]->label->getText());
-				binding->addTexture(textureProps[i]->label->getText(), textureProps[i]->get());
+				binding->removeParam(textureProps[i]->label->getText());
+				binding->setTextureForParam(textureProps[i]->label->getText(), textureProps[i]->get());
 				dispatchEvent(new Event(), Event::CHANGE_EVENT);
 			}
 		}	
 		
 		for(int i=0; i < cubemapProps.size(); i++) {
 			if(event->getDispatcher() == cubemapProps[i]) {
-				binding->clearCubemap(cubemapProps[i]->label->getText());
+				binding->removeParam(cubemapProps[i]->label->getText());
 				Cubemap *cubemap = (Cubemap*)cubemapProps[i]->comboEntry->getSelectedItem()->data;
-				binding->addCubemap(cubemapProps[i]->label->getText(), cubemap);
+				binding->setCubemapForParam(cubemapProps[i]->label->getText(), cubemap);
 				dispatchEvent(new Event(), Event::CHANGE_EVENT);
 			}
 		}	
@@ -2458,6 +2455,8 @@ void ShaderTexturesSheet::setShader(Shader *shader, Material *material, ShaderBi
 		
 	this->binding = binding;
 
+    // RENDERER_TODO
+    /*
 	for(int i=0; i < shader->expectedCubemaps.size(); i++) {
 		ComboProp *comboProp = new ComboProp(shader->expectedCubemaps[i]);
 		
@@ -2498,6 +2497,7 @@ void ShaderTexturesSheet::setShader(Shader *shader, Material *material, ShaderBi
 		textureProps.push_back(textureProp);
 		propHeight += 65;
 	}
+     */
 
 	dispatchEvent(new Event(), Event::COMPLETE_EVENT);	
 	Resize(getWidth(), getHeight());
@@ -3283,7 +3283,7 @@ void EntitySheet::handleEvent(Event *event) {
 		return;
 
 	if(event->getDispatcher() == blendingProp  && event->getEventCode() == Event::CHANGE_EVENT) {
-		entity->blendingMode = blendingProp->get();
+		entity->setBlendingMode(blendingProp->get());
 	} else if(event->getDispatcher() == colorProp  && event->getEventCode() == Event::CHANGE_EVENT) {
 		entity->color = colorProp->get();
 	}else if(event->getDispatcher() == idProp  && event->getEventCode() == Event::CHANGE_EVENT) {
@@ -3341,7 +3341,7 @@ void EntitySheet::setEntity(Entity *entity) {
         tagProp->set(tagString);
         
         colorProp->set(entity->color);
-        blendingProp->set(entity->blendingMode);
+        blendingProp->set(entity->getBlendingMode());
         
         bBoxProp->set(entity->getLocalBoundingBox());
         refreshLayers();

@@ -101,9 +101,14 @@ Number SceneLabel::getLabelActualHeight() {
 void SceneLabel::updateFromLabel() {
 
 	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
-	if(texture)
+    
+    // RENDERER_TODO:
+    /*
+    if(texture) {
 		materialManager->deleteTexture(texture);
-
+    }
+    */
+    Texture *texture;
 	if(SceneLabel::createMipmapsForLabels) {
 		texture = materialManager->createTextureFromImage(label, materialManager->clampDefault, materialManager->mipmapsDefault);	
 	} else {
@@ -114,14 +119,7 @@ void SceneLabel::updateFromLabel() {
 	
     setLocalBoundingBox(label->getWidth()*labelScale / CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), label->getHeight()*labelScale/ CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), 0.001);
     
-    
-    if(localShaderOptions) {
-        LocalShaderParam *diffuseParam = localShaderOptions->getLocalParamByName("diffuse");
-        if(!diffuseParam) {
-            diffuseParam = localShaderOptions->addParam(ProgramParam::PARAM_TEXTURE, "diffuse");
-        }
-        diffuseParam->setTexture(texture);
-    }
+    localShaderOptions->setTextureForParam("diffuse", texture);
     
         // RENDERER_TODO
     /*

@@ -56,14 +56,14 @@ SpriteSheetEditor::SpriteSheetEditor(SpriteSet *sprite) : UIElement() {
     frameVisualizerMesh->setColor(1.0, 1.0, 1.0, 1.0);
     addChild(frameVisualizerMesh);
     frameVisualizerMesh->setAnchorPoint(-1.0, -1.0, 0.0);
-    frameVisualizerMesh->loadTexture("main/stipple.png");
+    frameVisualizerMesh->getLocalShaderOptions()->loadTextureForParam("diffuse", "main/stipple.png");
     frameVisualizerMesh->lineWidth = 1; //CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX();
 
     frameVisualizerMeshSelected = new SceneMesh(Mesh::LINE_MESH);
     frameVisualizerMeshSelected->setColor(1.0, 1.0, 0.0, 1.0);
     addChild(frameVisualizerMeshSelected);
     frameVisualizerMeshSelected->setAnchorPoint(-1.0, -1.0, 0.0);
-    frameVisualizerMeshSelected->loadTexture("main/stipple.png");
+    frameVisualizerMeshSelected->getLocalShaderOptions()->loadTextureForParam("diffuse", "main/stipple.png");
     frameVisualizerMeshSelected->lineWidth = 2;
     
     previewImage->setTexture(sprite->getTexture());
@@ -1131,7 +1131,7 @@ void SpriteStateEditBar::refreshBar() {
         return;
     }
     
-    barMesh->setTexture(spriteSet->getTexture());
+    barMesh->getLocalShaderOptions()->setTextureForParam("diffuse", spriteSet->getTexture());
     
     Mesh *mesh = barMesh->getMesh();
     mesh->clearMesh();
@@ -1337,22 +1337,22 @@ SpriteStateEditBar::SpriteStateEditBar(SpriteSet *spriteSet) : UIElement() {
     
     barBase = new UIElement();
     
-    barMeshBg = new SceneMesh(Mesh::QUAD_MESH);
+    barMeshBg = new SceneMesh(Mesh::TRI_MESH);
     barBase->addChild(barMeshBg);
-    barMeshBg->loadTexture("spriteEditor/sprite_frame_bg.png");
+    barMeshBg->getLocalShaderOptions()->loadTextureForParam("diffuse", "spriteEditor/sprite_frame_bg.png");
     barMeshBg->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     
-    barMesh = new SceneMesh(Mesh::QUAD_MESH);
+    barMesh = new SceneMesh(Mesh::TRI_MESH);
     barBase->addChild(barMesh);
     barMesh->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     
-    frameTicksMesh = new SceneMesh(Mesh::QUAD_MESH);
+    frameTicksMesh = new SceneMesh(Mesh::TRI_MESH);
     barBase->addChild(frameTicksMesh);
     
-    frameGripsMesh = new SceneMesh(Mesh::QUAD_MESH);
+    frameGripsMesh = new SceneMesh(Mesh::TRI_MESH);
     barBase->addChild(frameGripsMesh);
     frameGripsMesh->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
-    frameGripsMesh->loadTexture("spriteEditor/frame_grip.png");
+    frameGripsMesh->getLocalShaderOptions()->loadTextureForParam("diffuse", "spriteEditor/frame_grip.png");
     
     this->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_UP);
     this->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_DOWN);
@@ -1936,7 +1936,7 @@ SpritePreview::SpritePreview(SpriteSet *spriteSet) : UIElement() {
     
     boundingBoxPreview = new SceneMesh(Mesh::LINE_MESH);
     addChild(boundingBoxPreview);
-    boundingBoxPreview->loadTexture("main/stipple_small.png");
+    boundingBoxPreview->getLocalShaderOptions()->loadTextureForParam("diffuse", "main/stipple_small.png");
     boundingBoxPreview->lineWidth = 1;
     
     

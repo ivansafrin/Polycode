@@ -98,7 +98,7 @@ void Scene::setSceneType(int newType) {
             defaultCamera->setOrthoSizeMode(Camera::ORTHO_SIZE_VIEWPORT);
 			defaultCamera->topLeftOrtho = true;
 			rootEntity.setInverseY(true);
-            rootEntity.setPositionY(-CoreServices::getInstance()->getCore()->getYRes());            
+            rootEntity.setPositionY(-CoreServices::getInstance()->getCore()->getYRes());
             break;
 		case SCENE_3D:
 			defaultCamera->setClippingPlanes(1.0, 1000.0);
