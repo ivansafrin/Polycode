@@ -191,7 +191,8 @@ void SceneMesh::setMaterial(Material *material) {
     localShaderOptions = new ShaderBinding();
     
     localShaderOptions->addAttributeBinding("texCoord", &mesh->vertexTexCoordArray);
-    localShaderOptions->addAttributeBinding("position", &mesh->vertexPositionArray);    
+    localShaderOptions->addAttributeBinding("position", &mesh->vertexPositionArray);
+    localShaderOptions->addAttributeBinding("normal", &mesh->vertexNormalArray);
 	
 }
 

@@ -47,7 +47,6 @@ indexArray(RenderDataArray::INDEX_DATA_ARRAY)
     indexedMesh = false;
     meshType = TRI_MESH;
     meshHasVertexBuffer = false;
-    vertexBuffer = NULL;
     loadMesh(fileName);
     useVertexColors = false;
 }
@@ -65,8 +64,7 @@ indexArray(RenderDataArray::INDEX_DATA_ARRAY)
 {
 
     this->meshType = meshType;
-    meshHasVertexBuffer = false;		
-    vertexBuffer = NULL;
+    meshHasVertexBuffer = false;
     useVertexColors = false;
     indexedMesh = false;
 }
@@ -80,9 +78,6 @@ Mesh::~Mesh() {
 }
 
 void Mesh::clearMesh() {
-    if(vertexBuffer)
-        delete vertexBuffer;
-    vertexBuffer = NULL;
     
     vertexPositionArray.data.clear();
     vertexColorArray.data.clear();
@@ -95,19 +90,6 @@ void Mesh::clearMesh() {
     vertexBoneIndexArray.data.clear();
     
     meshHasVertexBuffer = false;
-}
-
-VertexBuffer *Mesh::getVertexBuffer() {
-    return vertexBuffer;
-}
-
-
-void Mesh::setVertexBuffer(VertexBuffer *buffer) {    
-    if(vertexBuffer) {
-        delete vertexBuffer;
-    }
-    vertexBuffer = buffer;
-    meshHasVertexBuffer = true;
 }
 
 Number Mesh::getRadius() {

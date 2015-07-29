@@ -68,6 +68,9 @@ namespace Polycode {
         void beginDrawCall();
         void setBlendingMode(unsigned int blendingMode);
         
+        void createVertexBuffer(VertexDataArray *dataArray);
+        void createIndexBuffer(IndexDataArray *dataArray);
+        
         void drawIndices(int type, IndexDataArray *indexArray);
         void drawArrays(int type, unsigned int vertexCount);
         

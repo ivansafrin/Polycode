@@ -168,7 +168,16 @@ void OpenGLGraphicsInterface::useShader(Shader *shader) {
 
 void OpenGLGraphicsInterface::setAttributeInShader(Shader *shader, ProgramAttribute *attribute, AttributeBinding *attributeBinding) {
     GLuint attribLocation = *((GLuint*) attribute->platformData);
-    glVertexAttribPointer(attribLocation, attributeBinding->vertexData->countPerVertex, GL_FLOAT, false, 0, attributeBinding->vertexData->data.data());
+    
+    if(attributeBinding->vertexData->hasVBO) {
+        GLuint bufferID = *((GLuint*) attributeBinding->vertexData->platformData);
+        glBindBuffer(GL_ARRAY_BUFFER, bufferID);
+        glVertexAttribPointer(attribLocation, attributeBinding->vertexData->countPerVertex, GL_FLOAT, false, 0, NULL);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    } else {
+        glVertexAttribPointer(attribLocation, attributeBinding->vertexData->countPerVertex, GL_FLOAT, false, 0, attributeBinding->vertexData->data.data());
+    }
+    
     glEnableVertexAttribArray(attribLocation);
 }
 
@@ -206,7 +215,14 @@ GLenum OpenGLGraphicsInterface::getGLDrawMode(int polycodeMode) {
 }
 
 void OpenGLGraphicsInterface::drawIndices(int type, IndexDataArray *indexArray) {
+    if(indexArray->hasVBO) {
+        GLuint bufferID = *((GLuint*) indexArray->platformData);
+        glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufferID);
+        glDrawElements(getGLDrawMode(type), indexArray->data.size(), GL_UNSIGNED_INT, NULL);
+        glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0);
+    } else {
      glDrawElements(getGLDrawMode(type), indexArray->data.size(), GL_UNSIGNED_INT, indexArray->data.data());
+    }
 }
 
 void OpenGLGraphicsInterface::drawArrays(int type, unsigned int vertexCount) {
@@ -341,6 +357,39 @@ void OpenGLGraphicsInterface::createProgram(ShaderProgram *program) {
     free(buffer);
     
     *((GLuint*)program->platformData) = programID;
+}
+
+void OpenGLGraphicsInterface::createVertexBuffer(VertexDataArray *dataArray) {
+    if(dataArray->hasVBO) {
+            // delete vbo
+    } else {
+        dataArray->platformData = (new GLuint);
+    }
+    
+    GLuint bufferID;
+    glGenBuffers(1, &bufferID);
+    glBindBuffer(GL_ARRAY_BUFFER, bufferID);
+    glBufferData(GL_ARRAY_BUFFER, dataArray->getDataSize() * sizeof(PolyRendererVertexType), dataArray->getArrayData(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    dataArray->hasVBO = true;
+    *((GLuint*)dataArray->platformData) = bufferID;
+}
+
+void OpenGLGraphicsInterface::createIndexBuffer(IndexDataArray *dataArray) {
+
+    if(dataArray->hasVBO) {
+        // delete vbo
+    } else {
+        dataArray->platformData = (new GLuint);
+    }
+    
+    GLuint bufferID;
+    glGenBuffers(1, &bufferID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferID);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, dataArray->getDataSize() * sizeof(PolyRendererIndexType), dataArray->getArrayData(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    dataArray->hasVBO = true;
+    *((GLuint*)dataArray->platformData) = bufferID;
 }
 
 void OpenGLGraphicsInterface::createShader(Shader *shader) {

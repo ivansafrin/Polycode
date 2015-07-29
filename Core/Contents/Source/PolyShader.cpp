@@ -453,6 +453,10 @@ LocalShaderParam *LocalShaderParam::Copy() {
     return copyParam;
 }
 
+AttributeBinding::AttributeBinding() : enabled(true), vertexData(NULL), attribute(NULL) {
+    
+}
+
 AttributeBinding *ShaderBinding::addAttributeBinding(const String &name, VertexDataArray *dataArray) {
     AttributeBinding *binding = new AttributeBinding();
     binding->name = name;

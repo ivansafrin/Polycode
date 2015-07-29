@@ -34,6 +34,9 @@ namespace Polycode {
         virtual void *getArrayData();
         virtual unsigned int getDataSize();
         
+        bool hasVBO;
+        void *platformData;
+        
         /**
          * Vertex position array.
          */

@@ -175,9 +175,11 @@ namespace Polycode {
     
     class AttributeBinding : public PolyBase {
         public:
+            AttributeBinding();
             String name;
             VertexDataArray *vertexData;
             ProgramAttribute *attribute;
+            bool enabled;
     };
 	
 	class RenderTargetBinding : public PolyBase {
@@ -186,7 +188,7 @@ namespace Polycode {
 			String name;
 			int mode;
 			Texture *texture;
-			static const int MODE_IN= 0;
+			static const int MODE_IN = 0;
 			static const int MODE_OUT = 1;
 			static const int MODE_COLOR = 2;
 			static const int MODE_DEPTH = 3;			

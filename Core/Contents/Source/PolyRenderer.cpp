@@ -154,11 +154,16 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                     AttributeBinding *attributeBinding = localShaderBinding->getAttributeBinding(a);
                     
                     if(attributeBinding) {
-                        if(!attributeBinding->attribute) {
-                            attributeBinding->attribute = shader->getAttribPointer(attributeBinding->name);
-                        }
-                        if(attributeBinding->attribute) {
-                             interface->setAttributeInShader(shader, attributeBinding->attribute, attributeBinding);
+                        if(attributeBinding->enabled) {
+                            
+                            if(!attributeBinding->attribute) {
+                                attributeBinding->attribute = shader->getAttribPointer(attributeBinding->name);
+                            }
+                            if(attributeBinding->attribute) {
+                                 interface->setAttributeInShader(shader, attributeBinding->attribute, attributeBinding);
+                            } else {
+                                attributeBinding->enabled = false;
+                            }
                         }
                     }
                     
@@ -176,7 +181,6 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                     interface->disableAttribute(shader, attribute);
                 }
                 
-
             }
         }
     }
@@ -229,6 +233,17 @@ void RenderThread::processJob(const RendererThreadJob &job) {
         {
             Shader *shader = (Shader*) job.data;
             interface->createShader(shader);
+        }
+        break;
+        case JOB_CREATE_VERTEX_BUFFERS:
+        {
+            Mesh *mesh = (Mesh*) job.data;
+            
+            interface->createVertexBuffer(&mesh->vertexPositionArray);
+            interface->createVertexBuffer(&mesh->vertexTexCoordArray);
+            if(mesh->indexedMesh) {
+                interface->createIndexBuffer(&mesh->indexArray);
+            }
         }
         break;
     }
@@ -340,6 +355,10 @@ ShaderProgram *Renderer::createProgram(const String &fileName) {
     
     renderThread->enqueueJob(RenderThread::JOB_CREATE_PROGRAM, (void*)program);
     return program;
+}
+
+void Renderer::createVertexBuffers(Mesh *mesh) {
+    renderThread->enqueueJob(RenderThread::JOB_CREATE_VERTEX_BUFFERS, (void*) mesh);
 }
 
 void Renderer::destroyTexture(Texture *texture) {

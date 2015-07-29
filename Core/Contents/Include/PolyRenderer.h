@@ -51,6 +51,10 @@ namespace Polycode {
             virtual void useShader(Shader *shader) = 0;
             virtual void setBlendingMode(unsigned int blendingMode) = 0;
         
+            virtual void createVertexBuffer(VertexDataArray *dataArray) = 0;
+            virtual void createIndexBuffer(IndexDataArray *dataArray) = 0;
+
+        
             virtual void drawIndices(int type, IndexDataArray *indexArray) = 0;
             virtual void drawArrays(int type, unsigned int vertexCount) = 0;
         
@@ -103,6 +107,7 @@ namespace Polycode {
             static const int JOB_CREATE_PROGRAM = 4;
             static const int JOB_CREATE_SHADER = 5;
             static const int JOB_BEGIN_FRAME = 6;
+            static const int JOB_CREATE_VERTEX_BUFFERS = 7;
         
         protected:
         
@@ -143,6 +148,7 @@ namespace Polycode {
         Number getBackingResolutionScaleY();
         ShaderProgram *createProgram(const String &fileName);
         Shader *createShader(ShaderProgram *vertexProgram, ShaderProgram *fragmentProgram);
+        void createVertexBuffers(Mesh *mesh);
         
         void setAnisotropyAmount(Number amount);
         Number getAnisotropyAmount();

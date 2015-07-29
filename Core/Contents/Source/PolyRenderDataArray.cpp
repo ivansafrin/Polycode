@@ -24,8 +24,7 @@
 
 using namespace Polycode;
 
-RenderDataArray::RenderDataArray(unsigned int type) {
-    this->type = type;
+RenderDataArray::RenderDataArray(unsigned int type) : type(type), hasVBO(false), platformData(NULL) {
 }
 
 void *RenderDataArray::getArrayData() {
