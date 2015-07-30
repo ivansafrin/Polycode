@@ -58,7 +58,7 @@ SceneMesh::SceneMesh(const String& fileName) : Entity(), material(NULL), skeleto
     backfaceCulled = true;
 	alphaTest = false;
     sendBoneMatricesToMaterial = false;
-    setMaterialByName("Unlit");
+    setMaterialByName("UnlitUntextured");
 }
 
 SceneMesh::SceneMesh(Mesh *mesh) : Entity(), material(NULL), skeleton(NULL), localShaderOptions(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
@@ -77,7 +77,7 @@ SceneMesh::SceneMesh(Mesh *mesh) : Entity(), material(NULL), skeleton(NULL), loc
     backfaceCulled = true;
 	alphaTest = false;
     sendBoneMatricesToMaterial = false;
-    setMaterialByName("Unlit");
+    setMaterialByName("UnlitUntextured");
 }
 
 SceneMesh::SceneMesh(int meshType) : material(NULL), skeleton(NULL), localShaderOptions(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
@@ -94,7 +94,7 @@ SceneMesh::SceneMesh(int meshType) : material(NULL), skeleton(NULL), localShader
     backfaceCulled = true;
 	alphaTest = false;
     sendBoneMatricesToMaterial = false;
-    setMaterialByName("Unlit");    
+    setMaterialByName("UnlitUntextured");    
 }
 
 void SceneMesh::setMesh(Mesh *mesh) {
@@ -185,6 +185,8 @@ void SceneMesh::setMaterial(Material *material) {
 		
 	this->material = material;
     localShaderOptions = new ShaderBinding();
+    
+    localShaderOptions->addParamPointer(ProgramParam::PARAM_COLOR, "entityColor", &color);
     
     localShaderOptions->addAttributeBinding("texCoord", &mesh->vertexTexCoordArray);
     localShaderOptions->addAttributeBinding("position", &mesh->vertexPositionArray);

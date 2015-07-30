@@ -66,6 +66,7 @@ namespace Polycode {
         void createProgram(ShaderProgram *program);
         void createShader(Shader *shader);
         void beginDrawCall();
+        void endDrawCall();
         void setBlendingMode(unsigned int blendingMode);
         
         void createVertexBuffer(VertexDataArray *dataArray);

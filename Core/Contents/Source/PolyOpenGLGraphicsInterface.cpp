@@ -50,7 +50,7 @@ void OpenGLGraphicsInterface::setUniformMatrix(GLint paramLocation, const Polyco
 }
 
 void OpenGLGraphicsInterface::setParamInShader(Shader *shader, ProgramParam *param, LocalShaderParam *localParam) {
-
+    
     GLuint paramLocation = *((GLuint*) param->platformData);
     
     switch(param->type) {
@@ -82,7 +82,7 @@ void OpenGLGraphicsInterface::setParamInShader(Shader *shader, ProgramParam *par
                 Color color = localParam->getColor();
                 glUniform4f(paramLocation, color.r, color.g, color.b, color.a);
             } else {
-                glUniform4f(paramLocation, 0.0f, 0.0f, 0.0f, 0.0f);
+                glUniform4f(paramLocation, 1.0f, 1.0f, 1.0f, 1.0f);
             }
             break;
         case ProgramParam::PARAM_MATRIX:
@@ -155,6 +155,11 @@ void OpenGLGraphicsInterface::setBlendingMode(unsigned int blendingMode) {
 
 void OpenGLGraphicsInterface::beginDrawCall() {
     textureIndex = 0;
+}
+
+void OpenGLGraphicsInterface::endDrawCall() {
+    glUseProgram(0);
+    currentShaderID = -1;
 }
 
 void OpenGLGraphicsInterface::useShader(Shader *shader) {

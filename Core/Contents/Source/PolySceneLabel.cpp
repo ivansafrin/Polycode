@@ -37,6 +37,8 @@ bool SceneLabel::createMipmapsForLabels = true;
 
 SceneLabel::SceneLabel(const String& text, int size, const String& fontName, int amode, Number actualHeight, bool premultiplyAlpha, const Color &backgroundColor, const Color &foregroundColor) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1){
 
+    setMaterialByName("Unlit");
+    
 	label = new Label(CoreServices::getInstance()->getFontManager()->getFontByName(fontName), text, size * CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), amode, premultiplyAlpha, backgroundColor, foregroundColor);
     
 	positionAtBaseline = SceneLabel::defaultPositionAtBaseline;
@@ -130,11 +132,12 @@ void SceneLabel::updateFromLabel() {
 }
 
 void SceneLabel::Render(GPUDrawBuffer *buffer) {
-	if(positionAtBaseline) {
-        // RENDERER_TODO
-		//CoreServices::getInstance()->getRenderer()->translate2D(0.0, (((Number)label->getSize()*labelScale) * -1.0 / CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleY()) + (((Number)label->getBaselineAdjust())*labelScale/CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleY()));
-	}
 	ScenePrimitive::Render(buffer);
+	if(positionAtBaseline) {
+        if(buffer->drawCalls.size() > 0) {
+            buffer->drawCalls[buffer->drawCalls.size()-1].modelMatrix.Translate(0.0, (((Number)label->getSize()*labelScale) * -1.0 / CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleY()) + (((Number)label->getBaselineAdjust())*labelScale/CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleY()), 0.0);
+        }
+    }
 }
 
 int SceneLabel::getTextWidthForString(String text) {

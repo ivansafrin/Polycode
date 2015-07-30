@@ -63,7 +63,7 @@ namespace Polycode {
             virtual void enableBackfaceCulling(bool val) = 0;
         
             virtual void beginDrawCall() = 0;
-        
+            virtual void endDrawCall() = 0;
     };
     
     class _PolyExport RendererThreadJob {

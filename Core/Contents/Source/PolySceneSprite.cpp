@@ -32,6 +32,7 @@ using namespace Polycode;
 
 
 SceneSprite::SceneSprite(SpriteSet *spriteSet) : SceneMesh(Mesh::TRI_MESH) {
+    setMaterialByName("Unlit");    
     currentSprite = NULL;
     currentSpriteState = NULL;
     this->spriteSet = NULL;

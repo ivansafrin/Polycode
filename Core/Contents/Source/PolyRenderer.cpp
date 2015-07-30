@@ -109,9 +109,12 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                     
                     LocalShaderParam *localParam = rendererShaderBinding->getLocalParam(p);
                     if(localParam) {
-                        if(!localParam->param) {
+
+        // TODO: can't cache the param here, need a better system (move to material binding?)
+                        
+//                        if(!localParam->param) {
                             localParam->param = shader->getParamPointer(localParam->name);
-                        }
+  //                      }
                         if(localParam->param) {
                             interface->setParamInShader(shader, localParam->param, localParam);
                         }
@@ -179,6 +182,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                     interface->disableAttribute(shader, attribute);
                 }
                 
+                interface->endDrawCall();
             }
         }
     }

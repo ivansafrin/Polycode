@@ -135,8 +135,10 @@ UILabel::UILabel(const String& text, int size, const String& fontName, int amode
     label->positionAtBaseline = true;
     label->setAnchorPoint(-1.0, -1.0, 0.0);
 	label->snapToPixels = true;
-	
-	color.setColorHexFromString(conf->getStringValue("Polycode", "uiDefaultFontColor"));
+    label->depthTest = false;
+    label->depthWrite = false;
+    
+	label->color.setColorHexFromString(conf->getStringValue("Polycode", "uiDefaultFontColor"));
 	addChild(label);
 	setLocalBoundingBox(label->getLocalBoundingBox());
 }
@@ -261,13 +263,16 @@ void UIRect::initRect(Number width, Number height) {
     rectMesh->addIndexedFace(0, 1, 2);
     rectMesh->addIndexedFace(0, 2, 3);
     
-    material =  (Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit");
+    material =  (Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured");
     localShaderOptions = new ShaderBinding();
+    
+    localShaderOptions->addParamPointer(ProgramParam::PARAM_COLOR, "entityColor", &color);
     
     localShaderOptions->addAttributeBinding("texCoord", &rectMesh->vertexTexCoordArray);
     localShaderOptions->addAttributeBinding("position", &rectMesh->vertexPositionArray);
 
     if(texture) {
+        material =  (Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit");
         localShaderOptions->setTextureForParam("diffuse", texture);
     }
 }
@@ -279,14 +284,30 @@ UIRect::~UIRect() {
 
 void UIRect::loadTexture(String fileName) {
 
+    material =  (Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit");
+    
 	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
 	texture = materialManager->createTextureFromFile(fileName, materialManager->clampDefault, false);
+    
+    if(!texture) {
+        material =  (Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured");
+    } else {
+        material =  (Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit");
+    }
+    
     if(localShaderOptions) {
         localShaderOptions->setTextureForParam("diffuse", texture);
     }
 }
 
 void UIRect::setTexture(Texture *texture) {
+    
+    if(!texture) {
+        material =  (Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured");
+    } else {
+        material =  (Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit");
+    }
+    
 	this->texture = texture;
     if(localShaderOptions) {
         localShaderOptions->setTextureForParam("diffuse", texture);
