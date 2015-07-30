@@ -36,6 +36,7 @@
 namespace Polycode {
 
 	class Renderer;
+    class Scene;
 
 	class _PolyExport MouseEventResult {
 		public:
@@ -829,13 +830,6 @@ namespace Polycode {
              * @return Pixel position of the entity on the screen.
              */
             Vector2 getScreenPosition(const Matrix4 &projectionMatrix, const Matrix4 &cameraMatrix, const Polycode::Rectangle &viewport);
-        
-            /**
-             * Returns the screen pixel position of the entity using the last projection matrix, camera matrix and viewport that were set in the renderer.
-             * @return Pixel position of the entity on the screen.
-             */
-			Vector2 getScreenPositionForMainCamera();
-
 
             /**
              * If set to true, will round the position of this entity to integral values. Use this if you need pixel-perfect positioning in 2D.
@@ -898,8 +892,13 @@ namespace Polycode {
         
             GPUDrawCall drawCall;
         
+            void setContainerScene(Scene *scene);
+    
+            Scene *getContainerScene();
+        
 		protected:
 
+            Scene *containerScene;
         
             AABB aabb;
             Vector3 bBox;

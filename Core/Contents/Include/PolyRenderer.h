@@ -145,6 +145,11 @@ namespace Polycode {
         void setAnisotropyAmount(Number amount);
         Number getAnisotropyAmount();
         
+        static Vector3 unProject(const Vector3 &position, const Matrix4 &modelMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport);
+
+        static Vector3 project(const Vector3 &position, const Matrix4 &modelMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport);
+        
+        
         void beginFrame();
         void endFrame();
         

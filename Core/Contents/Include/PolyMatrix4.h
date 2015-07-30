@@ -24,6 +24,7 @@ THE SOFTWARE.
 #include <string.h>
 #include "PolyGlobals.h"
 #include "PolyVector3.h"
+#include "PolyVector4.h"
 
 namespace Polycode {
 
@@ -129,17 +130,31 @@ namespace Polycode {
                            n*m[3][0], n*m[3][1], n*m[3][2], n*m[3][3]);
             }
         
-            inline Vector3 multVector( const Vector3 &v2 ) const
+            inline Vector3 multVector3( const Vector3 &v2 ) const
             {
                 return Vector3(v2.x*m[0][0] + v2.y*m[1][0] + v2.z*m[2][0] + m[3][0],
                                v2.x*m[0][1] + v2.y*m[1][1] + v2.z*m[2][1] + m[3][1],
                                v2.x*m[0][2] + v2.y*m[1][2] + v2.z*m[2][2] + m[3][2]);
             }
         
+            inline Vector4 multVector4( const Vector4 &v2 ) const
+            {
+                return Vector4(v2.x*m[0][0] + v2.y*m[1][0] + v2.z*m[2][0] + v2.w*m[3][0],
+                           v2.x*m[0][1] + v2.y*m[1][1] + v2.z*m[2][1] + v2.w*m[3][1],
+                           v2.x*m[0][2] + v2.y*m[1][2] + v2.z*m[2][2] + v2.w*m[3][2],
+                           v2.x*m[0][3] + v2.y*m[1][3] + v2.z*m[2][3] + v2.w*m[3][3]);
+            }
+        
 			inline Vector3 operator * ( const Vector3 &v2 ) const
 			{
-				return multVector(v2);
-			}			
+				return multVector3(v2);
+			}
+        
+        
+            inline Vector4 operator * ( const Vector4 &v2 ) const
+            {
+                return multVector4(v2);
+            }
 			
 			inline Number* operator [] ( int row ) { return m[row];}
 			inline const Number* operator [] ( int row ) const { return m[row];}

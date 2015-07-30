@@ -25,6 +25,7 @@
 #include "PolyCoreServices.h"
 #include "PolyCore.h"
 #include "PolyTexture.h"
+#include "PolyVector4.h"
 
 using namespace Polycode;
 
@@ -366,4 +367,49 @@ void Renderer::destroyTexture(Texture *texture) {
 void Renderer::createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height, bool floatingPointBuffer) {
     
 }
+Vector3 Renderer::project(const Vector3 &position, const Matrix4 &modelMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport) {
+    
+    Vector4 in(position);
+    Vector4 out = modelMatrix * in;
+    in = projectionMatrix * out;
+    
+    if (in.w == 0.0) return Vector3();
+    
+    in.x /= in.w;
+    in.y /= in.w;
+    in.z /= in.w;
+    
+    in.x = in.x * 0.5 + 0.5;
+    in.y = in.y * 0.5 + 0.5;
+    in.z = in.z * 0.5 + 0.5;
+    
+    in.x = in.x * (viewport.x + viewport.w) + viewport.x;
+    in.y = in.y * (viewport.y + viewport.h) + viewport.y;
+    
+    return Vector3(in.x, in.y, in.z);
+}
 
+Vector3 Renderer::unProject(const Vector3 &position, const Matrix4 &modelMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport) {
+
+    Matrix4 finalMatrix = modelMatrix * projectionMatrix;
+    finalMatrix = finalMatrix.Inverse();
+    
+    Vector4 in(position);
+    
+    in.x = (in.x - viewport.x) / (viewport.x + viewport.w);
+    in.y = (in.y - viewport.y) / (viewport.y + viewport.h);
+    
+    in.x = in.x * 2.0 - 1.0;
+    in.y = in.y * 2.0 - 1.0;
+    in.z = in.z * 2.0 - 1.0;
+    
+    Vector4 out = finalMatrix * in;
+    
+    if(out.w == 0.0) return Vector3();
+    
+    out.x /= out.w;
+    out.y /= out.w;
+    out.z /= out.w;
+    
+    return Vector3(out.x, out.y, out.z);
+}

@@ -173,6 +173,8 @@ void PolycodeEditor::didAction(String actionName, PolycodeEditorActionData *befo
 
 void PolycodeEditor::Resize(int x, int y) {
 	editorSize = Vector2(x,y);
+    // RENDERER_TODO
+
 	Vector2 pos = getScreenPositionForMainCamera();
 	scissorBox.setRect(pos.x,pos.y, x, y);	
 }

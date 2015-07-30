@@ -49,6 +49,7 @@ Scene::Scene(int sceneType, bool virtualScene) : EventDispatcher() {
 
 void Scene::initScene(int sceneType, bool virtualScene) {
 
+    rootEntity.setContainerScene(this);
 	core = CoreServices::getInstance()->getCore();
 	this->sceneType = sceneType;
 	defaultCamera = new Camera(this);
@@ -325,8 +326,6 @@ void Scene::RenderDepthOnly(Camera *targetCamera) {
 
 Ray Scene::projectRayFromCameraAndViewportCoordinate(Camera *camera, Vector2 coordinate) {
 
-        // RENDERER_TODO
-    /*
 	Polycode::Rectangle viewport = camera->getViewport();
     
     if(remapMouse) {
@@ -334,7 +333,7 @@ Ray Scene::projectRayFromCameraAndViewportCoordinate(Camera *camera, Vector2 coo
         viewport.y = (core->getYRes() - (sceneMouseRect.y + sceneMouseRect.h)) * renderer->getBackingResolutionScaleY();
     }
     
-	Vector3 dir =  renderer->projectRayFrom2DCoordinate(coordinate.x *  renderer->getBackingResolutionScaleX(), coordinate.y  * renderer->getBackingResolutionScaleY(), camera->getConcatenatedMatrix(), camera->getProjectionMatrix(), viewport);
+    Vector3 dir =  camera->projectRayFrom2DCoordinate(Vector2(coordinate.x *  renderer->getBackingResolutionScaleX(), coordinate.y  * renderer->getBackingResolutionScaleY()), viewport);
 	Vector3 pos;
     
 	switch(sceneType) {
@@ -382,7 +381,6 @@ Ray Scene::projectRayFromCameraAndViewportCoordinate(Camera *camera, Vector2 coo
 
 
 	return Ray(pos, dir);
-*/     
 }
 
 

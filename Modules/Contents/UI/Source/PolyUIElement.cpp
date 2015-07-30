@@ -28,6 +28,8 @@
 #include "PolyConfig.h"
 #include "PolyCoreInput.h"
 #include "PolyInputEvent.h"
+#include "PolyScene.h"
+#include "PolyCamera.h"
 
 using namespace Polycode;
 
@@ -455,6 +457,21 @@ UIElement::~UIElement() {
 	if(UIElement::globalFocusedChild == this) {
 		UIElement::globalFocusedChild = NULL;
 	}
+}
+
+Vector2 UIElement::getScreenPositionForMainCamera() {
+    Scene *containerScene = getContainerScene();
+    Vector2 screenPos;
+    
+    if(containerScene) {
+        Camera *camera = containerScene->getActiveCamera();
+        if(camera) {
+            screenPos = getScreenPosition(camera->getProjectionMatrix(), camera->getConcatenatedMatrix().Inverse(), camera->getViewport());
+        }
+    }
+    screenPos.y = Services()->getCore()->getYRes() - screenPos.y;
+    
+    return screenPos;
 }
 
 void UIElement::focusPreviousChild() {

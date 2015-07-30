@@ -79,6 +79,7 @@ void Entity::initEntity() {
 	lastClickTicks = 0.0;
     rendererVis = true;
     layerID = 0;
+    containerScene = NULL;
 }
 
 Entity *Entity::getEntityById(String id, bool recursive) const {
@@ -459,17 +460,8 @@ Matrix4 Entity::getConcatenatedRollMatrix() const {
 
 Vector2 Entity::getScreenPosition(const Matrix4 &projectionMatrix, const Matrix4 &cameraMatrix, const Polycode::Rectangle &viewport) {
 	if(renderer){
-        // RENDERER_TODO
-		//return renderer->Project(cameraMatrix, projectionMatrix, viewport, getConcatenatedMatrix().getPosition());
-	} else {
-		return Vector2();
-	}
-}
-
-Vector2 Entity::getScreenPositionForMainCamera() {
-	if(renderer) {
-        // RENDERER_TODO
-		//return getScreenPosition(renderer->getProjectionMatrix(), renderer->getCameraMatrix(), renderer->getViewport());
+        Vector3 pos = Renderer::project(getConcatenatedMatrix().getPosition(), cameraMatrix, projectionMatrix, viewport);
+        return Vector2(pos.x, pos.y);
 	} else {
 		return Vector2();
 	}
@@ -480,7 +472,19 @@ void Entity::setDepthOnly(bool val) {
 }
 
 bool Entity::getDepthOnly() {
-    
+    return drawCall.options.depthOnly;
+}
+
+void Entity::setContainerScene(Scene *scene) {
+    this->containerScene = scene;
+}
+
+Scene *Entity::getContainerScene() {
+    if(parentEntity) {
+        return parentEntity->getContainerScene();
+    } else {
+        return containerScene;
+    }
 }
 
 void Entity::transformAndRender(GPUDrawBuffer *buffer) {

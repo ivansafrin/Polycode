@@ -22,6 +22,7 @@
 
 #pragma once
 #include "PolyGlobals.h"
+#include "PolyVector3.h"
 #include <math.h>
 
 //#ifdef _WINDOWS
@@ -44,6 +45,9 @@ namespace Polycode {
 			* @param w W coordinate.
 			*/					
 			Vector4(Number x,Number y,Number z, Number w);
+        
+        
+            Vector4(const Vector3 &v3);
 
 			/**
 			* Create from single value for all coordinates

@@ -39,7 +39,9 @@ namespace Polycode {
 			virtual ~UIElement();
 			
 			virtual void Resize(Number width, Number height);
-						
+        
+            Vector2 getScreenPositionForMainCamera();
+        
 			bool hasFocus;
 			bool focusable;
 			

@@ -267,7 +267,7 @@ namespace Polycode {
              * @param matrix Custom projection matrix.
              * @see setProjectionMode
              */
-            void setProjectionMatrix(Matrix4 matrix);
+            void setCustomProjectionMatrix(Matrix4 matrix);
 			
             /**
              * Return's the camera's pixel viewport based on the last render pass.
@@ -311,6 +311,8 @@ namespace Polycode {
 
             void setUseGlobalFramebuffer(bool val);
             bool getUseGlobalFramebuffer() const;
+        
+            Vector3 projectRayFrom2DCoordinate(const Vector2 &coordinate, const Polycode::Rectangle &viewport);
 
 		protected:
 
