@@ -24,7 +24,7 @@
 
 using namespace Polycode;
 
-GPUDrawBuffer::GPUDrawBuffer() {
+GPUDrawBuffer::GPUDrawBuffer() : targetFramebuffer(NULL) {
     
 }
 

@@ -22,6 +22,7 @@ THE SOFTWARE.
 
 #pragma once
 #include "PolyGlobals.h"
+#include "PolyImage.h"
 
 namespace Polycode {
 
@@ -44,7 +45,7 @@ namespace Polycode {
 			* @param renderHeight Vertical size of the render texture.
 			* @param floatingPoint Pass true if you want fp16 target renders			
 			*/
-			SceneRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight, bool floatingPoint = false);
+            SceneRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight, unsigned int textureFormat = Image::IMAGE_RGBA);
 			virtual ~SceneRenderTexture();
 						
 			/**
@@ -79,7 +80,7 @@ namespace Polycode {
 			Texture *filterColorBufferTexture;
 			Texture *filterZBufferTexture;
 		
-			bool floatingPoint;
+            unsigned int textureFormat;
 		
 			Texture *depthTexture;		
 			Texture *targetTexture;

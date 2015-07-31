@@ -61,6 +61,7 @@ namespace Polycode {
         GPUDrawBuffer();
         ~GPUDrawBuffer();
         
+        Texture *targetFramebuffer;
         Matrix4 projectionMatrix;
         Matrix4 viewMatrix;
         Color clearColor;

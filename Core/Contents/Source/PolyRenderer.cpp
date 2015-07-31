@@ -72,12 +72,16 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
     
     ++currentDebugFrameInfo.buffersProcessed;
     
+    if(buffer->targetFramebuffer) {
+        interface->bindFramebuffer(buffer->targetFramebuffer);
+    }
+    
     interface->setViewport(buffer->viewport.x, buffer->viewport.y, buffer->viewport.w, buffer->viewport.h);
     interface->clearBuffers(buffer->clearColor, buffer->clearColorBuffer, buffer->clearDepthBuffer, true);
     
     projectionMatrixParam->setMatrix4(buffer->projectionMatrix);
     viewMatrixParam->setMatrix4(buffer->viewMatrix);
-    
+
     for(int i=0; i < buffer->drawCalls.size(); i++) {
         
         
@@ -186,6 +190,11 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
             }
         }
     }
+    
+    if(buffer->targetFramebuffer) {
+        interface->bindFramebuffer(NULL);
+    }
+    
 }
 
 void RenderThread::processJob(const RendererThreadJob &job) {
@@ -330,8 +339,8 @@ void Renderer::endFrame() {
     renderThread->enqueueJob(RenderThread::JOB_END_FRAME, NULL);
 }
 
-Texture *Renderer::createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type, unsigned int filteringMode, unsigned int anisotropy) {
-    Texture *texture = new Texture(width, height, textureData, clamp, createMipmaps, type);
+Texture *Renderer::createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type, unsigned int filteringMode, unsigned int anisotropy, bool framebufferTexture) {
+    Texture *texture = new Texture(width, height, textureData, clamp, createMipmaps, type, framebufferTexture);
     texture->filteringMode = filteringMode;
     texture->anisotropy = anisotropy;
     renderThread->enqueueJob(RenderThread::JOB_CREATE_TEXTURE, (void*)texture);
@@ -368,9 +377,7 @@ void Renderer::createVertexBuffers(Mesh *mesh) {
 void Renderer::destroyTexture(Texture *texture) {
     
 }
-void Renderer::createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height, bool floatingPointBuffer) {
-    
-}
+
 Vector3 Renderer::project(const Vector3 &position, const Matrix4 &modelMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport) {
     
     Vector4 in(position);

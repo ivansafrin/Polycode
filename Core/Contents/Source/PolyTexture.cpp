@@ -26,7 +26,7 @@
 
 using namespace Polycode;
 
-Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool clamp, bool createMipmaps, int type) : Resource(Resource::RESOURCE_TEXTURE), width(width), height(height), clamp(clamp), type(type), createMipmaps(createMipmaps), filteringMode(FILTERING_NEAREST), anisotropy(0) {
+Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool clamp, bool createMipmaps, int type, bool framebufferTexture) : Resource(Resource::RESOURCE_TEXTURE), width(width), height(height), clamp(clamp), type(type), createMipmaps(createMipmaps), filteringMode(FILTERING_NEAREST), anisotropy(0), framebufferTexture(framebufferTexture), frameBufferPlatformData(NULL) {
     
 	switch(type) {
 		case Image::IMAGE_RGB:
@@ -43,11 +43,15 @@ Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool
 		break;
 	}
 	
-	this->textureData = (char*)malloc(width*height*pixelSize);
-	if(textureData)
-		memcpy(this->textureData, textureData, width*height*pixelSize);	
-	else
-		memset(this->textureData, 0, width*height*pixelSize);	
+    if(!framebufferTexture) {
+        this->textureData = (char*)malloc(width*height*pixelSize);
+        if(textureData)
+            memcpy(this->textureData, textureData, width*height*pixelSize);	
+        else
+            memset(this->textureData, 0, width*height*pixelSize);
+    } else {
+        this->textureData = NULL;
+    }
 
 }
 

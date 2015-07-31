@@ -30,7 +30,7 @@ namespace Polycode {
 
 	class _PolyExport Texture : public Resource {
 		public:
-            Texture(unsigned int width, unsigned int height, char *textureData,bool clamp, bool createMipmaps, int type=Image::IMAGE_RGBA);
+            Texture(unsigned int width, unsigned int height, char *textureData,bool clamp, bool createMipmaps, int type=Image::IMAGE_RGBA, bool framebufferTexture=false);
 			Texture(Image *image);
 			virtual ~Texture();
 			
@@ -51,9 +51,12 @@ namespace Polycode {
             int filteringMode;
             bool createMipmaps;
             unsigned int anisotropy;
+            bool framebufferTexture;
         
             static const int FILTERING_NEAREST = 0;
             static const int FILTERING_LINEAR = 1;
+        
+            void *frameBufferPlatformData;
         
 		protected:
 

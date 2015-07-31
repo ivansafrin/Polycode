@@ -53,6 +53,7 @@ namespace Polycode {
             virtual void createVertexBuffer(VertexDataArray *dataArray) = 0;
             virtual void createIndexBuffer(IndexDataArray *dataArray) = 0;
 
+            virtual void bindFramebuffer(Texture *framebufferTexture) = 0;
         
             virtual void drawIndices(int type, IndexDataArray *indexArray) = 0;
             virtual void drawArrays(int type, unsigned int vertexCount) = 0;
@@ -129,10 +130,8 @@ namespace Polycode {
         RenderThread *getRenderThread();
 
         Cubemap *createCubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4, Texture *t5);
-        Texture *createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type, unsigned int filteringMode, unsigned int anisotropy);
+        Texture *createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type, unsigned int filteringMode, unsigned int anisotropy, bool framebufferTexture);
         void destroyTexture(Texture *texture);
-        void createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height, bool floatingPointBuffer);
-        
         void processDrawBuffer(GPUDrawBuffer *buffer);
         
         void setBackingResolutionScale(Number xScale, Number yScale);
@@ -146,7 +145,6 @@ namespace Polycode {
         Number getAnisotropyAmount();
         
         static Vector3 unProject(const Vector3 &position, const Matrix4 &modelMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport);
-
         static Vector3 project(const Vector3 &position, const Matrix4 &modelMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport);
         
         

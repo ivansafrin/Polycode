@@ -233,11 +233,31 @@ void OpenGLGraphicsInterface::drawArrays(int type, unsigned int vertexCount) {
     glDrawArrays(getGLDrawMode(type), 0, vertexCount);
 }
 
+
+void OpenGLGraphicsInterface::bindFramebuffer(Texture *framebufferTexture) {
+    if(framebufferTexture) {
+        glBindFramebuffer(GL_FRAMEBUFFER, *((GLuint*) framebufferTexture->frameBufferPlatformData));
+    } else {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+}
+
 void OpenGLGraphicsInterface::createTexture(Texture *texture) {
+    
+    if(texture->framebufferTexture) {
+        if(!texture->frameBufferPlatformData) {
+            texture->frameBufferPlatformData = (void*) new GLuint;
+            glGenFramebuffers(1, (GLuint*)texture->frameBufferPlatformData);
+            glBindFramebuffer(GL_FRAMEBUFFER, *((GLuint*)texture->frameBufferPlatformData));
+        }
+    }
+    
+    
     if(!texture->platformData) {
         texture->platformData = (void*) new GLuint;
         glGenTextures(1, (GLuint*)texture->platformData);
     }
+    
     
     GLuint textureID = *((GLuint*)texture->platformData);
     
@@ -301,13 +321,22 @@ void OpenGLGraphicsInterface::createTexture(Texture *texture) {
             break;
     }
     
-    if(texture->getTextureData()) {
-        glTexImage2D(GL_TEXTURE_2D, 0, glTextureFormat, texture->getWidth(), texture->getHeight(), 0, glTextureType, pixelType, texture->getTextureData());
+    if(texture->framebufferTexture) {
+        glTexImage2D(GL_TEXTURE_2D, 0, glTextureFormat, texture->getWidth(), texture->getHeight(), 0, glTextureType, pixelType, NULL);
+        
+    } else {
+        if(texture->getTextureData()) {
+            glTexImage2D(GL_TEXTURE_2D, 0, glTextureFormat, texture->getWidth(), texture->getHeight(), 0, glTextureType, pixelType, texture->getTextureData());
+        }
     }
     
-    
-    if(texture->createMipmaps) {
+    if(texture->createMipmaps && !texture->framebufferTexture) {
         glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    
+    if(texture->framebufferTexture) {
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureID, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     
     glBindTexture(GL_TEXTURE_2D, 0);

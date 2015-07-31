@@ -74,22 +74,11 @@ void SceneManager::setRenderer(Renderer *renderer) {
 }
 
 void SceneManager::renderVirtual() {
-    
-        // RENDERER_TODO
-    /*
-    
-	bool anyVirtualsRendered = false;
 	for(int i=0;i<renderTextures.size();i++) {
 		if(renderTextures[i]->enabled) {
             renderTextures[i]->Render();
-			anyVirtualsRendered = true;
 		}			
 	}
-	renderer->setViewportSize(renderer->getXRes(), renderer->getYRes());
-	if (anyVirtualsRendered) {
-		renderer->clearScreen();
-	}
-     */
 }
 
 void SceneManager::Render(const Polycode::Rectangle &viewport) {    

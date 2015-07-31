@@ -84,6 +84,7 @@ namespace Polycode {
         
             void setAnisotropyAmount(unsigned int anisotropy);
             void setTextureFilteringMode(unsigned int textureFilteringMode);
+            unsigned int getTextureFilteringMode();
 						
 			void addMaterial(Material *material);
 			void addShader(Shader *shader);

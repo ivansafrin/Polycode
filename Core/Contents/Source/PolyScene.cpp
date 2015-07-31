@@ -216,7 +216,7 @@ void Scene::setEntityVisibility(Entity *entity, Camera *camera) {
     }
 }
 
-void Scene::Render(Camera *targetCamera) {
+void Scene::Render(Camera *targetCamera, Texture *targetFramebuffer) {
     if(!targetCamera && !activeCamera)
         return;
     if(!targetCamera)
@@ -226,6 +226,7 @@ void Scene::Render(Camera *targetCamera) {
     drawBuffer->clearColor = clearColor;
     drawBuffer->clearColorBuffer = useClearColor;
     drawBuffer->clearDepthBuffer = useClearDepth;
+    drawBuffer->targetFramebuffer = targetFramebuffer;
     
     drawBuffer->viewport = targetCamera->getViewport();
 ///    drawBuffer->projectionMatrix = targetCamera->
