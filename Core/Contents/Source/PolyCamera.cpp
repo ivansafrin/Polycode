@@ -530,8 +530,7 @@ Matrix4 Camera::createProjectionMatrix() {
             retMatrix.setProjection(fov * TORADIANS, (viewport.w/viewport.h), nearClipPlane, farClipPlane);
             break;
         case PERSPECTIVE_FRUSTUM:
-            // TODO
-          //  renderer->setProjectionFromFrustum(leftFrustum, rightFrustum, bottomFrustum, topFrustum, nearClipPlane, farClipPlane);
+            retMatrix.setProjectionFrustum(leftFrustum, rightFrustum, bottomFrustum, topFrustum, nearClipPlane, farClipPlane);
             break;
         case ORTHO_SIZE_MANUAL:
             setOrthoMatrix(retMatrix, orthoSizeX, orthoSizeY, nearClipPlane, farClipPlane, !topLeftOrtho);
@@ -551,48 +550,4 @@ Matrix4 Camera::createProjectionMatrix() {
     }
     
     return retMatrix;
-    
-    // RENDERER_TODO
-	/*
-    viewport = renderer->getViewport();
-
-	switch (projectionMode) {
-		case PERSPECTIVE_FOV:
-			renderer->setViewportShift(cameraShift.x, cameraShift.y);
-			renderer->setProjectionFromFoV(fov, nearClipPlane, farClipPlane);
-		break;
-		case PERSPECTIVE_FRUSTUM:
-			renderer->setProjectionFromFrustum(leftFrustum, rightFrustum, bottomFrustum, topFrustum, nearClipPlane, farClipPlane);
-		break;
-		case ORTHO_SIZE_MANUAL:
-			renderer->setProjectionOrtho(orthoSizeX, orthoSizeY, nearClipPlane, farClipPlane, !topLeftOrtho);
-		break;
-		case ORTHO_SIZE_LOCK_HEIGHT:
-			renderer->setProjectionOrtho(orthoSizeY * (viewport.w/viewport.h), orthoSizeY, nearClipPlane, farClipPlane, !topLeftOrtho);
-		break;
-		case ORTHO_SIZE_LOCK_WIDTH:
-			renderer->setProjectionOrtho(orthoSizeX, orthoSizeX * (viewport.h/viewport.w), nearClipPlane, farClipPlane, !topLeftOrtho);
-		break;
-		case ORTHO_SIZE_VIEWPORT:
-			renderer->setProjectionOrtho(viewport.w / renderer->getBackingResolutionScaleX(), viewport.h / renderer->getBackingResolutionScaleY(), !topLeftOrtho);
-		break;
-		case MANUAL_MATRIX:
-            renderer->setProjectionMatrix(projectionMatrix);
-        break;
-	}
-	renderer->setExposureLevel(exposureLevel);
-
-    if(projectionMode != MANUAL_MATRIX) {
-        projectionMatrix = renderer->getProjectionMatrix();
-    }
-
-	if(matrixDirty) {
-		rebuildTransformMatrix();
-	}
-
-	Matrix4 camMatrix = getConcatenatedMatrix();
-	renderer->setCameraMatrix(camMatrix);	
-	camMatrix = camMatrix.Inverse();
-	renderer->multModelviewMatrix(camMatrix);
-     */
 }

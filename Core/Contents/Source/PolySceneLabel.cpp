@@ -123,12 +123,6 @@ void SceneLabel::updateFromLabel() {
     
     localShaderOptions->setTextureForParam("diffuse", texture);
     
-        // RENDERER_TODO
-    /*
-	if(useVertexBuffer)
-		CoreServices::getInstance()->getRenderer()->createVertexBufferForMesh(mesh);
-     */
-	
 }
 
 void SceneLabel::Render(GPUDrawBuffer *buffer) {

@@ -712,9 +712,7 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
     iconVisibilitySelector->addEventListener(this, UIEvent::SELECT_EVENT);
     
     bBoxVis = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 1.0, 1.0, 1.0);
-    bBoxVis->overlayWireframe = true;
-    bBoxVis->wireFrameColor = Color(0.3, 0.5, 1.0, 0.5);
-    bBoxVis->color.a = 0.0;
+    bBoxVis->color = Color(0.3, 0.5, 1.0, 0.5);
     bBoxVis->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     mainScene->addChild(bBoxVis);
     
@@ -995,10 +993,10 @@ void EntityEditorMainView::Update() {
     
     if(selectedEntities.size() > 0) {
         setBBox();
-        bBoxVis->wireFrameColor = Color(0.3, 0.5, 1.0, 0.5);
+        bBoxVis->color = Color(0.3, 0.5, 1.0, 0.5);
     } else {
         setBBox(getObjectRoot());
-        bBoxVis->wireFrameColor = Color(0.5, 1.0, 0.3, 0.5);
+        bBoxVis->color = Color(0.5, 1.0, 0.3, 0.5);
     }
 }
 
@@ -1049,7 +1047,8 @@ void EntityEditorMainView::setLinkedEntityPropsRecursive(SceneEntityInstance *pa
     entity->editorOnly = true;
     
     if(sceneMesh && !emitter) {
-        sceneMesh->wireFrameColor = Color(0.2, 0.9, 0.6, 1.0);
+        // RENDERER_TODO
+//        sceneMesh->wireFrameColor = Color(0.2, 0.9, 0.6, 1.0);
         sceneMesh->useGeometryHitDetection = true;
     }
  
@@ -1068,7 +1067,8 @@ void EntityEditorMainView::setEditorProps(Entity *entity) {
     SceneSprite *sprite = dynamic_cast<SceneSprite*>(entity);
     
     if(sceneMesh && !emitter && !sprite) {
-        sceneMesh->wireFrameColor = Color(1.0, 0.8, 0.3, 1.0);
+        // RENDERER_TODO
+//        sceneMesh->wireFrameColor = Color(1.0, 0.8, 0.3, 1.0);
 //        sceneMesh->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
         sceneMesh->useGeometryHitDetection = true;
     }
@@ -1750,7 +1750,8 @@ Scene *EntityEditorMainView::getMainScene() {
 void EntityEditorMainView::doEntityDeselect(Entity *targetEntity) {
     SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(targetEntity);
     if(sceneMesh) {
-        sceneMesh->overlayWireframe = false;
+        // RENDERER_TODO
+        //sceneMesh->overlayWireframe = false;
     }
     
     if(targetEntity == dummyEntity) {
@@ -1777,7 +1778,8 @@ void EntityEditorMainView::doEntityDeselect(Entity *targetEntity) {
 void EntityEditorMainView::setOverlayWireframeRecursive(Entity *targetEntity, bool val) {
     SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(targetEntity);
     if(sceneMesh) {
-        sceneMesh->overlayWireframe = val;
+        // RENDERER_TODO
+            //sceneMesh->overlayWireframe = val;
     }
     for(int i=0; i < targetEntity->getNumChildren(); i++) {
         setOverlayWireframeRecursive(targetEntity->getChildAtIndex(i), val);
@@ -1789,7 +1791,8 @@ void EntityEditorMainView::doEntitySelect(Entity *targetEntity) {
     SceneParticleEmitter *emitter = dynamic_cast<SceneParticleEmitter*>(targetEntity);
     
     if(sceneMesh && ! emitter) {
-        sceneMesh->overlayWireframe = true;
+                // RENDERER_TODO
+//        sceneMesh->overlayWireframe = true;
     }
     
     if(targetEntity == dummyEntity) {

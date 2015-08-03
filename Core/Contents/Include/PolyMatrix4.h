@@ -360,6 +360,21 @@ namespace Polycode {
                 m[3][1] = -((top+bottom)/(top-bottom));
                 m[3][2] = -((zFar+zNear)/(zFar-zNear));
             }
+        
+            inline void setProjectionFrustum(Number left, Number right, Number bottom, Number top, Number zNear, Number zFar) {
+                
+                m[0][0] = (2.0*zNear)/(right-left);
+                m[1][1] = (2.0*zNear)/(top-bottom);
+                m[3][3] = 0.0;
+
+                m[2][0] = (right+left)/(right-left);
+                m[2][1] = (top+bottom)/(top-bottom);
+                m[2][2] = (zFar+zNear)/(zFar-zNear);
+                m[2][3] = -1.0;
+                
+                m[3][2] = (2.0*zFar*zNear)/(zFar-zNear);
+                
+            }
 
             inline void setProjection(Number fov, Number aspect, Number zNear, Number zFar) {
                 

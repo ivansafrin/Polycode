@@ -182,17 +182,6 @@ namespace Polycode {
 			bool ownsSkeleton;
 			
             /**
-             * If set to true, will render the mesh wireframe on top of the mesh using wireFrameColor.
-             * @see wireFrameColor
-             */
-			bool overlayWireframe;
-        
-            /*
-             * If overlayWireframe is set to true, defines the color of the mesh wireframe.
-             */
-			Color wireFrameColor;	
-			
-            /**
              * If set to true, will check against actual geometry polygons on ray hit detection. Defaults to false.
              */
 			bool useGeometryHitDetection;

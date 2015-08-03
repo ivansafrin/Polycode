@@ -64,6 +64,7 @@ namespace Polycode {
         Texture *targetFramebuffer;
         Matrix4 projectionMatrix;
         Matrix4 viewMatrix;
+        Matrix4 cameraMatrix;
         Color clearColor;
         bool clearDepthBuffer;
         bool clearColorBuffer;

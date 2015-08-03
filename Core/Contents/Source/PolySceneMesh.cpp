@@ -52,7 +52,6 @@ SceneMesh::SceneMesh(const String& fileName) : Entity(), material(NULL), skeleto
 	lineWidth = 1.0;
 	pointSize = 1.0;
 	pointSmooth = false;
-	overlayWireframe = false;
 	useGeometryHitDetection = false;
     forceMaterial = false;
     backfaceCulled = true;
@@ -71,7 +70,6 @@ SceneMesh::SceneMesh(Mesh *mesh) : Entity(), material(NULL), skeleton(NULL), loc
 	lineWidth = 1.0;
 	pointSize = 1.0;
 	pointSmooth = false;
-	overlayWireframe = false;	
 	useGeometryHitDetection = false;
     forceMaterial = false;
     backfaceCulled = true;
@@ -88,7 +86,6 @@ SceneMesh::SceneMesh(int meshType) : material(NULL), skeleton(NULL), localShader
 	ownsMesh = true;
 	ownsSkeleton = true;	
 	lineWidth = 1.0;
-	overlayWireframe = false;
 	useGeometryHitDetection = false;
     forceMaterial = false;
     backfaceCulled = true;
@@ -129,8 +126,6 @@ void SceneMesh::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly)
 	_clone->alphaTest = alphaTest;
 	_clone->backfaceCulled = backfaceCulled;
     _clone->ownsSkeleton = ownsSkeleton;
-    _clone->overlayWireframe = overlayWireframe;
-    _clone->wireFrameColor = wireFrameColor;
     _clone->useGeometryHitDetection = useGeometryHitDetection;
     _clone->forceMaterial = forceMaterial;
     _clone->setFilename(fileName);

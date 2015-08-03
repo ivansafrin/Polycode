@@ -244,6 +244,7 @@ void Scene::Render(Camera *targetCamera, Texture *targetFramebuffer) {
     
     drawBuffer->projectionMatrix = targetCamera->createProjectionMatrix();
     drawBuffer->viewMatrix = targetCamera->getConcatenatedMatrix().Inverse();
+    drawBuffer->cameraMatrix = targetCamera->getConcatenatedMatrix();
 /*
 	if(useClearColor) {
 		CoreServices::getInstance()->getRenderer()->setClearColor(clearColor.r,clearColor.g,clearColor.b, clearColor.a);	

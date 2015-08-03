@@ -64,9 +64,8 @@ namespace Polycode {
         
             void fixedUpdate();
             void Render(GPUDrawBuffer *buffer);
-        
             void updateParticles();
-            void rebuildParticles();
+            void rebuildParticles(GPUDrawBuffer *buffer);
         
             void triggerParticles(bool allAtOnce);
         

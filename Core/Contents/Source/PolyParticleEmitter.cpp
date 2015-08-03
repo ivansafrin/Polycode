@@ -203,7 +203,7 @@ void SceneParticleEmitter::enableParticleSystem(bool val) {
     }
 }
 
-void SceneParticleEmitter::rebuildParticles() {
+void SceneParticleEmitter::rebuildParticles(GPUDrawBuffer *buffer) {
     mesh->clearMesh();
     Matrix4 inverseMatrix = systemTrasnformMatrix.Inverse();
     
@@ -227,8 +227,6 @@ void SceneParticleEmitter::rebuildParticles() {
         case PARTICLE_TYPE_MESH:
         case PARTICLE_TYPE_QUAD:
         {
-            // RENDERER_TODO
-            Matrix4 cameraMatrix;// = renderer->getCameraMatrix();
             Quaternion q;
             
             Color vertexColor;
@@ -290,25 +288,25 @@ void SceneParticleEmitter::rebuildParticles() {
                     
                     Vector3 vertexPosition = Vector3(-finalParticleSize, -finalParticleSize, 0.0);
                     vertexPosition = q.applyTo(vertexPosition);
-                    vertexPosition = cameraMatrix.rotateVector(vertexPosition);
+                    vertexPosition = buffer->cameraMatrix.rotateVector(vertexPosition);
                     mesh->addVertexWithUV(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 0.0, 0.0);
                     mesh->addColor(vertexColor);
                     
                     vertexPosition = Vector3(finalParticleSize, -finalParticleSize, 0.0);
                     vertexPosition = q.applyTo(vertexPosition);
-                    vertexPosition = cameraMatrix.rotateVector(vertexPosition);
+                    vertexPosition = buffer->cameraMatrix.rotateVector(vertexPosition);
                     mesh->addVertexWithUV(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 1.0, 0.0);
                     mesh->addColor(vertexColor);
 
                     vertexPosition = Vector3(finalParticleSize, finalParticleSize, 0.0);
                     vertexPosition = q.applyTo(vertexPosition);
-                    vertexPosition = cameraMatrix.rotateVector(vertexPosition);
+                    vertexPosition = buffer->cameraMatrix.rotateVector(vertexPosition);
                     mesh->addVertexWithUV(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 1.0, 1.0);
                     mesh->addColor(vertexColor);
 
                     vertexPosition = Vector3(-finalParticleSize, finalParticleSize, 0.0);
                     vertexPosition = q.applyTo(vertexPosition);
-                    vertexPosition = cameraMatrix.rotateVector(vertexPosition);
+                    vertexPosition = buffer->cameraMatrix.rotateVector(vertexPosition);
                     mesh->addVertexWithUV(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 0.0, 1.0);
                     mesh->addColor(vertexColor);
                     
@@ -506,7 +504,7 @@ void SceneParticleEmitter::updateParticles() {
 
 void SceneParticleEmitter::Render(GPUDrawBuffer *buffer) {
     systemTrasnformMatrix = getConcatenatedMatrix();
-    rebuildParticles();
+    rebuildParticles(buffer);
     SceneMesh::Render(buffer);
 }
 

@@ -248,9 +248,6 @@ void CocoaCore::handleVideoModeChange(VideoModeChangeInfo *modeInfo) {
 	} else {
 		CGLDisable(ctx, kCGLCESurfaceBackingSize);		
 	}
-    
-        // RENDERER_TODO
-	//renderer->Resize(xRes, yRes);
 
 	if(aaLevel > 0) {
 		glEnable( GL_MULTISAMPLE_ARB );
@@ -307,8 +304,6 @@ String CocoaCore::executeExternalCommand(String command,  String args, String in
 void CocoaCore::resizeTo(int xRes, int yRes) {
 	this->xRes = xRes;
 	this->yRes = yRes;
-    // RENDERER_TODO
-//	renderer->Resize(xRes, yRes);
     coreResized = true;
 }
 
