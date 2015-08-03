@@ -1932,7 +1932,7 @@ void EntityEditorMainView::Resize(Number width, Number height) {
     
 	viewModeSelector->setPosition(width-viewModeSelector->getWidth()-10.0, 3);
     
-    Vector2 screenPos = renderTextureShape->getScreenPosition(globalScene->getDefaultCamera()->getProjectionMatrix(), globalScene->getDefaultCamera()->getTransformMatrix(), globalScene->getDefaultCamera()->getViewport());
+    Vector2 screenPos = renderTextureShape->getScreenPositionForMainCamera();
     
 	renderTexture->resizeRenderTexture(width, height-60);
 	renderTextureShape->setTexture(renderTexture->getTargetTexture());		

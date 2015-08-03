@@ -394,8 +394,8 @@ Vector3 Renderer::project(const Vector3 &position, const Matrix4 &modelMatrix, c
     in.y = in.y * 0.5 + 0.5;
     in.z = in.z * 0.5 + 0.5;
     
-    in.x = in.x * (viewport.x + viewport.w) + viewport.x;
-    in.y = in.y * (viewport.y + viewport.h) + viewport.y;
+    in.x = in.x * (viewport.w) + viewport.x;
+    in.y = in.y * (viewport.h) + viewport.y;
     
     return Vector3(in.x, in.y, in.z);
 }
@@ -407,8 +407,10 @@ Vector3 Renderer::unProject(const Vector3 &position, const Matrix4 &modelMatrix,
     
     Vector4 in(position);
     
-    in.x = (in.x - viewport.x) / (viewport.x + viewport.w);
-    in.y = (in.y - viewport.y) / (viewport.y + viewport.h);
+    in.x = (in.x - viewport.x) / (viewport.w);
+    in.y = (in.y - viewport.y) / (viewport.h);
+    
+    in.y = 1.0 - in.y;
     
     in.x = in.x * 2.0 - 1.0;
     in.y = in.y * 2.0 - 1.0;

@@ -510,12 +510,14 @@ void Camera::setOrthoMatrix(Matrix4 &matrix, Number xSize, Number ySize, Number 
 
 Vector3 Camera::projectRayFrom2DCoordinate(const Vector2 &coordinate, const Polycode::Rectangle &viewport) {
     Matrix4 camInverse = getConcatenatedMatrix().Inverse();
+    Matrix4 projectionMatrix = getProjectionMatrix();
     
-    Vector3 nearPlane = Renderer::unProject(Vector3(coordinate.x, coordinate.y, 0.0), camInverse, getProjectionMatrix(), viewport);
-    Vector3 farPlane = Renderer::unProject(Vector3(coordinate.x, coordinate.y, 1.0), camInverse, getProjectionMatrix(), viewport);
-    
+    Vector3 nearPlane = Renderer::unProject(Vector3(coordinate.x, coordinate.y, 0.0), camInverse, projectionMatrix, viewport);
+    Vector3 farPlane = Renderer::unProject(Vector3(coordinate.x, coordinate.y, 1.0), camInverse, projectionMatrix, viewport);
+
     Vector3 dirVec = (farPlane) - (nearPlane);
     dirVec.Normalize();
+    
     return dirVec;
 }
 

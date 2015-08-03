@@ -331,7 +331,7 @@ Ray Scene::projectRayFromCameraAndViewportCoordinate(Camera *camera, Vector2 coo
     
     if(remapMouse) {
         viewport.x = sceneMouseRect.x * renderer->getBackingResolutionScaleX();
-        viewport.y = (core->getYRes() - (sceneMouseRect.y + sceneMouseRect.h)) * renderer->getBackingResolutionScaleY();
+        viewport.y = sceneMouseRect.y * renderer->getBackingResolutionScaleY();
     }
     
     Vector3 dir =  camera->projectRayFrom2DCoordinate(Vector2(coordinate.x *  renderer->getBackingResolutionScaleX(), coordinate.y  * renderer->getBackingResolutionScaleY()), viewport);
@@ -380,7 +380,6 @@ Ray Scene::projectRayFromCameraAndViewportCoordinate(Camera *camera, Vector2 coo
 		break;		
 	}
 
-
 	return Ray(pos, dir);
 }
 
@@ -392,13 +391,14 @@ void Scene::handleEvent(Event *event) {
         }
     } else if(event->getDispatcher() == core->getInput() && rootEntity.processInputEvents) {
 		InputEvent *inputEvent = (InputEvent*) event;
-
+        
         if(constrainPickingToViewport) {
             Polycode::Rectangle v = activeCamera->getViewport();
             if(remapMouse) {
                 v.x = sceneMouseRect.x;
                 v.y = sceneMouseRect.y;
-            }            
+            }
+            
             if(inputEvent->mousePosition.x < v.x || inputEvent->mousePosition.x > v.x+(v.w / renderer->getBackingResolutionScaleX()) || inputEvent->mousePosition.y < v.y || inputEvent->mousePosition.y > v.y + (v.h/renderer->getBackingResolutionScaleY())) {
                     return;
             }
