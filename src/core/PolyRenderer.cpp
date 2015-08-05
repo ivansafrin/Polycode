@@ -89,6 +89,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
         interface->enableDepthTest(buffer->drawCalls[i].options.depthTest);
         interface->enableDepthWrite(buffer->drawCalls[i].options.depthWrite);
         interface->enableBackfaceCulling(buffer->drawCalls[i].options.backfaceCull);
+        interface->setLineSize(buffer->drawCalls[i].options.linePointSize);
         
         modelMatrixParam->setMatrix4(buffer->drawCalls[i].modelMatrix);
         

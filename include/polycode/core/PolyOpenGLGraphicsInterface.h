@@ -80,6 +80,7 @@ namespace Polycode {
         void enableDepthTest(bool val);
         void enableDepthWrite(bool val);
         void enableBackfaceCulling(bool val);
+        void setLineSize(Number lineSize);
         
 	protected:
 		

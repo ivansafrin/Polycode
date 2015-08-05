@@ -537,6 +537,10 @@ void OpenGLGraphicsInterface::enableDepthWrite(bool val) {
     }
 }
 
+void OpenGLGraphicsInterface::setLineSize(Number lineSize) {
+    glLineWidth(lineSize);
+}
+
 void OpenGLGraphicsInterface::clearBuffers(const Color &clearColor, bool colorBuffer, bool depthBuffer, bool stencilBuffer) {
     GLbitfield clearMask = 0;
     

@@ -62,6 +62,7 @@ namespace Polycode {
             virtual void enableDepthWrite(bool val) = 0;
             virtual void setBlendingMode(unsigned int blendingMode) = 0;
             virtual void enableBackfaceCulling(bool val) = 0;
+            virtual void setLineSize(Number lineSize) = 0;
         
             virtual void beginDrawCall() = 0;
             virtual void endDrawCall() = 0;
