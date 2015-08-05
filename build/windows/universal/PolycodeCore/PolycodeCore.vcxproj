@@ -1,0 +1,363 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ARM">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM">
+      <Configuration>Release</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\core\PolyBezierCurve.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyBone.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyCamera.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyClient.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyColor.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyConfig.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyCore.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyCoreInput.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyCoreServices.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyCubemap.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyData.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyEntity.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyEvent.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyEventDispatcher.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyEventHandler.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyFont.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyFontGlyphSheet.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyFontManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyGPUDrawBuffer.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyInputEvent.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyLabel.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyLogger.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyMaterial.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyMaterialManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyMatrix4.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyMesh.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyObject.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyParticleEmitter.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyPeer.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyPerlin.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyQuaternion.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyQuaternionCurve.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyRay.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyRectangle.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyRenderDataArray.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyRenderer.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyResource.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyResourceManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyScene.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySceneEntityInstance.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySceneImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySceneLabel.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySceneLight.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySceneLine.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySceneManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySceneMesh.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyScenePrimitive.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySceneRenderTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySceneSound.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySceneSprite.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyServer.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyShader.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySkeleton.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySocket.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySound.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySoundManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyString.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyThreaded.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyTimer.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyTimerManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyTween.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyTweenManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyVector2.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyVector3.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyVector4.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\rgbe.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\tinystr.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\tinyxml.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\tinyxmlerror.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\tinyxmlparser.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\include\Polycode.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyBezierCurve.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyBone.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyCamera.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyClient.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyCocoaCore.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyColor.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyConfig.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyCore.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyCoreInput.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyCoreServices.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyCubemap.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyData.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyEntity.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyEvent.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyEventDispatcher.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyEventHandler.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyFont.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyFontGlyphSheet.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyFontManager.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyGlobals.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyGPUDrawBuffer.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyImage.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyInputEvent.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyInputKeys.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyLabel.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyLogger.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyMaterial.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyMaterialManager.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyMatrix4.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyMesh.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyObject.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyParticleEmitter.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyPeer.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyPerlin.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyQuaternion.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyQuaternionCurve.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyRay.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyRectangle.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyRenderDataArray.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyRenderer.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyResource.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyResourceManager.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyScene.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneEntityInstance.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneImage.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneLabel.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneLight.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneLine.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneManager.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneMesh.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyScenePrimitive.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneRenderTexture.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneSound.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneSprite.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyServer.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyServerWorld.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyShader.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolySkeleton.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolySocket.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolySound.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolySoundManager.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyString.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyTexture.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyThreaded.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyTimer.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyTimerManager.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyTween.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyTweenManager.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyVector2.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyVector3.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyVector4.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\rgbe.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\stb_image.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\tinystr.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\tinyxml.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{ee7ae05c-9ae5-47fa-8a08-28e8d8d89b94}</ProjectGuid>
+    <Keyword>StaticLibrary</Keyword>
+    <ProjectName>PolycodeCore</ProjectName>
+    <RootNamespace>PolycodeCore</RootNamespace>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <AppContainerApplication>true</AppContainerApplication>
+    <ApplicationType>Windows Store</ApplicationType>
+    <WindowsTargetPlatformVersion>10.0.10240.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformMinVersion>10.0.10240.0</WindowsTargetPlatformMinVersion>
+    <ApplicationTypeRevision>10.0</ApplicationTypeRevision>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <GenerateManifest>false</GenerateManifest>
+    <IncludePath>../../../../include;$(IncludePath)</IncludePath>
+    <OutDir>..\..\..\..\lib\windows\x86</OutDir>
+    <TargetName>Polycored</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <GenerateManifest>false</GenerateManifest>
+    <IncludePath>../../../../include;$(IncludePath)</IncludePath>
+    <OutDir>..\..\..\..\lib\windows\x86</OutDir>
+    <TargetName>Polycore</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <GenerateManifest>false</GenerateManifest>
+    <OutDir>..\..\..\..\lib\windows\x64</OutDir>
+    <IncludePath>../../../../include;$(IncludePath)</IncludePath>
+    <TargetName>Polycored</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <GenerateManifest>false</GenerateManifest>
+    <OutDir>..\..\..\..\lib\windows\x64</OutDir>
+    <IncludePath>../../../../include;$(IncludePath)</IncludePath>
+    <TargetName>Polycore</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINDOWS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINDOWS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>Full</Optimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINDOWS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINDOWS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

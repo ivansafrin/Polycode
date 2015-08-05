@@ -77,7 +77,6 @@ Temporary Items
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
-build/
 bld/
 [Oo]bj/
 
@@ -256,7 +255,6 @@ FakesAssemblies/
 
 
 ### Xcode ###
-build/
 *.pbxuser
 !default.pbxuser
 *.mode1v3
