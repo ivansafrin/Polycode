@@ -90,5 +90,17 @@
 #include "polycode/core/PolyGlobals.h"
 
 #ifdef _WINDOWS
-#include "polycode/core/PolyWinCore.h"
 #endif
+
+#if defined(__APPLE__) && defined(__MACH__)
+        #include "polycode/core/PolyCocoaCore.h"
+#else
+    #if defined(_WINDOWS) && !defined(_MINGW)
+        #include "polycode/core/PolyWinCore.h"
+    #else
+        #include "polycode/core/PolySDLCore.h"
+    #endif
+#endif
+
+
+

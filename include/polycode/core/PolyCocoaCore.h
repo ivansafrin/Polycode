@@ -129,6 +129,9 @@ namespace Polycode {
 		
 		String executeExternalCommand(String command, String args, String inDirectory="");
 		
+        void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport=true);
+
+        
 		void launchApplicationWithFile(String application, String file);
 		void openFileWithApplication(String file, String application);
 		

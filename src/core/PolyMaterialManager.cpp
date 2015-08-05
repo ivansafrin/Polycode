@@ -38,6 +38,7 @@ MaterialManager::MaterialManager() {
 	clampDefault = false;
 	mipmapsDefault = true;
     keepTextureData = true;
+    textureFilteringMode = Texture::FILTERING_LINEAR;
 }
 
 MaterialManager::~MaterialManager() {

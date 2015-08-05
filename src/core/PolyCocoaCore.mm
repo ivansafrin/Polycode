@@ -21,7 +21,7 @@
 */
 
 #include "PolyCocoaCore.h"
-#import "PolycodeView.h"
+#import "polycode/view/osx/PolycodeView.h"
 #include <iostream>
 #include <limits.h>
 
@@ -113,6 +113,11 @@ CocoaCore::CocoaCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, 
     setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
 }
 
+void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport) {
+    [[glView window] setContentSize: NSMakeSize(xRes, yRes)];    
+    Core::setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
+}
+
 void CocoaCore::copyStringToClipboard(const String& str) {
 
 	NSPasteboard *pb = [NSPasteboard generalPasteboard];
@@ -189,7 +194,7 @@ void CocoaCore::handleVideoModeChange(VideoModeChangeInfo *modeInfo) {
 	attrs[atindx++] = NSOpenGLPFANoRecovery;		
 	
 	attrs[atindx++] = NSOpenGLPFAAccelerated;			
-	attrs[atindx++] = nil;					
+	attrs[atindx++] = 0;
 	NSOpenGLPixelFormat *format = [[NSOpenGLPixelFormat alloc] initWithAttributes:attrs];		
 		
 	if(!format) {
@@ -209,8 +214,6 @@ void CocoaCore::handleVideoModeChange(VideoModeChangeInfo *modeInfo) {
 	[context setView: (NSView*)glView];					
 		
 	renderer->setAnisotropyAmount(anisotropyLevel);
-
-	[[glView window] setContentSize: NSMakeSize(xRes, yRes)];
 		
 	if(fullScreen) {	
 		if(monitorIndex > -1) {
@@ -242,7 +245,7 @@ void CocoaCore::handleVideoModeChange(VideoModeChangeInfo *modeInfo) {
 
 	CGLContextObj ctx = (CGLContextObj) [context CGLContextObj];
 	if(fullScreen) {
-		GLint dim[2] = {backingBounds.size.width, backingBounds.size.height};
+		GLint dim[2] = {(GLint)backingBounds.size.width, (GLint)backingBounds.size.height};
 		CGLSetParameter(ctx, kCGLCPSurfaceBackingSize, dim);
 		CGLEnable (ctx, kCGLCESurfaceBackingSize);
 	} else {
