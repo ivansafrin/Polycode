@@ -1,7 +1,0 @@
-<PolycodeProject defaultWidth="640" defaultHeight="480" antiAliasingLevel="0">
-	<backgroundColor red="0.25" green="0.25" blue="0.25" />
-	<entryPoint>PolycodeTemplate.lua</entryPoint>
-	<packedItems>
-		<item path="polycode_logo.png" type="file"/>
-	</packedItems>
-</PolycodeProject>

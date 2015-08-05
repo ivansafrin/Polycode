@@ -1,5 +1,0 @@
-#TODO: actually build the pak file
-IF(POLYCODE_INSTALL_FRAMEWORK)
-    INSTALL(FILES default.pak DESTINATION Core/Assets)
-    INSTALL(FILES hdr.pak DESTINATION Core/Assets)
-ENDIF(POLYCODE_INSTALL_FRAMEWORK)
