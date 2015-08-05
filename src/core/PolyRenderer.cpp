@@ -165,7 +165,10 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                                 attributeBinding->attribute = shader->getAttribPointer(attributeBinding->name);
                             }
                             if(attributeBinding->attribute) {
-                                 interface->setAttributeInShader(shader, attributeBinding->attribute, attributeBinding);
+                                
+                                if(attributeBinding->vertexData->data.size() / attributeBinding->vertexData->countPerVertex >= buffer->drawCalls[i].numVertices) {
+                                    interface->setAttributeInShader(shader, attributeBinding->attribute, attributeBinding);
+                                }
                             } else {
                                 attributeBinding->enabled = false;
                             }

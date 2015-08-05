@@ -2,6 +2,7 @@
 // Polycode template. Write your code here.
 //
 
+#import "polycode/view/osx/PolycodeView.h"
 #include "Polycode.h"
 
 using namespace Polycode;

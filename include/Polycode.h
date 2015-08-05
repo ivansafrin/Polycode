@@ -93,7 +93,7 @@
 #endif
 
 #if defined(__APPLE__) && defined(__MACH__)
-        #include "polycode/core/PolyCocoaCore.h"
+//    #import "polycode/view/osx/PolycodeView.h"
 #else
     #if defined(_WINDOWS) && !defined(_MINGW)
         #include "polycode/core/PolyWinCore.h"

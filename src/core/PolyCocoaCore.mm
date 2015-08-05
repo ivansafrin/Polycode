@@ -24,6 +24,7 @@
 #import "polycode/view/osx/PolycodeView.h"
 #include <iostream>
 #include <limits.h>
+#import <Cocoa/Cocoa.h>
 
 #include <ApplicationServices/ApplicationServices.h>
 

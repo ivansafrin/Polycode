@@ -12,7 +12,6 @@
 		8A8652351B72865C009F94DD /* PolyCamera.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8651EA1B72865C009F94DD /* PolyCamera.h */; };
 		8A8652361B72865C009F94DD /* PolyClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8651EB1B72865C009F94DD /* PolyClient.h */; };
 		8A8652371B72865C009F94DD /* PolyCocoaCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8651EC1B72865C009F94DD /* PolyCocoaCore.h */; };
-		8A8652381B72865C009F94DD /* Polycode.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8651ED1B72865C009F94DD /* Polycode.h */; };
 		8A8652391B72865C009F94DD /* PolyColor.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8651EE1B72865C009F94DD /* PolyColor.h */; };
 		8A86523A1B72865C009F94DD /* PolyConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8651EF1B72865C009F94DD /* PolyConfig.h */; };
 		8A86523B1B72865C009F94DD /* PolyCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8651F01B72865C009F94DD /* PolyCore.h */; };
@@ -170,7 +169,6 @@
 		8A8651EA1B72865C009F94DD /* PolyCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyCamera.h; path = ../../../include/polycode/core/PolyCamera.h; sourceTree = "<group>"; };
 		8A8651EB1B72865C009F94DD /* PolyClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyClient.h; path = ../../../include/polycode/core/PolyClient.h; sourceTree = "<group>"; };
 		8A8651EC1B72865C009F94DD /* PolyCocoaCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyCocoaCore.h; path = ../../../include/polycode/core/PolyCocoaCore.h; sourceTree = "<group>"; };
-		8A8651ED1B72865C009F94DD /* Polycode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Polycode.h; path = ../../../include/polycode/core/Polycode.h; sourceTree = "<group>"; };
 		8A8651EE1B72865C009F94DD /* PolyColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyColor.h; path = ../../../include/polycode/core/PolyColor.h; sourceTree = "<group>"; };
 		8A8651EF1B72865C009F94DD /* PolyConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyConfig.h; path = ../../../include/polycode/core/PolyConfig.h; sourceTree = "<group>"; };
 		8A8651F01B72865C009F94DD /* PolyCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyCore.h; path = ../../../include/polycode/core/PolyCore.h; sourceTree = "<group>"; };
@@ -436,7 +434,6 @@
 				8A8651EA1B72865C009F94DD /* PolyCamera.h */,
 				8A8651EB1B72865C009F94DD /* PolyClient.h */,
 				8A8651EC1B72865C009F94DD /* PolyCocoaCore.h */,
-				8A8651ED1B72865C009F94DD /* Polycode.h */,
 				8A8651EE1B72865C009F94DD /* PolyColor.h */,
 				8A8651EF1B72865C009F94DD /* PolyConfig.h */,
 				8A8651F01B72865C009F94DD /* PolyCore.h */,
@@ -576,7 +573,6 @@
 				8A86526E1B72865C009F94DD /* PolyShader.h in Headers */,
 				8A8652551B72865C009F94DD /* PolyPeer.h in Headers */,
 				8A86524A1B72865C009F94DD /* PolyInputEvent.h in Headers */,
-				8A8652381B72865C009F94DD /* Polycode.h in Headers */,
 				8A8652391B72865C009F94DD /* PolyColor.h in Headers */,
 				8A8652601B72865C009F94DD /* PolySceneEntityInstance.h in Headers */,
 				8A86526C1B72865C009F94DD /* PolyServer.h in Headers */,
