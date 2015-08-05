@@ -598,9 +598,7 @@ Material *MaterialManager::materialFromXMLNode(ResourcePool *resourcePool, TiXml
 									tname =  pChild2Element->Attribute("name");
 								}
 								Texture *texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(pChild2Element->GetText());
-                                    // RENDERER_TODO
-								//newShaderBinding->addTexture(tname,texture);
-//								newShaderBinding->addTexture(tname, (Texture*)CoreServices::getInstance()->getResourceManager()->getResource(Resource::RESOURCE_TEXTURE, pChild2Element->GetText()));
+                                newShaderBinding->setTextureForParam(tname, texture);
 							}
 							
 							if(strcmp(pChild2->Value(), "cubemap") == 0){

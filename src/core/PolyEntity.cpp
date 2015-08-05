@@ -516,14 +516,15 @@ void Entity::transformAndRender(GPUDrawBuffer *buffer) {
 		renderer->setScissorBox(finalScissorBox);
 	}
      */
+    
+    drawCall.modelMatrix.identity();
+    drawCall.modelMatrix.Translate(-anchorPoint.x * bBox.x * 0.5, -anchorPoint.y * bBox.y * 0.5 * yAdjust, -anchorPoint.z * bBox.z * 0.5);
 		
 	if(ignoreParentMatrix) {
-        drawCall.modelMatrix = transformMatrix;
+        drawCall.modelMatrix = drawCall.modelMatrix * transformMatrix;
     } else {
-        drawCall.modelMatrix = getConcatenatedMatrix();
+        drawCall.modelMatrix = drawCall.modelMatrix * getConcatenatedMatrix();
     }
-
-    drawCall.modelMatrix.Translate(-anchorPoint.x * bBox.x * 0.5, -anchorPoint.y * bBox.y * 0.5 * yAdjust, -anchorPoint.z * bBox.z * 0.5);
     
     /*
 	if(billboardMode) {
