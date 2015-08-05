@@ -20,7 +20,7 @@
  THE SOFTWARE.
 */
 
-#include "PolyColor.h"
+#include "polycode/core/PolyColor.h"
 #include <stdlib.h>
 
 using namespace Polycode;

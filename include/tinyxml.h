@@ -53,7 +53,7 @@ distribution.
 	#define TIXML_STRING		TiXmlString
 #endif
 
-#include "PolyLogger.h"
+#include "polycode/core/PolyLogger.h"
 
 // Deprecated library function hell. Compilers want to use the
 // new safe versions. This probably doesn't fully address the problem,

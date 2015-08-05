@@ -20,9 +20,9 @@
  THE SOFTWARE.
 */
 
-#include "PolyTweenManager.h"
-#include "PolyTween.h"
-#include "PolyCore.h"
+#include "polycode/core/PolyTweenManager.h"
+#include "polycode/core/PolyTween.h"
+#include "polycode/core/PolyCore.h"
 
 using namespace Polycode;
 

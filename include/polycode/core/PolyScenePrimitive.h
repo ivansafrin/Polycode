@@ -21,9 +21,9 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolySceneMesh.h"
-#include "PolyMesh.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolySceneMesh.h"
+#include "polycode/core/PolyMesh.h"
 
 namespace Polycode {
 

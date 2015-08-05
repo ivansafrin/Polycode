@@ -23,9 +23,9 @@ THE SOFTWARE.
 
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyRenderer.h"
-#include "PolyTexture.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyRenderer.h"
+#include "polycode/core/PolyTexture.h"
 
 #ifdef _WINDOWS
 #include <windows.h>

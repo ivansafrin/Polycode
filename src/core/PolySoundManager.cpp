@@ -20,8 +20,8 @@
  THE SOFTWARE.
 */
 
-#include "PolySoundManager.h"
-#include "PolyLogger.h"
+#include "polycode/core/PolySoundManager.h"
+#include "polycode/core/PolyLogger.h"
 
 using namespace Polycode;
 

@@ -21,10 +21,10 @@ THE SOFTWARE.
 */
  
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyString.h"
-#include "PolyEventDispatcher.h"
-#include "PolyMaterialManager.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyString.h"
+#include "polycode/core/PolyEventDispatcher.h"
+#include "polycode/core/PolyMaterialManager.h"
 #include <map>
 
 namespace Polycode {

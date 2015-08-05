@@ -20,9 +20,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "PolyClient.h"
+#include "polycode/core/PolyClient.h"
 #include <string.h>
-#include "PolyTimer.h"
+#include "polycode/core/PolyTimer.h"
 
 using namespace Polycode;
 

@@ -20,12 +20,12 @@
  THE SOFTWARE.
 */
 
-#include "PolyBone.h"
-#include "PolyCoreServices.h"
-#include "PolyLabel.h"
-#include "PolyMesh.h"
-#include "PolyRenderer.h"
-#include "PolySceneLabel.h"
+#include "polycode/core/PolyBone.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyLabel.h"
+#include "polycode/core/PolyMesh.h"
+#include "polycode/core/PolyRenderer.h"
+#include "polycode/core/PolySceneLabel.h"
 
 using namespace Polycode;
 

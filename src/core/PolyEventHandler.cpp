@@ -20,7 +20,7 @@
  THE SOFTWARE.
 */
 
-#include "PolyEventHandler.h" 
+#include "polycode/core/PolyEventHandler.h" 
 
 
 namespace Polycode {

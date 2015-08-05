@@ -22,11 +22,11 @@
 
 #include "png.h"
 #include <math.h>
-#include "PolyImage.h"
-#include "PolyString.h"
-#include "PolyLogger.h"
+#include "polycode/core/PolyImage.h"
+#include "polycode/core/PolyString.h"
+#include "polycode/core/PolyLogger.h"
 #include "OSBasics.h"
-#include "PolyPerlin.h"
+#include "polycode/core/PolyPerlin.h"
 #include <algorithm>
 #include <stdlib.h>
 #include "rgbe.h"

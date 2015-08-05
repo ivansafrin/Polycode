@@ -20,10 +20,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "PolyPeer.h"
+#include "polycode/core/PolyPeer.h"
 #include <string.h>
-#include "PolyCore.h"
-#include "PolyTimer.h"
+#include "polycode/core/PolyCore.h"
+#include "polycode/core/PolyTimer.h"
 
 using namespace Polycode;
 

@@ -21,11 +21,11 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyLogger.h"
-#include "PolyGlobals.h"
-#include "PolyPeer.h"
-#include "PolyTimer.h"
-#include "PolyEvent.h"
+#include "polycode/core/PolyLogger.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyPeer.h"
+#include "polycode/core/PolyTimer.h"
+#include "polycode/core/PolyEvent.h"
 
 namespace Polycode {
 	

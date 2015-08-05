@@ -21,10 +21,10 @@
  */
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyVector3.h"
-#include "PolyString.h"
-#include "PolyCoreServices.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyVector3.h"
+#include "polycode/core/PolyString.h"
+#include "polycode/core/PolyCoreServices.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
     #include <OpenAL/al.h>

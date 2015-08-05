@@ -20,7 +20,7 @@
  THE SOFTWARE.
 */
 
-#include "PolyInputEvent.h"
+#include "polycode/core/PolyInputEvent.h"
 
 namespace Polycode {
 

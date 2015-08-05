@@ -20,15 +20,15 @@
  THE SOFTWARE.
 */
 
-#include "PolyResourceManager.h"
-#include "PolyCoreServices.h"
-#include "PolyCubemap.h"
-#include "PolyMaterialManager.h"
-#include "PolyFontManager.h"
-#include "PolyLogger.h"
-#include "PolyMaterial.h"
-#include "PolyShader.h"
-#include "PolyTexture.h"
+#include "polycode/core/PolyResourceManager.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyCubemap.h"
+#include "polycode/core/PolyMaterialManager.h"
+#include "polycode/core/PolyFontManager.h"
+#include "polycode/core/PolyLogger.h"
+#include "polycode/core/PolyMaterial.h"
+#include "polycode/core/PolyShader.h"
+#include "polycode/core/PolyTexture.h"
 #include "OSBasics.h"
 
 #include "physfs.h"

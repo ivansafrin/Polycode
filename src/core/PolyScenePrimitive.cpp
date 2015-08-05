@@ -20,8 +20,8 @@
  THE SOFTWARE.
 */
  
-#include "PolyScenePrimitive.h"
-#include "PolyMesh.h"
+#include "polycode/core/PolyScenePrimitive.h"
+#include "polycode/core/PolyMesh.h"
 
 using namespace Polycode;
 

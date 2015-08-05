@@ -21,10 +21,10 @@ THE SOFTWARE.
 */
  
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyImage.h"
-#include "PolyObject.h"
-#include "PolyShader.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyImage.h"
+#include "polycode/core/PolyObject.h"
+#include "polycode/core/PolyShader.h"
 #include <vector>
 
 class TiXmlNode;

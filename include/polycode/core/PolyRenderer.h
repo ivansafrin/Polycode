@@ -21,17 +21,17 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
-#include "PolyGlobals.h"
-#include "PolyMatrix4.h"
-#include "PolyVector2.h"
-#include "PolyShader.h"
-#include "PolyImage.h"
-#include "PolyRectangle.h"
-#include "PolyShader.h"
-#include "PolyRenderDataArray.h"
-#include "PolyThreaded.h"
-#include "PolyGPUDrawBuffer.h"
+#include "polycode/core/PolyString.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyMatrix4.h"
+#include "polycode/core/PolyVector2.h"
+#include "polycode/core/PolyShader.h"
+#include "polycode/core/PolyImage.h"
+#include "polycode/core/PolyRectangle.h"
+#include "polycode/core/PolyShader.h"
+#include "polycode/core/PolyRenderDataArray.h"
+#include "polycode/core/PolyThreaded.h"
+#include "polycode/core/PolyGPUDrawBuffer.h"
 #include <stack>
 #include <queue>  
 

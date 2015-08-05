@@ -20,8 +20,8 @@
  THE SOFTWARE.
 */
 
-#include "PolyFontManager.h"
-#include "PolyFont.h"
+#include "polycode/core/PolyFontManager.h"
+#include "polycode/core/PolyFont.h"
 #include FT_LCD_FILTER_H
 
 using namespace Polycode;

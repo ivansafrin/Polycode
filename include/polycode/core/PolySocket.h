@@ -22,8 +22,8 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "PolyGlobals.h"
-#include "PolyEvent.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyEvent.h"
 #include "stdio.h"
 
 
@@ -52,7 +52,7 @@ THE SOFTWARE.
 	#include <fcntl.h>
 #endif
 
-#include "PolyEventDispatcher.h"
+#include "polycode/core/PolyEventDispatcher.h"
 
 #if PLATFORM == PLATFORM_WINDOWS
 	typedef int socklen_t;

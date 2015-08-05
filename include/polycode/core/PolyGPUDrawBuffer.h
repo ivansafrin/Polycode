@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include "PolyMesh.h"
-#include "PolyShader.h"
-#include "PolyRectangle.h"
-#include "PolyMaterial.h"
-#include "PolyColor.h"
+#include "polycode/core/PolyMesh.h"
+#include "polycode/core/PolyShader.h"
+#include "polycode/core/PolyRectangle.h"
+#include "polycode/core/PolyMaterial.h"
+#include "polycode/core/PolyColor.h"
 
 namespace Polycode {
     

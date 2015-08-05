@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#include "PolyGPUDrawBuffer.h"
+#include "polycode/core/PolyGPUDrawBuffer.h"
 
 using namespace Polycode;
 

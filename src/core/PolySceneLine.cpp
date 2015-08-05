@@ -20,8 +20,8 @@
  THE SOFTWARE.
 */
 
-#include "PolySceneLine.h"
-#include "PolyRenderer.h"
+#include "polycode/core/PolySceneLine.h"
+#include "polycode/core/PolyRenderer.h"
 
 using namespace Polycode;
 

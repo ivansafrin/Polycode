@@ -20,20 +20,20 @@
  THE SOFTWARE.
 */
 
-#include "PolyCoreServices.h"
-#include "PolyCore.h"
-#include "PolyCoreInput.h"
-#include "PolyInputEvent.h"
-#include "PolyLogger.h"
-#include "PolyResourceManager.h"
-#include "PolyMaterialManager.h"
-#include "PolyRenderer.h"
-#include "PolyConfig.h"
-#include "PolyFontManager.h"
-#include "PolySceneManager.h"
-#include "PolyTimerManager.h"
-#include "PolyTweenManager.h"
-#include "PolySoundManager.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyCore.h"
+#include "polycode/core/PolyCoreInput.h"
+#include "polycode/core/PolyInputEvent.h"
+#include "polycode/core/PolyLogger.h"
+#include "polycode/core/PolyResourceManager.h"
+#include "polycode/core/PolyMaterialManager.h"
+#include "polycode/core/PolyRenderer.h"
+#include "polycode/core/PolyConfig.h"
+#include "polycode/core/PolyFontManager.h"
+#include "polycode/core/PolySceneManager.h"
+#include "polycode/core/PolyTimerManager.h"
+#include "polycode/core/PolyTweenManager.h"
+#include "polycode/core/PolySoundManager.h"
 
 using namespace Polycode;
 

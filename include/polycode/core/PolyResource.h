@@ -22,9 +22,9 @@ THE SOFTWARE.
  
 
 #pragma once
-#include "PolyString.h"
-#include "PolyGlobals.h"
-#include "PolyEventDispatcher.h"
+#include "polycode/core/PolyString.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyEventDispatcher.h"
 
 namespace Polycode {
 

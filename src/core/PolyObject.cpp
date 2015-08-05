@@ -20,7 +20,7 @@
  THE SOFTWARE.
 */
  
-#include "PolyObject.h"
+#include "polycode/core/PolyObject.h"
 #include "tinyxml.h"
 #include <sstream>
 #include <stdio.h>

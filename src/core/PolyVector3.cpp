@@ -20,7 +20,7 @@
  THE SOFTWARE.
 */
 
-#include "PolyVector3.h"
+#include "polycode/core/PolyVector3.h"
 
 using namespace Polycode;
 

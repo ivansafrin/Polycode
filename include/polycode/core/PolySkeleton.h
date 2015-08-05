@@ -22,13 +22,13 @@ THE SOFTWARE.
 
 
 #pragma once
-#include "PolyString.h"
-#include "PolyGlobals.h"
-#include "PolyColor.h"
-#include "PolyVector3.h"
-#include "PolyQuaternion.h"
-#include "PolyQuaternionCurve.h"
-#include "PolyEntity.h"
+#include "polycode/core/PolyString.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyColor.h"
+#include "polycode/core/PolyVector3.h"
+#include "polycode/core/PolyQuaternion.h"
+#include "polycode/core/PolyQuaternionCurve.h"
+#include "polycode/core/PolyEntity.h"
 #include <vector>
 
 namespace Polycode {

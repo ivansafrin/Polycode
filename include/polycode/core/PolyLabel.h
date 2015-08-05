@@ -21,12 +21,12 @@ THE SOFTWARE.
 */
  
 #pragma once
-#include "PolyString.h"
-#include "PolyGlobals.h"
-#include "PolyColor.h"
-#include "PolyImage.h"
+#include "polycode/core/PolyString.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyColor.h"
+#include "polycode/core/PolyImage.h"
 
-#include "PolyFont.h"
+#include "polycode/core/PolyFont.h"
 
 #include FT_GLYPH_H
 #include FT_IMAGE_H

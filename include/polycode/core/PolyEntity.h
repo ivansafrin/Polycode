@@ -21,16 +21,16 @@
  */
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyString.h"
-#include "PolyMatrix4.h"
-#include "PolyVector2.h"
-#include "PolyQuaternion.h"
-#include "PolyColor.h"
-#include "PolyRectangle.h"
-#include "PolyRay.h"
-#include "PolyEventDispatcher.h"
-#include "PolyGPUDrawBuffer.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyString.h"
+#include "polycode/core/PolyMatrix4.h"
+#include "polycode/core/PolyVector2.h"
+#include "polycode/core/PolyQuaternion.h"
+#include "polycode/core/PolyColor.h"
+#include "polycode/core/PolyRectangle.h"
+#include "polycode/core/PolyRay.h"
+#include "polycode/core/PolyEventDispatcher.h"
+#include "polycode/core/PolyGPUDrawBuffer.h"
 #include <vector>
 
 namespace Polycode {

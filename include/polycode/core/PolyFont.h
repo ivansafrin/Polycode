@@ -21,9 +21,9 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyGlobals.h"
+#include "polycode/core/PolyGlobals.h"
 #include "ft2build.h"
-#include "PolyString.h"
+#include "polycode/core/PolyString.h"
 
 #include FT_FREETYPE_H
 

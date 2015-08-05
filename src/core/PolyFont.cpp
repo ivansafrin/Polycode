@@ -20,9 +20,9 @@
  THE SOFTWARE.
 */
 
-#include "PolyFont.h"
+#include "polycode/core/PolyFont.h"
 #include "OSBasics.h"
-#include "PolyLogger.h"
+#include "polycode/core/PolyLogger.h"
 
 using namespace Polycode;
 

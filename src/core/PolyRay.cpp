@@ -20,7 +20,7 @@
  THE SOFTWARE.
 */
 
-#include "PolyRay.h"
+#include "polycode/core/PolyRay.h"
 #include <stdio.h>
 
 using namespace Polycode;

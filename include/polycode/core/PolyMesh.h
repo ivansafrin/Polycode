@@ -21,11 +21,11 @@ THE SOFTWARE.
 */
  
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyRenderDataArray.h"
-#include "PolyColor.h"
-#include "PolyVector3.h"
-#include "PolyVector2.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyRenderDataArray.h"
+#include "polycode/core/PolyColor.h"
+#include "polycode/core/PolyVector3.h"
+#include "polycode/core/PolyVector2.h"
 #include <vector>
 
 class OSFILE;

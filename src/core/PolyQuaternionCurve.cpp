@@ -20,9 +20,9 @@
  THE SOFTWARE.
 */
 
-#include "PolyQuaternionCurve.h"
-#include "PolyBezierCurve.h"
-#include "PolyLogger.h"
+#include "polycode/core/PolyQuaternionCurve.h"
+#include "polycode/core/PolyBezierCurve.h"
+#include "polycode/core/PolyLogger.h"
 
 using namespace Polycode;
 

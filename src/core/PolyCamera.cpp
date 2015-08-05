@@ -20,16 +20,16 @@
  THE SOFTWARE.
 */
 
-#include "PolyCamera.h"
-#include "PolyCore.h"
-#include "PolyCoreServices.h"
-#include "PolyMaterial.h"
-#include "PolyRenderer.h"
-#include "PolyResource.h"
-#include "PolyResourceManager.h"
-#include "PolyScene.h"
-#include "PolyShader.h"
-#include "PolyTexture.h"
+#include "polycode/core/PolyCamera.h"
+#include "polycode/core/PolyCore.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyMaterial.h"
+#include "polycode/core/PolyRenderer.h"
+#include "polycode/core/PolyResource.h"
+#include "polycode/core/PolyResourceManager.h"
+#include "polycode/core/PolyScene.h"
+#include "polycode/core/PolyShader.h"
+#include "polycode/core/PolyTexture.h"
 
 using namespace Polycode;
 			

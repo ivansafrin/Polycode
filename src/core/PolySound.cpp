@@ -20,13 +20,13 @@
  THE SOFTWARE.
 */
 
-#include "PolySound.h"
+#include "polycode/core/PolySound.h"
 #define OV_EXCLUDE_STATIC_CALLBACKS
 #include <vorbis/vorbisfile.h>
 #undef OV_EXCLUDE_STATIC_CALLBACKS
-#include "PolyString.h"
-#include "PolyLogger.h"
-#include "PolySoundManager.h"
+#include "polycode/core/PolyString.h"
+#include "polycode/core/PolyLogger.h"
+#include "polycode/core/PolySoundManager.h"
 
 #include "OSBasics.h"
 #include <string>

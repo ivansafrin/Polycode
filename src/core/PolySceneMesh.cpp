@@ -20,18 +20,18 @@
  THE SOFTWARE.
 */
 
-#include "PolySceneMesh.h"
-#include "PolyCoreServices.h"
-#include "PolyBone.h"
-#include "PolyMaterial.h"
-#include "PolyRenderer.h"
-#include "PolyMaterial.h"
-#include "PolyMesh.h"
-#include "PolyImage.h"
-#include "PolyShader.h"
-#include "PolySkeleton.h"
-#include "PolyResourceManager.h"
-#include "PolyMaterialManager.h"
+#include "polycode/core/PolySceneMesh.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyBone.h"
+#include "polycode/core/PolyMaterial.h"
+#include "polycode/core/PolyRenderer.h"
+#include "polycode/core/PolyMaterial.h"
+#include "polycode/core/PolyMesh.h"
+#include "polycode/core/PolyImage.h"
+#include "polycode/core/PolyShader.h"
+#include "polycode/core/PolySkeleton.h"
+#include "polycode/core/PolyResourceManager.h"
+#include "polycode/core/PolyMaterialManager.h"
 
 using namespace Polycode;
 

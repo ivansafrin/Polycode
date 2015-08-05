@@ -20,12 +20,12 @@
  THE SOFTWARE.
 */
 
-#include "PolySceneSprite.h"
-#include "PolyCore.h"
-#include "PolyCoreServices.h"
-#include "PolyMesh.h"
-#include "PolyTexture.h"
-#include "PolyLogger.h"
+#include "polycode/core/PolySceneSprite.h"
+#include "polycode/core/PolyCore.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyMesh.h"
+#include "polycode/core/PolyTexture.h"
+#include "polycode/core/PolyLogger.h"
 
 using std::vector;
 using namespace Polycode;

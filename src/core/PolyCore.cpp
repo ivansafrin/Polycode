@@ -20,10 +20,10 @@
  THE SOFTWARE.
 */
 
-#include "PolyCore.h"
-#include "PolyCoreInput.h"
-#include "PolyRenderer.h"
-#include "PolyCoreServices.h"
+#include "polycode/core/PolyCore.h"
+#include "polycode/core/PolyCoreInput.h"
+#include "polycode/core/PolyRenderer.h"
+#include "polycode/core/PolyCoreServices.h"
 
 #ifdef _WINDOWS
 #include <windows.h>

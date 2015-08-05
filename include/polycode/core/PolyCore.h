@@ -21,14 +21,14 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyString.h"
-#include "PolyRectangle.h"
-#include "PolyVector2.h"
-#include "PolyEventDispatcher.h"
-#include "PolyCoreInput.h"
-#include "PolyCoreServices.h"
-#include "PolyThreaded.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyString.h"
+#include "polycode/core/PolyRectangle.h"
+#include "polycode/core/PolyVector2.h"
+#include "polycode/core/PolyEventDispatcher.h"
+#include "polycode/core/PolyCoreInput.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyThreaded.h"
 
 long getThreadID();
 

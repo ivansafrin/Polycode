@@ -21,19 +21,19 @@
  */
 
 #pragma once
-#include "PolyString.h"
-#include "PolyGlobals.h"
-#include "PolyLogger.h"
-#include "PolyCore.h"
-#include "PolyString.h"
-#include "PolyRectangle.h"
+#include "polycode/core/PolyString.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyLogger.h"
+#include "polycode/core/PolyCore.h"
+#include "polycode/core/PolyString.h"
+#include "polycode/core/PolyRectangle.h"
 #include <vector>
 #include <OpenGL/gl.h>
 #include <OpenGL/OpenGL.h>
-#include "PolyOpenGLGraphicsInterface.h"
+#include "polycode/core/PolyOpenGLGraphicsInterface.h"
 #include <mach/mach_time.h>
 #include <unistd.h>
-#include "PolyInputEvent.h"
+#include "polycode/core/PolyInputEvent.h"
 #include <IOKit/hid/IOHIDLib.h>
 #import <Cocoa/Cocoa.h>
 

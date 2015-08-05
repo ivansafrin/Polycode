@@ -20,10 +20,10 @@
  THE SOFTWARE.
 */
 
-#include "PolySceneImage.h"
-#include "PolyMesh.h"
-#include "PolyTexture.h"
-#include "PolyCoreServices.h"
+#include "polycode/core/PolySceneImage.h"
+#include "polycode/core/PolyMesh.h"
+#include "polycode/core/PolyTexture.h"
+#include "polycode/core/PolyCoreServices.h"
 
 using namespace Polycode;
 

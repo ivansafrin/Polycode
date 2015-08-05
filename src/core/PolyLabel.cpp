@@ -20,7 +20,7 @@
  THE SOFTWARE.
 */
 
-#include "PolyLabel.h"
+#include "polycode/core/PolyLabel.h"
 #include <math.h>
 
 using namespace Polycode;

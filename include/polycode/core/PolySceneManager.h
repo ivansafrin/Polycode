@@ -21,8 +21,8 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyRectangle.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyRectangle.h"
 
 #include <vector>
 

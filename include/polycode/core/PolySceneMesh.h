@@ -21,11 +21,11 @@ THE SOFTWARE.
 */
  
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyEntity.h"
-#include "PolyShader.h"
-#include "PolyRenderDataArray.h"
-#include "PolyRenderer.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyEntity.h"
+#include "polycode/core/PolyShader.h"
+#include "polycode/core/PolyRenderDataArray.h"
+#include "polycode/core/PolyRenderer.h"
 
 namespace Polycode {
 

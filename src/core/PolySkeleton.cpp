@@ -20,14 +20,14 @@
  THE SOFTWARE.
 */
 
-#include "PolySkeleton.h"
-#include "PolyBezierCurve.h"
-#include "PolyBone.h"
-#include "PolyLabel.h"
-#include "PolySceneLabel.h"
-#include "PolySceneLine.h"
-#include "PolyTween.h"
-#include "PolyTweenManager.h"
+#include "polycode/core/PolySkeleton.h"
+#include "polycode/core/PolyBezierCurve.h"
+#include "polycode/core/PolyBone.h"
+#include "polycode/core/PolyLabel.h"
+#include "polycode/core/PolySceneLabel.h"
+#include "polycode/core/PolySceneLine.h"
+#include "polycode/core/PolyTween.h"
+#include "polycode/core/PolyTweenManager.h"
 #include "OSBasics.h"
 
 using namespace Polycode;

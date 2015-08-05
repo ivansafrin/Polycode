@@ -21,12 +21,9 @@
 */		
 
 #include "PolyWinCore.h"
-#include "PolyGLHeaders.h"
 #include "PolyCoreInput.h"
 #include "PolyCoreServices.h"
 #include "PolyInputEvent.h"
-#include "PolyGLRenderer.h"
-#include "PolyGLSLShaderModule.h"
 #include "PolyLogger.h"
 #include "PolyThreaded.h"
 

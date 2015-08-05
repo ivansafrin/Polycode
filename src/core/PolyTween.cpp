@@ -20,14 +20,14 @@
  THE SOFTWARE.
 */
 
-#include "PolyTween.h"
-#include "PolyBezierCurve.h"
-#include "PolyCoreServices.h"
-#include "PolyQuaternionCurve.h"
-#include "PolyTimer.h"
-#include "PolyTweenManager.h"
-#include "PolyTimerManager.h"
-#include "PolyEvent.h"
+#include "polycode/core/PolyTween.h"
+#include "polycode/core/PolyBezierCurve.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyQuaternionCurve.h"
+#include "polycode/core/PolyTimer.h"
+#include "polycode/core/PolyTweenManager.h"
+#include "polycode/core/PolyTimerManager.h"
+#include "polycode/core/PolyEvent.h"
 
 using namespace Polycode;
 

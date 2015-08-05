@@ -22,10 +22,10 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "PolyGlobals.h"
-#include "PolyCoreServices.h"
-#include "PolyThreaded.h"
-#include "PolySocket.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyThreaded.h"
+#include "polycode/core/PolySocket.h"
 
 #include <vector>
 #include <deque>

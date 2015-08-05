@@ -20,11 +20,11 @@
  THE SOFTWARE.
 */
 
-#include "PolyParticleEmitter.h"
-#include "PolyCoreServices.h"
-#include "PolyCore.h"
-#include "PolyMesh.h"
-#include "PolyRenderer.h"
+#include "polycode/core/PolyParticleEmitter.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyCore.h"
+#include "polycode/core/PolyMesh.h"
+#include "polycode/core/PolyRenderer.h"
 
 using namespace Polycode;
 

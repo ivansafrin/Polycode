@@ -22,8 +22,8 @@
 
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyString.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyString.h"
 
 namespace Polycode {
 

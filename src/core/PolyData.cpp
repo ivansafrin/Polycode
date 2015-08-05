@@ -20,7 +20,7 @@
  THE SOFTWARE.
 */
 
-#include "PolyData.h"
+#include "polycode/core/PolyData.h"
 #include "OSBasics.h"
 #include <string.h>
 #include <stdlib.h>

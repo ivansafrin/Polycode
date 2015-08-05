@@ -20,9 +20,9 @@
  THE SOFTWARE.
 */
 
-#include "PolyShader.h"
-#include "PolyMatrix4.h"
-#include "PolyCoreServices.h"
+#include "polycode/core/PolyShader.h"
+#include "polycode/core/PolyMatrix4.h"
+#include "polycode/core/PolyCoreServices.h"
 
 using namespace Polycode;
 

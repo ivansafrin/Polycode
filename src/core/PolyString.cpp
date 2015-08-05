@@ -20,7 +20,7 @@
  THE SOFTWARE.
 */
 
-#include "PolyString.h"
+#include "polycode/core/PolyString.h"
 #include <iomanip>
 #include <sstream>
 

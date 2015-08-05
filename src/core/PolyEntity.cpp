@@ -19,10 +19,10 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
 */
-#include "PolyEntity.h"
-#include "PolyRenderer.h"
-#include "PolyCoreServices.h"
-#include "PolyInputEvent.h"
+#include "polycode/core/PolyEntity.h"
+#include "polycode/core/PolyRenderer.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyInputEvent.h"
 
 using namespace Polycode;
 

@@ -20,7 +20,7 @@
  THE SOFTWARE.
 */
 
-#include "PolyQuaternion.h"
+#include "polycode/core/PolyQuaternion.h"
 
 using namespace Polycode;
 

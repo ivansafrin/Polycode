@@ -21,8 +21,8 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyEventDispatcher.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyEventDispatcher.h"
 
 namespace Polycode{
 

@@ -20,7 +20,7 @@
  THE SOFTWARE.
 */
 
-#include "PolyMatrix4.h"
+#include "polycode/core/PolyMatrix4.h"
 
 using namespace Polycode;
 

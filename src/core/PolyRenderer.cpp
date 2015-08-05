@@ -21,11 +21,11 @@
  */
 
 
-#include "PolyRenderer.h"
-#include "PolyCoreServices.h"
-#include "PolyCore.h"
-#include "PolyTexture.h"
-#include "PolyVector4.h"
+#include "polycode/core/PolyRenderer.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyCore.h"
+#include "polycode/core/PolyTexture.h"
+#include "polycode/core/PolyVector4.h"
 
 using namespace Polycode;
 

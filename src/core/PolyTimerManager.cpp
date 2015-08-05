@@ -20,10 +20,10 @@
  THE SOFTWARE.
 */
 
-#include "PolyTimerManager.h"
-#include "PolyCoreServices.h"
-#include "PolyCore.h"
-#include "PolyTimer.h"
+#include "polycode/core/PolyTimerManager.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyCore.h"
+#include "polycode/core/PolyTimer.h"
 
 using namespace Polycode;
 

@@ -21,8 +21,8 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyString.h"
-#include "PolyGlobals.h"
+#include "polycode/core/PolyString.h"
+#include "polycode/core/PolyGlobals.h"
 
 #define SAMPLE_SIZE 1024
 

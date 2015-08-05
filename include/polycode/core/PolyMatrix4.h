@@ -22,9 +22,9 @@ THE SOFTWARE.
  
 #pragma once
 #include <string.h>
-#include "PolyGlobals.h"
-#include "PolyVector3.h"
-#include "PolyVector4.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyVector3.h"
+#include "polycode/core/PolyVector4.h"
 
 namespace Polycode {
 

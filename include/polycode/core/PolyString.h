@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "PolyGlobals.h"
+#include "polycode/core/PolyGlobals.h"
 #include <stdio.h>
 #include <string>
 #include <vector>

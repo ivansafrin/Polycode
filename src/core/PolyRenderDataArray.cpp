@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#include "PolyRenderDataArray.h"
+#include "polycode/core/PolyRenderDataArray.h"
 
 using namespace Polycode;
 

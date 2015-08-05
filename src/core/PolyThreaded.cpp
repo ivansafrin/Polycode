@@ -1,6 +1,6 @@
 
-#include "PolyThreaded.h"
-#include "PolyCore.h"
+#include "polycode/core/PolyThreaded.h"
+#include "polycode/core/PolyCore.h"
 
 using namespace Polycode;
 

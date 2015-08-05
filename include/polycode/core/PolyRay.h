@@ -21,9 +21,9 @@
  */
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyVector3.h"
-#include "PolyMatrix4.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyVector3.h"
+#include "polycode/core/PolyMatrix4.h"
 
 namespace Polycode {
 

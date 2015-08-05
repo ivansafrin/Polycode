@@ -20,9 +20,9 @@
  THE SOFTWARE.
 */
 
-#include "PolyResource.h"
-#include "PolyCoreServices.h"
-#include "PolyResourceManager.h"
+#include "polycode/core/PolyResource.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyResourceManager.h"
 
 using namespace Polycode;
 

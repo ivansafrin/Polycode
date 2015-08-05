@@ -21,8 +21,8 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyQuaternion.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyQuaternion.h"
 #include <vector>
 
 namespace Polycode {

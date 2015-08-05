@@ -22,8 +22,8 @@ THE SOFTWARE.
 
 #include <map>
 
-#include "PolyMesh.h"
-#include "PolyLogger.h"
+#include "polycode/core/PolyMesh.h"
+#include "polycode/core/PolyLogger.h"
 #include "OSBasics.h"
 
 using std::min;

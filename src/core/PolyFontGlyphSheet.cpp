@@ -20,13 +20,13 @@
  THE SOFTWARE.
 */
 
-#include "PolyFont.h"
-#include "PolyFontGlyphSheet.h"
+#include "polycode/core/PolyFont.h"
+#include "polycode/core/PolyFontGlyphSheet.h"
 #include "OSBasics.h"
-#include "PolyLogger.h"
-#include "PolyImage.h"
-#include "PolyTexture.h"
-#include "PolyCoreServices.h"
+#include "polycode/core/PolyLogger.h"
+#include "polycode/core/PolyImage.h"
+#include "polycode/core/PolyTexture.h"
+#include "polycode/core/PolyCoreServices.h"
 #include <algorithm>
 #include <set>
 #include <vector>

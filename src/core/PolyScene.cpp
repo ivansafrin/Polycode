@@ -20,21 +20,21 @@
  THE SOFTWARE.
 */
 
-#include "PolyScene.h"
+#include "polycode/core/PolyScene.h"
 #include "OSBasics.h"
-#include "PolyCamera.h"
-#include "PolyCoreServices.h"
-#include "PolyLogger.h"
-#include "PolyMaterial.h"
-#include "PolyMesh.h"
-#include "PolyRenderer.h"
-#include "PolyResource.h"
-#include "PolyResourceManager.h"
-#include "PolySceneLight.h"
-#include "PolyInputEvent.h"
-#include "PolySceneMesh.h"
-#include "PolyRay.h"
-#include "PolySceneManager.h"
+#include "polycode/core/PolyCamera.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyLogger.h"
+#include "polycode/core/PolyMaterial.h"
+#include "polycode/core/PolyMesh.h"
+#include "polycode/core/PolyRenderer.h"
+#include "polycode/core/PolyResource.h"
+#include "polycode/core/PolyResourceManager.h"
+#include "polycode/core/PolySceneLight.h"
+#include "polycode/core/PolyInputEvent.h"
+#include "polycode/core/PolySceneMesh.h"
+#include "polycode/core/PolyRay.h"
+#include "polycode/core/PolySceneManager.h"
 
 using std::vector;
 using namespace Polycode;

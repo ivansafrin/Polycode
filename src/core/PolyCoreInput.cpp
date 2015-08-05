@@ -20,10 +20,10 @@
  THE SOFTWARE.
 */
 
-#include "PolyCoreInput.h"
-#include "PolyInputEvent.h"
-#include "PolyCoreServices.h"
-#include "PolyCore.h"
+#include "polycode/core/PolyCoreInput.h"
+#include "polycode/core/PolyInputEvent.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyCore.h"
 
 namespace Polycode {
 	

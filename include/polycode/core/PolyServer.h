@@ -22,10 +22,10 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "PolyGlobals.h"
-#include "PolyPeer.h"
-#include "PolyEvent.h"
-#include "PolyServerWorld.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyPeer.h"
+#include "polycode/core/PolyEvent.h"
+#include "polycode/core/PolyServerWorld.h"
 #include <vector>
 
 using std::vector;

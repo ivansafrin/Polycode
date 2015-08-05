@@ -21,9 +21,9 @@
  */
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyVector3.h"
-#include "PolySound.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyVector3.h"
+#include "polycode/core/PolySound.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
     #include <OpenAL/al.h>

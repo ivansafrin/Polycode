@@ -20,7 +20,7 @@
  THE SOFTWARE.
 */
 
-#include "PolyRectangle.h"
+#include "polycode/core/PolyRectangle.h"
 #include <algorithm> // for min/max
 
 using namespace Polycode;

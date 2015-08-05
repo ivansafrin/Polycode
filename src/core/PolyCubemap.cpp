@@ -20,7 +20,7 @@
  THE SOFTWARE.
 */
 
-#include "PolyCubemap.h"
+#include "polycode/core/PolyCubemap.h"
 
 using namespace Polycode;
 

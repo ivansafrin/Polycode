@@ -20,13 +20,13 @@
  THE SOFTWARE.
 */
 
-#include "PolyMaterialManager.h"
-#include "PolyCoreServices.h"
-#include "PolyCubemap.h"
-#include "PolyMaterial.h"
-#include "PolyRenderer.h"
-#include "PolyResourceManager.h"
-#include "PolyTexture.h"
+#include "polycode/core/PolyMaterialManager.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyCubemap.h"
+#include "polycode/core/PolyMaterial.h"
+#include "polycode/core/PolyRenderer.h"
+#include "polycode/core/PolyResourceManager.h"
+#include "polycode/core/PolyTexture.h"
 
 #include "tinyxml.h"
 

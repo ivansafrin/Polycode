@@ -20,13 +20,13 @@
  THE SOFTWARE.
 */
 
-#include "PolyMaterial.h"
-#include "PolyLogger.h"
-#include "PolyShader.h"
-#include "PolyRenderer.h"
-#include "PolyCoreServices.h"
-#include "PolyCore.h"
-#include "PolyTexture.h"
+#include "polycode/core/PolyMaterial.h"
+#include "polycode/core/PolyLogger.h"
+#include "polycode/core/PolyShader.h"
+#include "polycode/core/PolyRenderer.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyCore.h"
+#include "polycode/core/PolyTexture.h"
 
 using namespace Polycode;
 

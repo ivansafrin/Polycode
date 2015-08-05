@@ -22,10 +22,10 @@
 
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyEntity.h"
-#include "PolyVector2.h"
-#include "PolyVector4.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyEntity.h"
+#include "polycode/core/PolyVector2.h"
+#include "polycode/core/PolyVector4.h"
 
 namespace Polycode {
 

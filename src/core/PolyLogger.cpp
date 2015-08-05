@@ -20,11 +20,11 @@
  THE SOFTWARE.
 */
 
-#include "PolyLogger.h"
+#include "polycode/core/PolyLogger.h"
 #ifdef _MSC_VER
 #include <windows.h>
 #endif
-#include "PolyLogger.h"
+#include "polycode/core/PolyLogger.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include <string>

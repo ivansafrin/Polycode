@@ -20,7 +20,7 @@
  THE SOFTWARE.
 */
 
-#include "PolyBezierCurve.h"
+#include "polycode/core/PolyBezierCurve.h"
 
 using namespace Polycode;
 

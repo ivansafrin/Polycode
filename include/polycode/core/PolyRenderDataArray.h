@@ -21,7 +21,7 @@
  */
 
 #pragma once
-#include "PolyGlobals.h"
+#include "polycode/core/PolyGlobals.h"
 #include <vector>
 
 namespace Polycode {

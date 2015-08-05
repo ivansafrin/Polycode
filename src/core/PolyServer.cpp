@@ -20,9 +20,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "PolyServer.h"
-#include "PolyTimer.h"
-#include "PolyLogger.h"
+#include "polycode/core/PolyServer.h"
+#include "polycode/core/PolyTimer.h"
+#include "polycode/core/PolyLogger.h"
 
 using namespace Polycode;
 using std::vector;

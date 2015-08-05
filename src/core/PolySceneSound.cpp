@@ -20,10 +20,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "PolySceneSound.h"
-#include "PolyCoreServices.h"
-#include "PolySound.h"
-#include "PolySoundManager.h"
+#include "polycode/core/PolySceneSound.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolySound.h"
+#include "polycode/core/PolySoundManager.h"
 
 using namespace Polycode;
 

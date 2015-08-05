@@ -22,17 +22,17 @@ THE SOFTWARE.
 
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyEntity.h"
-#include "PolyObject.h"
-#include "PolyParticleEmitter.h"
-#include "PolyScenePrimitive.h"
-#include "PolyResource.h"
-#include "PolySceneSprite.h"
-#include "PolyBezierCurve.h"
-#include "PolySceneLine.h"
-#include "PolyScene.h"
-#include "PolySound.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyEntity.h"
+#include "polycode/core/PolyObject.h"
+#include "polycode/core/PolyParticleEmitter.h"
+#include "polycode/core/PolyScenePrimitive.h"
+#include "polycode/core/PolyResource.h"
+#include "polycode/core/PolySceneSprite.h"
+#include "polycode/core/PolyBezierCurve.h"
+#include "polycode/core/PolySceneLine.h"
+#include "polycode/core/PolyScene.h"
+#include "polycode/core/PolySound.h"
 
 namespace Polycode {
 

@@ -19,7 +19,7 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
 */
-#include "PolyConfig.h"
+#include "polycode/core/PolyConfig.h"
 #include "tinyxml.h"
 
 using namespace Polycode;

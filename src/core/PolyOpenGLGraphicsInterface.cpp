@@ -21,10 +21,10 @@
  THE SOFTWARE.
  */
 
-#include "PolyOpenGLGraphicsInterface.h"
+#include "polycode/core/PolyOpenGLGraphicsInterface.h"
 #include "OSBasics.h"
-#include "PolyLogger.h"
-#include "PolyCoreServices.h"
+#include "polycode/core/PolyLogger.h"
+#include "polycode/core/PolyCoreServices.h"
 
 using namespace Polycode;
 

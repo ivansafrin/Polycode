@@ -20,8 +20,8 @@
  THE SOFTWARE.
 */
 
-#include "PolyEventDispatcher.h"
-#include "PolyEvent.h"
+#include "polycode/core/PolyEventDispatcher.h"
+#include "polycode/core/PolyEvent.h"
 
 using namespace Polycode;
 

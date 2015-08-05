@@ -21,11 +21,11 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolySceneMesh.h"
-#include "PolyCore.h"
-#include "PolyPerlin.h"
-#include "PolyBezierCurve.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolySceneMesh.h"
+#include "polycode/core/PolyCore.h"
+#include "polycode/core/PolyPerlin.h"
+#include "polycode/core/PolyBezierCurve.h"
 
 namespace Polycode {
     

@@ -21,7 +21,7 @@
 */
 
 #include "string.h"
-#include "PolyTexture.h"
+#include "polycode/core/PolyTexture.h"
 #include <stdlib.h>
 
 using namespace Polycode;

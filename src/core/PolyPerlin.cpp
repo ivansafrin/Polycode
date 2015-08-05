@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "PolyPerlin.h"
+#include "polycode/core/PolyPerlin.h"
 
 using namespace Polycode;
 

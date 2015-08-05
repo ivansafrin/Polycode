@@ -1,9 +1,9 @@
 
 #pragma once
-#include "PolyGlobals.h"
+#include "polycode/core/PolyGlobals.h"
 #include "ft2build.h"
-#include "PolyString.h"
-#include "PolyVector2.h"
+#include "polycode/core/PolyString.h"
+#include "polycode/core/PolyVector2.h"
 #include <vector>
 #include <map>
 #include <set>
