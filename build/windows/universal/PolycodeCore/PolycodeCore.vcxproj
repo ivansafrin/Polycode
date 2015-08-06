@@ -91,6 +91,7 @@
     <ClCompile Include="..\..\..\..\src\core\PolyTimerManager.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyTween.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyTweenManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyUWPCore.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyVector2.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyVector3.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyVector4.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyTimerManager.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyTween.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyTweenManager.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyUWPCore.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyVector2.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyVector3.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyVector4.h" />
@@ -336,7 +338,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINDOWS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

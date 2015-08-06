@@ -1,14 +1,16 @@
 
 #pragma once
 #include "polycode/core/PolyGlobals.h"
+#define generic GenericFreetypeLibrary
 #include "ft2build.h"
+#include FT_FREETYPE_H
+#undef generic
 #include "polycode/core/PolyString.h"
 #include "polycode/core/PolyVector2.h"
 #include <vector>
 #include <map>
 #include <set>
 
-#include FT_FREETYPE_H
 
 namespace Polycode {
 	

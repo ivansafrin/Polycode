@@ -20,6 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+#include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyServer.h"
 #include "polycode/core/PolyTimer.h"
 #include "polycode/core/PolyLogger.h"

@@ -24,7 +24,7 @@ THE SOFTWARE.
 #include "polycode/core/PolyLogger.h"
 #include <stdlib.h>
 
-#ifndef _WINDOWS
+#if PLATFORM != PLATFORM_WINDOWS
 	#include <unistd.h>
 #endif
 

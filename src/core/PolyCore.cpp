@@ -20,12 +20,13 @@
  THE SOFTWARE.
 */
 
+#include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyCore.h"
 #include "polycode/core/PolyCoreInput.h"
 #include "polycode/core/PolyRenderer.h"
 #include "polycode/core/PolyCoreServices.h"
 
-#ifdef _WINDOWS
+#if PLATFORM == PLATFORM_WINDOWS
 #include <windows.h>
 #else
 #include <unistd.h>
@@ -305,7 +306,7 @@ namespace Polycode {
 		unsigned int ticksSinceLastFrame = ticks - lastSleepFrameTicks;
 		int sleepTimeMs = refreshInterval - ticksSinceLastFrame;
 		if(sleepTimeMs > 0) {
-#ifdef _WINDOWS
+#if PLATFORM == PLATFORM_WINDOWS
 			Sleep(sleepTimeMs);
 #else
 			usleep(sleepTimeMs * 1000);

@@ -21,6 +21,7 @@
 */
 
 #include "polycode/core/PolyString.h"
+#include "polycode/core/PolyGlobals.h"
 #include <iomanip>
 #include <sstream>
 
@@ -113,7 +114,7 @@ void String::setDataWithEncoding(char *data, int encoding) {
 }
 
 bool String::isNumber() {
-#ifdef _WINDOWS
+#if PLATFORM == PLATFORM_WINDOWS
 	return false;
 #else
     std::string::const_iterator it = contents.begin();

@@ -89,16 +89,17 @@
 #include "polycode/core/PolySceneEntityInstance.h"
 #include "polycode/core/PolyGlobals.h"
 
-#ifdef _WINDOWS
-#endif
-
 #if defined(__APPLE__) && defined(__MACH__)
 //    #import "polycode/view/osx/PolycodeView.h"
 #else
     #if defined(_WINDOWS) && !defined(_MINGW)
         #include "polycode/core/PolyWinCore.h"
     #else
-        #include "polycode/core/PolySDLCore.h"
+		#if (WINAPI_FAMILY == WINAPI_FAMILY_APP)
+			#include "polycode/core/PolyUWPCore.h"
+		#else
+			#include "polycode/core/PolySDLCore.h"
+		#endif
     #endif
 #endif
 

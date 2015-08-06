@@ -22,10 +22,11 @@ THE SOFTWARE.
 
 #pragma once
 #include "polycode/core/PolyGlobals.h"
+#define generic GenericFreetypeLibrary
 #include "ft2build.h"
-#include "polycode/core/PolyString.h"
-
 #include FT_FREETYPE_H
+#undef generic
+#include "polycode/core/PolyString.h"
 
 namespace Polycode {
 	

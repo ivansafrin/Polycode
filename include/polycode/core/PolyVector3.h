@@ -24,7 +24,8 @@
 #include "polycode/core/PolyGlobals.h"
 #include <math.h>
 
-//#ifdef _WINDOWS
+//#ifdef 
+
 	#include <assert.h>
 //#endif 
 

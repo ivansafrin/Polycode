@@ -25,8 +25,10 @@ THE SOFTWARE.
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyString.h"
 #include <vector>
+#define generic GenericFreetypeLibrary
 #include "ft2build.h"
 #include FT_FREETYPE_H
+#undef generic
 
 namespace Polycode {
 

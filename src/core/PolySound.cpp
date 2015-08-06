@@ -34,8 +34,13 @@
 #include <stdint.h>
 #include <limits>
 
-#define MAX_FLOAT (std::numeric_limits<double>::infinity())
-#define INT32_MAX (std::numeric_limits<int32_t>::max())
+#ifndef MAX_FLOAT
+	#define MAX_FLOAT (std::numeric_limits<double>::infinity())
+#endif
+
+#ifndef INT32_MAX
+	#define INT32_MAX (std::numeric_limits<int32_t>::max())
+#endif
 
 using namespace std;
 using namespace Polycode;
