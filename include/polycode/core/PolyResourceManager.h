@@ -33,6 +33,7 @@ namespace Polycode {
 	class Resource;
 	class PolycodeShaderModule;
 	class String;
+    class ResourceLoader;
     
     class _PolyExport ResourcePool : public EventDispatcher {
         public:
@@ -45,8 +46,9 @@ namespace Polycode {
 			void removeResource(Resource *resource);
             bool hasResource(Resource *resource);
         
-			Resource *getResource(int resourceType, const String& resourceName) const;
+            void loadResourcesFromFolder(const String &folder, bool recursive);
         
+			Resource *getResource(int resourceType, const String& resourceName) const;
             String getName();
             void setName(const String &name);
         
@@ -67,13 +69,47 @@ namespace Polycode {
         
         private:
         
+            void loadResourcesFromFolderWithLoader(const String &folder, bool recursive, ResourceLoader *loader, const String &containingFolder);
+        
             ResourcePool *fallbackPool;
             String name;
 			int ticksSinceCheck;
             std::vector <Resource*> resources;
         
     };
+    
+    class _PolyExport ResourceLoader {
+        public:
+            virtual ~ResourceLoader() {}
+            bool canHandleExtension(const String &extension);
+            virtual Resource *loadResource(const String &path, ResourcePool *targetPool) = 0;
+            std::vector<String> extensions;
+    };
+    
+    class _PolyExport TextureResourceLoader : public ResourceLoader {
+        public:
+            TextureResourceLoader();
+            Resource *loadResource(const String &path, ResourcePool *targetPool);
+    };
+    
+    class _PolyExport ProgramResourceLoader : public ResourceLoader {
+    public:
+        ProgramResourceLoader();
+        Resource *loadResource(const String &path, ResourcePool *targetPool);
+    };
 
+    class _PolyExport MaterialResourceLoader : public ResourceLoader {
+    public:
+            MaterialResourceLoader();
+            Resource *loadResource(const String &path, ResourcePool *targetPool);
+    };
+    
+    class _PolyExport FontResourceLoader : public ResourceLoader {
+    public:
+        FontResourceLoader();
+        Resource *loadResource(const String &path, ResourcePool *targetPool);
+    };
+    
 	/**
 	* Manages loading and unloading of resources from directories and archives. Should only be accessed via the CoreServices singleton. 
 	*/ 
@@ -81,26 +117,17 @@ namespace Polycode {
 		public:
 			ResourceManager();
 			~ResourceManager();
-			
-
-			/**
-			* Loads resources from a directory.
-			* @param dirPath Path to directory to load resources from.
-			* @param recursive If true, will recurse into subdirectories.
-			*/
-			void addDirResource(const String& dirPath, bool recursive=true);
-		
-			void parseTexturesIntoPool(ResourcePool *pool, const String& dirPath, bool recursive, const String& basePath);
-			void parseMaterialsIntoPool(ResourcePool *pool, const String& dirPath, bool recursive);
-			void parseShadersIntoPool(ResourcePool *pool, const String& dirPath, bool recursive);
-			void parseProgramsIntoPool(ResourcePool *pool, const String& dirPath, bool recursive);
-			void parseCubemapsIntoPool(ResourcePool *pool, const String& dirPath, bool recursive);
-            void parseOtherIntoPool(ResourcePool *pool, const String& dirPath, bool recursive);
-		
-            ResourcePool *getGlobalPool();
         
+            ResourcePool *getGlobalPool();
             ResourcePool *getResourcePoolByName(const String &name);
 		      
+            void addResourceLoader(ResourceLoader *loader);
+            ResourceLoader *getResourceLoaderForExtension(const String &extension);
+            void removeResourceLoader(ResourceLoader *loader);
+
+            unsigned int getNumResourceLoaders();
+            ResourceLoader *getResourceLoaderAtIndex(unsigned int index);
+        
             void addResourcePool(ResourcePool *pool);
             void removeResourcePool(ResourcePool *pool);
         
@@ -116,6 +143,7 @@ namespace Polycode {
 		
 		private:
 		
+            std::vector<ResourceLoader*> resourceLoaders;
             ResourcePool *globalPool;
             std::vector <ResourcePool*> pools;
 	};

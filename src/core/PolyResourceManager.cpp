@@ -113,14 +113,64 @@ void ResourcePool::setFallbackPool(ResourcePool *pool) {
     fallbackPool = pool;
 }
 
-void ResourceManager::addDirResource(const String& dirPath, bool recursive) {
-	parseTexturesIntoPool(globalPool, dirPath, recursive, "");
-	parseProgramsIntoPool(globalPool, dirPath, recursive);
-	parseShadersIntoPool(globalPool, dirPath, recursive);
-	parseCubemapsIntoPool(globalPool, dirPath, recursive);
-	parseMaterialsIntoPool(globalPool, dirPath, recursive);
-	parseOtherIntoPool(globalPool, dirPath, recursive);
+bool ResourceLoader::canHandleExtension(const String &extension) {
+    for(int i=0; i < extensions.size(); i++) {
+        if(extensions[i] == extension) {
+            return true;
+        }
+    }
+    return false;
 }
+
+TextureResourceLoader::TextureResourceLoader() {
+    extensions.push_back("png");
+    extensions.push_back("hdr");
+    extensions.push_back("jpg");
+    extensions.push_back("tga");
+    extensions.push_back("psd");
+}
+
+Resource *TextureResourceLoader::loadResource(const String &path,  ResourcePool *targetPool) {
+    MaterialManager *materialManager = Services()->getMaterialManager();
+    Texture *texture = materialManager->createTextureFromFile(path, materialManager->clampDefault, materialManager->mipmapsDefault);
+    return texture;
+}
+
+void ResourcePool::loadResourcesFromFolderWithLoader(const String &folder, bool recursive, ResourceLoader *loader, const String &containingFolder) {
+    vector<OSFileEntry> resourceDir;
+    
+    resourceDir = Services()->getCore()->parseFolder(folder, false);
+    
+    for(int i=0; i < resourceDir.size(); i++) {
+        if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
+            Resource *newResource = NULL;
+            if(loader->canHandleExtension(resourceDir[i].extension)) {
+                newResource = loader->loadResource(resourceDir[i].fullPath, this);
+            }
+            if(newResource) {
+                newResource->setResourceName(resourceDir[i].name);
+                newResource->setResourcePath(resourceDir[i].fullPath);
+                addResource(newResource);
+            }
+        } else {
+            if(recursive) {
+                loadResourcesFromFolderWithLoader(folder+"/"+resourceDir[i].name, true, loader, containingFolder);
+            }
+        }
+    }
+}
+
+void ResourcePool::loadResourcesFromFolder(const String &folder, bool recursive) {
+    
+    // need to do separate passes for each loader so that different types of resources load
+    // after each other
+    
+    for(int r = 0; r < Services()->getResourceManager()->getNumResourceLoaders(); r++) {
+        ResourceLoader *loader = Services()->getResourceManager()->getResourceLoaderAtIndex(r);
+        loadResourcesFromFolderWithLoader(folder, recursive, loader, "");
+    }
+}
+
 
 Resource *ResourcePool::getResourceByPath(const String& resourcePath) const {
 	for(int i =0; i < resources.size(); i++) {
@@ -186,11 +236,20 @@ void ResourcePool::checkForChangedFiles() {
 
 ResourceManager::ResourceManager() : EventDispatcher() {
     globalPool = new ResourcePool("Global", NULL);
+    
+    resourceLoaders.push_back(new TextureResourceLoader());
+    resourceLoaders.push_back(new ProgramResourceLoader());
+    resourceLoaders.push_back(new MaterialResourceLoader());
+    resourceLoaders.push_back(new FontResourceLoader());
 }
 
 ResourceManager::~ResourceManager() {
     printf("Shutting down resource manager...\n");
 
+    for(int i=0; i < resourceLoaders.size(); i++)	{
+        delete resourceLoaders[i];
+    }
+    
     for(int i=0; i < pools.size(); i++)	{
         delete pools[i];
     }
@@ -208,108 +267,71 @@ void ResourcePool::Update(int elapsed) {
 	}
 }
 
-void ResourceManager::parseShadersIntoPool(ResourcePool *pool, const String& dirPath, bool recursive) {
-	vector<OSFileEntry> resourceDir;
-	resourceDir = Services()->getCore()->parseFolder(dirPath, false);
-	
-	for(int i=0; i < resourceDir.size(); i++) {	
-		if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
-			if(resourceDir[i].extension == "mat") {
-				MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
-				std::vector<Shader*> shaders = materialManager->loadShadersFromFile(pool, resourceDir[i].fullPath);
-				
-				for(int s=0; s < shaders.size(); s++) {
-					pool->addResource(shaders[s]);
-					materialManager->addShader(shaders[s]);
-				}
-			}
-		} else {
-			if(recursive)
-				parseShadersIntoPool(pool, dirPath+"/"+resourceDir[i].name, true);
-		}
-	}
+void ResourceManager::addResourceLoader(ResourceLoader *loader) {
+    resourceLoaders.push_back(loader);
 }
 
-void ResourceManager::parseOtherIntoPool(ResourcePool *pool, const String& dirPath, bool recursive) {
-    vector<OSFileEntry> resourceDir;
-    resourceDir = Services()->getCore()->parseFolder(dirPath, false);
-    for(int i=0; i < resourceDir.size(); i++) {
-        if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
-            if(resourceDir[i].extension == "ttf") {
-                Logger::log("Registering font: %s\n", resourceDir[i].nameWithoutExtension.c_str());
-                CoreServices::getInstance()->getFontManager()->registerFont(resourceDir[i].nameWithoutExtension, resourceDir[i].fullPath);
-            }
-        } else {
-            if(recursive)
-                parseOtherIntoPool(pool, dirPath+"/"+resourceDir[i].name, true);
+ResourceLoader *ResourceManager::getResourceLoaderForExtension(const String &extension) {
+    for(int i=0; i < resourceLoaders.size(); i++) {
+        if(resourceLoaders[i]->canHandleExtension(extension)) {
+            return resourceLoaders[i];
+        }
+    }
+    return NULL;
+}
+
+void ResourceManager::removeResourceLoader(ResourceLoader *loader) {
+    for(int i=0; i < resourceLoaders.size(); i++) {
+        if(resourceLoaders[i] == loader) {
+            delete resourceLoaders[i];
+            resourceLoaders.erase(resourceLoaders.begin() + i);
+            return;
         }
     }
 }
 
-void ResourceManager::parseProgramsIntoPool(ResourcePool *pool, const String& dirPath, bool recursive) {
-	vector<OSFileEntry> resourceDir;
-	resourceDir = Services()->getCore()->parseFolder(dirPath, false);
-	for(int i=0; i < resourceDir.size(); i++) {	
-		if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
-			MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
-            
-            if(resourceDir[i].extension == "vert" || resourceDir[i].extension == "frag") {
-                ShaderProgram *newProgram = materialManager->createProgramFromFile(resourceDir[i].fullPath);
-                if(newProgram) {
-                    newProgram->setResourceName(resourceDir[i].name);
-                    newProgram->setResourcePath(resourceDir[i].fullPath);
-                    pool->addResource(newProgram);
-                }
-            }
-		} else {
-			if(recursive)
-				parseProgramsIntoPool(pool, dirPath+"/"+resourceDir[i].name, true);
-		}
-	}	
+unsigned int ResourceManager::getNumResourceLoaders() {
+    return resourceLoaders.size();
 }
 
-void ResourceManager::parseMaterialsIntoPool(ResourcePool *pool, const String& dirPath, bool recursive) {
-	vector<OSFileEntry> resourceDir;
-	resourceDir = Services()->getCore()->parseFolder(dirPath, false);
-	
-	for(int i=0; i < resourceDir.size(); i++) {	
-		if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
-			if(resourceDir[i].extension == "mat") {				
-				MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();			
-				std::vector<Material*> materials = materialManager->loadMaterialsFromFile(pool, resourceDir[i].fullPath);
-
-				for(int m=0; m < materials.size(); m++) {
-					materials[m]->setResourceName(materials[m]->getName());
-					pool->addResource(materials[m]);
-					materialManager->addMaterial(materials[m]);
-				}
-			}
-		} else {
-			if(recursive)
-				parseMaterialsIntoPool(pool, dirPath+"/"+resourceDir[i].name, true);
-		}
-	}
+ResourceLoader *ResourceManager::getResourceLoaderAtIndex(unsigned int index) {
+    if(index <= resourceLoaders.size()) {
+        return resourceLoaders[index];
+    } else {
+        return NULL;
+    }
 }
 
-void ResourceManager::parseCubemapsIntoPool(ResourcePool *pool, const String& dirPath, bool recursive) {
-	vector<OSFileEntry> resourceDir;
-	resourceDir = Services()->getCore()->parseFolder(dirPath, false);
-	
-	for(int i=0; i < resourceDir.size(); i++) {	
-		if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
-			if(resourceDir[i].extension == "mat") {
-			
-				MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();			
-				std::vector<Cubemap*> cubemaps = materialManager->loadCubemapsFromFile(resourceDir[i].fullPath);			
-				for(int c=0; c < cubemaps.size(); c++) {
-					pool->addResource(cubemaps[c]);
-				}			
-			}
-		} else {
-			if(recursive)
-				parseCubemapsIntoPool(pool, dirPath+"/"+resourceDir[i].name, true);
-		}
-	}	
+
+MaterialResourceLoader::MaterialResourceLoader() {
+    extensions.push_back("mat");
+}
+
+Resource *MaterialResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
+    Services()->getMaterialManager()->loadMaterialLibraryIntoPool(targetPool, path);
+    return NULL;
+}
+
+ProgramResourceLoader::ProgramResourceLoader() {
+    extensions.push_back("frag");
+    extensions.push_back("vert");
+}
+
+Resource *ProgramResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
+    ShaderProgram *newProgram = Services()->getMaterialManager()->createProgramFromFile(path);
+    return newProgram;
+}
+
+FontResourceLoader::FontResourceLoader() {
+    extensions.push_back("ttf");
+    extensions.push_back("otf");
+}
+
+Resource *FontResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
+    OSFileEntry entry = OSFileEntry(path, OSFileEntry::TYPE_FILE);
+    Services()->getFontManager()->registerFont(entry.nameWithoutExtension, path);
+    // TODO: make fonts resources, get rid of font manager
+    return NULL;
 }
 
 void ResourceManager::handleEvent(Event *event) {
@@ -320,38 +342,6 @@ void ResourceManager::handleEvent(Event *event) {
 
 ResourcePool *ResourceManager::getGlobalPool() {
     return globalPool;
-}
-
-void ResourceManager::parseTexturesIntoPool(ResourcePool *pool, const String& dirPath, bool recursive, const String& basePath) {
-	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
-	vector<OSFileEntry> resourceDir;
-	resourceDir = Services()->getCore()->parseFolder(dirPath, false);
-	for(int i=0; i < resourceDir.size(); i++) {	
-		if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
-			if(resourceDir[i].extension == "png") {
-				Logger::log("Adding texture %s\n", resourceDir[i].nameWithoutExtension.c_str());
-				Texture *t = materialManager->createTextureFromFile(resourceDir[i].fullPath, materialManager->clampDefault, materialManager->mipmapsDefault);
-				if(t) {
-					if(basePath == "") {
-						t->setResourceName(resourceDir[i].name);
-						t->setResourcePath(resourceDir[i].fullPath);
-					} else {
-						t->setResourceName(basePath+"/"+resourceDir[i].name);
-						t->setResourcePath(resourceDir[i].fullPath);						
-					}
-					pool->addResource(t);
-				}
-			}
-		} else {
-			if(recursive) {
-				if(basePath == "") {			
-					parseTexturesIntoPool(pool, dirPath+"/"+resourceDir[i].name, true, resourceDir[i].name);
-				} else {
-					parseTexturesIntoPool(pool, dirPath+"/"+resourceDir[i].name, true, basePath+"/"+resourceDir[i].name);
-				}
-			}
-		}
-	}
 }
 
 void ResourceManager::Update(int elapsed) {

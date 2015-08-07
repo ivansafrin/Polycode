@@ -9,8 +9,9 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     core = new CocoaCore(view, 1280,720,false,false, 0,0,60);
     
     core->addFileSource("archive", "default.pak");
-	CoreServices::getInstance()->getResourceManager()->addDirResource("default");
-
+    ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
+    globalPool->loadResourcesFromFolder("default", true);
+    
 	// Write your code here!
     
     Scene *scene = new Scene(Scene::SCENE_2D);
