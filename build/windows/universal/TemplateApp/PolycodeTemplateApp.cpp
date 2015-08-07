@@ -7,8 +7,8 @@
 
 PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     core = new POLYCODE_CORE(view, 1280,720,false,false, 0,0,60);
-	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
-	CoreServices::getInstance()->getResourceManager()->addDirResource("default");
+//	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
+	//CoreServices::getInstance()->getResourceManager()->addDirResource("default");
 
 	// Write your code here!
     

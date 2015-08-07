@@ -27,6 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\core\PolyBasicFileProvider.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyBezierCurve.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyBone.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyCamera.cpp" />
@@ -34,6 +35,7 @@
     <ClCompile Include="..\..\..\..\src\core\PolyColor.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyConfig.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyCore.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyCoreFileProvider.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyCoreInput.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyCoreServices.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyCubemap.cpp" />
@@ -103,6 +105,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\Polycode.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyBasicFileProvider.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyBezierCurve.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyBone.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyCamera.h" />
@@ -111,6 +114,7 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyColor.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyConfig.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyCore.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyCoreFileProvider.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyCoreInput.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyCoreServices.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyCubemap.h" />

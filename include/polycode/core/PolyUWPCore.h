@@ -40,5 +40,6 @@ class UWPCore : public Core {
 	void openURL(String url);
 	unsigned int getTicks();
 	String executeExternalCommand(String command, String args, String inDirectory);
+	bool systemParseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector);
 
 };

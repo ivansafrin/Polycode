@@ -232,6 +232,12 @@
     <ClCompile Include="..\..\..\..\src\core\PolyUWPCore.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\core\PolyBasicFileProvider.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\core\PolyCoreFileProvider.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\Polycode.h">
@@ -463,6 +469,12 @@
       <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyUWPCore.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyBasicFileProvider.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyCoreFileProvider.h">
       <Filter>Include</Filter>
     </ClInclude>
   </ItemGroup>

@@ -95,3 +95,11 @@ unsigned int UWPCore::getTicks() {
 String UWPCore::executeExternalCommand(String command, String args, String inDirectory) {
 	return "";
 }
+
+bool UWPCore::systemParseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector) {
+	return false;
+}
+
+void Core::getScreenInfo(int *width, int *height, int *hz) {
+
+}

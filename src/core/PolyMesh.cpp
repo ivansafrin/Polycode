@@ -25,6 +25,7 @@ THE SOFTWARE.
 #include "polycode/core/PolyMesh.h"
 #include "polycode/core/PolyLogger.h"
 #include "polycode/core/PolyCore.h"
+#include "polycode/core/PolyCoreFileProvider.h"
 
 using std::min;
 using std::max;
@@ -120,7 +121,7 @@ void Mesh::writeVertexBlock(VertexDataArray *array, Polycode::CoreFile *outFile)
     outFile->write(array->getArrayData(), sizeof(PolyRendererVertexType), array->getDataSize());
 }
 
-void Mesh::writeIndexBlock(IndexDataArray *array, CoreFile *outFile) {
+void Mesh::writeIndexBlock(IndexDataArray *array, Polycode::CoreFile *outFile) {
     
     if(array->getDataSize() == 0) {
         return;
@@ -135,7 +136,7 @@ void Mesh::writeIndexBlock(IndexDataArray *array, CoreFile *outFile) {
     outFile->write(array->getArrayData(), sizeof(PolyRendererIndexType), array->getDataSize());
 }
 
-void Mesh::saveToFile(CoreFile *outFile, bool writeNormals, bool writeTangents, bool writeColors, bool writeBoneWeights, bool writeUVs, bool writeSecondaryUVs) {
+void Mesh::saveToFile(Polycode::CoreFile *outFile, bool writeNormals, bool writeTangents, bool writeColors, bool writeBoneWeights, bool writeUVs, bool writeSecondaryUVs) {
 
     // new mesh format
     // IMPORTANT: PolyRendererVertexType type defines mesh format internal type. Consider making floats always. Don't want to cast for now.
@@ -183,7 +184,7 @@ void Mesh::saveToFile(CoreFile *outFile, bool writeNormals, bool writeTangents, 
     }
 }
 
-void Mesh::loadFromFile(CoreFile *inFile) {
+void Mesh::loadFromFile(Polycode::CoreFile *inFile) {
     clearMesh();
     
     char tag[4];
@@ -197,7 +198,7 @@ void Mesh::loadFromFile(CoreFile *inFile) {
     }
 }
 
-void Mesh::loadFromFileV2(CoreFile *inFile) {
+void Mesh::loadFromFileV2(Polycode::CoreFile *inFile) {
     
     unsigned char meshFlags;
     inFile->read(&meshFlags, sizeof(unsigned char), 1);
@@ -264,7 +265,7 @@ void Mesh::normalizeBoneWeights() {
     }
 }
 
-void Mesh::loadFromFileLegacyV1(CoreFile *inFile) {
+void Mesh::loadFromFileLegacyV1(Polycode::CoreFile *inFile) {
     
     unsigned char meshFlags;
     inFile->read(&meshFlags, sizeof(unsigned char), 1);
