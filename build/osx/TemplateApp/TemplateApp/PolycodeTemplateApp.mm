@@ -7,7 +7,8 @@
 
 PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     core = new CocoaCore(view, 1280,720,false,false, 0,0,60);
-	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
+    
+    core->addFileSource("archive", "default.pak");
 	CoreServices::getInstance()->getResourceManager()->addDirResource("default");
 
 	// Write your code here!

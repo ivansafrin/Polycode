@@ -56,3 +56,11 @@ void OSFileEntry::init(const Polycode::String& path, const Polycode::String& nam
 bool CoreFileProvider::parseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector) {
     return false;
 }
+
+void CoreFileProvider::addSource(const String &source) {
+    
+}
+
+void CoreFileProvider::removeSource(const String &source) {
+    
+}

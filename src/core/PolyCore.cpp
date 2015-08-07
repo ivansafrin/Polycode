@@ -346,6 +346,24 @@ namespace Polycode {
         assert(false); // CLOSING A FILE FOR A NON-EXISTING PROVIDER
     }
     
+    void Core::addFileSource(const String &type, const String &source) {
+        for(int i=0; i < fileProviders.size(); i++) {
+            if(fileProviders[i]->type == type) {
+                fileProviders[i]->addSource(source);
+                return;
+            }
+        }
+    }
+    
+    void Core::removeFileSource(const String &type, const String &source) {
+        for(int i=0; i < fileProviders.size(); i++) {
+            if(fileProviders[i]->type == type) {
+                fileProviders[i]->removeSource(source);
+                return;
+            }
+        }
+    }
+    
     std::vector<OSFileEntry> Core::parseFolder(const Polycode::String& pathString, bool showHidden) {
         std::vector<OSFileEntry> retVec;
         

@@ -29,8 +29,6 @@
 #include "polycode/core/PolyMaterial.h"
 #include "polycode/core/PolyShader.h"
 #include "polycode/core/PolyTexture.h"
-
-#include "physfs.h"
 #include "tinyxml.h"
 
 using std::vector;
@@ -187,13 +185,11 @@ void ResourcePool::checkForChangedFiles() {
 }
 
 ResourceManager::ResourceManager() : EventDispatcher() {
-	PHYSFS_init(NULL);
     globalPool = new ResourcePool("Global", NULL);
 }
 
 ResourceManager::~ResourceManager() {
     printf("Shutting down resource manager...\n");
-    PHYSFS_deinit();
 
     for(int i=0; i < pools.size(); i++)	{
         delete pools[i];
@@ -356,18 +352,6 @@ void ResourceManager::parseTexturesIntoPool(ResourcePool *pool, const String& di
 			}
 		}
 	}
-}
-
-void ResourceManager::addArchive(const String& path) {
-	if(PHYSFS_addToSearchPath(path.c_str(), 1) == 0) {	
-		Logger::log("Error adding archive to resource manager... %s\n", PHYSFS_getLastError());
-	} else {
-		Logger::log("Added archive: %s\n", path.c_str());
-	}
-}
-
-void ResourceManager::removeArchive(const String& path) {
-	PHYSFS_removeFromSearchPath(path.c_str());
 }
 
 void ResourceManager::Update(int elapsed) {

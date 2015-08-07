@@ -68,6 +68,10 @@ namespace Polycode {
         virtual void closeFile(CoreFile *file) = 0;
         virtual bool parseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector);
         
+        virtual void addSource(const String &source);
+        virtual void removeSource(const String &source);
+        
+        String type;
         bool canListFiles;
     };
 

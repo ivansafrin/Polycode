@@ -1,10 +1,17 @@
 
 #include "polycode/core/PolyPhysFSFileProvider.h"
+#include "polycode/core/PolyLogger.h"
 
 using namespace Polycode;
 
 PhysFSFileProvider::PhysFSFileProvider() {
     canListFiles = true;
+    type = "archive";
+	PHYSFS_init(NULL);
+}
+
+PhysFSFileProvider::~PhysFSFileProvider() {
+    PHYSFS_deinit();    
 }
 
 bool PhysFSFileProvider::parseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector) {
@@ -60,6 +67,18 @@ Polycode::CoreFile *PhysFSFileProvider::openFile(const String &fileName, const S
     return NULL;
 }
 
+void PhysFSFileProvider::addSource(const String &source) {
+    if(PHYSFS_addToSearchPath(source.c_str(), 1) == 0) {
+        Logger::log("Error adding archive to resource manager... %s\n", PHYSFS_getLastError());
+    } else {
+        Logger::log("Added physfs archive: %s\n", source.c_str());
+    }
+}
+
+void PhysFSFileProvider::removeSource(const String &source) {
+    PHYSFS_removeFromSearchPath(source.c_str());
+}
+
 void PhysFSFileProvider::closeFile(Polycode::CoreFile *file) {
     PhysFSFile *physFSFile = (PhysFSFile*) file;
     PHYSFS_close(physFSFile->physFSFile);
@@ -96,3 +115,4 @@ int PhysFSFile::seek(long int offset, int origin) {
 long PhysFSFile::tell() {
     return PHYSFS_tell(physFSFile);   
 }
+

@@ -3,8 +3,37 @@
 
 using namespace Polycode;
 
+BasicFileProvider::BasicFileProvider() {
+    type = "folder";
+}
+
+void BasicFileProvider::addSource(const String &source) {
+    sourceFolders.push_back(source);
+}
+
+void BasicFileProvider::removeSource(const String &source) {
+    for(int i=0; i < sourceFolders.size(); i++) {
+        if(sourceFolders[i] == source) {
+            sourceFolders.erase(sourceFolders.begin()+i);
+            return;
+        }
+    }
+}
+
 Polycode::CoreFile *BasicFileProvider::openFile(const String &fileName, const String &opts) {
-    FILE *file = fopen(fileName.c_str(), opts.c_str());
+    
+    FILE *file = NULL;
+    for(int i=0; i < sourceFolders.size(); i++) {
+        file = fopen((sourceFolders[i]+"/"+fileName).c_str(), opts.c_str());
+        if(file) {
+            break;
+        }
+    }
+    
+    if(!file) {
+        file = fopen(fileName.c_str(), opts.c_str());
+    }
+    
     if(file) {
         BasicFile *retFile = NULL;
         retFile = new BasicFile();

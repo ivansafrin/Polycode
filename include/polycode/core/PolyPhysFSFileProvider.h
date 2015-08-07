@@ -41,11 +41,15 @@ namespace Polycode {
     class _PolyExport PhysFSFileProvider : public CoreFileProvider {
         public:
             PhysFSFileProvider();
+            ~PhysFSFileProvider();
         
             Polycode::CoreFile *openFile(const String &fileName, const String &opts);
             void closeFile(Polycode::CoreFile *file);
         
             bool parseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector);
+        
+            void addSource(const String &source);
+            void removeSource(const String &source);
     };
     
 }
