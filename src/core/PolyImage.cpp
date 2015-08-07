@@ -20,7 +20,6 @@
  THE SOFTWARE.
 */
 
-#include "png.h"
 #include <math.h>
 #include "polycode/core/PolyImage.h"
 #include "polycode/core/PolyString.h"
@@ -35,11 +34,6 @@
 #include "stb_image.h"
 
 using namespace Polycode;
-
-void user_read_data(png_structp png_ptr, png_bytep data, png_size_t length) {
-    Polycode::CoreFile *file = (Polycode::CoreFile*)png_get_io_ptr(png_ptr);
-	file->read(data, length, 1);
-}
 
 Image::Image(const String& fileName) : imageData(NULL) {
 	setPixelType(IMAGE_RGBA);
@@ -413,7 +407,8 @@ void Image::fill(const Color &color) {
 }
 
 bool Image::saveImage(const String &fileName) {
-	return savePNG(fileName);
+    //RENDERER_TODO: reimplement
+    return false; //savePNG(fileName);
 }
 
 void Image::premultiplyAlpha() {
@@ -450,69 +445,6 @@ void Image::premultiplyAlpha() {
 	}
 }
 
-bool Image::savePNG(const String &fileName) {
-
-	printf("Saving %dx%d image\n", width, height);
-
-   FILE *fp;
-   png_structp png_ptr;
-   png_infop info_ptr;
-   
-   fp = fopen(fileName.c_str(), "wb");
-   if (fp == NULL)
-      return false;
-
-   png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, 0, 0, 0);
-
-   if (png_ptr == NULL)
-   {
-      fclose(fp);
-      return false;
-   }
-
-   info_ptr = png_create_info_struct(png_ptr);
-   if (info_ptr == NULL)
-   {
-      fclose(fp);
-      png_destroy_write_struct(&png_ptr,  NULL);
-      return false;
-   }
-
-   if (setjmp(png_jmpbuf(png_ptr)))
-   {
-      /* If we get here, we had a problem writing the file */
-      fclose(fp);
-      png_destroy_write_struct(&png_ptr, &info_ptr);
-      return false;
-   }
-
-   png_init_io(png_ptr, fp);
-   png_set_IHDR(png_ptr, info_ptr, width, height, 8, PNG_COLOR_TYPE_RGB_ALPHA,
-      PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
- 
-	png_write_info(png_ptr, info_ptr);
-
-   png_uint_32 k;
-   png_bytep *row_pointers = (png_bytep*) malloc(sizeof(png_bytep) * height);
-
-   if (height > PNG_UINT_32_MAX/png_sizeof(png_bytep))
-     png_error (png_ptr, "Image is too tall to process in memory");
-
-   for (k = 0; k < height; k++)
-     row_pointers[height-k-1] = (png_byte*)(imageData + k*width*4);
-
-   /* One of the following output methods is REQUIRED */
-
-   png_write_image(png_ptr, row_pointers);
-
-   free(row_pointers);
-   png_free(png_ptr, 0);
-   png_destroy_write_struct(&png_ptr, &info_ptr);
-   fclose(fp);
-   return true;
-}
-
-
 bool Image::loadImage(const String& fileName) {
     
 	String extension;
@@ -524,11 +456,9 @@ bool Image::loadImage(const String& fileName) {
 		extension = "";
 	}
 
-    if(extension == "png") {
-        return loadPNG(fileName);
-    } else if(extension == "hdr") {
+    if(extension == "hdr") {
         return loadHDR(fileName);
-    } else if(extension == "jpg" || extension == "tga" || extension == "psd") {
+    } else if(extension == "png" || extension == "jpg" || extension == "tga" || extension == "psd") {
         return loadSTB(fileName);
     } else {
         Logger::log("Error: Invalid image format.\n");
@@ -686,122 +616,6 @@ bool Image::loadHDR(const String &fileName) {
     
     
     return true;
-}
-
-bool Image::loadPNG(const String& fileName) {
-	CoreFile         *infile;
-	
-	png_structp   png_ptr;
-	png_infop     info_ptr;
-	char         *image_data;
-	char         sig[8];
-	int           bit_depth;
-	int           color_type;
-	png_uint_32 width;
-	png_uint_32 height;
-	unsigned int rowbytes;
-	image_data = NULL;
-	int i;
-	png_bytepp row_pointers = NULL;
-	
-	infile = Services()->getCore()->openFile(fileName.c_str(), "rb");
-	if (!infile) {
-		Logger::log("Error opening png file (\"%s\")\n", fileName.c_str());
-		return false;
-	}
-	
-	infile->read(sig, 1, 8);
-	
-	if (!png_check_sig((unsigned char *) sig, 8)) {
-		Logger::log("Error reading png signature (\"%s\")\n", fileName.c_str());
-		Services()->getCore()->closeFile(infile);
-		return false;
-	}
-
-	png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-	if (!png_ptr) {
-		Logger::log("Error creating png struct (\"%s\")\n", fileName.c_str());
-		Services()->getCore()->closeFile(infile);
-		return false;    /* out of memory */
-	}
-	
-	info_ptr = png_create_info_struct(png_ptr);
-	if (!info_ptr) {
-		Logger::log("Error creating info struct (\"%s\")\n", fileName.c_str());
-		png_destroy_read_struct(&png_ptr, (png_infopp) NULL, (png_infopp) NULL);
-		Services()->getCore()->closeFile(infile);
-		return false;    /* out of memory */
-	}
-	
-	if (setjmp(png_jmpbuf(png_ptr))) {
-		Logger::log("Error setting jump thingie (\"%s\")\n", fileName.c_str());
-		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
-		Services()->getCore()->closeFile(infile);
-		return false;
-	}
-
-	//png_init_io(png_ptr, infile);
-	png_set_read_fn(png_ptr, (png_voidp)infile, user_read_data);
-	
-	png_set_sig_bytes(png_ptr, 8);
-	png_read_info(png_ptr, info_ptr);
-	png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, 
-				 &color_type, NULL, NULL, NULL);
-	this->width = width;
-	this->height = height;
-	
-	/* Set up some transforms. */
-	if (color_type & PNG_COLOR_MASK_ALPHA) {
-		//  png_set_strip_alpha(png_ptr);
-	}
-	if (bit_depth > 8) {
-		png_set_strip_16(png_ptr);
-	}
-	if (color_type == PNG_COLOR_TYPE_GRAY ||
-		color_type == PNG_COLOR_TYPE_GRAY_ALPHA) {
-		png_set_gray_to_rgb(png_ptr);
-	}
-	if (color_type == PNG_COLOR_TYPE_PALETTE) {
-		png_set_palette_to_rgb(png_ptr);
-	}
-	
-	
-	if (color_type == PNG_COLOR_TYPE_RGB || color_type == PNG_COLOR_TYPE_RGB_ALPHA) {
-		png_set_add_alpha(png_ptr, 0xffffff, PNG_FILLER_AFTER);
-	}	
-	
-	/* Update the png info struct.*/
-	png_read_update_info(png_ptr, info_ptr);
-	
-	/* Rowsize in bytes. */
-	rowbytes = png_get_rowbytes(png_ptr, info_ptr);
-	
-	/* Allocate the image_data buffer. */
-	if ((image_data = (char *) malloc(rowbytes * height))==NULL) {
-		Logger::log("Error allocating image memory (\"%s\")\n", fileName.c_str());
-		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
-		return false;
-	}
-	
-	if ((row_pointers = (png_bytepp)malloc(height*sizeof(png_bytep))) == NULL) {
-		Logger::log("Error allocating image memory (\"%s\")\n", fileName.c_str());
-		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
-		free(image_data);
-		image_data = NULL;
-		return false;
-	}
-	
-	for (i = 0;  i < height;  ++i)
-		row_pointers[height - 1 - i] = (png_byte*)image_data + i*rowbytes;
-	
-	png_read_image(png_ptr, row_pointers);
-	
-	free(row_pointers);
-	png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
-	Services()->getCore()->closeFile(infile);
-	
-	imageData = image_data;
-	return true;
 }
 
 void Image::transformCoordinates(int *x, int *y) {

@@ -103,7 +103,6 @@ namespace Polycode {
 			* @return True if successfully loaded, false otherwise.	
 			*/
 			bool saveImage(const String &fileName);
-			bool savePNG(const String &fileName);
 			
 			/**
 			* Pastes another image into the image using a blending mode
@@ -275,7 +274,6 @@ namespace Polycode {
 		protected:
 		
             bool loadHDR(const String &fileName);
-            bool loadPNG(const String& fileName);
             bool loadSTB(const String &fileName);
         
         
