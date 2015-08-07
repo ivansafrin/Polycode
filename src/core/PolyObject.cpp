@@ -25,6 +25,8 @@
 #include <sstream>
 #include <stdio.h>
 #include <string.h>
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyCore.h"
 
 using namespace Polycode;
 
@@ -315,10 +317,10 @@ bool Object::loadFromBinary(const String& fileName) {
 BinaryObjectReader::BinaryObjectReader(const String& fileName, Object *object) {
 	this->object = object;
 	success = false;
-	inFile = OSBasics::open(fileName, "rb");
+	inFile = Services()->getCore()->openFile(fileName, "rb");
 	if(inFile) {
 		success = readFile();
-		OSBasics::close(inFile);
+		Services()->getCore()->closeFile(inFile);
 	}
 }
 
@@ -332,11 +334,11 @@ String BinaryObjectReader::getKeyByIndex(unsigned int index) {
 
 bool BinaryObjectReader::parseEntryFromFile(ObjectEntry *entry) {	
 	uint16_t keyIndex;
-	OSBasics::read(&keyIndex, sizeof(uint16_t), 1, inFile);	
+	inFile->read(&keyIndex, sizeof(uint16_t), 1);	
 	entry->name = getKeyByIndex(keyIndex);
 	
 	uint8_t type;
-	OSBasics::read(&type, sizeof(uint8_t), 1, inFile);
+	inFile->read(&type, sizeof(uint8_t), 1);
 	entry->type = type;
 
 //	printf("Loading %s of type %u\n", entry->name.c_str(), entry->type);
@@ -345,9 +347,9 @@ bool BinaryObjectReader::parseEntryFromFile(ObjectEntry *entry) {
 	switch(entry->type) {
 		case ObjectEntry::STRING_ENTRY:
 		{
-			OSBasics::read(&data32, sizeof(uint32_t), 1, inFile);
+			inFile->read(&data32, sizeof(uint32_t), 1);
 			char *buffer = (char*) malloc(data32 + 1);
-			OSBasics::read(buffer, 1, data32, inFile);
+			inFile->read(buffer, 1, data32);
 			buffer[data32] = '\0';
 			entry->stringVal = String(buffer);
 			free(buffer);			
@@ -356,7 +358,7 @@ bool BinaryObjectReader::parseEntryFromFile(ObjectEntry *entry) {
 		case ObjectEntry::FLOAT_ENTRY:
 		{
 			float val;
-			OSBasics::read(&val, sizeof(uint32_t), 1, inFile);
+			inFile->read(&val, sizeof(uint32_t), 1);
 			entry->intVal = val;
 			entry->NumberVal = val;			
 		}
@@ -364,14 +366,14 @@ bool BinaryObjectReader::parseEntryFromFile(ObjectEntry *entry) {
 		case ObjectEntry::INT_ENTRY:
 		{
 			int32_t intval;
-			OSBasics::read(&intval, sizeof(int32_t), 1, inFile);
+			inFile->read(&intval, sizeof(int32_t), 1);
 			entry->intVal = intval;
 			entry->NumberVal = intval;
 		}
 		break;
 		case ObjectEntry::BOOL_ENTRY:
 		{
-			OSBasics::read(&data32, sizeof(uint32_t), 1, inFile);		
+			inFile->read(&data32, sizeof(uint32_t), 1);		
 			if(data32 == 0) {
 				entry->boolVal = false;
 				entry->intVal = data32;
@@ -383,11 +385,11 @@ bool BinaryObjectReader::parseEntryFromFile(ObjectEntry *entry) {
 		}
 		break;
 		default:
-			OSBasics::read(&data32, sizeof(uint32_t), 1, inFile);			
+			inFile->read(&data32, sizeof(uint32_t), 1);			
 		break;
 	}	
 
-	OSBasics::read(&data32, sizeof(uint32_t), 1, inFile);
+	inFile->read(&data32, sizeof(uint32_t), 1);
 	
 	bool retVal = true;
 	
@@ -405,7 +407,7 @@ bool BinaryObjectReader::parseEntryFromFile(ObjectEntry *entry) {
 			
 bool BinaryObjectReader::readFile() {
 	char header[5];
-	OSBasics::read(header, 1, 4, inFile);
+	inFile->read(header, 1, 4);
 	header[4] = '\0';
 //	printf("HEADER: [%s]\n", header);
 	if(String(header) != "PBOF") {
@@ -413,19 +415,19 @@ bool BinaryObjectReader::readFile() {
 	}
 	
 	uint32_t data32;
-	OSBasics::read(&data32, sizeof(uint32_t), 1, inFile);
+	inFile->read(&data32, sizeof(uint32_t), 1);
 	
 	for(int i=0; i < data32; i++) {
 		uint16_t data16;
-		OSBasics::read(&data16, sizeof(uint16_t), 1, inFile);
+		inFile->read(&data16, sizeof(uint16_t), 1);
 		char *buffer = (char*)malloc(data16+1);
-		OSBasics::read(buffer, 1, data16, inFile);
+		inFile->read(buffer, 1, data16);
 		buffer[data16] = '\0';
 		keys.push_back(String(buffer));
 		free(buffer);
 	}
 	
-	OSBasics::read(&data32, sizeof(uint32_t), 1, inFile);	
+	inFile->read(&data32, sizeof(uint32_t), 1);	
 	
 	return parseEntryFromFile(&object->root);
 	
@@ -477,29 +479,29 @@ BinaryObjectWriter::~BinaryObjectWriter() {
 void BinaryObjectWriter::writeEntryToFile(ObjectEntry *entry) {
 
 	uint16_t keyIndex = getKeyIndex(entry->name);
-	OSBasics::write(&keyIndex, sizeof(uint16_t), 1, outFile);
+	outFile->write(&keyIndex, sizeof(uint16_t), 1);
 
 	uint8_t type = (uint8_t)entry->type;
-	OSBasics::write(&type, sizeof(uint8_t), 1, outFile);
+	outFile->write(&type, sizeof(uint8_t), 1);
 	
 	uint32_t data32;
 	
 	switch(entry->type) {
 		case ObjectEntry::STRING_ENTRY:
 			data32 = entry->stringVal.length();
-			OSBasics::write(&data32, sizeof(uint32_t), 1, outFile);
-			OSBasics::write(entry->stringVal.c_str(), 1, data32, outFile);
+			outFile->write(&data32, sizeof(uint32_t), 1);
+			outFile->write(entry->stringVal.c_str(), 1, data32);
 		break;
 		case ObjectEntry::FLOAT_ENTRY:
 		{
 			float val = (float)entry->NumberVal;
-			OSBasics::write(&val, sizeof(uint32_t), 1, outFile);		
+			outFile->write(&val, sizeof(uint32_t), 1);		
 		}
 		break;
 		case ObjectEntry::INT_ENTRY:
 		{
 			int32_t intval = (int32_t)entry->intVal;
-			OSBasics::write(&intval, sizeof(int32_t), 1, outFile);		
+			outFile->write(&intval, sizeof(int32_t), 1);		
 		}
 		break;
 		case ObjectEntry::BOOL_ENTRY:
@@ -508,16 +510,16 @@ void BinaryObjectWriter::writeEntryToFile(ObjectEntry *entry) {
 			} else {
 				data32 = 0;			
 			}
-			OSBasics::write(&data32, sizeof(uint32_t), 1, outFile);		
+			outFile->write(&data32, sizeof(uint32_t), 1);		
 		break;
 		default:
 			data32 = 0;
-			OSBasics::write(&data32, sizeof(uint32_t), 1, outFile);			
+			outFile->write(&data32, sizeof(uint32_t), 1);			
 		break;
 	}
 	
 	data32 = entry->children.size();
-	OSBasics::write(&data32, sizeof(uint32_t), 1, outFile);
+	outFile->write(&data32, sizeof(uint32_t), 1);
 	
 	for(int i=0; i < entry->children.size(); i++) {
 		writeEntryToFile(entry->children[i]);
@@ -527,33 +529,33 @@ void BinaryObjectWriter::writeEntryToFile(ObjectEntry *entry) {
 }
 			
 bool BinaryObjectWriter::writeToFile(const String& fileName) {
-	outFile = OSBasics::open(fileName, "wb");
+	outFile = Services()->getCore()->openFile(fileName, "wb");
 	
-	OSBasics::write("PBOF", 1, 4, outFile);
+	outFile->write("PBOF", 1, 4);
 
 	uint32_t data32 = keys.size();
-	OSBasics::write(&data32, sizeof(uint32_t), 1, outFile);
+	outFile->write(&data32, sizeof(uint32_t), 1);
 
 	for(int i=0; i < keys.size(); i++) {
 		uint16_t data16 = keys[i].length();
-		OSBasics::write(&data16, sizeof(uint16_t), 1, outFile);
-		OSBasics::write(keys[i].c_str(), 1, data16, outFile);
+		outFile->write(&data16, sizeof(uint16_t), 1);
+		outFile->write(keys[i].c_str(), 1, data16);
 	}
 	
-	size_t offset = OSBasics::tell(outFile);
+	size_t offset = outFile->tell();
 
 	numEntriesWritten = 0;
 	
 	data32 = 0;
-	OSBasics::write(&data32, sizeof(uint32_t), 1, outFile);
+	outFile->write(&data32, sizeof(uint32_t), 1);
 	
 	writeEntryToFile(&object->root);
 	
-	OSBasics::seek(outFile,  offset, SEEK_SET);
+	outFile->seek(offset, SEEK_SET);
 	data32 = numEntriesWritten;
-	OSBasics::write(&data32, sizeof(uint32_t), 1, outFile);	
+	outFile->write(&data32, sizeof(uint32_t), 1);	
 	
-	OSBasics::close(outFile);
+	Services()->getCore()->closeFile(outFile);
 	return true;
 }
 

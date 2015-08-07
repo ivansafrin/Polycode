@@ -24,7 +24,7 @@ THE SOFTWARE.
 
 #include "polycode/core/PolyMesh.h"
 #include "polycode/core/PolyLogger.h"
-#include "OSBasics.h"
+#include "polycode/core/PolyCore.h"
 
 using std::min;
 using std::max;
@@ -105,7 +105,7 @@ Number Mesh::getRadius() {
     return hRad;
 }
 
-void Mesh::writeVertexBlock(VertexDataArray *array, OSFILE *outFile) {
+void Mesh::writeVertexBlock(VertexDataArray *array, Polycode::CoreFile *outFile) {
     
     if(array->getDataSize() == 0) {
         return;
@@ -114,13 +114,13 @@ void Mesh::writeVertexBlock(VertexDataArray *array, OSFILE *outFile) {
     unsigned char blockType = array->type;
     unsigned int blockCount = array->getDataSize();
 
-    OSBasics::write(&blockType, sizeof(unsigned char), 1, outFile);
-    OSBasics::write(&blockCount, sizeof(unsigned int), 1, outFile);
+    outFile->write(&blockType, sizeof(unsigned char), 1);
+    outFile->write(&blockCount, sizeof(unsigned int), 1);
     
-    OSBasics::write(array->getArrayData(), sizeof(PolyRendererVertexType), array->getDataSize(), outFile);
+    outFile->write(array->getArrayData(), sizeof(PolyRendererVertexType), array->getDataSize());
 }
 
-void Mesh::writeIndexBlock(IndexDataArray *array, OSFILE *outFile) {
+void Mesh::writeIndexBlock(IndexDataArray *array, CoreFile *outFile) {
     
     if(array->getDataSize() == 0) {
         return;
@@ -129,19 +129,19 @@ void Mesh::writeIndexBlock(IndexDataArray *array, OSFILE *outFile) {
     unsigned char blockType = array->type;
     unsigned int blockCount = array->getDataSize();
     
-    OSBasics::write(&blockType, sizeof(unsigned char), 1, outFile);
-    OSBasics::write(&blockCount, sizeof(unsigned int), 1, outFile);
+    outFile->write(&blockType, sizeof(unsigned char), 1);
+    outFile->write(&blockCount, sizeof(unsigned int), 1);
     
-    OSBasics::write(array->getArrayData(), sizeof(PolyRendererIndexType), array->getDataSize(), outFile);
+    outFile->write(array->getArrayData(), sizeof(PolyRendererIndexType), array->getDataSize());
 }
 
-void Mesh::saveToFile(OSFILE *outFile, bool writeNormals, bool writeTangents, bool writeColors, bool writeBoneWeights, bool writeUVs, bool writeSecondaryUVs) {
+void Mesh::saveToFile(CoreFile *outFile, bool writeNormals, bool writeTangents, bool writeColors, bool writeBoneWeights, bool writeUVs, bool writeSecondaryUVs) {
 
     // new mesh format
     // IMPORTANT: PolyRendererVertexType type defines mesh format internal type. Consider making floats always. Don't want to cast for now.
     
     const char headerTag[] = "MSH2";
-    OSBasics::write(headerTag, 1, 4, outFile);
+    outFile->write(headerTag, 1, 4);
     
     unsigned char meshFlags = 0;
     
@@ -149,7 +149,7 @@ void Mesh::saveToFile(OSFILE *outFile, bool writeNormals, bool writeTangents, bo
         meshFlags |= 1 << 0;
     }
     
-    OSBasics::write(&meshFlags, sizeof(unsigned char), 1, outFile);
+    outFile->write(&meshFlags, sizeof(unsigned char), 1);
     
     writeVertexBlock(&vertexPositionArray, outFile);
     
@@ -183,64 +183,64 @@ void Mesh::saveToFile(OSFILE *outFile, bool writeNormals, bool writeTangents, bo
     }
 }
 
-void Mesh::loadFromFile(OSFILE *inFile) {
+void Mesh::loadFromFile(CoreFile *inFile) {
     clearMesh();
     
     char tag[4];
-    OSBasics::read(tag, 1, 4, inFile);
+    inFile->read(tag, 1, 4);
     
     if(tag[0] == 'M' && tag[1] == 'S' && tag[2] == 'H' && tag[3] == '2') {
         loadFromFileV2(inFile);
     } else {
-        OSBasics::seek(inFile, 0, SEEK_SET);
+        inFile->seek(0, SEEK_SET);
         loadFromFileLegacyV1(inFile);
     }
 }
 
-void Mesh::loadFromFileV2(OSFILE *inFile) {
+void Mesh::loadFromFileV2(CoreFile *inFile) {
     
     unsigned char meshFlags;
-    OSBasics::read(&meshFlags, sizeof(unsigned char), 1, inFile);
+    inFile->read(&meshFlags, sizeof(unsigned char), 1);
     
     indexedMesh = meshFlags & (1 << 0);
     
     char blockType;
     unsigned int blockSize;
-    while(OSBasics::read(&blockType, sizeof(unsigned char), 1, inFile)) {
-        OSBasics::read(&blockSize, sizeof(unsigned int), 1, inFile);
+    while(inFile->read(&blockType, sizeof(unsigned char), 1)) {
+        inFile->read(&blockSize, sizeof(unsigned int), 1);
         
         switch(blockType) {
             case RenderDataArray::VERTEX_DATA_ARRAY:
                 vertexPositionArray.data.resize(blockSize);
-                OSBasics::read(&vertexPositionArray.data[0], sizeof(PolyRendererVertexType), blockSize, inFile);
+                inFile->read(&vertexPositionArray.data[0], sizeof(PolyRendererVertexType), blockSize);
             break;
             case RenderDataArray::TEXCOORD_DATA_ARRAY:
                 vertexTexCoordArray.data.resize(blockSize);
-                OSBasics::read(&vertexTexCoordArray.data[0], sizeof(PolyRendererVertexType), blockSize, inFile);
+                inFile->read(&vertexTexCoordArray.data[0], sizeof(PolyRendererVertexType), blockSize);
             break;
             case RenderDataArray::NORMAL_DATA_ARRAY:
                 vertexNormalArray.data.resize(blockSize);
-                OSBasics::read(&vertexNormalArray.data[0], sizeof(PolyRendererVertexType), blockSize, inFile);
+                inFile->read(&vertexNormalArray.data[0], sizeof(PolyRendererVertexType), blockSize);
             break;
             case RenderDataArray::COLOR_DATA_ARRAY:
                 vertexColorArray.data.resize(blockSize);
-                OSBasics::read(&vertexColorArray.data[0], sizeof(PolyRendererVertexType), blockSize, inFile);
+                inFile->read(&vertexColorArray.data[0], sizeof(PolyRendererVertexType), blockSize);
             break;
             case RenderDataArray::TANGENT_DATA_ARRAY:
                 vertexTangentArray.data.resize(blockSize);
-                OSBasics::read(&vertexTangentArray.data[0], sizeof(PolyRendererVertexType), blockSize, inFile);
+                inFile->read(&vertexTangentArray.data[0], sizeof(PolyRendererVertexType), blockSize);
             break;
             case RenderDataArray::BONE_WEIGHT_DATA_ARRAY:
                 vertexBoneWeightArray.data.resize(blockSize);
-                OSBasics::read(&vertexBoneWeightArray.data[0], sizeof(PolyRendererVertexType), blockSize, inFile);
+                inFile->read(&vertexBoneWeightArray.data[0], sizeof(PolyRendererVertexType), blockSize);
             break;
             case RenderDataArray::INDEX_DATA_ARRAY:
                 indexArray.data.resize(blockSize);
-                OSBasics::read(&indexArray.data[0], sizeof(PolyRendererIndexType), blockSize, inFile);
+                inFile->read(&indexArray.data[0], sizeof(PolyRendererIndexType), blockSize);
             break;
             case RenderDataArray::BONE_INDEX_DATA_ARRAY:
                 vertexBoneIndexArray.data.resize(blockSize);
-                OSBasics::read(&vertexBoneIndexArray.data[0], sizeof(PolyRendererVertexType), blockSize, inFile);
+                inFile->read(&vertexBoneIndexArray.data[0], sizeof(PolyRendererVertexType), blockSize);
             break;
         }
     }
@@ -264,10 +264,10 @@ void Mesh::normalizeBoneWeights() {
     }
 }
 
-void Mesh::loadFromFileLegacyV1(OSFILE *inFile) {
+void Mesh::loadFromFileLegacyV1(CoreFile *inFile) {
     
     unsigned char meshFlags;
-    OSBasics::read(&meshFlags, sizeof(unsigned char), 1, inFile);
+    inFile->read(&meshFlags, sizeof(unsigned char), 1);
     
     indexedMesh = meshFlags & (1 << 0);
     bool hasNormals = meshFlags & (1 << 1);
@@ -278,11 +278,11 @@ void Mesh::loadFromFileLegacyV1(OSFILE *inFile) {
     bool hasBoneWeights = meshFlags & (1 << 6);
     
     unsigned int meshType;		
-    OSBasics::read(&meshType, sizeof(unsigned int), 1, inFile);
+    inFile->read(&meshType, sizeof(unsigned int), 1);
     setMeshType(meshType);
     
     unsigned int numVertices;
-    OSBasics::read(&numVertices, sizeof(unsigned int), 1, inFile);
+    inFile->read(&numVertices, sizeof(unsigned int), 1);
     
     Vector3_struct pos;
     Vector3_struct nor;
@@ -291,14 +291,14 @@ void Mesh::loadFromFileLegacyV1(OSFILE *inFile) {
     Vector2_struct tex;
     
     for(int i=0; i < numVertices; i++) {
-        OSBasics::read(&pos, sizeof(Vector3_struct), 1, inFile);
+        inFile->read(&pos, sizeof(Vector3_struct), 1);
 
         vertexPositionArray.data.push_back(pos.x);
         vertexPositionArray.data.push_back(pos.y);
         vertexPositionArray.data.push_back(pos.z);
         
         if(hasNormals) {
-            OSBasics::read(&nor, sizeof(Vector3_struct), 1, inFile);
+            inFile->read(&nor, sizeof(Vector3_struct), 1);
 
             vertexNormalArray.data.push_back(nor.x);
             vertexNormalArray.data.push_back(nor.y);
@@ -307,7 +307,7 @@ void Mesh::loadFromFileLegacyV1(OSFILE *inFile) {
             
         }
         if(hasTangents) {
-            OSBasics::read(&tan, sizeof(Vector3_struct), 1, inFile);
+            inFile->read(&tan, sizeof(Vector3_struct), 1);
             
             vertexTangentArray.data.push_back(tan.x);
             vertexTangentArray.data.push_back(tan.y);
@@ -316,7 +316,7 @@ void Mesh::loadFromFileLegacyV1(OSFILE *inFile) {
         }
         
         if(hasColors) {
-            OSBasics::read(&col, sizeof(Vector4_struct), 1, inFile);
+            inFile->read(&col, sizeof(Vector4_struct), 1);
             
             vertexColorArray.data.push_back(col.x);
             vertexColorArray.data.push_back(col.y);
@@ -325,20 +325,20 @@ void Mesh::loadFromFileLegacyV1(OSFILE *inFile) {
         }
         
         if(hasUV) {
-            OSBasics::read(&tex, sizeof(Vector2_struct), 1, inFile);
+            inFile->read(&tex, sizeof(Vector2_struct), 1);
             vertexTexCoordArray.data.push_back(tex.x);
             vertexTexCoordArray.data.push_back(tex.y);
         }
         
         if(hasSecondaryUVs) {
-            OSBasics::read(&tex, sizeof(Vector2_struct), 1, inFile);
+            inFile->read(&tex, sizeof(Vector2_struct), 1);
             vertexTexCoord2Array.data.push_back(tex.x);
             vertexTexCoord2Array.data.push_back(tex.x);
         }
         
         if(hasBoneWeights) {
             unsigned int numBoneWeights;
-            OSBasics::read(&numBoneWeights, sizeof(unsigned int), 1, inFile);
+            inFile->read(&numBoneWeights, sizeof(unsigned int), 1);
             
             Number totalWeight = 0;
             int numPushed = 0;
@@ -346,8 +346,8 @@ void Mesh::loadFromFileLegacyV1(OSFILE *inFile) {
             for(int b=0; b < numBoneWeights; b++) {
                 float weight;
                 unsigned int boneID;
-                OSBasics::read(&boneID, sizeof(unsigned int), 1, inFile);
-                OSBasics::read(&weight, sizeof(float), 1, inFile);
+                inFile->read(&boneID, sizeof(unsigned int), 1);
+                inFile->read(&weight, sizeof(float), 1);
                 
                 if(b < 4) {
                     vertexBoneWeightArray.data.push_back(weight);
@@ -372,10 +372,10 @@ void Mesh::loadFromFileLegacyV1(OSFILE *inFile) {
     
     if(indexedMesh) {
         unsigned int numIndices;
-        OSBasics::read(&numIndices, sizeof(unsigned int), 1, inFile);
+        inFile->read(&numIndices, sizeof(unsigned int), 1);
         unsigned int val;
         for(int i=0; i < numIndices; i++) {
-            OSBasics::read(&val, sizeof(unsigned int), 1, inFile);
+            inFile->read(&val, sizeof(unsigned int), 1);
             indexArray.data.push_back(val);
         }
     }
@@ -481,24 +481,24 @@ void Mesh::addNormal(const Vector3 &n) {
 }
 
 void Mesh::saveToFile(const String& fileName, bool writeNormals, bool writeTangents, bool writeColors, bool writeBoneWeights, bool writeUVs, bool writeSecondaryUVs) {
-    OSFILE *outFile = OSBasics::open(fileName, "wb");
+    CoreFile *outFile = Services()->getCore()->openFile(fileName, "wb");
     if(!outFile) {
         Logger::log("Error opening mesh file for saving: %s\n", fileName.c_str());
         return;
     }
     saveToFile(outFile, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs);
-    OSBasics::close(outFile);	
+    Services()->getCore()->closeFile(outFile);
 
 }
 
 void Mesh::loadMesh(const String& fileName) {
-    OSFILE *inFile = OSBasics::open(fileName, "rb");
+    CoreFile *inFile = Services()->getCore()->openFile(fileName, "rb");
     if(!inFile) {
         Logger::log("Error opening mesh file %s\n", fileName.c_str());
         return;
     }
     loadFromFile(inFile);
-    OSBasics::close(inFile);	
+    Services()->getCore()->closeFile(inFile);
 }
 
 void Mesh::createCircle(Number w, Number h, unsigned int numSegments, Number tilingValue) {

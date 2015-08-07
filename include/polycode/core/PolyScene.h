@@ -31,7 +31,7 @@ THE SOFTWARE.
 
 #include <vector>
 
-class OSFILE;
+class CoreFile;
 
 namespace Polycode {
 		

@@ -29,13 +29,14 @@ THE SOFTWARE.
 #include "polycode/core/PolyCoreInput.h"
 #include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyThreaded.h"
+#include "polycode/core/PolyCoreFileProvider.h"
 
 long getThreadID();
 
 namespace Polycode {
 
 	class Renderer;
-
+          
 	class _PolyExport CoreMutex : public PolyBase {
 	public:
 		int mutexID;
@@ -296,6 +297,14 @@ namespace Polycode {
         virtual void handleVideoModeChange(VideoModeChangeInfo *modeInfo) = 0;
         virtual void flushRenderContext() = 0;
         
+        CoreFile *openFile(const Polycode::String& fileName, const Polycode::String& opts);
+        void closeFile(CoreFile *file);
+        
+        std::vector<OSFileEntry> parseFolder(const Polycode::String& pathString, bool showHidden);
+
+        virtual bool systemParseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector) = 0;
+        
+        
 		/**
 		* Sets a new video mode.
 		* @param xRes New horizontal resolution of the renderer.
@@ -410,6 +419,8 @@ namespace Polycode {
 	protected:	
 	
 		virtual bool checkSpecialKeyEvents(PolyKEY key) { return false; }
+        
+        std::vector<CoreFileProvider*> fileProviders;
         
 		void loseFocus();
 		void gainFocus();

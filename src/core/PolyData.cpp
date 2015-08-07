@@ -21,7 +21,8 @@
 */
 
 #include "polycode/core/PolyData.h"
-#include "OSBasics.h"
+#include "polycode/core/PolyCore.h"
+#include "polycode/core/PolyCoreServices.h"
 #include <string.h>
 #include <stdlib.h>
 
@@ -48,39 +49,39 @@ void Data::setFromString(const String& str, int encoding) {
 
 bool Data::saveToFile(const String& fileName) const {
 	
-	OSFILE *file = OSBasics::open(fileName, "wb");
+    Polycode::CoreFile *file = Services()->getCore()->openFile(fileName, "wb");
 	
 	if(!file) {
-		OSBasics::close(file);		
+		Services()->getCore()->closeFile(file);
 		return false;
 	}
 	
-	OSBasics::write(data, sizeof(char), dataSize, file);	
-	OSBasics::close(file);	
+	file->write(data, sizeof(char), dataSize);
+	Services()->getCore()->closeFile(file);
 	
 	return true;
 }
 
 bool Data::loadFromFile(const String& fileName) {
-	OSFILE *file = OSBasics::open(fileName, "rb");
+	CoreFile *file = Services()->getCore()->openFile(fileName, "rb");
 	if(!file)
 		return false;
 	
-	OSBasics::seek(file, 0L, SEEK_END);
-	dataSize = OSBasics::tell(file);
-	OSBasics::seek(file, 0L, SEEK_SET);
+	file->seek(0L, SEEK_END);
+	dataSize = file->tell();
+	file->seek(0L, SEEK_SET);
 	
 	if(data)
 		free(data);
 	
 	data = (char*)malloc(dataSize);
 	if(!data) {
-		OSBasics::close(file);		
+		Services()->getCore()->closeFile(file);
 		return false;
 	}
 	
-	OSBasics::read(data, sizeof(char), dataSize, file);	
-	OSBasics::close(file);
+	file->read(data, sizeof(char), dataSize);
+	Services()->getCore()->closeFile(file);
 
 	return true;
 }

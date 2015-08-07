@@ -30,18 +30,20 @@ distribution.
 #endif
 
 #include "tinyxml.h"
+#include "polycode/core/PolyCore.h"
+#include "polycode/core/PolyCoreServices.h"
 
 // This document has been altered from the original in the following ways:
-// * It opens files through the Polycode OSFile abstraction rather than directly.
+// * It opens files through the Polycode CoreFile abstraction rather than directly.
 // * It now uses Windows linebreaks consistently regardless of platform.
 #define NEWLINE "\n"
 
 bool TiXmlBase::condenseWhiteSpace = true;
 
 // Microsoft compiler security
-OSFILE* TiXmlFOpen( const char* filename, const char* mode )
+Polycode::CoreFile* TiXmlFOpen( const char* filename, const char* mode )
 {
-	return OSBasics::open( filename, mode );
+    return Polycode::Services()->getCore()->openFile( filename, mode );
 }
 
 void TiXmlBase::EncodeString( const TIXML_STRING& str, TIXML_STRING* outString )
@@ -954,12 +956,12 @@ bool TiXmlDocument::LoadFile( const char* _filename, TiXmlEncoding encoding )
 	value = filename;
 
 	// reading in binary mode so that tinyxml can normalize the EOL
-	OSFILE* file = TiXmlFOpen( value.c_str (), "rb" );	
+    Polycode::CoreFile* file = TiXmlFOpen( value.c_str (), "rb" );
 
 	if ( file )
 	{
 		bool result = LoadFile( file, encoding );
-		OSBasics::close( file );
+        Polycode::Services()->getCore()->closeFile(file);
 		return result;
 	}
 	else
@@ -969,7 +971,7 @@ bool TiXmlDocument::LoadFile( const char* _filename, TiXmlEncoding encoding )
 	}
 }
 
-bool TiXmlDocument::LoadFile( OSFILE* file, TiXmlEncoding encoding )
+bool TiXmlDocument::LoadFile(Polycode::CoreFile* file, TiXmlEncoding encoding )
 {
 	if ( !file ) 
 	{
@@ -983,9 +985,9 @@ bool TiXmlDocument::LoadFile( OSFILE* file, TiXmlEncoding encoding )
 
 	// Get the file size, so we can pre-allocate the string. HUGE speed impact.
 	long length = 0;
-	OSBasics::seek( file, 0, SEEK_END );
-	length = OSBasics::tell( file );
-	OSBasics::seek( file, 0, SEEK_SET );
+	file->seek(0, SEEK_END );
+	length = file->tell();
+	file->seek(0, SEEK_SET );
 
 	// Strange case, but good to handle up front.
 	if ( length <= 0 )
@@ -1023,7 +1025,7 @@ bool TiXmlDocument::LoadFile( OSFILE* file, TiXmlEncoding encoding )
 	char* buf = new char[ length+1 ];
 	buf[0] = 0;
 
-	if ( OSBasics::read( buf, length, 1, file ) != 1 ) {
+	if ( file->read( buf, length, 1) != 1 ) {
 		delete [] buf;
 		SetError( TIXML_ERROR_OPENING_FILE, 0, 0, TIXML_ENCODING_UNKNOWN );
 		return false;
@@ -1087,12 +1089,13 @@ bool TiXmlDocument::LoadFile( OSFILE* file, TiXmlEncoding encoding )
 bool TiXmlDocument::SaveFile( const char * filename ) const
 {
 	// The old c stuff lives on...
-	OSFILE* fp = TiXmlFOpen( filename, "wb" );
+    Polycode::CoreFile* fp = TiXmlFOpen( filename, "wb" );
 	if ( fp )
 	{
-		bool result = SaveFile( fp->file );
-		fclose( fp->file );
-		return result;
+        // NOCMAKE_TODO: Fix this
+		//bool result = SaveFile( fp->file );
+		//fclose( fp->file );
+		//return result;
 	}
 	return false;
 }

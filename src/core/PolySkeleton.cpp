@@ -28,7 +28,6 @@
 #include "polycode/core/PolySceneLine.h"
 #include "polycode/core/PolyTween.h"
 #include "polycode/core/PolyTweenManager.h"
-#include "OSBasics.h"
 
 using namespace Polycode;
 
@@ -176,7 +175,7 @@ unsigned int Skeleton::getBoneIndexByBone(Bone *bone) {
 }
 
 void Skeleton::loadSkeleton(const String& fileName) {
-	OSFILE *inFile = OSBasics::open(fileName.c_str(), "rb");
+	CoreFile *inFile = Services()->getCore()->openFile(fileName.c_str(), "rb");
 	if(!inFile) {
 		return;
 	}
@@ -184,7 +183,7 @@ void Skeleton::loadSkeleton(const String& fileName) {
 	unsigned int numBones;
 	float t[3],rq[4],s[3];
 	
-	OSBasics::read(&numBones, sizeof(unsigned int), 1, inFile);
+	inFile->read(&numBones, sizeof(unsigned int), 1);
 	unsigned int namelen;
 	char buffer[1024];
 	
@@ -192,23 +191,23 @@ void Skeleton::loadSkeleton(const String& fileName) {
 	unsigned int hasParent, boneID;
 	for(int i=0; i < numBones; i++) {
 		
-		OSBasics::read(&namelen, sizeof(unsigned int), 1, inFile);
+		inFile->read(&namelen, sizeof(unsigned int), 1);
 		memset(buffer, 0, 1024);
-		OSBasics::read(buffer, 1, namelen, inFile);
+		inFile->read(buffer, 1, namelen);
 		
 		Bone *newBone = new Bone(String(buffer));
 		
-		OSBasics::read(&hasParent, sizeof(unsigned int), 1, inFile);
+		inFile->read(&hasParent, sizeof(unsigned int), 1);
 		if(hasParent == 1) {
-			OSBasics::read(&boneID, sizeof(unsigned int), 1, inFile);
+			inFile->read(&boneID, sizeof(unsigned int), 1);
 			newBone->parentBoneId = boneID;
 		} else {
 			newBone->parentBoneId = -1;
 		}
 
-		OSBasics::read(t, sizeof(float), 3, inFile);
-		OSBasics::read(s, sizeof(float), 3, inFile);
-		OSBasics::read(rq, sizeof(float), 4, inFile);
+		inFile->read(t, sizeof(float), 3);
+		inFile->read(s, sizeof(float), 3);
+		inFile->read(rq, sizeof(float), 4);
 		
 		bones.push_back(newBone);
 		
@@ -227,9 +226,9 @@ void Skeleton::loadSkeleton(const String& fileName) {
 		newBone->setBaseMatrix(newBone->getTransformMatrix());
 		newBone->setBoneMatrix(newBone->getTransformMatrix());
 
-		OSBasics::read(t, sizeof(float), 3, inFile);
-		OSBasics::read(s, sizeof(float), 3, inFile);
-		OSBasics::read(rq, sizeof(float), 4, inFile);
+		inFile->read(t, sizeof(float), 3);
+		inFile->read(s, sizeof(float), 3);
+		inFile->read(rq, sizeof(float), 4);
 		
 		Quaternion q;
 		q.set(rq[0], rq[1], rq[2], rq[3]);
@@ -252,7 +251,7 @@ void Skeleton::loadSkeleton(const String& fileName) {
 			bonesEntity->addChild(bones[i]);
 		}
 	}
-	OSBasics::close(inFile);
+	Services()->getCore()->closeFile(inFile);
 }
 
 SkeletonAnimation *Skeleton::getBaseAnimation() {
@@ -285,7 +284,7 @@ void Skeleton::stopAnimation(SkeletonAnimation *animation) {
 
 void Skeleton::addAnimation(const String& name, const String& fileName) {
 
-    OSFILE *inFile = OSBasics::open(fileName.c_str(), "rb");
+    CoreFile *inFile = Services()->getCore()->openFile(fileName.c_str(), "rb");
     
     if(!inFile) {
 		return;
@@ -293,18 +292,18 @@ void Skeleton::addAnimation(const String& name, const String& fileName) {
 	
     unsigned int activeBones,numPoints,numCurves, curveType;
     float length;
-    OSBasics::read(&length, 1, sizeof(float), inFile);
+    inFile->read(&length, 1, sizeof(float));
 
     SkeletonAnimation *newAnimation = new SkeletonAnimation(name, length);
-    OSBasics::read(&activeBones, sizeof(unsigned int), 1, inFile);
+    inFile->read(&activeBones, sizeof(unsigned int), 1);
     
     unsigned short boneNameLen;
     char boneNameBuffer[1024];
 
     for(int j=0; j < activeBones; j++) {
         
-        OSBasics::read(&boneNameLen, sizeof(unsigned short), 1, inFile);
-        OSBasics::read(boneNameBuffer, 1, boneNameLen, inFile);
+        inFile->read(&boneNameLen, sizeof(unsigned short), 1);
+        inFile->read(boneNameBuffer, 1, boneNameLen);
         boneNameBuffer[boneNameLen] = '\0';
         
         Bone *trackBone = getBoneByName(boneNameBuffer);
@@ -318,14 +317,14 @@ void Skeleton::addAnimation(const String& name, const String& fileName) {
         BezierCurve *curve;
         float vec1[2];
         
-        OSBasics::read(&numCurves, sizeof(unsigned int), 1, inFile);
+        inFile->read(&numCurves, sizeof(unsigned int), 1);
         for(int l=0; l < numCurves; l++) {
             curve = new BezierCurve();
-            OSBasics::read(&curveType, sizeof(unsigned int), 1, inFile);
-            OSBasics::read(&numPoints, sizeof(unsigned int), 1, inFile);
+            inFile->read(&curveType, sizeof(unsigned int), 1);
+            inFile->read(&numPoints, sizeof(unsigned int), 1);
             
             for(int k=0; k < numPoints; k++) {
-                OSBasics::read(vec1, sizeof(float), 2, inFile);					
+                inFile->read(vec1, sizeof(float), 2);					
                 curve->addControlPoint2d(vec1[1], vec1[0]);
             }
             switch(curveType) {
@@ -365,7 +364,7 @@ void Skeleton::addAnimation(const String& name, const String& fileName) {
     }
     
     animations.push_back(newAnimation);
-	OSBasics::close(inFile);	
+	Services()->getCore()->closeFile(inFile);
 }
 
 void Skeleton::bonesVisible(bool val) {

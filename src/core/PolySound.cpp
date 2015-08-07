@@ -27,8 +27,8 @@
 #include "polycode/core/PolyString.h"
 #include "polycode/core/PolyLogger.h"
 #include "polycode/core/PolySoundManager.h"
-
-#include "OSBasics.h"
+#include "polycode/core/PolyCore.h"
+#include "polycode/core/PolyCoreServices.h"
 #include <string>
 #include <vector>
 #include <stdint.h>
@@ -66,23 +66,24 @@ unsigned int AudioStreamingSource::streamData(char *buffer, unsigned int size) {
 
 
 size_t custom_readfunc(void *ptr, size_t size, size_t nmemb, void *datasource) {
-	OSFILE *file = (OSFILE*) datasource;
-	return OSBasics::read(ptr, size, nmemb, file);
+    Polycode::CoreFile *file = (Polycode::CoreFile*) datasource;
+	return file->read(ptr, size, nmemb);
 }
 
 int custom_seekfunc(void *datasource, ogg_int64_t offset, int whence){
-	OSFILE *file = (OSFILE*) datasource;
-	return OSBasics::seek(file, offset, whence);
+	Polycode::CoreFile *file = (Polycode::CoreFile*) datasource;
+	return file->seek(offset, whence);
 }
 
 int custom_closefunc(void *datasource) {
-	OSFILE *file = (OSFILE*) datasource;
-	return OSBasics::close(file);
+	Polycode::CoreFile *file = (Polycode::CoreFile*) datasource;
+	Services()->getCore()->closeFile(file);
+    return 0;
 }
 
 long custom_tellfunc(void *datasource) {
-	OSFILE *file = (OSFILE*) datasource;
-	return OSBasics::tell(file);
+	CoreFile *file = (CoreFile*) datasource;
+	return file->tell();
 }
 
 Sound::Sound(const String& fileName, bool generateFloatBuffer) :  referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), sampleLength(-1), streamingSound(false) {
@@ -186,11 +187,11 @@ void Sound::loadFile(String fileName, bool generateFloatBuffer) {
 	}
 
 	String actualFilename = fileName;
-	OSFILE *test = OSBasics::open(fileName, "rb");
+	CoreFile *test = Services()->getCore()->openFile(fileName, "rb");
 	if(!test) {
 		actualFilename = "default/default.wav";
 	} else {
-		OSBasics::close(test);	
+		Services()->getCore()->closeFile(test);
 	}
 	
 	String extension;
@@ -511,12 +512,12 @@ ALuint Sound::loadOGG(const String& fileName, bool generateFloatBuffer) {
 	int bitStream;
 	long bytes;
 	char array[BUFFER_SIZE];    // Local fixed size array
-	OSFILE *f;
+	CoreFile *f;
 	ALenum format;
 	ALsizei freq;
 	
 	// Open for binary reading
-	f = OSBasics::open(fileName.c_str(), "rb");		
+	f = Services()->getCore()->openFile(fileName.c_str(), "rb");
 	if(!f) {
 		soundError("Error loading OGG file!\n");
 		return buffer;
@@ -577,13 +578,13 @@ ALuint Sound::loadWAV(const String& fileName, bool generateFloatBuffer) {
 	ALsizei freq;
 	
 	// Local resources
-	OSFILE *f = NULL;
+	CoreFile *f = NULL;
 	char *array = NULL;
 	
 	checkALError("loadWAV: pre-generate buffer");
 	
 		// Open for binary reading
-		f = OSBasics::open(fileName.c_str(), "rb");
+		f = Services()->getCore()->openFile(fileName.c_str(), "rb");
 		if (!f) {
 			soundError("LoadWav: Could not load wav from " + fileName);
 			return buffer;
@@ -596,50 +597,50 @@ ALuint Sound::loadWAV(const String& fileName, bool generateFloatBuffer) {
 		unsigned char data16[2];
 		
 		// check magic
-		soundCheck(OSBasics::read(magic,4,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
+		soundCheck(f->read(magic,4,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
 		soundCheck(String(magic) == "RIFF", "LoadWav: Wrong wav file format. This file is not a .wav file (no RIFF magic): "+ fileName );
 		
 		// skip 4 bytes (file size)
-		OSBasics::seek(f,4,SEEK_CUR);
+		f->seek(4,SEEK_CUR);
 		
 		// check file format
-		soundCheck(OSBasics::read(magic,4,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
+		soundCheck(f->read(magic,4,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
 		soundCheck(String(magic) == "WAVE", "LoadWav: Wrong wav file format. This file is not a .wav file (no WAVE format): "+ fileName );
 		
 		// check 'fmt ' sub chunk (1)
-		soundCheck(OSBasics::read(magic,4,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
+		soundCheck(f->read(magic,4,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
 		soundCheck(String(magic) == "fmt ", "LoadWav: Wrong wav file format. This file is not a .wav file (no 'fmt ' subchunk): "+ fileName );
 		
 		// read (1)'s size
-		soundCheck(OSBasics::read(data32,4,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
+		soundCheck(f->read(data32,4,1)   == 1, "LoadWav: Cannot read wav file "+ fileName );
 		unsigned long subChunk1Size = readByte32(data32);
 		soundCheck(subChunk1Size >= 16, "Wrong wav file format. This file is not a .wav file ('fmt ' chunk too small, truncated file?): "+ fileName );
 		
 		// check PCM audio format
-		soundCheck(OSBasics::read(data16,2,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
+		soundCheck(f->read(data16,2,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
 		unsigned short audioFormat = readByte16(data16);
 		soundCheck(audioFormat == 1, "LoadWav: Wrong wav file format. This file is not a .wav file (audio format is not PCM): "+ fileName );
 		
 		// read number of channels
-		soundCheck(OSBasics::read(data16,2,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
+		soundCheck(f->read(data16,2,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
 		unsigned short channels = readByte16(data16);
 		
 		// read frequency (sample rate)
-		soundCheck(OSBasics::read(data32,4,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
+		soundCheck(f->read(data32,4,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
 		unsigned long frequency = readByte32(data32);
 		
 		// skip 6 bytes (Byte rate (4), Block align (2))
-		OSBasics::seek(f,6,SEEK_CUR);
+		f->seek(6,SEEK_CUR);
 		
 		// read bits per sample
-		soundCheck(OSBasics::read(data16,2,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
+		soundCheck(f->read(data16,2,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
 		unsigned short bps = readByte16(data16);
 		
 		// check 'data' sub chunk (2)
-		soundCheck(OSBasics::read(magic,4,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
+		soundCheck(f->read(magic,4,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
 		soundCheck(String(magic) == "data", "LoadWav: Wrong wav file format. This file is not a .wav file (no data subchunk): "+ fileName );
 		
-		soundCheck(OSBasics::read(data32,4,1,f) == 1, "LoadWav: Cannot read wav file "+ fileName );
+		soundCheck(f->read(data32,4,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
 		unsigned long subChunk2Size = readByte32(data32);
 		
 		// The frequency of the sampling rate
@@ -650,7 +651,7 @@ ALuint Sound::loadWAV(const String& fileName, bool generateFloatBuffer) {
 		
 		while (data.size() != subChunk2Size) {
 			// Read up to a buffer's worth of decoded sound data
-			bytes = OSBasics::read(array, 1, BUFFER_SIZE, f);
+			bytes = f->read(array, 1, BUFFER_SIZE);
 			
 			if (bytes <= 0)
 				break;
@@ -665,7 +666,7 @@ ALuint Sound::loadWAV(const String& fileName, bool generateFloatBuffer) {
 		delete []array;
 		array = NULL;
 		
-		OSBasics::close(f);
+		Services()->getCore()->closeFile(f);
 		f = NULL;
 				
 		return loadBytes(&data[0], data.size(), freq, channels, bps, generateFloatBuffer);

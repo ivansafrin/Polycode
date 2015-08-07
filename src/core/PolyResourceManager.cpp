@@ -29,7 +29,6 @@
 #include "polycode/core/PolyMaterial.h"
 #include "polycode/core/PolyShader.h"
 #include "polycode/core/PolyTexture.h"
-#include "OSBasics.h"
 
 #include "physfs.h"
 #include "tinyxml.h"
@@ -104,7 +103,9 @@ bool ResourcePool::hasResource(Resource *resource) {
 void ResourcePool::addResource(Resource *resource) {
     resource->addEventListener(this, Event::RESOURCE_CHANGE_EVENT);
     resources.push_back(resource);
-    resource->resourceFileTime = OSBasics::getFileTime(resource->getResourcePath());
+    
+    // NOCMAKE_TODO: fix this!!
+    resource->resourceFileTime = 0; //OSBasics::getFileTime(resource->getResourcePath());
     if(dispatchChangeEvents) {
         dispatchEvent(new Event(), Event::CHANGE_EVENT);
     }
@@ -173,7 +174,9 @@ Resource *ResourcePool::getResource(int resourceType, const String& resourceName
 void ResourcePool::checkForChangedFiles() {
 	for(int i=0; i < resources.size(); i++) {
 		if(resources[i]->reloadOnFileModify == true) {
-			time_t newFileTime = OSBasics::getFileTime(resources[i]->getResourcePath());
+            
+            // NOCMAKE_TODO: fix this!
+            time_t newFileTime = 0; //OSBasics::getFileTime(resources[i]->getResourcePath());
             //			printf("%s\n%lld %lld\n", resources[i]->getResourcePath().c_str(), newFileTime, resources[i]->resourceFileTime);
 			if((newFileTime != resources[i]->resourceFileTime) && newFileTime != 0) {
 				resources[i]->reloadResource();
@@ -211,7 +214,7 @@ void ResourcePool::Update(int elapsed) {
 
 void ResourceManager::parseShadersIntoPool(ResourcePool *pool, const String& dirPath, bool recursive) {
 	vector<OSFileEntry> resourceDir;
-	resourceDir = OSBasics::parseFolder(dirPath, false);
+	resourceDir = Services()->getCore()->parseFolder(dirPath, false);
 	
 	for(int i=0; i < resourceDir.size(); i++) {	
 		if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
@@ -233,7 +236,7 @@ void ResourceManager::parseShadersIntoPool(ResourcePool *pool, const String& dir
 
 void ResourceManager::parseOtherIntoPool(ResourcePool *pool, const String& dirPath, bool recursive) {
     vector<OSFileEntry> resourceDir;
-    resourceDir = OSBasics::parseFolder(dirPath, false);
+    resourceDir = Services()->getCore()->parseFolder(dirPath, false);
     for(int i=0; i < resourceDir.size(); i++) {
         if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
             if(resourceDir[i].extension == "ttf") {
@@ -249,7 +252,7 @@ void ResourceManager::parseOtherIntoPool(ResourcePool *pool, const String& dirPa
 
 void ResourceManager::parseProgramsIntoPool(ResourcePool *pool, const String& dirPath, bool recursive) {
 	vector<OSFileEntry> resourceDir;
-	resourceDir = OSBasics::parseFolder(dirPath, false);
+	resourceDir = Services()->getCore()->parseFolder(dirPath, false);
 	for(int i=0; i < resourceDir.size(); i++) {	
 		if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
 			MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
@@ -271,7 +274,7 @@ void ResourceManager::parseProgramsIntoPool(ResourcePool *pool, const String& di
 
 void ResourceManager::parseMaterialsIntoPool(ResourcePool *pool, const String& dirPath, bool recursive) {
 	vector<OSFileEntry> resourceDir;
-	resourceDir = OSBasics::parseFolder(dirPath, false);
+	resourceDir = Services()->getCore()->parseFolder(dirPath, false);
 	
 	for(int i=0; i < resourceDir.size(); i++) {	
 		if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
@@ -294,7 +297,7 @@ void ResourceManager::parseMaterialsIntoPool(ResourcePool *pool, const String& d
 
 void ResourceManager::parseCubemapsIntoPool(ResourcePool *pool, const String& dirPath, bool recursive) {
 	vector<OSFileEntry> resourceDir;
-	resourceDir = OSBasics::parseFolder(dirPath, false);
+	resourceDir = Services()->getCore()->parseFolder(dirPath, false);
 	
 	for(int i=0; i < resourceDir.size(); i++) {	
 		if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
@@ -326,7 +329,7 @@ ResourcePool *ResourceManager::getGlobalPool() {
 void ResourceManager::parseTexturesIntoPool(ResourcePool *pool, const String& dirPath, bool recursive, const String& basePath) {
 	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
 	vector<OSFileEntry> resourceDir;
-	resourceDir = OSBasics::parseFolder(dirPath, false);
+	resourceDir = Services()->getCore()->parseFolder(dirPath, false);
 	for(int i=0; i < resourceDir.size(); i++) {	
 		if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
 			if(resourceDir[i].extension == "png") {

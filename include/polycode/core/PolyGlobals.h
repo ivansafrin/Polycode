@@ -77,7 +77,7 @@ typedef unsigned int PolyRendererIndexType;
 #define PLATFORM_MAC      2
 #define PLATFORM_UNIX     3
 
-#if defined(_WINDOWS) || (WINAPI_FAMILY == WINAPI_FAMILY_APP)
+#if defined(_WINDOWS) || defined(WINAPI_FAMILY_APP)
 	#define PLATFORM PLATFORM_WINDOWS
 #elif defined(__APPLE__) && defined(__MACH__)
 	#define PLATFORM PLATFORM_MAC

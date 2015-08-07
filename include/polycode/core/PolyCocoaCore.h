@@ -131,6 +131,7 @@ namespace Polycode {
 		
         void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport=true);
 
+        bool systemParseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector);
         
 		void launchApplicationWithFile(String application, String file);
 		void openFileWithApplication(String file, String application);

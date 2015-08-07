@@ -53,6 +53,7 @@ distribution.
 	#define TIXML_STRING		TiXmlString
 #endif
 
+#include "polycode/core/PolyCore.h"
 #include "polycode/core/PolyLogger.h"
 
 // Deprecated library function hell. Compilers want to use the
@@ -82,9 +83,7 @@ distribution.
 	#else
 		#define TIXML_SSCANF   sscanf
 	#endif
-#endif	
-
-#include "OSBasics.h"
+#endif
 
 class TiXmlDocument;
 class TiXmlElement;
@@ -94,6 +93,8 @@ class TiXmlAttribute;
 class TiXmlText;
 class TiXmlDeclaration;
 class TiXmlParsingData;
+
+class CoreFile;
 
 const int TIXML_MAJOR_VERSION = 2;
 const int TIXML_MINOR_VERSION = 5;
@@ -1420,7 +1421,7 @@ public:
 		will be interpreted as an XML file. TinyXML doesn't stream in XML from the current
 		file location. Streaming may be added in the future.
 	*/
-	bool LoadFile( OSFILE*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING );
+    bool LoadFile( Polycode::CoreFile*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING );
 	/// Save a file using the given FILE*. Returns true if successful.
 	bool SaveFile( FILE* ) const;
 

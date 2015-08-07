@@ -26,9 +26,10 @@ THE SOFTWARE.
 #include "polycode/core/PolyColor.h"
 #include "polycode/core/PolyVector3.h"
 #include "polycode/core/PolyVector2.h"
+#include "polycode/core/PolyCore.h"
 #include <vector>
 
-class OSFILE;
+class CoreFile;
 
 namespace Polycode {
 	
@@ -98,10 +99,10 @@ namespace Polycode {
 			*/			
 			void saveToFile(const String& fileName, bool writeNormals = true, bool writeTangents = true, bool writeColors = true, bool writeBoneWeights = true, bool writeUVs = true, bool writeSecondaryUVs = false);
 
-			void loadFromFile(OSFILE *inFile);
+			void loadFromFile(CoreFile *inFile);
 
         
-			void saveToFile(OSFILE *outFile, bool writeNormals = true, bool writeTangents = true, bool writeColors = true, bool writeBoneWeights = true, bool writeUVs = true, bool writeSecondaryUVs = false);
+			void saveToFile(CoreFile *outFile, bool writeNormals = true, bool writeTangents = true, bool writeColors = true, bool writeBoneWeights = true, bool writeUVs = true, bool writeSecondaryUVs = false);
 			
 			
 			/**
@@ -369,11 +370,11 @@ namespace Polycode {
         
         protected:
         
-            void loadFromFileV2(OSFILE *inFile);
-            void loadFromFileLegacyV1(OSFILE *inFile);
+            void loadFromFileV2(Polycode::CoreFile *inFile);
+            void loadFromFileLegacyV1(Polycode::CoreFile *inFile);
 
-            void writeVertexBlock(VertexDataArray *array, OSFILE *outFile);
-            void writeIndexBlock(IndexDataArray *array, OSFILE *outFile);
+            void writeVertexBlock(VertexDataArray *array, Polycode::CoreFile *outFile);
+            void writeIndexBlock(IndexDataArray *array, Polycode::CoreFile *outFile);
 
             bool meshHasVertexBuffer;
             int meshType;

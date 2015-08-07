@@ -25,8 +25,9 @@
 #include "polycode/core/PolyImage.h"
 #include "polycode/core/PolyString.h"
 #include "polycode/core/PolyLogger.h"
-#include "OSBasics.h"
 #include "polycode/core/PolyPerlin.h"
+#include "polycode/core/PolyCore.h"
+#include "polycode/core/PolyCoreServices.h"
 #include <algorithm>
 #include <stdlib.h>
 #include "rgbe.h"
@@ -36,8 +37,8 @@
 using namespace Polycode;
 
 void user_read_data(png_structp png_ptr, png_bytep data, png_size_t length) {
-	OSFILE *file = (OSFILE*)png_get_io_ptr(png_ptr);
-	OSBasics::read(data, length, 1, file);
+    Polycode::CoreFile *file = (Polycode::CoreFile*)png_get_io_ptr(png_ptr);
+	file->read(data, length, 1);
 }
 
 Image::Image(const String& fileName) : imageData(NULL) {
@@ -612,19 +613,19 @@ void Image::freeTokens(TokenArray tokens) {
 
 bool Image::loadSTB(const String &fileName) {
     
-    OSFILE *infile = OSBasics::open(fileName.c_str(), "rb");
+    CoreFile *infile = Services()->getCore()->openFile(fileName.c_str(), "rb");
     
     if(!infile) {
         Logger::log("Error opening image file: %s\n", fileName.c_str());
         return false;
     }
     
-    OSBasics::seek(infile, 0, SEEK_END);
-    long bufferLen = OSBasics::tell(infile);
-    OSBasics::seek(infile, 0, SEEK_SET);
+    infile->seek(0, SEEK_END);
+    long bufferLen = infile->tell();
+    infile->seek(0, SEEK_SET);
     
     char *buffer = (char*) malloc(bufferLen);
-    OSBasics::read(buffer, bufferLen, 1, infile);
+    infile->read(buffer, bufferLen, 1);
     
     int x,y,n;
     stbi_uc *data = stbi_load_from_memory((const stbi_uc*)buffer, bufferLen, &x, &y, &n, 4);
@@ -643,7 +644,7 @@ bool Image::loadSTB(const String &fileName) {
     
     imageData = (char*)data;
     
-    OSBasics::close(infile);
+    Services()->getCore()->closeFile(infile);
 
     return true;
 }
@@ -652,19 +653,19 @@ bool Image::loadHDR(const String &fileName) {
     
     imageType = Image::IMAGE_FP16;
     
-    OSFILE *infile = OSBasics::open(fileName.c_str(), "rb");
+    CoreFile *infile = Services()->getCore()->openFile(fileName.c_str(), "rb");
     
     if(!infile) {
         Logger::log("Error opening HDR %s\n", fileName.c_str());
         return false;
     }
     
-    OSBasics::seek(infile, 0, SEEK_END);
-    long bufferLen = OSBasics::tell(infile);
-    OSBasics::seek(infile, 0, SEEK_SET);
+    infile->seek(0, SEEK_END);
+    long bufferLen = infile->tell();
+    infile->seek(0, SEEK_SET);
     
     char *buffer = (char*) malloc(bufferLen);
-    OSBasics::read(buffer, bufferLen, 1, infile);
+    infile->read(buffer, bufferLen, 1);
     
     int x,y,n;
     float *data = stbi_loadf_from_memory((const stbi_uc*)buffer, bufferLen, &x, &y, &n, 0);
@@ -681,14 +682,14 @@ bool Image::loadHDR(const String &fileName) {
     
     imageData = (char*)data;
     
-    OSBasics::close(infile);
+    Services()->getCore()->closeFile(infile);
     
     
     return true;
 }
 
 bool Image::loadPNG(const String& fileName) {
-	OSFILE         *infile;
+	CoreFile         *infile;
 	
 	png_structp   png_ptr;
 	png_infop     info_ptr;
@@ -703,24 +704,24 @@ bool Image::loadPNG(const String& fileName) {
 	int i;
 	png_bytepp row_pointers = NULL;
 	
-	infile = OSBasics::open(fileName.c_str(), "rb");
+	infile = Services()->getCore()->openFile(fileName.c_str(), "rb");
 	if (!infile) {
 		Logger::log("Error opening png file (\"%s\")\n", fileName.c_str());
 		return false;
 	}
 	
-	OSBasics::read(sig, 1, 8, infile);
+	infile->read(sig, 1, 8);
 	
 	if (!png_check_sig((unsigned char *) sig, 8)) {
 		Logger::log("Error reading png signature (\"%s\")\n", fileName.c_str());
-		OSBasics::close(infile);
+		Services()->getCore()->closeFile(infile);
 		return false;
 	}
 
 	png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 	if (!png_ptr) {
 		Logger::log("Error creating png struct (\"%s\")\n", fileName.c_str());
-		OSBasics::close(infile);
+		Services()->getCore()->closeFile(infile);
 		return false;    /* out of memory */
 	}
 	
@@ -728,14 +729,14 @@ bool Image::loadPNG(const String& fileName) {
 	if (!info_ptr) {
 		Logger::log("Error creating info struct (\"%s\")\n", fileName.c_str());
 		png_destroy_read_struct(&png_ptr, (png_infopp) NULL, (png_infopp) NULL);
-		OSBasics::close(infile);
+		Services()->getCore()->closeFile(infile);
 		return false;    /* out of memory */
 	}
 	
 	if (setjmp(png_jmpbuf(png_ptr))) {
 		Logger::log("Error setting jump thingie (\"%s\")\n", fileName.c_str());
 		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
-		OSBasics::close(infile);
+		Services()->getCore()->closeFile(infile);
 		return false;
 	}
 
@@ -797,7 +798,7 @@ bool Image::loadPNG(const String& fileName) {
 	
 	free(row_pointers);
 	png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
-	OSBasics::close(infile);
+	Services()->getCore()->closeFile(infile);
 	
 	imageData = image_data;
 	return true;

@@ -23,7 +23,7 @@
 #pragma once
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyString.h"
-#include "OSBasics.h"
+#include "polycode/core/PolyCoreFileProvider.h"
 
 class TiXmlElement;
 
@@ -368,7 +368,7 @@ namespace Polycode {
 			
 			bool readFile();
 					
-			OSFILE *inFile;		
+            Polycode::CoreFile *inFile;
 			std::vector<String> keys;
 			Object *object;		
 
@@ -388,7 +388,7 @@ namespace Polycode {
 			bool writeToFile(const String& fileName);			
 			
 		protected:
-			OSFILE *outFile;
+			Polycode::CoreFile *outFile;
 			int numEntriesWritten;
 			std::vector<String> keys;			
 			Object *object;

@@ -663,7 +663,8 @@ bool SceneEntityInstance::loadFromFile(const String& fileName) {
 
 	clearInstance();
 	
-	resourceEntry->resourceFileTime = OSBasics::getFileTime(fileName);
+    // NOCMAKE_TODO: fix this!
+    resourceEntry->resourceFileTime = 0; //OSBasics::getFileTime(fileName);
 
 	this->ownsChildren = true;
 	this->fileName = fileName;

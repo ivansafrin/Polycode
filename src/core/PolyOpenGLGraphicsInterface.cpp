@@ -22,7 +22,6 @@
  */
 
 #include "polycode/core/PolyOpenGLGraphicsInterface.h"
-#include "OSBasics.h"
 #include "polycode/core/PolyLogger.h"
 #include "polycode/core/PolyCoreServices.h"
 
@@ -357,20 +356,21 @@ void OpenGLGraphicsInterface::createProgram(ShaderProgram *program) {
         glDeleteShader(programID);
     }
     
-    OSFILE *file = OSBasics::open(program->getResourcePath(), "rb");
+    CoreFile *file = Services()->getCore()->openFile(program->getResourcePath(), "rb");
     if (!file) {
         Logger::log("Error: shader file %s not found\n", program->getResourcePath().c_str());
         *((GLuint*)program->platformData) = -1;
         return;
     }
     
-    OSBasics::seek(file, 0, SEEK_END);
-    long progsize = OSBasics::tell(file);
-    OSBasics::seek(file, 0, SEEK_SET);
+    file->seek(0, SEEK_END);
+    long progsize = file->tell();
+    file->seek(0, SEEK_SET);
     char *buffer = (char*)malloc(progsize+1);
     memset(buffer, 0, progsize+1);
-    OSBasics::read(buffer, progsize, 1, file);
-    OSBasics::close(file);
+    file->read(buffer, progsize, 1);
+    
+    Services()->getCore()->closeFile(file);
     
     if( program->type == ShaderProgram::TYPE_VERT) {
         programID = glCreateShader(GL_VERTEX_SHADER);

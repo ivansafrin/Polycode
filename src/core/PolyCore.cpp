@@ -35,7 +35,7 @@
 #include <time.h>
 
 namespace Polycode {
-	
+
 	TimeInfo::TimeInfo() {
 		time_t rawtime;
 		struct tm * timeinfo;
@@ -55,7 +55,7 @@ namespace Polycode {
 	
 	Core::Core(int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex) : EventDispatcher() {
 	
-		int _hz;
+        int _hz;
 		getScreenInfo(&defaultScreenWidth, &defaultScreenHeight, &_hz);
 	
         coreResized = false;
@@ -324,5 +324,42 @@ namespace Polycode {
 	CoreServices *Core::getServices() {
 		return services;
 	}
+    
+    CoreFile *Core::openFile(const Polycode::String& fileName, const Polycode::String& opts) {
+        for(int i=0; i < fileProviders.size(); i++) {
+            CoreFile *file = fileProviders[i]->openFile(fileName, opts);
+            if(file) {
+                file->provider = fileProviders[i];
+                return file;
+            }
+        }
+        return NULL;
+    }
+    
+    void Core::closeFile(CoreFile *file) {
+        for(int i=0; i < fileProviders.size(); i++) {
+            if(file->provider == fileProviders[i]) {
+                fileProviders[i]->closeFile(file);
+                return;
+            }
+        }
+        assert(false); // CLOSING A FILE FOR A NON-EXISTING PROVIDER
+    }
+    
+    std::vector<OSFileEntry> Core::parseFolder(const Polycode::String& pathString, bool showHidden) {
+        std::vector<OSFileEntry> retVec;
+        
+        for(int i=0; i < fileProviders.size(); i++) {
+            if(fileProviders[i]->canListFiles) {
+                if(fileProviders[i]->parseFolder(pathString, showHidden, retVec)) {
+                    return retVec;
+                }
+            }
+        }
+        
+        systemParseFolder(pathString, showHidden, retVec);        
+        return retVec;
+    }
+    
 	
 }

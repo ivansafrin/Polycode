@@ -26,6 +26,14 @@
 #include <limits.h>
 #import <Cocoa/Cocoa.h>
 
+#include <dirent.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+#include "polycode/core/PolyBasicFileProvider.h"
+#include "polycode/core/PolyPhysFSFileProvider.h"
+
 #include <ApplicationServices/ApplicationServices.h>
 
 
@@ -85,6 +93,9 @@ void Core::getScreenInfo(int *width, int *height, int *hz) {
 
 CocoaCore::CocoaCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex, bool retinaSupport) : Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
 
+    fileProviders.push_back(new PhysFSFileProvider());
+    fileProviders.push_back(new BasicFileProvider());
+    
     this->retinaSupport = retinaSupport;
     
 	hidManager = NULL;
@@ -773,6 +784,28 @@ static void onDeviceValueChanged(void * context, IOReturn result, void * sender,
 			return;
 		}
 	}
+}
+
+bool CocoaCore::systemParseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector) {
+
+
+    DIR           *d;
+    struct dirent *dir;
+    
+    d = opendir(pathString.c_str());
+    if(d) {
+        while ((dir = readdir(d)) != NULL) {
+            if(dir->d_name[0] != '.' || (dir->d_name[0] == '.'  && showHidden)) {
+                if(dir->d_type == DT_DIR) {
+                    targetVector.push_back(OSFileEntry(pathString, dir->d_name, OSFileEntry::TYPE_FOLDER));
+                } else {
+                    targetVector.push_back(OSFileEntry(pathString, dir->d_name, OSFileEntry::TYPE_FILE));
+                }
+            }
+        }
+        closedir(d);
+    }
+    return true;
 }
 
 static void onDeviceMatched(void * context, IOReturn result, void * sender, IOHIDDeviceRef device) {
