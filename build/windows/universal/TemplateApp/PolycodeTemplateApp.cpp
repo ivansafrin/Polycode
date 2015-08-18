@@ -11,7 +11,7 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
 	//CoreServices::getInstance()->getResourceManager()->addDirResource("default");
 
 	// Write your code here!
-    
+    /*
     Scene *scene = new Scene(Scene::SCENE_2D);
     scene->useClearColor = true;
     
@@ -19,7 +19,7 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     test->setMaterialByName("Unlit");
     test->getLocalShaderOptions()->loadTextureForParam("diffuse", "main_icon.png");
     scene->addChild(test);
-    
+    */
 }
 
 PolycodeTemplateApp::~PolycodeTemplateApp() {

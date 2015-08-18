@@ -84,7 +84,7 @@ namespace Polycode {
     class _PolyExport RenderThread : public Threaded {
         public:
             RenderThread();
-            void setGraphicsInterface(Core *core, GraphicsInterface *interface);
+             void setGraphicsInterface(Core *core, GraphicsInterface *graphicsInterface);
             virtual void runThread();
             void enqueueJob(int jobType, void *data);
             void processJob(const RendererThreadJob &job);
@@ -113,7 +113,7 @@ namespace Polycode {
             Core *core;
             CoreMutex *jobQueueMutex;
             std::queue<RendererThreadJob> jobQueue;
-            GraphicsInterface *interface;
+            GraphicsInterface *graphicsInterface;
         
             ShaderBinding *rendererShaderBinding;
             LocalShaderParam *projectionMatrixParam;
@@ -126,7 +126,7 @@ namespace Polycode {
         
 		Renderer();
 		virtual ~Renderer();
-        void setGraphicsInterface(Core *core, GraphicsInterface *interface);
+        void setGraphicsInterface(Core *core, GraphicsInterface *graphicsInterface);
         
         RenderThread *getRenderThread();
 

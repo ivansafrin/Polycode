@@ -40,7 +40,7 @@ GPUDrawBuffer::~GPUDrawBuffer() {
 GraphicsInterface::GraphicsInterface() {
 }
 
-RenderThread::RenderThread() : interface(NULL) {
+RenderThread::RenderThread() : graphicsInterface(NULL) {
     
     rendererShaderBinding = new ShaderBinding();
     
@@ -73,11 +73,11 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
     ++currentDebugFrameInfo.buffersProcessed;
     
     if(buffer->targetFramebuffer) {
-        interface->bindFramebuffer(buffer->targetFramebuffer);
+        graphicsInterface->bindFramebuffer(buffer->targetFramebuffer);
     }
     
-    interface->setViewport(buffer->viewport.x, buffer->viewport.y, buffer->viewport.w, buffer->viewport.h);
-    interface->clearBuffers(buffer->clearColor, buffer->clearColorBuffer, buffer->clearDepthBuffer, true);
+    graphicsInterface->setViewport(buffer->viewport.x, buffer->viewport.y, buffer->viewport.w, buffer->viewport.h);
+    graphicsInterface->clearBuffers(buffer->clearColor, buffer->clearColorBuffer, buffer->clearDepthBuffer, true);
     
     projectionMatrixParam->setMatrix4(buffer->projectionMatrix);
     viewMatrixParam->setMatrix4(buffer->viewMatrix);
@@ -85,11 +85,11 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
     for(int i=0; i < buffer->drawCalls.size(); i++) {
         
         
-        interface->setBlendingMode(buffer->drawCalls[i].options.blendingMode);
-        interface->enableDepthTest(buffer->drawCalls[i].options.depthTest);
-        interface->enableDepthWrite(buffer->drawCalls[i].options.depthWrite);
-        interface->enableBackfaceCulling(buffer->drawCalls[i].options.backfaceCull);
-        interface->setLineSize(buffer->drawCalls[i].options.linePointSize);
+        graphicsInterface->setBlendingMode(buffer->drawCalls[i].options.blendingMode);
+        graphicsInterface->enableDepthTest(buffer->drawCalls[i].options.depthTest);
+        graphicsInterface->enableDepthWrite(buffer->drawCalls[i].options.depthWrite);
+        graphicsInterface->enableBackfaceCulling(buffer->drawCalls[i].options.backfaceCull);
+        graphicsInterface->setLineSize(buffer->drawCalls[i].options.linePointSize);
         
         modelMatrixParam->setMatrix4(buffer->drawCalls[i].modelMatrix);
         
@@ -100,10 +100,10 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
             for(int s=0; s < buffer->drawCalls[i].material->getNumShaders(); s++) {
         
                 ++currentDebugFrameInfo.drawCallsProcessed;
-                interface->beginDrawCall();
+                graphicsInterface->beginDrawCall();
                 
                 Shader *shader = buffer->drawCalls[i].material->getShader(s);
-                interface->useShader(shader);
+                graphicsInterface->useShader(shader);
                 
                 ShaderBinding *materialShaderBinding = buffer->drawCalls[i].material->getShaderBinding(s);
 
@@ -121,7 +121,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                             localParam->param = shader->getParamPointer(localParam->name);
   //                      }
                         if(localParam->param) {
-                            interface->setParamInShader(shader, localParam->param, localParam);
+                            graphicsInterface->setParamInShader(shader, localParam->param, localParam);
                         }
                     }
                     
@@ -135,7 +135,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                             localParam->param = shader->getParamPointer(localParam->name);
                         }
                         if(localParam->param) {
-                            interface->setParamInShader(shader, localParam->param, localParam);
+                            graphicsInterface->setParamInShader(shader, localParam->param, localParam);
                         }
                     }
 
@@ -149,7 +149,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                             localParam->param = shader->getParamPointer(localParam->name);
                         }
                         if(localParam->param) {
-                            interface->setParamInShader(shader, localParam->param, localParam);
+                            graphicsInterface->setParamInShader(shader, localParam->param, localParam);
                         }
                     }
                     
@@ -168,7 +168,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                             if(attributeBinding->attribute) {
                                 
                                 if(attributeBinding->vertexData->data.size() / attributeBinding->vertexData->countPerVertex >= buffer->drawCalls[i].numVertices) {
-                                    interface->setAttributeInShader(shader, attributeBinding->attribute, attributeBinding);
+                                    graphicsInterface->setAttributeInShader(shader, attributeBinding->attribute, attributeBinding);
                                 }
                             } else {
                                 attributeBinding->enabled = false;
@@ -179,24 +179,24 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                 }
                 
                 if(buffer->drawCalls[i].indexed) {
-                    interface->drawIndices(buffer->drawCalls[i].mode, buffer->drawCalls[i].indexArray);
+                    graphicsInterface->drawIndices(buffer->drawCalls[i].mode, buffer->drawCalls[i].indexArray);
                 } else {
-                    interface->drawArrays(buffer->drawCalls[i].mode, buffer->drawCalls[i].numVertices);
+                    graphicsInterface->drawArrays(buffer->drawCalls[i].mode, buffer->drawCalls[i].numVertices);
                 }
                 
                 
                 for(int a=0; a < shader->expectedAttributes.size(); a++) {
                     ProgramAttribute attribute = shader->expectedAttributes[a];
-                    interface->disableAttribute(shader, attribute);
+                    graphicsInterface->disableAttribute(shader, attribute);
                 }
                 
-                interface->endDrawCall();
+                graphicsInterface->endDrawCall();
             }
         }
     }
     
     if(buffer->targetFramebuffer) {
-        interface->bindFramebuffer(NULL);
+        graphicsInterface->bindFramebuffer(NULL);
     }
     
 }
@@ -213,7 +213,7 @@ void RenderThread::processJob(const RendererThreadJob &job) {
         case JOB_CREATE_TEXTURE:
         {
             Texture *texture = (Texture*) job.data;
-            interface->createTexture(texture);
+            graphicsInterface->createTexture(texture);
         }
         break;
         case JOB_PROCESS_DRAW_BUFFER:
@@ -241,23 +241,23 @@ void RenderThread::processJob(const RendererThreadJob &job) {
         case JOB_CREATE_PROGRAM:
         {
             ShaderProgram *program = (ShaderProgram*) job.data;
-            interface->createProgram(program);
+            graphicsInterface->createProgram(program);
         }
         break;
         case JOB_CREATE_SHADER:
         {
             Shader *shader = (Shader*) job.data;
-            interface->createShader(shader);
+            graphicsInterface->createShader(shader);
         }
         break;
         case JOB_CREATE_VERTEX_BUFFERS:
         {
             Mesh *mesh = (Mesh*) job.data;
             
-            interface->createVertexBuffer(&mesh->vertexPositionArray);
-            interface->createVertexBuffer(&mesh->vertexTexCoordArray);
+            graphicsInterface->createVertexBuffer(&mesh->vertexPositionArray);
+            graphicsInterface->createVertexBuffer(&mesh->vertexTexCoordArray);
             if(mesh->indexedMesh) {
-                interface->createIndexBuffer(&mesh->indexArray);
+                graphicsInterface->createIndexBuffer(&mesh->indexArray);
             }
         }
         break;
@@ -281,8 +281,8 @@ void RenderThread::enqueueJob(int jobType, void *data) {
     Services()->getCore()->unlockMutex(jobQueueMutex);
 }
 
-void RenderThread::setGraphicsInterface(Core *core, GraphicsInterface *interface) {
-    this->interface = interface;
+void RenderThread::setGraphicsInterface(Core *core, GraphicsInterface *graphicsInterface) {
+    this->graphicsInterface = graphicsInterface;
     this->core = core;
 }
 
@@ -298,8 +298,8 @@ Renderer::~Renderer() {
     
 }
 
-void Renderer::setGraphicsInterface(Core *core, GraphicsInterface *interface) {
-    renderThread->setGraphicsInterface(core, interface);
+void Renderer::setGraphicsInterface(Core *core, GraphicsInterface *graphicsInterface) {
+    renderThread->setGraphicsInterface(core, graphicsInterface);
 }
 
 RenderThread *Renderer::getRenderThread() {
