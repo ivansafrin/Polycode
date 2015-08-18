@@ -123,6 +123,8 @@ CocoaCore::CocoaCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, 
     renderer->setGraphicsInterface(this, new OpenGLGraphicsInterface());
     services->setRenderer(renderer);
     setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
+    
+    services->getSoundManager()->setAudioInterface(new PAAudioInterface());
 }
 
 void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport) {

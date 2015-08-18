@@ -87,33 +87,25 @@ long custom_tellfunc(void *datasource) {
 }
 
 Sound::Sound(const String& fileName, bool generateFloatBuffer) :  referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), sampleLength(-1), streamingSound(false) {
-	checkALError("Construct: Loose error before construction");
-	soundLoaded = false;	
-
-	loadFile(fileName, generateFloatBuffer);	
-	
+	soundLoaded = false;
+	loadFile(fileName, generateFloatBuffer);
 	setIsPositional(false);
-	
-	checkALError("Construct from file: Finished");
 }
 
-Sound::Sound(int size, const char *data, int channels, int freq, int bps, bool generateFloatBuffer) : referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), buffer(AL_NONE), soundSource(AL_NONE), sampleLength(-1), streamingSound(false) {
-	checkALError("Construct: Loose error before construction");
-	buffer = loadBytes(data, size, freq, channels, bps, generateFloatBuffer);
-	
-	soundSource = GenSource(buffer);
+Sound::Sound(int size, const char *data, int channels, unsigned int freq, int bps, bool generateFloatBuffer) : referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), sampleLength(-1), streamingSound(false) {
+    
+	//buffer = loadBytes(data, size, freq, channels, bps, generateFloatBuffer);
+	//soundSource = GenSource(buffer);
 	
 	setIsPositional(false);
 	reloadProperties();
 	
 	soundLoaded = true;
-	
-	checkALError("Construct from data: Finished");
 }
 
-Sound::Sound(AudioStreamingSource *streamingSource) : referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), buffer(AL_NONE), soundSource(AL_NONE), sampleLength(-1), streamingSound(true), streamingSource(streamingSource) {
+Sound::Sound(AudioStreamingSource *streamingSource) : referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1),  sampleLength(-1), streamingSound(true), streamingSource(streamingSource) {
     
-    
+    /*
     alGenSources(1, &soundSource);
     
     alSourcef(soundSource, AL_PITCH, 1.0);
@@ -136,10 +128,13 @@ Sound::Sound(AudioStreamingSource *streamingSource) : referenceDistance(1), maxD
     Services()->getSoundManager()->registerStreamingSound(this);
     
 	alSourcePlay(soundSource);
+     */
+        // NOAL_TODO
     
 }
 
 void Sound::updateStream() {
+    /*
     ALint processed = 0;
     alGetSourcei(soundSource, AL_BUFFERS_PROCESSED, &processed);
     
@@ -156,10 +151,12 @@ void Sound::updateStream() {
     if(state != AL_PLAYING) {
         alSourcePlay(soundSource);
     }
+     */
+    //NOAL_TODO
 }
 
-bool Sound::updateALBuffer(ALuint buffer) {
-    
+bool Sound::updateALBuffer(unsigned int buffer) {
+    /*
     char data[STREAMING_BUFFER_SIZE];
     unsigned int bytesStreamed = streamingSource->streamData(data, STREAMING_BUFFER_SIZE);
     
@@ -175,13 +172,14 @@ bool Sound::updateALBuffer(ALuint buffer) {
     }
     
     alBufferData(buffer, format, data, bytesStreamed, streamingSource->getFrequency());
-    
+    */
+            // NOAL_TODO
     return true;
 }
 
 
 void Sound::loadFile(String fileName, bool generateFloatBuffer) {
-
+/*
 	if(soundLoaded) {
 		alDeleteSources(1,&soundSource);	
 	}
@@ -218,6 +216,8 @@ void Sound::loadFile(String fileName, bool generateFloatBuffer) {
 	soundLoaded = true;
 	
 	checkALError("Sound load: complete");
+ */
+    //NOAL_TODO
 }
 
 void Sound::reloadProperties() { // Re-set stored properties into sound source.
@@ -241,7 +241,7 @@ Number Sound::getPitch() {
 }
 
 Sound::~Sound() {
-    
+/*
 	alSourcei(soundSource, AL_BUFFER, 0);
     
 	alDeleteSources(1,&soundSource);
@@ -252,6 +252,8 @@ Sound::~Sound() {
         alDeleteBuffers(STREAMING_BUFFER_COUNT, streamingBuffers);
         Services()->getSoundManager()->unregisterStreamingSound(this);
     }
+ */
+        //NOAL_TODO
 }
 
 void Sound::soundCheck(bool result, const String& err) {
@@ -280,6 +282,8 @@ unsigned short Sound::readByte16(const unsigned char data[2]) {
 }
 
 void Sound::Play(bool loop) {
+    
+    /*
 	if(!loop) {
 		alSourcei(soundSource, AL_LOOPING, AL_FALSE);
 	} else {
@@ -288,57 +292,86 @@ void Sound::Play(bool loop) {
 	checkALError("Play: loop");
 	alSourcePlay(soundSource);
 	checkALError("Play: play");
+     */
+        //NOAL_TODO
 }
 
 bool Sound::isPlaying() {
+    /*
 	ALenum state;
 	alGetSourcei(soundSource, AL_SOURCE_STATE, &state);
 	return (state == AL_PLAYING);
+     */
+        //NOAL_TODO
+    return false;
 }
 
 
 void Sound::setVolume(Number newVolume) {
 	this->volume = newVolume;
+    /*
 	alSourcef(soundSource, AL_GAIN, newVolume);
 	checkALError("Set volume");
+     */
+        //NOAL_TODO
 }
 
 void Sound::setPitch(Number newPitch) {
 	this->pitch = newPitch;
+    /*
 	alSourcef(soundSource, AL_PITCH, newPitch);
 	checkALError("Set pitch");
+     */
+        //NOAL_TODO
 }
 
 void Sound::setSoundPosition(Vector3 position) {
+    /*
 	if(isPositional)
 		alSource3f(soundSource,AL_POSITION, position.x, position.y, position.z);
 	checkALError("Set sound position");
+     */
+        //NOAL_TODO
 }
 
 void Sound::setSoundVelocity(Vector3 velocity) {
+    /*
 	if(isPositional)
 		alSource3f(soundSource,AL_VELOCITY, velocity.x, velocity.y, velocity.z);
 	checkALError("Set sound velocity");
+     */
+        //NOAL_TODO
 }
 
 void Sound::setSoundDirection(Vector3 direction) {
+    /*
 	if(isPositional)
 		alSource3f(soundSource,AL_DIRECTION, direction.x, direction.y, direction.z);
 	checkALError("Set sound direction");
+     */
+        //NOAL_TODO
 }
 
 void Sound::setOffset(int off) {
+    /*
 	alSourcei(soundSource, AL_SAMPLE_OFFSET, off);
+     */
+        //NOAL_TODO
 }
 
 
 Number Sound::getPlaybackTime() {
+    /*
 	float result = 0.0;
 	alGetSourcef(soundSource, AL_SEC_OFFSET, &result);
 	return result;
+     */
+        //NOAL_TODO
+    return 0.0;
 }
 
 Number Sound::getPlaybackDuration() {
+    /*
 	ALint sizeInBytes;
 	ALint channels;
 	ALint bits;
@@ -356,19 +389,29 @@ Number Sound::getPlaybackDuration() {
 	Number durationInSeconds = (float)lengthInSamples / (float)frequency;
 	
 	return durationInSeconds;
+     */
+        //NOAL_TODO
+    return 0.0;
 }
 		
 int Sound::getOffset() {
+    /*
 	ALint off = -1;
 	alGetSourcei(soundSource, AL_SAMPLE_OFFSET, &off);
 	return off;
+     */
+            //NOAL_TODO
+    return 0;
 }
 
 void Sound::seekTo(Number time) {
+    /*
 	if(time > getPlaybackDuration())
 		return;
 	alSourcef(soundSource, AL_SEC_OFFSET, time);
 	checkALError("Seek");
+     */
+            //NOAL_TODO
 }
 
 int Sound::getSampleLength() {
@@ -382,14 +425,16 @@ void Sound::setPositionalProperties(Number referenceDistance, Number maxDistance
 
 void Sound::setReferenceDistance(Number referenceDistance) {
 	this->referenceDistance = referenceDistance;
-	alSourcef(soundSource, AL_REFERENCE_DISTANCE, referenceDistance);
-	checkALError("Set reference distance");
+	//alSourcef(soundSource, AL_REFERENCE_DISTANCE, referenceDistance);
+	//checkALError("Set reference distance");
+            //NOAL_TODO
 }
 
 void Sound::setMaxDistance(Number maxDistance) {
 	this->maxDistance = maxDistance;
-	alSourcef(soundSource,AL_MAX_DISTANCE, maxDistance);	
-	checkALError("Set max distance");
+	//alSourcef(soundSource,AL_MAX_DISTANCE, maxDistance);
+//	checkALError("Set max distance");
+            //NOAL_TODO
 }
 		
 Number Sound::getReferenceDistance() {
@@ -401,6 +446,7 @@ Number Sound::getMaxDistance() {
 }
 
 void Sound::setIsPositional(bool isPositional) {
+    /*
 	this->isPositional = isPositional;
 	if(isPositional) {
 		alSourcei(soundSource, AL_SOURCE_RELATIVE, AL_FALSE);
@@ -411,71 +457,24 @@ void Sound::setIsPositional(bool isPositional) {
 		alSource3f(soundSource,AL_DIRECTION, 0,0,0);				
 	}
 	checkALError("Set is-positional");
-}
-
-ALenum Sound::checkALError(const String& operation) {
-	ALenum error = alGetError();
-	if(error != AL_NO_ERROR) {
-		switch(error) {
-			case AL_INVALID_NAME:
-				soundError(operation +": " + ALInvalidNameStr);
-				break;
-			case AL_INVALID_ENUM:
-				soundError(operation + ": " +ALInvalidEnumStr);
-				break;
-			case AL_INVALID_VALUE:
-				soundError(operation + ": " +ALInvalidValueStr);
-				break;
-			case AL_INVALID_OPERATION:
-				soundError(operation + ": " +ALInvalidOpStr);
-				break;
-			case AL_OUT_OF_MEMORY:
-				soundError(operation + ": " +ALOutOfMemoryStr);
-				break;
-			default:
-				soundError(operation + ": " +ALOtherErrorStr);
-				break;
-		}		
-	}
-	return error;
+     */
+            //NOAL_TODO
 }
 
 void Sound::Stop() {
-	alSourceStop(soundSource);
-	checkALError("Stop");
+        //NOAL_TODO
 }
 
-ALuint Sound::GenSource() {
-	ALuint source;
-	bool looping = false;
-	ALfloat sourcePos[] = {0.0, 0.0, 0.0};
-	ALfloat sourceVel[] = {0.0, 0.0, 0.0};
-	
-	alGetError();
-	
-	alGenSources(1, &source);
-	checkALError("Generating sources");
-	
-	alSourcef(source, AL_PITCH, 1.0);
-	alSourcef(source, AL_GAIN, 1.0);
-	alSourcefv(source, AL_POSITION, sourcePos);
-	alSourcefv(source, AL_VELOCITY, sourceVel);
-	alSourcei(source, AL_LOOPING, looping);
 
-	checkALError("Setting source properties");
-	
-	return source;
+
+std::vector<float> *Sound::getFloatBuffer() {
+    return &floatBuffer;
 }
 
-ALuint Sound::GenSource(ALuint buffer) {
-	alGetError();
-	ALuint source = GenSource();
-	alSourcei(source, AL_BUFFER, buffer);	
-	checkALError("Setting source buffer");
-	return source;
-}
 
+/*
 ALuint Sound::loadBytes(const char *data, int size, int freq, int channels, int bps, bool generateFloatBuffer) {
+    /*
 	ALenum format;
 	if (channels == 1)
 		format = (bps == 8) ? AL_FORMAT_MONO8 : AL_FORMAT_MONO16;
@@ -499,9 +498,10 @@ ALuint Sound::loadBytes(const char *data, int size, int freq, int channels, int 
 			floatBuffer.push_back(((Number)ptr32[i])/((Number)INT32_MAX));
 		}
 	}
-    
+
 	return buffer;
 }
+
 
 ALuint Sound::loadOGG(const String& fileName, bool generateFloatBuffer) {
 //	floatBuffer.clear();
@@ -565,12 +565,6 @@ ALuint Sound::loadOGG(const String& fileName, bool generateFloatBuffer) {
 	}
 	return buffer;
 }
-
-
-std::vector<float> *Sound::getFloatBuffer() {
-	return &floatBuffer;
-}
-
 
 ALuint Sound::loadWAV(const String& fileName, bool generateFloatBuffer) {
 	long bytes;
@@ -683,3 +677,6 @@ ALuint Sound::loadWAV(const String& fileName, bool generateFloatBuffer) {
 //		throw (e);
 
 }
+ 
+ */
+//NOAL_TODO

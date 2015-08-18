@@ -25,16 +25,23 @@
 #include "polycode/core/PolyVector3.h"
 #include "polycode/core/PolySound.h"
 
-#if defined(__APPLE__) && defined(__MACH__)
-    #include <OpenAL/al.h>
-    #include <OpenAL/alc.h>
-#else
-    #include "al.h"
-    #include "alc.h"
-#endif
+#define POLY_FRAMES_PER_BUFFER 256
+#define POLY_AUDIO_FREQ 44100
+#define POLY_CIRCULAR_BUFFER_SIZE 128
+#define POLY_NUM_CHANNELS 2
 
 namespace Polycode {
 	
+    class _PolyExport AudioInterface {
+        public:
+            AudioInterface();
+            void addToBuffer(float *data, unsigned int count);
+        
+            float bufferData[POLY_NUM_CHANNELS][POLY_FRAMES_PER_BUFFER*POLY_CIRCULAR_BUFFER_SIZE];
+            unsigned int readOffset;
+            unsigned int writeOffset;
+    };
+    
 	/**
 	* Controls global sound settings.
 	*/
@@ -43,14 +50,14 @@ namespace Polycode {
 	public:
 		SoundManager();
 		~SoundManager();
-		
+		 
 		void setListenerPosition(Vector3 position);
 		void setListenerOrientation(Vector3 orientation, Vector3 upVector);	
-		void initAL();
         
         bool recordSound(unsigned int rate, unsigned int sampleSize);
         Sound *stopRecording(bool generateFloatBuffer = false);
-
+        void setAudioInterface(AudioInterface *audioInterface);
+        
         void Update();
 		
 		/**
@@ -63,12 +70,13 @@ namespace Polycode {
 		
 	protected:
 		
+        AudioInterface *audioInterface;
+        
+        Number globalVolume;
+        Number testVal;
+        
         std::vector<Sound*> streamingSounds;
-		ALCdevice* device;
-        ALCdevice* captureDevice;
-        ALbyte *recordingBuffer;
         int recordingBufferSize;
         int recordingBufferRate;
-		ALCcontext* context;		
 	};
 }

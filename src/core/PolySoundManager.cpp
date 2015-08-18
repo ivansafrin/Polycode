@@ -21,74 +21,29 @@
 */
 
 #include "polycode/core/PolySoundManager.h"
+#include "polycode/core/PolyCore.h"
 #include "polycode/core/PolyLogger.h"
 
 using namespace Polycode;
 
+
 SoundManager::SoundManager() {
-	initAL();
-}
-
-void SoundManager::initAL() {
-    captureDevice = NULL;
-    
-	device = alcOpenDevice(0);
-	if(device == 0) {
-		Logger::log("InitializeAL: Cannot open preferred device\n");
-		return;
-	}
-
-	ALCenum error = alcGetError(device);
-	if (error != ALC_NO_ERROR) {
-		alcCloseDevice(device);
-		Logger::log("InitializeAL: Could not open device (%d).", error);
-		return;
-	}
-	
-	context = alcCreateContext(device, 0);
-	if (context == 0) {
-		alcCloseDevice(device);
-		Logger::log("InitializeAL: Could not create context");
-		return;
-	}
-
-	error = alcGetError(device);
-	if (error != ALC_NO_ERROR) {
-		alcDestroyContext(context);
-		alcCloseDevice(device);
-		Logger::log("InitializeAL: Could not open device (%d).", error);
-		return;
-	}
-	
-	if (alcMakeContextCurrent(context) != ALC_TRUE) {
-		alcDestroyContext(context);
-		alcCloseDevice(device);
-		Logger::log("InitializeAL: Could not make context current");
-		return;
-	}
-	
-	ALfloat listenerPos[] = { 0.0, 0.0, 0.0 };
-	ALfloat listenerVel[] = { 0.0, 0.0, 0.0 };	
-	ALfloat listenerOri[] = { 0.0, 0.0, -1.0,  0.0, 1.0, 0.0 };
-	
-	alListenerfv(AL_POSITION, listenerPos);
-	alListenerfv(AL_VELOCITY, listenerVel);
-	alListenerfv(AL_ORIENTATION, listenerOri);
-	
-	alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
-	
-	Logger::log("OpenAL initialized...\n");
+    audioInterface = NULL;
+    testVal = 0.0;
 }
 
 void SoundManager::setGlobalVolume(Number globalVolume) {
-	alListenerf(AL_GAIN, globalVolume);
+    // NOAL_TODO
+	//alListenerf(AL_GAIN, globalVolume);
 }
 
 void SoundManager::setListenerPosition(Vector3 position) {
-	alListener3f(AL_POSITION, position.x, position.y, position.z);
+    // NOAL_TODO
+//	alListener3f(AL_POSITION, position.x, position.y, position.z);
 }
 
 void SoundManager::setListenerOrientation(Vector3 orientation, Vector3 upVector) {
+    /*
 	ALfloat ori[6];
 	ori[0] = orientation.x;
 	ori[1] = orientation.y;
@@ -98,10 +53,13 @@ void SoundManager::setListenerOrientation(Vector3 orientation, Vector3 upVector)
 	ori[4] = upVector.y;
 	ori[5] = upVector.z;	
 	alListenerfv(AL_ORIENTATION,ori);
+     */
+    // NOAL_TODO
 }
 
 bool SoundManager::recordSound(unsigned int rate, unsigned int sampleSize) {
-    
+    // NOAL_TODO
+    /*
     if(captureDevice) {
         Logger::log("Error: Audio capture already in progress\n");
         return false;
@@ -119,9 +77,12 @@ bool SoundManager::recordSound(unsigned int rate, unsigned int sampleSize) {
     
     alcCaptureStart(captureDevice);
     return true;
+     */
+    return false;
 }
 
 Sound *SoundManager::stopRecording(bool generateFloatBuffer) {
+    /*
     if(!captureDevice) {
         Logger::log("No recording in process\n");
         return NULL;
@@ -135,6 +96,9 @@ Sound *SoundManager::stopRecording(bool generateFloatBuffer) {
     free(recordingBuffer);
     
     return newSound;
+     */
+        // NOAL_TODO
+    return NULL;
 }
 
 void SoundManager::registerStreamingSound(Sound *sound) {
@@ -150,8 +114,46 @@ void SoundManager::unregisterStreamingSound(Sound *sound) {
     }
 }
 
+void SoundManager::setAudioInterface(AudioInterface *audioInterface) {
+    this->audioInterface = audioInterface;
+}
+
+
+AudioInterface::AudioInterface() {
+    readOffset = 0;
+    writeOffset = 0;
+    memset(bufferData, 0, sizeof(float) * POLY_FRAMES_PER_BUFFER*POLY_CIRCULAR_BUFFER_SIZE);
+}
+
+void AudioInterface::addToBuffer(float *data, unsigned int count) {
+    for(int i=0; i < count; i++) {
+        for(int b=0; b < POLY_NUM_CHANNELS; b++) {
+            bufferData[b][writeOffset] = data[(i*POLY_NUM_CHANNELS)+b];
+        }
+        writeOffset++;
+        if(writeOffset >= POLY_FRAMES_PER_BUFFER * POLY_CIRCULAR_BUFFER_SIZE) {
+            writeOffset = 0;
+        }
+        
+    }
+}
+
 void SoundManager::Update() {
+    Number elapsed = Services()->getCore()->getElapsed();
+    
+    if(audioInterface) {
+        unsigned int numSamples = ((Number)POLY_AUDIO_FREQ)*elapsed;
+        
+        for(int i=0; i < numSamples; i++) {
+            float sinVal = sin(testVal);
+            float data[2] = {sinVal, sinVal};
+            audioInterface->addToBuffer(data, 1);
+            testVal += 1.0/44100.0 * 261.62 * 2.0 * PI; // middle C for testing
+        }
+    }
+    
     // if recording sound, save samples
+    /*
     if(captureDevice) {
         ALint samples;
         alcGetIntegerv(captureDevice, ALC_CAPTURE_SAMPLES, (ALCsizei)sizeof(ALint), &samples);
@@ -167,15 +169,10 @@ void SoundManager::Update() {
     for(int i=0; i < streamingSounds.size(); i++) {
         streamingSounds[i]->updateStream();
     }
+     */
+        // NOAL_TODO
 }
 
 SoundManager::~SoundManager() {
-	if (context != 0 ) {
-		alcSuspendContext(context);
-		alcMakeContextCurrent(0);
-		alcDestroyContext(context);
-	}
-	if (device != 0) {
-		alcCloseDevice(device);
-	}
+    delete audioInterface;
 }

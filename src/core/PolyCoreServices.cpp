@@ -102,9 +102,6 @@ Logger *CoreServices::getLogger() {
 	return logger;
 }
 
-void CoreServices::setupBasicListeners() {
-	this->setCore(this->core);	
-}
 
 CoreServices::CoreServices() : EventDispatcher() {
 	logger = Logger::getInstance();

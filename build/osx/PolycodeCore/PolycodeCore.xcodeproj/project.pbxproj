@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8A825F231B829BA70039E823 /* PolyPAAudioInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A825F221B829BA70039E823 /* PolyPAAudioInterface.h */; };
+		8A825F251B829BC20039E823 /* PolyPAAudioInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A825F241B829BC20039E823 /* PolyPAAudioInterface.cpp */; };
 		8A8652331B72865C009F94DD /* PolyBezierCurve.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8651E81B72865C009F94DD /* PolyBezierCurve.h */; };
 		8A8652341B72865C009F94DD /* PolyBone.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8651E91B72865C009F94DD /* PolyBone.h */; };
 		8A8652351B72865C009F94DD /* PolyCamera.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8651EA1B72865C009F94DD /* PolyCamera.h */; };
@@ -167,6 +169,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8A825F221B829BA70039E823 /* PolyPAAudioInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyPAAudioInterface.h; path = ../../../include/polycode/core/PolyPAAudioInterface.h; sourceTree = "<group>"; };
+		8A825F241B829BC20039E823 /* PolyPAAudioInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyPAAudioInterface.cpp; path = ../../../src/core/PolyPAAudioInterface.cpp; sourceTree = "<group>"; };
 		8A8651E81B72865C009F94DD /* PolyBezierCurve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyBezierCurve.h; path = ../../../include/polycode/core/PolyBezierCurve.h; sourceTree = "<group>"; };
 		8A8651E91B72865C009F94DD /* PolyBone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyBone.h; path = ../../../include/polycode/core/PolyBone.h; sourceTree = "<group>"; };
 		8A8651EA1B72865C009F94DD /* PolyCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyCamera.h; path = ../../../include/polycode/core/PolyCamera.h; sourceTree = "<group>"; };
@@ -350,6 +354,7 @@
 		8A8651E61B728638009F94DD /* src */ = {
 			isa = PBXGroup;
 			children = (
+				8A825F241B829BC20039E823 /* PolyPAAudioInterface.cpp */,
 				8A8653911B7434D8009F94DD /* PolyCoreFileProvider.cpp */,
 				8A86538D1B742DCD009F94DD /* PolyBasicFileProvider.cpp */,
 				8A86538E1B742DCD009F94DD /* PolyPhysFSFileProvider.cpp */,
@@ -434,6 +439,7 @@
 		8A8651E71B72863F009F94DD /* include */ = {
 			isa = PBXGroup;
 			children = (
+				8A825F221B829BA70039E823 /* PolyPAAudioInterface.h */,
 				8A8653891B742DBC009F94DD /* PolyBasicFileProvider.h */,
 				8A86538A1B742DBC009F94DD /* PolyPhysFSFileProvider.h */,
 				8A8653931B7434EB009F94DD /* PolyCoreFileProvider.h */,
@@ -530,6 +536,7 @@
 				8A86523E1B72865C009F94DD /* PolyCubemap.h in Headers */,
 				8A8652741B72865C009F94DD /* PolyTexture.h in Headers */,
 				8A86526D1B72865C009F94DD /* PolyServerWorld.h in Headers */,
+				8A825F231B829BA70039E823 /* PolyPAAudioInterface.h in Headers */,
 				8A86524F1B72865C009F94DD /* PolyMaterialManager.h in Headers */,
 				8A8652461B72865C009F94DD /* PolyFontManager.h in Headers */,
 				8A8652891B72866C009F94DD /* tinyxml.h in Headers */,
@@ -720,6 +727,7 @@
 				8A8652EE1B72867F009F94DD /* PolyMaterial.cpp in Sources */,
 				8A8653121B72867F009F94DD /* PolyTexture.cpp in Sources */,
 				8A86530A1B72867F009F94DD /* PolySceneSprite.cpp in Sources */,
+				8A825F251B829BC20039E823 /* PolyPAAudioInterface.cpp in Sources */,
 				8A8653041B72867F009F94DD /* PolySceneLine.cpp in Sources */,
 				8A8653191B72867F009F94DD /* PolyVector3.cpp in Sources */,
 				8A8653141B72867F009F94DD /* PolyTimer.cpp in Sources */,

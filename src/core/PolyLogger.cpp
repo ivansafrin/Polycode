@@ -110,6 +110,10 @@ void Logger::log(const char *format, ...) {
 
 }
 
+void Logger::log(const String &message) {
+    log(message.c_str());
+}
+
 void Logger::setLogToFile(bool val){
 	if (!logToFile && val){
 		time_t t = time(NULL);

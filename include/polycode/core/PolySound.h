@@ -26,22 +26,6 @@
 #include "polycode/core/PolyString.h"
 #include "polycode/core/PolyCoreServices.h"
 
-#if defined(__APPLE__) && defined(__MACH__)
-    #include <OpenAL/al.h>
-    #include <OpenAL/alc.h>
-#else
-    #include "al.h"
-    #include "alc.h"
-#endif
-
-#define ALNoErrorStr "No AL error occurred"
-#define ALInvalidNameStr "AL error: a bad name (ID) was passed to an OpenAL function"
-#define ALInvalidEnumStr "AL error: an invalid enum value was passed to an OpenAL function"
-#define ALInvalidValueStr "AL error: an invalid value was passed to an OpenAL function"
-#define ALInvalidOpStr "AL error: the requested operation is not valid"
-#define ALOutOfMemoryStr "AL error: the requested operation resulted in OpenAL running out of memory"
-#define ALOtherErrorStr "AL error: unknown error"
-
 #define BUFFER_SIZE 32768
 #define STREAMING_BUFFER_COUNT 4
 #define STREAMING_BUFFER_SIZE 4096
@@ -79,7 +63,7 @@ namespace Polycode {
 		* @param fileName Path to an OGG or WAV file to load.
 		*/ 
 		Sound(const String& fileName, bool generateFloatBuffer = false);
-		Sound(int size, const char *data, int channels = 1, ALsizei freq = 44100, int bps = 16, bool generateFloatBuffer = false);
+		Sound(int size, const char *data, int channels = 1, unsigned int freq = 44100, int bps = 16, bool generateFloatBuffer = false);
         Sound(AudioStreamingSource *streamingSource);
         
 		virtual ~Sound();
@@ -159,15 +143,16 @@ namespace Polycode {
 		
 		Number getReferenceDistance();
 		Number getMaxDistance();
-		
+        
+		/*
 		ALuint loadBytes(const char *data, int size, int channels = 1, ALsizei freq = 44100, int bps = 16, bool generateFloatBuffer = false);
 		ALuint loadWAV(const String& fileName, bool generateFloatBuffer);
 		ALuint loadOGG(const String& fileName, bool generateFloatBuffer);
-		
 		ALuint GenSource(ALuint buffer);
 		ALuint GenSource();
-	
-		ALenum checkALError(const String& operation);
+        */
+        // NOAL_TODO
+        
 		void soundError(const String& err);
 		void soundCheck(bool result, const String& err);
 		static unsigned long readByte32(const unsigned char buffer[4]);		
@@ -179,7 +164,7 @@ namespace Polycode {
 
 	protected:
         
-        bool updateALBuffer(ALuint buffer);
+        bool updateALBuffer(unsigned int buffer);
 	
 		Number referenceDistance;
 		Number maxDistance;
@@ -195,12 +180,7 @@ namespace Polycode {
 		bool soundLoaded;
 	
 		bool isPositional;
-		ALuint buffer; // Kept around only for deletion purposes
-		ALuint soundSource;
 		int sampleLength;
-        
-        ALuint streamingSources;
-        ALuint streamingBuffers[STREAMING_BUFFER_COUNT];
 		
 		std::vector<float> floatBuffer;
 	};

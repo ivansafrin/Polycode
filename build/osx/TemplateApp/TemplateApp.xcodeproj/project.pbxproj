@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8A825F271B82A2680039E823 /* libportaudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A825F261B82A2680039E823 /* libportaudio.a */; };
+		8A825F291B82A29B0039E823 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A825F281B82A29B0039E823 /* CoreAudio.framework */; };
+		8A825F2E1B82A2C80039E823 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A825F2C1B82A2B10039E823 /* AudioUnit.framework */; };
+		8A825F2F1B82A2DC0039E823 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A825F2A1B82A2A50039E823 /* AudioToolbox.framework */; };
 		8A8653371B72931C009F94DD /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A8653361B72931C009F94DD /* AppDelegate.m */; };
 		8A8653391B72931C009F94DD /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A8653381B72931C009F94DD /* main.m */; };
 		8A86533B1B72931C009F94DD /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8A86533A1B72931C009F94DD /* Images.xcassets */; };
@@ -20,7 +24,6 @@
 		8A8653621B72949F009F94DD /* libpng15.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A8653591B72949F009F94DD /* libpng15.a */; };
 		8A8653631B72949F009F94DD /* libPolycore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A86535A1B72949F009F94DD /* libPolycore.a */; };
 		8A8653641B72949F009F94DD /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A86535B1B72949F009F94DD /* libz.a */; };
-		8A8653661B7294B1009F94DD /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A8653651B7294B1009F94DD /* OpenAL.framework */; };
 		8A8653681B7294B7009F94DD /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A8653671B7294B7009F94DD /* OpenGL.framework */; };
 		8A86536B1B729559009F94DD /* PolycodeTemplateApp.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8A86536A1B729559009F94DD /* PolycodeTemplateApp.mm */; };
 		8A86536D1B729D77009F94DD /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8A86536C1B729D77009F94DD /* PolycodeView.mm */; };
@@ -29,6 +32,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8A825F261B82A2680039E823 /* libportaudio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libportaudio.a; path = ../../../../lib/osx/libportaudio.a; sourceTree = "<group>"; };
+		8A825F281B82A29B0039E823 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		8A825F2A1B82A2A50039E823 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		8A825F2C1B82A2B10039E823 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
 		8A8653301B72931C009F94DD /* TemplateApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TemplateApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A8653341B72931C009F94DD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8A8653351B72931C009F94DD /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -45,7 +52,6 @@
 		8A8653591B72949F009F94DD /* libpng15.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng15.a; path = ../../../../lib/osx/libpng15.a; sourceTree = "<group>"; };
 		8A86535A1B72949F009F94DD /* libPolycore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycore.a; path = ../../../../lib/osx/libPolycore.a; sourceTree = "<group>"; };
 		8A86535B1B72949F009F94DD /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = ../../../../lib/osx/libz.a; sourceTree = "<group>"; };
-		8A8653651B7294B1009F94DD /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		8A8653671B7294B7009F94DD /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		8A8653691B729559009F94DD /* PolycodeTemplateApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeTemplateApp.h; sourceTree = "<group>"; };
 		8A86536A1B729559009F94DD /* PolycodeTemplateApp.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PolycodeTemplateApp.mm; sourceTree = "<group>"; };
@@ -60,9 +66,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A825F2F1B82A2DC0039E823 /* AudioToolbox.framework in Frameworks */,
+				8A825F2E1B82A2C80039E823 /* AudioUnit.framework in Frameworks */,
+				8A825F291B82A29B0039E823 /* CoreAudio.framework in Frameworks */,
 				8A8653681B7294B7009F94DD /* OpenGL.framework in Frameworks */,
-				8A8653661B7294B1009F94DD /* OpenAL.framework in Frameworks */,
 				8A8653641B72949F009F94DD /* libz.a in Frameworks */,
+				8A825F271B82A2680039E823 /* libportaudio.a in Frameworks */,
 				8A8653631B72949F009F94DD /* libPolycore.a in Frameworks */,
 				8A86535F1B72949F009F94DD /* liblibvorbisfile.a in Frameworks */,
 				8A8653621B72949F009F94DD /* libpng15.a in Frameworks */,
@@ -80,8 +89,10 @@
 		8A8653271B72931C009F94DD = {
 			isa = PBXGroup;
 			children = (
+				8A825F2C1B82A2B10039E823 /* AudioUnit.framework */,
+				8A825F2A1B82A2A50039E823 /* AudioToolbox.framework */,
+				8A825F281B82A29B0039E823 /* CoreAudio.framework */,
 				8A8653671B7294B7009F94DD /* OpenGL.framework */,
-				8A8653651B7294B1009F94DD /* OpenAL.framework */,
 				8A8653321B72931C009F94DD /* TemplateApp */,
 				8A8653311B72931C009F94DD /* Products */,
 			);
@@ -119,6 +130,7 @@
 				8A8653531B72949F009F94DD /* libfreetype.a */,
 				8A8653541B72949F009F94DD /* liblibogg.a */,
 				8A8653551B72949F009F94DD /* liblibvorbis.a */,
+				8A825F261B82A2680039E823 /* libportaudio.a */,
 				8A8653561B72949F009F94DD /* liblibvorbisfile.a */,
 				8A8653571B72949F009F94DD /* liblua5.1.a */,
 				8A8653581B72949F009F94DD /* libphysfs.a */,

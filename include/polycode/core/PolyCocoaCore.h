@@ -27,6 +27,7 @@
 #include "polycode/core/PolyCore.h"
 #include "polycode/core/PolyString.h"
 #include "polycode/core/PolyRectangle.h"
+#include "polycode/core/PolyPAAudioInterface.h"
 #include <vector>
 #include <OpenGL/gl.h>
 #include <OpenGL/OpenGL.h>
@@ -178,7 +179,7 @@ namespace Polycode {
 		PolycodeView *glView;
 		uint64_t initTime;
         bool retinaSupport;
-				
+        
 		IOHIDManagerRef hidManager;
 	};
 }
