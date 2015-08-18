@@ -178,6 +178,6 @@ namespace Polycode {
 	};
     
 
-    CoreServices *Services();
+	_PolyExport CoreServices *Services();
     
 }

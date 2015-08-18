@@ -65,12 +65,6 @@ typedef unsigned int PolyRendererIndexType;
 #define TODEGREES 57.2957795
 #define TORADIANS 0.0174532925
 
-#if defined(_WINDOWS) && defined(Polycore_EXPORTS)
-	#define _PolyExport __declspec(dllexport)
-#else
-	#define _PolyExport
-#endif
-
 //#define COMPILE_SDL_CORE		1
 
 #define PLATFORM_WINDOWS  1
@@ -85,6 +79,13 @@ typedef unsigned int PolyRendererIndexType;
 	#include <cstddef>
 	#define PLATFORM PLATFORM_UNIX
 #endif
+
+#if (defined(_WINDOWS) || defined(WINAPI_FAMILY)) && defined(POLYCODE_EXPORTS)
+	#define _PolyExport __declspec(dllexport)
+#else
+	#define _PolyExport
+#endif
+
 
 #ifdef POLYCODE_NUMBER_IS_SINGLE
 typedef float Number;

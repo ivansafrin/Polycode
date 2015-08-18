@@ -27,83 +27,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\core\PolyBasicFileProvider.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyBezierCurve.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyBone.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyCamera.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyClient.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyColor.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyConfig.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyCore.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyCoreFileProvider.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyCoreInput.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyCoreServices.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyCubemap.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyData.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyEntity.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyEvent.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyEventDispatcher.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyEventHandler.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyFont.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyFontGlyphSheet.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyFontManager.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyGPUDrawBuffer.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyImage.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyInputEvent.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyLabel.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyLogger.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyMaterial.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyMaterialManager.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyMatrix4.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyMesh.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyObject.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyParticleEmitter.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyPeer.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyPerlin.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyQuaternion.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyQuaternionCurve.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyRay.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyRectangle.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyRenderDataArray.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyRenderer.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyResource.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyResourceManager.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyScene.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolySceneEntityInstance.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolySceneImage.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolySceneLabel.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolySceneLight.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolySceneLine.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolySceneManager.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolySceneMesh.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyScenePrimitive.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolySceneRenderTexture.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolySceneSound.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolySceneSprite.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyServer.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyShader.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolySkeleton.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolySocket.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolySound.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolySoundManager.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyString.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyTexture.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyThreaded.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyTimer.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyTimerManager.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyTween.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyTweenManager.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyUWPCore.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyVector2.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyVector3.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyVector4.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\rgbe.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\tinystr.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\tinyxml.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\tinyxmlerror.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\tinyxmlparser.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\..\..\..\include\Polycode.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyBasicFileProvider.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyBezierCurve.h" />
@@ -119,6 +42,7 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyCoreServices.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyCubemap.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyData.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyDX11GraphicsInterface.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyEntity.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyEvent.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyEventDispatcher.h" />
@@ -183,6 +107,85 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\stb_image.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\tinystr.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\tinyxml.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\core\PolyBasicFileProvider.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyBezierCurve.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyBone.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyCamera.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyClient.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyColor.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyConfig.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyCore.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyCoreFileProvider.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyCoreInput.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyCoreServices.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyCubemap.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyData.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyDX11GraphicsInterface.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyEntity.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyEvent.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyEventDispatcher.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyEventHandler.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyFont.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyFontGlyphSheet.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyFontManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyGPUDrawBuffer.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyInputEvent.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyLabel.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyLogger.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyMaterial.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyMaterialManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyMatrix4.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyMesh.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyObject.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyParticleEmitter.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyPeer.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyPerlin.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyQuaternion.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyQuaternionCurve.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyRay.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyRectangle.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyRenderDataArray.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyRenderer.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyResource.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyResourceManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyScene.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySceneEntityInstance.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySceneImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySceneLabel.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySceneLight.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySceneLine.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySceneManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySceneMesh.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyScenePrimitive.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySceneRenderTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySceneSound.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySceneSprite.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyServer.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyShader.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySkeleton.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySocket.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySound.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolySoundManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyString.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyThreaded.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyTimer.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyTimerManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyTween.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyTweenManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyUWPCore.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyVector2.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyVector3.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyVector4.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\rgbe.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\tinystr.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\tinyxml.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\tinyxmlerror.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\tinyxmlparser.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{ee7ae05c-9ae5-47fa-8a08-28e8d8d89b94}</ProjectGuid>
@@ -349,6 +352,9 @@
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
     </Link>
+    <Lib>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -362,6 +368,9 @@
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
     </Link>
+    <Lib>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
