@@ -44,9 +44,17 @@ UWPCore::UWPCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool v
 	mEglContext = view->mEglContext;
 	mEglSurface = view->mEglSurface;
 
+	LARGE_INTEGER li;
+	QueryPerformanceFrequency(&li);
+	pcFreq = double(li.QuadPart) / 1000.0;
+
+
 	fileProviders.push_back(new BasicFileProvider());
 
 	renderer = new Renderer();
+
+	renderer->setBackingResolutionScale(1.0, 1.0);
+
 	graphicsInterface = new OpenGLGraphicsInterface();
 	renderer->setGraphicsInterface(this, graphicsInterface);
 	services->setRenderer(renderer);
@@ -153,6 +161,9 @@ void UWPCore::openURL(String url) {
 }
 
 unsigned int UWPCore::getTicks() {
+	LARGE_INTEGER li;
+	QueryPerformanceCounter(&li);
+	return (unsigned int)(li.QuadPart / pcFreq);
 	return 0;
 }
 

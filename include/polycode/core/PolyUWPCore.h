@@ -96,6 +96,8 @@ namespace Polycode {
 
 	private:
 
+		double pcFreq;
+
 		OpenGLGraphicsInterface *graphicsInterface;
 		IUnknown *m_Window;
 

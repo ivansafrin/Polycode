@@ -9,7 +9,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyBasicFileProvider.h">
       <Filter>Include</Filter>
     </ClInclude>
@@ -249,6 +248,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyOpenGLGraphicsInterface.h">
       <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

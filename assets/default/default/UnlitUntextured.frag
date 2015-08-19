@@ -1,3 +1,5 @@
+precision mediump float;
+
 uniform vec4 entityColor;
 
 void main() {
