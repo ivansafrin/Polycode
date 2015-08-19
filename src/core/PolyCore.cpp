@@ -188,6 +188,12 @@ namespace Polycode {
 	CoreMutex *Core::getEventMutex() {
 		return eventMutex;
 	}
+
+	void Core::resizeTo(int xRes, int yRes) {
+		this->xRes = xRes;
+		this->yRes = yRes;
+		coreResized = true;
+	}
 	
 	void Core::loseFocus() {
 		if(pauseOnLoseFocus) {

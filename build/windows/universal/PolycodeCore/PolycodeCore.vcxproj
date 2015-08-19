@@ -42,7 +42,6 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyCoreServices.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyCubemap.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyData.h" />
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyDX11GraphicsInterface.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyEntity.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyEvent.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyEventDispatcher.h" />
@@ -62,6 +61,7 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyMatrix4.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyMesh.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyObject.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyOpenGLGraphicsInterface.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyParticleEmitter.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyPeer.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyPerlin.h" />
@@ -123,7 +123,6 @@
     <ClCompile Include="..\..\..\..\src\core\PolyCoreServices.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyCubemap.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyData.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyDX11GraphicsInterface.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyEntity.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyEvent.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyEventDispatcher.cpp" />
@@ -141,6 +140,7 @@
     <ClCompile Include="..\..\..\..\src\core\PolyMatrix4.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyMesh.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyObject.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyOpenGLGraphicsInterface.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyParticleEmitter.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyPeer.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyPerlin.cpp" />

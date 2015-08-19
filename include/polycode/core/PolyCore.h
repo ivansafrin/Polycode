@@ -322,7 +322,7 @@ namespace Polycode {
 		* @param xRes New horizontal resolution of the renderer.
 		* @param yRes New vertical resolution of the renderer.		
 		*/
-		virtual void resizeTo(int xRes, int yRes) = 0;
+		virtual void resizeTo(int xRes, int yRes);
 		
 		void doSleep();
 		

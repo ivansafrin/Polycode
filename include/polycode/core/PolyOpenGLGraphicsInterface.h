@@ -23,28 +23,31 @@ THE SOFTWARE.
 
 
 #pragma once
+
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyRenderer.h"
 #include "polycode/core/PolyTexture.h"
 
-#ifdef _WINDOWS
-#include <windows.h>
-#endif
+#if PLATFORM == PLATFORM_MAC
+	#include <OpenGL/gl.h>
+	#include <OpenGL/glext.h>
+	#include <OpenGL/glu.h>
+#elif PLATFORM == PLATFORM_WINDOWS
 
-#if defined(__APPLE__) && defined(__MACH__)
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
-#include <OpenGL/glu.h>
-#else
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glext.h>
+	#include <GLES2/gl2.h>
+	#include <GLES2/gl2ext.h>
+	#include <EGL/egl.h>
+	#include <EGL/eglext.h>
+	#include <EGL/eglplatform.h>
 
-#if defined(_WINDOWS) && !defined(_MINGW)
-#include <GL/wglext.h>
+	#if defined(WINAPI_FAMILY)
+		#include <angle_windowsstore.h>
+	#endif
+#else	
+	#include <GL/gl.h>
+	#include <GL/glu.h>
+	#include <GL/glext.h>
 #endif
-#endif
-
 
 namespace Polycode {
 	class _PolyExport OpenGLGraphicsInterface : public GraphicsInterface {

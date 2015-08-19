@@ -1,10 +1,20 @@
 ﻿#pragma once
 
-#include "pch.h"
 #include "PolycodeTemplateApp.h"
+
+#include <wrl.h>
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
+#include <EGL/eglplatform.h>
+#include <angle_windowsstore.h>
+
+using namespace Windows::Foundation::Collections;
 
 namespace TemplateApp
 {
+
 	// Main entry point for our app. Connects the app with the Windows shell and handles application lifecycle events.
 	ref class App sealed : public Windows::ApplicationModel::Core::IFrameworkView
 	{
@@ -37,8 +47,15 @@ namespace TemplateApp
 	private:
 		bool m_windowClosed;
 		bool m_windowVisible;
-
+		PropertySet^ surfaceCreationProperties;
 		PolycodeTemplateApp *app;
+
+		EGLDisplay mEglDisplay;
+		EGLContext mEglContext;
+		EGLSurface mEglSurface;
+
+		EGLint lastPanelWidth;
+		EGLint lastPanelHeight;
 	};
 }
 

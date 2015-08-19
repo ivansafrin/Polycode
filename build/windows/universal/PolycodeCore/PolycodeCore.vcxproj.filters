@@ -55,9 +55,6 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyData.h">
       <Filter>Include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyDX11GraphicsInterface.h">
-      <Filter>Include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyEntity.h">
       <Filter>Include</Filter>
     </ClInclude>
@@ -250,6 +247,9 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\tinyxml.h">
       <Filter>Include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyOpenGLGraphicsInterface.h">
+      <Filter>Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\core\PolyBasicFileProvider.cpp">
@@ -289,9 +289,6 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\core\PolyData.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\core\PolyDX11GraphicsInterface.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\core\PolyEntity.cpp">
@@ -478,6 +475,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\core\tinyxmlparser.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\core\PolyOpenGLGraphicsInterface.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

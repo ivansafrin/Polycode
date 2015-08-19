@@ -1,46 +1,71 @@
+/*
+Copyright (C) 2015 by Ivan Safrin
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
 
 #pragma once
 
-#include "PolyCore.h"
-#include "polycode/core/PolyDX11GraphicsInterface.h"
-
-#include <wrl.h>
-#include <wrl/client.h>
-#include <d3d11_2.h>
-#include <d2d1_2.h>
-#include <d2d1effects_1.h>
-#include <dwrite_2.h>
-#include <wincodec.h>
-#include <DirectXColors.h>
-#include <DirectXMath.h>
-#include <memory>
-#include <concrt.h>
-
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyCore.h"
 #include <ppltasks.h>
 
-using namespace concurrency;
-using namespace Polycode;
-using namespace DirectX;
-using namespace Microsoft::WRL;
-using namespace Windows::Foundation;
+#include <Windows.Foundation.h>
+#include <Windows.Storage.h>
+#include <wrl\wrappers\corewrappers.h>
+#include <wrl\client.h>
+#include <wrl.h>
 
+
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
+#include <EGL/eglplatform.h>
+#include <angle_windowsstore.h>
+
+using namespace concurrency;
 
 #define POLYCODE_CORE UWPCore
 
-class PolycodeView {
-	public:
-		IUnknown *window;
-};
+namespace Polycode {
 
-class UWPCoreMutex : public CoreMutex {
+	class PolycodeView {
+	public:
+
+		EGLNativeWindowType eglWindow;
+		IUnknown *window;
+		EGLDisplay mEglDisplay;
+		EGLContext mEglContext;
+		EGLSurface mEglSurface;
+	};
+
+	class UWPCoreMutex : public CoreMutex {
 	public:
 		std::mutex mutex;
-};
+	};
 
+	class OpenGLGraphicsInterface;
 
-class _PolyExport UWPCore : public Core {
+	class _PolyExport UWPCore : public Core {
 	public:
-	
+
 		UWPCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex = -1, bool retinaSupport = false);
 		~UWPCore();
 
@@ -62,27 +87,23 @@ class _PolyExport UWPCore : public Core {
 		String saveFilePicker(std::vector<CoreFileExtension> extensions);
 		void handleVideoModeChange(VideoModeChangeInfo *modeInfo);
 		void flushRenderContext();
-		void resizeTo(int xRes, int yRes);
 		void openURL(String url);
 		unsigned int getTicks();
 		String executeExternalCommand(String command, String args, String inDirectory);
 		bool systemParseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector);
 
-	
+
 
 	private:
 
-		DX11GraphicsInterface *graphicsInterface;
-
-
-		D3D_FEATURE_LEVEL								m_d3dFeatureLevel;
-		Microsoft::WRL::ComPtr<ID3D11Device2>			m_d3dDevice;
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext2>	m_d3dContext;
-		Microsoft::WRL::ComPtr<IDXGISwapChain1>			m_swapChain;
-
-		Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	m_d3dRenderTargetView;
-		Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	m_d3dDepthStencilView;
-
+		OpenGLGraphicsInterface *graphicsInterface;
 		IUnknown *m_Window;
 
-};
+		EGLNativeWindowType m_eglWindow;
+
+		EGLDisplay mEglDisplay;
+		EGLContext mEglContext;
+		EGLSurface mEglSurface;
+
+	};
+}

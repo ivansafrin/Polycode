@@ -29,12 +29,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
-    <ClCompile Include="pch.cpp" />
     <ClCompile Include="PolycodeTemplateApp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
-    <ClInclude Include="pch.h" />
     <ClInclude Include="PolycodeTemplateApp.h" />
   </ItemGroup>
   <ItemGroup>
