@@ -318,12 +318,6 @@ String CocoaCore::executeExternalCommand(String command,  String args, String in
 	return retString;
 }
 
-void CocoaCore::resizeTo(int xRes, int yRes) {
-	this->xRes = xRes;
-	this->yRes = yRes;
-    coreResized = true;
-}
-
 CocoaCore::~CocoaCore() {
 	printf("Shutting down cocoa core\n");
 	[glView setCore:nil];	

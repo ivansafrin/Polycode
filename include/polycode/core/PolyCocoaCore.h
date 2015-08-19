@@ -116,8 +116,7 @@ namespace Polycode {
 		bool systemUpdate();
 		
 		void Render();
-								
-		void resizeTo(int xRes, int yRes);
+
 		void createThread(Threaded *target);		
 		
 		void createFolder(const String& folderPath);
