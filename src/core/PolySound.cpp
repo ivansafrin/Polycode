@@ -45,22 +45,18 @@
 using namespace std;
 using namespace Polycode;
 
-AudioStreamingSource::AudioStreamingSource(unsigned int channels, unsigned int bps, unsigned int freq) : channels(channels), freq(freq), bps(bps) {
+AudioStreamingSource::AudioStreamingSource(unsigned int channels, unsigned int freq) : channels(channels), freq(freq) {
 }
 
 unsigned int AudioStreamingSource::getNumChannels() {
     return channels;
 }
 
-unsigned int AudioStreamingSource::getBitsPerSample() {
-    return bps;
-}
-
 unsigned int AudioStreamingSource::getFrequency() {
     return freq;
 }
 
-unsigned int AudioStreamingSource::streamData(char *buffer, unsigned int size) {
+unsigned int AudioStreamingSource::streamData(int16_t *buffer, unsigned int size) {
     return 0;
 }
 
@@ -86,102 +82,42 @@ long custom_tellfunc(void *datasource) {
 	return file->tell();
 }
 
-Sound::Sound(const String& fileName, bool generateFloatBuffer) :  referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), sampleLength(-1), streamingSound(false) {
+Sound::Sound(const String& fileName) :  referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), numSamples(-1), streamingSound(false), playing(false), playbackOffset(0), streamingSource(NULL) {
 	soundLoaded = false;
-	loadFile(fileName, generateFloatBuffer);
 	setIsPositional(false);
+	loadFile(fileName);
+    if(soundLoaded) {
+        Services()->getSoundManager()->registerSound(this);
+    }
 }
 
-Sound::Sound(int size, const char *data, int channels, unsigned int freq, int bps, bool generateFloatBuffer) : referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), sampleLength(-1), streamingSound(false) {
-    
-	//buffer = loadBytes(data, size, freq, channels, bps, generateFloatBuffer);
-	//soundSource = GenSource(buffer);
-	
+Sound::Sound(int size, const char *data, int channels, unsigned int freq, SoundFormat format) : referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), numSamples(-1), streamingSound(false), playing(false) , playbackOffset(0), streamingSource(NULL) {
 	setIsPositional(false);
-	reloadProperties();
-	
-	soundLoaded = true;
+    soundLoaded = loadBytes(data, size, channels, freq, format);
+    if(soundLoaded) {
+        Services()->getSoundManager()->registerSound(this);
+    }
 }
 
-Sound::Sound(AudioStreamingSource *streamingSource) : referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1),  sampleLength(-1), streamingSound(true), streamingSource(streamingSource) {
-    
-    /*
-    alGenSources(1, &soundSource);
-    
-    alSourcef(soundSource, AL_PITCH, 1.0);
-    alSourcef(soundSource, AL_GAIN, 1.0);
-    
-    ALfloat sourcePos[] = {0.0, 0.0, 0.0};
-    ALfloat sourceVel[] = {0.0, 0.0, 0.0};
-    
-    alSourcefv(soundSource, AL_POSITION, sourcePos);
-    alSourcefv(soundSource, AL_VELOCITY, sourceVel);
-    
-    
-    alGenBuffers(STREAMING_BUFFER_COUNT, streamingBuffers);
-    
-    for(int i=0; i < STREAMING_BUFFER_COUNT; i++) {
-        if(updateALBuffer(streamingBuffers[i])) {
-            alSourceQueueBuffers(soundSource, 1, &streamingBuffers[i]);
-        }
-    }
-    Services()->getSoundManager()->registerStreamingSound(this);
-    
-	alSourcePlay(soundSource);
-     */
-        // NOAL_TODO
-    
+Sound::Sound(AudioStreamingSource *streamingSource) : referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1),  numSamples(-1), streamingSound(true), streamingSource(streamingSource), playing(false), playbackOffset(0) {
+
+    soundBuffer = (int16_t*) malloc(sizeof(int16_t) * streamingSource->getNumChannels() * POLY_MIX_BUFFER_SIZE);
+    Services()->getSoundManager()->registerSound(this);
+    numChannels = streamingSource->getNumChannels();
 }
 
-void Sound::updateStream() {
-    /*
-    ALint processed = 0;
-    alGetSourcei(soundSource, AL_BUFFERS_PROCESSED, &processed);
-    
-    while(processed--) {
-        ALuint buffer;
-        alSourceUnqueueBuffers(soundSource, 1, &buffer);
-        if(updateALBuffer(buffer)) {
-            alSourceQueueBuffers(soundSource, 1, &buffer);
-        }
+void Sound::updateStream(unsigned int streamCount) {
+    if(streamingSource) {
+        playbackOffset = 0;
+        numSamples = streamCount;
+        streamingSource->streamData(soundBuffer, streamCount);
     }
-
-    ALenum state;
-    alGetSourcei(soundSource, AL_SOURCE_STATE, &state);
-    if(state != AL_PLAYING) {
-        alSourcePlay(soundSource);
-    }
-     */
-    //NOAL_TODO
 }
 
-bool Sound::updateALBuffer(unsigned int buffer) {
-    /*
-    char data[STREAMING_BUFFER_SIZE];
-    unsigned int bytesStreamed = streamingSource->streamData(data, STREAMING_BUFFER_SIZE);
-    
-    if(bytesStreamed == 0) {
-        return false;
-    }
-    
-    ALenum format;
-    if (streamingSource->getNumChannels() == 1) {
-        format = (streamingSource->getBitsPerSample() == 8) ? AL_FORMAT_MONO8 : AL_FORMAT_MONO16;
-    } else {
-        format = (streamingSource->getBitsPerSample() == 8) ? AL_FORMAT_STEREO8 : AL_FORMAT_STEREO16;
-    }
-    
-    alBufferData(buffer, format, data, bytesStreamed, streamingSource->getFrequency());
-    */
-            // NOAL_TODO
-    return true;
-}
+void Sound::loadFile(String fileName) {
 
-
-void Sound::loadFile(String fileName, bool generateFloatBuffer) {
-/*
 	if(soundLoaded) {
-		alDeleteSources(1,&soundSource);	
+        free(soundBuffer);
 	}
 
 	String actualFilename = fileName;
@@ -202,30 +138,12 @@ void Sound::loadFile(String fileName, bool generateFloatBuffer) {
 	}
 	
 	if(extension == "wav" || extension == "WAV") {
-		buffer = loadWAV(actualFilename, generateFloatBuffer);			
+		soundLoaded = loadWAV(actualFilename);
 	} else if(extension == "ogg" || extension == "OGG") {
-		buffer = loadOGG(actualFilename, generateFloatBuffer);
+		soundLoaded = loadOGG(actualFilename);
 	}
 	
 	this->fileName = actualFilename;
-	
-	soundSource = GenSource(buffer);	
-	
-	reloadProperties();
-	
-	soundLoaded = true;
-	
-	checkALError("Sound load: complete");
- */
-    //NOAL_TODO
-}
-
-void Sound::reloadProperties() { // Re-set stored properties into sound source.
-	setVolume(volume);
-	setPitch(pitch);
-	
-	setReferenceDistance(referenceDistance);
-	setMaxDistance(maxDistance);
 }
 
 String Sound::getFileName() {
@@ -241,19 +159,8 @@ Number Sound::getPitch() {
 }
 
 Sound::~Sound() {
-/*
-	alSourcei(soundSource, AL_BUFFER, 0);
-    
-	alDeleteSources(1,&soundSource);
-	checkALError("Destroying sound");
-	alDeleteBuffers(1, &buffer);
-	checkALError("Deleting buffer");
-    if(streamingSound) {
-        alDeleteBuffers(STREAMING_BUFFER_COUNT, streamingBuffers);
-        Services()->getSoundManager()->unregisterStreamingSound(this);
-    }
- */
-        //NOAL_TODO
+    free(soundBuffer);
+    Services()->getSoundManager()->unregisterSound(this);
 }
 
 void Sound::soundCheck(bool result, const String& err) {
@@ -281,48 +188,29 @@ unsigned short Sound::readByte16(const unsigned char data[2]) {
 #endif	
 }
 
-void Sound::Play(bool loop) {
-    
-    /*
-	if(!loop) {
-		alSourcei(soundSource, AL_LOOPING, AL_FALSE);
-	} else {
-		alSourcei(soundSource, AL_LOOPING, AL_TRUE);		
-	}
-	checkALError("Play: loop");
-	alSourcePlay(soundSource);
-	checkALError("Play: play");
-     */
-        //NOAL_TODO
+void Sound::Play(bool loop, bool restartSound) {
+    if(restartSound) {
+        playbackOffset = 0;
+    }
+    playing = true;
+    looped = loop;
 }
 
 bool Sound::isPlaying() {
-    /*
-	ALenum state;
-	alGetSourcei(soundSource, AL_SOURCE_STATE, &state);
-	return (state == AL_PLAYING);
-     */
-        //NOAL_TODO
-    return false;
+    return playing;
+}
+
+bool Sound::isLooped() {
+    return looped;
 }
 
 
 void Sound::setVolume(Number newVolume) {
 	this->volume = newVolume;
-    /*
-	alSourcef(soundSource, AL_GAIN, newVolume);
-	checkALError("Set volume");
-     */
-        //NOAL_TODO
 }
 
 void Sound::setPitch(Number newPitch) {
 	this->pitch = newPitch;
-    /*
-	alSourcef(soundSource, AL_PITCH, newPitch);
-	checkALError("Set pitch");
-     */
-        //NOAL_TODO
 }
 
 void Sound::setSoundPosition(Vector3 position) {
@@ -348,13 +236,6 @@ void Sound::setSoundDirection(Vector3 direction) {
 	if(isPositional)
 		alSource3f(soundSource,AL_DIRECTION, direction.x, direction.y, direction.z);
 	checkALError("Set sound direction");
-     */
-        //NOAL_TODO
-}
-
-void Sound::setOffset(int off) {
-    /*
-	alSourcei(soundSource, AL_SAMPLE_OFFSET, off);
      */
         //NOAL_TODO
 }
@@ -395,13 +276,17 @@ Number Sound::getPlaybackDuration() {
 }
 		
 int Sound::getOffset() {
-    /*
-	ALint off = -1;
-	alGetSourcei(soundSource, AL_SAMPLE_OFFSET, &off);
-	return off;
-     */
-            //NOAL_TODO
-    return 0;
+    return playbackOffset;
+}
+
+void Sound::setOffset(unsigned int offset) {
+    playbackOffset = (offset % numSamples);
+    if(offset >= numSamples) {
+        offset = 0;
+        if(!looped && !streamingSource) {
+            playing = false;
+        }
+    }
 }
 
 void Sound::seekTo(Number time) {
@@ -415,7 +300,7 @@ void Sound::seekTo(Number time) {
 }
 
 int Sound::getSampleLength() {
-	return sampleLength;
+	return numSamples;
 }
 
 void Sound::setPositionalProperties(Number referenceDistance, Number maxDistance) { 
@@ -462,48 +347,77 @@ void Sound::setIsPositional(bool isPositional) {
 }
 
 void Sound::Stop() {
-        //NOAL_TODO
+    playing = false;
 }
 
 
-
-std::vector<float> *Sound::getFloatBuffer() {
-    return &floatBuffer;
+Number Sound::getSampleAsNumber(unsigned int offset, unsigned int channel) {
+    Number ret = (((Number)(soundBuffer[((offset%numSamples)*numChannels)+(channel % numChannels)])/((Number)INT16_MAX))) * volume;
+    return ret;
 }
 
 
-/*
-ALuint Sound::loadBytes(const char *data, int size, int freq, int channels, int bps, bool generateFloatBuffer) {
-    /*
-	ALenum format;
-	if (channels == 1)
-		format = (bps == 8) ? AL_FORMAT_MONO8 : AL_FORMAT_MONO16;
-	else
-		format = (bps == 8) ? AL_FORMAT_STEREO8 : AL_FORMAT_STEREO16;
-	
-	sampleLength = bps > 8 ? size / (bps/8) : -1;
-
-	checkALError("LoadBytes: pre-generate buffer");
-	
-	alGenBuffers(1, &buffer);
-	checkALError("LoadBytes: generate buffer");
-	soundCheck(AL_NONE != buffer, "LoadBytes: Did not generate buffer");
-	
-	alBufferData(buffer, format, data, size, freq);
-	checkALError("LoadBytes: load buffer data");
+bool Sound::loadBytes(const char *data, int size, int channels, unsigned int freq, SoundFormat format) {
     
-	if(generateFloatBuffer) {
-		int32_t *ptr32 = (int32_t*) &data[0];
-		for(int i=0; i < size/4; i++ ) {
-			floatBuffer.push_back(((Number)ptr32[i])/((Number)INT32_MAX));
-		}
-	}
+    if(format == SoundFormatUnsupported) {
+        Logger::log("[%s] Error: sound format unsupported!\n", fileName.c_str());
+        return false;
+    }
+    
+    soundBuffer = (int16_t*) malloc(sizeof(int16_t) * channels * size);
+    
+    int16_t *soundBufferPtr = soundBuffer;
+    
+    unsigned int dataOffset = 0;
+    
+    switch(format) {
+        case SoundFormat8:
+            numSamples = size / channels;
+            break;
+        case SoundFormat16:
+            numSamples = size / channels / 2;
+            break;
+        case SoundFormat32:
+            numSamples = size / channels / 4;
+            break;
+        default:
+        break;
+    }
+    
+    
+    for(int i=0; i < numSamples; i++){
+        for(int c=0; c < channels; c++) {
+            switch(format) {
+                case SoundFormat8:
+                    *soundBufferPtr = ((int8_t*)data)[dataOffset];
+                break;
+                case SoundFormat16:
+                    *soundBufferPtr = ((int16_t*)data)[dataOffset];
+                break;
+                case SoundFormat32:
+                    *soundBufferPtr = ((int32_t*)data)[dataOffset];
+                break;
+                default:
+                break;
+            }
+            soundBufferPtr++;
+            dataOffset++;
+        }
+    }
+    
+    numChannels = channels;
+    frequency = freq;
 
-	return buffer;
+    return true;
+}
+
+unsigned int Sound::getFrequency() {
+    return frequency;
 }
 
 
-ALuint Sound::loadOGG(const String& fileName, bool generateFloatBuffer) {
+bool Sound::loadOGG(const String& fileName) {
+    /*
 //	floatBuffer.clear();
 	vector<char> data;
 	
@@ -563,120 +477,122 @@ ALuint Sound::loadOGG(const String& fileName, bool generateFloatBuffer) {
 			floatBuffer.push_back(((Number)ptr32[i])/((Number)INT32_MAX));
 		}	
 	}
-	return buffer;
+     */
+	return false;
+
 }
 
-ALuint Sound::loadWAV(const String& fileName, bool generateFloatBuffer) {
+bool Sound::loadWAV(const String& fileName) {
+    
 	long bytes;
 	vector <char> data;
-	ALsizei freq;
 	
 	// Local resources
 	CoreFile *f = NULL;
 	char *array = NULL;
 	
-	checkALError("loadWAV: pre-generate buffer");
-	
-		// Open for binary reading
-		f = Services()->getCore()->openFile(fileName.c_str(), "rb");
-		if (!f) {
-			soundError("LoadWav: Could not load wav from " + fileName);
-			return buffer;
-		}
-		
-		// buffers
-		char magic[5];
-		magic[4] = '\0';
-		unsigned char data32[4];
-		unsigned char data16[2];
-		
-		// check magic
-		soundCheck(f->read(magic,4,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
-		soundCheck(String(magic) == "RIFF", "LoadWav: Wrong wav file format. This file is not a .wav file (no RIFF magic): "+ fileName );
-		
-		// skip 4 bytes (file size)
-		f->seek(4,SEEK_CUR);
-		
-		// check file format
-		soundCheck(f->read(magic,4,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
-		soundCheck(String(magic) == "WAVE", "LoadWav: Wrong wav file format. This file is not a .wav file (no WAVE format): "+ fileName );
-		
-		// check 'fmt ' sub chunk (1)
-		soundCheck(f->read(magic,4,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
-		soundCheck(String(magic) == "fmt ", "LoadWav: Wrong wav file format. This file is not a .wav file (no 'fmt ' subchunk): "+ fileName );
-		
-		// read (1)'s size
-		soundCheck(f->read(data32,4,1)   == 1, "LoadWav: Cannot read wav file "+ fileName );
-		unsigned long subChunk1Size = readByte32(data32);
-		soundCheck(subChunk1Size >= 16, "Wrong wav file format. This file is not a .wav file ('fmt ' chunk too small, truncated file?): "+ fileName );
-		
-		// check PCM audio format
-		soundCheck(f->read(data16,2,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
-		unsigned short audioFormat = readByte16(data16);
-		soundCheck(audioFormat == 1, "LoadWav: Wrong wav file format. This file is not a .wav file (audio format is not PCM): "+ fileName );
-		
-		// read number of channels
-		soundCheck(f->read(data16,2,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
-		unsigned short channels = readByte16(data16);
-		
-		// read frequency (sample rate)
-		soundCheck(f->read(data32,4,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
-		unsigned long frequency = readByte32(data32);
-		
-		// skip 6 bytes (Byte rate (4), Block align (2))
-		f->seek(6,SEEK_CUR);
-		
-		// read bits per sample
-		soundCheck(f->read(data16,2,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
-		unsigned short bps = readByte16(data16);
-		
-		// check 'data' sub chunk (2)
-		soundCheck(f->read(magic,4,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
-		soundCheck(String(magic) == "data", "LoadWav: Wrong wav file format. This file is not a .wav file (no data subchunk): "+ fileName );
-		
-		soundCheck(f->read(data32,4,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
-		unsigned long subChunk2Size = readByte32(data32);
-		
-		// The frequency of the sampling rate
-		freq = frequency;
-		soundCheck(sizeof(freq) == sizeof(frequency), "LoadWav: freq and frequency different sizes");
-		
-		array = new char[BUFFER_SIZE];
-		
-		while (data.size() != subChunk2Size) {
-			// Read up to a buffer's worth of decoded sound data
-			bytes = f->read(array, 1, BUFFER_SIZE);
-			
-			if (bytes <= 0)
-				break;
-			
-			if (data.size() + bytes > subChunk2Size)
-				bytes = subChunk2Size - data.size();
-			
-			// Append to end of buffer
-			data.insert(data.end(), array, array + bytes);
-		};
-		
-		delete []array;
-		array = NULL;
-		
-		Services()->getCore()->closeFile(f);
-		f = NULL;
-				
-		return loadBytes(&data[0], data.size(), freq, channels, bps, generateFloatBuffer);
-//		if (buffer)
-//			if (alIsBuffer(buffer) == AL_TRUE)
-//				alDeleteBuffers(1, &buffer);
-//		
-//		if (array)
-//			delete []array;
-//		
-//		if (f)
-//			OSBasics::close(f);
-//		
-//		throw (e);
+    // Open for binary reading
+    f = Services()->getCore()->openFile(fileName.c_str(), "rb");
+    if (!f) {
+        soundError("LoadWav: Could not load wav from " + fileName);
+        return false;
+    }
+    
+    // buffers
+    char magic[5];
+    magic[4] = '\0';
+    unsigned char data32[4];
+    unsigned char data16[2];
+    
+    // check magic
+    soundCheck(f->read(magic,4,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
+    soundCheck(String(magic) == "RIFF", "LoadWav: Wrong wav file format. This file is not a .wav file (no RIFF magic): "+ fileName );
+    
+    // skip 4 bytes (file size)
+    f->seek(4,SEEK_CUR);
+    
+    // check file format
+    soundCheck(f->read(magic,4,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
+    soundCheck(String(magic) == "WAVE", "LoadWav: Wrong wav file format. This file is not a .wav file (no WAVE format): "+ fileName );
+    
+    // check 'fmt ' sub chunk (1)
+    soundCheck(f->read(magic,4,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
+    soundCheck(String(magic) == "fmt ", "LoadWav: Wrong wav file format. This file is not a .wav file (no 'fmt ' subchunk): "+ fileName );
+    
+    // read (1)'s size
+    soundCheck(f->read(data32,4,1)   == 1, "LoadWav: Cannot read wav file "+ fileName );
+    unsigned long subChunk1Size = readByte32(data32);
+    soundCheck(subChunk1Size >= 16, "Wrong wav file format. This file is not a .wav file ('fmt ' chunk too small, truncated file?): "+ fileName );
+    
+    // check PCM audio format
+    soundCheck(f->read(data16,2,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
+    unsigned short audioFormat = readByte16(data16);
+    soundCheck(audioFormat == 1, "LoadWav: Wrong wav file format. This file is not a .wav file (audio format is not PCM): "+ fileName );
+    
+    // read number of channels
+    soundCheck(f->read(data16,2,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
+    unsigned short channels = readByte16(data16);
+    
+    // read frequency (sample rate)
+    soundCheck(f->read(data32,4,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
+    unsigned long frequency = readByte32(data32);
+    
+    // skip 6 bytes (Byte rate (4), Block align (2))
+    f->seek(6,SEEK_CUR);
+    
+    // read bits per sample
+    soundCheck(f->read(data16,2,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
+    unsigned short bps = readByte16(data16);
+    
+    SoundFormat format = SoundFormatUnsupported;
+    
+    switch(bps) {
+        case 8:
+            format = SoundFormat8;
+        break;
+        case 16:
+            format = SoundFormat16;
+        break;
+        case 32:
+            format = SoundFormat32;
+        break;
+            
+    }
+    
+    // check 'data' sub chunk (2)
+    soundCheck(f->read(magic,4,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
+    soundCheck(String(magic) == "data", "LoadWav: Wrong wav file format. This file is not a .wav file (no data subchunk): "+ fileName );
+    
+    soundCheck(f->read(data32,4,1) == 1, "LoadWav: Cannot read wav file "+ fileName );
+    unsigned long subChunk2Size = readByte32(data32);
+    
+    array = new char[BUFFER_SIZE];
+    
+    while (data.size() != subChunk2Size) {
+        // Read up to a buffer's worth of decoded sound data
+        bytes = f->read(array, 1, BUFFER_SIZE);
+        
+        if (bytes <= 0)
+            break;
+        
+        if (data.size() + bytes > subChunk2Size)
+            bytes = subChunk2Size - data.size();
+        
+        // Append to end of buffer
+        data.insert(data.end(), array, array + bytes);
+    };
+    
+    delete []array;
+    array = NULL;
+    
+    Services()->getCore()->closeFile(f);
+    f = NULL;
+    
+    
+    
+    return loadBytes(&data[0], data.size(), channels, frequency, format);
 
 }
  
- */
+
 //NOAL_TODO

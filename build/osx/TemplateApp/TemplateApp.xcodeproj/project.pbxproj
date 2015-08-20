@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8A7348FE1B865C1F00F660C0 /* bedlayer_main.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8A7348FD1B865C1F00F660C0 /* bedlayer_main.wav */; };
+		8A7349001B86640200F660C0 /* marimba-lo.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8A7348FF1B86640200F660C0 /* marimba-lo.wav */; };
+		8A7349021B86642300F660C0 /* koto_level.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8A7349011B86642300F660C0 /* koto_level.wav */; };
+		8A7349041B86643400F660C0 /* curve_02_c.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8A7349031B86643400F660C0 /* curve_02_c.wav */; };
+		8A7349061B866A3C00F660C0 /* initial_touch_01.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8A7349051B866A3C00F660C0 /* initial_touch_01.wav */; };
 		8A825F271B82A2680039E823 /* libportaudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A825F261B82A2680039E823 /* libportaudio.a */; };
 		8A825F291B82A29B0039E823 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A825F281B82A29B0039E823 /* CoreAudio.framework */; };
 		8A825F2E1B82A2C80039E823 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A825F2C1B82A2B10039E823 /* AudioUnit.framework */; };
@@ -32,6 +37,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8A7348FD1B865C1F00F660C0 /* bedlayer_main.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = bedlayer_main.wav; path = ../../../../../MSFT/MicrosoftSurfaceHub/Resources/pd/samples/bedlayer_main.wav; sourceTree = "<group>"; };
+		8A7348FF1B86640200F660C0 /* marimba-lo.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = "marimba-lo.wav"; path = "../../../../../MSFT/MicrosoftSurfaceHub/Resources/pd/samples/marimba-lo.wav"; sourceTree = "<group>"; };
+		8A7349011B86642300F660C0 /* koto_level.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = koto_level.wav; path = ../../../../../MSFT/MicrosoftSurfaceHub/Resources/pd/samples/koto_level.wav; sourceTree = "<group>"; };
+		8A7349031B86643400F660C0 /* curve_02_c.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = curve_02_c.wav; path = ../../../../../MSFT/MicrosoftSurfaceHub/Resources/pd/samples/curve_02_c.wav; sourceTree = "<group>"; };
+		8A7349051B866A3C00F660C0 /* initial_touch_01.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = initial_touch_01.wav; path = ../../../../../MSFT/MicrosoftSurfaceHub/Resources/pd/samples/initial_touch_01.wav; sourceTree = "<group>"; };
 		8A825F261B82A2680039E823 /* libportaudio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libportaudio.a; path = ../../../../lib/osx/libportaudio.a; sourceTree = "<group>"; };
 		8A825F281B82A29B0039E823 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		8A825F2A1B82A2A50039E823 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -117,6 +127,11 @@
 				8A86536C1B729D77009F94DD /* PolycodeView.mm */,
 				8A86536F1B72C431009F94DD /* default.pak */,
 				8A86533A1B72931C009F94DD /* Images.xcassets */,
+				8A7348FF1B86640200F660C0 /* marimba-lo.wav */,
+				8A7349011B86642300F660C0 /* koto_level.wav */,
+				8A7348FD1B865C1F00F660C0 /* bedlayer_main.wav */,
+				8A7349051B866A3C00F660C0 /* initial_touch_01.wav */,
+				8A7349031B86643400F660C0 /* curve_02_c.wav */,
 				8A8653951B752DBE009F94DD /* main_icon.png */,
 				8A86533C1B72931C009F94DD /* MainMenu.xib */,
 				8A8653331B72931C009F94DD /* Supporting Files */,
@@ -201,7 +216,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				8A86533B1B72931C009F94DD /* Images.xcassets in Resources */,
+				8A7349001B86640200F660C0 /* marimba-lo.wav in Resources */,
+				8A7349041B86643400F660C0 /* curve_02_c.wav in Resources */,
+				8A7348FE1B865C1F00F660C0 /* bedlayer_main.wav in Resources */,
 				8A8653961B752DBE009F94DD /* main_icon.png in Resources */,
+				8A7349061B866A3C00F660C0 /* initial_touch_01.wav in Resources */,
+				8A7349021B86642300F660C0 /* koto_level.wav in Resources */,
 				8A86533E1B72931C009F94DD /* MainMenu.xib in Resources */,
 				8A8653701B72C431009F94DD /* default.pak in Resources */,
 			);

@@ -38,7 +38,7 @@ PAAudioInterface::PAAudioInterface() {
     error = Pa_OpenDefaultStream( &stream,
                                0,
                                POLY_NUM_CHANNELS,
-                               paFloat32,
+                               paInt16,
                                POLY_AUDIO_FREQ,
                                POLY_FRAMES_PER_BUFFER,
                                PAAudioInterface::paCallback,
@@ -78,7 +78,7 @@ int PAAudioInterface::paCallback(const void *inputBuffer, void *outputBuffer,
                                  void *userData) {
     PAAudioInterface *audioInterface = (PAAudioInterface*) userData;
     if(outputBuffer) {
-        float *out = (float*)outputBuffer;
+        int16_t *out = (int16_t*)outputBuffer;
         for(int i=0; i < framesPerBuffer; i++) {
             for(int b=0; b < POLY_NUM_CHANNELS; b++) {
                 *out++ = audioInterface->bufferData[b][audioInterface->readOffset];

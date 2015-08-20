@@ -1,4 +1,6 @@
-precision mediump float;
+#ifdef GLES2
+	precision mediump float;
+#endif
 
 uniform vec4 entityColor;
 

@@ -25,22 +25,24 @@
 #include "polycode/core/PolyVector3.h"
 #include "polycode/core/PolySound.h"
 
-#define POLY_FRAMES_PER_BUFFER 256
+#define POLY_FRAMES_PER_BUFFER 512
 #define POLY_AUDIO_FREQ 44100
-#define POLY_CIRCULAR_BUFFER_SIZE 128
+#define POLY_CIRCULAR_BUFFER_SIZE 32
 #define POLY_NUM_CHANNELS 2
+#define POLY_MIX_BUFFER_SIZE (POLY_FRAMES_PER_BUFFER*POLY_CIRCULAR_BUFFER_SIZE)
 
 namespace Polycode {
 	
     class _PolyExport AudioInterface {
         public:
             AudioInterface();
-            void addToBuffer(float *data, unsigned int count);
+            void addToBuffer(int16_t *data, unsigned int count);
         
-            float bufferData[POLY_NUM_CHANNELS][POLY_FRAMES_PER_BUFFER*POLY_CIRCULAR_BUFFER_SIZE];
+            int16_t bufferData[POLY_NUM_CHANNELS][POLY_FRAMES_PER_BUFFER*POLY_CIRCULAR_BUFFER_SIZE];
             unsigned int readOffset;
             unsigned int writeOffset;
     };
+    
     
 	/**
 	* Controls global sound settings.
@@ -65,17 +67,20 @@ namespace Polycode {
 		*/ 
 		void setGlobalVolume(Number globalVolume);
         
-        void registerStreamingSound(Sound *sound);
-        void unregisterStreamingSound(Sound *sound);
+        void registerSound(Sound *sound);
+        void unregisterSound(Sound *sound);
 		
 	protected:
 		
         AudioInterface *audioInterface;
         
+        int16_t mixBuffer[POLY_MIX_BUFFER_SIZE*POLY_NUM_CHANNELS];
+        
         Number globalVolume;
         Number testVal;
+        Number leftOver;
         
-        std::vector<Sound*> streamingSounds;
+        std::vector<Sound*> sounds;
         int recordingBufferSize;
         int recordingBufferRate;
 	};

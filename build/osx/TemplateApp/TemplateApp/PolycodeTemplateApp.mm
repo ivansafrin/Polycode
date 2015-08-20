@@ -22,6 +22,38 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     test->getLocalShaderOptions()->loadTextureForParam("diffuse", "main_icon.png");
     scene->addChild(test);
     
+    SceneLabel *testLabel = new SceneLabel("Test!", 32, "sans", Label::ANTIALIAS_FULL, 0.2);
+    scene->addChild(testLabel);
+    
+    bgSound = new Sound("bedlayer_main.wav");
+    bgSound->Play();
+    
+    
+    sound1 = new Sound("marimba-lo.wav");
+    
+    sound2 = new Sound("initial_touch_01.wav");
+    sound3 = new Sound("curve_02_c.wav");
+    
+    //sound2->Play(true);
+    
+    Services()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
+}
+
+void PolycodeTemplateApp::handleEvent(Event *event) {
+    InputEvent *inputEvent = (InputEvent*) event;
+    
+    switch(inputEvent->getKey()) {
+        case KEY_z:
+            sound1->Play();
+        break;
+        case KEY_x:
+            sound2->Play();
+        break;
+        case KEY_c:
+            sound3->Play();
+        break;
+            
+    }
 }
 
 PolycodeTemplateApp::~PolycodeTemplateApp() {

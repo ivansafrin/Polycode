@@ -30,11 +30,12 @@ using namespace Polycode;
 SoundManager::SoundManager() {
     audioInterface = NULL;
     testVal = 0.0;
+    globalVolume = 1.0;
+    leftOver = 0.0;
 }
 
 void SoundManager::setGlobalVolume(Number globalVolume) {
-    // NOAL_TODO
-	//alListenerf(AL_GAIN, globalVolume);
+    this->globalVolume = globalVolume;
 }
 
 void SoundManager::setListenerPosition(Vector3 position) {
@@ -101,14 +102,14 @@ Sound *SoundManager::stopRecording(bool generateFloatBuffer) {
     return NULL;
 }
 
-void SoundManager::registerStreamingSound(Sound *sound) {
-    streamingSounds.push_back(sound);
+void SoundManager::registerSound(Sound *sound) {
+    sounds.push_back(sound);
 }
 
-void SoundManager::unregisterStreamingSound(Sound *sound) {
-    for(int i=0; i < streamingSounds.size(); i++) {
-        if(streamingSounds[i] == sound) {
-            streamingSounds.erase(streamingSounds.begin()+i);
+void SoundManager::unregisterSound(Sound *sound) {
+    for(int i=0; i < sounds.size(); i++) {
+        if(sounds[i] == sound) {
+            sounds.erase(sounds.begin()+i);
             return;
         }
     }
@@ -122,10 +123,10 @@ void SoundManager::setAudioInterface(AudioInterface *audioInterface) {
 AudioInterface::AudioInterface() {
     readOffset = 0;
     writeOffset = 0;
-    memset(bufferData, 0, sizeof(float) * POLY_FRAMES_PER_BUFFER*POLY_CIRCULAR_BUFFER_SIZE);
+    memset(bufferData, 0, sizeof(int16_t) * POLY_FRAMES_PER_BUFFER*POLY_CIRCULAR_BUFFER_SIZE);
 }
 
-void AudioInterface::addToBuffer(float *data, unsigned int count) {
+void AudioInterface::addToBuffer(int16_t *data, unsigned int count) {
     for(int i=0; i < count; i++) {
         for(int b=0; b < POLY_NUM_CHANNELS; b++) {
             bufferData[b][writeOffset] = data[(i*POLY_NUM_CHANNELS)+b];
@@ -138,39 +139,69 @@ void AudioInterface::addToBuffer(float *data, unsigned int count) {
     }
 }
 
+inline Number mixSamples(Number A, Number B) {
+
+    if (A < 0 && B < 0 ) {
+        return  (A + B) - (A * B)/-1.0;
+    } else if (A > 0 && B > 0 ) {
+        return (A + B) - (A * B)/1.0;
+    } else {
+        return A + B;
+    }
+}
+
 void SoundManager::Update() {
     Number elapsed = Services()->getCore()->getElapsed();
     
     if(audioInterface) {
-        unsigned int numSamples = ((Number)POLY_AUDIO_FREQ)*elapsed;
+
+        // mix sounds
+        unsigned int numSamples = ((Number)POLY_AUDIO_FREQ)*(elapsed);
         
+        // align to 64 samples
+       // numSamples = numSamples-(numSamples%64);
+        
+        
+        if(numSamples > POLY_MIX_BUFFER_SIZE) {
+            numSamples = POLY_MIX_BUFFER_SIZE;
+        }
+
+        for(int i=0; i < sounds.size(); i++) {
+            sounds[i]->updateStream(numSamples);
+        }
+        
+        int16_t *bufferPtr = mixBuffer;
         for(int i=0; i < numSamples; i++) {
-            float sinVal = sin(testVal);
-            float data[2] = {sinVal, sinVal};
-            audioInterface->addToBuffer(data, 1);
-            testVal += 1.0/44100.0 * 261.62 * 2.0 * PI; // middle C for testing
+            
+            Number mixResults[POLY_NUM_CHANNELS];
+            memset(mixResults, 0, sizeof(Number) * POLY_NUM_CHANNELS);
+            
+            int mixNum = 0;
+            for(int i=0; i < sounds.size(); i++) {
+                if(sounds[i]->isPlaying()) {
+                    for(int c=0; c < POLY_NUM_CHANNELS; c++) {
+                        Number A = mixResults[c];
+                        Number B = sounds[i]->getSampleAsNumber(sounds[i]->getOffset(), c);
+                        
+                        if(mixNum == 0) {
+                            mixResults[c] = B;
+                        } else {
+                            mixResults[c] = mixSamples(A, B);
+                        }
+                    }
+                    sounds[i]->setOffset(sounds[i]->getOffset()+1);
+                    mixNum++;
+                }
+            }
+            
+            for(int c=0; c < POLY_NUM_CHANNELS; c++) {
+                *bufferPtr = (int16_t)(((Number)INT16_MAX) * (mixResults[c] * globalVolume));
+                bufferPtr++;
+            }
         }
-    }
-    
-    // if recording sound, save samples
-    /*
-    if(captureDevice) {
-        ALint samples;
-        alcGetIntegerv(captureDevice, ALC_CAPTURE_SAMPLES, (ALCsizei)sizeof(ALint), &samples);
-        if(samples) {
-            unsigned int newBufferSize = sizeof(ALbyte) * samples * 4;
-            recordingBuffer = (ALbyte*) realloc(recordingBuffer, recordingBufferSize + newBufferSize);
         
-            alcCaptureSamples(captureDevice, (ALCvoid *)(recordingBuffer+recordingBufferSize), samples);
-            recordingBufferSize += newBufferSize;
-        }
+        audioInterface->addToBuffer(mixBuffer, numSamples);
     }
-    
-    for(int i=0; i < streamingSounds.size(); i++) {
-        streamingSounds[i]->updateStream();
-    }
-     */
-        // NOAL_TODO
 }
 
 SoundManager::~SoundManager() {

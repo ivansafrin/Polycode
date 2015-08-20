@@ -1,4 +1,6 @@
-precision mediump float;
+#ifdef GLES2
+	precision mediump float;
+#endif
 
 attribute vec4 position;
 attribute vec2 texCoord;
