@@ -251,10 +251,10 @@ void SceneSprite::Render(GPUDrawBuffer *buffer) {
     
     Mesh *stateMesh = currentSpriteState->getMeshForFrameIndex(currentFrame);
     if(stateMesh) {
-        this->mesh = stateMesh;
+        setMesh(stateMesh);
         useVertexBuffer = false;
     } else {
-        this->mesh = defaultMesh;
+        setMesh(defaultMesh);
         useVertexBuffer = false;
     }
     

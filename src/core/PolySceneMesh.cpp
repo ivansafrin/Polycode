@@ -95,9 +95,19 @@ SceneMesh::SceneMesh(int meshType) : material(NULL), skeleton(NULL), localShader
 }
 
 void SceneMesh::setMesh(Mesh *mesh) {
+    if(this->mesh == mesh) {
+        return;
+    }
+    
 	this->mesh = mesh;
 	setLocalBoundingBox(mesh->calculateBBox());
-	useVertexBuffer = false;	
+	useVertexBuffer = false;
+    
+    if(localShaderOptions) {
+        localShaderOptions->getAttributeBindingByName("texCoord")->vertexData = &mesh->vertexTexCoordArray;
+        localShaderOptions->getAttributeBindingByName("position")->vertexData = &mesh->vertexPositionArray;
+        localShaderOptions->getAttributeBindingByName("normal")->vertexData = &mesh->vertexNormalArray;
+    }
 }
 
 SceneMesh::~SceneMesh() {

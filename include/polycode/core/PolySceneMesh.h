@@ -210,7 +210,7 @@ namespace Polycode {
             bool sendBoneMatricesToMaterial;
 			
 		protected:
-		
+        
 			bool useVertexBuffer;
 			Mesh *mesh;
 			Material *material;
