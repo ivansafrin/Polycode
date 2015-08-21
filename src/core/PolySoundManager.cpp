@@ -123,22 +123,6 @@ void SoundManager::setAudioInterface(AudioInterface *audioInterface) {
 
 
 AudioInterface::AudioInterface() {
-    readOffset = 0;
-    writeOffset = 0;
-    memset(bufferData, 0, sizeof(int16_t) * POLY_FRAMES_PER_BUFFER*POLY_CIRCULAR_BUFFER_SIZE);
-}
-
-void AudioInterface::addToBuffer(int16_t *data, unsigned int count) {
-    for(int i=0; i < count; i++) {
-        for(int b=0; b < POLY_NUM_CHANNELS; b++) {
-            bufferData[b][writeOffset] = data[(i*POLY_NUM_CHANNELS)+b];
-        }
-        writeOffset++;
-        if(writeOffset >= POLY_FRAMES_PER_BUFFER * POLY_CIRCULAR_BUFFER_SIZE) {
-            writeOffset = 0;
-        }
-        
-    }
 }
 
 void AudioInterface::setMixer(AudioMixer *mixer) {

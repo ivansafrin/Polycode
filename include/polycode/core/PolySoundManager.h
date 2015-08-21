@@ -45,12 +45,7 @@ namespace Polycode {
             AudioInterface();
             void addToBuffer(int16_t *data, unsigned int count);
             void setMixer(AudioMixer *mixer);
-            AudioMixer *getMixer();
-        
-            int16_t bufferData[POLY_NUM_CHANNELS][POLY_FRAMES_PER_BUFFER*POLY_CIRCULAR_BUFFER_SIZE];
-            unsigned int readOffset;
-            unsigned int writeOffset;
-        
+            AudioMixer *getMixer();        
         protected:
             AudioMixer *mixer;
     };
