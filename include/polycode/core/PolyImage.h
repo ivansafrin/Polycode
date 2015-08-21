@@ -266,6 +266,8 @@ namespace Polycode {
              * Multiplies the RGB values by alpha for each pixel.
              */
 			void premultiplyAlpha();
+        
+            bool savePNG(const String &fileName);
 		
 			static const int IMAGE_RGB = 0;
 			static const int IMAGE_RGBA = 1;

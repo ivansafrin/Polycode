@@ -32,6 +32,7 @@
 #include "rgbe.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#include "lodepng.h"
 
 using namespace Polycode;
 
@@ -407,8 +408,28 @@ void Image::fill(const Color &color) {
 }
 
 bool Image::saveImage(const String &fileName) {
-    //RENDERER_TODO: reimplement
-    return false; //savePNG(fileName);
+    return savePNG(fileName);
+}
+
+bool Image::savePNG(const String &fileName) {
+    unsigned char *png = NULL;
+    size_t pngsize;
+    
+    unsigned error = lodepng_encode32(&png, &pngsize, (const unsigned char*) imageData, width, height);
+    if(!error) {
+        CoreFile *file = Services()->getCore()->openFile(fileName, "wb");
+        if(file) {
+            file->write(png, pngsize, 1);
+            free(png);
+            return true;
+        } else {
+            free(png);
+            return false;
+        }
+    } else {
+        free(png);
+        return false;
+    }
 }
 
 void Image::premultiplyAlpha() {

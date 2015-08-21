@@ -93,8 +93,8 @@ void Core::getScreenInfo(int *width, int *height, int *hz) {
 
 CocoaCore::CocoaCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex, bool retinaSupport) : Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
 
-    fileProviders.push_back(new PhysFSFileProvider());
     fileProviders.push_back(new BasicFileProvider());
+    fileProviders.push_back(new PhysFSFileProvider());
     
     this->retinaSupport = retinaSupport;
     

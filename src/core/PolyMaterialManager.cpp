@@ -532,17 +532,15 @@ Material *MaterialManager::materialFromXMLNode(ResourcePool *resourcePool, TiXml
 							if(strcmp(pChild2->Value(), "param") == 0){
 								String pname =  pChild2Element->Attribute("name");
 
-                                    // RENDERER_TODO
-                                /*
-								if(!CoreServices::getInstance()->getRenderer()->getDataPointerForName(pname)) {								
+
                                     String pvalue =  pChild2Element->Attribute("value");
                                     int type = materialShader->getExpectedParamType(pname);
                                     LocalShaderParam *param = newShaderBinding->addParam(type, pname);
                                     if(param) {
                                         param->setParamValueFromString(type, pvalue);
                                     }
-								}
-                                 */
+								
+
 							}						
 						}
 					}
