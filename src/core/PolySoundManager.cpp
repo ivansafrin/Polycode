@@ -30,12 +30,13 @@ using namespace Polycode;
 SoundManager::SoundManager() {
     audioInterface = NULL;
     testVal = 0.0;
-    globalVolume = 1.0;
     leftOver = 0.0;
+    mixer = new AudioMixer();
+    mixer->globalVolume = 1.0;    
 }
 
 void SoundManager::setGlobalVolume(Number globalVolume) {
-    this->globalVolume = globalVolume;
+    mixer->globalVolume = globalVolume;
 }
 
 void SoundManager::setListenerPosition(Vector3 position) {
@@ -103,13 +104,13 @@ Sound *SoundManager::stopRecording(bool generateFloatBuffer) {
 }
 
 void SoundManager::registerSound(Sound *sound) {
-    sounds.push_back(sound);
+    mixer->sounds.push_back(sound);
 }
 
 void SoundManager::unregisterSound(Sound *sound) {
-    for(int i=0; i < sounds.size(); i++) {
-        if(sounds[i] == sound) {
-            sounds.erase(sounds.begin()+i);
+    for(int i=0; i < mixer->sounds.size(); i++) {
+        if(mixer->sounds[i] == sound) {
+            mixer->sounds.erase(mixer->sounds.begin()+i);
             return;
         }
     }
@@ -117,6 +118,7 @@ void SoundManager::unregisterSound(Sound *sound) {
 
 void SoundManager::setAudioInterface(AudioInterface *audioInterface) {
     this->audioInterface = audioInterface;
+    audioInterface->setMixer(mixer);
 }
 
 
@@ -139,8 +141,16 @@ void AudioInterface::addToBuffer(int16_t *data, unsigned int count) {
     }
 }
 
-inline Number mixSamples(Number A, Number B) {
+void AudioInterface::setMixer(AudioMixer *mixer) {
+    this->mixer = mixer;
+}
 
+AudioMixer *AudioInterface::getMixer() {
+    return mixer;
+}
+
+inline Number mixSamples(Number A, Number B) {
+    
     if (A < 0 && B < 0 ) {
         return  (A + B) - (A * B)/-1.0;
     } else if (A > 0 && B > 0 ) {
@@ -150,58 +160,45 @@ inline Number mixSamples(Number A, Number B) {
     }
 }
 
-void SoundManager::Update() {
-    Number elapsed = Services()->getCore()->getElapsed();
+void AudioMixer::mixIntoBuffer(int16_t *buffer, unsigned int numSamples) {
     
-    if(audioInterface) {
-
-        // mix sounds
-        unsigned int numSamples = ((Number)POLY_AUDIO_FREQ)*(elapsed);
-        
-        // align to 64 samples
-       // numSamples = numSamples-(numSamples%64);
-        
-        
-        if(numSamples > POLY_MIX_BUFFER_SIZE) {
-            numSamples = POLY_MIX_BUFFER_SIZE;
-        }
-
-        for(int i=0; i < sounds.size(); i++) {
-            sounds[i]->updateStream(numSamples);
-        }
-        
-        int16_t *bufferPtr = mixBuffer;
-        for(int i=0; i < numSamples; i++) {
-            
-            Number mixResults[POLY_NUM_CHANNELS];
-            memset(mixResults, 0, sizeof(Number) * POLY_NUM_CHANNELS);
-            
-            int mixNum = 0;
-            for(int i=0; i < sounds.size(); i++) {
-                if(sounds[i]->isPlaying()) {
-                    for(int c=0; c < POLY_NUM_CHANNELS; c++) {
-                        Number A = mixResults[c];
-                        Number B = sounds[i]->getSampleAsNumber(sounds[i]->getOffset(), c);
-                        
-                        if(mixNum == 0) {
-                            mixResults[c] = B;
-                        } else {
-                            mixResults[c] = mixSamples(A, B);
-                        }
-                    }
-                    sounds[i]->setOffset(sounds[i]->getOffset()+1);
-                    mixNum++;
-                }
-            }
-            
-            for(int c=0; c < POLY_NUM_CHANNELS; c++) {
-                *bufferPtr = (int16_t)(((Number)INT16_MAX) * (mixResults[c] * globalVolume));
-                bufferPtr++;
-            }
-        }
-        
-        audioInterface->addToBuffer(mixBuffer, numSamples);
+    for(int i=0; i < sounds.size(); i++) {
+        sounds[i]->updateStream(numSamples);
     }
+    
+    int16_t *bufferPtr = buffer;
+    for(int i=0; i < numSamples; i++) {
+        
+        Number mixResults[POLY_NUM_CHANNELS];
+        memset(mixResults, 0, sizeof(Number) * POLY_NUM_CHANNELS);
+        
+        int mixNum = 0;
+        for(int i=0; i < sounds.size(); i++) {
+            if(sounds[i]->isPlaying()) {
+                for(int c=0; c < POLY_NUM_CHANNELS; c++) {
+                    Number sampleA = mixResults[c];
+                    Number sampleB = sounds[i]->getSampleAsNumber(sounds[i]->getOffset(), c);
+                    
+                    if(mixNum == 0) {
+                        mixResults[c] = sampleB;
+                    } else {
+                        mixResults[c] = mixSamples(sampleA, sampleB);
+                    }
+                }
+                sounds[i]->setOffset(sounds[i]->getOffset()+1);
+                mixNum++;
+            }
+        }
+        
+        for(int c=0; c < POLY_NUM_CHANNELS; c++) {
+            *bufferPtr = (int16_t)(((Number)INT16_MAX) * (mixResults[c] * globalVolume));
+            bufferPtr++;
+        }
+    }
+    
+}
+
+void SoundManager::Update() {
 }
 
 SoundManager::~SoundManager() {

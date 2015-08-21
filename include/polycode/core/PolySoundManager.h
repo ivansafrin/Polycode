@@ -32,15 +32,27 @@
 #define POLY_MIX_BUFFER_SIZE (POLY_FRAMES_PER_BUFFER*POLY_CIRCULAR_BUFFER_SIZE)
 
 namespace Polycode {
+    
+    class _PolyExport AudioMixer {
+        public:
+            void mixIntoBuffer(int16_t *buffer, unsigned int numSamples);
+            std::vector<Sound*> sounds;
+            Number globalVolume;
+    };
 	
     class _PolyExport AudioInterface {
         public:
             AudioInterface();
             void addToBuffer(int16_t *data, unsigned int count);
+            void setMixer(AudioMixer *mixer);
+            AudioMixer *getMixer();
         
             int16_t bufferData[POLY_NUM_CHANNELS][POLY_FRAMES_PER_BUFFER*POLY_CIRCULAR_BUFFER_SIZE];
             unsigned int readOffset;
             unsigned int writeOffset;
+        
+        protected:
+            AudioMixer *mixer;
     };
     
     
@@ -72,15 +84,15 @@ namespace Polycode {
 		
 	protected:
 		
+        AudioMixer *mixer;
         AudioInterface *audioInterface;
         
         int16_t mixBuffer[POLY_MIX_BUFFER_SIZE*POLY_NUM_CHANNELS];
         
-        Number globalVolume;
         Number testVal;
         Number leftOver;
         
-        std::vector<Sound*> sounds;
+       
         int recordingBufferSize;
         int recordingBufferRate;
 	};

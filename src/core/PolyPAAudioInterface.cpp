@@ -79,15 +79,7 @@ int PAAudioInterface::paCallback(const void *inputBuffer, void *outputBuffer,
     PAAudioInterface *audioInterface = (PAAudioInterface*) userData;
     if(outputBuffer) {
         int16_t *out = (int16_t*)outputBuffer;
-        for(int i=0; i < framesPerBuffer; i++) {
-            for(int b=0; b < POLY_NUM_CHANNELS; b++) {
-                *out++ = audioInterface->bufferData[b][audioInterface->readOffset];
-            }
-            audioInterface->readOffset++;
-            if(audioInterface->readOffset >= POLY_FRAMES_PER_BUFFER * POLY_CIRCULAR_BUFFER_SIZE) {
-                audioInterface->readOffset = 0;
-            }
-        }
+        audioInterface->getMixer()->mixIntoBuffer(out, framesPerBuffer);
     }
     return 0;
 }
