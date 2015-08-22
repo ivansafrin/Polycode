@@ -59,6 +59,8 @@ UWPCore::UWPCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool v
 	renderer->setGraphicsInterface(this, graphicsInterface);
 	services->setRenderer(renderer);
 	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
+
+	services->getSoundManager()->setAudioInterface(new XAudio2AudioInterface());
 }
 
 UWPCore::~UWPCore() {

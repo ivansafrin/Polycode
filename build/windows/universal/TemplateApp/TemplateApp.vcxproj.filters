@@ -41,4 +41,7 @@
   <ItemGroup>
     <None Include="TemplateApp_TemporaryKey.pfx" />
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="bedlayer_main.wav" />
+  </ItemGroup>
 </Project>

@@ -252,6 +252,9 @@
     <ClInclude Include="resource.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyXAudio2AudioInterface.h">
+      <Filter>Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\core\PolyBasicFileProvider.cpp">
@@ -480,6 +483,12 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\core\PolyOpenGLGraphicsInterface.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\core\lodepng.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\core\PolyXAudio2AudioInterface.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

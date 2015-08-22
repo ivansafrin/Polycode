@@ -26,13 +26,8 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     test->getLocalShaderOptions()->loadTextureForParam("diffuse", "main_icon.png");
     scene->addChild(test);
 
-	SceneLabel *testLabel = new SceneLabel("O", 32, "sans", Label::ANTIALIAS_FULL, 0.2);
-	scene->addChild(testLabel);
-	
-
-	test->getLocalShaderOptions()->setTextureForParam("diffuse", testLabel->getLocalShaderOptions()->getLocalParamByName("diffuse")->getTexture());
-//	testLabel->getLocalShaderOptions()->setTextureForParam("diffuse", test->getLocalShaderOptions()->getLocalParamByName("diffuse")->getTexture());
-    
+	Sound *bgSound = new Sound("bedlayer_main.wav");
+	bgSound->Play();
 }
 
 PolycodeTemplateApp::~PolycodeTemplateApp() {

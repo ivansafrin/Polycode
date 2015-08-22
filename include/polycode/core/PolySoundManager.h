@@ -35,16 +35,22 @@ namespace Polycode {
     
     class _PolyExport AudioMixer {
         public:
+
+			AudioMixer();
+			~AudioMixer();
+
             void mixIntoBuffer(int16_t *buffer, unsigned int numSamples);
             std::vector<Sound*> sounds;
             Number globalVolume;
+
+			CoreMutex *mixerMutex;
     };
 	
     class _PolyExport AudioInterface {
         public:
             AudioInterface();
             void addToBuffer(int16_t *data, unsigned int count);
-            void setMixer(AudioMixer *mixer);
+            virtual void setMixer(AudioMixer *mixer);
             AudioMixer *getMixer();        
         protected:
             AudioMixer *mixer;

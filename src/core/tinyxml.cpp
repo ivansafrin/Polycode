@@ -32,6 +32,7 @@ distribution.
 #include "tinyxml.h"
 #include "polycode/core/PolyCore.h"
 #include "polycode/core/PolyCoreServices.h"
+#include <stdarg.h>
 
 // This document has been altered from the original in the following ways:
 // * It opens files through the Polycode CoreFile abstraction rather than directly.

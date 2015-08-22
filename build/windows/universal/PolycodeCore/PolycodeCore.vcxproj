@@ -103,6 +103,7 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyVector2.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyVector3.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyVector4.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyXAudio2AudioInterface.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\rgbe.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\stb_image.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\tinystr.h" />
@@ -110,6 +111,7 @@
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\core\lodepng.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyBasicFileProvider.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyBezierCurve.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyBone.cpp" />
@@ -181,6 +183,7 @@
     <ClCompile Include="..\..\..\..\src\core\PolyVector2.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyVector3.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyVector4.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyXAudio2AudioInterface.cpp" />
     <ClCompile Include="..\..\..\..\src\core\rgbe.cpp" />
     <ClCompile Include="..\..\..\..\src\core\tinystr.cpp" />
     <ClCompile Include="..\..\..\..\src\core\tinyxml.cpp" />
