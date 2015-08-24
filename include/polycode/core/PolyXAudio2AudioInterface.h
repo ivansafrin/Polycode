@@ -29,13 +29,31 @@ THE SOFTWARE.
 #include "polycode/core/PolyThreaded.h"
 #include "polycode/core/PolySoundManager.h"
 
-#define MAX_XAUDIO_BUFFER_COUNT 3
+#include <queue>
+
+#define MAX_XAUDIO_BUFFER_COUNT 4
 
 #ifndef SAFE_RELEASE
 #define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=nullptr; } }
 #endif
 
+
 namespace Polycode {
+
+	class XAudioInterfaceBuffer {
+		public:
+			int16_t bufferData[POLY_FRAMES_PER_BUFFER * POLY_NUM_CHANNELS];
+	};
+
+	class XAudio2FillThread : public Threaded {
+		public:
+
+			void runThread();
+
+			AudioMixer *mixer;
+			std::queue<XAudioInterfaceBuffer*> bufferQueue;
+			CoreMutex *bufferMutex;
+	};
 
 	class XAudio2Stream : public Threaded, IXAudio2VoiceCallback {
 		public:
@@ -71,12 +89,15 @@ namespace Polycode {
 
 				
 		private:
-
-				int16_t buffer[POLY_FRAMES_PER_BUFFER];
+				
+				XAudioInterfaceBuffer *lastBuffer;
+				XAudioInterfaceBuffer *lastBuffer2;
 
 				AudioMixer *mixer;
 
 				HANDLE hBufferEndEvent;
+
+				XAudio2FillThread *fillThread;
 
 				IXAudio2* pXAudio2;
 				IXAudio2MasteringVoice* pMasterVoice;

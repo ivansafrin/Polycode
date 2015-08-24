@@ -39,6 +39,10 @@ namespace Polycode {
           
 	class _PolyExport CoreMutex : public PolyBase {
 	public:
+
+		virtual void lock() = 0;
+		virtual void unlock() = 0;
+
 		int mutexID;
 	};
 	
@@ -149,16 +153,16 @@ namespace Polycode {
 		virtual void createThread(Threaded *target);
 
 		/**
-		* Locks a mutex.
+		* Locks a mutex. Legacy method. Use the "lock" method of CoreMutex!
 		* @param mutex Mutex to lock.
 		*/
-		virtual void lockMutex(CoreMutex *mutex) = 0;
+		void lockMutex(CoreMutex *mutex);
 		
 		/**
-		* Unlocks a mutex.
+		* Unlocks a mutex.  Legacy method. Use the "unlock" method of CoreMutex!
 		* @param mutex Mutex to lock.
 		*/		
-		virtual void unlockMutex(CoreMutex *mutex) = 0;
+		void unlockMutex(CoreMutex *mutex);
 		
 		/**
 		* Creates a mutex

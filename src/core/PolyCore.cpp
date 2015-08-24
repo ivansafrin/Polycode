@@ -384,6 +384,14 @@ namespace Polycode {
         systemParseFolder(pathString, showHidden, retVec);        
         return retVec;
     }
-    
+
+	void Core::lockMutex(CoreMutex *mutex) {
+		mutex->lock();
+	}
+
+
+	void Core::unlockMutex(CoreMutex *mutex) {
+		mutex->unlock();
+	}
 	
 }

@@ -34,6 +34,15 @@ using namespace ABI::Windows::Storage;
 using namespace Microsoft::WRL;
 using namespace Microsoft::WRL::Wrappers;
 
+void UWPCoreMutex::lock() {
+	mutex.lock();
+}
+
+void UWPCoreMutex::unlock() {
+	mutex.unlock();
+}
+
+
 UWPCore::UWPCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex, bool retinaSupport) 
 	: Core(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
 
@@ -94,15 +103,7 @@ void launchThread(Threaded *target) {
 void UWPCore::createThread(Threaded * target) {
 	Core::createThread(target);
 	std::thread *thread = new std::thread(launchThread, target);
-
-}
-
-void UWPCore::lockMutex(CoreMutex *mutex) {
-	((UWPCoreMutex*)mutex)->mutex.lock();
-}
-
-void UWPCore::unlockMutex(CoreMutex *mutex) {
-	((UWPCoreMutex*)mutex)->mutex.unlock();
+	 
 }
 
 CoreMutex *UWPCore::createMutex() {

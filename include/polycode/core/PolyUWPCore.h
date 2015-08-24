@@ -59,6 +59,8 @@ namespace Polycode {
 
 	class UWPCoreMutex : public CoreMutex {
 	public:
+		void lock();
+		void unlock();
 		std::mutex mutex;
 	};
 
@@ -74,8 +76,6 @@ namespace Polycode {
 		bool systemUpdate();
 		void setCursor(int cursorType);
 		void createThread(Threaded *target);
-		void lockMutex(CoreMutex *mutex);
-		void unlockMutex(CoreMutex *mutex);
 		CoreMutex *createMutex();
 		void copyStringToClipboard(const String& str);
 		String getClipboardString();

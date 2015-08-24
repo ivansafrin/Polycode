@@ -114,6 +114,7 @@ void SoundManager::unregisterSound(Sound *sound) {
     for(int i=0; i < mixer->sounds.size(); i++) {
         if(mixer->sounds[i] == sound) {
             mixer->sounds.erase(mixer->sounds.begin()+i);
+			Services()->getCore()->unlockMutex(mixer->mixerMutex);
             return;
         }
     }
@@ -122,6 +123,9 @@ void SoundManager::unregisterSound(Sound *sound) {
 
 void SoundManager::setAudioInterface(AudioInterface *audioInterface) {
     this->audioInterface = audioInterface;
+	if (!mixer->mixerMutex) {
+		mixer->mixerMutex = Services()->getCore()->createMutex();
+	}
     audioInterface->setMixer(mixer);
 }
 
@@ -157,12 +161,12 @@ AudioMixer::~AudioMixer() {
 }
 
 void AudioMixer::mixIntoBuffer(int16_t *buffer, unsigned int numSamples) {
-    
-	if (!mixerMutex) {
-		mixerMutex = Services()->getCore()->createMutex();
-	}
+	mixerMutex->lock();
 
-	Services()->getCore()->lockMutex(mixerMutex);
+	if (sounds.size() == 0) {
+		mixerMutex->unlock();
+		return;
+	}
 
     for(int i=0; i < sounds.size(); i++) {
         sounds[i]->updateStream(numSamples);
@@ -198,7 +202,7 @@ void AudioMixer::mixIntoBuffer(int16_t *buffer, unsigned int numSamples) {
             bufferPtr++;
         }
     }
-	Services()->getCore()->unlockMutex(mixerMutex);
+	 mixerMutex->unlock();
 }
 
 void SoundManager::Update() {

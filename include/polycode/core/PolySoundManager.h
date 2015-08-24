@@ -25,7 +25,7 @@
 #include "polycode/core/PolyVector3.h"
 #include "polycode/core/PolySound.h"
 
-#define POLY_FRAMES_PER_BUFFER 512
+#define POLY_FRAMES_PER_BUFFER 2048
 #define POLY_AUDIO_FREQ 44100
 #define POLY_CIRCULAR_BUFFER_SIZE 32
 #define POLY_NUM_CHANNELS 2

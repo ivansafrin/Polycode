@@ -27,7 +27,8 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     scene->addChild(test);
 
 	Sound *bgSound = new Sound("bedlayer_main.wav");
-	bgSound->Play();
+
+	bgSound->Play(true);
 }
 
 PolycodeTemplateApp::~PolycodeTemplateApp() {

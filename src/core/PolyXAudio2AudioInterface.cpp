@@ -73,6 +73,18 @@ HRESULT XAudio2Stream::initXAudio2() {
 	
 }
 
+void XAudio2FillThread::runThread() {
+	while (threadRunning) {
+		bufferMutex->lock();
+		if (bufferQueue.size() < MAX_XAUDIO_BUFFER_COUNT) {
+			XAudioInterfaceBuffer *buffer = new XAudioInterfaceBuffer();
+			mixer->mixIntoBuffer(&buffer->bufferData[0], POLY_FRAMES_PER_BUFFER);
+			bufferQueue.push(buffer);
+		}
+		bufferMutex->unlock();
+	}
+}
+
 void XAudio2Stream::runThread() {
 
 	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
@@ -83,33 +95,50 @@ void XAudio2Stream::runThread() {
 		Logger::log("ERROR INITIALIZING XAUDIO2!\n");
 	}
 
+	fillThread = new XAudio2FillThread();
+	fillThread->mixer = mixer;
+	fillThread->bufferMutex = Services()->getCore()->createMutex();
+
+	Services()->getCore()->createThread(fillThread);
+
+	lastBuffer = NULL; 
+
 	while (threadRunning) {
 
 		XAUDIO2_VOICE_STATE state;
 		for (;; )
 		{
+
 			pSourceVoice->GetState(&state);
-			if (state.BuffersQueued == 0) {
+			if (state.BuffersQueued < MAX_XAUDIO_BUFFER_COUNT-1) {
 				break;
 			}
+
 			WaitForSingleObject(hBufferEndEvent, INFINITE);
 		}
 
-		XAUDIO2_BUFFER buf = { 0 };
-
-		buf.AudioBytes = POLY_FRAMES_PER_BUFFER*POLY_NUM_CHANNELS*2;
-
-		//memset(buffer,0, POLY_FRAMES_PER_BUFFER * sizeof(int16_t));
-		if (mixer) {
-			Services()->getCore()->lockMutex(mixer->mixerMutex);
-			mixer->mixIntoBuffer(buffer, POLY_FRAMES_PER_BUFFER);
-			Services()->getCore()->unlockMutex(mixer->mixerMutex);
+		if (lastBuffer) {
+		//	delete lastBuffer;
+			lastBuffer = NULL;
 		}
-
-		buf.pAudioData = (BYTE*) buffer;
-		pSourceVoice->SubmitSourceBuffer(&buf);
-
+		
+		fillThread->bufferMutex->lock();
+		if(fillThread->bufferQueue.size() > 1) {
+			XAUDIO2_BUFFER buf = { 0 };
+			buf.AudioBytes = POLY_FRAMES_PER_BUFFER*POLY_NUM_CHANNELS * 2;
+			lastBuffer = fillThread->bufferQueue.front();
+			buf.Flags = XAUDIO2_END_OF_STREAM;
+			buf.pAudioData = (BYTE*)&lastBuffer->bufferData[0];
+			buf.LoopCount = 0;
+			buf.LoopBegin = 0;
+			pSourceVoice->SubmitSourceBuffer(&buf);		
+			delete lastBuffer;
+			fillThread->bufferQueue.pop();
+		}
+		fillThread->bufferMutex->unlock();
 	}
+
+	fillThread->killThread();
 
 	pMasterVoice->DestroyVoice();
 	SAFE_RELEASE(pXAudio2);
@@ -126,11 +155,11 @@ void XAudio2Stream::setMixer(AudioMixer *mixer) {
 void XAudio2AudioInterface::setMixer(AudioMixer *mixer) {
 	xAudioStream->setMixer(mixer);
 	AudioInterface::setMixer(mixer);
+	Services()->getCore()->createThread(xAudioStream);
 }
 
 XAudio2AudioInterface::XAudio2AudioInterface() {
 	xAudioStream = new XAudio2Stream();
-	Services()->getCore()->createThread(xAudioStream);
 }
 
 XAudio2AudioInterface::~XAudio2AudioInterface() {
