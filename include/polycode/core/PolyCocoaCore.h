@@ -48,6 +48,8 @@ namespace Polycode {
 	
 	class _PolyExport PosixMutex : public CoreMutex {
 	public:
+        void lock();
+        void unlock();
 		pthread_mutex_t pMutex;
 	};
 	
@@ -149,8 +151,6 @@ namespace Polycode {
 		
 		void makeApplicationMain();
 		
-		void lockMutex(CoreMutex *mutex);
-		void unlockMutex(CoreMutex *mutex);
 		CoreMutex *createMutex();		
 		
 		void checkEvents();		

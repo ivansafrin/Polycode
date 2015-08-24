@@ -39,6 +39,15 @@
 
 using namespace Polycode;
 
+void PosixMutex::lock() {
+    pthread_mutex_lock(&pMutex);    
+}
+
+void PosixMutex::unlock() {
+    pthread_mutex_unlock(&pMutex);
+}
+
+
 static bool DisplayModeIs32Bit(CGDisplayModeRef displayMode)
 {
 	bool is32Bit = false;
@@ -342,16 +351,6 @@ void CocoaCore::createThread(Threaded *target) {
 	Core::createThread(target);
 	pthread_t thread;
 	pthread_create( &thread, NULL, ManagedThreadFunc, (void*)target);
-}
-
-void CocoaCore::lockMutex(CoreMutex *mutex) {
-	PosixMutex *m = (PosixMutex*) mutex;
-	pthread_mutex_lock(&m->pMutex);	
-}
-
-void CocoaCore::unlockMutex(CoreMutex *mutex) {
-	PosixMutex *m = (PosixMutex*) mutex;
-	pthread_mutex_unlock(&m->pMutex);
 }
 
 CoreMutex *CocoaCore::createMutex() {
