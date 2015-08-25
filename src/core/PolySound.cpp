@@ -280,9 +280,12 @@ int Sound::getOffset() {
 }
 
 void Sound::setOffset(unsigned int offset) {
-    playbackOffset = (offset % numSamples);
-    if(offset >= numSamples) {
-        offset = 0;
+    playbackOffset = (offset);
+    
+    Number adjustedOffset = ((Number)playbackOffset) * pitch;
+    
+    if((unsigned int)adjustedOffset >= numSamples) {
+        playbackOffset = 0;
         if(!looped && !streamingSource) {
             playing = false;
         }
@@ -352,7 +355,8 @@ void Sound::Stop() {
 
 
 Number Sound::getSampleAsNumber(unsigned int offset, unsigned int channel) {
-    Number ret = (((Number)(soundBuffer[((offset%numSamples)*numChannels)+(channel % numChannels)])/((Number)INT16_MAX))) * volume;
+    Number adjustedOffset = ((Number)offset) * pitch;
+    Number ret = (((Number)(soundBuffer[((((unsigned int )adjustedOffset)%numSamples)*numChannels)+(channel % numChannels)])/((Number)INT16_MAX))) * volume;
     return ret;
 }
 

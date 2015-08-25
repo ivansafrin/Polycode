@@ -27,9 +27,12 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     
     bgSound = new Sound("bedlayer_main.wav");
     bgSound->Play();
+//    bgSound->setPitch(10.0);
     
     
     sound1 = new Sound("marimba-lo.wav");
+    
+    sound1->setPitch(2.3);
     
     sound2 = new Sound("initial_touch_01.wav");
     sound3 = new Sound("curve_02_c.wav");
@@ -44,7 +47,7 @@ void PolycodeTemplateApp::handleEvent(Event *event) {
     
     switch(inputEvent->getKey()) {
         case KEY_z:
-            sound1->Play();
+            sound1->Play(true);
         break;
         case KEY_x:
             sound2->Play();
