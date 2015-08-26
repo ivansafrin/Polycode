@@ -21,15 +21,15 @@
  */
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyUIElement.h"
-#include "PolySceneLabel.h"
-#include "PolySceneImage.h"
-#include "PolyScenePrimitive.h"
-#include "PolyEntity.h"
-#include "PolyUITreeEvent.h"
-#include "PolyUIBox.h"
-#include "PolyTween.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/modules/ui/PolyUIElement.h"
+#include "polycode/core/PolySceneLabel.h"
+#include "polycode/core/PolySceneImage.h"
+#include "polycode/core/PolyScenePrimitive.h"
+#include "polycode/core/PolyEntity.h"
+#include "polycode/modules/ui/PolyUITreeEvent.h"
+#include "polycode/modules/ui/PolyUIBox.h"
+#include "polycode/core/PolyTween.h"
 #include <vector>
 
 using std::vector;

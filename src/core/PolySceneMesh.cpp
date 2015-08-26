@@ -102,7 +102,11 @@ void SceneMesh::setMesh(Mesh *mesh) {
 	this->mesh = mesh;
 	setLocalBoundingBox(mesh->calculateBBox());
 	useVertexBuffer = false;
-    
+
+    rebuildAttributes();
+}
+
+void SceneMesh::rebuildAttributes() {
     if(localShaderOptions) {
         localShaderOptions->getAttributeBindingByName("texCoord")->vertexData = &mesh->vertexTexCoordArray;
         localShaderOptions->getAttributeBindingByName("position")->vertexData = &mesh->vertexPositionArray;

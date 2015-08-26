@@ -20,10 +20,10 @@
  THE SOFTWARE.
  */
 
-#include "PolyUIBox.h"
-#include "PolyCoreServices.h"
-#include "PolyConfig.h"
-#include "PolyRenderer.h"
+#include "polycode/modules/ui/PolyUIBox.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyConfig.h"
+#include "polycode/core/PolyRenderer.h"
 
 using namespace Polycode;
 

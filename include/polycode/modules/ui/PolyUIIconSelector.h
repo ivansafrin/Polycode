@@ -22,13 +22,13 @@
 
 #pragma once
 
-#include "PolyGlobals.h"
-#include "PolyEntity.h"
-#include "PolyUIEvent.h"
-#include "PolyUIBox.h"
-#include "PolyUIImageButton.h"
-#include "PolyUIElement.h"
-#include "PolyInputEvent.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyEntity.h"
+#include "polycode/modules/ui/PolyUIEvent.h"
+#include "polycode/modules/ui/PolyUIBox.h"
+#include "polycode/modules/ui/PolyUIImageButton.h"
+#include "polycode/modules/ui/PolyUIElement.h"
+#include "polycode/core/PolyInputEvent.h"
 
 using namespace Polycode;
 

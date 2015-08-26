@@ -1,7 +1,7 @@
 
-#include "PolyUIFileDialog.h"
-#include "PolyConfig.h"
-#include "PolyRenderer.h"
+#include "polycode/modules/ui/PolyUIFileDialog.h"
+#include "polycode/core/PolyConfig.h"
+#include "polycode/core/PolyRenderer.h"
 
 using namespace Polycode;
 
@@ -181,7 +181,7 @@ void UIFileDialog::showFolder(String folderPath) {
 	currentEntry = NULL;
 	clearEntries();
 
-	std::vector<OSFileEntry> _entries = OSBasics::parseFolder(folderPath, false);
+	std::vector<OSFileEntry> _entries = Services()->getCore()->parseFolder(folderPath, false);
 	
 	int offset = 0;
 	if(folderPath != "/") {

@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#include "PolycodeEditor.h"
-#include "PolycodeFrame.h"
+#include "polycode/ide/PolycodeEditor.h"
+#include "polycode/ide/PolycodeFrame.h"
 
 extern PolycodeClipboard *globalClipboard;
 

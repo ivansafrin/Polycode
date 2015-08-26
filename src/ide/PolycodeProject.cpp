@@ -20,7 +20,7 @@
  THE SOFTWARE.
 */
 
-#include "PolycodeProject.h"
+#include "polycode/ide/PolycodeProject.h"
 
 PolycodeProject::PolycodeProject(String name, String path, String file) {
 	
@@ -91,7 +91,9 @@ bool PolycodeProject::loadProjectFromFile() {
 			if(module->type != ObjectEntry::STRING_ENTRY) continue;
 			
 			data.modules.push_back(module->stringVal);
-			CoreServices::getInstance()->getResourceManager()->addArchive("Standalone/Modules/"+module->stringVal+"/API");
+            
+            // NOCMAKE_TODO:
+			//CoreServices::getInstance()->getResourceManager()->addArchive("Standalone/Modules/"+module->stringVal+"/API");
 			
 		}
 	}
@@ -189,7 +191,7 @@ bool PolycodeProject::saveFile() {
 		configFile.root["packedItems"]->Clear();
 	}
 	
-	vector<OSFileEntry> files = OSBasics::parseFolder(projectFolder, false);
+	vector<OSFileEntry> files = Services()->getCore()->parseFolder(projectFolder, false);
 
 	for(int i=0; i < files.size(); i++) {
 		OSFileEntry entry = files[i];

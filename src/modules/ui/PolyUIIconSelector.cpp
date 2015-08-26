@@ -20,10 +20,10 @@
  THE SOFTWARE.
  */
 
-#include "PolyUIIconSelector.h"
-#include "PolyConfig.h"
-#include "PolyInputEvent.h"
-#include "PolyCoreServices.h"
+#include "polycode/modules/ui/PolyUIIconSelector.h"
+#include "polycode/core/PolyConfig.h"
+#include "polycode/core/PolyInputEvent.h"
+#include "polycode/core/PolyCoreServices.h"
 
 
 UIIconSelector::UIIconSelector(Number height) : UIElement() {

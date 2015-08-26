@@ -20,15 +20,15 @@
  THE SOFTWARE.
  */
 
-#include "PolyUIMenu.h"
-#include "PolyUIEvent.h"
-#include "PolyInputEvent.h"
-#include "PolyLabel.h"
-#include "PolyCoreServices.h"
-#include "PolyCore.h"
-#include "PolyConfig.h"
-#include "PolySceneLine.h"
-#include "PolyRenderer.h"
+#include "polycode/modules/ui/PolyUIMenu.h"
+#include "polycode/modules/ui/PolyUIEvent.h"
+#include "polycode/core/PolyInputEvent.h"
+#include "polycode/core/PolyLabel.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyCore.h"
+#include "polycode/core/PolyConfig.h"
+#include "polycode/core/PolySceneLine.h"
+#include "polycode/core/PolyRenderer.h"
 
 using namespace Polycode;
 

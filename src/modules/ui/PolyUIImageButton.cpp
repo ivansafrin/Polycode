@@ -20,11 +20,11 @@
  THE SOFTWARE.
  */
 
-#include "PolyUIImageButton.h"
-#include "PolyConfig.h"
-#include "PolyInputEvent.h"
-#include "PolyLabel.h"
-#include "PolyCoreServices.h"
+#include "polycode/modules/ui/PolyUIImageButton.h"
+#include "polycode/core/PolyConfig.h"
+#include "polycode/core/PolyInputEvent.h"
+#include "polycode/core/PolyLabel.h"
+#include "polycode/core/PolyCoreServices.h"
 
 using namespace Polycode;
 

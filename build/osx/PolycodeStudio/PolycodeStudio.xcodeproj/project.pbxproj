@@ -1,0 +1,621 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8A36D2101B8E5751009897D0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D20F1B8E5751009897D0 /* AppDelegate.m */; };
+		8A36D2121B8E5751009897D0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2111B8E5751009897D0 /* main.m */; };
+		8A36D2141B8E5751009897D0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8A36D2131B8E5751009897D0 /* Images.xcassets */; };
+		8A36D2171B8E5751009897D0 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A36D2151B8E5751009897D0 /* MainMenu.xib */; };
+		8A36D22E1B8E5ACC009897D0 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D22D1B8E5ACC009897D0 /* PolycodeView.mm */; };
+		8A36D2531B8E5BA9009897D0 /* EditorGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2311B8E5BA9009897D0 /* EditorGrid.cpp */; };
+		8A36D2541B8E5BA9009897D0 /* EntityEditorPropertyView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2321B8E5BA9009897D0 /* EntityEditorPropertyView.cpp */; };
+		8A36D2551B8E5BA9009897D0 /* EntityEditorSettingsView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2331B8E5BA9009897D0 /* EntityEditorSettingsView.cpp */; };
+		8A36D2561B8E5BA9009897D0 /* EntityEditorTreeView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2341B8E5BA9009897D0 /* EntityEditorTreeView.cpp */; };
+		8A36D2571B8E5BA9009897D0 /* ExampleBrowserWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2351B8E5BA9009897D0 /* ExampleBrowserWindow.cpp */; };
+		8A36D2581B8E5BA9009897D0 /* ExportProjectWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2361B8E5BA9009897D0 /* ExportProjectWindow.cpp */; };
+		8A36D2591B8E5BA9009897D0 /* NewFileWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2371B8E5BA9009897D0 /* NewFileWindow.cpp */; };
+		8A36D25A1B8E5BA9009897D0 /* NewProjectWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2381B8E5BA9009897D0 /* NewProjectWindow.cpp */; };
+		8A36D25B1B8E5BA9009897D0 /* PolycodeClipboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2391B8E5BA9009897D0 /* PolycodeClipboard.cpp */; };
+		8A36D25C1B8E5BA9009897D0 /* PolycodeConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D23A1B8E5BA9009897D0 /* PolycodeConsole.cpp */; };
+		8A36D25D1B8E5BA9009897D0 /* PolycodeEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D23B1B8E5BA9009897D0 /* PolycodeEditor.cpp */; };
+		8A36D25E1B8E5BA9009897D0 /* PolycodeEditorManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D23C1B8E5BA9009897D0 /* PolycodeEditorManager.cpp */; };
+		8A36D25F1B8E5BA9009897D0 /* PolycodeEntityEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D23D1B8E5BA9009897D0 /* PolycodeEntityEditor.cpp */; };
+		8A36D2601B8E5BA9009897D0 /* PolycodeFontEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D23E1B8E5BA9009897D0 /* PolycodeFontEditor.cpp */; };
+		8A36D2611B8E5BA9009897D0 /* PolycodeFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D23F1B8E5BA9009897D0 /* PolycodeFrame.cpp */; };
+		8A36D2621B8E5BA9009897D0 /* PolycodeIDEApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2401B8E5BA9009897D0 /* PolycodeIDEApp.cpp */; };
+		8A36D2631B8E5BA9009897D0 /* PolycodeImageEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2411B8E5BA9009897D0 /* PolycodeImageEditor.cpp */; };
+		8A36D2641B8E5BA9009897D0 /* PolycodeMaterialEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2421B8E5BA9009897D0 /* PolycodeMaterialEditor.cpp */; };
+		8A36D2651B8E5BA9009897D0 /* PolycodeMeshEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2431B8E5BA9009897D0 /* PolycodeMeshEditor.cpp */; };
+		8A36D2661B8E5BA9009897D0 /* PolycodeProject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2441B8E5BA9009897D0 /* PolycodeProject.cpp */; };
+		8A36D2671B8E5BA9009897D0 /* PolycodeProjectBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2451B8E5BA9009897D0 /* PolycodeProjectBrowser.cpp */; };
+		8A36D2681B8E5BA9009897D0 /* PolycodeProjectEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2461B8E5BA9009897D0 /* PolycodeProjectEditor.cpp */; };
+		8A36D2691B8E5BA9009897D0 /* PolycodeProjectManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2471B8E5BA9009897D0 /* PolycodeProjectManager.cpp */; };
+		8A36D26A1B8E5BA9009897D0 /* PolycodeProps.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2481B8E5BA9009897D0 /* PolycodeProps.cpp */; };
+		8A36D26B1B8E5BA9009897D0 /* PolycodeRemoteDebugger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2491B8E5BA9009897D0 /* PolycodeRemoteDebugger.cpp */; };
+		8A36D26C1B8E5BA9009897D0 /* PolycodeSoundEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D24A1B8E5BA9009897D0 /* PolycodeSoundEditor.cpp */; };
+		8A36D26D1B8E5BA9009897D0 /* PolycodeSpriteEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D24B1B8E5BA9009897D0 /* PolycodeSpriteEditor.cpp */; };
+		8A36D26E1B8E5BA9009897D0 /* PolycodeTextEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D24C1B8E5BA9009897D0 /* PolycodeTextEditor.cpp */; };
+		8A36D26F1B8E5BA9009897D0 /* PolycodeToolLauncher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D24D1B8E5BA9009897D0 /* PolycodeToolLauncher.cpp */; };
+		8A36D2701B8E5BA9009897D0 /* SettingsWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D24E1B8E5BA9009897D0 /* SettingsWindow.cpp */; };
+		8A36D2711B8E5BA9009897D0 /* TextureBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D24F1B8E5BA9009897D0 /* TextureBrowser.cpp */; };
+		8A36D2721B8E5BA9009897D0 /* ToolWindows.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2501B8E5BA9009897D0 /* ToolWindows.cpp */; };
+		8A36D2731B8E5BA9009897D0 /* TrackballCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2511B8E5BA9009897D0 /* TrackballCamera.cpp */; };
+		8A36D2741B8E5BA9009897D0 /* TransformGizmo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2521B8E5BA9009897D0 /* TransformGizmo.cpp */; };
+		8A36D30D1B8E6FB8009897D0 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3091B8E6FB8009897D0 /* AudioUnit.framework */; };
+		8A36D30E1B8E6FB9009897D0 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D30A1B8E6FB8009897D0 /* AudioToolbox.framework */; };
+		8A36D30F1B8E6FB9009897D0 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D30B1B8E6FB8009897D0 /* CoreAudio.framework */; };
+		8A36D3101B8E6FB9009897D0 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D30C1B8E6FB8009897D0 /* OpenGL.framework */; };
+		8A36D31B1B8E6FD5009897D0 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3111B8E6FD5009897D0 /* libfreetype.a */; };
+		8A36D31C1B8E6FD5009897D0 /* liblibogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3121B8E6FD5009897D0 /* liblibogg.a */; };
+		8A36D31D1B8E6FD5009897D0 /* liblibvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3131B8E6FD5009897D0 /* liblibvorbis.a */; };
+		8A36D31E1B8E6FD5009897D0 /* libportaudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3141B8E6FD5009897D0 /* libportaudio.a */; };
+		8A36D31F1B8E6FD5009897D0 /* liblibvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3151B8E6FD5009897D0 /* liblibvorbisfile.a */; };
+		8A36D3201B8E6FD5009897D0 /* liblua5.1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3161B8E6FD5009897D0 /* liblua5.1.a */; };
+		8A36D3211B8E6FD5009897D0 /* libphysfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3171B8E6FD5009897D0 /* libphysfs.a */; };
+		8A36D3221B8E6FD5009897D0 /* libpng15.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3181B8E6FD5009897D0 /* libpng15.a */; };
+		8A36D3231B8E6FD5009897D0 /* libPolycore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3191B8E6FD5009897D0 /* libPolycore.a */; };
+		8A36D3241B8E6FD5009897D0 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D31A1B8E6FD5009897D0 /* libz.a */; };
+		8A36D3261B8E6FE7009897D0 /* libPolycodeUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3251B8E6FE7009897D0 /* libPolycodeUI.a */; };
+		8A36D32A1B8E7096009897D0 /* default.pak in Resources */ = {isa = PBXBuildFile; fileRef = 8A36D3281B8E7096009897D0 /* default.pak */; };
+		8A36D32B1B8E7096009897D0 /* hdr.pak in Resources */ = {isa = PBXBuildFile; fileRef = 8A36D3291B8E7096009897D0 /* hdr.pak */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		8A36D2091B8E5751009897D0 /* PolycodeStudio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PolycodeStudio.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A36D20D1B8E5751009897D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8A36D20E1B8E5751009897D0 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		8A36D20F1B8E5751009897D0 /* AppDelegate.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; path = AppDelegate.m; sourceTree = "<group>"; };
+		8A36D2111B8E5751009897D0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		8A36D2131B8E5751009897D0 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		8A36D2161B8E5751009897D0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		8A36D22C1B8E5ACC009897D0 /* PolycodeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeView.h; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../include/polycode/view/osx/PolycodeView.h; sourceTree = "<absolute>"; };
+		8A36D22D1B8E5ACC009897D0 /* PolycodeView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PolycodeView.mm; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../src/view/osx/PolycodeView.mm; sourceTree = "<absolute>"; };
+		8A36D2311B8E5BA9009897D0 /* EditorGrid.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = EditorGrid.cpp; path = ../../../src/ide/EditorGrid.cpp; sourceTree = "<group>"; };
+		8A36D2321B8E5BA9009897D0 /* EntityEditorPropertyView.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = EntityEditorPropertyView.cpp; path = ../../../src/ide/EntityEditorPropertyView.cpp; sourceTree = "<group>"; };
+		8A36D2331B8E5BA9009897D0 /* EntityEditorSettingsView.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = EntityEditorSettingsView.cpp; path = ../../../src/ide/EntityEditorSettingsView.cpp; sourceTree = "<group>"; };
+		8A36D2341B8E5BA9009897D0 /* EntityEditorTreeView.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = EntityEditorTreeView.cpp; path = ../../../src/ide/EntityEditorTreeView.cpp; sourceTree = "<group>"; };
+		8A36D2351B8E5BA9009897D0 /* ExampleBrowserWindow.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = ExampleBrowserWindow.cpp; path = ../../../src/ide/ExampleBrowserWindow.cpp; sourceTree = "<group>"; };
+		8A36D2361B8E5BA9009897D0 /* ExportProjectWindow.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = ExportProjectWindow.cpp; path = ../../../src/ide/ExportProjectWindow.cpp; sourceTree = "<group>"; };
+		8A36D2371B8E5BA9009897D0 /* NewFileWindow.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = NewFileWindow.cpp; path = ../../../src/ide/NewFileWindow.cpp; sourceTree = "<group>"; };
+		8A36D2381B8E5BA9009897D0 /* NewProjectWindow.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = NewProjectWindow.cpp; path = ../../../src/ide/NewProjectWindow.cpp; sourceTree = "<group>"; };
+		8A36D2391B8E5BA9009897D0 /* PolycodeClipboard.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = PolycodeClipboard.cpp; path = ../../../src/ide/PolycodeClipboard.cpp; sourceTree = "<group>"; };
+		8A36D23A1B8E5BA9009897D0 /* PolycodeConsole.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = PolycodeConsole.cpp; path = ../../../src/ide/PolycodeConsole.cpp; sourceTree = "<group>"; };
+		8A36D23B1B8E5BA9009897D0 /* PolycodeEditor.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = PolycodeEditor.cpp; path = ../../../src/ide/PolycodeEditor.cpp; sourceTree = "<group>"; };
+		8A36D23C1B8E5BA9009897D0 /* PolycodeEditorManager.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = PolycodeEditorManager.cpp; path = ../../../src/ide/PolycodeEditorManager.cpp; sourceTree = "<group>"; };
+		8A36D23D1B8E5BA9009897D0 /* PolycodeEntityEditor.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = PolycodeEntityEditor.cpp; path = ../../../src/ide/PolycodeEntityEditor.cpp; sourceTree = "<group>"; };
+		8A36D23E1B8E5BA9009897D0 /* PolycodeFontEditor.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = PolycodeFontEditor.cpp; path = ../../../src/ide/PolycodeFontEditor.cpp; sourceTree = "<group>"; };
+		8A36D23F1B8E5BA9009897D0 /* PolycodeFrame.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = PolycodeFrame.cpp; path = ../../../src/ide/PolycodeFrame.cpp; sourceTree = "<group>"; };
+		8A36D2401B8E5BA9009897D0 /* PolycodeIDEApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = PolycodeIDEApp.cpp; path = ../../../src/ide/PolycodeIDEApp.cpp; sourceTree = "<group>"; };
+		8A36D2411B8E5BA9009897D0 /* PolycodeImageEditor.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = PolycodeImageEditor.cpp; path = ../../../src/ide/PolycodeImageEditor.cpp; sourceTree = "<group>"; };
+		8A36D2421B8E5BA9009897D0 /* PolycodeMaterialEditor.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = PolycodeMaterialEditor.cpp; path = ../../../src/ide/PolycodeMaterialEditor.cpp; sourceTree = "<group>"; };
+		8A36D2431B8E5BA9009897D0 /* PolycodeMeshEditor.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = PolycodeMeshEditor.cpp; path = ../../../src/ide/PolycodeMeshEditor.cpp; sourceTree = "<group>"; };
+		8A36D2441B8E5BA9009897D0 /* PolycodeProject.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = PolycodeProject.cpp; path = ../../../src/ide/PolycodeProject.cpp; sourceTree = "<group>"; };
+		8A36D2451B8E5BA9009897D0 /* PolycodeProjectBrowser.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = PolycodeProjectBrowser.cpp; path = ../../../src/ide/PolycodeProjectBrowser.cpp; sourceTree = "<group>"; };
+		8A36D2461B8E5BA9009897D0 /* PolycodeProjectEditor.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = PolycodeProjectEditor.cpp; path = ../../../src/ide/PolycodeProjectEditor.cpp; sourceTree = "<group>"; };
+		8A36D2471B8E5BA9009897D0 /* PolycodeProjectManager.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = PolycodeProjectManager.cpp; path = ../../../src/ide/PolycodeProjectManager.cpp; sourceTree = "<group>"; };
+		8A36D2481B8E5BA9009897D0 /* PolycodeProps.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = PolycodeProps.cpp; path = ../../../src/ide/PolycodeProps.cpp; sourceTree = "<group>"; };
+		8A36D2491B8E5BA9009897D0 /* PolycodeRemoteDebugger.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = PolycodeRemoteDebugger.cpp; path = ../../../src/ide/PolycodeRemoteDebugger.cpp; sourceTree = "<group>"; };
+		8A36D24A1B8E5BA9009897D0 /* PolycodeSoundEditor.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = PolycodeSoundEditor.cpp; path = ../../../src/ide/PolycodeSoundEditor.cpp; sourceTree = "<group>"; };
+		8A36D24B1B8E5BA9009897D0 /* PolycodeSpriteEditor.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = PolycodeSpriteEditor.cpp; path = ../../../src/ide/PolycodeSpriteEditor.cpp; sourceTree = "<group>"; };
+		8A36D24C1B8E5BA9009897D0 /* PolycodeTextEditor.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = PolycodeTextEditor.cpp; path = ../../../src/ide/PolycodeTextEditor.cpp; sourceTree = "<group>"; };
+		8A36D24D1B8E5BA9009897D0 /* PolycodeToolLauncher.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = PolycodeToolLauncher.cpp; path = ../../../src/ide/PolycodeToolLauncher.cpp; sourceTree = "<group>"; };
+		8A36D24E1B8E5BA9009897D0 /* SettingsWindow.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = SettingsWindow.cpp; path = ../../../src/ide/SettingsWindow.cpp; sourceTree = "<group>"; };
+		8A36D24F1B8E5BA9009897D0 /* TextureBrowser.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = TextureBrowser.cpp; path = ../../../src/ide/TextureBrowser.cpp; sourceTree = "<group>"; };
+		8A36D2501B8E5BA9009897D0 /* ToolWindows.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = ToolWindows.cpp; path = ../../../src/ide/ToolWindows.cpp; sourceTree = "<group>"; };
+		8A36D2511B8E5BA9009897D0 /* TrackballCamera.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = TrackballCamera.cpp; path = ../../../src/ide/TrackballCamera.cpp; sourceTree = "<group>"; };
+		8A36D2521B8E5BA9009897D0 /* TransformGizmo.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = TransformGizmo.cpp; path = ../../../src/ide/TransformGizmo.cpp; sourceTree = "<group>"; };
+		8A36D2751B8E5BE4009897D0 /* EditorGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EditorGrid.h; path = ../../../include/polycode/ide/EditorGrid.h; sourceTree = "<group>"; };
+		8A36D2761B8E5BE4009897D0 /* EntityEditorPropertyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EntityEditorPropertyView.h; path = ../../../include/polycode/ide/EntityEditorPropertyView.h; sourceTree = "<group>"; };
+		8A36D2771B8E5BE4009897D0 /* EntityEditorSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EntityEditorSettingsView.h; path = ../../../include/polycode/ide/EntityEditorSettingsView.h; sourceTree = "<group>"; };
+		8A36D2781B8E5BE4009897D0 /* EntityEditorTreeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EntityEditorTreeView.h; path = ../../../include/polycode/ide/EntityEditorTreeView.h; sourceTree = "<group>"; };
+		8A36D2791B8E5BE4009897D0 /* ExampleBrowserWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExampleBrowserWindow.h; path = ../../../include/polycode/ide/ExampleBrowserWindow.h; sourceTree = "<group>"; };
+		8A36D27A1B8E5BE4009897D0 /* ExportProjectWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExportProjectWindow.h; path = ../../../include/polycode/ide/ExportProjectWindow.h; sourceTree = "<group>"; };
+		8A36D27B1B8E5BE4009897D0 /* NewFileWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NewFileWindow.h; path = ../../../include/polycode/ide/NewFileWindow.h; sourceTree = "<group>"; };
+		8A36D27C1B8E5BE4009897D0 /* NewProjectWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NewProjectWindow.h; path = ../../../include/polycode/ide/NewProjectWindow.h; sourceTree = "<group>"; };
+		8A36D27D1B8E5BE4009897D0 /* PolycodeClipboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeClipboard.h; path = ../../../include/polycode/ide/PolycodeClipboard.h; sourceTree = "<group>"; };
+		8A36D27E1B8E5BE4009897D0 /* PolycodeConsole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeConsole.h; path = ../../../include/polycode/ide/PolycodeConsole.h; sourceTree = "<group>"; };
+		8A36D27F1B8E5BE4009897D0 /* PolycodeEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeEditor.h; path = ../../../include/polycode/ide/PolycodeEditor.h; sourceTree = "<group>"; };
+		8A36D2801B8E5BE4009897D0 /* PolycodeEditorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeEditorManager.h; path = ../../../include/polycode/ide/PolycodeEditorManager.h; sourceTree = "<group>"; };
+		8A36D2811B8E5BE4009897D0 /* PolycodeEntityEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeEntityEditor.h; path = ../../../include/polycode/ide/PolycodeEntityEditor.h; sourceTree = "<group>"; };
+		8A36D2821B8E5BE4009897D0 /* PolycodeFontEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeFontEditor.h; path = ../../../include/polycode/ide/PolycodeFontEditor.h; sourceTree = "<group>"; };
+		8A36D2831B8E5BE4009897D0 /* PolycodeFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeFrame.h; path = ../../../include/polycode/ide/PolycodeFrame.h; sourceTree = "<group>"; };
+		8A36D2841B8E5BE4009897D0 /* PolycodeGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeGlobals.h; path = ../../../include/polycode/ide/PolycodeGlobals.h; sourceTree = "<group>"; };
+		8A36D2851B8E5BE4009897D0 /* PolycodeIDEApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeIDEApp.h; path = ../../../include/polycode/ide/PolycodeIDEApp.h; sourceTree = "<group>"; };
+		8A36D2861B8E5BE4009897D0 /* PolycodeImageEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeImageEditor.h; path = ../../../include/polycode/ide/PolycodeImageEditor.h; sourceTree = "<group>"; };
+		8A36D2871B8E5BE4009897D0 /* PolycodeMaterialEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeMaterialEditor.h; path = ../../../include/polycode/ide/PolycodeMaterialEditor.h; sourceTree = "<group>"; };
+		8A36D2881B8E5BE4009897D0 /* PolycodeMeshEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeMeshEditor.h; path = ../../../include/polycode/ide/PolycodeMeshEditor.h; sourceTree = "<group>"; };
+		8A36D2891B8E5BE4009897D0 /* PolycodeProject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeProject.h; path = ../../../include/polycode/ide/PolycodeProject.h; sourceTree = "<group>"; };
+		8A36D28A1B8E5BE4009897D0 /* PolycodeProjectBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeProjectBrowser.h; path = ../../../include/polycode/ide/PolycodeProjectBrowser.h; sourceTree = "<group>"; };
+		8A36D28B1B8E5BE4009897D0 /* PolycodeProjectEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeProjectEditor.h; path = ../../../include/polycode/ide/PolycodeProjectEditor.h; sourceTree = "<group>"; };
+		8A36D28C1B8E5BE4009897D0 /* PolycodeProjectManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeProjectManager.h; path = ../../../include/polycode/ide/PolycodeProjectManager.h; sourceTree = "<group>"; };
+		8A36D28D1B8E5BE4009897D0 /* PolycodeProps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeProps.h; path = ../../../include/polycode/ide/PolycodeProps.h; sourceTree = "<group>"; };
+		8A36D28E1B8E5BE4009897D0 /* PolycodeRemoteDebugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeRemoteDebugger.h; path = ../../../include/polycode/ide/PolycodeRemoteDebugger.h; sourceTree = "<group>"; };
+		8A36D28F1B8E5BE4009897D0 /* PolycodeSoundEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeSoundEditor.h; path = ../../../include/polycode/ide/PolycodeSoundEditor.h; sourceTree = "<group>"; };
+		8A36D2901B8E5BE4009897D0 /* PolycodeSpriteEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeSpriteEditor.h; path = ../../../include/polycode/ide/PolycodeSpriteEditor.h; sourceTree = "<group>"; };
+		8A36D2911B8E5BE4009897D0 /* PolycodeTextEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeTextEditor.h; path = ../../../include/polycode/ide/PolycodeTextEditor.h; sourceTree = "<group>"; };
+		8A36D2921B8E5BE4009897D0 /* PolycodeToolLauncher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeToolLauncher.h; path = ../../../include/polycode/ide/PolycodeToolLauncher.h; sourceTree = "<group>"; };
+		8A36D2931B8E5BE4009897D0 /* SettingsWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SettingsWindow.h; path = ../../../include/polycode/ide/SettingsWindow.h; sourceTree = "<group>"; };
+		8A36D2941B8E5BE4009897D0 /* TextureBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TextureBrowser.h; path = ../../../include/polycode/ide/TextureBrowser.h; sourceTree = "<group>"; };
+		8A36D2951B8E5BE4009897D0 /* ToolWindows.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ToolWindows.h; path = ../../../include/polycode/ide/ToolWindows.h; sourceTree = "<group>"; };
+		8A36D2961B8E5BE4009897D0 /* TrackballCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TrackballCamera.h; path = ../../../include/polycode/ide/TrackballCamera.h; sourceTree = "<group>"; };
+		8A36D2971B8E5BE4009897D0 /* TransformGizmo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TransformGizmo.h; path = ../../../include/polycode/ide/TransformGizmo.h; sourceTree = "<group>"; };
+		8A36D3091B8E6FB8009897D0 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/System/Library/Frameworks/AudioUnit.framework; sourceTree = "<absolute>"; };
+		8A36D30A1B8E6FB8009897D0 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
+		8A36D30B1B8E6FB8009897D0 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/System/Library/Frameworks/CoreAudio.framework; sourceTree = "<absolute>"; };
+		8A36D30C1B8E6FB8009897D0 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
+		8A36D3111B8E6FD5009897D0 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/libfreetype.a; sourceTree = "<absolute>"; };
+		8A36D3121B8E6FD5009897D0 /* liblibogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibogg.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/liblibogg.a; sourceTree = "<absolute>"; };
+		8A36D3131B8E6FD5009897D0 /* liblibvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibvorbis.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/liblibvorbis.a; sourceTree = "<absolute>"; };
+		8A36D3141B8E6FD5009897D0 /* libportaudio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libportaudio.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/libportaudio.a; sourceTree = "<absolute>"; };
+		8A36D3151B8E6FD5009897D0 /* liblibvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibvorbisfile.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/liblibvorbisfile.a; sourceTree = "<absolute>"; };
+		8A36D3161B8E6FD5009897D0 /* liblua5.1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua5.1.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/liblua5.1.a; sourceTree = "<absolute>"; };
+		8A36D3171B8E6FD5009897D0 /* libphysfs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libphysfs.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/libphysfs.a; sourceTree = "<absolute>"; };
+		8A36D3181B8E6FD5009897D0 /* libpng15.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng15.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/libpng15.a; sourceTree = "<absolute>"; };
+		8A36D3191B8E6FD5009897D0 /* libPolycore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycore.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/libPolycore.a; sourceTree = "<absolute>"; };
+		8A36D31A1B8E6FD5009897D0 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/libz.a; sourceTree = "<absolute>"; };
+		8A36D3251B8E6FE7009897D0 /* libPolycodeUI.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeUI.a; path = ../../../../lib/osx/libPolycodeUI.a; sourceTree = "<group>"; };
+		8A36D3281B8E7096009897D0 /* default.pak */ = {isa = PBXFileReference; lastKnownFileType = file; name = default.pak; path = ../../../../assets/default/default.pak; sourceTree = "<group>"; };
+		8A36D3291B8E7096009897D0 /* hdr.pak */ = {isa = PBXFileReference; lastKnownFileType = file; name = hdr.pak; path = ../../../../assets/default/hdr.pak; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8A36D2061B8E5751009897D0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A36D31D1B8E6FD5009897D0 /* liblibvorbis.a in Frameworks */,
+				8A36D30F1B8E6FB9009897D0 /* CoreAudio.framework in Frameworks */,
+				8A36D3231B8E6FD5009897D0 /* libPolycore.a in Frameworks */,
+				8A36D3101B8E6FB9009897D0 /* OpenGL.framework in Frameworks */,
+				8A36D3221B8E6FD5009897D0 /* libpng15.a in Frameworks */,
+				8A36D3201B8E6FD5009897D0 /* liblua5.1.a in Frameworks */,
+				8A36D31F1B8E6FD5009897D0 /* liblibvorbisfile.a in Frameworks */,
+				8A36D31E1B8E6FD5009897D0 /* libportaudio.a in Frameworks */,
+				8A36D3261B8E6FE7009897D0 /* libPolycodeUI.a in Frameworks */,
+				8A36D31B1B8E6FD5009897D0 /* libfreetype.a in Frameworks */,
+				8A36D30D1B8E6FB8009897D0 /* AudioUnit.framework in Frameworks */,
+				8A36D30E1B8E6FB9009897D0 /* AudioToolbox.framework in Frameworks */,
+				8A36D3211B8E6FD5009897D0 /* libphysfs.a in Frameworks */,
+				8A36D3241B8E6FD5009897D0 /* libz.a in Frameworks */,
+				8A36D31C1B8E6FD5009897D0 /* liblibogg.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		8A36D2001B8E5751009897D0 = {
+			isa = PBXGroup;
+			children = (
+				8A36D3091B8E6FB8009897D0 /* AudioUnit.framework */,
+				8A36D30A1B8E6FB8009897D0 /* AudioToolbox.framework */,
+				8A36D30B1B8E6FB8009897D0 /* CoreAudio.framework */,
+				8A36D30C1B8E6FB8009897D0 /* OpenGL.framework */,
+				8A36D2301B8E5B73009897D0 /* include */,
+				8A36D22F1B8E5B6E009897D0 /* src */,
+				8A36D20B1B8E5751009897D0 /* PolycodeStudio */,
+				8A36D20A1B8E5751009897D0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8A36D20A1B8E5751009897D0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8A36D2091B8E5751009897D0 /* PolycodeStudio.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8A36D20B1B8E5751009897D0 /* PolycodeStudio */ = {
+			isa = PBXGroup;
+			children = (
+				8A36D3281B8E7096009897D0 /* default.pak */,
+				8A36D3291B8E7096009897D0 /* hdr.pak */,
+				8A36D22C1B8E5ACC009897D0 /* PolycodeView.h */,
+				8A36D22D1B8E5ACC009897D0 /* PolycodeView.mm */,
+				8A36D20E1B8E5751009897D0 /* AppDelegate.h */,
+				8A36D20F1B8E5751009897D0 /* AppDelegate.m */,
+				8A36D2131B8E5751009897D0 /* Images.xcassets */,
+				8A36D2151B8E5751009897D0 /* MainMenu.xib */,
+				8A36D20C1B8E5751009897D0 /* Supporting Files */,
+			);
+			path = PolycodeStudio;
+			sourceTree = "<group>";
+		};
+		8A36D20C1B8E5751009897D0 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				8A36D3111B8E6FD5009897D0 /* libfreetype.a */,
+				8A36D3121B8E6FD5009897D0 /* liblibogg.a */,
+				8A36D3131B8E6FD5009897D0 /* liblibvorbis.a */,
+				8A36D3141B8E6FD5009897D0 /* libportaudio.a */,
+				8A36D3151B8E6FD5009897D0 /* liblibvorbisfile.a */,
+				8A36D3161B8E6FD5009897D0 /* liblua5.1.a */,
+				8A36D3171B8E6FD5009897D0 /* libphysfs.a */,
+				8A36D3251B8E6FE7009897D0 /* libPolycodeUI.a */,
+				8A36D3181B8E6FD5009897D0 /* libpng15.a */,
+				8A36D3191B8E6FD5009897D0 /* libPolycore.a */,
+				8A36D31A1B8E6FD5009897D0 /* libz.a */,
+				8A36D20D1B8E5751009897D0 /* Info.plist */,
+				8A36D2111B8E5751009897D0 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		8A36D22F1B8E5B6E009897D0 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				8A36D2311B8E5BA9009897D0 /* EditorGrid.cpp */,
+				8A36D2321B8E5BA9009897D0 /* EntityEditorPropertyView.cpp */,
+				8A36D2331B8E5BA9009897D0 /* EntityEditorSettingsView.cpp */,
+				8A36D2341B8E5BA9009897D0 /* EntityEditorTreeView.cpp */,
+				8A36D2351B8E5BA9009897D0 /* ExampleBrowserWindow.cpp */,
+				8A36D2361B8E5BA9009897D0 /* ExportProjectWindow.cpp */,
+				8A36D2371B8E5BA9009897D0 /* NewFileWindow.cpp */,
+				8A36D2381B8E5BA9009897D0 /* NewProjectWindow.cpp */,
+				8A36D2391B8E5BA9009897D0 /* PolycodeClipboard.cpp */,
+				8A36D23A1B8E5BA9009897D0 /* PolycodeConsole.cpp */,
+				8A36D23B1B8E5BA9009897D0 /* PolycodeEditor.cpp */,
+				8A36D23C1B8E5BA9009897D0 /* PolycodeEditorManager.cpp */,
+				8A36D23D1B8E5BA9009897D0 /* PolycodeEntityEditor.cpp */,
+				8A36D23E1B8E5BA9009897D0 /* PolycodeFontEditor.cpp */,
+				8A36D23F1B8E5BA9009897D0 /* PolycodeFrame.cpp */,
+				8A36D2401B8E5BA9009897D0 /* PolycodeIDEApp.cpp */,
+				8A36D2411B8E5BA9009897D0 /* PolycodeImageEditor.cpp */,
+				8A36D2421B8E5BA9009897D0 /* PolycodeMaterialEditor.cpp */,
+				8A36D2431B8E5BA9009897D0 /* PolycodeMeshEditor.cpp */,
+				8A36D2441B8E5BA9009897D0 /* PolycodeProject.cpp */,
+				8A36D2451B8E5BA9009897D0 /* PolycodeProjectBrowser.cpp */,
+				8A36D2461B8E5BA9009897D0 /* PolycodeProjectEditor.cpp */,
+				8A36D2471B8E5BA9009897D0 /* PolycodeProjectManager.cpp */,
+				8A36D2481B8E5BA9009897D0 /* PolycodeProps.cpp */,
+				8A36D2491B8E5BA9009897D0 /* PolycodeRemoteDebugger.cpp */,
+				8A36D24A1B8E5BA9009897D0 /* PolycodeSoundEditor.cpp */,
+				8A36D24B1B8E5BA9009897D0 /* PolycodeSpriteEditor.cpp */,
+				8A36D24C1B8E5BA9009897D0 /* PolycodeTextEditor.cpp */,
+				8A36D24D1B8E5BA9009897D0 /* PolycodeToolLauncher.cpp */,
+				8A36D24E1B8E5BA9009897D0 /* SettingsWindow.cpp */,
+				8A36D24F1B8E5BA9009897D0 /* TextureBrowser.cpp */,
+				8A36D2501B8E5BA9009897D0 /* ToolWindows.cpp */,
+				8A36D2511B8E5BA9009897D0 /* TrackballCamera.cpp */,
+				8A36D2521B8E5BA9009897D0 /* TransformGizmo.cpp */,
+			);
+			name = src;
+			sourceTree = "<group>";
+		};
+		8A36D2301B8E5B73009897D0 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				8A36D2751B8E5BE4009897D0 /* EditorGrid.h */,
+				8A36D2761B8E5BE4009897D0 /* EntityEditorPropertyView.h */,
+				8A36D2771B8E5BE4009897D0 /* EntityEditorSettingsView.h */,
+				8A36D2781B8E5BE4009897D0 /* EntityEditorTreeView.h */,
+				8A36D2791B8E5BE4009897D0 /* ExampleBrowserWindow.h */,
+				8A36D27A1B8E5BE4009897D0 /* ExportProjectWindow.h */,
+				8A36D27B1B8E5BE4009897D0 /* NewFileWindow.h */,
+				8A36D27C1B8E5BE4009897D0 /* NewProjectWindow.h */,
+				8A36D27D1B8E5BE4009897D0 /* PolycodeClipboard.h */,
+				8A36D27E1B8E5BE4009897D0 /* PolycodeConsole.h */,
+				8A36D27F1B8E5BE4009897D0 /* PolycodeEditor.h */,
+				8A36D2801B8E5BE4009897D0 /* PolycodeEditorManager.h */,
+				8A36D2811B8E5BE4009897D0 /* PolycodeEntityEditor.h */,
+				8A36D2821B8E5BE4009897D0 /* PolycodeFontEditor.h */,
+				8A36D2831B8E5BE4009897D0 /* PolycodeFrame.h */,
+				8A36D2841B8E5BE4009897D0 /* PolycodeGlobals.h */,
+				8A36D2851B8E5BE4009897D0 /* PolycodeIDEApp.h */,
+				8A36D2861B8E5BE4009897D0 /* PolycodeImageEditor.h */,
+				8A36D2871B8E5BE4009897D0 /* PolycodeMaterialEditor.h */,
+				8A36D2881B8E5BE4009897D0 /* PolycodeMeshEditor.h */,
+				8A36D2891B8E5BE4009897D0 /* PolycodeProject.h */,
+				8A36D28A1B8E5BE4009897D0 /* PolycodeProjectBrowser.h */,
+				8A36D28B1B8E5BE4009897D0 /* PolycodeProjectEditor.h */,
+				8A36D28C1B8E5BE4009897D0 /* PolycodeProjectManager.h */,
+				8A36D28D1B8E5BE4009897D0 /* PolycodeProps.h */,
+				8A36D28E1B8E5BE4009897D0 /* PolycodeRemoteDebugger.h */,
+				8A36D28F1B8E5BE4009897D0 /* PolycodeSoundEditor.h */,
+				8A36D2901B8E5BE4009897D0 /* PolycodeSpriteEditor.h */,
+				8A36D2911B8E5BE4009897D0 /* PolycodeTextEditor.h */,
+				8A36D2921B8E5BE4009897D0 /* PolycodeToolLauncher.h */,
+				8A36D2931B8E5BE4009897D0 /* SettingsWindow.h */,
+				8A36D2941B8E5BE4009897D0 /* TextureBrowser.h */,
+				8A36D2951B8E5BE4009897D0 /* ToolWindows.h */,
+				8A36D2961B8E5BE4009897D0 /* TrackballCamera.h */,
+				8A36D2971B8E5BE4009897D0 /* TransformGizmo.h */,
+			);
+			name = include;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8A36D2081B8E5751009897D0 /* PolycodeStudio */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8A36D2261B8E5751009897D0 /* Build configuration list for PBXNativeTarget "PolycodeStudio" */;
+			buildPhases = (
+				8A36D2051B8E5751009897D0 /* Sources */,
+				8A36D2061B8E5751009897D0 /* Frameworks */,
+				8A36D2071B8E5751009897D0 /* Resources */,
+				8A36D3271B8E701D009897D0 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PolycodeStudio;
+			productName = PolycodeStudio;
+			productReference = 8A36D2091B8E5751009897D0 /* PolycodeStudio.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8A36D2011B8E5751009897D0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0640;
+				ORGANIZATIONNAME = Polycode;
+				TargetAttributes = {
+					8A36D2081B8E5751009897D0 = {
+						CreatedOnToolsVersion = 6.4;
+					};
+				};
+			};
+			buildConfigurationList = 8A36D2041B8E5751009897D0 /* Build configuration list for PBXProject "PolycodeStudio" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 8A36D2001B8E5751009897D0;
+			productRefGroup = 8A36D20A1B8E5751009897D0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8A36D2081B8E5751009897D0 /* PolycodeStudio */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8A36D2071B8E5751009897D0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A36D2141B8E5751009897D0 /* Images.xcassets in Resources */,
+				8A36D2171B8E5751009897D0 /* MainMenu.xib in Resources */,
+				8A36D32A1B8E7096009897D0 /* default.pak in Resources */,
+				8A36D32B1B8E7096009897D0 /* hdr.pak in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		8A36D3271B8E701D009897D0 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cp -R \"$PROJECT_DIR/../../../assets/ide/\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8A36D2051B8E5751009897D0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A36D2621B8E5BA9009897D0 /* PolycodeIDEApp.cpp in Sources */,
+				8A36D2631B8E5BA9009897D0 /* PolycodeImageEditor.cpp in Sources */,
+				8A36D26E1B8E5BA9009897D0 /* PolycodeTextEditor.cpp in Sources */,
+				8A36D2661B8E5BA9009897D0 /* PolycodeProject.cpp in Sources */,
+				8A36D26B1B8E5BA9009897D0 /* PolycodeRemoteDebugger.cpp in Sources */,
+				8A36D25A1B8E5BA9009897D0 /* NewProjectWindow.cpp in Sources */,
+				8A36D2641B8E5BA9009897D0 /* PolycodeMaterialEditor.cpp in Sources */,
+				8A36D2671B8E5BA9009897D0 /* PolycodeProjectBrowser.cpp in Sources */,
+				8A36D2581B8E5BA9009897D0 /* ExportProjectWindow.cpp in Sources */,
+				8A36D26D1B8E5BA9009897D0 /* PolycodeSpriteEditor.cpp in Sources */,
+				8A36D2531B8E5BA9009897D0 /* EditorGrid.cpp in Sources */,
+				8A36D2571B8E5BA9009897D0 /* ExampleBrowserWindow.cpp in Sources */,
+				8A36D2121B8E5751009897D0 /* main.m in Sources */,
+				8A36D2651B8E5BA9009897D0 /* PolycodeMeshEditor.cpp in Sources */,
+				8A36D25B1B8E5BA9009897D0 /* PolycodeClipboard.cpp in Sources */,
+				8A36D25E1B8E5BA9009897D0 /* PolycodeEditorManager.cpp in Sources */,
+				8A36D2591B8E5BA9009897D0 /* NewFileWindow.cpp in Sources */,
+				8A36D25C1B8E5BA9009897D0 /* PolycodeConsole.cpp in Sources */,
+				8A36D2711B8E5BA9009897D0 /* TextureBrowser.cpp in Sources */,
+				8A36D2741B8E5BA9009897D0 /* TransformGizmo.cpp in Sources */,
+				8A36D2721B8E5BA9009897D0 /* ToolWindows.cpp in Sources */,
+				8A36D2541B8E5BA9009897D0 /* EntityEditorPropertyView.cpp in Sources */,
+				8A36D2101B8E5751009897D0 /* AppDelegate.m in Sources */,
+				8A36D2681B8E5BA9009897D0 /* PolycodeProjectEditor.cpp in Sources */,
+				8A36D22E1B8E5ACC009897D0 /* PolycodeView.mm in Sources */,
+				8A36D2701B8E5BA9009897D0 /* SettingsWindow.cpp in Sources */,
+				8A36D26A1B8E5BA9009897D0 /* PolycodeProps.cpp in Sources */,
+				8A36D2601B8E5BA9009897D0 /* PolycodeFontEditor.cpp in Sources */,
+				8A36D26F1B8E5BA9009897D0 /* PolycodeToolLauncher.cpp in Sources */,
+				8A36D2691B8E5BA9009897D0 /* PolycodeProjectManager.cpp in Sources */,
+				8A36D2731B8E5BA9009897D0 /* TrackballCamera.cpp in Sources */,
+				8A36D25F1B8E5BA9009897D0 /* PolycodeEntityEditor.cpp in Sources */,
+				8A36D2561B8E5BA9009897D0 /* EntityEditorTreeView.cpp in Sources */,
+				8A36D26C1B8E5BA9009897D0 /* PolycodeSoundEditor.cpp in Sources */,
+				8A36D2551B8E5BA9009897D0 /* EntityEditorSettingsView.cpp in Sources */,
+				8A36D2611B8E5BA9009897D0 /* PolycodeFrame.cpp in Sources */,
+				8A36D25D1B8E5BA9009897D0 /* PolycodeEditor.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		8A36D2151B8E5751009897D0 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8A36D2161B8E5751009897D0 /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		8A36D2241B8E5751009897D0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"\"$(SRCROOT)/../../../include\"",
+				);
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../../../lib/osx\"";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		8A36D2251B8E5751009897D0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"\"$(SRCROOT)/../../../include\"",
+				);
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../../../lib/osx\"";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		8A36D2271B8E5751009897D0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = PolycodeStudio/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx,
+					/Users/isafrin/Desktop/Workshop/PolycodeNoCmake/lib/osx,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		8A36D2281B8E5751009897D0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = PolycodeStudio/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx,
+					/Users/isafrin/Desktop/Workshop/PolycodeNoCmake/lib/osx,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8A36D2041B8E5751009897D0 /* Build configuration list for PBXProject "PolycodeStudio" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8A36D2241B8E5751009897D0 /* Debug */,
+				8A36D2251B8E5751009897D0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8A36D2261B8E5751009897D0 /* Build configuration list for PBXNativeTarget "PolycodeStudio" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8A36D2271B8E5751009897D0 /* Debug */,
+				8A36D2281B8E5751009897D0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 8A36D2011B8E5751009897D0 /* Project object */;
+}

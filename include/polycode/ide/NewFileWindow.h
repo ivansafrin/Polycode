@@ -22,11 +22,10 @@
 
 #pragma once
 
-#include "PolycodeGlobals.h"
-#include "PolycodeUI.h"
+#include "polycode/ide/PolycodeGlobals.h"
+#include "polycode/modules/ui/PolycodeUI.h"
 #include "Polycode.h"
-#include "OSBasics.h"
-#include "PolycodeProjectBrowser.h"
+#include "polycode/ide/PolycodeProjectBrowser.h"
 
 using namespace Polycode;
 

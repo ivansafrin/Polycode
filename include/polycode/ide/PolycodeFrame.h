@@ -20,19 +20,19 @@
  THE SOFTWARE.
  */
 
-#include "PolycodeUI.h"
+#include "polycode/modules/ui/PolycodeUI.h"
 #include "Polycode.h"
-#include "PolycodeProjectBrowser.h"
-#include "PolycodeEditor.h"
-#include "PolycodeConsole.h"
+#include "polycode/ide/PolycodeProjectBrowser.h"
+#include "polycode/ide/PolycodeEditor.h"
+#include "polycode/ide/PolycodeConsole.h"
 #include "NewProjectWindow.h"
 #include "TextureBrowser.h"
 #include "ExportProjectWindow.h"
 #include "ExampleBrowserWindow.h"
 #include "NewFileWindow.h"
 #include "ToolWindows.h"
-#include "PolycodeProjectManager.h"
-#include "PolycodeEditorManager.h"
+#include "polycode/ide/PolycodeProjectManager.h"
+#include "polycode/ide/PolycodeEditorManager.h"
 #include "SettingsWindow.h"
 
 using namespace Polycode;

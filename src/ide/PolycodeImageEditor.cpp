@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
  
-#include "PolycodeImageEditor.h"
+#include "polycode/ide/PolycodeImageEditor.h"
 
 PolycodeImageEditor::PolycodeImageEditor() : PolycodeEditor(true){
 	

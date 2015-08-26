@@ -2,6 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:PolycodeUI/PolycodeUI.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:PolycodeStudio/PolycodeStudio.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:TemplateApp/TemplateApp.xcodeproj">
    </FileRef>
    <FileRef

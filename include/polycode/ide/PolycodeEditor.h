@@ -23,10 +23,9 @@
 #pragma once
 
 #include "Polycode.h"
-#include "OSBasics.h"
-#include "PolyUIElement.h"
-#include "PolycodeProject.h"
-#include "PolycodeClipboard.h"
+#include "polycode/modules/ui/PolyUIElement.h"
+#include "polycode/ide/PolycodeProject.h"
+#include "polycode/ide/PolycodeClipboard.h"
 
 #define MAX_EDITOR_UNDO_ACTIONS	40
 

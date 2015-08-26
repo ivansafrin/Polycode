@@ -20,10 +20,9 @@
  THE SOFTWARE.
  */
  
-#include "PolycodeProjectEditor.h"
-#include "OSBasics.h"
-#include "PolycodeFrame.h"
-#include "PolycodeConsole.h"
+#include "polycode/ide/PolycodeProjectEditor.h"
+#include "polycode/ide/PolycodeFrame.h"
+#include "polycode/ide/PolycodeConsole.h"
 
 extern UIColorPicker *globalColorPicker;
 extern UIGlobalMenu *globalMenu;
@@ -123,7 +122,7 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	
 	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
 		
-	std::vector<OSFileEntry> moduleFolders = OSBasics::parseFolder(polycodeBasePath+"/Standalone/Modules", false);
+	std::vector<OSFileEntry> moduleFolders = Services()->getCore()->parseFolder(polycodeBasePath+"/Standalone/Modules", false);
 	for(int i=0; i < moduleFolders.size(); i++) {
 		OSFileEntry entry = moduleFolders[i];
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {

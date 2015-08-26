@@ -22,34 +22,9 @@
  
 #pragma once
 
-#include "PolycodeEditor.h"
-#include "PolyUIElement.h"
+#include "polycode/ide/PolycodeEditor.h"
+#include "polycode/modules/ui/PolyUIElement.h"
 #include <Polycode.h>
 
 using namespace Polycode;
 
-class PolycodeImageEditor : public PolycodeEditor {
-	public:
-	PolycodeImageEditor();
-	virtual ~PolycodeImageEditor();
-	
-	bool openFile(OSFileEntry filePath);
-	void Resize(int x, int y);
-	
-	protected:
-	
-		UIRect *editorImage;
-		
-		UIRect *leftShape;		
-		UIRect *rightShape;		
-		UIRect *topShape;		
-		UIRect *bottomShape;								
-		
-		Number aspectRatio;
-};
-
-class PolycodeImageEditorFactory : public PolycodeEditorFactory {
-	public:
-		PolycodeImageEditorFactory() : PolycodeEditorFactory() { extensions.push_back("png"); }
-		PolycodeEditor *createEditor() { return new PolycodeImageEditor(); }
-};

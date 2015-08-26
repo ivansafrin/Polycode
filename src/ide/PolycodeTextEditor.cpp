@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#include "PolycodeTextEditor.h"
+#include "polycode/ide/PolycodeTextEditor.h"
 
 extern SyntaxHighlightTheme *globalSyntaxTheme;
 extern UIGlobalMenu *globalMenu;

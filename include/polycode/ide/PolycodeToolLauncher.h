@@ -22,8 +22,8 @@
  
 #pragma once
 
-#include "PolycodeProject.h"
-#include "PolycodeConsole.h"
+#include "polycode/ide/PolycodeProject.h"
+#include "polycode/ide/PolycodeConsole.h"
 
 class PolycodeRunner : public Threaded {
 	public:

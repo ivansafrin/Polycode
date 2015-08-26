@@ -23,9 +23,7 @@
 #pragma once
 
 #include <Polycode.h>
-#include "PolycodeUI.h"
-
-#include "OSBasics.h"
+#include "polycode/modules/ui/PolycodeUI.h"
 
 using namespace Polycode;
 

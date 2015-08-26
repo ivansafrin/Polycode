@@ -21,9 +21,9 @@
  */
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyUIElement.h"
-#include "PolyUIBox.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/modules/ui/PolyUIElement.h"
+#include "polycode/modules/ui/PolyUIBox.h"
 
 namespace Polycode {
 	

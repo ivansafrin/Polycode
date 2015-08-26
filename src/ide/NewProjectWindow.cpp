@@ -21,7 +21,7 @@
 */
 
 #include "NewProjectWindow.h"
-#include "PolycodeFrame.h"
+#include "polycode/ide/PolycodeFrame.h"
 
 extern PolycodeFrame *globalFrame;
 
@@ -49,7 +49,7 @@ NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 480, 280)
 	
 	templateContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
 	
-	vector<OSFileEntry> templates = OSBasics::parseFolder(RESOURCE_PATH"ProjectTemplates", false);
+	vector<OSFileEntry> templates = Services()->getCore()->parseFolder(RESOURCE_PATH"ProjectTemplates", false);
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {
@@ -172,7 +172,7 @@ void NewProjectWindow::handleEvent(Event *event) {
 }
 
 void NewProjectWindow::parseTemplatesIntoTree(UITree *tree, OSFileEntry folder) {
-	vector<OSFileEntry> templates = OSBasics::parseFolder(folder.fullPath, false);
+	vector<OSFileEntry> templates = Services()->getCore()->parseFolder(folder.fullPath, false);
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {

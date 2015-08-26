@@ -20,10 +20,10 @@
  THE SOFTWARE.
  */
  
-#include "PolycodeEntityEditor.h"
-#include "PolycodeFrame.h"
-#include "PolyCubemap.h"
-#include "PolycodeMaterialEditor.h"
+#include "polycode/ide/PolycodeEntityEditor.h"
+#include "polycode/ide/PolycodeFrame.h"
+#include "polycode/core/PolyCubemap.h"
+#include "polycode/ide/PolycodeMaterialEditor.h"
 
 extern UIGlobalMenu *globalMenu;
 extern PolycodeFrame *globalFrame;

@@ -21,9 +21,9 @@
  */
 
 #include "Polycode.h"
-#include "PolycodeGlobals.h"
-#include "PolycodeProject.h"
-#include "PolycodeProjectBrowser.h"
+#include "polycode/ide/PolycodeGlobals.h"
+#include "polycode/ide/PolycodeProject.h"
+#include "polycode/ide/PolycodeProjectBrowser.h"
 
 #pragma once 
 

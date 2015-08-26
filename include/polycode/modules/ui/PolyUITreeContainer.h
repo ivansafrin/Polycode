@@ -21,12 +21,12 @@
  */
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyUITree.h"
-#include "PolyUIBox.h"
-#include "PolyInputKeys.h"
-#include "PolyUIElement.h"
-#include "PolyUIScrollContainer.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/modules/ui/PolyUITree.h"
+#include "polycode/modules/ui/PolyUIBox.h"
+#include "polycode/core/PolyInputKeys.h"
+#include "polycode/modules/ui/PolyUIElement.h"
+#include "polycode/modules/ui/PolyUIScrollContainer.h"
 
 namespace Polycode {
 	

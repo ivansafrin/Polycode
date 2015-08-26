@@ -21,7 +21,7 @@
  */
 
 
-#include "PolyUIEvent.h"
+#include "polycode/modules/ui/PolyUIEvent.h"
 
 using namespace Polycode;
 

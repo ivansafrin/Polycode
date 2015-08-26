@@ -20,7 +20,7 @@
  THE SOFTWARE.
 */
 
-#include "PolycodeProjectBrowser.h"
+#include "polycode/ide/PolycodeProjectBrowser.h"
 
 extern UIGlobalMenu *globalMenu;
 
@@ -234,7 +234,7 @@ String PolycodeProjectBrowser::getIconForExtension(String extension) {
 }
 
 void PolycodeProjectBrowser::parseFolderIntoNode(UITree *node, String spath) {
-	vector<OSFileEntry> files = OSBasics::parseFolder(spath, false);
+	vector<OSFileEntry> files = Services()->getCore()->parseFolder(spath, false);
 	
 	// check if files got deleted
 	for(int i=0; i < node->getNumTreeChildren(); i++) {

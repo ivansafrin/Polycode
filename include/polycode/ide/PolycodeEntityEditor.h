@@ -22,10 +22,10 @@
  
 #pragma once
 
-#include "PolycodeEditor.h"
-#include "PolyUIElement.h"
+#include "polycode/ide/PolycodeEditor.h"
+#include "polycode/modules/ui/PolyUIElement.h"
 #include <Polycode.h>
-#include "PolycodeUI.h"
+#include "polycode/modules/ui/PolycodeUI.h"
 #include "EntityEditorPropertyView.h"
 #include "EntityEditorTreeView.h"
 #include "EntityEditorSettingsView.h"

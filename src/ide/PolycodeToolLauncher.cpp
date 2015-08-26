@@ -20,10 +20,10 @@
  THE SOFTWARE.
  */
  
-#include "PolycodeToolLauncher.h"
+#include "polycode/ide/PolycodeToolLauncher.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
-	#include "PolyCocoaCore.h"
+	#include "polycode/core/PolyCocoaCore.h"
 #endif
 
 GenericRunner::GenericRunner(String app, String file, String inFolder) : Threaded() {

@@ -21,7 +21,7 @@
  THE SOFTWARE.
  */
 
-#include "PolycodeClipboard.h"
+#include "polycode/ide/PolycodeClipboard.h"
 
 PolycodeClipboard::PolycodeClipboard() {
 	data = NULL;

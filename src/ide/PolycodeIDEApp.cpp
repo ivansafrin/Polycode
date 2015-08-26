@@ -20,7 +20,7 @@
  THE SOFTWARE.
 */
 
-#include "PolycodeIDEApp.h"
+#include "polycode/ide/PolycodeIDEApp.h"
 
 
 using namespace Polycode;
@@ -61,22 +61,21 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 	globalClipboard = new PolycodeClipboard();
 	
 	CoreServices::getInstance()->getMaterialManager()->setTextureFilteringMode(Texture::FILTERING_NEAREST);
-				
-	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
-	CoreServices::getInstance()->getResourceManager()->addDirResource("default");
+
+    ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
     
+    core->addFileSource("archive", "default.pak");
+    globalPool->loadResourcesFromFolder("default", true);
+  
+    core->addFileSource("archive", "hdr.pak");
+    globalPool->loadResourcesFromFolder("hdr", true);
+
+    core->addFileSource("archive", "api.pak");
+    core->addFileSource("archive", "Physics2D.pak");
+    core->addFileSource("archive", "Physics3D.pak");
+    core->addFileSource("archive", "UI.pak");
     
-
-	CoreServices::getInstance()->getResourceManager()->addArchive("hdr.pak");
-	CoreServices::getInstance()->getResourceManager()->addDirResource("hdr");
-
-
-	CoreServices::getInstance()->getResourceManager()->addArchive("api.pak");
-	CoreServices::getInstance()->getResourceManager()->addArchive("Physics2D.pak");
-	CoreServices::getInstance()->getResourceManager()->addArchive("Physics3D.pak");
-	CoreServices::getInstance()->getResourceManager()->addArchive("UI.pak");
-
-	CoreServices::getInstance()->getResourceManager()->addDirResource("Materials");	
+    globalPool->loadResourcesFromFolder("Materials", true);
 			
 	CoreServices::getInstance()->getFontManager()->registerFont("section", "Fonts/RobotoCondensed-Bold.ttf");
 
@@ -88,18 +87,23 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 	String themeName = CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiTheme");
 	
     if(core->getBackingXRes() == core->getXRes()) {
-        CoreServices::getInstance()->getResourceManager()->addArchive("Images");
+        core->addFileSource("folder", "Images");
     } else {
-        CoreServices::getInstance()->getResourceManager()->addArchive("ImagesRetina");
+        core->addFileSource("folder", "ImagesRetina");
+        
+        // NOCMAKE_TODO
+        /*
         if(OSBasics::fileExists("UIThemes/"+themeName+"_retina")) {
             themeName = themeName + "_retina";
         }
+         */
     }
     
     printf("LOADING THEME: %s\n", themeName.c_str());
     
 	CoreServices::getInstance()->getConfig()->loadConfig("Polycode", "UIThemes/"+themeName+"/theme.xml");
-	CoreServices::getInstance()->getResourceManager()->addArchive("UIThemes/"+themeName+"/");
+    
+    core->addFileSource("folder", "UIThemes/"+themeName+"/");
     
 	
 	willRunProject = false;
@@ -669,16 +673,16 @@ void PolycodeIDEApp::openDocs() {
 
 void PolycodeIDEApp::openFileInProject(PolycodeProject *project, String filePath) {
 	OSFileEntry fileEntry = OSFileEntry(project->getRootFolder()+"/"+filePath, OSFileEntry::TYPE_FILE);	
-	OSFILE *file = OSBasics::open(project->getRootFolder()+"/"+filePath,"r");
+    Polycode::CoreFile *file = Services()->getCore()->openFile(project->getRootFolder()+"/"+filePath,"r");
 	
 	if(file) {
-		OSBasics::close(file);
+        Services()->getCore()->closeFile(file);
 		openFile(fileEntry);		
 	} else {
 		fileEntry = OSFileEntry(filePath, OSFileEntry::TYPE_FILE);	
-		file = OSBasics::open(filePath,"r");	
+		file = Services()->getCore()->openFile(filePath,"r");
 		if(file) {
-			OSBasics::close(file);
+			 Services()->getCore()->closeFile(file);
 			openFile(fileEntry);							
 		} else {
 			PolycodeConsole::print("File not available.\n");

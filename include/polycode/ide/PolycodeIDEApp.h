@@ -23,32 +23,32 @@
 #if defined(__APPLE__) && defined(__MACH__)
 #import "PolycodeView.h"
 #elif defined(_WINDOWS)
-#include "PolycodeWinIDEView.h"
+#include "polycode/ide/PolycodeWinIDEView.h"
 #else
-#include "PolycodeView.h"
+#include "polycode/ide/PolycodeView.h"
 #endif
 
-#include "PolycodeGlobals.h"
-#include "PolycodeProjectManager.h"
-#include "PolycodeEditorManager.h"
+#include "polycode/ide/PolycodeGlobals.h"
+#include "polycode/ide/PolycodeProjectManager.h"
+#include "polycode/ide/PolycodeEditorManager.h"
 #include "Polycode.h"
-//#include "PolyCocoaCore.h"
-#include "PolycodeUI.h"
-#include "PolycodeFrame.h"
+//#include "polycode/core/PolyCocoaCore.h"
+#include "polycode/modules/ui/PolycodeUI.h"
+#include "polycode/ide/PolycodeFrame.h"
 
-#include "PolycodeImageEditor.h"
-#include "PolycodeMaterialEditor.h"
-#include "PolycodeFontEditor.h"
-#include "PolycodeTextEditor.h"
-#include "PolycodeProjectEditor.h"
-#include "PolycodeSpriteEditor.h"
-#include "PolycodeMeshEditor.h"
-#include "PolycodeEntityEditor.h"
+#include "polycode/ide/PolycodeImageEditor.h"
+#include "polycode/ide/PolycodeMaterialEditor.h"
+#include "polycode/ide/PolycodeFontEditor.h"
+#include "polycode/ide/PolycodeTextEditor.h"
+#include "polycode/ide/PolycodeProjectEditor.h"
+#include "polycode/ide/PolycodeSpriteEditor.h"
+#include "polycode/ide/PolycodeMeshEditor.h"
+#include "polycode/ide/PolycodeEntityEditor.h"
 
-#include "PolycodeToolLauncher.h"
+#include "polycode/ide/PolycodeToolLauncher.h"
 
-#include "PolycodeRemoteDebugger.h"
-#include "PolycodeClipboard.h"
+#include "polycode/ide/PolycodeRemoteDebugger.h"
+#include "polycode/ide/PolycodeClipboard.h"
 
 using namespace Polycode;
 

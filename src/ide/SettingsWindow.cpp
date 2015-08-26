@@ -17,8 +17,8 @@
  */
 
 #include "SettingsWindow.h"
-#include "PolycodeFrame.h"
-#include "PolycodeTextEditor.h"
+#include "polycode/ide/PolycodeFrame.h"
+#include "polycode/ide/PolycodeTextEditor.h"
 
 extern PolycodeFrame *globalFrame;
 extern UIGlobalMenu *globalMenu;
@@ -57,7 +57,7 @@ SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, 
 	syntaxThemeBox->setPosition(padding, EDITOR_BROWSE_POS + 55);
 	syntaxThemeBox->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
-	std::vector<OSFileEntry> themes = OSBasics::parseFolder(CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory() + "/SyntaxThemes", false);
+	std::vector<OSFileEntry> themes = Services()->getCore()->parseFolder(CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory() + "/SyntaxThemes", false);
 	
 	for(int i=0; i < themes.size(); i++) {
 		if(themes[i].extension == "xml") {
@@ -86,7 +86,7 @@ SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, 
 	uiThemeBox->setPosition(padding, 255);
 	uiThemeBox->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
-	std::vector<OSFileEntry> uiThemes = OSBasics::parseFolder(CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory() + "/UIThemes", false);
+	std::vector<OSFileEntry> uiThemes = Services()->getCore()->parseFolder(CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory() + "/UIThemes", false);
 	
 	for(int i=0; i < uiThemes.size(); i++) {
 		if(uiThemes[i].type == OSFileEntry::TYPE_FOLDER) {

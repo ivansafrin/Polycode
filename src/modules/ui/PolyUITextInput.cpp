@@ -21,13 +21,13 @@
  */
 
 
-#include "PolyUITextInput.h"
-#include "PolyConfig.h"
-#include "PolyInputEvent.h"
-#include "PolyLabel.h"
-#include "PolyCoreServices.h"
-#include "PolyEventHandler.h"
-#include "PolyRenderer.h"
+#include "polycode/modules/ui/PolyUITextInput.h"
+#include "polycode/core/PolyConfig.h"
+#include "polycode/core/PolyInputEvent.h"
+#include "polycode/core/PolyLabel.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyEventHandler.h"
+#include "polycode/core/PolyRenderer.h"
 
 using namespace Polycode;
 

@@ -69,7 +69,7 @@ Polycode::CoreFile *PhysFSFileProvider::openFile(const String &fileName, const S
 
 void PhysFSFileProvider::addSource(const String &source) {
     if(PHYSFS_addToSearchPath(source.c_str(), 1) == 0) {
-        Logger::log("Error adding archive to resource manager... %s\n", PHYSFS_getLastError());
+        Logger::log("Error adding physfs archive: %s [%s]\n", PHYSFS_getLastError(), source.c_str());
     } else {
         Logger::log("Added physfs archive: %s\n", source.c_str());
     }

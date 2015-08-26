@@ -22,10 +22,9 @@
 
 #pragma once
 
-#include "PolycodeGlobals.h"
-#include "PolycodeUI.h"
+#include "polycode/ide/PolycodeGlobals.h"
+#include "polycode/modules/ui/PolycodeUI.h"
 #include "Polycode.h"
-#include "OSBasics.h"
 
 #define SETTINGS_WINDOW_WIDTH 400
 #define SETTINGS_WINDOW_HEIGHT 375

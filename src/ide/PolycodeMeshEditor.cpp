@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
  
-#include "PolycodeMeshEditor.h"
+#include "polycode/ide/PolycodeMeshEditor.h"
 
 extern UIGlobalMenu *globalMenu;
 

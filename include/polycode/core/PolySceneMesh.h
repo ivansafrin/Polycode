@@ -106,6 +106,8 @@ namespace Polycode {
 			*/												
 			void setMaterial(Material *material);
 			
+            void rebuildAttributes();
+        
 			/**
 			* Set material by name. You can create materials in material files and name them there, then use this to set a material by name to a scene mesh.
 			* @param materialName Name of material to apply.

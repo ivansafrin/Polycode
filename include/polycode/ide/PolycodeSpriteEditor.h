@@ -22,9 +22,9 @@
  
 #pragma once
 
-#include "PolycodeEditor.h"
+#include "polycode/ide/PolycodeEditor.h"
 #include <Polycode.h>
-#include "PolycodeProps.h"
+#include "polycode/ide/PolycodeProps.h"
 #include "TransformGizmo.h"
 
 using namespace Polycode;

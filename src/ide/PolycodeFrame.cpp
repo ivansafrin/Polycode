@@ -20,7 +20,7 @@
  THE SOFTWARE.
 */
 
-#include "PolycodeFrame.h"
+#include "polycode/ide/PolycodeFrame.h"
 
 
 UIColorPicker *globalColorPicker;
@@ -1441,7 +1441,7 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
     aboutWindow->addChild(info2);
     info2->setPosition(450, 40);
 
-	UILabel *versionLabel = new UILabel("version "POLYCODE_VERSION_STRING, 12, "mono");
+	UILabel *versionLabel = new UILabel("version " POLYCODE_VERSION_STRING, 12, "mono");
 	aboutWindow->addChild(versionLabel);
 	versionLabel->setPosition(40, 430);
 	versionLabel->color.a = 1.0;

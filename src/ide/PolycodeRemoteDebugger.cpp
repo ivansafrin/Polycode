@@ -20,7 +20,7 @@
  THE SOFTWARE.
 */
 
-#include "PolycodeRemoteDebugger.h"
+#include "polycode/ide/PolycodeRemoteDebugger.h"
 
 
 PolycodeRemoteDebugger::PolycodeRemoteDebugger(PolycodeProjectManager *projectManager) {

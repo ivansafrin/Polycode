@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include "PolyGlobals.h"
-#include "PolyEvent.h"
-#include "PolyUITree.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyEvent.h"
+#include "polycode/modules/ui/PolyUITree.h"
 
 namespace Polycode {
 	class UITree;

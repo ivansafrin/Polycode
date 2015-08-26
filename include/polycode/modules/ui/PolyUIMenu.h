@@ -21,9 +21,9 @@
  */
 
 #pragma once
-#include "PolyUIElement.h"
-#include "PolySceneLabel.h"
-#include "PolyUIBox.h"
+#include "polycode/modules/ui/PolyUIElement.h"
+#include "polycode/core/PolySceneLabel.h"
+#include "polycode/modules/ui/PolyUIBox.h"
 
 namespace Polycode {
 	class SceneLine;

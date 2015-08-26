@@ -20,7 +20,7 @@
  THE SOFTWARE.
 */
 
-#include "PolyCocoaCore.h"
+#include "polycode/core/PolyCocoaCore.h"
 #import "polycode/view/osx/PolycodeView.h"
 #include <iostream>
 #include <limits.h>

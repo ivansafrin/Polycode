@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#include "PolycodeFontEditor.h"
+#include "polycode/ide/PolycodeFontEditor.h"
 
 PolycodeFontEditor::PolycodeFontEditor() : PolycodeEditor(true){
 	

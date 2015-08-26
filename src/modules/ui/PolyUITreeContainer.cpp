@@ -20,12 +20,12 @@
  THE SOFTWARE.
  */
 
-#include "PolyUITreeContainer.h"
-#include "PolyConfig.h"
-#include "PolyInputEvent.h"
-#include "PolyLabel.h"
-#include "PolyCoreServices.h"
-#include "PolyCore.h"
+#include "polycode/modules/ui/PolyUITreeContainer.h"
+#include "polycode/core/PolyConfig.h"
+#include "polycode/core/PolyInputEvent.h"
+#include "polycode/core/PolyLabel.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyCore.h"
 
 using namespace Polycode;
 

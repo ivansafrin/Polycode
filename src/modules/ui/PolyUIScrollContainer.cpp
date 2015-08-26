@@ -20,11 +20,11 @@
  THE SOFTWARE.
  */
 
-#include "PolyUIScrollContainer.h"
-#include "PolyConfig.h"
-#include "PolyInputEvent.h"
-#include "PolyLabel.h"
-#include "PolyCoreServices.h"
+#include "polycode/modules/ui/PolyUIScrollContainer.h"
+#include "polycode/core/PolyConfig.h"
+#include "polycode/core/PolyInputEvent.h"
+#include "polycode/core/PolyLabel.h"
+#include "polycode/core/PolyCoreServices.h"
 #include <math.h>
 
 using namespace Polycode;

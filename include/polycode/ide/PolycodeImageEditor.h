@@ -22,8 +22,8 @@
  
 #pragma once
 
-#include "PolycodeEditor.h"
-#include "PolyUIElement.h"
+#include "polycode/ide/PolycodeEditor.h"
+#include "polycode/modules/ui/PolyUIElement.h"
 #include <Polycode.h>
 
 using namespace Polycode;

@@ -20,16 +20,16 @@
  THE SOFTWARE.
  */
 
-#include "PolyUIElement.h"
-#include "PolyRenderer.h"
-#include "PolyCoreServices.h"
-#include "PolyResourceManager.h"
-#include "PolyTexture.h"
-#include "PolyConfig.h"
-#include "PolyCoreInput.h"
-#include "PolyInputEvent.h"
-#include "PolyScene.h"
-#include "PolyCamera.h"
+#include "polycode/modules/ui/PolyUIElement.h"
+#include "polycode/core/PolyRenderer.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyResourceManager.h"
+#include "polycode/core/PolyTexture.h"
+#include "polycode/core/PolyConfig.h"
+#include "polycode/core/PolyCoreInput.h"
+#include "polycode/core/PolyInputEvent.h"
+#include "polycode/core/PolyScene.h"
+#include "polycode/core/PolyCamera.h"
 
 using namespace Polycode;
 
@@ -347,7 +347,7 @@ void UIRect::Resize(Number width, Number height) {
 	Number whalf = width/2.0f;
 	Number hhalf = height/2.0f;
 
-    rectMesh->clearMesh();
+    rectMesh->vertexPositionArray.data.clear();
     rectMesh->indexedMesh = true;
 
     rectMesh->addVertex(-whalf,-hhalf,0);
@@ -357,6 +357,7 @@ void UIRect::Resize(Number width, Number height) {
     
     rectMesh->addIndexedFace(0, 1, 2);
     rectMesh->addIndexedFace(0, 2, 3);
+    
 }
 
 UIImage::UIImage(String imagePath, int width, int height) : UIRect(imagePath, width, height) {

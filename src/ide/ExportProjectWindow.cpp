@@ -21,7 +21,7 @@
  */
  
 #include "ExportProjectWindow.h"
-#include "PolycodeFrame.h"
+#include "polycode/ide/PolycodeFrame.h"
 
 extern PolycodeFrame *globalFrame;
 

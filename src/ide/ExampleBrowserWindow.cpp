@@ -47,7 +47,7 @@ ExampleBrowserWindow::ExampleBrowserWindow() : UIWindow(L"Example Browser", 320,
 	templateContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
 	templateContainer->getRootNode()->addEventListener(this, UITreeEvent::EXECUTED_EVENT);
 	
-	vector<OSFileEntry> templates = OSBasics::parseFolder(RESOURCE_PATH"Standalone/Examples/Lua", false);
+	vector<OSFileEntry> templates = Services()->getCore()->parseFolder(RESOURCE_PATH"Standalone/Examples/Lua", false);
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {
@@ -127,7 +127,7 @@ void ExampleBrowserWindow::handleEvent(Event *event) {
 }
 
 void ExampleBrowserWindow::parseTemplatesIntoTree(UITree *tree, OSFileEntry folder) {
-	vector<OSFileEntry> templates = OSBasics::parseFolder(folder.fullPath, false);
+	vector<OSFileEntry> templates = Services()->getCore()->parseFolder(folder.fullPath, false);
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {

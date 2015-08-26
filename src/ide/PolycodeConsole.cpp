@@ -20,10 +20,10 @@
  THE SOFTWARE.
 */
 
-#include "PolycodeConsole.h"
-#include "PolycodeRemoteDebugger.h"
-#include "PolycodeTextEditor.h"
-#include "PolycodeFrame.h"
+#include "polycode/ide/PolycodeConsole.h"
+#include "polycode/ide/PolycodeRemoteDebugger.h"
+#include "polycode/ide/PolycodeTextEditor.h"
+#include "polycode/ide/PolycodeFrame.h"
 
 PolycodeConsole* PolycodeConsole::instance = NULL;
 extern SyntaxHighlightTheme *globalSyntaxTheme;

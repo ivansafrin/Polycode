@@ -1,10 +1,10 @@
 
-#include "PolyUIMenuBar.h"
-#include "PolyLabel.h"
-#include <PolyCoreServices.h>
-#include <PolyCore.h>
-#include <PolyConfig.h>
-#include <PolyRenderer.h>
+#include "polycode/modules/ui/PolyUIMenuBar.h"
+#include "polycode/core/PolyLabel.h"
+#include <polycode/core/PolyCoreServices.h>
+#include <polycode/core/PolyCore.h>
+#include <polycode/core/PolyConfig.h>
+#include <polycode/core/PolyRenderer.h>
 
 using namespace Polycode;
 

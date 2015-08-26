@@ -20,9 +20,9 @@
  THE SOFTWARE.
  */
  
-#include "PolycodeProps.h"
-#include "PolycodeFrame.h"
-#include "PolyCubemap.h"
+#include "polycode/ide/PolycodeProps.h"
+#include "polycode/ide/PolycodeFrame.h"
+#include "polycode/core/PolyCubemap.h"
 
 extern UIColorPicker *globalColorPicker;
 extern PolycodeFrame *globalFrame;
@@ -4055,7 +4055,7 @@ void SoundSheet::handleEvent(Event *event) {
 	}
 
 	if(event->getDispatcher() == soundProp  && event->getEventCode() == Event::CHANGE_EVENT) {
-		sound->getSound()->loadFile(soundProp->get(), false);
+		sound->getSound()->loadFile(soundProp->get());
 	}
     
     if(event->getDispatcher() == loopOnLoad && event->getEventCode() == Event::CHANGE_EVENT) {

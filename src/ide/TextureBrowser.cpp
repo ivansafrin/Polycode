@@ -204,7 +204,7 @@ void AssetList::showFolder(String folderPath) {
 
     clearList();
 	
-	vector<OSFileEntry> assets = OSBasics::parseFolder(folderPath, false);	
+	vector<OSFileEntry> assets = Services()->getCore()->parseFolder(folderPath, false);	
 	
 	Number xPos = 20;
 	Number yPos = 30;
@@ -345,7 +345,7 @@ void AssetBrowser::setProject(PolycodeProject *project) {
 	
 	templateContainer->getRootNode()->clearTree();
 
-	vector<OSFileEntry> templates = OSBasics::parseFolder(project->getRootFolder(), false);
+	vector<OSFileEntry> templates = Services()->getCore()->parseFolder(project->getRootFolder(), false);
 	templateContainer->getRootNode()->setLabelText(project->getProjectName());
 	
     FolderUserData *userData = (FolderUserData*) templateContainer->getRootNode()->getUserData();
@@ -446,7 +446,7 @@ void AssetBrowser::handleEvent(Event *event) {
 
 
 void AssetBrowser::parseFolderIntoTree(UITree *tree, OSFileEntry folder) {
-	vector<OSFileEntry> templates = OSBasics::parseFolder(folder.fullPath, false);
+	vector<OSFileEntry> templates = Services()->getCore()->parseFolder(folder.fullPath, false);
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];	
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {

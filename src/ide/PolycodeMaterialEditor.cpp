@@ -20,9 +20,9 @@
  THE SOFTWARE.
  */
  
-#include "PolycodeMaterialEditor.h"
-#include "PolycodeFrame.h"
-#include "PolyCubemap.h"
+#include "polycode/ide/PolycodeMaterialEditor.h"
+#include "polycode/ide/PolycodeFrame.h"
+#include "polycode/core/PolyCubemap.h"
 
 extern UIColorPicker *globalColorPicker;
 extern UIGlobalMenu *globalMenu;

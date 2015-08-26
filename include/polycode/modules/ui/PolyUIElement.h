@@ -21,10 +21,10 @@
  */
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyEntity.h"
-#include "PolySceneImage.h"
-#include "PolySceneLabel.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyEntity.h"
+#include "polycode/core/PolySceneImage.h"
+#include "polycode/core/PolySceneLabel.h"
 
 namespace Polycode {
 	/*

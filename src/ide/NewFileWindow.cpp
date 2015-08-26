@@ -44,7 +44,7 @@ NewFileWindow::NewFileWindow() : UIWindow(L"Create New File", 580, 280) {
 	templateContainer->getRootNode()->addEventListener(this, UITreeEvent::EXECUTED_EVENT);
 	
 	
-	vector<OSFileEntry> templates = OSBasics::parseFolder(RESOURCE_PATH"FileTemplates", false);
+	vector<OSFileEntry> templates = Services()->getCore()->parseFolder(RESOURCE_PATH"FileTemplates", false);
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {
@@ -139,7 +139,7 @@ void NewFileWindow::handleEvent(Event *event) {
 
 
 void NewFileWindow::parseTemplatesIntoTree(UITree *tree, OSFileEntry folder) {
-	vector<OSFileEntry> templates = OSBasics::parseFolder(folder.fullPath, false);
+	vector<OSFileEntry> templates = Services()->getCore()->parseFolder(folder.fullPath, false);
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];	
 		if(entry.type != OSFileEntry::TYPE_FOLDER) {

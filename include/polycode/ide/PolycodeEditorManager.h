@@ -23,8 +23,8 @@
 #pragma once
 
 #include "Polycode.h"
-#include "PolycodeEditor.h"
-#include "PolycodeProjectManager.h"
+#include "polycode/ide/PolycodeEditor.h"
+#include "polycode/ide/PolycodeProjectManager.h"
 
 using namespace Polycode;
 

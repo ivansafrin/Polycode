@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
  
-#include "PolycodeEditorManager.h"
+#include "polycode/ide/PolycodeEditorManager.h"
 
 
 PolycodeEditorManager::PolycodeEditorManager()  : EventDispatcher() {
@@ -71,10 +71,12 @@ void PolycodeEditorManager::destroyEditor(PolycodeEditor* editor) {
 
 PolycodeEditor *PolycodeEditorManager::openFile(OSFileEntry file) {
 
-	if(!OSBasics::fileExists(file.fullPath)) {
+    // NOCMAKE_TODO:
+    /*
+	if(!Services()->getCore()->fileExists(file.fullPath)) {
 		return NULL;
 	}
-
+*/
 	PolycodeEditor *editor = getEditorForPath(file.fullPath);	
 	if(editor) {
 		return editor;

@@ -20,8 +20,8 @@
  THE SOFTWARE.
 */
 
-#include "PolycodeProjectManager.h"
-#include "PolycodeToolLauncher.h"
+#include "polycode/ide/PolycodeProjectManager.h"
+#include "polycode/ide/PolycodeToolLauncher.h"
 
 PolycodeProjectManager::PolycodeProjectManager() : EventDispatcher() {
 	activeProject = NULL;
@@ -108,12 +108,12 @@ void PolycodeProjectManager::setActiveProject(PolycodeProject* project) {
 	if(project != activeProject) {
 		
 		if(activeProject != NULL) {
-			CoreServices::getInstance()->getResourceManager()->removeArchive(activeProject->getRootFolder());		
+            Services()->getCore()->removeFileSource("archive", activeProject->getRootFolder());
 		}
 
 		activeProject = project;
-		if(project){			
-			CoreServices::getInstance()->getResourceManager()->addArchive(project->getRootFolder());
+		if(project){
+            Services()->getCore()->addFileSource("archive", activeProject->getRootFolder());
 		}
 		
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
@@ -134,6 +134,8 @@ void PolycodeProjectManager::createNewProject(String templateFolder, String proj
 
 	CoreServices::getInstance()->getCore()->createFolder(projectLocation);		
 	
+    // NOCMAKE_TODO:
+    /*
 	if(OSBasics::isFolder(projectLocation+"/"+projectName)) {
 		int projectSuffix = 0;
 		do {
@@ -141,7 +143,8 @@ void PolycodeProjectManager::createNewProject(String templateFolder, String proj
 			
 		} while (OSBasics::isFolder(projectLocation+"/"+projectName));
 	}	
-	
+	*/
+    
 	CoreServices::getInstance()->getCore()->copyDiskItem(CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory()+"/"+templateFolder, projectLocation+"/"+projectName);
 	CoreServices::getInstance()->getCore()->moveDiskItem(projectLocation+"/"+projectName+"/template.polyproject",  projectLocation+"/"+projectName+"/"+projectName+".polyproject");
 	openProject(projectLocation+"/"+projectName+"/"+projectName+".polyproject");	

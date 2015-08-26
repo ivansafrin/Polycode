@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
  
-#include "PolycodeSpriteEditor.h"
-#include "PolycodeFrame.h"
+#include "polycode/ide/PolycodeSpriteEditor.h"
+#include "polycode/ide/PolycodeFrame.h"
 
 extern UIColorPicker *globalColorPicker;
 extern PolycodeFrame *globalFrame;

@@ -21,9 +21,9 @@
  */
 
 
-#include "PolyUIHSlider.h"
-#include "PolyConfig.h"
-#include "PolyCoreServices.h"
+#include "polycode/modules/ui/PolyUIHSlider.h"
+#include "polycode/core/PolyConfig.h"
+#include "polycode/core/PolyCoreServices.h"
 
 using namespace Polycode;
 
