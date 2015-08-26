@@ -57,6 +57,8 @@ UWPCore::UWPCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool v
 	QueryPerformanceFrequency(&li);
 	pcFreq = double(li.QuadPart) / 1000.0;
 
+	lastMouseY = 0;
+	lastMouseX = 0;
 
 	fileProviders.push_back(new BasicFileProvider());
 
@@ -70,6 +72,8 @@ UWPCore::UWPCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool v
 	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
 
 	services->getSoundManager()->setAudioInterface(new XAudio2AudioInterface());
+
+	eventMutex = createMutex();
 }
 
 UWPCore::~UWPCore() {
@@ -82,12 +86,81 @@ void UWPCore::Render() {
 	renderer->endFrame();
 }
 
+
+void UWPCore::checkEvents() {
+
+	eventMutex->lock();
+
+	UWPEvent event;
+	for (int i = 0; i < systemInputEvents.size(); i++) {
+		event = systemInputEvents[i];
+		switch (event.eventGroup) {
+		case UWPEvent::INPUT_EVENT:
+			switch (event.eventCode) {
+			case InputEvent::EVENT_MOUSEMOVE:
+				input->setDeltaPosition(lastMouseX - event.mouseX, lastMouseY - event.mouseY);
+				lastMouseX = event.mouseX;
+				lastMouseY = event.mouseY;
+				input->setMousePosition(event.mouseX, event.mouseY, getTicks());
+				break;
+			case InputEvent::EVENT_MOUSEDOWN:
+				input->mousePosition.x = event.mouseX;
+				input->mousePosition.y = event.mouseY;
+				input->setMouseButtonState(event.mouseButton, true, getTicks());
+				break;
+			case InputEvent::EVENT_MOUSEWHEEL_UP:
+				input->mouseWheelUp(getTicks());
+				break;
+			case InputEvent::EVENT_MOUSEWHEEL_DOWN:
+				input->mouseWheelDown(getTicks());
+				break;
+			case InputEvent::EVENT_MOUSEUP:
+				input->setMouseButtonState(event.mouseButton, false, getTicks());
+				break;
+			case InputEvent::EVENT_KEYDOWN:
+				if (!checkSpecialKeyEvents(event.keyCode))
+					input->setKeyState(event.keyCode, event.unicodeChar, true, getTicks());
+				break;
+			case InputEvent::EVENT_KEYUP:
+				input->setKeyState(event.keyCode, event.unicodeChar, false, getTicks());
+				break;
+			case InputEvent::EVENT_TOUCHES_BEGAN:
+				input->touchesBegan(event.touch, event.touches, getTicks());
+				break;
+			case InputEvent::EVENT_TOUCHES_ENDED:
+				input->touchesEnded(event.touch, event.touches, getTicks());
+				break;
+			case InputEvent::EVENT_TOUCHES_MOVED:
+				input->touchesMoved(event.touch, event.touches, getTicks());
+				break;
+			}
+			break;
+		case UWPEvent::SYSTEM_FOCUS_EVENT:
+			switch (event.eventCode) {
+			case Core::EVENT_LOST_FOCUS:
+				loseFocus();
+				break;
+			case Core::EVENT_GAINED_FOCUS:
+				gainFocus();
+				break;
+			}
+			break;
+		}
+	}
+
+	systemInputEvents.clear();
+	eventMutex->unlock();
+
+}
+
 bool UWPCore::systemUpdate() {
 	if (!running) {
 		return false;
 	}
 	doSleep();
 	updateCore();
+
+	checkEvents();
 	return running;
 }
 
@@ -241,6 +314,27 @@ bool UWPCore::systemParseFolder(const Polycode::String& pathString, bool showHid
 	return true; 
 }
 
+void UWPCore::handleSystemEvent(UWPEvent systemEvent) {
+	eventMutex->lock();
+	systemInputEvents.push_back(systemEvent);
+	eventMutex->unlock();
+}
+
 void Core::getScreenInfo(int *width, int *height, int *hz) {
 
+}
+
+void UWPCore::setDeviceSize(Number x, Number y) {
+	deviceWidth = x;
+	deviceHeight = y;
+
+	renderer->setBackingResolutionScale(xRes/deviceWidth, yRes/deviceHeight);
+}
+
+Number UWPCore::getBackingXRes() {
+	return deviceWidth;
+}
+
+Number UWPCore::getBackingYRes() {
+	return deviceHeight;
 }

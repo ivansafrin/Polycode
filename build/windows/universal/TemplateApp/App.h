@@ -44,6 +44,11 @@ namespace TemplateApp
 		void OnOrientationChanged(Windows::Graphics::Display::DisplayInformation^ sender, Platform::Object^ args);
 		void OnDisplayContentsInvalidated(Windows::Graphics::Display::DisplayInformation^ sender, Platform::Object^ args);
 
+		void OnPointerPressed(Windows::UI::Core::CoreWindow^ sender, Windows::UI::Core::PointerEventArgs^ args);
+		void OnPointerMoved(Windows::UI::Core::CoreWindow^ sender, Windows::UI::Core::PointerEventArgs^ args);
+		void OnPointerReleased(Windows::UI::Core::CoreWindow^ sender, Windows::UI::Core::PointerEventArgs^ args);
+
+
 	private:
 		bool m_windowClosed;
 		bool m_windowVisible;
@@ -56,6 +61,7 @@ namespace TemplateApp
 
 		EGLint lastPanelWidth;
 		EGLint lastPanelHeight;
+
 	};
 }
 

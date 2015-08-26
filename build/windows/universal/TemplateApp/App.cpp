@@ -9,6 +9,7 @@ using namespace Windows::ApplicationModel;
 using namespace Windows::ApplicationModel::Core;
 using namespace Windows::ApplicationModel::Activation;
 using namespace Windows::Foundation::Collections;
+using namespace Windows::System::Threading;
 using namespace Windows::UI::Core;
 using namespace Windows::UI::Input;
 using namespace Windows::System;
@@ -51,7 +52,90 @@ void App::Initialize(CoreApplicationView^ applicationView)
 
 	CoreApplication::Resuming +=
 		ref new Windows::Foundation::EventHandler<Platform::Object^>(this, &App::OnResuming);
+
+
 }
+
+
+void App::OnPointerPressed(CoreWindow^ sender, PointerEventArgs^ args)
+{
+
+	PointerPoint^ currentPoint = args->CurrentPoint;
+	Polycode::UWPEvent touchEvent;
+
+	if (currentPoint->PointerDevice->PointerDeviceType == Windows::Devices::Input::PointerDeviceType::Touch) {
+		touchEvent.eventCode = Polycode::InputEvent::EVENT_MOUSEDOWN;
+		touchEvent.mouseX = currentPoint->Position.X;
+		touchEvent.mouseY = currentPoint->Position.Y;
+
+		if (currentPoint->Properties->IsLeftButtonPressed) {
+			touchEvent.mouseButton = 0;
+		}
+		else if (currentPoint->Properties->IsMiddleButtonPressed) {
+			touchEvent.mouseButton = 1;
+		} else {
+			touchEvent.mouseButton = 2;
+		}
+	}
+	else {
+		touchEvent.eventCode = Polycode::InputEvent::EVENT_TOUCHES_BEGAN;
+		touchEvent.touch.position = Vector2(currentPoint->Position.X, currentPoint->Position.Y);
+		touchEvent.touch.id = currentPoint->PointerId;
+
+		if (currentPoint->PointerDevice->PointerDeviceType == Windows::Devices::Input::PointerDeviceType::Touch) {
+			touchEvent.touch.type = TouchInfo::TYPE_TOUCH;
+		}
+		else if (currentPoint->PointerDevice->PointerDeviceType == Windows::Devices::Input::PointerDeviceType::Pen) {
+			touchEvent.touch.type = TouchInfo::TYPE_PEN;
+		}
+	}
+}
+
+void App::OnPointerMoved(CoreWindow^ sender, PointerEventArgs^ args)
+{
+	// Get the intermediate points and process them in your gestureRecognizer
+	IVector<PointerPoint^>^ pointerPoints = PointerPoint::GetIntermediatePoints(args->CurrentPoint->PointerId);
+
+}
+
+void App::OnPointerReleased(CoreWindow^ sender, PointerEventArgs^ args)
+{
+	// Get the current point and process it in your gestureRecognizer
+	PointerPoint^ pointerPoint = args->CurrentPoint;
+	
+	PointerPoint^ currentPoint = args->CurrentPoint;
+	Polycode::UWPEvent touchEvent;
+
+	if (currentPoint->PointerDevice->PointerDeviceType == Windows::Devices::Input::PointerDeviceType::Touch) {
+		touchEvent.eventCode = Polycode::InputEvent::EVENT_MOUSEUP;
+		touchEvent.mouseX = currentPoint->Position.X;
+		touchEvent.mouseY = currentPoint->Position.Y;
+
+		if (currentPoint->Properties->IsLeftButtonPressed) {
+			touchEvent.mouseButton = 0;
+		}
+		else if (currentPoint->Properties->IsMiddleButtonPressed) {
+			touchEvent.mouseButton = 1;
+		}
+		else {
+			touchEvent.mouseButton = 2;
+		}
+	}
+	else {
+		touchEvent.eventCode = Polycode::InputEvent::EVENT_TOUCHES_ENDED;
+		touchEvent.touch.position = Vector2(currentPoint->Position.X, currentPoint->Position.Y);
+		touchEvent.touch.id = currentPoint->PointerId;
+
+		if (currentPoint->PointerDevice->PointerDeviceType == Windows::Devices::Input::PointerDeviceType::Touch) {
+			touchEvent.touch.type = TouchInfo::TYPE_TOUCH;
+		}
+		else if (currentPoint->PointerDevice->PointerDeviceType == Windows::Devices::Input::PointerDeviceType::Pen) {
+			touchEvent.touch.type = TouchInfo::TYPE_PEN;
+		}
+	}
+
+}
+
 
 // Called when the CoreWindow object is created (or re-created).
 void App::SetWindow(CoreWindow^ window)
@@ -64,6 +148,19 @@ void App::SetWindow(CoreWindow^ window)
 
 	window->Closed += 
 		ref new TypedEventHandler<CoreWindow^, CoreWindowEventArgs^>(this, &App::OnWindowClosed);
+
+	window->PointerPressed +=
+		ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>(this, &App::OnPointerPressed);
+
+	window->PointerMoved +=
+		ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>(this, &App::OnPointerMoved);
+
+	window->PointerReleased +=
+		ref new TypedEventHandler<CoreWindow^, PointerEventArgs^>(this, &App::OnPointerReleased);
+
+
+
+
 
 	DisplayInformation^ currentDisplayInformation = DisplayInformation::GetForCurrentView();
 

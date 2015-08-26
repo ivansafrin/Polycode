@@ -123,7 +123,7 @@ void XAudio2Stream::runThread() {
 		}
 		
 		fillThread->bufferMutex->lock();
-		if(fillThread->bufferQueue.size() > 1) {
+		if(fillThread->bufferQueue.size() > 0) {
 			XAUDIO2_BUFFER buf = { 0 };
 			buf.AudioBytes = POLY_FRAMES_PER_BUFFER*POLY_NUM_CHANNELS * 2;
 			lastBuffer = fillThread->bufferQueue.front();
@@ -132,7 +132,7 @@ void XAudio2Stream::runThread() {
 			buf.LoopCount = 0;
 			buf.LoopBegin = 0;
 			pSourceVoice->SubmitSourceBuffer(&buf);		
-			delete lastBuffer;
+		//	delete lastBuffer; // FIXME!!
 			fillThread->bufferQueue.pop();
 		}
 		fillThread->bufferMutex->unlock();

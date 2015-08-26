@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyCore.h"
+#include "polycode/core/PolyInputEvent.h"
 #include <ppltasks.h>
 
 #include <Windows.Foundation.h>
@@ -56,6 +57,28 @@ namespace Polycode {
 		EGLContext mEglContext;
 		EGLSurface mEglSurface;
 	};
+
+	class UWPEvent {
+	public:
+		int eventGroup;
+		int eventCode;
+
+		int mouseX;
+		int mouseY;
+
+		std::vector<TouchInfo> touches;
+		TouchInfo touch;
+
+		PolyKEY keyCode;
+		wchar_t unicodeChar;
+
+		char mouseButton;
+
+		static const int EVENTBASE_PLATFORMEVENT = 0x300;
+		static const int INPUT_EVENT = EVENTBASE_PLATFORMEVENT + 0;
+		static const int SYSTEM_FOCUS_EVENT = EVENTBASE_PLATFORMEVENT + 1;
+	};
+
 
 	class UWPCoreMutex : public CoreMutex {
 	public:
@@ -93,9 +116,22 @@ namespace Polycode {
 		String executeExternalCommand(String command, String args, String inDirectory);
 		bool systemParseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector);
 
+		void handleSystemEvent(UWPEvent systemEvent);
+		void checkEvents();
+		void setDeviceSize(Number x, Number y);
 
+		Number getBackingXRes();
+		Number getBackingYRes();
 
 	private:
+
+		Number deviceWidth;
+		Number deviceHeight;
+
+		int lastMouseY;
+		int lastMouseX;
+
+		std::vector<UWPEvent> systemInputEvents;
 
 		double pcFreq;
 
