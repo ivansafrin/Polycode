@@ -929,7 +929,7 @@ bool EntityDistanceSorter::operator() (MultiselectorEntry i,MultiselectorEntry j
     }
 }
 
-void EntityEditorMainView::Update() {
+void EntityEditorMainView::fixedUpdate() {
     
     // update dummy target if trasnforming dummy entity
     
@@ -965,8 +965,7 @@ void EntityEditorMainView::Update() {
         Number aspect = renderTextureShape->getWidth() / renderTextureShape->getHeight();
         mainScene->getDefaultCamera()->setOrthoSize(trackballCamera->getCameraDistance() * aspect, trackballCamera->getCameraDistance());
     }
-    
-    
+        
     for(int i=0; i < icons.size(); i++) {
         Number scale;
         
@@ -977,17 +976,11 @@ void EntityEditorMainView::Update() {
             icons[i]->visible = false;
         } else {
             icons[i]->visible = true;
-            Vector3 parentPosition = parentEntity->getConcatenatedMatrix().getPosition();
-            icons[i]->setPosition(parentPosition);
             
-            if(editorMode != EDITOR_MODE_3D) {
-                scale = trackballCamera->getCameraDistance() * 0.1;
-            } else {
-                scale = mainScene->getDefaultCamera()->getPosition().distance(icons[i]->getConcatenatedMatrix().getPosition()) * 0.1;
-            }
-            icons[i]->setScale(scale, scale, scale);
-            icons[i]->rebuildTransformMatrix();
-            icons[i]->recalculateAABBAllChildren();
+            Vector2 screenPos = parentEntity->getScreenPosition(mainScene->getDefaultCamera()->getProjectionMatrix(), mainScene->getDefaultCamera()->getConcatenatedMatrix().Inverse(), mainScene->getDefaultCamera()->getViewport());
+            
+            icons[i]->setPosition(screenPos.x, (mainScene->getDefaultCamera()->getViewport().h - screenPos.y) + 30);
+
         }
     }
     
@@ -1004,26 +997,19 @@ void EntityEditorMainView::createIcon(Entity *entity, String iconFile) {
     
     entity->removeAllHandlersForListener(this);
     
-    ScenePrimitive *iconPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.3, 0.3);
-    
+    ScenePrimitive *iconPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 32, 32);
     iconPrimitive->setMaterialByName("Unlit");
+    iconPrimitive->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	Texture *tex = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile("entityEditor/"+iconFile);
 	if(iconPrimitive->getLocalShaderOptions()) {
         iconPrimitive->getLocalShaderOptions()->setTextureForParam("diffuse", tex);
 	}
     
-    iconBase->addChild(iconPrimitive);
-    iconPrimitive->billboardMode = true;
+    addChild(iconPrimitive);
     iconPrimitive->setUserData((void*)entity);
     iconPrimitive->forceMaterial = true;
     iconPrimitive->processInputEvents = true;
     iconPrimitive->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
-    iconPrimitive->ignoreParentMatrix = true;
-    iconPrimitive->addTag("");
-    iconPrimitive->depthTest = false;
-    iconPrimitive->depthWrite = false;
-    iconPrimitive->editorOnly = true;
-    iconPrimitive->alphaTest = true;
     iconPrimitive->setUserData(entity);
     icons.push_back(iconPrimitive);
 }

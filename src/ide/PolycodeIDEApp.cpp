@@ -834,10 +834,10 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 	if(event->getDispatcher() == core) {
 		switch(event->getEventCode()) {
 			case Core::EVENT_LOST_FOCUS:
-				core->setFramerate(3);
+//				core->setFramerate(3);
 			break;		
 			case Core::EVENT_GAINED_FOCUS:
-				core->setFramerate(60);			
+//				core->setFramerate(60);
 			break;					
 			case Core::EVENT_CORE_RESIZE:
 				if(menuBar) {
@@ -1278,13 +1278,13 @@ void PolycodeIDEApp::applyFinalConfig() {
 		int newYRes = appHeight->intVal;		
 		if(newXRes > 100 && newYRes > 100) {
 			setResFromConfig = true;
-//			core->setVideoMode(newXRes, newYRes, false, true, 0, 0);
+            core->setVideoMode(newXRes, newYRes, false, true, 0, 0);
 			frame->Resize(newXRes, newYRes);
 		}
 	}
 	
 	if(!setResFromConfig) {
-	//	core->setVideoMode(1100, 700, false, true, 0, 0);
+        core->setVideoMode(1100, 700, false, true, 0, 0);
 		frame->Resize(1100, 700);			
 	}
 

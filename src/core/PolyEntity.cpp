@@ -57,8 +57,6 @@ void Entity::initEntity() {
 	parentEntity = NULL;
 	matrixDirty = true;
 	billboardMode = false;
-	billboardRoll = false;
-	billboardIgnoreScale = false;
 	drawCall.options.depthOnly = false;
 	drawCall.options.blendingMode = Entity::defaultBlendingMode;    
 	depthWrite = true;
@@ -110,8 +108,7 @@ void Entity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) co
 	clone->setRotationByQuaternion(rotationQuat);
 	clone->setScale(scale);
 	clone->color = color;
-	clone->billboardMode = billboardMode;	
-	clone->billboardRoll = billboardRoll;
+	clone->billboardMode = billboardMode;
 	clone->depthWrite = depthWrite;
 	clone->depthTest = depthTest;
 	clone->colorAffectsChildren = colorAffectsChildren;
@@ -525,18 +522,24 @@ void Entity::transformAndRender(GPUDrawBuffer *buffer, Polycode::Rectangle *pare
         drawCall.modelMatrix = drawCall.modelMatrix * getConcatenatedMatrix();
     }
     
-    /*
+
 	if(billboardMode) {
-		if(billboardIgnoreScale) {
-			renderer->billboardMatrix();
-		} else {
-			renderer->billboardMatrixWithScale(getCompoundScale());
-		}
-		if(billboardRoll) {
-			renderer->multModelviewMatrix(getConcatenatedRollMatrix());
-		}
+        
+        Vector3 scale = getCompoundScale();
+        
+        drawCall.modelMatrix[0][0] = buffer->viewMatrix.m[0][0];
+        drawCall.modelMatrix[0][1] = buffer->viewMatrix.m[1][0];
+        drawCall.modelMatrix[0][2] = buffer->viewMatrix.m[2][0];
+            
+        drawCall.modelMatrix[1][0] = buffer->viewMatrix.m[0][1];
+        drawCall.modelMatrix[1][1] = buffer->viewMatrix.m[1][1];
+        drawCall.modelMatrix[1][2] = buffer->viewMatrix.m[2][1];
+            
+        drawCall.modelMatrix[2][0] = buffer->viewMatrix.m[0][2];
+        drawCall.modelMatrix[2][1] = buffer->viewMatrix.m[1][2];
+        drawCall.modelMatrix[2][2] = buffer->viewMatrix.m[2][2];
+        
 	}
-*/
     
     
 	if(visible && rendererVis) {

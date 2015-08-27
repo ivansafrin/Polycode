@@ -226,7 +226,7 @@ class EntityEditorMainView : public UIElement {
     
 			void handleEvent(Event *event);
 			void Resize(Number width, Number height);
-			void Update();
+			void fixedUpdate();
             void addEntityFromMenu(String command);
     
             void doEntityDeselect(Entity *targetEntity);

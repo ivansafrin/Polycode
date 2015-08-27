@@ -611,19 +611,8 @@ namespace Polycode {
 			/**
 			* If this flag is true, the entity will always face the camera. False by default.
 			*/						
-			bool billboardMode;			
-			
-			/**
-			* Normally, if billboardMode is on, no rotation is allowed at all. If this flag is also true, you can rotate the entity around the axis pointing to the camera.
-			*/									
-			bool billboardRoll;
-			
-			/**
-			* If set to true, the entity will not be scaled by the modelview
-			* matrix when billboardMode is enabled
-			*/
-			bool billboardIgnoreScale;
-
+			bool billboardMode;
+        
 			/**
 			* The entity's color.
 			*/					
