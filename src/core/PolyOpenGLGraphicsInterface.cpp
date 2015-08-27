@@ -126,6 +126,7 @@ void OpenGLGraphicsInterface::setParamInShader(Shader *shader, ProgramParam *par
 void OpenGLGraphicsInterface::setBlendingMode(unsigned int blendingMode) {
     if(blendingMode == Renderer::BLEND_MODE_NONE) {
         glDisable(GL_BLEND);
+        return;
     } else {
         glEnable(GL_BLEND);
     }

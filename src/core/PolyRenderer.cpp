@@ -77,7 +77,6 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
     for(int i=0; i < buffer->drawCalls.size(); i++) {
         
         
-        graphicsInterface->setBlendingMode(buffer->drawCalls[i].options.blendingMode);
         graphicsInterface->enableDepthTest(buffer->drawCalls[i].options.depthTest);
         graphicsInterface->enableDepthWrite(buffer->drawCalls[i].options.depthWrite);
         graphicsInterface->enableBackfaceCulling(buffer->drawCalls[i].options.backfaceCull);
@@ -86,6 +85,13 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
         modelMatrixParam->setMatrix4(buffer->drawCalls[i].modelMatrix);
         
         if(buffer->drawCalls[i].material) {
+            
+            
+            if(buffer->drawCalls[i].options.blendingMode == Renderer::BLEND_MODE_MATERIAL) {
+                graphicsInterface->setBlendingMode(buffer->drawCalls[i].material->blendingMode);
+            } else {
+                graphicsInterface->setBlendingMode(buffer->drawCalls[i].options.blendingMode);
+            }
             
             ShaderBinding *localShaderBinding = buffer->drawCalls[i].shaderBinding;
             

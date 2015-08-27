@@ -158,6 +158,7 @@ namespace Polycode {
         static const int BLEND_MODE_COLOR = 3;
         static const int BLEND_MODE_PREMULTIPLIED = 4;
         static const int BLEND_MODE_MULTIPLY = 5;
+        static const int BLEND_MODE_MATERIAL = 6;
         
         static const int DEPTH_FUNCTION_GREATER = 0;
         static const int DEPTH_FUNCTION_LEQUAL = 1;

@@ -348,6 +348,7 @@ void UIRect::Resize(Number width, Number height) {
 	Number hhalf = height/2.0f;
 
     rectMesh->vertexPositionArray.data.clear();
+    rectMesh->indexArray.data.clear();
     rectMesh->indexedMesh = true;
 
     rectMesh->addVertex(-whalf,-hhalf,0);
