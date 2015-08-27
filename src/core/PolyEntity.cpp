@@ -27,7 +27,7 @@
 using namespace Polycode;
 
 
-int Entity::defaultBlendingMode = Renderer::BLEND_MODE_NONE;
+int Entity::defaultBlendingMode = Renderer::BLEND_MODE_NORMAL;
 
 Rotation::Rotation() {
 	pitch = 0;
@@ -487,7 +487,7 @@ Scene *Entity::getContainerScene() {
     }
 }
 
-void Entity::transformAndRender(GPUDrawBuffer *buffer) {
+void Entity::transformAndRender(GPUDrawBuffer *buffer, Polycode::Rectangle *parentScissorBox) {
 	if(!renderer || !enabled)
 		return;
 
@@ -495,27 +495,26 @@ void Entity::transformAndRender(GPUDrawBuffer *buffer) {
 		rebuildTransformMatrix();
     }
     
+
+    Polycode::Rectangle finalScissorBox = scissorBox;
+    Polycode::Rectangle *scissorBoxForChildren = parentScissorBox;
     
-	
-    /*
-	bool isScissorEnabled;
-	Polycode::Rectangle oldScissorBox;
-	
 	if(enableScissor) {
-		isScissorEnabled = renderer->isScissorEnabled();
-		oldScissorBox = renderer->getScissorBox();
-		renderer->enableScissor(true);
-
-		Rectangle finalScissorBox = scissorBox;
-
+		finalScissorBox = scissorBox;
 		// make sure that our scissor box is constrained to the parent one if it exists
-		if(isScissorEnabled) {
-			finalScissorBox = finalScissorBox.Clipped(renderer->getScissorBox());
+		if(parentScissorBox) {
+			finalScissorBox = finalScissorBox.Clipped(*parentScissorBox);
 		}
+        drawCall.options.enableScissor = true;
+        drawCall.options.scissorBox = finalScissorBox;
+        scissorBoxForChildren = &finalScissorBox;
+    } else if(parentScissorBox){
+        drawCall.options.enableScissor = true;
+        drawCall.options.scissorBox = *parentScissorBox;
+    } else {
+        drawCall.options.enableScissor = false;
+    }
 
-		renderer->setScissorBox(finalScissorBox);
-	}
-     */
     
     drawCall.modelMatrix.identity();
     drawCall.modelMatrix.Translate(-anchorPoint.x * bBox.x * 0.5, -anchorPoint.y * bBox.y * 0.5 * yAdjust, -anchorPoint.z * bBox.z * 0.5);
@@ -545,23 +544,9 @@ void Entity::transformAndRender(GPUDrawBuffer *buffer) {
 	}
     
     if(visible || (!visible && !visibilityAffectsChildren)) {
-        renderChildren(buffer);
+        renderChildren(buffer, scissorBoxForChildren);
     }
-/*
-    renderer->popVertexColor();
-    
-	renderer->popMatrix();
-	
-	
-	if(depthOnly) {
-		renderer->drawToColorBuffer(true);
-	}	
-	
-	if(enableScissor) {
-		renderer->enableScissor(isScissorEnabled);
-		renderer->setScissorBox(oldScissorBox);
-	}
-*/
+
 }
 
 void Entity::setRenderer(Renderer *renderer) {
@@ -572,9 +557,9 @@ void Entity::setRenderer(Renderer *renderer) {
 }
 
 
-void Entity::renderChildren(GPUDrawBuffer *buffer) {
+void Entity::renderChildren(GPUDrawBuffer *buffer, Polycode::Rectangle *parentScissorBox) {
 	for(int i=0;i<children.size();i++) {
-		children[i]->transformAndRender(buffer);
+		children[i]->transformAndRender(buffer, parentScissorBox);
 	}
 }
 

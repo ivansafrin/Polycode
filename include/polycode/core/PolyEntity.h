@@ -97,9 +97,9 @@ namespace Polycode {
 			virtual void Update(){};			
 			virtual void fixedUpdate(){};
         
-            void transformAndRender(GPUDrawBuffer *drawBuffer);
+            void transformAndRender(GPUDrawBuffer *drawBuffer, Polycode::Rectangle *parentScissorBox);
 
-			void renderChildren(GPUDrawBuffer *buffer);
+			void renderChildren(GPUDrawBuffer *buffer, Polycode::Rectangle *parentScissorBox);
 		
 			
 			/**
@@ -890,14 +890,14 @@ namespace Polycode {
 
             std::vector <EntityProp> entityProps;
         
-            GPUDrawCall drawCall;
-        
             void setContainerScene(Scene *scene);
     
             Scene *getContainerScene();
         
 		protected:
 
+            GPUDrawCall drawCall;
+        
             Scene *containerScene;
         
             AABB aabb;

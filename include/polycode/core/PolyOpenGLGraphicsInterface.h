@@ -85,6 +85,9 @@ namespace Polycode {
         void enableBackfaceCulling(bool val);
         void setLineSize(Number lineSize);
         
+        void enableScissor(bool val);
+        void setScissorBox(const Polycode::Rectangle &box);
+        
 	protected:
 		
         GLuint currentShaderID;

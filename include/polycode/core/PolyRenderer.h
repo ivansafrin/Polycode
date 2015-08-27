@@ -64,6 +64,9 @@ namespace Polycode {
             virtual void enableBackfaceCulling(bool val) = 0;
             virtual void setLineSize(Number lineSize) = 0;
         
+            virtual void enableScissor(bool val) = 0;
+            virtual void setScissorBox(const Polycode::Rectangle &box) = 0;
+        
             virtual void beginDrawCall() = 0;
             virtual void endDrawCall() = 0;
     };

@@ -39,6 +39,8 @@ namespace Polycode {
         bool backfaceCull;
         bool depthOnly;
         unsigned int blendingMode;
+        Polycode::Rectangle scissorBox;
+        bool enableScissor;
         Color drawColor;
     };
     
@@ -68,6 +70,7 @@ namespace Polycode {
         Color clearColor;
         bool clearDepthBuffer;
         bool clearColorBuffer;
+        Vector2 backingResolutionScale;
         
         Polycode::Rectangle viewport;
         std::vector<GPUDrawCall> drawCalls;

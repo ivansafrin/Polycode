@@ -190,6 +190,19 @@ void OpenGLGraphicsInterface::disableAttribute(Shader *shader, const ProgramAttr
     glDisableVertexAttribArray(attribLocation);
 }
 
+void OpenGLGraphicsInterface::enableScissor(bool val) {
+    if(val) {
+        glEnable(GL_SCISSOR_TEST);
+    } else {
+        glDisable(GL_SCISSOR_TEST);
+    }
+}
+
+void OpenGLGraphicsInterface::setScissorBox(const Polycode::Rectangle &box) {
+    glScissor(box.x, box.y, box.w, box.h);
+    
+}
+
 GLenum OpenGLGraphicsInterface::getGLDrawMode(int polycodeMode) {
     switch(polycodeMode) {
         case Mesh::POINT_MESH:

@@ -77,6 +77,20 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
     for(int i=0; i < buffer->drawCalls.size(); i++) {
         
         
+        if(buffer->drawCalls[i].options.enableScissor) {
+            graphicsInterface->enableScissor(true);
+            Polycode::Rectangle scissorBox = buffer->drawCalls[i].options.scissorBox;
+            
+            scissorBox.x *= buffer->backingResolutionScale.x;
+            scissorBox.w *= buffer->backingResolutionScale.x;
+            scissorBox.h *= buffer->backingResolutionScale.y;
+            scissorBox.y = ((buffer->viewport.h*buffer->backingResolutionScale.y)-(scissorBox.y*buffer->backingResolutionScale.y))-scissorBox.h;
+            
+            graphicsInterface->setScissorBox(scissorBox);
+        } else {
+            graphicsInterface->enableScissor(false);
+        }
+        
         graphicsInterface->enableDepthTest(buffer->drawCalls[i].options.depthTest);
         graphicsInterface->enableDepthWrite(buffer->drawCalls[i].options.depthWrite);
         graphicsInterface->enableBackfaceCulling(buffer->drawCalls[i].options.backfaceCull);
@@ -330,6 +344,8 @@ Cubemap *Renderer::createCubemap(Texture *t0, Texture *t1, Texture *t2, Texture 
 }
 
 void Renderer::processDrawBuffer(GPUDrawBuffer *buffer) {
+    buffer->backingResolutionScale.x = backingResolutionScaleX;
+    buffer->backingResolutionScale.y = backingResolutionScaleY;
     renderThread->enqueueJob(RenderThread::JOB_PROCESS_DRAW_BUFFER, buffer);
 }
 

@@ -295,7 +295,7 @@ void Scene::Render(Camera *targetCamera, Texture *targetFramebuffer) {
         setEntityVisibility(&rootEntity, targetCamera);
     }
          */
-	rootEntity.transformAndRender(drawBuffer);
+	rootEntity.transformAndRender(drawBuffer, NULL);
 
     
     renderer->processDrawBuffer(drawBuffer);
