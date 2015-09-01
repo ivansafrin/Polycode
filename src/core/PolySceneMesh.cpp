@@ -43,7 +43,7 @@ SceneMesh *SceneMesh::SceneMeshWithType(int meshType) {
 	return new SceneMesh(meshType);
 }
 
-SceneMesh::SceneMesh(const String& fileName) : Entity(), material(NULL), skeleton(NULL), localShaderOptions(NULL), mesh(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
+SceneMesh::SceneMesh(const String& fileName) : Entity(), material(NULL), skeleton(NULL), mesh(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
     loadFromFile(fileName);
 	useVertexBuffer = false;
 	lineSmooth = false;
@@ -53,14 +53,13 @@ SceneMesh::SceneMesh(const String& fileName) : Entity(), material(NULL), skeleto
 	pointSize = 1.0;
 	pointSmooth = false;
 	useGeometryHitDetection = false;
-    forceMaterial = false;
     backfaceCulled = true;
 	alphaTest = false;
     sendBoneMatricesToMaterial = false;
     setMaterialByName("UnlitUntextured");
 }
 
-SceneMesh::SceneMesh(Mesh *mesh) : Entity(), material(NULL), skeleton(NULL), localShaderOptions(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
+SceneMesh::SceneMesh(Mesh *mesh) : Entity(), material(NULL), skeleton(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
 	this->mesh = mesh;
 	setLocalBoundingBox(mesh->calculateBBox());
 	useVertexBuffer = false;
@@ -71,14 +70,13 @@ SceneMesh::SceneMesh(Mesh *mesh) : Entity(), material(NULL), skeleton(NULL), loc
 	pointSize = 1.0;
 	pointSmooth = false;
 	useGeometryHitDetection = false;
-    forceMaterial = false;
     backfaceCulled = true;
 	alphaTest = false;
     sendBoneMatricesToMaterial = false;
     setMaterialByName("UnlitUntextured");
 }
 
-SceneMesh::SceneMesh(int meshType) : material(NULL), skeleton(NULL), localShaderOptions(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
+SceneMesh::SceneMesh(int meshType) : material(NULL), skeleton(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
 	mesh = new Mesh(meshType);
 	setLocalBoundingBox(mesh->calculateBBox());
 	useVertexBuffer = false;	
@@ -87,7 +85,6 @@ SceneMesh::SceneMesh(int meshType) : material(NULL), skeleton(NULL), localShader
 	ownsSkeleton = true;	
 	lineWidth = 1.0;
 	useGeometryHitDetection = false;
-    forceMaterial = false;
     backfaceCulled = true;
 	alphaTest = false;
     sendBoneMatricesToMaterial = false;
@@ -107,10 +104,12 @@ void SceneMesh::setMesh(Mesh *mesh) {
 }
 
 void SceneMesh::rebuildAttributes() {
-    if(localShaderOptions) {
-        localShaderOptions->getAttributeBindingByName("texCoord")->vertexData = &mesh->vertexTexCoordArray;
-        localShaderOptions->getAttributeBindingByName("position")->vertexData = &mesh->vertexPositionArray;
-        localShaderOptions->getAttributeBindingByName("normal")->vertexData = &mesh->vertexNormalArray;
+    for(int i=0; i < shaderPasses.size(); i++) {
+        if(shaderPasses[i].shaderBinding) {
+            shaderPasses[i].shaderBinding->getAttributeBindingByName("texCoord")->vertexData = &mesh->vertexTexCoordArray;
+            shaderPasses[i].shaderBinding->getAttributeBindingByName("position")->vertexData = &mesh->vertexPositionArray;
+            shaderPasses[i].shaderBinding->getAttributeBindingByName("normal")->vertexData = &mesh->vertexNormalArray;
+        }
     }
 }
 
@@ -118,14 +117,25 @@ SceneMesh::~SceneMesh() {
 	if(ownsSkeleton)
 		delete skeleton;
 	if(ownsMesh)
-		delete mesh;	
-	delete localShaderOptions;
+		delete mesh;
+    
+    for(int i=0; i < shaderPasses.size(); i++)  {
+        delete shaderPasses[i].shaderBinding;
+    }
 }
 
 Entity *SceneMesh::Clone(bool deepClone, bool ignoreEditorOnly) const {
     SceneMesh *newEntity = new SceneMesh(mesh->getMeshType());
     applyClone(newEntity, deepClone, ignoreEditorOnly);
     return newEntity;
+}
+
+void SceneMesh::setForceMaterial(bool forceMaterial) {
+    drawCall.options.forceMaterial = forceMaterial;
+}
+
+bool SceneMesh::getForceMaterial() {
+    return drawCall.options.forceMaterial;
 }
 
 void SceneMesh::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
@@ -141,7 +151,6 @@ void SceneMesh::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly)
 	_clone->backfaceCulled = backfaceCulled;
     _clone->ownsSkeleton = ownsSkeleton;
     _clone->useGeometryHitDetection = useGeometryHitDetection;
-    _clone->forceMaterial = forceMaterial;
     _clone->setFilename(fileName);
     
     Mesh *newMesh = mesh->Copy();
@@ -149,7 +158,10 @@ void SceneMesh::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly)
     
     _clone->setMaterial(material);
     if(material) {
-        localShaderOptions->copyTo(_clone->getLocalShaderOptions());
+        
+        for(int i=0; i < shaderPasses.size(); i++) {
+            shaderPasses[i].shaderBinding->copyTo(_clone->getShaderPass(i).shaderBinding);
+        }
     }
 }
 
@@ -175,10 +187,11 @@ Mesh *SceneMesh::getMesh() {
 }
 
 void SceneMesh::clearMaterial() {
-	if(localShaderOptions)
-		delete localShaderOptions;
-	localShaderOptions = NULL;
-	this->material = NULL;
+    for(int i=0; i < shaderPasses.size(); i++)  {
+        delete shaderPasses[i].shaderBinding;
+    }
+    shaderPasses.clear();
+    this->material = NULL;
 }
 
 void SceneMesh::setMaterial(Material *material) {
@@ -189,18 +202,23 @@ void SceneMesh::setMaterial(Material *material) {
 	if(!material)
 		return;
 		
-	if(material->getNumShaders() == 0)
+	if(material->getNumShaderPasses() == 0)
 			return;
 		
 	this->material = material;
-    localShaderOptions = new ShaderBinding();
     
-    localShaderOptions->addParamPointer(ProgramParam::PARAM_COLOR, "entityColor", &color);
+    for(int i=0; i < material->getNumShaderPasses(); i++)  {
+        ShaderPass shaderPass = material->getShaderPass(i);
+        shaderPass.shaderBinding = new ShaderBinding();
+        
+        shaderPass.shaderBinding->addParamPointer(ProgramParam::PARAM_COLOR, "entityColor", &color);
+        shaderPass.shaderBinding->addAttributeBinding("texCoord", &mesh->vertexTexCoordArray);
+        shaderPass.shaderBinding->addAttributeBinding("position", &mesh->vertexPositionArray);
+        shaderPass.shaderBinding->addAttributeBinding("normal", &mesh->vertexNormalArray);
+        
+        shaderPasses.push_back(shaderPass);
+    }
     
-    localShaderOptions->addAttributeBinding("texCoord", &mesh->vertexTexCoordArray);
-    localShaderOptions->addAttributeBinding("position", &mesh->vertexPositionArray);
-    localShaderOptions->addAttributeBinding("normal", &mesh->vertexNormalArray);
-	
 }
 
 void SceneMesh::setMaterialByName(const String& materialName, ResourcePool *resourcePool) {
@@ -214,8 +232,20 @@ void SceneMesh::setMaterialByName(const String& materialName, ResourcePool *reso
     setMaterial(material);
 }
 
-ShaderBinding *SceneMesh::getLocalShaderOptions() {
-	return localShaderOptions;
+ShaderPass SceneMesh::getShaderPass(unsigned int index) {
+    if(index >= shaderPasses.size()) {
+        printf("WARNING: ACCESSING NON EXISTING SHADER PASS!\n");
+        return ShaderPass();
+    }
+    return shaderPasses[index];
+}
+
+unsigned int SceneMesh::getNumShaderPasses() {
+    return shaderPasses.size();
+}
+
+void SceneMesh::addShaderPass(ShaderPass pass) {
+    shaderPasses.push_back(pass);
 }
 
 Skeleton *SceneMesh::loadSkeleton(const String& fileName) {
@@ -344,6 +374,13 @@ bool SceneMesh::customHitDetection(const Ray &ray) {
 }
 
 
+void SceneMesh::removeShaderPass(int shaderIndex) {
+    if(shaderIndex >= 0 && shaderIndex < shaderPasses.size()) {
+        delete shaderPasses[shaderIndex].shaderBinding;
+        shaderPasses.erase(shaderPasses.begin() + shaderIndex);
+    }
+}
+
 void SceneMesh::Render(GPUDrawBuffer *buffer) {
     
     drawCall.options.alphaTest = alphaTest;
@@ -366,7 +403,7 @@ void SceneMesh::Render(GPUDrawBuffer *buffer) {
     
     
     drawCall.material = material;
-    drawCall.shaderBinding = localShaderOptions;
+    drawCall.shaderPasses = shaderPasses;
     
     buffer->drawCalls.push_back(drawCall);
     

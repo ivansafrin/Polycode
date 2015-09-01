@@ -131,7 +131,7 @@ void SceneSprite::setSpriteSet(SpriteSet *spriteSet) {
     this->spriteSet = spriteSet;
     spriteSet->addEventListener(this, Event::CHANGE_EVENT);
     
-    localShaderOptions->setTextureForParam("diffuse", spriteSet->getTexture());
+    getShaderPass(0).shaderBinding->setTextureForParam("diffuse", spriteSet->getTexture());
     currentSprite = NULL;
     currentSpriteState = NULL;
 }
@@ -218,7 +218,7 @@ void SceneSprite::Update() {
     setLocalBoundingBox(bBox.x / currentSpriteState->getPixelsPerUnit(), bBox.y / currentSpriteState->getPixelsPerUnit(), 0.001);
     
     spriteBoundingBox = currentSpriteState->getLargestFrameBoundingBox();    
-    localShaderOptions->setTextureForParam("diffuse", spriteSet->getTexture());
+    getShaderPass(0).shaderBinding->setTextureForParam("diffuse", spriteSet->getTexture());
     
     if(paused) {
         return;

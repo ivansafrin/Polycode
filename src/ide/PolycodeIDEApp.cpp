@@ -22,7 +22,6 @@
 
 #include "polycode/ide/PolycodeIDEApp.h"
 
-
 using namespace Polycode;
 
 UIGlobalMenu *globalMenu;

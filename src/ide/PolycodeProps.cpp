@@ -1243,8 +1243,8 @@ MaterialProp::MaterialProp(const String &caption) : PropProp(caption, "Material"
 	
 	previewBg->setMaterialByName("Unlit");
 	Texture *tex = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile("materialEditor/material_grid.png");
-	if(previewBg->getLocalShaderOptions()) {
-        previewBg->getLocalShaderOptions()->setTextureForParam("diffuse", tex);
+	if(previewBg->getNumShaderPasses()) {
+        previewBg->getShaderPass(0).shaderBinding->setTextureForParam("diffuse", tex);
 	}
 	previewScene->addChild(previewBg);
 	
@@ -1634,7 +1634,7 @@ void ShaderPassProp::handleEvent(Event *event) {
 		Shader *selectedShader = (Shader*)shaderComboBox->getSelectedItem()->data;
 		if(selectedShader) {
 			if(material->getShader(shaderIndex) != selectedShader) {
-				material->removeShader(shaderIndex);				
+				material->removeShaderPass(shaderIndex);
                 ShaderBinding *newShaderBinding = new ShaderBinding();
 				material->addShaderAtIndex(selectedShader, newShaderBinding, shaderIndex);
 				dispatchEvent(new Event(), Event::CHANGE_EVENT);
@@ -1925,7 +1925,7 @@ void ShaderPassesSheet::refreshPasses() {
 		return;
 	}
 
-	for(int i=0; i < material->getNumShaders(); i++) {
+	for(int i=0; i < material->getNumShaderPasses(); i++) {
 		ShaderPassProp *passProp = new ShaderPassProp(material, i);
 		passProp->addEventListener(this, Event::REMOVE_EVENT);
 		passProp->addEventListener(this, Event::CHANGE_EVENT);		
@@ -1940,7 +1940,7 @@ void ShaderPassesSheet::refreshPasses() {
 
 void ShaderPassesSheet::Update() {
 	if(removeIndex != -1) {
-		material->removeShader(removeIndex);
+		material->removeShaderPass(removeIndex);
 		refreshPasses();
 		removeIndex = -1;			
 	}

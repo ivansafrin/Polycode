@@ -98,19 +98,22 @@ CurveDisplay::CurveDisplay(Scene *parentScene, SceneCurve *curve) : DummyTargetE
     controlPointLines = new SceneMesh(Mesh::LINE_MESH);
     controlPointLines->setColor(1.0, 1.0, 0.4, 1.0);
     addChild(controlPointLines);
-    
+    controlPointLines->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    controlPointLines->setForceMaterial(true);
    
     mainPoints = new SceneMesh(Mesh::POINT_MESH);
     mainPoints->setColor(0.0, 0.5, 1.0, 1.0);
     addChild(mainPoints);
     mainPoints->pointSize = 10.0;
     mainPoints->pointSmooth = true;
-
+    mainPoints->setForceMaterial(true);
+    
     controlPoints = new SceneMesh(Mesh::POINT_MESH);
     controlPoints->setColor(1.0, 0.7, 0.0, 1.0);
     addChild(controlPoints);
     controlPoints->pointSize = 8.0;
     controlPoints->pointSmooth = true;
+    controlPoints->setForceMaterial(true);
     
     renderControlPoints = false;
     
@@ -284,12 +287,16 @@ LightDisplay::LightDisplay(SceneLight *light) : Entity() {
     addChild(spotSpot);
     spotSpot->setColor(1.0, 0.8, 0.0, 1.0);
     spotSpot->enabled = false;
+    spotSpot->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    spotSpot->setForceMaterial(true);
     
     fovSceneMesh = new SceneMesh(Mesh::LINE_MESH);
     fovSceneMesh->setColor(1.0, 0.8, 0.0, 1.0);
     fovMesh = fovSceneMesh->getMesh();
     fovMesh->indexedMesh = true;
     addChild(fovSceneMesh);
+    fovSceneMesh->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    fovSceneMesh->setForceMaterial(true);
     
     fovMesh->addVertex(0.0, 0.0, 0.0);
     
@@ -342,9 +349,11 @@ CameraDisplay::CameraDisplay(Camera *camera) : Entity() {
     editorOnly = true;
     
     fovSceneMesh = new SceneMesh(Mesh::LINE_MESH);
+    fovSceneMesh->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     fovSceneMesh->setColor(1.0, 0.0, 1.0, 1.0);
     fovMesh = fovSceneMesh->getMesh();
     fovMesh->indexedMesh = true;
+    fovSceneMesh->setForceMaterial(true);
     
     fovMesh->addVertex(0.0, 0.0, 0.0);
     
@@ -714,7 +723,7 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
     bBoxVis = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 1.0, 1.0, 1.0);
     bBoxVis->color = Color(0.3, 0.5, 1.0, 0.5);
     bBoxVis->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
-    mainScene->addChild(bBoxVis);
+    //mainScene->addChild(bBoxVis);
     
     editorMode = EDITOR_MODE_3D;
     
@@ -1001,13 +1010,11 @@ void EntityEditorMainView::createIcon(Entity *entity, String iconFile) {
     iconPrimitive->setMaterialByName("Unlit");
     iconPrimitive->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	Texture *tex = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile("entityEditor/"+iconFile);
-	if(iconPrimitive->getLocalShaderOptions()) {
-        iconPrimitive->getLocalShaderOptions()->setTextureForParam("diffuse", tex);
-	}
+    iconPrimitive->getShaderPass(0).shaderBinding->setTextureForParam("diffuse", tex);
     
     addChild(iconPrimitive);
     iconPrimitive->setUserData((void*)entity);
-    iconPrimitive->forceMaterial = true;
+    iconPrimitive->setForceMaterial(true);
     iconPrimitive->processInputEvents = true;
     iconPrimitive->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
     iconPrimitive->setUserData(entity);
@@ -1083,6 +1090,8 @@ void EntityEditorMainView::setEditorProps(Entity *entity) {
     
     SceneCurve *sceneCurve = dynamic_cast<SceneCurve*>(entity);
     if(sceneCurve) {
+        sceneCurve->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+        sceneCurve->setForceMaterial(true);
         CurveDisplay *curveVis = new CurveDisplay(mainScene, sceneCurve);
         curveVis->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
         createIcon(entity, "curve_icon.png");
@@ -1552,7 +1561,14 @@ void EntityEditorMainView::handleEvent(Event *event) {
                 mainScene->setOverrideMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Default"));
             break;
             case 2:
-                mainScene->setOverrideMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitWireframe"));
+            {
+                Material *wireframeMaterial = (Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitWireframe");
+                
+                if(!wireframeMaterial->getShaderPass(0).shaderBinding->getLocalParamByName("wireframeColor")) {
+                    wireframeMaterial->getShaderPass(0).shaderBinding->addParam(ProgramParam::PARAM_COLOR, "wireframeColor")->setColor(Color(1.0, 1.0, 1.0, 1.0));
+                }
+                mainScene->setOverrideMaterial(wireframeMaterial);
+            }
             break;
         }
     } else if(event->getDispatcher() == moveUpButton) {
@@ -1736,8 +1752,7 @@ Scene *EntityEditorMainView::getMainScene() {
 void EntityEditorMainView::doEntityDeselect(Entity *targetEntity) {
     SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(targetEntity);
     if(sceneMesh) {
-        // RENDERER_TODO
-        //sceneMesh->overlayWireframe = false;
+        setOverlayWireframeRecursive(sceneMesh, false);
     }
     
     if(targetEntity == dummyEntity) {
@@ -1764,8 +1779,24 @@ void EntityEditorMainView::doEntityDeselect(Entity *targetEntity) {
 void EntityEditorMainView::setOverlayWireframeRecursive(Entity *targetEntity, bool val) {
     SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(targetEntity);
     if(sceneMesh) {
-        // RENDERER_TODO
-            //sceneMesh->overlayWireframe = val;
+        Material *material = sceneMesh->getMaterial();
+        if(material) {
+            if(val) {
+                ShaderPass wireframePass;
+                wireframePass.shader = (Shader*)Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_SHADER, "UnlitWireframe");
+                wireframePass.wireframe = true;
+                wireframePass.shaderBinding = new ShaderBinding();
+                wireframePass.blendingMode = Renderer::BLEND_MODE_NORMAL;
+                wireframePass.shaderBinding->addAttributeBinding("position", &sceneMesh->getMesh()->vertexPositionArray);
+                wireframePass.shaderBinding->addParam(ProgramParam::PARAM_COLOR, "wireframeColor")->setColor(Color(0.5, 0.6, 1.0, 0.75));
+
+                
+                sceneMesh->addShaderPass(wireframePass);
+            } else {
+                sceneMesh->removeShaderPass(sceneMesh->getNumShaderPasses()-1);
+            }
+        }
+        
     }
     for(int i=0; i < targetEntity->getNumChildren(); i++) {
         setOverlayWireframeRecursive(targetEntity->getChildAtIndex(i), val);
@@ -1777,8 +1808,7 @@ void EntityEditorMainView::doEntitySelect(Entity *targetEntity) {
     SceneParticleEmitter *emitter = dynamic_cast<SceneParticleEmitter*>(targetEntity);
     
     if(sceneMesh && ! emitter) {
-                // RENDERER_TODO
-//        sceneMesh->overlayWireframe = true;
+        setOverlayWireframeRecursive(sceneMesh, true);
     }
     
     if(targetEntity == dummyEntity) {
@@ -2368,7 +2398,9 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
         if(sceneMesh->getMaterial()) {
             meshEntry->addChild("material", sceneMesh->getMaterial()->getResourceName());
             ObjectEntry *shaderOptions = meshEntry->addChild("shader_options");
-            saveShaderOptionsToEntry(shaderOptions, sceneMesh->getMaterial(), sceneMesh->getLocalShaderOptions());
+            
+            // RENDERER_TODO
+            //saveShaderOptionsToEntry(shaderOptions, sceneMesh->getMaterial(), sceneMesh->getLocalShaderOptions());
         }
     }
     
@@ -2413,8 +2445,8 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
 void PolycodeEntityEditor::saveShaderOptionsToEntry(ObjectEntry *entry, Material *material, ShaderBinding *binding) {
 
 	
-    if(material->getNumShaders() > 0) {
-        for(int s=0; s < material->getNumShaders(); s++) {
+    if(material->getNumShaderPasses() > 0) {
+        for(int s=0; s < material->getNumShaderPasses(); s++) {
             Shader *shader = material->getShader(s);
             
             ObjectEntry *shaderEntry = entry->addChild("shader");

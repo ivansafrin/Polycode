@@ -74,11 +74,12 @@ namespace Polycode {
 			
 			void Render(GPUDrawBuffer *buffer);
 			
-            /**
-             * Returns the local material binding options for this mesh.
-             */
-			ShaderBinding *getLocalShaderOptions();
-			
+
+			ShaderPass getShaderPass(unsigned int index);
+            unsigned int getNumShaderPasses();
+            void addShaderPass(ShaderPass pass);
+            void removeShaderPass(int shaderIndex);
+        
 			/**
 			* Returns the Mesh instance of the actual mesh.
 			*/
@@ -193,11 +194,11 @@ namespace Polycode {
             /**
              * The Renderer has an ability to set an override material that is set for all rendered entities. If forceMaterial is set to true, this entity will always use its assigned material, even if an override material is set.
              */
-            bool forceMaterial;
+            void setForceMaterial(bool forceMaterial);
+            bool getForceMaterial();
         
             virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
-            virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
-        
+            virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;        
             
             /**
              * Normally, translucent textures do not affect the depth buffer, but if this flag is set to true, this entity's alpha channel is written to the depth buffer at a preset threshold. This flag is set to false by default.
@@ -208,7 +209,6 @@ namespace Polycode {
              * If this flag is set to false, backface culling is disabled when rendering this entity, rendering both sides of each face. Set to true by default.
              */
             bool backfaceCulled;
-        
             bool sendBoneMatricesToMaterial;
 			
 		protected:
@@ -217,9 +217,12 @@ namespace Polycode {
 			Mesh *mesh;
 			Material *material;
 			Skeleton *skeleton;
-			ShaderBinding *localShaderOptions;
+        
+            std::vector<ShaderPass> shaderPasses;
+        
             String fileName;
             std::vector<Matrix4> materialBoneMatrices;
+                    
         
             VertexDataArray skeletalVertexPositions;
             VertexDataArray skeletalVertexNormals;

@@ -67,6 +67,8 @@ namespace Polycode {
             virtual void enableScissor(bool val) = 0;
             virtual void setScissorBox(const Polycode::Rectangle &box) = 0;
         
+            virtual void setWireframeMode(bool val) = 0;
+        
             virtual void beginDrawCall() = 0;
             virtual void endDrawCall() = 0;
     };

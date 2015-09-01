@@ -58,7 +58,7 @@ namespace Polycode {
 			void focusPreviousChild();
 			bool isFocusable();
 			void focusSelf();
-									
+        
 			virtual void onLoseFocus() {}
 			virtual void onGainFocus() {}
 			
@@ -100,6 +100,7 @@ namespace Polycode {
 			void setImageCoordinates(Number x, Number y, Number width, Number height, Number imageScale = 1.0);
 			Number getImageWidth() const;
 			Number getImageHeight() const;
+            void setMaterial(Material *material);
         
 			Texture *getTexture();			
 		protected:
@@ -108,7 +109,7 @@ namespace Polycode {
 			Number imageHeight;
         
             Material *material;
-            ShaderBinding *localShaderOptions;
+            std::vector<ShaderPass> shaderPasses;
 			
 			Mesh *rectMesh;
 			Texture *texture;

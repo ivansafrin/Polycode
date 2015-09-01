@@ -133,15 +133,14 @@ void EntityEditorPropertyView::updateShaderOptions() {
     shaderOptionsSheet->enabled = false;
     
     if(sceneMesh) {
-        if(sceneMesh->getMaterial() && sceneMesh->getLocalShaderOptions()) {
+        if(sceneMesh->getMaterial() && sceneMesh->getNumShaderPasses() > 0) {
             
             // can't edit the textures manually on a scene label or sprite
             if(!sceneLabel && !sceneSprite) {
-            shaderTexturesSheet->setShader(sceneMesh->getMaterial()->getShader(0), sceneMesh->getMaterial(), sceneMesh->getLocalShaderOptions());
+            shaderTexturesSheet->setShader(sceneMesh->getMaterial()->getShader(0), sceneMesh->getMaterial(), sceneMesh->getShaderPass(0).shaderBinding);
                 shaderTexturesSheet->enabled = true;
-            }
-            
-            shaderOptionsSheet->setShader(sceneMesh->getMaterial()->getShader(0), sceneMesh->getMaterial(), sceneMesh->getLocalShaderOptions());
+            }            
+            shaderOptionsSheet->setShader(sceneMesh->getMaterial()->getShader(0), sceneMesh->getMaterial(), sceneMesh->getShaderPass(0).shaderBinding);
         }
     }
 }

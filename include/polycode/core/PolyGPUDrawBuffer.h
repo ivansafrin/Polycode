@@ -38,6 +38,7 @@ namespace Polycode {
         bool alphaTest;
         bool backfaceCull;
         bool depthOnly;
+        bool forceMaterial;
         unsigned int blendingMode;
         Polycode::Rectangle scissorBox;
         bool enableScissor;
@@ -54,7 +55,7 @@ namespace Polycode {
         GPUDrawOptions options;
         Matrix4 modelMatrix;
         Material *material;
-        ShaderBinding *shaderBinding;
+        std::vector<ShaderPass> shaderPasses;
         IndexDataArray *indexArray;
     };
     
@@ -71,6 +72,7 @@ namespace Polycode {
         bool clearDepthBuffer;
         bool clearColorBuffer;
         Vector2 backingResolutionScale;
+        Material *globalMaterial;
         
         Polycode::Rectangle viewport;
         std::vector<GPUDrawCall> drawCalls;

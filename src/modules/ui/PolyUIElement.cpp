@@ -164,7 +164,6 @@ Label *UILabel::getLabel() {
 
 UIRect::UIRect(String fileName, Number width, Number height) : UIElement() {
 	texture = NULL;
-    localShaderOptions = NULL;
 	loadTexture(fileName);
     initRect(width, height);
     imageWidth = width;
@@ -173,7 +172,6 @@ UIRect::UIRect(String fileName, Number width, Number height) : UIElement() {
 
 UIRect::UIRect(String fileName) : UIElement() {
 	texture = NULL;
-    localShaderOptions = NULL;
 	loadTexture(fileName);
 	if(texture) {	
 		initRect(texture->getWidth(), texture->getHeight());
@@ -190,7 +188,6 @@ UIRect::UIRect(String fileName) : UIElement() {
 
 UIRect::UIRect(Number width, Number height) : UIElement() {
 	texture = NULL;
-    localShaderOptions = NULL;
 	initRect(width, height);
 	imageWidth = 0;
 	imageHeight = 0;
@@ -263,23 +260,17 @@ void UIRect::initRect(Number width, Number height) {
     rectMesh->addIndexedFace(0, 1, 2);
     rectMesh->addIndexedFace(0, 2, 3);
     
-    material =  (Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured");
-    localShaderOptions = new ShaderBinding();
+    setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured"));
     
-    localShaderOptions->addParamPointer(ProgramParam::PARAM_COLOR, "entityColor", &color);
-    
-    localShaderOptions->addAttributeBinding("texCoord", &rectMesh->vertexTexCoordArray);
-    localShaderOptions->addAttributeBinding("position", &rectMesh->vertexPositionArray);
-
     if(texture) {
-        material =  (Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit");
-        localShaderOptions->setTextureForParam("diffuse", texture);
+        setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
+        shaderPasses[0].shaderBinding->setTextureForParam("diffuse", texture);
     }
 }
 
 UIRect::~UIRect() {
 	delete rectMesh;
-    delete localShaderOptions;
+    delete shaderPasses[0].shaderBinding;
 }
 
 void UIRect::loadTexture(String fileName) {
@@ -290,29 +281,49 @@ void UIRect::loadTexture(String fileName) {
 	texture = materialManager->createTextureFromFile(fileName, materialManager->clampDefault, false);
     
     if(!texture) {
-        material =  (Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured");
+        setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured"));
     } else {
-        material =  (Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit");
+        setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
     }
     
-    if(localShaderOptions) {
-        localShaderOptions->setTextureForParam("diffuse", texture);
+    if(shaderPasses.size() > 0) {
+        shaderPasses[0].shaderBinding->setTextureForParam("diffuse", texture);
     }
 }
 
 void UIRect::setTexture(Texture *texture) {
     
     if(!texture) {
-        material =  (Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured");
+        setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured"));
     } else {
-        material =  (Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit");
+        setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
     }
     
 	this->texture = texture;
-    if(localShaderOptions) {
-        localShaderOptions->setTextureForParam("diffuse", texture);
+    if(shaderPasses[0].shaderBinding) {
+        shaderPasses[0].shaderBinding->setTextureForParam("diffuse", texture);
     }
-}	
+}
+
+void UIRect::setMaterial(Material *material) {
+    
+    for(int i=0; i < shaderPasses.size(); i++) {
+        delete shaderPasses[i].shaderBinding;
+    }
+    shaderPasses.clear();
+    
+    this->material = material;
+    
+    ShaderPass pass;
+    pass.shaderBinding = new ShaderBinding();
+    pass.shader = material->getShaderPass(0).shader;
+    shaderPasses.push_back(pass);
+    
+    shaderPasses[0].shaderBinding->addParamPointer(ProgramParam::PARAM_COLOR, "entityColor", &color);
+    shaderPasses[0].shaderBinding->addAttributeBinding("texCoord", &rectMesh->vertexTexCoordArray);
+    shaderPasses[0].shaderBinding->addAttributeBinding("position", &rectMesh->vertexPositionArray);
+    
+}
 
 Texture *UIRect::getTexture() {
 	return texture;
@@ -334,7 +345,7 @@ void UIRect::Render(GPUDrawBuffer *buffer) {
     }
     
     drawCall.material = material;
-    drawCall.shaderBinding = localShaderOptions;
+    drawCall.shaderPasses = shaderPasses;
     
     buffer->drawCalls.push_back(drawCall);
 }

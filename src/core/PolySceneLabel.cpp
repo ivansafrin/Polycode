@@ -121,7 +121,7 @@ void SceneLabel::updateFromLabel() {
 	
     setLocalBoundingBox(label->getWidth()*labelScale / CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), label->getHeight()*labelScale/ CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), 0.001);
     
-    localShaderOptions->setTextureForParam("diffuse", texture);
+    getShaderPass(0).shaderBinding->setTextureForParam("diffuse", texture);
     
 }
 

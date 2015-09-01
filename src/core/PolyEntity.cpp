@@ -57,6 +57,7 @@ void Entity::initEntity() {
 	parentEntity = NULL;
 	matrixDirty = true;
 	billboardMode = false;
+    drawCall.options.forceMaterial = false;
 	drawCall.options.depthOnly = false;
 	drawCall.options.blendingMode = Entity::defaultBlendingMode;    
 	depthWrite = true;

@@ -85,8 +85,12 @@ namespace Polycode {
         void enableBackfaceCulling(bool val);
         void setLineSize(Number lineSize);
         
+        void setWireframeMode(bool val);
+        
         void enableScissor(bool val);
         void setScissorBox(const Polycode::Rectangle &box);
+        
+        bool lineSmooth;
         
 	protected:
 		

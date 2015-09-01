@@ -879,6 +879,7 @@ unsigned int Mesh::getIndexCount() {
     return indexArray.data.size();
 }
 
+
 void Mesh::createTorus(Number radius, Number tubeRadius, int segmentsW, int segmentsH, Number tilingValue) {
 
     segmentsH++;

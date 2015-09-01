@@ -719,8 +719,8 @@ MaterialPreviewBox::MaterialPreviewBox() : UIElement() {
 	
 	previewBg->setMaterialByName("Unlit");
 	Texture *tex = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile("materialEditor/material_grid.png");
-	if(previewBg->getLocalShaderOptions()) {
-        previewBg->getLocalShaderOptions()->setTextureForParam("diffuse", tex);
+	if(previewBg->getNumShaderPasses() > 0) {
+        previewBg->getShaderPass(0).shaderBinding->setTextureForParam("diffuse", tex);
 	}
 	previewScene->addChild(previewBg);
 	
@@ -1328,8 +1328,8 @@ void PolycodeMaterialEditor::saveMaterials(ObjectEntry *materialsEntry, std::vec
 			}
 		}
 		
-		if(material->getNumShaders() > 0) {
-			for(int s=0; s < material->getNumShaders(); s++) { 
+		if(material->getNumShaderPasses() > 0) {
+			for(int s=0; s < material->getNumShaderPasses(); s++) {
 				Shader *shader = material->getShader(s);
 				
 				ObjectEntry *shaderEntry = materialEntry->addChild("shader");

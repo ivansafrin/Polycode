@@ -102,6 +102,9 @@ EditorGrid::EditorGrid() : Entity() {
     Mesh *gridMesh = new Mesh(Mesh::LINE_MESH);
     
     grid = new SceneMesh(gridMesh);
+    grid->setForceMaterial(true);
+    grid->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    
     grid->setColor(0.3, 0.3, 0.3, 1.0);
     grid->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
     addChild(grid);
@@ -110,15 +113,22 @@ EditorGrid::EditorGrid() : Entity() {
     addChild(yLine);
     yLine->setColor(0.0, 0.8, 0.0, 1.0);
     yLine->visible = false;
+    yLine->setForceMaterial(true);
     
     xLine = new SceneLine(Vector3(), Vector3());
     addChild(xLine);
     xLine->setColor(0.8, 0.0, 0.0, 1.0);
+    xLine->setForceMaterial(true);
     
     zLine = new SceneLine(Vector3(), Vector3());
     addChild(zLine);
     zLine->setColor(0.0, 0.0, 0.8, 1.0);
-
+    zLine->setForceMaterial(true);
+    
+    xLine->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    yLine->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    zLine->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    
     gridSize = 1.0;
     gridLen = 16;
     

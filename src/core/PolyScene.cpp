@@ -226,12 +226,8 @@ void Scene::Render(Camera *targetCamera, Texture *targetFramebuffer) {
     drawBuffer->clearColorBuffer = useClearColor;
     drawBuffer->clearDepthBuffer = useClearDepth;
     drawBuffer->targetFramebuffer = targetFramebuffer;
-    
     drawBuffer->viewport = targetCamera->getViewport();
-///    drawBuffer->projectionMatrix = targetCamera->
-
-   // renderer->setOverrideMaterial(overrideMaterial);
-	
+    drawBuffer->globalMaterial = overrideMaterial;
 		
 	//make these the closest
 	

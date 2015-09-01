@@ -212,7 +212,10 @@ void SceneEntityInstance::applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMes
                                             }
                                              */
                                         } else {
+                                            // RENDERER_TODO
+                                            /*
                                             sceneMesh->getLocalShaderOptions()->setTextureForParam(nameEntry->stringVal, CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(textureEntry->stringVal));
+                                             */
                                         }
                                     }
                                 }
@@ -230,10 +233,14 @@ void SceneEntityInstance::applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMes
                                         Shader *materialShader = sceneMesh->getMaterial()->getShader(i);
                                         if(materialShader) {
                                             int type = materialShader->getExpectedParamType(nameEntry->stringVal);
+                                            
+                                            // RENDERER_TODO
+                                            /*
                                             LocalShaderParam *param = sceneMesh->getLocalShaderOptions()->addParam(type, nameEntry->stringVal);
                                             if(param) {
                                                 param->setParamValueFromString(type, valueEntry->stringVal);
                                             }
+                                             */
                                         }
                                     }
                                     

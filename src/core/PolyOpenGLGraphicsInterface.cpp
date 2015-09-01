@@ -28,7 +28,7 @@
 using namespace Polycode;
 
 OpenGLGraphicsInterface::OpenGLGraphicsInterface() {
-
+    lineSmooth = false;
 }
 
 OpenGLGraphicsInterface::~OpenGLGraphicsInterface() {
@@ -155,6 +155,11 @@ void OpenGLGraphicsInterface::setBlendingMode(unsigned int blendingMode) {
 
 void OpenGLGraphicsInterface::beginDrawCall() {
     textureIndex = 0;
+#ifndef STRICT_OPENGLES2
+    if(lineSmooth) {
+        glEnable(GL_LINE_SMOOTH);
+    }
+#endif
 }
 
 void OpenGLGraphicsInterface::endDrawCall() {
@@ -201,6 +206,16 @@ void OpenGLGraphicsInterface::enableScissor(bool val) {
 void OpenGLGraphicsInterface::setScissorBox(const Polycode::Rectangle &box) {
     glScissor(box.x, box.y, box.w, box.h);
     
+}
+
+void OpenGLGraphicsInterface::setWireframeMode(bool val) {
+#ifndef STRICT_OPENGLES2
+    if(val) {
+        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE);
+    } else {
+        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
+    }
+#endif
 }
 
 GLenum OpenGLGraphicsInterface::getGLDrawMode(int polycodeMode) {

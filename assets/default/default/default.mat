@@ -8,20 +8,24 @@
 		<shader type="glsl" name="UnlitUntextured" numPointLights="0" numSpotLights="0">		
 			<vp source="default/UnlitUntextured.vert"/>
 			<fp source="default/UnlitUntextured.frag"/>
-		</shader>		
+		</shader>
+		<shader type="glsl" name="UnlitWireframe" numPointLights="0" numSpotLights="0">		
+			<vp source="default/UnlitUntextured.vert"/>
+			<fp source="default/UnlitWireframe.frag"/>
+		</shader>	
 	</shaders>	
 	<materials>	
 		<material name="Unlit">
 			<shader name="Unlit">
-				<textures>
-				</textures>				
 			</shader>
 		</material>
 		<material name="UnlitUntextured">
 			<shader name="UnlitUntextured">
-				<textures>
-				</textures>				
 			</shader>
-		</material>		
+		</material>	
+		<material name="UnlitWireframe">
+			<shader name="UnlitWireframe" wireframe="true">
+			</shader>
+		</material>				
 	</materials>
 </polycode>

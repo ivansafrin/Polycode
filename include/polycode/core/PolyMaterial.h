@@ -32,17 +32,33 @@ namespace Polycode {
 	class Shader;
 	class ShaderBinding;
 	class ShaderRenderTarget;
+    
+    class _PolyExport ShaderPass {
+        public:
+            ShaderPass();
+            ShaderPass(Shader *shader);
+            Shader *shader;
+            bool wireframe;
+            unsigned short blendingMode;
+            ShaderBinding* shaderBinding;
+    };
 
 	class _PolyExport Material : public Resource {
 		public:
 			explicit Material(const String& name);
 			virtual ~Material();
-			
+
+			void addShaderPass(const ShaderPass &pass);
+			void addShaderPassAtIndex(const ShaderPass &pass, unsigned int shaderIndex);
+        
+            /* DEPRECATED! Use addShaderPass! */
 			void addShader(Shader *shader,ShaderBinding *shaderBinding);
+            /* DEPRECATED! Use addShaderPassAtIndex! */
 			void addShaderAtIndex(Shader *shader,ShaderBinding *shaderBinding, int shaderIndex);			
-			unsigned int getNumShaders() const;
+			unsigned int getNumShaderPasses() const;
 			
-			void removeShader(int shaderIndex);
+        
+			void removeShaderPass(int shaderIndex);
 			
 			void addShaderRenderTarget(ShaderRenderTarget *newTarget);
 			int getNumShaderRenderTargets();
@@ -54,8 +70,10 @@ namespace Polycode {
 			void handleEvent(Event *event);
 						
 			const String& getName() const;
-			Shader *getShader(unsigned int index) const;
+			ShaderPass getShaderPass(unsigned int index) const;
 			ShaderBinding *getShaderBinding(unsigned int index) const;
+			Shader *getShader(unsigned int index) const;
+        
 			void loadMaterial(const String& fileName);
 			
 			void setName(const String &name);
@@ -67,14 +85,11 @@ namespace Polycode {
 			void *shaderModule;
 			
 			int blendingMode;
-        
-            bool wireframe;
 			bool screenMaterial;
 			
 		protected:
 		
-			std::vector<Shader*> materialShaders;
-			std::vector<ShaderBinding*> shaderBindings;
+			std::vector<ShaderPass> shaderPasses;
 			std::vector<ShaderRenderTarget*> renderTargets;
 					
 			String name;

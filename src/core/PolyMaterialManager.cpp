@@ -435,11 +435,8 @@ Material *MaterialManager::materialFromXMLNode(ResourcePool *resourcePool, TiXml
 
 	String mname = nodeElement->Attribute("name");
 	TiXmlNode* pChild, *pChild2,*pChild3;
-	Shader *materialShader;
-	ShaderBinding *newShaderBinding;
 	
-	vector<Shader*> materialShaders;
-	vector<ShaderBinding*> newShaderBindings;
+	vector<ShaderPass> shaderPasses;
 	vector<ShaderRenderTarget*> renderTargets;
 
 	Material *newMaterial = new Material(mname);
@@ -450,10 +447,6 @@ Material *MaterialManager::materialFromXMLNode(ResourcePool *resourcePool, TiXml
 		if(String(nodeElement->Attribute("screen")) == "true") {
 			newMaterial->screenMaterial = true;
 		}
-	}
-    
-	if(nodeElement->Attribute("wireframe")) {
-		newMaterial->wireframe = String(nodeElement->Attribute("wireframe")) == "true";
 	}
 	
 	if(nodeElement->Attribute("blendingMode")) {
@@ -515,15 +508,23 @@ Material *MaterialManager::materialFromXMLNode(ResourcePool *resourcePool, TiXml
 		if (!pChild3Element) continue; // Skip comment nodes
 		
 		if(strcmp(pChild3->Value(), "shader") == 0) {
-			materialShader = setShaderFromXMLNode(resourcePool, pChild3);
-			if(materialShader) {
-                newShaderBinding = new ShaderBinding();
-				materialShaders.push_back(materialShader);
-				newShaderBindings.push_back(newShaderBinding);
+            
+            ShaderPass shaderPass;
+            
+			shaderPass.shader = setShaderFromXMLNode(resourcePool, pChild3);
+            
+            TiXmlElement *nodeElement = pChild3->ToElement();
+            if(nodeElement->Attribute("wireframe")) {
+                shaderPass.wireframe = String(nodeElement->Attribute("wireframe")) == "true";
+            }
+            
+			if(shaderPass.shader) {
+                shaderPass.shaderBinding = new ShaderBinding();
+				shaderPasses.push_back(shaderPass);
 				for (pChild = pChild3->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
 					TiXmlElement *pChildElement = pChild->ToElement();
 					if (!pChildElement) continue; // Skip comment nodes
-
+                    
 					if(strcmp(pChild->Value(), "params") == 0) {
 						for (pChild2 = pChild->FirstChild(); pChild2 != 0; pChild2 = pChild2->NextSibling()) {
 							TiXmlElement *pChild2Element = pChild2->ToElement();
@@ -534,8 +535,8 @@ Material *MaterialManager::materialFromXMLNode(ResourcePool *resourcePool, TiXml
 
 
                                     String pvalue =  pChild2Element->Attribute("value");
-                                    int type = materialShader->getExpectedParamType(pname);
-                                    LocalShaderParam *param = newShaderBinding->addParam(type, pname);
+                                    int type = shaderPass.shader->getExpectedParamType(pname);
+                                    LocalShaderParam *param = shaderPass.shaderBinding->addParam(type, pname);
                                     if(param) {
                                         param->setParamValueFromString(type, pvalue);
                                     }
@@ -569,7 +570,7 @@ Material *MaterialManager::materialFromXMLNode(ResourcePool *resourcePool, TiXml
 									newBinding->mode = RenderTargetBinding::MODE_OUT;								
 								}
 																
-								newShaderBinding->addRenderTargetBinding(newBinding);
+								shaderPass.shaderBinding->addRenderTargetBinding(newBinding);
 								
 								for(int l=0; l < renderTargets.size(); l++) {
 									if(renderTargets[l]->id == newBinding->id) {
@@ -596,7 +597,7 @@ Material *MaterialManager::materialFromXMLNode(ResourcePool *resourcePool, TiXml
 									tname =  pChild2Element->Attribute("name");
 								}
 								Texture *texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(pChild2Element->GetText());
-                                newShaderBinding->setTextureForParam(tname, texture);
+                                shaderPass.shaderBinding->setTextureForParam(tname, texture);
 							}
 							
 							if(strcmp(pChild2->Value(), "cubemap") == 0){
@@ -616,11 +617,8 @@ Material *MaterialManager::materialFromXMLNode(ResourcePool *resourcePool, TiXml
 	}
 	
 
-	for(int i=0; i< materialShaders.size(); i++) {
-		newMaterial->addShader(materialShaders[i],newShaderBindings[i]);
-	}
-	for(int i=0; i< renderTargets.size(); i++) {
-		newMaterial->addShaderRenderTarget(renderTargets[i]);
+	for(int i=0; i< shaderPasses.size(); i++) {
+		newMaterial->addShaderPass(shaderPasses[i]);
 	}
 	
 	return newMaterial;

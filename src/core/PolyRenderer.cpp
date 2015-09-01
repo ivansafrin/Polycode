@@ -98,27 +98,44 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
         
         modelMatrixParam->setMatrix4(buffer->drawCalls[i].modelMatrix);
         
-        if(buffer->drawCalls[i].material) {
+        Material *material = buffer->drawCalls[i].material;
+        if(buffer->globalMaterial && !buffer->drawCalls[i].options.forceMaterial) {
+            material = buffer->globalMaterial;
+        }
+        
+        if(material) {
             
-            
-            if(buffer->drawCalls[i].options.blendingMode == Renderer::BLEND_MODE_MATERIAL) {
-                graphicsInterface->setBlendingMode(buffer->drawCalls[i].material->blendingMode);
+            if(buffer->drawCalls[i].options.blendingMode == Renderer::BLEND_MODE_MATERIAL || buffer->globalMaterial) {
+                graphicsInterface->setBlendingMode(material->blendingMode);
             } else {
                 graphicsInterface->setBlendingMode(buffer->drawCalls[i].options.blendingMode);
             }
             
-            ShaderBinding *localShaderBinding = buffer->drawCalls[i].shaderBinding;
             
-            for(int s=0; s < buffer->drawCalls[i].material->getNumShaders(); s++) {
+            for(int s=0; s < buffer->drawCalls[i].shaderPasses.size(); s++) {
         
                 ++currentDebugFrameInfo.drawCallsProcessed;
                 graphicsInterface->beginDrawCall();
                 
-                Shader *shader = buffer->drawCalls[i].material->getShader(s);
-                graphicsInterface->useShader(shader);
-                
-                ShaderBinding *materialShaderBinding = buffer->drawCalls[i].material->getShaderBinding(s);
+                ShaderPass shaderPass;
+                if(s < material->getNumShaderPasses()) {
+                    shaderPass = material->getShaderPass(s);
+                } else {
+                    shaderPass = buffer->drawCalls[i].shaderPasses[s];
+                    graphicsInterface->setBlendingMode(shaderPass.blendingMode);
+                }
+                ShaderBinding *localShaderBinding = buffer->drawCalls[i].shaderPasses[s].shaderBinding;
 
+                if(!shaderPass.shader || !localShaderBinding) {
+                    continue;
+                }
+                
+                graphicsInterface->useShader(shaderPass.shader);
+
+
+                graphicsInterface->setWireframeMode(shaderPass.wireframe);
+                
+                ShaderBinding *materialShaderBinding = material->getShaderBinding(s);
                 
                 // set shader uniforms
                 
@@ -130,27 +147,28 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
         // TODO: can't cache the param here, need a better system (move to material binding?)
                         
 //                        if(!localParam->param) {
-                            localParam->param = shader->getParamPointer(localParam->name);
+                            localParam->param = shaderPass.shader->getParamPointer(localParam->name);
   //                      }
                         if(localParam->param) {
-                            graphicsInterface->setParamInShader(shader, localParam->param, localParam);
+                            graphicsInterface->setParamInShader(shaderPass.shader, localParam->param, localParam);
                         }
                     }
                     
                 }
    
-                for(int p=0; p < materialShaderBinding->getNumLocalParams(); p++) {
-                    
-                    LocalShaderParam *localParam = materialShaderBinding->getLocalParam(p);
-                    if(localParam) {
-                        if(!localParam->param) {
-                            localParam->param = shader->getParamPointer(localParam->name);
+                if(materialShaderBinding) {
+                    for(int p=0; p < materialShaderBinding->getNumLocalParams(); p++) {                        
+                        LocalShaderParam *localParam = materialShaderBinding->getLocalParam(p);
+                        if(localParam) {
+                            if(!localParam->param) {
+                                localParam->param = shaderPass.shader->getParamPointer(localParam->name);
+                            }
+                            if(localParam->param) {
+                                graphicsInterface->setParamInShader(shaderPass.shader, localParam->param, localParam);
+                            }
                         }
-                        if(localParam->param) {
-                            graphicsInterface->setParamInShader(shader, localParam->param, localParam);
-                        }
-                    }
 
+                    }
                 }
                 
                 for(int p=0; p < localShaderBinding->getNumLocalParams(); p++) {
@@ -158,10 +176,10 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                     LocalShaderParam *localParam = localShaderBinding->getLocalParam(p);
                     if(localParam) {
                         if(!localParam->param) {
-                            localParam->param = shader->getParamPointer(localParam->name);
+                            localParam->param = shaderPass.shader->getParamPointer(localParam->name);
                         }
                         if(localParam->param) {
-                            graphicsInterface->setParamInShader(shader, localParam->param, localParam);
+                            graphicsInterface->setParamInShader(shaderPass.shader, localParam->param, localParam);
                         }
                     }
                     
@@ -175,12 +193,12 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                         if(attributeBinding->enabled) {
                             
                             if(!attributeBinding->attribute) {
-                                attributeBinding->attribute = shader->getAttribPointer(attributeBinding->name);
+                                attributeBinding->attribute = shaderPass.shader->getAttribPointer(attributeBinding->name);
                             }
                             if(attributeBinding->attribute) {
                                 
                                 if(attributeBinding->vertexData->data.size() / attributeBinding->vertexData->countPerVertex >= buffer->drawCalls[i].numVertices) {
-                                    graphicsInterface->setAttributeInShader(shader, attributeBinding->attribute, attributeBinding);
+                                    graphicsInterface->setAttributeInShader(shaderPass.shader, attributeBinding->attribute, attributeBinding);
                                 }
                             } else {
                                 attributeBinding->enabled = false;
@@ -197,9 +215,9 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                 }
                 
                 
-                for(int a=0; a < shader->expectedAttributes.size(); a++) {
-                    ProgramAttribute attribute = shader->expectedAttributes[a];
-                    graphicsInterface->disableAttribute(shader, attribute);
+                for(int a=0; a < shaderPass.shader->expectedAttributes.size(); a++) {
+                    ProgramAttribute attribute = shaderPass.shader->expectedAttributes[a];
+                    graphicsInterface->disableAttribute(shaderPass.shader, attribute);
                 }
                 
                 graphicsInterface->endDrawCall();

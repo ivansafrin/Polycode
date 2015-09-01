@@ -281,7 +281,9 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
     yLine->setLocalBoundingBox(yLine->getMesh()->calculateBBox());
     yLine->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX() * 2.0);
 	transformAndScaleLines->addChild(yLine);
-
+    yLine->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    yLine->setForceMaterial(true);
+    
 	xLine = new SceneMesh(Mesh::LINE_MESH);
 	xLine->getMesh()->addVertex(0.0, 0.0, 0.0);
 	xLine->getMesh()->addVertex(1.0, 0.0, 0.0);
@@ -290,7 +292,9 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
     xLine->setLocalBoundingBox(xLine->getMesh()->calculateBBox());
     xLine->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX() * 2.0);
 	transformAndScaleLines->addChild(xLine);
-
+    xLine->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    xLine->setForceMaterial(true);
+    
 	zLine = new SceneMesh(Mesh::LINE_MESH);
 	zLine->getMesh()->addVertex(0.0, 0.0, 0.0);
 	zLine->getMesh()->addVertex(0.0, 0.0, 1.0);
@@ -299,7 +303,9 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
     zLine->setLocalBoundingBox(zLine->getMesh()->calculateBBox());
     zLine->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX() * 2.0);
 	transformAndScaleLines->addChild(zLine);
-	
+    zLine->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    zLine->setForceMaterial(true);
+    
 	// MOVE
 	
 	yArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.05, 12);
@@ -307,21 +313,24 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	yArrow->setPosition(0.0, 1.0, 0.0);
 	yArrow->depthTest = false;
 	trasnformDecorators->addChild(yArrow);
-	
+    yArrow->setForceMaterial(true);
+    
 	xArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.05, 12);
 	xArrow->setColor(1.0, 0.0, 0.0, 1.0);
 	xArrow->setPosition(1.0, 0.0, 0.0);
 	xArrow->Roll(-90);
 	xArrow->depthTest = false;
 	trasnformDecorators->addChild(xArrow);
-
+    xArrow->setForceMaterial(true);
+    
 	zArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.05, 12);
 	zArrow->setColor(0.0, 0.0, 1.0, 1.0);
 	zArrow->setPosition(0.0, 0.0, 1.0);
 	zArrow->Pitch(90);
 	zArrow->depthTest = false;	
 	trasnformDecorators->addChild(zArrow);
-
+    zArrow->setForceMaterial(true);
+    
 	// SCALE
 
 	yBox = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.1, 0.1, 0.1);
@@ -329,21 +338,24 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	yBox->setPosition(0.0, 1.0, 0.0);
 	yBox->depthTest = false;
 	scaleDecorators->addChild(yBox);
-	
+    yBox->setForceMaterial(true);
+    
 	xBox = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.1, 0.1, 0.1);
 	xBox->setColor(1.0, 0.0, 0.0, 1.0);
 	xBox->setPosition(1.0, 0.0, 0.0);
 	xBox->Roll(-90);
 	xBox->depthTest = false;
 	scaleDecorators->addChild(xBox);
-
+    xBox->setForceMaterial(true);
+    
 	zBox = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.1, 0.1, 0.1);
 	zBox->setColor(0.0, 0.0, 1.0, 1.0);
 	zBox->setPosition(0.0, 0.0, 1.0);
 	zBox->Pitch(90);
 	zBox->depthTest = false;	
 	scaleDecorators->addChild(zBox);
-
+    zBox->setForceMaterial(true);
+    
 	// ROTATE
 
 	bgCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 2.6, 2.6, 32);
@@ -353,7 +365,9 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	bgCircle->billboardMode = true;
 	rotateDectorators->addChild(bgCircle);
     bgCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
-
+    bgCircle->setForceMaterial(true);
+    bgCircle->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    
 	outerCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 3.0, 3.0, 32);
 	outerCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
 	outerCircle->setColor(1.0, 1.0, 1.0, 1.0);
@@ -361,8 +375,10 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	outerCircle->billboardMode = true;
 	rotateDectorators->addChild(outerCircle);
     outerCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX() * 2.0);
+    outerCircle->setForceMaterial(true);
+    outerCircle->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     
-	pitchCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 2.55, 2.55, 32);
+	pitchCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 2.55, 2.55, 64);
 	pitchCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
 	pitchCircle->setColor(1.0, 0.0, 0.0, 1.0);
 	pitchCircle->depthTest = false;
@@ -370,8 +386,10 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	rotateDectorators->addChild(pitchCircle);
 	pitchCircle->setMaterialByName("OneSidedLine");
     pitchCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX() * 2.0);
+    pitchCircle->setForceMaterial(true);
+    pitchCircle->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     
-	yawCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 2.65, 2.65, 32);
+	yawCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 2.65, 2.65, 64);
 	yawCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
 	yawCircle->setColor(0.0, 1.0, 0.0, 1.0);
 	yawCircle->depthTest = false;
@@ -379,16 +397,19 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	rotateDectorators->addChild(yawCircle);
 	yawCircle->setMaterialByName("OneSidedLine");
     yawCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX()* 2.0);
+    yawCircle->setForceMaterial(true);
+    yawCircle->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     
-	rollCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 2.6, 2.6, 32);
+	rollCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 2.6, 2.6, 64);
 	rollCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
 	rollCircle->setColor(0.0, 0.0, 1.0, 1.0);
 	rollCircle->depthTest = false;
 	rotateDectorators->addChild(rollCircle);
 	rollCircle->setMaterialByName("OneSidedLine");
     rollCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX()* 2.0);
+    rollCircle->setForceMaterial(true);
+    rollCircle->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     
-	
 	rotateDectorators->processInputEvents = true;
 	
 	//pitchGrip = new ScenePrimitive(ScenePrimitive::TYPE_TORUS, 1.55 * 0.5, 0.05, 16, 3);
