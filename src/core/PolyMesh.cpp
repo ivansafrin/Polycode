@@ -49,7 +49,6 @@ indexArray(RenderDataArray::INDEX_DATA_ARRAY)
     meshType = TRI_MESH;
     meshHasVertexBuffer = false;
     loadMesh(fileName);
-    useVertexColors = false;
 }
 
 Mesh::Mesh(int meshType)
@@ -66,7 +65,6 @@ indexArray(RenderDataArray::INDEX_DATA_ARRAY)
 
     this->meshType = meshType;
     meshHasVertexBuffer = false;
-    useVertexColors = false;
     indexedMesh = false;
 }
 

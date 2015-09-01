@@ -9,6 +9,10 @@
 			<vp source="default/UnlitUntextured.vert"/>
 			<fp source="default/UnlitUntextured.frag"/>
 		</shader>
+		<shader type="glsl" name="UnlitUntexturedVertexColor" numPointLights="0" numSpotLights="0">		
+			<vp source="default/UnlitUntexturedVertexColor.vert"/>
+			<fp source="default/UnlitUntexturedVertexColor.frag"/>
+		</shader>		
 		<shader type="glsl" name="UnlitWireframe" numPointLights="0" numSpotLights="0">		
 			<vp source="default/UnlitUntextured.vert"/>
 			<fp source="default/UnlitWireframe.frag"/>
@@ -23,6 +27,10 @@
 			<shader name="UnlitUntextured">
 			</shader>
 		</material>	
+		<material name="UnlitUntexturedVertexColor">
+			<shader name="UnlitUntexturedVertexColor">
+			</shader>
+		</material>			
 		<material name="UnlitWireframe">
 			<shader name="UnlitWireframe" wireframe="true">
 			</shader>

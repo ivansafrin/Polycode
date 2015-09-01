@@ -32,11 +32,15 @@ namespace Polycode {
 	class Shader;
 	class ShaderBinding;
 	class ShaderRenderTarget;
+    class Mesh;
     
     class _PolyExport ShaderPass {
         public:
             ShaderPass();
             ShaderPass(Shader *shader);
+        
+            void setExpectedAttributes(Mesh *mesh);
+        
             Shader *shader;
             bool wireframe;
             unsigned short blendingMode;

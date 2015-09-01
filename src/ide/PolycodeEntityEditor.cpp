@@ -1787,7 +1787,7 @@ void EntityEditorMainView::setOverlayWireframeRecursive(Entity *targetEntity, bo
                 wireframePass.wireframe = true;
                 wireframePass.shaderBinding = new ShaderBinding();
                 wireframePass.blendingMode = Renderer::BLEND_MODE_NORMAL;
-                wireframePass.shaderBinding->addAttributeBinding("position", &sceneMesh->getMesh()->vertexPositionArray);
+                wireframePass.setExpectedAttributes(sceneMesh->getMesh());
                 wireframePass.shaderBinding->addParam(ProgramParam::PARAM_COLOR, "wireframeColor")->setColor(Color(0.5, 0.6, 1.0, 0.75));
 
                 

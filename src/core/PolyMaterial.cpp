@@ -27,6 +27,7 @@
 #include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyCore.h"
 #include "polycode/core/PolyTexture.h"
+#include "polycode/core/PolyMesh.h"
 
 using namespace Polycode;
 
@@ -48,6 +49,43 @@ ShaderPass::ShaderPass(Shader *shader) :
     
 }
 
+void ShaderPass::setExpectedAttributes(Mesh *mesh) {
+    if(!shader || !shaderBinding) {
+        return;
+    }
+    
+    shaderBinding->attributes.clear();
+    
+    for(int i=0; i < shader->expectedAttributes.size(); i++) {
+        
+        VertexDataArray *targetArray = NULL;
+        
+        if(shader->expectedAttributes[i].name == "position") {
+            targetArray = &mesh->vertexPositionArray;
+        } else if(shader->expectedAttributes[i].name == "texCoord"){
+            targetArray = &mesh->vertexTexCoordArray;
+        } else if(shader->expectedAttributes[i].name == "normal") {
+            targetArray = &mesh->vertexNormalArray;
+        } else if(shader->expectedAttributes[i].name == "color") {
+            targetArray = &mesh->vertexColorArray;
+        } else if(shader->expectedAttributes[i].name == "tangent") {
+            targetArray = &mesh->vertexTangentArray;
+        } else if(shader->expectedAttributes[i].name == "texCoord2") {
+            targetArray = &mesh->vertexTexCoord2Array;
+        } else if(shader->expectedAttributes[i].name == "boneWeights") {
+            targetArray = &mesh->vertexBoneWeightArray;
+        } else if(shader->expectedAttributes[i].name == "boneIndices") {
+            targetArray = &mesh->vertexBoneIndexArray;
+        }
+        
+        AttributeBinding *attributeBinding = shaderBinding->getAttributeBindingByName(shader->expectedAttributes[i].name);
+        if(attributeBinding) {
+            attributeBinding->vertexData = targetArray;
+        } else {
+            shaderBinding->addAttributeBinding(shader->expectedAttributes[i].name, targetArray);
+        }
+    }
+}
 
 Material::Material(const String& name) : Resource(Resource::RESOURCE_MATERIAL) {
 	this->name = name;

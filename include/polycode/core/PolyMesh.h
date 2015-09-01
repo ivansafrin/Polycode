@@ -320,11 +320,6 @@ namespace Polycode {
 			static const int LINE_LOOP_MESH = 7;
         
         
-		
-			/**
-			* If set to true, the renderer will use the vertex colors instead of entity color transform to render this mesh.
-			*/
-			bool useVertexColors;
             bool indexedMesh;
 
             void addIndexedFace(unsigned int i1, unsigned int i2);

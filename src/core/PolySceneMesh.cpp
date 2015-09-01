@@ -105,11 +105,7 @@ void SceneMesh::setMesh(Mesh *mesh) {
 
 void SceneMesh::rebuildAttributes() {
     for(int i=0; i < shaderPasses.size(); i++) {
-        if(shaderPasses[i].shaderBinding) {
-            shaderPasses[i].shaderBinding->getAttributeBindingByName("texCoord")->vertexData = &mesh->vertexTexCoordArray;
-            shaderPasses[i].shaderBinding->getAttributeBindingByName("position")->vertexData = &mesh->vertexPositionArray;
-            shaderPasses[i].shaderBinding->getAttributeBindingByName("normal")->vertexData = &mesh->vertexNormalArray;
-        }
+        shaderPasses[i].setExpectedAttributes(mesh);
     }
 }
 
@@ -209,13 +205,9 @@ void SceneMesh::setMaterial(Material *material) {
     
     for(int i=0; i < material->getNumShaderPasses(); i++)  {
         ShaderPass shaderPass = material->getShaderPass(i);
-        shaderPass.shaderBinding = new ShaderBinding();
-        
+        shaderPass.shaderBinding = new ShaderBinding();        
         shaderPass.shaderBinding->addParamPointer(ProgramParam::PARAM_COLOR, "entityColor", &color);
-        shaderPass.shaderBinding->addAttributeBinding("texCoord", &mesh->vertexTexCoordArray);
-        shaderPass.shaderBinding->addAttributeBinding("position", &mesh->vertexPositionArray);
-        shaderPass.shaderBinding->addAttributeBinding("normal", &mesh->vertexNormalArray);
-        
+        shaderPass.setExpectedAttributes(mesh);
         shaderPasses.push_back(shaderPass);
     }
     

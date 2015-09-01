@@ -32,7 +32,6 @@ SceneParticleEmitter::SceneParticleEmitter(unsigned int particleCount, Number li
     
     core = CoreServices::getInstance()->getCore();
     motionPerlin = new Perlin(3,5,1.0,RANDOM_NUMBER);
-    mesh->useVertexColors = true;
     depthWrite = false;
     systemEnabled = true;
     setParticleCount(particleCount);
@@ -102,7 +101,6 @@ void SceneParticleEmitter::applyClone(Entity *clone, bool deepClone, bool ignore
     cloneEmitter->colorCurveA = colorCurveA;
     cloneEmitter->useColorCurves = useColorCurves;
     
-    cloneEmitter->getMesh()->useVertexColors = true;
 }
 
 void SceneParticleEmitter::resetParticle(unsigned int index) {

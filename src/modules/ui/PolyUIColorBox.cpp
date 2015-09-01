@@ -72,8 +72,12 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
     
     mainColorRect->getMesh()->indexedMesh = true;
     
-    mainColorRect->getMesh()->addIndexedFace(0, 1, 2);
-    mainColorRect->getMesh()->addIndexedFace(0, 2, 3);
+//    mainColorRect->getMesh()->addIndexedFace(0, 1, 2);
+//    mainColorRect->getMesh()->addIndexedFace(0, 2, 3);
+    
+    mainColorRect->getMesh()->addIndexedFace(3, 0, 1);
+    mainColorRect->getMesh()->addIndexedFace(3, 1, 2);
+    
     
 	mainColorRect->backfaceCulled = false;	
 
@@ -81,6 +85,8 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	mainColorRect->setPosition(padding, topPadding+padding);
 	addChild(mainColorRect);
 	addChild(mainFrame);
+    
+    mainColorRect->setMaterialByName("UnlitUntexturedVertexColor");
 
 	hueFrame = new UIImage(hueFrameImage, 20, 187);
 	hueFrame->setPosition(mainFrame->getPosition().x + mainFrame->getWidth()+10, topPadding+padding);
@@ -100,7 +106,6 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	mainSelector->setPosition(mainFrame->getPosition());
 	addChild(mainSelector);	
 	
-	mainColorRect->getMesh()->useVertexColors = true;
 	
 	mainColorRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	mainColorRect->addEventListener(this, InputEvent::EVENT_MOUSEUP);

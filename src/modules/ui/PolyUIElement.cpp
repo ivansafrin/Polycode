@@ -320,9 +320,7 @@ void UIRect::setMaterial(Material *material) {
     shaderPasses.push_back(pass);
     
     shaderPasses[0].shaderBinding->addParamPointer(ProgramParam::PARAM_COLOR, "entityColor", &color);
-    shaderPasses[0].shaderBinding->addAttributeBinding("texCoord", &rectMesh->vertexTexCoordArray);
-    shaderPasses[0].shaderBinding->addAttributeBinding("position", &rectMesh->vertexPositionArray);
-    
+    shaderPasses[0].setExpectedAttributes(rectMesh);
 }
 
 Texture *UIRect::getTexture() {

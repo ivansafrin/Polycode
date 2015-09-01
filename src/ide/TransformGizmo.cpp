@@ -260,6 +260,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	centerCircle->billboardMode = true;
 	addChild(centerCircle);
     centerCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
+    centerCircle->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 		  
 	trasnformDecorators = new Entity();
 	addChild(trasnformDecorators);

@@ -1140,12 +1140,10 @@ void SpriteStateEditBar::refreshBar() {
     Mesh *meshBg = barMeshBg->getMesh();
     meshBg->clearMesh();
     meshBg->indexedMesh = true;
-    meshBg->useVertexColors = true;
     
     Mesh *meshTicks = frameTicksMesh->getMesh();
     meshTicks->clearMesh();
     meshTicks->indexedMesh = true;
-    meshTicks->useVertexColors = true;
     
     Mesh *meshGrips = frameGripsMesh->getMesh();
     meshGrips->clearMesh();
