@@ -227,7 +227,7 @@ void Scene::Render(Camera *targetCamera, Texture *targetFramebuffer) {
     drawBuffer->clearDepthBuffer = useClearDepth;
     drawBuffer->targetFramebuffer = targetFramebuffer;
     drawBuffer->viewport = targetCamera->getViewport();
-    drawBuffer->globalMaterial = overrideMaterial;
+    drawBuffer->globalMaterial = overrideMaterial;	
 		
 	//make these the closest
 	
@@ -282,7 +282,10 @@ void Scene::Render(Camera *targetCamera, Texture *targetFramebuffer) {
 			position = light->getParentEntity()->getConcatenatedMatrix() * position;			
 		}
         
-		//CoreServices::getInstance()->getRenderer()->addLight(light->getLightImportance(), position, direction, light->getLightType(), light->lightColor, light->specularLightColor, light->getConstantAttenuation(), light->getLinearAttenuation(), light->getQuadraticAttenuation(), light->getIntensity(), light->getSpotlightCutoff(), light->getSpotlightExponent(), light->areShadowsEnabled(), matrixPtr, shadowMapTexture);
+        
+        drawBuffer->lights.push_back(light->getLightInfo());
+        drawBuffer->lights[drawBuffer->lights.size()-1].position = position;
+        drawBuffer->lights[drawBuffer->lights.size()-1].direction = direction;
 	}	
 		
     	/*

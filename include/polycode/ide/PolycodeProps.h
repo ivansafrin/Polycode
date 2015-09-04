@@ -526,26 +526,6 @@ class ShaderOptionsSheet : public PropSheet {
 		
 };
 
-class ShaderTexturesSheet : public PropSheet {
-	public:
-		ShaderTexturesSheet();
-		~ShaderTexturesSheet();
-		
-		void handleEvent(Event *event);
-		void Update();
-		
-		void clearShader();
-		void setShader(Shader *shader, Material *material, ShaderBinding *binding);
-				
-	private:
-		Shader *shader;
-		Material *material;
-		ShaderBinding *binding;
-						
-		std::vector<TextureProp*> textureProps;
-		std::vector<ComboProp*> cubemapProps;		
-};
-
 class EntitySheet : public PropSheet {
 	public:
 		EntitySheet();

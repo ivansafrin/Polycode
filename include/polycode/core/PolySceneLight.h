@@ -71,9 +71,9 @@ namespace Polycode {
 			*/
 			void setAttenuation(Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation);			
 						
-			Number getConstantAttenuation() const { return constantAttenuation; }
-			Number getLinearAttenuation() const { return linearAttenuation; }
-			Number getQuadraticAttenuation() const { return quadraticAttenuation; }
+            Number getConstantAttenuation() const;
+            Number getLinearAttenuation() const;
+            Number getQuadraticAttenuation() const;
 									
 			/*
 			* Returns the light's type.
@@ -81,9 +81,7 @@ namespace Polycode {
 			int getType() const;
 			
 			void renderDepthMap(Scene *scene);
-			
-			void Render();
-
+		
 			const Matrix4& getLightViewMatrix() const;
 			
 			static const int POINT_LIGHT = 0;
@@ -92,24 +90,14 @@ namespace Polycode {
 			Texture *getZBufferTexture() const;
 			
 			/**
-			* Color of the light.
-			*/ 
-			Color specularLightColor;
-		
-			/**
 			* Sets the light color.
 			* @param r Red value 0-1.
 			* @param g Green value 0-1
 			* @param b Blue value 0-1
 			* @param a Alpha value 0-1									
 			*/	
-			void setSpecularLightColor(Number r, Number g, Number b, Number a) { specularLightColor.r = r; specularLightColor.g = g; specularLightColor.b = b; specularLightColor.a = a; }
+			void setSpecularLightColor(Number r, Number g, Number b, Number a) { lightInfo.specularColor.r = r; lightInfo.specularColor.g = g; lightInfo.specularColor.b = b; lightInfo.specularColor.a = a; }
 						
-			
-			/**
-			* Color of the light.
-			*/ 
-			Color lightColor;
 		
 			/**
 			* Sets the light color.
@@ -118,10 +106,18 @@ namespace Polycode {
 			* @param b Blue value 0-1
 			* @param a Alpha value 0-1									
 			*/	
-			void setDiffuseLightColor(Number r, Number g, Number b) { lightColor.r = r; lightColor.g = g; lightColor.b = b; }
+			void setDiffuseLightColor(Number r, Number g, Number b, Number a=1.0) { lightInfo.diffuseColor.r = r; lightInfo.diffuseColor.g = g; lightInfo.diffuseColor.b = b; lightInfo.diffuseColor.a = a; }
 			
-			
-			
+        
+        	void setDiffuseLightColor(const Color &color) {
+                lightInfo.diffuseColor = color;
+            }
+
+            void setSpecularLightColor(const Color &color) {
+                lightInfo.specularColor = color;
+            }
+        
+        
 			/**
 			* Sets both the specular and diffust light colors. Use setDiffuseLightColor and setSpecularLightColor to set the individual light colors.
 			* @param r Red value 0-1.
@@ -142,13 +138,10 @@ namespace Polycode {
 			* @param spotlightExponent Spotlight exponent size
 			* @param spotlightCutoff Spotlight furstrum cutoff.
 			*/
-			void setSpotlightProperties(Number spotlightCutoff, Number spotlightExponent) {
-				this->spotlightCutoff = spotlightCutoff;
-                this->spotlightExponent = spotlightExponent;
-			}
+            void setSpotlightProperties(Number spotlightCutoff, Number spotlightExponent);
 			
-			Number getSpotlightCutoff() const { return spotlightCutoff; }
-			Number getSpotlightExponent() const { return spotlightExponent; }
+            Number getSpotlightCutoff() const;
+            Number getSpotlightExponent() const;
 			
 			/**
 			* If this is called with 'true', the light will generate a shadow map.
@@ -178,7 +171,7 @@ namespace Polycode {
 			/**
 			* Returns the light type.
 			*/
-			int getLightType() const { return type; }
+            int getLightType() const;
 			
 			void setLightImportance(int newImportance);
 			int getLightImportance() const;
@@ -193,31 +186,17 @@ namespace Polycode {
         
             Camera *getSpotlightCamera();
         
+            LightInfo getLightInfo() const;
+        
 		protected:
-		
-			Number spotlightExponent;
-			Number spotlightCutoff;
-		
-			int lightImportance;
-		
-			Number constantAttenuation;
-			Number linearAttenuation;
-			Number quadraticAttenuation;
-		
-			int type;
-			Number intensity;
-			
-			Camera *spotCamera;
-			Texture *zBufferTexture;
+        
+            LightInfo lightInfo;
 
+			Camera *spotCamera;
 			Scene *parentScene;
-			
-			Matrix4 lightViewMatrix;
 		
 			unsigned int shadowMapRes;
-			Number shadowMapFOV;	
-			bool shadowsEnabled;
-		
+			Number shadowMapFOV;
 			Number distance;
 	};
 }

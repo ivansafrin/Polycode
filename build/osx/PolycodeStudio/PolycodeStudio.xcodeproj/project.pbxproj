@@ -62,7 +62,6 @@
 		8A36D3241B8E6FD5009897D0 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D31A1B8E6FD5009897D0 /* libz.a */; };
 		8A36D3261B8E6FE7009897D0 /* libPolycodeUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3251B8E6FE7009897D0 /* libPolycodeUI.a */; };
 		8A36D32A1B8E7096009897D0 /* default.pak in Resources */ = {isa = PBXBuildFile; fileRef = 8A36D3281B8E7096009897D0 /* default.pak */; };
-		8A36D32B1B8E7096009897D0 /* hdr.pak in Resources */ = {isa = PBXBuildFile; fileRef = 8A36D3291B8E7096009897D0 /* hdr.pak */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -160,7 +159,6 @@
 		8A36D31A1B8E6FD5009897D0 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/libz.a; sourceTree = "<absolute>"; };
 		8A36D3251B8E6FE7009897D0 /* libPolycodeUI.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeUI.a; path = ../../../../lib/osx/libPolycodeUI.a; sourceTree = "<group>"; };
 		8A36D3281B8E7096009897D0 /* default.pak */ = {isa = PBXFileReference; lastKnownFileType = file; name = default.pak; path = ../../../../assets/default/default.pak; sourceTree = "<group>"; };
-		8A36D3291B8E7096009897D0 /* hdr.pak */ = {isa = PBXFileReference; lastKnownFileType = file; name = hdr.pak; path = ../../../../assets/default/hdr.pak; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -215,7 +213,6 @@
 			isa = PBXGroup;
 			children = (
 				8A36D3281B8E7096009897D0 /* default.pak */,
-				8A36D3291B8E7096009897D0 /* hdr.pak */,
 				8A36D22C1B8E5ACC009897D0 /* PolycodeView.h */,
 				8A36D22D1B8E5ACC009897D0 /* PolycodeView.mm */,
 				8A36D20E1B8E5751009897D0 /* AppDelegate.h */,
@@ -391,7 +388,6 @@
 				8A36D2141B8E5751009897D0 /* Images.xcassets in Resources */,
 				8A36D2171B8E5751009897D0 /* MainMenu.xib in Resources */,
 				8A36D32A1B8E7096009897D0 /* default.pak in Resources */,
-				8A36D32B1B8E7096009897D0 /* hdr.pak in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -614,6 +610,7 @@
 				8A36D2281B8E5751009897D0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

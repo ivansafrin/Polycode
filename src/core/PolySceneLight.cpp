@@ -32,39 +32,39 @@
 using namespace Polycode;
 
 SceneLight::SceneLight(int type, Scene *parentScene, Number intensity, Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation) : Entity() {
-	this->type = type;
-	this->intensity = intensity;
-	this->constantAttenuation = constantAttenuation;
-	this->linearAttenuation = linearAttenuation;
-	this->quadraticAttenuation = quadraticAttenuation;
+	lightInfo.type = type;
+	lightInfo.intensity = intensity;
+	lightInfo.constantAttenuation = constantAttenuation;
+	lightInfo.linearAttenuation = linearAttenuation;
+	lightInfo.quadraticAttenuation = quadraticAttenuation;
 	
-	spotlightCutoff = 40;
-	spotlightExponent = 10;
+	lightInfo.spotlightCutoff = 40;
+	lightInfo.spotlightExponent = 10;
 		
     shadowMapRes = 256;
 	this->depthWrite = false;
 	    
 	shadowMapFOV = 60.0f;
-	zBufferTexture = NULL;
+	lightInfo.shadowMapTexture = NULL;
 	spotCamera = NULL;
 	this->parentScene = parentScene;
-	shadowsEnabled = false;
-	lightColor.setColor(1.0f,1.0f,1.0f,1.0f);
+	lightInfo.shadowsEnabled = false;
+	lightInfo.diffuseColor.setColor(1.0f,1.0f,1.0f,1.0f);
 	setSpotlightProperties(40,0.1);
 	
-	lightImportance = 0;
+	lightInfo.importance = 0;
 }
 
 void SceneLight::setLightType(int lightType) {
-    this->type = lightType;
+    lightInfo.type = lightType;
 }
 
 void SceneLight::setLightImportance(int newImportance) {
-	lightImportance = newImportance;
+	lightInfo.importance = newImportance;
 }
 
 int SceneLight::getLightImportance() const {
-	return lightImportance;
+	return lightInfo.importance;
 }
 
 void SceneLight::enableShadows(bool val, unsigned int resolution) {
@@ -91,18 +91,18 @@ void SceneLight::enableShadows(bool val, unsigned int resolution) {
 }
 
 bool SceneLight::areShadowsEnabled() const {
-	return shadowsEnabled;
+	return lightInfo.shadowsEnabled;
 }
 
 void SceneLight::setAttenuation(Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation) {
-	this->constantAttenuation = constantAttenuation;
-	this->linearAttenuation = linearAttenuation;
-	this->quadraticAttenuation = quadraticAttenuation;
+	lightInfo.constantAttenuation = constantAttenuation;
+	lightInfo.linearAttenuation = linearAttenuation;
+	lightInfo.quadraticAttenuation = quadraticAttenuation;
 }			
 
 
 void SceneLight::setIntensity(Number newIntensity) {
-	intensity = newIntensity;
+	lightInfo.intensity = newIntensity;
 }
 
 void SceneLight::setShadowMapFOV(Number fov) {
@@ -147,8 +147,12 @@ void SceneLight::renderDepthMap(Scene *scene) {
      */
 }
 
+LightInfo SceneLight::getLightInfo() const {
+    return lightInfo;
+}
+
 Entity *SceneLight::Clone(bool deepClone, bool ignoreEditorOnly) const {
-    SceneLight *newLight = new SceneLight(type, NULL, intensity, constantAttenuation, linearAttenuation, quadraticAttenuation);
+    SceneLight *newLight = new SceneLight(lightInfo.type, NULL, lightInfo.intensity, lightInfo.constantAttenuation, lightInfo.linearAttenuation, lightInfo.quadraticAttenuation);
     applyClone(newLight, deepClone, ignoreEditorOnly);
     return newLight;
 }
@@ -157,18 +161,47 @@ void SceneLight::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly
     Entity::applyClone(clone, deepClone, ignoreEditorOnly);
     SceneLight *cloneLight = (SceneLight*) clone;
     
-    cloneLight->setAttenuation(constantAttenuation, linearAttenuation, quadraticAttenuation);
-    cloneLight->setIntensity(intensity);
-    cloneLight->lightColor = lightColor;
-    cloneLight->specularLightColor = specularLightColor;
-    cloneLight->enableShadows(shadowsEnabled, shadowMapRes);
+    cloneLight->setAttenuation(lightInfo.constantAttenuation, lightInfo.linearAttenuation, lightInfo.quadraticAttenuation);
+    cloneLight->setIntensity(lightInfo.intensity);
+    cloneLight->setDiffuseLightColor(lightInfo.diffuseColor.r, lightInfo.diffuseColor.g, lightInfo.diffuseColor.b);
+    cloneLight->setSpecularLightColor(lightInfo.specularColor.r, lightInfo.specularColor.g, lightInfo.specularColor.b, lightInfo.specularColor.a);
+    cloneLight->enableShadows(lightInfo.shadowsEnabled, shadowMapRes);
     cloneLight->setShadowMapFOV(shadowMapFOV);
-    cloneLight->setSpotlightProperties(spotlightCutoff, spotlightExponent);
-    cloneLight->setLightType(type);
+    cloneLight->setSpotlightProperties(lightInfo.spotlightCutoff, lightInfo.spotlightExponent);
+    cloneLight->setLightType(lightInfo.type);
+}
+
+Number SceneLight::getConstantAttenuation() const {
+    return lightInfo.constantAttenuation;
+}
+
+Number SceneLight::getLinearAttenuation() const {
+    return lightInfo.linearAttenuation;
+}
+
+Number SceneLight::getQuadraticAttenuation() const {
+    return lightInfo.quadraticAttenuation;
+}
+
+void SceneLight::setSpotlightProperties(Number spotlightCutoff, Number spotlightExponent) {
+    lightInfo.spotlightCutoff = spotlightCutoff;
+    lightInfo.spotlightExponent = spotlightExponent;
+}
+
+Number SceneLight::getSpotlightCutoff() const {
+    return lightInfo.spotlightCutoff;
+}
+
+Number SceneLight::getSpotlightExponent() const{
+    return lightInfo.spotlightExponent;
 }
 
 Scene *SceneLight::getParentScene() const {
     return parentScene;
+}
+
+int SceneLight::getLightType() const {
+    return lightInfo.type;
 }
 
 void SceneLight::setParentScene(Scene *scene) {
@@ -183,21 +216,17 @@ Camera *SceneLight::getSpotlightCamera() {
 }
 
 const Matrix4& SceneLight::getLightViewMatrix() const {
-	return lightViewMatrix;
+	return lightInfo.lightViewMatrix;
 }
 
 Texture *SceneLight::getZBufferTexture() const {
-	return zBufferTexture;
+	return lightInfo.shadowMapTexture;
 }
 
 Number SceneLight::getIntensity() const {
-	return intensity;
-}
-
-void SceneLight::Render() {
-    
+	return lightInfo.intensity;
 }
 
 int SceneLight::getType() const {
-	return type;
+	return lightInfo.type;
 }

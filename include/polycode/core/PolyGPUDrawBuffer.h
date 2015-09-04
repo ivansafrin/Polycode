@@ -27,8 +27,28 @@
 #include "polycode/core/PolyRectangle.h"
 #include "polycode/core/PolyMaterial.h"
 #include "polycode/core/PolyColor.h"
+#include "polycode/core/PolyVector3.h"
 
 namespace Polycode {
+    
+    class _PolyExport LightInfo {
+        public:
+            unsigned short importance;
+            Vector3 position;
+            Vector3 direction;
+            unsigned short type;
+            Color diffuseColor;
+            Color specularColor;
+            Number constantAttenuation;
+            Number linearAttenuation;
+            Number quadraticAttenuation;
+            Number intensity;
+            Number spotlightCutoff;
+            Number spotlightExponent;
+            bool shadowsEnabled;
+            Texture *shadowMapTexture;
+            Matrix4 lightViewMatrix;
+    };
     
     class _PolyExport GPUDrawOptions {
     public:
@@ -73,6 +93,8 @@ namespace Polycode {
         bool clearColorBuffer;
         Vector2 backingResolutionScale;
         Material *globalMaterial;
+        
+        std::vector<LightInfo> lights;
         
         Polycode::Rectangle viewport;
         std::vector<GPUDrawCall> drawCalls;

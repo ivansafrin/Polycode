@@ -426,8 +426,8 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
                     newLight->setLightImportance(importanceEntry->intVal);
                 }
                 
-                newLight->lightColor.setColor((*lightEntry)["cR"]->NumberVal, (*lightEntry)["cG"]->NumberVal, (*lightEntry)["cB"]->NumberVal, (*lightEntry)["cA"]->NumberVal);
-                newLight->specularLightColor.setColor((*lightEntry)["scR"]->NumberVal, (*lightEntry)["scG"]->NumberVal, (*lightEntry)["scB"]->NumberVal, (*lightEntry)["scA"]->NumberVal);
+                newLight->setDiffuseLightColor((*lightEntry)["cR"]->NumberVal, (*lightEntry)["cG"]->NumberVal, (*lightEntry)["cB"]->NumberVal, (*lightEntry)["cA"]->NumberVal);
+                newLight->setSpecularLightColor((*lightEntry)["scR"]->NumberVal, (*lightEntry)["scG"]->NumberVal, (*lightEntry)["scB"]->NumberVal, (*lightEntry)["scA"]->NumberVal);
 
                 newLight->setAttenuation((*lightEntry)["cAtt"]->NumberVal, (*lightEntry)["lAtt"]->NumberVal, (*lightEntry)["qAtt"]->NumberVal);
                 

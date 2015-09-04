@@ -35,6 +35,8 @@ THE SOFTWARE.
 #include <stack>
 #include <queue>  
 
+#define RENDERER_MAX_LIGHTS 8
+
 namespace Polycode {
     
     class _PolyExport GraphicsInterface : public PolyBase {
@@ -86,6 +88,19 @@ namespace Polycode {
             unsigned int timeTaken;
     };
     
+    class LightInfoBinding {
+        public:
+            LocalShaderParam *position;
+            LocalShaderParam *direction;
+            LocalShaderParam *specular;
+            LocalShaderParam *diffuse;
+            LocalShaderParam *spotExponent;
+            LocalShaderParam *spotCosCutoff;
+            LocalShaderParam *constantAttenuation;
+            LocalShaderParam *linearAttenuation;
+            LocalShaderParam *quadraticAttenuation;
+    };
+    
     class _PolyExport RenderThread : public Threaded {
         public:
             RenderThread();
@@ -124,6 +139,9 @@ namespace Polycode {
             LocalShaderParam *projectionMatrixParam;
             LocalShaderParam *viewMatrixParam;
             LocalShaderParam *modelMatrixParam;
+        
+            LightInfoBinding lights[RENDERER_MAX_LIGHTS];
+        
     };
     
     class _PolyExport Renderer : public PolyBase {

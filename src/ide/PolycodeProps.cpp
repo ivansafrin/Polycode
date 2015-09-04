@@ -2300,14 +2300,20 @@ void ShaderOptionsSheet::handleEvent(Event *event) {
                     }
 					(*(Number*)param->data) = ((NumberProp*)props[i])->get();
 				} else if(props[i]->propType == "Color") {
-                    
                     if(!param){
                         param = binding->addParam(ProgramParam::PARAM_COLOR, props[i]->label->getText());
                     }
-                    
 					(*(Color*)param->data) = ((ColorProp*)props[i])->get();
 				
-				}
+                } else if(props[i]->propType == "Texture") {
+                    if(!param){
+                        param = binding->addParam(ProgramParam::PARAM_TEXTURE, props[i]->label->getText());
+                    }
+                    param->setTexture(((TextureProp*)props[i])->get());
+                    
+                }
+
+                
 				dispatchEvent(new Event(), Event::CHANGE_EVENT);				
 				return;
 			}
@@ -2334,40 +2340,58 @@ void ShaderOptionsSheet::clearShader() {
 void ShaderOptionsSheet::setOptionsFromParams(std::vector<ProgramParam> &params) {
 
 	for(int i=0; i < params.size(); i++) {
-        switch (params[i].type) {
-            case ProgramParam::PARAM_NUMBER:
-            {
-                String paramName = params[i].name;
-                NumberProp *numberProp = new NumberProp(paramName, this);
-                addProp(numberProp);
-                                        
-                LocalShaderParam *param = binding->getLocalParamByName(params[i].name);
-                Number numberValue = 0.0;
-                if(param) {
-                    numberValue = (*(Number*)param->data);
-                }
-                numberProp->set(numberValue);
-                propHeight += 30;
-            }
-            break;					
-            case ProgramParam::PARAM_COLOR:
-            {
-                String paramName = params[i].name;
+        if(!params[i].globalParam) {
+            switch (params[i].type) {
+                case ProgramParam::PARAM_TEXTURE:
+                {
+                    String paramName = params[i].name;
+                    TextureProp *textureProp = new TextureProp(paramName);
+                    addProp(textureProp);
+                    
+                    LocalShaderParam *param = binding->getLocalParamByName(params[i].name);
+                    Texture *texture = NULL;
+                    if(param) {
+                        texture = param->getTexture();
+                    }
+                    textureProp->set(texture);
+                    propHeight += 30;
 
-                LocalShaderParam *param = binding->getLocalParamByName(params[i].name);
-
-                ColorProp *colorProp = new ColorProp(paramName);
-                addProp(colorProp);
-                
-                Color colorValue;
-                if(param) {
-                    colorValue = (*(Color*)param->data);
                 }
-                colorProp->set(colorValue);
-                
-                propHeight += 40;				
+                break;
+                case ProgramParam::PARAM_NUMBER:
+                {
+                    String paramName = params[i].name;
+                    NumberProp *numberProp = new NumberProp(paramName, this);
+                    addProp(numberProp);
+                                            
+                    LocalShaderParam *param = binding->getLocalParamByName(params[i].name);
+                    Number numberValue = 0.0;
+                    if(param) {
+                        numberValue = param->getNumber();
+                    }
+                    numberProp->set(numberValue);
+                    propHeight += 30;
+                }
+                break;					
+                case ProgramParam::PARAM_COLOR:
+                {
+                    String paramName = params[i].name;
+
+                    LocalShaderParam *param = binding->getLocalParamByName(params[i].name);
+
+                    ColorProp *colorProp = new ColorProp(paramName);
+                    addProp(colorProp);
+                    
+                    Color colorValue;
+                    if(param) {
+                        colorValue = param->getColor();
+                    }
+                    colorProp->set(colorValue);
+                    
+                    propHeight += 40;				
+                }
+                break;
             }
-            break;
         }
     }
 }
@@ -2386,119 +2410,6 @@ void ShaderOptionsSheet::setShader(Shader *shader, Material *material, ShaderBin
 	
 	setOptionsFromParams(shader->expectedParams);
 	
-	dispatchEvent(new Event(), Event::COMPLETE_EVENT);	
-	Resize(getWidth(), getHeight());
-}
-
-ShaderTexturesSheet::ShaderTexturesSheet() : PropSheet("SHADER TEXTURES", "shader_textures"){
-	shader = NULL;
-	propHeight = 40;
-    customUndoHandler = true;
-    enabled = false;
-}
-
-ShaderTexturesSheet::~ShaderTexturesSheet() {
-
-}
-
-void ShaderTexturesSheet::handleEvent(Event *event) {
-
-	if(event->getEventCode() == Event::CHANGE_EVENT) {
-		for(int i=0; i < textureProps.size(); i++) {
-			if(event->getDispatcher() == textureProps[i]) {
-				binding->removeParam(textureProps[i]->label->getText());
-				binding->setTextureForParam(textureProps[i]->label->getText(), textureProps[i]->get());
-				dispatchEvent(new Event(), Event::CHANGE_EVENT);
-			}
-		}	
-		
-		for(int i=0; i < cubemapProps.size(); i++) {
-			if(event->getDispatcher() == cubemapProps[i]) {
-				binding->removeParam(cubemapProps[i]->label->getText());
-				Cubemap *cubemap = (Cubemap*)cubemapProps[i]->comboEntry->getSelectedItem()->data;
-				binding->setCubemapForParam(cubemapProps[i]->label->getText(), cubemap);
-				dispatchEvent(new Event(), Event::CHANGE_EVENT);
-			}
-		}	
-		
-	}
-	PropSheet::handleEvent(event);
-}
-
-void ShaderTexturesSheet::Update() {
-
-}
-
-void ShaderTexturesSheet::clearShader() {
-	for(int i=0; i < props.size(); i++) {
-		contents->removeChild(props[i]);
-		props[i]->removeAllHandlersForListener(this);
-		delete props[i];
-	}
-	
-	props.clear();
-	cubemapProps.clear();
-	textureProps.clear();
-	
-	propHeight = 30;
-}
-
-void ShaderTexturesSheet::setShader(Shader *shader, Material *material, ShaderBinding *binding) {
-	clearShader();
-	this->shader = shader;
-	this->material = material;
-	
-    enabled = true;
-    
-	if(!shader || !material)
-		return;
-		
-	this->binding = binding;
-
-    // RENDERER_TODO
-    /*
-	for(int i=0; i < shader->expectedCubemaps.size(); i++) {
-		ComboProp *comboProp = new ComboProp(shader->expectedCubemaps[i]);
-		
-		std::vector<Resource*> cubemaps = CoreServices::getInstance()->getResourceManager()->getResources(Resource::RESOURCE_CUBEMAP);
-		
-		for(int j=0; j < cubemaps.size(); j++) {
-			comboProp->comboEntry->addComboItem(cubemaps[j]->getResourceName(), (void*) cubemaps[j]);
-			if(material) {
-				if(binding) {
-					Cubemap *currentCubemap = binding->getCubemap(shader->expectedCubemaps[i]);
-					if(currentCubemap) {
-						if(currentCubemap->getResourceName() == cubemaps[j]->getResourceName()) {
-							comboProp->set(j);
-						}
-					}
-				}
-			}
-		}
-				
-		addProp(comboProp);
-		cubemapProps.push_back(comboProp);
-		propHeight += 45;
-	}
-	
-	for(int i=0; i < shader->expectedTextures.size(); i++) {
-		TextureProp *textureProp = new TextureProp(shader->expectedTextures[i]);
-		
-		if(material) {
-			if(binding) {
-				Texture *currentTexture = binding->getTexture(shader->expectedTextures[i]);
-				if(currentTexture) {
-					textureProp->set(currentTexture);
-				}
-			}
-		}
-		
-		addProp(textureProp);
-		textureProps.push_back(textureProp);
-		propHeight += 65;
-	}
-     */
-
 	dispatchEvent(new Event(), Event::COMPLETE_EVENT);	
 	Resize(getWidth(), getHeight());
 }
@@ -2799,8 +2710,8 @@ void SceneLightSheet::setSceneLight(SceneLight *light) {
     
     if(light) {
         typeProp->set(light->getLightType());
-        lightColorProp->set(light->lightColor);
-        specularColorProp->set(light->specularLightColor);
+        lightColorProp->set(light->getLightInfo().diffuseColor);
+        specularColorProp->set(light->getLightInfo().specularColor);
         intensityProp->set(light->getIntensity());
         constantAttenuationProp->set(light->getConstantAttenuation());
         linearAttenuationProp->set(light->getLinearAttenuation());
@@ -2832,9 +2743,9 @@ void SceneLightSheet::handleEvent(Event *event) {
         if(event->getDispatcher() == typeProp) {
             light->setLightType(typeProp->get());
         } else if(event->getDispatcher() == lightColorProp) {
-            light->lightColor = lightColorProp->get();
+            light->setDiffuseLightColor(lightColorProp->get());
         } else if(event->getDispatcher() == specularColorProp) {
-            light->specularLightColor = specularColorProp->get();
+            light->setSpecularLightColor(specularColorProp->get());
         } else if(event->getDispatcher() == intensityProp) {
             light->setIntensity(intensityProp->get());
         } else if(event->getDispatcher() == constantAttenuationProp) {

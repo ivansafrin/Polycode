@@ -36,6 +36,7 @@ namespace Polycode {
 	class ShaderBinding;
 	class Texture;
     class VertexDataArray;
+    class LocalShaderParam;
 	
 	class _PolyExport ProgramParam {
 		public:
@@ -45,6 +46,7 @@ namespace Polycode {
         String name;
         int type;
         void *platformData;
+        LocalShaderParam *globalParam;
 
         static void *createParamData(int type);
         

@@ -201,7 +201,6 @@ class PostEditorPane : public UIElement {
 		PropList *optionsPropList;
 		
 		TargetBindingsSheet *targetBindingProps;
-		ShaderTexturesSheet *shaderTextureSheet;
 		ShaderOptionsSheet *shaderOptionsSheet;			
 			
 		UIVSizer *mainSizer;
@@ -280,7 +279,6 @@ class MaterialEditorPane : public UIElement {
 		ComboProp *blendModeProp;
 		ComboProp *shaderProp;
 		
-		ShaderTexturesSheet *shaderTextureSheet;
 		ShaderOptionsSheet *shaderOptionsSheet;	
 };
 

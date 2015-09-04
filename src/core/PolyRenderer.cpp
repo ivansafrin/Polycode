@@ -40,6 +40,19 @@ RenderThread::RenderThread() : graphicsInterface(NULL) {
     modelMatrixParam = rendererShaderBinding->addParam(ProgramParam::PARAM_MATRIX, "modelMatrix");
     viewMatrixParam = rendererShaderBinding->addParam(ProgramParam::PARAM_MATRIX, "viewMatrix");
     
+    for(int i=0; i < RENDERER_MAX_LIGHTS; i++) {
+        lights[i].position = rendererShaderBinding->addParam(ProgramParam::PARAM_VECTOR3, "lights["+String::IntToString(i)+"].position");
+        lights[i].direction = rendererShaderBinding->addParam(ProgramParam::PARAM_VECTOR3, "lights["+String::IntToString(i)+"].direction");
+        lights[i].specular = rendererShaderBinding->addParam(ProgramParam::PARAM_COLOR, "lights["+String::IntToString(i)+"].specular");
+        lights[i].diffuse = rendererShaderBinding->addParam(ProgramParam::PARAM_COLOR, "lights["+String::IntToString(i)+"].diffuse");
+        lights[i].spotExponent = rendererShaderBinding->addParam(ProgramParam::PARAM_NUMBER, "lights["+String::IntToString(i)+"].spotExponent");
+        lights[i].spotCosCutoff = rendererShaderBinding->addParam(ProgramParam::PARAM_NUMBER, "lights["+String::IntToString(i)+"].spotCosCutoff");
+        lights[i].constantAttenuation = rendererShaderBinding->addParam(ProgramParam::PARAM_NUMBER, "lights["+String::IntToString(i)+"].constantAttenuation");
+        lights[i].linearAttenuation = rendererShaderBinding->addParam(ProgramParam::PARAM_NUMBER, "lights["+String::IntToString(i)+"].linearAttenuation");
+        lights[i].quadraticAttenuation = rendererShaderBinding->addParam(ProgramParam::PARAM_NUMBER, "lights["+String::IntToString(i)+"].quadraticAttenuation");
+        
+    }
+    
     jobQueueMutex = Services()->getCore()->createMutex();
 }
 
@@ -74,6 +87,26 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
     projectionMatrixParam->setMatrix4(buffer->projectionMatrix);
     viewMatrixParam->setMatrix4(buffer->viewMatrix);
 
+    for(int i=0; i <RENDERER_MAX_LIGHTS; i++) {
+        if(i < buffer->lights.size()) {
+            lights[i].diffuse->setColor(buffer->lights[i].diffuseColor * buffer->lights[i].intensity);
+            lights[i].specular->setColor(buffer->lights[i].specularColor  * buffer->lights[i].intensity);
+            
+            lights[i].position->setVector3(buffer->lights[i].position);
+            lights[i].direction->setVector3(buffer->lights[i].direction);
+            lights[i].spotExponent->setNumber(buffer->lights[i].spotlightExponent);
+            lights[i].spotCosCutoff->setNumber(buffer->lights[i].spotlightCutoff);
+            
+            lights[i].constantAttenuation->setNumber(buffer->lights[i].constantAttenuation);
+            lights[i].linearAttenuation->setNumber(buffer->lights[i].linearAttenuation);
+            lights[i].quadraticAttenuation->setNumber(buffer->lights[i].quadraticAttenuation);
+            
+        } else {
+            lights[i].diffuse->setColor(Color(0.0, 0.0, 0.0, 1.0));
+            lights[i].specular->setColor(Color(0.0, 0.0, 0.0, 1.0));
+        }
+    }
+    
     for(int i=0; i < buffer->drawCalls.size(); i++) {
         
         
@@ -132,30 +165,17 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                 
                 graphicsInterface->useShader(shaderPass.shader);
 
-
                 graphicsInterface->setWireframeMode(shaderPass.wireframe);
                 
                 ShaderBinding *materialShaderBinding = material->getShaderBinding(s);
-                
-                // set shader uniforms
-                
-                for(int p=0; p < rendererShaderBinding->getNumLocalParams(); p++) {
-                    
-                    LocalShaderParam *localParam = rendererShaderBinding->getLocalParam(p);
-                    if(localParam) {
 
-        // TODO: can't cache the param here, need a better system (move to material binding?)
-                        
-//                        if(!localParam->param) {
-                            localParam->param = shaderPass.shader->getParamPointer(localParam->name);
-  //                      }
-                        if(localParam->param) {
-                            graphicsInterface->setParamInShader(shaderPass.shader, localParam->param, localParam);
-                        }
+                // set global params
+                for(int p=0; p < shaderPass.shader->expectedParams.size(); p++) {
+                    if(shaderPass.shader->expectedParams[p].globalParam) {
+                        graphicsInterface->setParamInShader(shaderPass.shader, &shaderPass.shader->expectedParams[p], shaderPass.shader->expectedParams[p].globalParam);
                     }
-                    
                 }
-   
+                 
                 if(materialShaderBinding) {
                     for(int p=0; p < materialShaderBinding->getNumLocalParams(); p++) {                        
                         LocalShaderParam *localParam = materialShaderBinding->getLocalParam(p);
@@ -278,6 +298,19 @@ void RenderThread::processJob(const RendererThreadJob &job) {
         {
             Shader *shader = (Shader*) job.data;
             graphicsInterface->createShader(shader);
+            
+            // set renderer global params
+            for(int p=0; p < rendererShaderBinding->getNumLocalParams(); p++) {
+                LocalShaderParam *localParam = rendererShaderBinding->getLocalParam(p);
+                if(localParam) {
+                    ProgramParam *paramPtr = shader->getParamPointer(localParam->name);
+                    if(paramPtr) {
+                        paramPtr->globalParam = localParam;
+                    }
+                }
+            }
+            
+            
         }
         break;
         case JOB_CREATE_VERTEX_BUFFERS:

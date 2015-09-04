@@ -38,10 +38,6 @@ EntityEditorPropertyView::EntityEditorPropertyView() : UIElement() {
     entityProps->addPropSheet(materialSheet);
     materialSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
     materialSheet->addEventListener(this, Event::CHANGE_EVENT);
-    
-    shaderTexturesSheet = new ShaderTexturesSheet();
-    entityProps->addPropSheet(shaderTexturesSheet);
-    shaderTexturesSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 
     shaderOptionsSheet = new ShaderOptionsSheet();
     entityProps->addPropSheet(shaderOptionsSheet);
@@ -129,7 +125,6 @@ void EntityEditorPropertyView::updateShaderOptions() {
     SceneLabel *sceneLabel = dynamic_cast<SceneLabel*>(targetEntity);
     SceneSprite *sceneSprite = dynamic_cast<SceneSprite*>(targetEntity);
     
-    shaderTexturesSheet->enabled = false;
     shaderOptionsSheet->enabled = false;
     
     if(sceneMesh) {
@@ -137,10 +132,8 @@ void EntityEditorPropertyView::updateShaderOptions() {
             
             // can't edit the textures manually on a scene label or sprite
             if(!sceneLabel && !sceneSprite) {
-            shaderTexturesSheet->setShader(sceneMesh->getMaterial()->getShader(0), sceneMesh->getMaterial(), sceneMesh->getShaderPass(0).shaderBinding);
-                shaderTexturesSheet->enabled = true;
-            }            
-            shaderOptionsSheet->setShader(sceneMesh->getMaterial()->getShader(0), sceneMesh->getMaterial(), sceneMesh->getShaderPass(0).shaderBinding);
+                shaderOptionsSheet->setShader(sceneMesh->getMaterial()->getShader(0), sceneMesh->getMaterial(), sceneMesh->getShaderPass(0).shaderBinding);
+            }
         }
     }
 }

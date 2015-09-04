@@ -55,31 +55,93 @@ void OpenGLGraphicsInterface::setParamInShader(Shader *shader, ProgramParam *par
     switch(param->type) {
         case ProgramParam::PARAM_NUMBER:
             if(localParam) {
-                glUniform1f(paramLocation, localParam->getNumber());
+                
+                if(localParam->arraySize > 0) {
+                    
+                    GLfloat *data = (GLfloat*) malloc(sizeof(GLfloat) * localParam->arraySize);
+                    for(int i=0; i < localParam->arraySize; i++ ){
+                        Number *dataPtr = (Number*)localParam->data;
+                        data[i] = dataPtr[i];
+                    }
+                    glUniform1fv(paramLocation, localParam->arraySize, data);
+                    free(data);
+                    
+                } else {
+                    glUniform1f(paramLocation, localParam->getNumber());
+                }
+                
             } else {
                 glUniform1f(paramLocation, 0.0f);
             }
             break;
         case ProgramParam::PARAM_VECTOR2:
             if(localParam) {
-                Vector2 vec2 = localParam->getVector2();
-                glUniform2f(paramLocation, vec2.x, vec2.y);
+                
+                if(localParam->arraySize > 0) {
+                    
+                    GLfloat *data = (GLfloat*) malloc(sizeof(GLfloat) * localParam->arraySize * 2);
+                    for(int i=0; i < localParam->arraySize; i++ ){
+                        Vector2 *dataPtr = (Vector2*)localParam->data;
+                        data[(i*2)] = dataPtr[i].x;
+                        data[(i*2)+1] = dataPtr[i].y;
+                    }
+                    glUniform2fv(paramLocation, localParam->arraySize, data);
+                    free(data);
+                    
+                } else {
+                    Vector2 vec2 = localParam->getVector2();
+                    glUniform2f(paramLocation, vec2.x, vec2.y);
+                }
+                
             } else {
                 glUniform2f(paramLocation, 0.0f, 0.0f);
             }
             break;
         case ProgramParam::PARAM_VECTOR3:
             if(localParam) {
-                Vector3 vec3 = localParam->getVector3();
-                glUniform3f(paramLocation, vec3.x, vec3.y, vec3.z);
+                
+                if(localParam->arraySize > 0) {
+                    
+                    GLfloat *data = (GLfloat*) malloc(sizeof(GLfloat) * localParam->arraySize * 3);
+                    for(int i=0; i < localParam->arraySize; i++ ){
+                        Vector3 *dataPtr = (Vector3*)localParam->data;
+                        data[(i*3)] = dataPtr[i].x;
+                        data[(i*3)+1] = dataPtr[i].y;
+                        data[(i*3)+2] = dataPtr[i].z;
+                    }
+                    glUniform3fv(paramLocation, localParam->arraySize, data);
+                    free(data);
+                    
+                } else {
+                    Vector3 vec3 = localParam->getVector3();
+                    glUniform3f(paramLocation, vec3.x, vec3.y, vec3.z);
+                }
+                
             } else {
                 glUniform3f(paramLocation, 0.0f, 0.0f, 0.0f);
             }
             break;
         case ProgramParam::PARAM_COLOR:
             if(localParam) {
-                Color color = localParam->getColor();
-                glUniform4f(paramLocation, color.r, color.g, color.b, color.a);
+                
+                if(localParam->arraySize > 0) {
+                    
+                    GLfloat *data = (GLfloat*) malloc(sizeof(GLfloat) * localParam->arraySize * 4);
+                    for(int i=0; i < localParam->arraySize; i++ ){
+                        Color *dataPtr = (Color*)localParam->data;
+                        data[(i*3)] = dataPtr[i].r;
+                        data[(i*3)+1] = dataPtr[i].g;
+                        data[(i*3)+2] = dataPtr[i].b;
+                        data[(i*3)+3] = dataPtr[i].a;
+                    }
+                    glUniform4fv(paramLocation, localParam->arraySize, data);
+                    free(data);
+                    
+                } else {
+                    Color color = localParam->getColor();
+                    glUniform4f(paramLocation, color.r, color.g, color.b, color.a);
+                }
+                
             } else {
                 glUniform4f(paramLocation, 1.0f, 1.0f, 1.0f, 1.0f);
             }

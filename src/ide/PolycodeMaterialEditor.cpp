@@ -72,8 +72,6 @@ PostEditorPane::PostEditorPane(ResourcePool *resourcePool) : UIElement() {
 	optionsPropList->addPropSheet(targetBindingProps);
 	targetBindingProps->addEventListener(this, Event::CHANGE_EVENT);
 		
-	shaderTextureSheet = new ShaderTexturesSheet();
-	optionsPropList->addPropSheet(shaderTextureSheet);
 
 	shaderOptionsSheet = new ShaderOptionsSheet();
 	optionsPropList->addPropSheet(shaderOptionsSheet);
@@ -183,8 +181,7 @@ void PostEditorPane::handleEvent(Event *event) {
 				Material *material = passProps->selectedProp->material;
 				ShaderBinding *binding = material->getShaderBinding(shaderIndex);
 				targetBindingProps->setShader(currentMaterial->getShader(shaderIndex), material, binding);
-				shaderTextureSheet->setShader(currentMaterial->getShader(shaderIndex), material, binding);
-				shaderOptionsSheet->setShader(currentMaterial->getShader(shaderIndex), material, binding);		
+				shaderOptionsSheet->setShader(currentMaterial->getShader(shaderIndex), material, binding);
 				optionsPropList->visible = true;
 				optionsPropList->enabled = true;	
 				
@@ -887,10 +884,6 @@ MaterialEditorPane::MaterialEditorPane() : UIElement() {
 	
 	baseProps->propHeight = 130;	
 	
-	shaderTextureSheet = new ShaderTexturesSheet();
-	propList->addPropSheet(shaderTextureSheet);			
-	shaderTextureSheet->addEventListener(this, Event::CHANGE_EVENT);
-		
 	shaderOptionsSheet = new ShaderOptionsSheet();
 	propList->addPropSheet(shaderOptionsSheet);
 	shaderOptionsSheet->addEventListener(this, Event::CHANGE_EVENT);
@@ -929,11 +922,10 @@ void MaterialEditorPane::Resize(Number width, Number height) {
 void MaterialEditorPane::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == currentMaterial) {
-		shaderTextureSheet->setShader(currentMaterial->getShader(0), currentMaterial, currentMaterial->getShaderBinding(0));
-		shaderOptionsSheet->setShader(currentMaterial->getShader(0), currentMaterial, currentMaterial->getShaderBinding(0));		
+		shaderOptionsSheet->setShader(currentMaterial->getShader(0), currentMaterial, currentMaterial->getShaderBinding(0));
 	}
 
-	if(event->getDispatcher() == shaderTextureSheet || event->getDispatcher() == shaderOptionsSheet) {
+	if(event->getDispatcher() == shaderOptionsSheet) {
 		if(!changingMaterial) {
 			dispatchEvent(new Event(), Event::CHANGE_EVENT);
 		}		
@@ -960,8 +952,7 @@ void MaterialEditorPane::handleEvent(Event *event) {
 				materialPreview->setMaterial(currentMaterial);					
 			}
 			
-			shaderTextureSheet->setShader(selectedShader, currentMaterial, currentMaterial->getShaderBinding(0));
-			shaderOptionsSheet->setShader(selectedShader, currentMaterial, currentMaterial->getShaderBinding(0));
+            shaderOptionsSheet->setShader(selectedShader, currentMaterial, currentMaterial->getShaderBinding(0));
 		}
 		
 		if(!changingMaterial) {

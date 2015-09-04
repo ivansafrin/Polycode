@@ -30,7 +30,7 @@ ShaderRenderTarget::ShaderRenderTarget() : PolyBase() {
 	texture = NULL;
 }
 
-ProgramParam::ProgramParam() : type(PARAM_UNKNOWN), platformData(NULL) {
+ProgramParam::ProgramParam() : type(PARAM_UNKNOWN), platformData(NULL), globalParam(NULL) {
 }
 
 ProgramAttribute::ProgramAttribute() : platformData(NULL) {

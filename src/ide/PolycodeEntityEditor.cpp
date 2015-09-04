@@ -2298,15 +2298,17 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
         ObjectEntry *lightEntry = entry->addChild("SceneLight");
         lightEntry->addChild("type", light->getType());
 
-        lightEntry->addChild("cR", light->lightColor.r);
-        lightEntry->addChild("cG", light->lightColor.g);
-        lightEntry->addChild("cB", light->lightColor.b);
-        lightEntry->addChild("cA", light->lightColor.a);
+        LightInfo lightInfo = light->getLightInfo();
+        
+        lightEntry->addChild("cR", lightInfo.diffuseColor.r);
+        lightEntry->addChild("cG", lightInfo.diffuseColor.g);
+        lightEntry->addChild("cB", lightInfo.diffuseColor.b);
+        lightEntry->addChild("cA", lightInfo.diffuseColor.a);
 
-        lightEntry->addChild("scR", light->specularLightColor.r);
-        lightEntry->addChild("scG", light->specularLightColor.g);
-        lightEntry->addChild("scB", light->specularLightColor.b);
-        lightEntry->addChild("scA", light->specularLightColor.a);
+        lightEntry->addChild("scR", lightInfo.specularColor.r);
+        lightEntry->addChild("scG", lightInfo.specularColor.g);
+        lightEntry->addChild("scB", lightInfo.specularColor.b);
+        lightEntry->addChild("scA", lightInfo.specularColor.a);
 
         lightEntry->addChild("intensity", light->getIntensity());
         lightEntry->addChild("importance", light->getLightImportance());
@@ -2400,7 +2402,7 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
             ObjectEntry *shaderOptions = meshEntry->addChild("shader_options");
             
             // RENDERER_TODO
-            //saveShaderOptionsToEntry(shaderOptions, sceneMesh->getMaterial(), sceneMesh->getLocalShaderOptions());
+            saveShaderOptionsToEntry(shaderOptions, sceneMesh->getMaterial(), sceneMesh->getShaderPass(0).shaderBinding);
         }
     }
     
@@ -2453,26 +2455,6 @@ void PolycodeEntityEditor::saveShaderOptionsToEntry(ObjectEntry *entry, Material
             ObjectEntry *texturesEntry = shaderEntry->addChild("textures");
             
             // RENDERER_TODO
-            /*
-            for(int j=0; j < shader->expectedTextures.size(); j++) {
-                Texture *texture = binding->getTexture(shader->expectedTextures[j]);
-                if(texture) {
-                    String texturePath = texture->getResourcePath();
-                    texturePath = texturePath.replace(parentProject->getRootFolder()+"/", "");
-                    ObjectEntry *textureEntry = texturesEntry->addChild("texture", texturePath);
-                    textureEntry->addChild("name", shader->expectedTextures[j]);
-                }
-            }
-            
-            for(int j=0; j < shader->expectedCubemaps.size(); j++) {
-                Cubemap *cubemap = binding->getCubemap(shader->expectedCubemaps[j]);
-                if(cubemap) {
-                    String cubemapName = cubemap->getResourceName();
-                    ObjectEntry *cubemapEntry = texturesEntry->addChild("cubemap", cubemapName);
-                    cubemapEntry->addChild("name", shader->expectedCubemaps[j]);
-                }
-            }
-            */
             
             if(shader->expectedParams.size() > 0 || shader->expectedParams.size() > 0) {
                 ObjectEntry *paramsEntry = shaderEntry->addChild("params");
