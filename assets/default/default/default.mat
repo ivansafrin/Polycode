@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<polycode>	
+	<shaders>														
+		<shader type="glsl" name="Unlit" numPointLights="0" numSpotLights="0">		
+			<vp source="default/Unlit.vert"/>
+			<fp source="default/Unlit.frag"/>
+		</shader>
+		<shader type="glsl" name="UnlitUntextured" numPointLights="0" numSpotLights="0">		
+			<vp source="default/UnlitUntextured.vert"/>
+			<fp source="default/UnlitUntextured.frag"/>
+		</shader>		
+	</shaders>	
+	<materials>	
+		<material name="Unlit">
+			<shader name="Unlit">
+				<textures>
+				</textures>				
+			</shader>
+		</material>
+		<material name="UnlitUntextured">
+			<shader name="UnlitUntextured">
+				<textures>
+				</textures>				
+			</shader>
+		</material>		
+	</materials>
+</polycode>
