@@ -2452,13 +2452,8 @@ void PolycodeEntityEditor::saveShaderOptionsToEntry(ObjectEntry *entry, Material
             Shader *shader = material->getShader(s);
             
             ObjectEntry *shaderEntry = entry->addChild("shader");
-            ObjectEntry *texturesEntry = shaderEntry->addChild("textures");
-            
-            // RENDERER_TODO
-            
             if(shader->expectedParams.size() > 0 || shader->expectedParams.size() > 0) {
-                ObjectEntry *paramsEntry = shaderEntry->addChild("params");
-                
+                ObjectEntry *paramsEntry = shaderEntry->addChild("params");                
                 for(int j=0; j < shader->expectedParams.size(); j++) {
                     if(binding->getLocalParamByName(shader->expectedParams[j].name)) {
                         ObjectEntry *paramEntry = paramsEntry->addChild("param");

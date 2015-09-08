@@ -1274,6 +1274,12 @@ String PolycodeMaterialEditor::createStringValue(unsigned int type, void *value)
 			retString = String::NumberToString(vec.x) + " " + String::NumberToString(vec.y) + " " + String::NumberToString(vec.z);
 		}
 		break;
+        case ProgramParam::PARAM_TEXTURE:
+        {
+            Texture *tex = (Texture*) value;
+            retString = tex->getResourcePath();
+        }
+        break;
 	}
 	
 	return retString;

@@ -545,6 +545,10 @@ void LocalShaderParam::setParamValueFromString(int type, String pvalue) {
 					printf("Material parameter error: Color %s must have 4 values (%d provided)!\n", name.c_str(), (int)values.size());
                 }
             }
-                break;
+            break;
+            case ProgramParam::PARAM_TEXTURE:
+                Texture *texture = Services()->getMaterialManager()->createTextureFromFile(pvalue);
+                setTexture(texture);
+            break;
         }
 }

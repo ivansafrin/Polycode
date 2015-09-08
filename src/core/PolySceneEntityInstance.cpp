@@ -235,12 +235,10 @@ void SceneEntityInstance::applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMes
                                             int type = materialShader->getExpectedParamType(nameEntry->stringVal);
                                             
                                             // RENDERER_TODO
-                                            /*
-                                            LocalShaderParam *param = sceneMesh->getLocalShaderOptions()->addParam(type, nameEntry->stringVal);
+                                            LocalShaderParam *param = sceneMesh->getShaderPass(0).shaderBinding->addParam(type, nameEntry->stringVal);
                                             if(param) {
                                                 param->setParamValueFromString(type, valueEntry->stringVal);
                                             }
-                                             */
                                         }
                                     }
                                     
