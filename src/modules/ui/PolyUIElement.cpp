@@ -30,6 +30,7 @@
 #include "polycode/core/PolyInputEvent.h"
 #include "polycode/core/PolyScene.h"
 #include "polycode/core/PolyCamera.h"
+#include "polycode/core/PolyLabel.h"
 
 using namespace Polycode;
 
@@ -129,7 +130,12 @@ UIMultilineLabel::~UIMultilineLabel() {
 
 UILabel::UILabel(const String& text, int size, const String& fontName, int amode) : UIElement() {
 
-	Config *conf = CoreServices::getInstance()->getConfig();	
+	Config *conf = CoreServices::getInstance()->getConfig();
+    
+    if(size == -1) {
+        size = conf->getNumericValue("Polycode", "uiDefaultFontSize");
+    }
+    
 	label = new SceneLabel(text, size, fontName, amode);
     label->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     label->positionAtBaseline = true;

@@ -118,7 +118,7 @@ namespace Polycode {
 	
 	class _PolyExport UILabel : public UIElement {
 		public:
-			UILabel(const String& text, int size, const String& fontName = "sans", int amode = 0);			
+			UILabel(const String& text, int size=-1, const String& fontName = "sans", int amode = 0);
 			void setText(const String& text);
 			Label *getLabel();
 			String getText();

@@ -222,9 +222,10 @@ PropSheet::PropSheet(String caption, String type) : UIElement() {
 	bg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiSmallHeaderBgColor"));
 	bg->setAnchorPoint(-1.0, -1.0, 0.0);
 	
-	UILabel *label = new UILabel(caption, 18, "section", Label::ANTIALIAS_FULL);
-	label->color.a = 1.0;
-	addFocusChild(label);
+	SceneLabel *label = new SceneLabel(caption, 18, "section", Label::ANTIALIAS_FULL);
+    label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiSectionFontColor"));
+    label->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+	addChild(label);
 	label->setPosition(25, 3);	
 	
 	contents = new UIElement();
@@ -343,7 +344,7 @@ PropProp::PropProp(String caption, String type) : UIElement() {
 
 	suppressChangeEvent = false;
 	propType = type;
-	label = new UILabel(caption, 11);
+	label = new UILabel(caption);
 	label->setPosition(0, 5);
 	addFocusChild(label);
 	

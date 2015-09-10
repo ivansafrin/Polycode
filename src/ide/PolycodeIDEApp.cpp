@@ -63,6 +63,8 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 
     ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
     
+    CoreServices::getInstance()->getFontManager()->registerFont("sans", "Fonts/Lato-Semibold.ttf");
+    
     core->addFileSource("archive", "default.pak");
     globalPool->loadResourcesFromFolder("default", true);
   
@@ -76,8 +78,8 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
     
     globalPool->loadResourcesFromFolder("Materials", true);
 			
-	CoreServices::getInstance()->getFontManager()->registerFont("section", "Fonts/RobotoCondensed-Bold.ttf");
-
+	CoreServices::getInstance()->getFontManager()->registerFont("section", "Fonts/Lato-Black.ttf");
+    
 
 	CoreServices::getInstance()->getMaterialManager()->setTextureFilteringMode(Texture::FILTERING_LINEAR);
 	

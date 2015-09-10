@@ -4,22 +4,22 @@
 	<uiScale>1.0</uiScale>
 
 	<uiDefaultFontName>sans</uiDefaultFontName>
-	<uiDefaultFontColor>0x161616ff</uiDefaultFontColor>
+	<uiDefaultFontColor>0xffffff80</uiDefaultFontColor>
 
-	<uiBgColor>0x494949ff</uiBgColor>
+	<uiBgColor>0x3e3e3eff</uiBgColor>
 	<uiAccentColor>0x36526aff</uiAccentColor>	
 	<uiHeaderBgColor>0x232323ff</uiHeaderBgColor>
-	<uiSmallHeaderBgColor>0x3a3a3aff</uiSmallHeaderBgColor>
+	<uiSmallHeaderBgColor>0x2a2a2aff</uiSmallHeaderBgColor>
 	<uiHeaderFontColor>0x545454FF</uiHeaderFontColor>
-	<uiSectionFontColor>0x00000080</uiSectionFontColor>
+	<uiSectionFontColor>0xffffff3C</uiSectionFontColor>
 	<uiMenuBarBgColor>0x00000000</uiMenuBarBgColor>
 
 	<uiTextInputFontName>sans</uiTextInputFontName>
 	<uiTextInputFontNameMultiLine>mono</uiTextInputFontNameMultiLine>
-	<uiDefaultFontSize>12</uiDefaultFontSize>
-	<uiTextInputFontSize>12</uiTextInputFontSize>
+	<uiDefaultFontSize>14</uiDefaultFontSize>
+	<uiTextInputFontSize>14</uiTextInputFontSize>
 	<uiTextInputFontOffsetY>-2</uiTextInputFontOffsetY>		
-	<uiTextInputFontSizeMultiline>12</uiTextInputFontSizeMultiline>	
+	<uiTextInputFontSizeMultiline>14</uiTextInputFontSizeMultiline>	
 	<uiTreeArrowIconImage>arrowIcon.png</uiTreeArrowIconImage>
 	<uiTreeCellHeight>20</uiTreeCellHeight>
 	<uiTreeTextOffsetX>2</uiTreeTextOffsetX>
@@ -62,14 +62,14 @@
 
 	<uiButtonSkin>button.png</uiButtonSkin>
 	<uiButtonFocusedSkin>buttonFocused.png</uiButtonFocusedSkin>
-	<uiButtonFontSize>12</uiButtonFontSize>	
+	<uiButtonFontSize>14</uiButtonFontSize>	
 	<uiButtonFontColor>0xffffffff</uiButtonFontColor>
 	<uiButtonLabelOffsetX>0</uiButtonLabelOffsetX>
 	<uiButtonLabelOffsetY>4</uiButtonLabelOffsetY>	
-	<uiButtonSkinT>12</uiButtonSkinT>
-	<uiButtonSkinR>12</uiButtonSkinR>
-	<uiButtonSkinB>12</uiButtonSkinB>
-	<uiButtonSkinL>12</uiButtonSkinL>
+	<uiButtonSkinT>14</uiButtonSkinT>
+	<uiButtonSkinR>14</uiButtonSkinR>
+	<uiButtonSkinB>14</uiButtonSkinB>
+	<uiButtonSkinL>14</uiButtonSkinL>
 
 	<uiWindowSkin>windowBg.png</uiWindowSkin>
 	<uiWindowSkinT>24</uiWindowSkinT>
@@ -79,7 +79,7 @@
 	<uiWindowSkinPadding>15</uiWindowSkinPadding>		
 	<uiWindowTitleFont>sans</uiWindowTitleFont>
 	<uiWindowFontColor>0x000000c8</uiWindowFontColor>	
-	<uiWindowTitleFontSize>12</uiWindowTitleFontSize>
+	<uiWindowTitleFontSize>14</uiWindowTitleFontSize>
 	<uiWindowTitleX>15</uiWindowTitleX>	
 	<uiWindowTitleY>10</uiWindowTitleY>
 	<uiWindowTitleBarHeight>25</uiWindowTitleBarHeight>
@@ -105,14 +105,14 @@
 	<uiTreeContainerScrollBarOffset>27</uiTreeContainerScrollBarOffset>
 	
 	<uiCheckBoxFont>sans</uiCheckBoxFont>
-	<uiCheckBoxFontSize>12</uiCheckBoxFontSize>	
+	<uiCheckBoxFontSize>14</uiCheckBoxFontSize>	
 	<uiCheckBoxCheckedImage>checkboxChecked.png</uiCheckBoxCheckedImage>
 	<uiCheckBoxUncheckedImage>checkboxUnchecked.png</uiCheckBoxUncheckedImage>
 	<uiCheckBoxLabelOffsetX>4</uiCheckBoxLabelOffsetX>
 	<uiCheckBoxLabelOffsetY>3</uiCheckBoxLabelOffsetY>
 		
 	<uiComboBoxFont>sans</uiComboBoxFont>
-	<uiComboBoxFontSize>12</uiComboBoxFontSize>
+	<uiComboBoxFontSize>14</uiComboBoxFontSize>
 	<uiComboBoxDropdownImage>comboBoxDrop.png</uiComboBoxDropdownImage>
 	<uiComboBoxBgImage>comboBoxBg.png</uiComboBoxBgImage>
 	<uiComboBoxHeight>24</uiComboBoxHeight>
@@ -127,7 +127,7 @@
 
 
 	<uiMenuFont>sans</uiMenuFont>
-	<uiMenuFontSize>12</uiMenuFontSize>
+	<uiMenuFontSize>14</uiMenuFontSize>
 	<uiMenuTextOffsetX>10</uiMenuTextOffsetX>
 	<uiMenuTextOffsetY>-1</uiMenuTextOffsetY>		
 	<uiMenuPaddingX>3</uiMenuPaddingX>
