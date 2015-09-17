@@ -25,6 +25,11 @@
 #include <Polycode.h>
 #include "polycode/modules/ui/PolycodeUI.h"
 
+#define GRID_X_COLOR "0xde4a09ff"
+#define GRID_Y_COLOR "0x8ac840ff"
+#define GRID_Z_COLOR "0x297affff"
+
+
 using namespace Polycode;
 
 class EditorGrid : public Entity {

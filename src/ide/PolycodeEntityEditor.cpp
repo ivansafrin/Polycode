@@ -637,7 +637,7 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
     objectRootBase->addChild(sceneObjectRoot);
     
     iconBase = new Entity();
-    mainScene->addChild(iconBase);
+    addChild(iconBase);
     iconBase->processInputEvents = true;
     
 	transformGizmo = new TransformGizmo(mainScene, mainScene->getDefaultCamera());
@@ -1016,7 +1016,7 @@ void EntityEditorMainView::createIcon(Entity *entity, String iconFile) {
 	Texture *tex = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile("entityEditor/"+iconFile);
     iconPrimitive->getShaderPass(0).shaderBinding->setTextureForParam("diffuse", tex);
     
-    addChild(iconPrimitive);
+    iconBase->addChild(iconPrimitive);
     iconPrimitive->setUserData((void*)entity);
     iconPrimitive->setForceMaterial(true);
     iconPrimitive->processInputEvents = true;

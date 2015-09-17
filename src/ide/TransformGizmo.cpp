@@ -276,9 +276,9 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
     
 	yLine = new SceneMesh(Mesh::LINE_MESH);
 	yLine->getMesh()->addVertex(0.0, 0.0, 0.0);
-	yLine->getMesh()->addVertex(0.0, 1.0, 0.0);
+	yLine->getMesh()->addVertex(0.0, 0.75, 0.0);
 	yLine->depthTest = false;
-	yLine->setColor(0.0, 1.0, 0.0, 1.0);
+	yLine->color.setColorHexFromString(TRANSGIZMO_Y_COLOR);
     yLine->setLocalBoundingBox(yLine->getMesh()->calculateBBox());
     yLine->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX() * 2.0);
 	transformAndScaleLines->addChild(yLine);
@@ -287,9 +287,9 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
     
 	xLine = new SceneMesh(Mesh::LINE_MESH);
 	xLine->getMesh()->addVertex(0.0, 0.0, 0.0);
-	xLine->getMesh()->addVertex(1.0, 0.0, 0.0);
+	xLine->getMesh()->addVertex(0.75, 0.0, 0.0);
 	xLine->depthTest = false;
-	xLine->setColor(1.0, 0.0, 0.0, 1.0);
+	xLine->color.setColorHexFromString(TRANSGIZMO_X_COLOR);
     xLine->setLocalBoundingBox(xLine->getMesh()->calculateBBox());
     xLine->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX() * 2.0);
 	transformAndScaleLines->addChild(xLine);
@@ -298,9 +298,9 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
     
 	zLine = new SceneMesh(Mesh::LINE_MESH);
 	zLine->getMesh()->addVertex(0.0, 0.0, 0.0);
-	zLine->getMesh()->addVertex(0.0, 0.0, 1.0);
+	zLine->getMesh()->addVertex(0.0, 0.0, 0.75);
 	zLine->depthTest = false;
-	zLine->setColor(0.0, 0.0, 1.0, 1.0);
+	zLine->color.setColorHexFromString(TRANSGIZMO_Z_COLOR);
     zLine->setLocalBoundingBox(zLine->getMesh()->calculateBBox());
     zLine->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX() * 2.0);
 	transformAndScaleLines->addChild(zLine);
@@ -310,23 +310,23 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	// MOVE
 	
 	yArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.05, 12);
-	yArrow->setColor(0.0, 1.0, 0.0, 1.0);
-	yArrow->setPosition(0.0, 1.0, 0.0);
+	yArrow->color.setColorHexFromString(TRANSGIZMO_Y_COLOR);
+	yArrow->setPosition(0.0, 0.75, 0.0);
 	yArrow->depthTest = false;
 	trasnformDecorators->addChild(yArrow);
     yArrow->setForceMaterial(true);
     
 	xArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.05, 12);
-	xArrow->setColor(1.0, 0.0, 0.0, 1.0);
-	xArrow->setPosition(1.0, 0.0, 0.0);
+	xArrow->color.setColorHexFromString(TRANSGIZMO_X_COLOR);
+	xArrow->setPosition(0.75, 0.0, 0.0);
 	xArrow->Roll(-90);
 	xArrow->depthTest = false;
 	trasnformDecorators->addChild(xArrow);
     xArrow->setForceMaterial(true);
     
 	zArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.05, 12);
-	zArrow->setColor(0.0, 0.0, 1.0, 1.0);
-	zArrow->setPosition(0.0, 0.0, 1.0);
+	zArrow->color.setColorHexFromString(TRANSGIZMO_Z_COLOR);
+	zArrow->setPosition(0.0, 0.0, 0.75);
 	zArrow->Pitch(90);
 	zArrow->depthTest = false;	
 	trasnformDecorators->addChild(zArrow);
@@ -334,24 +334,24 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
     
 	// SCALE
 
-	yBox = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.1, 0.1, 0.1);
-	yBox->setColor(0.0, 1.0, 0.0, 1.0);
-	yBox->setPosition(0.0, 1.0, 0.0);
+	yBox = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.08, 0.08, 0.08);
+	yBox->color.setColorHexFromString(TRANSGIZMO_Y_COLOR);
+	yBox->setPosition(0.0, 0.75, 0.0);
 	yBox->depthTest = false;
 	scaleDecorators->addChild(yBox);
     yBox->setForceMaterial(true);
     
-	xBox = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.1, 0.1, 0.1);
-	xBox->setColor(1.0, 0.0, 0.0, 1.0);
-	xBox->setPosition(1.0, 0.0, 0.0);
+	xBox = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.08, 0.08, 0.08);
+	xBox->color.setColorHexFromString(TRANSGIZMO_X_COLOR);
+	xBox->setPosition(0.75, 0.0, 0.0);
 	xBox->Roll(-90);
 	xBox->depthTest = false;
 	scaleDecorators->addChild(xBox);
     xBox->setForceMaterial(true);
     
-	zBox = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.1, 0.1, 0.1);
-	zBox->setColor(0.0, 0.0, 1.0, 1.0);
-	zBox->setPosition(0.0, 0.0, 1.0);
+	zBox = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.08, 0.08, 0.08);
+	zBox->color.setColorHexFromString(TRANSGIZMO_Z_COLOR);
+	zBox->setPosition(0.0, 0.0, 0.75);
 	zBox->Pitch(90);
 	zBox->depthTest = false;	
 	scaleDecorators->addChild(zBox);
@@ -363,8 +363,8 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	bgCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
 	bgCircle->setColor(0.0, 0.0, 0.0, 1.0);
 	bgCircle->depthTest = false;
-	bgCircle->billboardMode = true;
-	rotateDectorators->addChild(bgCircle);
+//	bgCircle->billboardMode = true;
+	//rotateDectorators->addChild(bgCircle);
     bgCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
     bgCircle->setForceMaterial(true);
     bgCircle->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
@@ -379,9 +379,9 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
     outerCircle->setForceMaterial(true);
     outerCircle->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     
-	pitchCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 2.55, 2.55, 64);
+	pitchCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 1.55, 1.55, 64);
 	pitchCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
-	pitchCircle->setColor(1.0, 0.0, 0.0, 1.0);
+	pitchCircle->color.setColorHexFromString(TRANSGIZMO_X_COLOR);
 	pitchCircle->depthTest = false;
 	pitchCircle->Yaw(90);	
 	rotateDectorators->addChild(pitchCircle);
@@ -390,9 +390,9 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
     pitchCircle->setForceMaterial(true);
     pitchCircle->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     
-	yawCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 2.65, 2.65, 64);
+	yawCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 1.65, 1.65, 64);
 	yawCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
-	yawCircle->setColor(0.0, 1.0, 0.0, 1.0);
+	yawCircle->color.setColorHexFromString(TRANSGIZMO_Y_COLOR);
 	yawCircle->depthTest = false;
 	yawCircle->Pitch(90);
 	rotateDectorators->addChild(yawCircle);
@@ -401,9 +401,9 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
     yawCircle->setForceMaterial(true);
     yawCircle->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     
-	rollCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 2.6, 2.6, 64);
+	rollCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 1.6, 1.6, 64);
 	rollCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
-	rollCircle->setColor(0.0, 0.0, 1.0, 1.0);
+	rollCircle->color.setColorHexFromString(TRANSGIZMO_Z_COLOR);
 	rollCircle->depthTest = false;
 	rotateDectorators->addChild(rollCircle);
 	rollCircle->setMaterialByName("OneSidedLine");
@@ -414,8 +414,8 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	rotateDectorators->processInputEvents = true;
 	
 	//pitchGrip = new ScenePrimitive(ScenePrimitive::TYPE_TORUS, 1.55 * 0.5, 0.05, 16, 3);
-    pitchGrip = new ScenePrimitive(ScenePrimitive::TYPE_UNCAPPED_CYLINDER, 0.15, 2.55 * 0.5, 16);
-	pitchGrip->setColor(1.0, 0.0, 0.0, 0.2);
+    pitchGrip = new ScenePrimitive(ScenePrimitive::TYPE_UNCAPPED_CYLINDER, 0.15, 1.55 * 0.5, 16);
+	pitchGrip->color.setColorHexFromString(TRANSGIZMO_X_COLOR);
 	pitchGrip->depthTest = false;
 	pitchGrip->Pitch(90);	
 	pitchGrip->Yaw(90);		
@@ -425,8 +425,8 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	pitchGrip->useGeometryHitDetection = true;
 	pitchGrip->blockMouseInput = true;
 
-    rollGrip = new ScenePrimitive(ScenePrimitive::TYPE_UNCAPPED_CYLINDER, 0.15, 2.6 * 0.5, 16);
-	rollGrip->setColor(0.0, 0.0, 1.0, 0.2);
+    rollGrip = new ScenePrimitive(ScenePrimitive::TYPE_UNCAPPED_CYLINDER, 0.15, 1.6 * 0.5, 16);
+	rollGrip->color.setColorHexFromString(TRANSGIZMO_Z_COLOR);
 	rollGrip->depthTest = false;
 	rollGrip->Pitch(90);		
 	rotateDectorators->addChild(rollGrip);
@@ -435,8 +435,8 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	rollGrip->useGeometryHitDetection = true;
 	rollGrip->blockMouseInput = true;
 	
-	yawGrip= new ScenePrimitive(ScenePrimitive::TYPE_UNCAPPED_CYLINDER, 0.15, 2.65 * 0.5, 16);
-	yawGrip->setColor(0.0, 1.0, 0.0, 0.2);
+	yawGrip= new ScenePrimitive(ScenePrimitive::TYPE_UNCAPPED_CYLINDER, 0.15, 1.65 * 0.5, 16);
+	yawGrip->color.setColorHexFromString(TRANSGIZMO_Y_COLOR);
 	yawGrip->depthTest = false;
 	yawGrip->Yaw(90);		
 	rotateDectorators->addChild(yawGrip);
@@ -459,6 +459,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	viewportRotateGrip->useGeometryHitDetection = true;
 	viewportRotateGrip->blockMouseInput = true;
 
+    
     pitchGrip->visible = false;
 	yawGrip->visible = false;
 	rollGrip->visible = false;
@@ -1047,15 +1048,23 @@ Vector2 TransformGizmo::getCorrectedMousePosition() {
 }
 
 Number TransformGizmo::get2dAngle() {
-	Polycode::Rectangle view = targetScene->sceneMouseRect;
+
+    Polycode::Rectangle view = targetScene->sceneMouseRect;
 	Polycode::Rectangle camView = targetCamera->getViewport();
-	Vector2 origin = getScreenPosition(targetCamera->getProjectionMatrix(), targetCamera->getAnchorAdjustedMatrix(), camView);
+	Vector2 origin = getScreenPosition(targetCamera->getProjectionMatrix(), targetCamera->getConcatenatedMatrix().Inverse(), camView);
+    origin.y = Services()->getCore()->getYRes() - origin.y;
+    
+    
 	Vector2 localStart = mouseStart2d - origin;
 	Vector2 localMouse = CoreServices::getInstance()->getInput()->getMousePosition();
+
+    
 	localMouse.x -= view.x;
 	localMouse.y -= view.y;
+    
 	localMouse -= origin;
 
+    
 	Number ang = atan2(localStart.crossProduct(localMouse), localStart.dot(localMouse));
 	Number dot = targetCamera->getRotationQuat().applyTo(Vector3(0,0,-1)).dot(rotationQuat.applyTo(transformConstraint));
 	if(dot < 0.0)
@@ -1453,7 +1462,7 @@ void TransformGizmo::updateOrientationForEntity(Entity *entity) {
     }
 }
 
-void TransformGizmo::Update() {
+void TransformGizmo::fixedUpdate() {
     
     if(selectedEntities.size() > 0) {
         Vector3 centerPoint;

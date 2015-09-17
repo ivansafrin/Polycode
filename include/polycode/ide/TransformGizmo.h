@@ -25,6 +25,10 @@
 #include "Polycode.h"
 #include "polycode/modules/ui/PolycodeUI.h"
 
+#define TRANSGIZMO_X_COLOR "0xde4a09ff"
+#define TRANSGIZMO_Y_COLOR "0x8ac840ff"
+#define TRANSGIZMO_Z_COLOR "0x297affff"
+
 using namespace Polycode;
 
 
@@ -84,7 +88,7 @@ class TransformGizmo : public Entity {
 		void setTransformMode(int newMode);
         void setGizmoMode(int newMode);
     
-		void Update();
+		void fixedUpdate();
     
         void enableSnap(bool val);
         void setSnapSize(Number snapSize);

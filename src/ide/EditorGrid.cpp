@@ -111,18 +111,18 @@ EditorGrid::EditorGrid() : Entity() {
     
     yLine = new SceneLine(Vector3(), Vector3());
     addChild(yLine);
-    yLine->setColor(0.0, 0.8, 0.0, 1.0);
+    yLine->color.setColorHexFromString(GRID_Y_COLOR);
     yLine->visible = false;
     yLine->setForceMaterial(true);
     
     xLine = new SceneLine(Vector3(), Vector3());
     addChild(xLine);
-    xLine->setColor(0.8, 0.0, 0.0, 1.0);
+    xLine->color.setColorHexFromString(GRID_X_COLOR);
     xLine->setForceMaterial(true);
     
     zLine = new SceneLine(Vector3(), Vector3());
     addChild(zLine);
-    zLine->setColor(0.0, 0.0, 0.8, 1.0);
+    zLine->color.setColorHexFromString(GRID_Z_COLOR);
     zLine->setForceMaterial(true);
     
     xLine->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
