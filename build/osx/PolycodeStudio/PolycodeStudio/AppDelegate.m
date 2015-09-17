@@ -100,14 +100,15 @@ void PolycodeAppEventHandler::handleEvent(Event *evt) {
 {
     app->saveConfigFile();
     bool retVal = app->quitApp();
-
     
     NSApplicationTerminateReply reply = NSTerminateLater;
     if(retVal) {
         reply = NSTerminateNow;
         app->core->Shutdown();
+        [[NSApplication sharedApplication] replyToApplicationShouldTerminate:YES];
         
     }
+    [[NSApplication sharedApplication] replyToApplicationShouldTerminate:NO];
     return reply;
 }
 

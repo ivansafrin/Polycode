@@ -25,7 +25,7 @@
 
 TextInputPopup::TextInputPopup() : UIWindow(L"", 300, 80) {
 	
-	textInput = new UITextInput(false, 290, 12);	
+	textInput = new UITextInput(false, 290, 14);
 	addFocusChild(textInput);
 	textInput->setPosition(padding, 35);
 	textInput->addEventListener(this, Event::COMPLETE_EVENT);
@@ -86,7 +86,7 @@ TextInputPopup::~TextInputPopup() {
 }
 
 MessagePopup::MessagePopup() : UIWindow("", 300, 80) {
-    captionLabel = new UILabel("This is a caption", 12);
+    captionLabel = new UILabel("This is a caption", 14);
 	addFocusChild(captionLabel);
 	captionLabel->setPosition(padding, 35);
     
@@ -132,7 +132,7 @@ void MessagePopup::handleEvent(Event *event) {
 
 YesNoPopup::YesNoPopup() : UIWindow(L"", 300, 80) {
 	
-	captionLabel = new UILabel("This is a caption", 12);	
+	captionLabel = new UILabel("This is a caption", 14);
 	addFocusChild(captionLabel);
 	captionLabel->setPosition(padding, 35);
 		
@@ -196,7 +196,7 @@ void YesNoCancelPopup::onGainFocus() {
 
 YesNoCancelPopup::YesNoCancelPopup() : UIWindow(L"", 300, 80) {
 	
-	captionLabel = new UILabel("This is a caption", 12);	
+	captionLabel = new UILabel("This is a caption", 14);
 	addFocusChild(captionLabel);
 	captionLabel->setPosition(padding, 35);
 		
@@ -260,7 +260,7 @@ YesNoCancelPopup::~YesNoCancelPopup() {
 }
 
 AssetImporterWindow::AssetImporterWindow() : UIWindow("3D Asset Importer", 650, 330) {
-	filesToImportLabel = new UILabel("Files that will be imported:", 12);
+	filesToImportLabel = new UILabel("Files that will be imported:", 14);
 	addFocusChild(filesToImportLabel);
 	filesToImportLabel->setPosition(padding, 35);
 	
@@ -387,7 +387,7 @@ void AssetImporterWindow::clearFiles() {
 }
 
 void AssetImporterWindow::addFile(String fileName) {
-	UILabel *fileLabel = new UILabel(fileName, 12);
+	UILabel *fileLabel = new UILabel(fileName, 14);
 	filesAnchor->addFocusChild(fileLabel);
 	fileLabel->setPosition(0.0, 14 * fileLabels.size());
 
