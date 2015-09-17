@@ -227,8 +227,8 @@ void OpenGLGraphicsInterface::beginDrawCall() {
 }
 
 void OpenGLGraphicsInterface::endDrawCall() {
-    glUseProgram(0);
-    currentShaderID = -1;
+//    glUseProgram(0);
+//    currentShaderID = -1;
 }
 
 void OpenGLGraphicsInterface::useShader(Shader *shader) {

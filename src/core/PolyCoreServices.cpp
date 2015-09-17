@@ -58,28 +58,13 @@ void CoreServices::setInstance(CoreServices *_instance) {
 	Logger::log("Overriding core instance to %d...\n", _instance);
 }
 
+void CoreServices::createInstance() {
+    overrideInstance = new CoreServices;
+    Logger::log("Creating new core services instance...\n");
+}
+
 CoreServices* CoreServices::getInstance() {
-
-	if(overrideInstance) {
-		return overrideInstance;
-	}
-
-//#ifdef _WINDOWS
-		overrideInstance = new CoreServices;
-		Logger::log("Creating new core services instance...\n");
-		return overrideInstance;
-//#else
-//	long threadID = getThreadID(); 
-//	CoreServices *instance;
-//	if(instanceMap.find(threadID) == instanceMap.end()) {
-//		Logger::log("Creating new core services instance...\n");
-//		instance = new CoreServices;
-//		instanceMap[threadID] = instance;
-//	} else {
-//		instance = instanceMap[threadID];
-//	}
-//	return instance;
-//#endif
+    return overrideInstance;
 }
 
 MaterialManager *CoreServices::getMaterialManager() {

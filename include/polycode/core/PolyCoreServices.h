@@ -56,6 +56,8 @@ namespace Polycode {
 			static void setInstance(CoreServices *_instance);
 			static CoreMutex *getRenderMutex();
 			
+            static void createInstance();
+        
 			void setRenderer(Renderer *renderer);
 
 			/**
@@ -149,7 +151,7 @@ namespace Polycode {
 			*/														
 						
 			Config *getConfig();
-			
+
 					
 			~CoreServices();		
 			

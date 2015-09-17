@@ -54,6 +54,8 @@ namespace Polycode {
 	}
 	
 	Core::Core(int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex) : EventDispatcher() {
+        
+        CoreServices::createInstance();
 	
         int _hz;
 		getScreenInfo(&defaultScreenWidth, &defaultScreenHeight, &_hz);
