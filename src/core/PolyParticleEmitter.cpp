@@ -219,6 +219,7 @@ void SceneParticleEmitter::rebuildParticles(GPUDrawBuffer *buffer) {
                 }
                 mesh->addVertexWithUV(vertexPosition.x, vertexPosition.y, vertexPosition.z, 0.5, 0.5);
                 mesh->addColor(particles[i].color);
+                mesh->indexedMesh = false;
             }
         }
         break;

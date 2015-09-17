@@ -50,7 +50,6 @@ SceneMesh::SceneMesh(const String& fileName) : Entity(), material(NULL), skeleto
 	ownsMesh = true;
 	ownsSkeleton = true;
 	lineWidth = 1.0;
-	pointSize = 1.0;
 	pointSmooth = false;
 	useGeometryHitDetection = false;
     backfaceCulled = true;
@@ -67,7 +66,6 @@ SceneMesh::SceneMesh(Mesh *mesh) : Entity(), material(NULL), skeleton(NULL), ske
 	ownsMesh = true;
 	ownsSkeleton = true;	
 	lineWidth = 1.0;
-	pointSize = 1.0;
 	pointSmooth = false;
 	useGeometryHitDetection = false;
     backfaceCulled = true;
@@ -140,7 +138,6 @@ void SceneMesh::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly)
     
     _clone->lineWidth = lineWidth;
     _clone->lineSmooth = lineSmooth;
-    _clone->pointSize = pointSize;
     _clone->pointSmooth = pointSmooth;
     _clone->ownsMesh = ownsMesh;
 	_clone->alphaTest = alphaTest;

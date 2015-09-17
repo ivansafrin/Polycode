@@ -222,11 +222,11 @@ PropSheet::PropSheet(String caption, String type) : UIElement() {
 	bg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiSmallHeaderBgColor"));
 	bg->setAnchorPoint(-1.0, -1.0, 0.0);
 	
-	SceneLabel *label = new SceneLabel(caption, 18, "section", Label::ANTIALIAS_FULL);
+	SceneLabel *label = new SceneLabel(caption, 16, "section", Label::ANTIALIAS_FULL);
     label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiSectionFontColor"));
     label->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	addChild(label);
-	label->setPosition(25, 3);	
+	label->setPosition(25, 5);
 	
 	contents = new UIElement();
 	contents->processInputEvents = true;
@@ -2398,6 +2398,7 @@ void ShaderOptionsSheet::setOptionsFromParams(std::vector<ProgramParam> &params)
 }
 
 void ShaderOptionsSheet::setShader(Shader *shader, Material *material, ShaderBinding *binding) {
+    
 	clearShader();
 	this->shader = shader;
 	this->material = material;

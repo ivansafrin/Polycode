@@ -165,11 +165,6 @@ namespace Polycode {
 			bool lineSmooth;
 			
             /**
-             * Point size for point-based meshes.
-             */
-			Number pointSize;
-        
-            /**
              * If setto true, will antialias points in a point-based mesh. Defaults to false.
              */
 			bool pointSmooth;

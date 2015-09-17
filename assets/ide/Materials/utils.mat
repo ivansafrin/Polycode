@@ -5,6 +5,10 @@
             <vp source="default/DefaultShader.vert" />
             <fp source="Materials/OneSidedLine.frag" />
         </shader>
+        <shader type="glsl" name="PointShader" numAreaLights="0" numSpotLights="0" screen="false">
+            <vp source="default/DefaultShader.vert" />
+            <fp source="Materials/OneSidedLine.frag" />
+        </shader>        
     </shaders>
     <cubemaps />
     <materials>

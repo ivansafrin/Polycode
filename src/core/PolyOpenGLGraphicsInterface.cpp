@@ -221,6 +221,8 @@ void OpenGLGraphicsInterface::beginDrawCall() {
     if(lineSmooth) {
         glEnable(GL_LINE_SMOOTH);
     }
+    glEnable(GL_POINT_SPRITE);
+    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 #endif
 }
 

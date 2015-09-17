@@ -104,16 +104,20 @@ CurveDisplay::CurveDisplay(Scene *parentScene, SceneCurve *curve) : DummyTargetE
     mainPoints = new SceneMesh(Mesh::POINT_MESH);
     mainPoints->setColor(0.0, 0.5, 1.0, 1.0);
     addChild(mainPoints);
-    mainPoints->pointSize = 10.0;
     mainPoints->pointSmooth = true;
     mainPoints->setForceMaterial(true);
+    mainPoints->setMaterialByName("UnlitPointUntextured");
+    mainPoints->getShaderPass(0).shaderBinding->addParam(ProgramParam::PARAM_NUMBER, "pointSize")->setNumber(10.0);
+    mainPoints->getMesh()->indexedMesh = false;
     
     controlPoints = new SceneMesh(Mesh::POINT_MESH);
     controlPoints->setColor(1.0, 0.7, 0.0, 1.0);
     addChild(controlPoints);
-    controlPoints->pointSize = 8.0;
     controlPoints->pointSmooth = true;
     controlPoints->setForceMaterial(true);
+    controlPoints->setMaterialByName("UnlitPointUntextured");
+    controlPoints->getShaderPass(0).shaderBinding->addParam(ProgramParam::PARAM_NUMBER, "pointSize")->setNumber(8.0);
+    controlPoints->getMesh()->indexedMesh = false;
     
     renderControlPoints = false;
     
@@ -1789,11 +1793,12 @@ void EntityEditorMainView::setOverlayWireframeRecursive(Entity *targetEntity, bo
                 wireframePass.blendingMode = Renderer::BLEND_MODE_NORMAL;
                 wireframePass.setExpectedAttributes(sceneMesh->getMesh());
                 wireframePass.shaderBinding->addParam(ProgramParam::PARAM_COLOR, "wireframeColor")->setColor(Color(0.5, 0.6, 1.0, 0.75));
-
                 
                 sceneMesh->addShaderPass(wireframePass);
             } else {
-                sceneMesh->removeShaderPass(sceneMesh->getNumShaderPasses()-1);
+                if(sceneMesh->getNumShaderPasses() > 1) {
+                    sceneMesh->removeShaderPass(sceneMesh->getNumShaderPasses()-1);
+                }
             }
         }
         

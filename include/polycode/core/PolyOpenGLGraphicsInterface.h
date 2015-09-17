@@ -32,6 +32,7 @@ THE SOFTWARE.
 	#include <OpenGL/gl.h>
 	#include <OpenGL/glext.h>
 	#include <OpenGL/glu.h>
+
 #elif PLATFORM == PLATFORM_WINDOWS
 
 	#include <GLES2/gl2.h>
