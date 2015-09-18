@@ -73,11 +73,11 @@ void UIImageButton::handleEvent(Event *event) {
 	if(event->getDispatcher() == buttonRect) {
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEOVER:
-				this->setColor(0.7,0.7,0.7,1);
+				buttonImage->setColor(0.7,0.7,0.7,1);
 			break;
 			case InputEvent::EVENT_MOUSEOUT:
 				pressedDown = false;
-				this->setColor(1,1,1,1);
+				buttonImage->setColor(1,1,1,1);
 			break;
 			case InputEvent::EVENT_MOUSEUP:
 				this->setColor(0.7,0.7,0.7,1);				
@@ -88,7 +88,7 @@ void UIImageButton::handleEvent(Event *event) {
 			break;
 			case InputEvent::EVENT_MOUSEDOWN:
 				pressedDown = true;
-				this->setColor(0.5,0.5,0.5,1);				
+				buttonImage->setColor(0.5,0.5,0.5,1);
 			break;
 		}
 	}
