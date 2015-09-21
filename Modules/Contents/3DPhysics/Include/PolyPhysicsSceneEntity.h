@@ -145,6 +145,7 @@ namespace Polycode {
 	
 			void setWalkDirection(Vector3 direction);
 			void jump();
+            void setVelocityForTime(const Vector3 &velocity, Number time);
 			
 			void warpCharacter(Vector3 position);
 			void setJumpSpeed(Number jumpSpeed);

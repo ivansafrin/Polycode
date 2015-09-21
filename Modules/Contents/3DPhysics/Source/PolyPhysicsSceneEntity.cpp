@@ -138,6 +138,12 @@ PhysicsCharacter::PhysicsCharacter(Entity *entity, Number mass, Number friction,
 	
 }
 
+void PhysicsCharacter::setVelocityForTime(const Vector3 &velocity, Number time) {
+ 
+    btVector3 vel(velocity.x, velocity.y, velocity.z);
+    character->setVelocityForTimeInterval(vel, time);
+}
+
 
 void PhysicsCharacter::setWalkDirection(Vector3 direction) {
 	character->setWalkDirection(btVector3(direction.x, direction.y, direction.z));	
@@ -168,7 +174,6 @@ bool PhysicsCharacter::onGround() {
 	return character->onGround();
 }
 
-
 void PhysicsCharacter::Update() {
 	btVector3 pos = ghostObject->getWorldTransform().getOrigin();
 	entity->setPosition(pos.x(), pos.y(), pos.z());
@@ -189,12 +194,24 @@ PhysicsEntity::PhysicsEntity(Entity *entity, int type, Number mass, Number frict
 	transform.setIdentity();
     
 	Matrix4 ent_mat = entity->getConcatenatedMatrix();
-    Vector3 pos = ent_mat * Vector3(0.0, 0.0, 0.0);
-	transform.setOrigin(btVector3(pos.x,pos.y,pos.z));
     
-	Quaternion q = entity->getConcatenatedQuat();
-	transform.setRotation(btQuaternion(q.x,q.y,q.z,q.w));
-	
+    Vector3 scale = entity->getCompoundScale();
+    Matrix4 invScale;
+    
+    Matrix4 scaleMatrix;
+    scaleMatrix.m[0][0] *= 1.0/scale.x;
+    scaleMatrix.m[1][1] *= 1.0/scale.y;
+    scaleMatrix.m[2][2] *= 1.0/scale.z;
+
+    ent_mat = scaleMatrix * ent_mat;
+    
+    float fl[16];
+    for(int i=0; i < 16; i++) {
+        fl[i] = ent_mat.ml[i];
+    }
+    
+    transform.setFromOpenGLMatrix(fl);
+    
 	if(mass != 0.0f) {
 		shape->calculateLocalInertia(mass,localInertia);
 	}	

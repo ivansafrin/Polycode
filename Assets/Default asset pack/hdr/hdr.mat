@@ -28,7 +28,11 @@
 		<shader type="glsl" name="ExtractBloom" screen="true">
 			<vp source="default/ScreenShader.vert"/>
 			<fp source="hdr/ExtractBloom.frag"/>
-		</shader>							
+		</shader>	
+		<shader type="glsl" name="FXAA" screen="true">
+			<vp source="default/ScreenShader.vert"/>
+			<fp source="hdr/fxaa.frag"/>
+		</shader>	
 	</shaders>
 	<materials>
 		<material name="DefaultHDR">
@@ -43,11 +47,48 @@
 			<shader name="HDRProcessShader">
 			</shader>
 		</material>	
+		<material name="HDRProcessBloomFXAA" screen="true">
+			<rendertargets type="rgba_fp16">
+				<rendertarget id="bloomtarget"  sizeMode="pixels" width="1024" height="1024"/>
+				<rendertarget id="bloomtarget2"  sizeMode="pixels" width="1024" height="1024"/>				
+				<rendertarget id="bloomtarget_final"  sizeMode="pixels" width="1024" height="1024"/>
+			</rendertargets>											
+			<shader name="ExtractBloom">
+				<targettextures>			
+					<targettexture mode="in" name="screenColorBuffer" id="bloomtarget2"/>
+					<targettexture mode="out" id="bloomtarget"/>
+				</targettextures>
+			</shader>									
+			<shader name="HDRBloomH">
+				<targettextures>
+					<targettexture mode="in" name="screenTexture" id="bloomtarget"/>				
+					<targettexture mode="out" id="bloomtarget2"/>
+				</targettextures>
+			</shader>		
+			<shader name="HDRBloomV">
+				<targettextures>
+					<targettexture mode="in" name="screenTexture" id="bloomtarget2"/>
+					<targettexture mode="out" id="bloomtarget_final"/>					
+				</targettextures>													
+			</shader>
+			<shader name="HDRProcessShaderBloom">
+				<targettextures>
+					<targettexture mode="color" name="baseTexture"/>								
+					<targettexture mode="in" name="bloomTexture" id="bloomtarget_final"/>	
+					<targettexture mode="out" id="bloomtarget"/>
+				</targettextures>													
+			</shader>
+			<shader name="FXAA">
+				<targettextures>			
+					<targettexture mode="in" name="textureSampler" id="bloomtarget"/>
+				</targettextures>
+			</shader>	
+		</material>	
 		<material name="HDRProcessBloom" screen="true">
 			<rendertargets type="rgba_fp16">
-				<rendertarget id="bloomtarget"  sizeMode="pixels" width="512" height="512"/>
-				<rendertarget id="bloomtarget2"  sizeMode="pixels" width="512" height="512"/>				
-				<rendertarget id="bloomtarget_final"  sizeMode="pixels" width="512" height="512"/>
+				<rendertarget id="bloomtarget"  sizeMode="pixels" width="1024" height="1024"/>
+				<rendertarget id="bloomtarget2"  sizeMode="pixels" width="1024" height="1024"/>				
+				<rendertarget id="bloomtarget_final"  sizeMode="pixels" width="1024" height="1024"/>
 			</rendertargets>
 			<shader name="ExtractBloom">
 				<targettextures>			
