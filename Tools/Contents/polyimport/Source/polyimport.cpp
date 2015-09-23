@@ -581,7 +581,7 @@ int main(int argc, char **argv) {
 	}
 		
 	if(!listOnly) {
-		printf("Polycode import tool v"POLYCODE_VERSION_STRING"\n");	
+		printf("Polycode import tool v" POLYCODE_VERSION_STRING "\n");	
 	}
 	
 	if(!argsValid) {
