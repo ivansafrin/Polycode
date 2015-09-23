@@ -385,9 +385,9 @@ void OpenGLRenderer::setPointSize(Number pointSize) {
 	glPointSize(pointSize);
 }
 
-void OpenGLRenderer::createVertexBufferForMesh(Mesh *mesh) {
+VertexBuffer *OpenGLRenderer::createVertexBufferForMesh(Mesh *mesh) {
 	OpenGLVertexBuffer *buffer = new OpenGLVertexBuffer(mesh);
-	mesh->setVertexBuffer(buffer);
+    return buffer;
 }
 
 void OpenGLRenderer::drawVertexBuffer(VertexBuffer *buffer, bool enableColorBuffer) {
@@ -787,6 +787,11 @@ Texture *OpenGLRenderer::createTexture(unsigned int width, unsigned int height, 
 	return newTexture;
 }
 
+void OpenGLRenderer::destroyVertexBuffer(VertexBuffer *buffer) {
+    OpenGLVertexBuffer *glBuffer = (OpenGLVertexBuffer*)buffer;
+    delete glBuffer;
+}
+
 void OpenGLRenderer::destroyTexture(Texture *texture) {
 	OpenGLTexture *glTex = (OpenGLTexture*)texture;
 	delete glTex;
@@ -989,25 +994,23 @@ void OpenGLRenderer::drawScreenQuad(Number qx, Number qy) {
 	glPushMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
-	setProjectionOrtho();
+	setProjectionOrtho(2.0, 2.0, -1.0, 1.0, true);
 	
-	Number xscale = qx/((Number)viewportWidth) * 2.0f;
-	Number yscale = qy/((Number)viewportHeight) * 2.0f;	
 
 	glBegin(GL_QUADS);
 		glColor4f(1.0f,1.0f,1.0f,1.0f);
 
 		glTexCoord2f(0.0f, 1.0f);
-		glVertex2f(-1, -1+(1.0f*yscale));
+		glVertex2f(-1, 1.0);
 
 		glTexCoord2f(0.0f, 0.0f);
 		glVertex2f(-1.0f, -1.0f);
 
 		glTexCoord2f(1.0f, 0.0f);
-		glVertex2f(-1+(1.0f*xscale), -1.0f);
+		glVertex2f(1.0, -1.0f);
 
 		glTexCoord2f(1.0f, 1.0f);
-		glVertex2f(-1+(1.0f*xscale), -1+(1.0f*yscale));
+		glVertex2f(1.0, 1.0);
 	glEnd();
 
 	glMatrixMode(GL_PROJECTION);

@@ -1604,6 +1604,9 @@ ShaderPassProp::ShaderPassProp(Material *material, int shaderIndex) : PropProp("
 	
 	int index = 0;
 	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
+    
+    //TODO: FIX TO USE GLOBAL RESOURCE POOL
+    /*
 	for(int i=0; i < materialManager->getNumShaders(); i++) {
 		if(materialManager->getShaderByIndex(i)->screenShader) {
 			shaderComboBox->addComboItem(materialManager->getShaderByIndex(i)->getName(), (void*)materialManager->getShaderByIndex(i));			
@@ -1613,7 +1616,7 @@ ShaderPassProp::ShaderPassProp(Material *material, int shaderIndex) : PropProp("
 			index++;
 		}
 	}	
-	
+	*/
 	
 	editButton = new UIButton("Options", 30);
 	editButton->addEventListener(this, UIEvent::CLICK_EVENT);

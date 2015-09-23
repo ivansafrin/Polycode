@@ -42,43 +42,6 @@ MaterialManager::MaterialManager() {
 }
 
 MaterialManager::~MaterialManager() {
-	
-}
-
-void MaterialManager::Update(int elapsed) {
-	for(int i=0;i < textures.size(); i++) {
-		textures[i]->updateScroll(elapsed);
-	}
-}
-
-Texture *MaterialManager::getTextureByResourcePath(const String& resourcePath) const {
-	for(int i=0;i < textures.size(); i++) {
-		if(textures[i]->getResourcePath() == resourcePath)
-			return textures[i];
-	}
-	return NULL;
-}
-
-void MaterialManager::deleteTexture(Texture *texture) {
-	for(int i=0;i < textures.size(); i++) {
-		if(textures[i] == texture) {
-			textures.erase(textures.begin()+i);
-			CoreServices::getInstance()->getRenderer()->destroyTexture(texture);
-			return;
-		}
-	}
-}
-
-void MaterialManager::reloadPrograms() {
-	for(int m=0; m < shaderModules.size(); m++) {
-		PolycodeShaderModule *shaderModule = shaderModules[m];
-		shaderModule->reloadPrograms();
-	}
-	vector<Resource *> shaders = CoreServices::getInstance()->getResourceManager()->getResources(Resource::RESOURCE_SHADER);
-	for(int s = 0; s < shaders.size(); s++) {
-		Shader *shader = (Shader *)shaders[s];
-		shader->reload();
-	}
 }
 
 void MaterialManager::loadMaterialLibraryIntoPool(ResourcePool *pool, const String &materialFile) {
@@ -87,7 +50,6 @@ void MaterialManager::loadMaterialLibraryIntoPool(ResourcePool *pool, const Stri
 
     for(int s=0; s < shaders.size(); s++) {
         pool->addResource(shaders[s]);
-        addShader(shaders[s]);
     }
     
     std::vector<Cubemap*> cubemaps = loadCubemapsFromFile(materialFile);
@@ -100,7 +62,6 @@ void MaterialManager::loadMaterialLibraryIntoPool(ResourcePool *pool, const Stri
     for(int m=0; m < materials.size(); m++) {
         materials[m]->setResourceName(materials[m]->getName());
         pool->addResource(materials[m]);
-        addMaterial(materials[m]);
     }
 }
 
@@ -128,17 +89,13 @@ void MaterialManager::addShaderModule(PolycodeShaderModule *module) {
 #define DEFAULT_TEXTURE "default/default.png"
 
 Texture *MaterialManager::createTextureFromFile(const String& fileName, bool clamp, bool createMipmaps, ResourcePool *resourcePool) {
-	if(fileName.size() == 0) {
-		Logger::log("empty texture filename, using default texture.\n");
-		return getTextureByResourcePath(DEFAULT_TEXTURE);
-	}
     
     if(!resourcePool) {
         resourcePool = CoreServices::getInstance()->getResourceManager()->getGlobalPool();
     }
 
 	Texture *newTexture;
-	newTexture = getTextureByResourcePath(fileName);
+    newTexture = (Texture*) resourcePool->getResourceByPath(fileName);
 	if(newTexture) {
 		return newTexture;
 	}
@@ -153,7 +110,7 @@ Texture *MaterialManager::createTextureFromFile(const String& fileName, bool cla
         resourcePool->addResource(newTexture);
 	} else {
 		Logger::log("Error loading image (\"%s\"), using default texture.\n", fileName.c_str());		
-		newTexture = getTextureByResourcePath(DEFAULT_TEXTURE);
+		newTexture = (Texture*) CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResourceByPath(DEFAULT_TEXTURE);
 	}
 		
 	delete image;
@@ -176,7 +133,6 @@ Texture *MaterialManager::createNewTexture(int width, int height, bool clamp, bo
 
 Texture *MaterialManager::createTexture(int width, int height, char *imageData, bool clamp, bool createMipmaps, int type) {
 	Texture *newTexture = CoreServices::getInstance()->getRenderer()->createTexture(width, height, imageData,clamp, createMipmaps, type);
-	textures.push_back(newTexture);
     if(!keepTextureData) {
         free(newTexture->textureData);
         newTexture->textureData = NULL;
@@ -192,29 +148,6 @@ Texture *MaterialManager::createTextureFromImage(Image *image, bool clamp, bool 
         newTexture->textureData = NULL;
     }
 	return newTexture; 
-}
-
-void MaterialManager::reloadProgramsAndTextures() {
-	reloadTextures();
-	reloadPrograms();
-}
-
-void MaterialManager::reloadTextures() {
-	for(int i=0; i < textures.size(); i++) {
-		Texture *texture = textures[i];
-		texture->recreateFromImageData();
-	}
-}
-
-unsigned int MaterialManager::getNumShaders() {
-	return shaders.size();
-}
-
-Shader *MaterialManager::getShaderByIndex(unsigned int index) {
-	if(index < shaders.size())
-		return shaders[index];
-	else
-		return NULL;
 }
 
 Shader *MaterialManager::createShader(ResourcePool *resourcePool, String shaderType, String name, String vpName, String fpName, bool screenShader) {
@@ -323,14 +256,6 @@ Cubemap *MaterialManager::cubemapFromXMLNode(TiXmlNode *node) {
 	);
 	newCubemap->setResourceName(name);
 	return newCubemap;
-}
-
-void MaterialManager::addMaterial(Material *material) {
-	materials.push_back(material);
-}
-
-void MaterialManager::addShader(Shader *shader) {
-	shaders.push_back(shader);
 }
 
 std::vector<Shader*> MaterialManager::loadShadersFromFile(ResourcePool *resourcePool, String fileName) {

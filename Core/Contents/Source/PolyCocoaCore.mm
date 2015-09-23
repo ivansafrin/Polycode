@@ -232,7 +232,6 @@ void CocoaCore::_setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, i
 	renderer->setAnisotropyAmount(anisotropyLevel);
 	dispatchEvent(new Event(), EVENT_CORE_RESIZE);	
 
-	[[glView window] setContentSize: NSMakeSize(xRes, yRes)];
 		
 	if(fullScreen) {	
 		if(monitorIndex > -1) {
@@ -272,6 +271,7 @@ void CocoaCore::_setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, i
 	}
     
 	renderer->Resize(xRes, yRes);
+    [[glView window] setContentSize: NSMakeSize(xRes, yRes)];            
 
 	if(aaLevel > 0) {
 		glEnable( GL_MULTISAMPLE_ARB );

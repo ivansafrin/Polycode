@@ -54,7 +54,7 @@ SceneEntityInstance *SceneEntityInstance::BlankSceneEntityInstance(Scene *parent
 	return new SceneEntityInstance(parentScene);
 }
 
-SceneEntityInstance::SceneEntityInstance(Scene *parentScene, const String& fileName) : Entity() {
+SceneEntityInstance::SceneEntityInstance(Scene *parentScene, const String& fileName, ResourcePool *loadIntoPool) : Entity(), loadIntoPool(loadIntoPool) {
     createNewLayer("default");
     this->parentScene = parentScene;
 	resourceEntry = new SceneEntityInstanceResourceEntry(this);
@@ -98,7 +98,7 @@ SceneEntityInstanceResourceEntry *SceneEntityInstance::getResourceEntry() {
 Entity *SceneEntityInstance::Clone(bool deepClone, bool ignoreEditorOnly) const {
 	SceneEntityInstance *newEntity;
 	if(cloneUsingReload) {
-		newEntity = new SceneEntityInstance(parentScene, fileName);
+		newEntity = new SceneEntityInstance(parentScene, fileName, loadIntoPool);
 	} else {
 		newEntity = new SceneEntityInstance(parentScene);
 	}
@@ -209,7 +209,7 @@ void SceneEntityInstance::applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMes
                                                 sceneMesh->getLocalShaderOptions()->addCubemap(nameEntry->stringVal, cubemap);
                                             }
                                         } else {
-                                            sceneMesh->getLocalShaderOptions()->addTexture(nameEntry->stringVal, CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(textureEntry->stringVal));
+                                            sceneMesh->getLocalShaderOptions()->addTexture(nameEntry->stringVal, CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(textureEntry->stringVal, Services()->getMaterialManager()->clampDefault, Services()->getMaterialManager()->mipmapsDefault, loadIntoPool));
                                         }
                                     }
                                 }
@@ -294,7 +294,7 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
         if(entityType->stringVal == "SceneEntityInstance") {
             ObjectEntry *instanceEntry = (*entry)["SceneEntityInstance"];
             String filePath = (*instanceEntry)["filePath"]->stringVal;
-            SceneEntityInstance *instance = new SceneEntityInstance(parentScene, filePath);
+            SceneEntityInstance *instance = new SceneEntityInstance(parentScene, filePath, loadIntoPool);
             entity = instance;
          } else if(entityType->stringVal == "SceneCurve") {
 			ObjectEntry *curveEntry = (*entry)["SceneCurve"];
@@ -348,7 +348,7 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 			String text = (*labelEntry)["text"]->stringVal;
 			String font = (*labelEntry)["font"]->stringVal;
 			int size = (*labelEntry)["size"]->intVal;
-            Number actualHeight = (*labelEntry)["actualHeight"]->intVal;
+            Number actualHeight = (*labelEntry)["actualHeight"]->NumberVal;
 			int aaMode = (*labelEntry)["aaMode"]->intVal;
             
 			SceneLabel *label = new SceneLabel(text, size, font, aaMode, actualHeight);

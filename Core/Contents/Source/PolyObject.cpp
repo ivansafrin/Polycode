@@ -37,6 +37,12 @@ intVal(0)
     
 }
 
+ObjectEntry::~ObjectEntry() {
+    for(int i=0; i < children.size(); i++) {
+        delete children[i];
+    }
+}
+
 void ObjectEntry::Clear() {
 	for(int i=0; i < children.size(); i++) {
 		children[i]->Clear();

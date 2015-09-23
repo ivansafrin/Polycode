@@ -56,6 +56,7 @@ SceneMesh::SceneMesh(const String& fileName) : Entity(), texture(NULL), material
 	useGeometryHitDetection = false;
     forceMaterial = false;
     backfaceCulled = true;
+    vertexBuffer = NULL;
 	alphaTest = false;
     sendBoneMatricesToMaterial = false;
 }
@@ -73,6 +74,7 @@ SceneMesh::SceneMesh(Mesh *mesh) : Entity(), texture(NULL), material(NULL), skel
 	overlayWireframe = false;	
 	useGeometryHitDetection = false;
     forceMaterial = false;
+    vertexBuffer = NULL;
     backfaceCulled = true;
 	alphaTest = false;
     sendBoneMatricesToMaterial = false;
@@ -90,6 +92,7 @@ SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NUL
 	useGeometryHitDetection = false;
     forceMaterial = false;
     backfaceCulled = true;
+    vertexBuffer = NULL;
 	alphaTest = false;
     sendBoneMatricesToMaterial = false;
 }
@@ -106,6 +109,10 @@ SceneMesh::~SceneMesh() {
 	if(ownsMesh)
 		delete mesh;	
 	delete localShaderOptions;
+    
+    if(useVertexBuffer) {
+        CoreServices::getInstance()->getRenderer()->destroyVertexBuffer(vertexBuffer);
+    }
 }
 
 Entity *SceneMesh::Clone(bool deepClone, bool ignoreEditorOnly) const {
@@ -321,8 +328,13 @@ void SceneMesh::renderMeshLocally() {
 
 void SceneMesh::cacheToVertexBuffer(bool cache) {
 
-	if(cache && !mesh->hasVertexBuffer()) {
-		CoreServices::getInstance()->getRenderer()->createVertexBufferForMesh(mesh);
+    if(useVertexBuffer) {
+        CoreServices::getInstance()->getRenderer()->destroyVertexBuffer(vertexBuffer);
+        vertexBuffer = NULL;
+    }
+    
+	if(cache) {
+		vertexBuffer = CoreServices::getInstance()->getRenderer()->createVertexBufferForMesh(mesh);
 	}
 	useVertexBuffer = cache;
 }
@@ -401,9 +413,8 @@ void SceneMesh::Render() {
     }
     
 	if(useVertexBuffer) {
-        VertexBuffer *vb = mesh->getVertexBuffer();
-        if(vb){
-            renderer->drawVertexBuffer(vb, mesh->useVertexColors);
+        if(vertexBuffer){
+            renderer->drawVertexBuffer(vertexBuffer, mesh->useVertexColors);
         }
 	} else {
 		renderMeshLocally();
@@ -422,7 +433,7 @@ void SceneMesh::Render() {
 		renderer->setVertexColor(wireFrameColor.r, wireFrameColor.g, wireFrameColor.b, wireFrameColor.a);
 		
 		if(useVertexBuffer) {
-			renderer->drawVertexBuffer(mesh->getVertexBuffer(), mesh->useVertexColors);
+			renderer->drawVertexBuffer(vertexBuffer, mesh->useVertexColors);
 		} else {
 			renderMeshLocally();
 		}

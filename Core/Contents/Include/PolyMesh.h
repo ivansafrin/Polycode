@@ -248,20 +248,6 @@ namespace Polycode {
         
             Vector2 getVertexTexCoordAtIndex(unsigned int index);
         
-        
-			/**
-			* Sets the vertex buffer for the mesh.
-			* @param buffer New vertex buffer for mesh.
-			*/			
-			void setVertexBuffer(VertexBuffer *buffer);
-			
-			/**
-			* Returns the vertex buffer for the mesh.
-			* @return The vertex buffer for this mesh.
-			*/
-			VertexBuffer *getVertexBuffer();
-        
-        
             Mesh *Copy() const;
 			
 			/**
@@ -306,12 +292,6 @@ namespace Polycode {
 			* Calculates the mesh bounding box.
 			*/
 			Vector3 calculateBBox();
-
-			/**
-			* Checks if the mesh has a vertex buffer.
-			* @param True if the mesh has a vertex buffer, false if not.
-			*/		
-			bool hasVertexBuffer() { return meshHasVertexBuffer; }
 	
 			/**
 			* Quad based mesh.
@@ -404,9 +384,6 @@ namespace Polycode {
 
             void writeVertexBlock(VertexDataArray *array, OSFILE *outFile);
             void writeIndexBlock(IndexDataArray *array, OSFILE *outFile);
-        
-            VertexBuffer *vertexBuffer;
-            bool meshHasVertexBuffer;
             int meshType;
 
 	};

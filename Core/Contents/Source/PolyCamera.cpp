@@ -50,15 +50,30 @@ Camera::Camera(Scene *parentScene) : Entity() {
     orthoSizeX = 1.0;
 	orthoSizeY = 1.0;
     useGlobalFramebuffer = false;
+    
+    Services()->getCore()->addEventListener(this, Core::EVENT_CORE_RESIZE);
 }
 
-Camera::~Camera() {	
+Camera::~Camera() {
+    
+    Services()->getCore()->removeAllHandlersForListener(this);
+    
 	for(int i=0; i < localShaderOptions.size(); i++) {
 		delete localShaderOptions[i];
 	}
 
 	delete originalSceneTexture;
 	delete zBufferSceneTexture;
+}
+
+void Camera::handleEvent(Event *event) {
+    if(hasFilterShader()) {
+
+        delete originalSceneTexture;
+        delete zBufferSceneTexture;
+        
+        CoreServices::getInstance()->getRenderer()->createRenderTextures(&originalSceneTexture, &zBufferSceneTexture, Services()->getCore()->getXRes(), Services()->getCore()->getYRes(), filterShaderMaterial->fp16RenderTargets);
+    }
 }
 
 void Camera::setUseGlobalFramebuffer(bool val) {

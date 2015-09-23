@@ -129,6 +129,7 @@ void OpenGLTexture::setTextureData(char *data) {
 }
 
 OpenGLTexture::~OpenGLTexture() {
+    
 	glDeleteTextures(1, &textureID);
 	if(frameBufferID != FRAMEBUFFER_NULL) {
 		glDeleteFramebuffersEXT(1, &frameBufferID);

@@ -56,7 +56,9 @@ void BezierCurve::clearControlPoints() {
 }
 
 BezierCurve::~BezierCurve() {
-
+    for(int i=0; i < controlPoints.size(); i++) {
+        delete controlPoints[i];
+    }
 }
 
 void BezierCurve::addControlPoint(Number p1x, Number p1y, Number p1z, Number p2x, Number p2y, Number p2z, Number p3x, Number p3y, Number p3z) {

@@ -42,7 +42,7 @@ class SceneEntityInstanceResourceEntry;
 class SceneEntityInstance : public Entity {
 	public:
     
-        SceneEntityInstance(Scene *parentScene, const String& fileName);
+        SceneEntityInstance(Scene *parentScene, const String& fileName, ResourcePool *loadIntoPool = NULL);
 		explicit SceneEntityInstance(Scene *parentScene);
 		
 		static SceneEntityInstance *BlankSceneEntityInstance(Scene *parentScene);
@@ -90,6 +90,7 @@ class SceneEntityInstance : public Entity {
     
         void rebuildResourceLinks();
     
+        ResourcePool *loadIntoPool;
         ResourcePool *topLevelResourcePool;
         std::vector<ResourcePool*> resourcePools;
         Scene *parentScene;

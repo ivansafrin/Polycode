@@ -236,6 +236,8 @@ Number Sound::getPitch() {
 
 Sound::~Sound() {
     
+    Stop();
+    
 	alSourcei(soundSource, AL_BUFFER, 0);
     
 	alDeleteSources(1,&soundSource);

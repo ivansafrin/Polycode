@@ -37,12 +37,14 @@ Material::Material(const String& name) : Resource(Resource::RESOURCE_MATERIAL) {
 	blendingMode = Renderer::BLEND_MODE_NORMAL;
 	screenMaterial = false;
     wireframe = false;
+    
+    Services()->getCore()->addEventListener(this, Core::EVENT_CORE_RESIZE);
 }
 
 Material::~Material() {
 	
 	Logger::log("deleting material (%s)\n", name.c_str());
-	
+    Services()->getCore()->removeAllHandlersForListener(this);
 	clearShaders();
 }
 
@@ -111,7 +113,7 @@ void Material::recreateRenderTarget(ShaderRenderTarget *renderTarget) {
 		textureWidth = (int)renderTarget->width;
 		textureHeight = (int)renderTarget->height;		
 	}
-	
+    
 	CoreServices::getInstance()->getRenderer()->createRenderTextures(&newTexture, NULL, textureWidth, textureHeight, fp16RenderTargets);
 	newTexture->setResourceName(renderTarget->id);
 	
@@ -135,19 +137,24 @@ void Material::recreateRenderTarget(ShaderRenderTarget *renderTarget) {
 }
 
 void Material::handleEvent(Event *event) {
-	//Fix the bindings when we detect a reload
-	for (int i = 0; i < materialShaders.size(); i++) {
-		Shader* shader = materialShaders[i];
-		ShaderBinding* shaderBinding = shaderBindings[i];
-		CoreServices::getInstance()->getRenderer()->setRendererShaderParams(shader, shaderBinding);
+    
+    if(event->getDispatcher() == Services()->getCore()) {
+        recreateRenderTargets();
+    } else {
+        //Fix the bindings when we detect a reload
+        for (int i = 0; i < materialShaders.size(); i++) {
+            Shader* shader = materialShaders[i];
+            ShaderBinding* shaderBinding = shaderBindings[i];
+            CoreServices::getInstance()->getRenderer()->setRendererShaderParams(shader, shaderBinding);
 
-		for(int i=0; i < shader->expectedParams.size(); i++) {
-			if(!shaderBinding->getLocalParamByName(shader->expectedParams[i].name)) {
-				shaderBinding->addParam(shader->expectedParams[i].type, shader->expectedParams[i].name);
-			}
-		}
-	}
-	dispatchEvent(new Event(), Event::RESOURCE_RELOAD_EVENT);	
+            for(int i=0; i < shader->expectedParams.size(); i++) {
+                if(!shaderBinding->getLocalParamByName(shader->expectedParams[i].name)) {
+                    shaderBinding->addParam(shader->expectedParams[i].type, shader->expectedParams[i].name);
+                }
+            }
+        }
+        dispatchEvent(new Event(), Event::RESOURCE_RELOAD_EVENT);
+    }
 }
 
 void Material::removeShader(int shaderIndex) {

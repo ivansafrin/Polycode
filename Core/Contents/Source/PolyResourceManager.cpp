@@ -23,6 +23,7 @@
 #include "PolyResourceManager.h"
 #include "PolyCoreServices.h"
 #include "PolyCubemap.h"
+#include "PolyRenderer.h"
 #include "PolyMaterialManager.h"
 #include "PolyModule.h"
 #include "PolyFontManager.h"
@@ -58,19 +59,39 @@ ResourcePool::~ResourcePool() {
     for(int i=0; i < resources.size(); i++)	{
         if(resources[i]->getResourceType() == Resource::RESOURCE_MATERIAL) {
             delete resources[i];
+            resources[i] = NULL;
         }
     }
     
     for(int i=0; i < resources.size(); i++)	{
-        if(resources[i]->getResourceType() == Resource::RESOURCE_SHADER) {
-            delete resources[i];
+        if(resources[i]) {
+            if(resources[i]->getResourceType() == Resource::RESOURCE_SHADER) {
+                delete resources[i];
+                resources[i] = NULL;
+            }
         }
     }
     
     for(int i=0; i < resources.size(); i++)	{
-        if(resources[i]->getResourceType() == Resource::RESOURCE_PROGRAM) {
-            delete resources[i];
+        if(resources[i]) {
+            if(resources[i]->getResourceType() == Resource::RESOURCE_PROGRAM) {
+                delete resources[i];
+                resources[i] = NULL;
+            }
         }
+    }
+    
+    for(int i=0; i < resources.size(); i++)	{
+        if(resources[i]) {
+            if(resources[i]->getResourceType() == Resource::RESOURCE_TEXTURE) {
+                Services()->getRenderer()->destroyTexture((Texture*)resources[i]);
+                resources[i] = NULL;
+            }
+        }
+    }
+    
+    for(int i=0; i < resources.size(); i++)	{
+        delete resources[i];
     }
     
     resources.clear();
@@ -222,7 +243,6 @@ void ResourceManager::parseShadersIntoPool(ResourcePool *pool, const String& dir
 				
 				for(int s=0; s < shaders.size(); s++) {
 					pool->addResource(shaders[s]);
-					materialManager->addShader(shaders[s]);
 				}
 			}
 		} else {
@@ -281,7 +301,6 @@ void ResourceManager::parseMaterialsIntoPool(ResourcePool *pool, const String& d
 				for(int m=0; m < materials.size(); m++) {
 					materials[m]->setResourceName(materials[m]->getName());
 					pool->addResource(materials[m]);
-					materialManager->addMaterial(materials[m]);
 				}
 			}
 		} else {
@@ -428,3 +447,4 @@ std::vector<Resource*> ResourceManager::getResources(int resourceType) {
     
 	return result;
 }
+

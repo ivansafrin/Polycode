@@ -109,13 +109,15 @@ namespace Polycode {
 		
 		Cubemap *createCubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4, Texture *t5);
 		Texture *createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type = Image::IMAGE_RGBA);
-		void destroyTexture(Texture *texture);		
+		void destroyTexture(Texture *texture);
+        void destroyVertexBuffer(VertexBuffer *buffer);
+
 		Texture *createFramebufferTexture(unsigned int width, unsigned int height);
 		void createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height, bool floatingPointBuffer);
 		
 		void enableAlphaTest(bool val);
 		
-		void createVertexBufferForMesh(Mesh *mesh);
+		VertexBuffer *createVertexBufferForMesh(Mesh *mesh);
 		void drawVertexBuffer(VertexBuffer *buffer, bool enableColorBuffer);						
 		void bindFrameBufferTexture(Texture *texture);
 		void bindFrameBufferTextureDepth(Texture *texture);		

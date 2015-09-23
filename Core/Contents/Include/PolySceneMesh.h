@@ -23,6 +23,7 @@ THE SOFTWARE.
 #pragma once
 #include "PolyGlobals.h"
 #include "PolyEntity.h"
+#include "PolyMesh.h"
 #include "PolyShader.h"
 #include "PolyRenderDataArray.h"
 
@@ -247,6 +248,8 @@ namespace Polycode {
 		protected:
 		
 			bool useVertexBuffer;
+            VertexBuffer *vertexBuffer;
+        
 			Mesh *mesh;
 			Texture *texture;
 			Material *material;

@@ -24,6 +24,7 @@
 #include "PolyFontGlyphSheet.h"
 #include "OSBasics.h"
 #include "PolyLogger.h"
+#include "PolyRenderer.h"
 #include "PolyImage.h"
 #include "PolyTexture.h"
 #include "PolyCoreServices.h"
@@ -42,8 +43,7 @@ FontGlyphSheet::FontGlyphSheet(Font* font, int size, FontTextureGlyphMode mode)
 }
 
 FontGlyphSheet::~FontGlyphSheet() {
-	if (texture)
-		CoreServices::getInstance()->getMaterialManager()->deleteTexture(texture);
+  Services()->getRenderer()->destroyTexture(texture);
 }
 
 struct GlyphData {
@@ -265,8 +265,7 @@ void FontGlyphSheet::buildGlyphs(std::set<wchar_t> characters) {
 	}
 
 	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
-	if(texture)
-		materialManager->deleteTexture(texture);
+    Services()->getRenderer()->destroyTexture(texture);
 
 	texture = materialManager->createTextureFromImage(glyphsImage, true, materialManager->mipmapsDefault);
 	delete glyphsImage;

@@ -75,6 +75,7 @@ int Texture::getHeight() const {
 }
 
 Texture::~Texture(){
+    printf("DELETING TEXTURE: [%s][%s]\n", getResourceName().c_str(), getResourcePath().c_str());
 	free(textureData);
 }
 

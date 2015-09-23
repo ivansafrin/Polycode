@@ -52,6 +52,9 @@ Skeleton::Skeleton() {
 }
 
 Skeleton::~Skeleton() {
+    for(int i=0; i < animations.size(); i++) {
+        delete animations[i];
+    }
 }
 
 int Skeleton::getNumBones() const {
@@ -406,6 +409,7 @@ BoneTrack::~BoneTrack() {
 	delete LocX;
 	delete LocY;
 	delete LocZ;
+    delete quatCurve;
 }
 
 void BoneTrack::Reset() {

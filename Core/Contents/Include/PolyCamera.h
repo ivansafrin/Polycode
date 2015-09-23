@@ -97,6 +97,8 @@ namespace Polycode {
 			* @param orthoSizeY Height of the orthographic frustum (defaults to 1.0)				
 			*/			
 			void setOrthoMode(bool mode);
+        
+            void handleEvent(Event *event);
 
             /**
              * Sets the orthographic size of the camera.

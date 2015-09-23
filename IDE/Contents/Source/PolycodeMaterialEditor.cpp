@@ -905,13 +905,16 @@ MaterialEditorPane::MaterialEditorPane() : UIElement() {
 void MaterialEditorPane::reloadShaders() {
 
 	shaderProp->comboEntry->clearItems();
-
+    //TODO: FIX TO USE GLOBAL RESOURCE POOL    
+/*
 	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
 	for(int i=0; i < materialManager->getNumShaders(); i++) {
 		if(!materialManager->getShaderByIndex(i)->screenShader) {
 			shaderProp->comboEntry->addComboItem(materialManager->getShaderByIndex(i)->getName(), (void*)materialManager->getShaderByIndex(i));
 		}
 	}	
+ */
+    
 }
 
 void MaterialEditorPane::Resize(Number width, Number height) {
@@ -1507,7 +1510,9 @@ void PolycodeMaterialEditor::handleEvent(Event *event) {
 			if(newShader) {
 				materialBrowser->addShader(newShader)->setSelected();
 				shaders.push_back(newShader);
-				CoreServices::getInstance()->getMaterialManager()->addShader(newShader);
+                
+                //TODO: FIX TO USE GLOBAL RESOURCE POOL
+				//CoreServices::getInstance()->getMaterialManager()->addShader(newShader);
 				setHasChanges(true);	
 			} else {
 				printf("Error creating shader!\n");

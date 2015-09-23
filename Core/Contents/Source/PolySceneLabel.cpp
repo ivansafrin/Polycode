@@ -100,9 +100,9 @@ Number SceneLabel::getLabelActualHeight() {
 void SceneLabel::updateFromLabel() {
 
 	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
-	if(texture)
-		materialManager->deleteTexture(texture);
 
+    Services()->getRenderer()->destroyTexture(texture);
+    
 	if(SceneLabel::createMipmapsForLabels) {
 		texture = materialManager->createTextureFromImage(label, materialManager->clampDefault, materialManager->mipmapsDefault);	
 	} else {

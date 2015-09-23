@@ -48,8 +48,6 @@ namespace Polycode {
 		public:
 			MaterialManager();
 			~MaterialManager();
-			
-			void Update(int elapsed);
 
 			/**
 			* Creates a new framebuffer texture.
@@ -59,17 +57,10 @@ namespace Polycode {
 			Texture *createNewTexture(int width, int height, bool clamp=false, bool createMipmaps = true, int type=Image::IMAGE_RGBA);
 			Texture *createTextureFromImage(Image *image, bool clamp=false, bool createMipmaps = true);
 			Texture *createTextureFromFile(const String& fileName, bool clamp=false, bool createMipmaps = true, ResourcePool *resourcePool = NULL);
-			void deleteTexture(Texture *texture);
-		
-			void reloadTextures();
 			
-			void reloadProgramsAndTextures();
-			void reloadPrograms();		
-		
 			void addShaderModule(PolycodeShaderModule *module);		
 		
 			//SceneRenderTexture *createRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight);
-			Texture *getTextureByResourcePath(const String& resourcePath) const;
 			
 			ShaderProgram *createProgramFromFile(String programPath);
 			
@@ -91,12 +82,6 @@ namespace Polycode {
 			std::vector<Material*> loadMaterialsFromFile(ResourcePool *resourcePool, const String &fileName);
 			std::vector<Shader*> loadShadersFromFile(ResourcePool *resourcePool, String fileName);
 			std::vector<Cubemap*> loadCubemapsFromFile(String fileName);
-						
-			void addMaterial(Material *material);
-			void addShader(Shader *shader);
-		
-			unsigned int getNumShaders();
-			Shader *getShaderByIndex(unsigned int index);
 		
 			bool premultiplyAlphaOnLoad;
 			bool clampDefault;
@@ -104,10 +89,6 @@ namespace Polycode {
 			bool keepTextureData;
 			
 		private:
-			std::vector<Texture*> textures;
-			std::vector<Material*> materials;
-			std::vector<Shader*> shaders;
-		
 			std::vector <PolycodeShaderModule*> shaderModules;
 	};
 };

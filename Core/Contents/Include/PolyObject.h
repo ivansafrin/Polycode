@@ -39,7 +39,9 @@ namespace Polycode {
 		* Default constructor
 		*/
         ObjectEntry();
-				
+
+        ~ObjectEntry();
+        
 		/**
 		* Type of entry. Possible values are (FLOAT_ENTRY, INT_ENTRY, BOOL_ENTRY, ARRAY_ENTRY, STRING_ENTRY, CONTAINER_ENTRY).
 		*/

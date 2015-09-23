@@ -71,9 +71,7 @@ int SceneLight::getLightImportance() const {
 
 void SceneLight::enableShadows(bool val, unsigned int resolution) {
 	if(val) {
-        if(zBufferTexture) {
-            CoreServices::getInstance()->getMaterialManager()->deleteTexture(zBufferTexture);
-        }
+        delete zBufferTexture;
         CoreServices::getInstance()->getRenderer()->createRenderTextures(NULL, &zBufferTexture, resolution, resolution, false);
 		if(!spotCamera) {
 			spotCamera = new Camera(parentScene);
