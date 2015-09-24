@@ -256,6 +256,12 @@ namespace Polycode {
              * @see ownsChildren
              */
 			void setOwnsChildrenRecursive(bool val);
+
+			/**
+			* Removes all children
+			*/
+			void clearChildren();
+
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------
 				
@@ -889,6 +895,17 @@ namespace Polycode {
             void setLocalBoundingBoxZ(Number z);
         
             bool rendererVis;
+
+			/**
+			 * Sets forceRender to val. By default recursive.
+			 * @param val If true the Entity will always be rendered.
+			 */
+			void setForceRender(bool val, bool recursive = true);
+
+			/**
+			 * If set to true the Entity will always be rendered.
+			 */
+			bool forceRender;
         
             /**
             * Layer ID. Used by entity instances to separate entities into groups.

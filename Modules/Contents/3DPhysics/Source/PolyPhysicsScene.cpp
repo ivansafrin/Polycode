@@ -94,6 +94,9 @@ void PhysicsScene::initPhysicsScene(Vector3 size) {
 	world = physicsWorld;
 	
 	physicsWorld->setInternalTickCallback(worldTickCallback, this);
+	
+	debugDrawer = new CollisionSceneDebugDraw();
+	physicsWorld->setDebugDrawer(debugDrawer);
 }
 
 void PhysicsScene::setGravity(Vector3 gravity) {

@@ -78,6 +78,7 @@ void Entity::initEntity() {
 	yAdjust = 1.0;
 	lastClickTicks = 0.0;
     rendererVis = true;
+	forceRender = false;
     layerID = 0;
 }
 
@@ -155,6 +156,13 @@ void Entity::setOwnsChildrenRecursive(bool val) {
 	for(int i=0; i < children.size(); i++) {
 		children[i]->setOwnsChildrenRecursive(val);
 	}
+}
+
+void Entity::clearChildren(){
+	for (int i = children.size()-1; i > 0; i--){
+		delete children[i];
+	}
+	children.clear();
 }
 
 std::vector<Entity*> Entity::getEntitiesByLayerID(unsigned char layerID, bool recursive) const {
@@ -581,6 +589,15 @@ void Entity::setRenderer(Renderer *renderer) {
 void Entity::renderChildren() {
 	for(int i=0;i<children.size();i++) {
 		children[i]->transformAndRender();
+	}
+}
+
+void Entity::setForceRender(bool val, bool recursive){
+	forceRender = val;
+	if (recursive){
+		for (int i = 0; i<children.size(); i++) {
+			children[i]->setForceRender(val);
+		}
 	}
 }
 
