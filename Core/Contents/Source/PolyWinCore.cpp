@@ -89,7 +89,7 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 	: Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
 
 	hWnd = *((HWND*)view->windowData);
-	hInstance = (HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE);
+	hInstance = (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE);
 	core = this;
 	hasCopyDataString = false;
 

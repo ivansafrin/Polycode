@@ -19,3 +19,5 @@ make install
 cd ../../Standalone/Build
 cmake -G "Unix Makefiles" ..
 make install
+cd ../../IDE/Build/Linux
+make
