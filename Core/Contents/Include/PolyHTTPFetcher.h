@@ -67,7 +67,7 @@ namespace Polycode {
 		HTTPFetcher(String address, bool saveToPath = false, String savePath = "");
 		~HTTPFetcher();
 
-		String getData();
+		char* getData();
 
 		/*
 		* Fetches a file given in the param
@@ -85,7 +85,7 @@ namespace Polycode {
 	private:
         int s;
 		String address;
-		String bodyReturn;
+		char* bodyReturn;
 		String path;
 		String host;
 		String protocol;

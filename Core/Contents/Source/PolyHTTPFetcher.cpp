@@ -177,7 +177,7 @@ void HTTPFetcher::updateThread(){
 			Logger::log("HTTP Fetcher: recv failed: %d\n", WSAGetLastError());
 			event->errorCode = WSAGetLastError();
 #elif PLATFORM == PLATFORM_MAC || PLATFORM == PLATFORM_UNIX
-		if ((recv_size = recv(s, rec, DEFAULT_PAGE_BUF_SIZE, 0)) == -1) {
+		if ((recv_size = recv(s, rec, 1, 0)) == -1) {
 			Logger::log("HTTP Fetcher: recv failed: %s\n", strerror(errno));
 			event->errorCode = errno;
 #endif
@@ -276,7 +276,8 @@ void HTTPFetcher::updateThread(){
 	}
 
 	event->contentSize = totalRec;
-	bodyReturn = event->data;
+	bodyReturn = (char*)malloc(totalRec);
+	memcpy(bodyReturn,event->data, totalRec);
     dispatchEvent(event, HTTPFetcherEvent::EVENT_HTTP_DATA_RECEIVED);
 	killThread();
 }
@@ -289,6 +290,6 @@ void HTTPFetcher::fetchFile(String pathToFile, bool saveToPath, String savePath)
 	CoreServices::getInstance()->getCore()->createThread(this);
 }
 
-String HTTPFetcher::getData(){
+char* HTTPFetcher::getData(){
 	return this->bodyReturn;
 }
