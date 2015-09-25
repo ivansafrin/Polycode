@@ -390,7 +390,9 @@ void OpenGLGraphicsInterface::createTexture(Texture *texture) {
         case Texture::FILTERING_LINEAR:
             
             if(texture->anisotropy > 0) {
+#ifndef STRICT_OPENGLES2
                 glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, texture->anisotropy);
+#endif
             }
             
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

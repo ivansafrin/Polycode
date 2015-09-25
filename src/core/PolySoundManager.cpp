@@ -23,9 +23,14 @@
 #include "polycode/core/PolySoundManager.h"
 #include "polycode/core/PolyCore.h"
 #include "polycode/core/PolyLogger.h"
+#include <stdint.h>
+#include <limits>
 
 using namespace Polycode;
 
+#ifndef INT16_MAX
+	#define INT16_MAX (std::numeric_limits<int16_t>::max())
+#endif
 
 SoundManager::SoundManager() {
     audioInterface = NULL;

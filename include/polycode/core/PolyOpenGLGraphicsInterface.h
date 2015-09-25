@@ -45,9 +45,15 @@ THE SOFTWARE.
 		#include <angle_windowsstore.h>
 	#endif
 #else	
-	#include <GL/gl.h>
-	#include <GL/glu.h>
-	#include <GL/glext.h>
+	#if defined(USE_EGL)
+		#include <EGL/egl.h>
+		#include <EGL/eglext.h>
+		#include <GLES2/gl2.h>
+	#else
+		#include <GL/gl.h>
+		#include <GL/glu.h>
+		#include <GL/glext.h>
+	#endif
 #endif
 
 namespace Polycode {

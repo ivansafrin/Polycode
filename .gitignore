@@ -1,5 +1,10 @@
 # Created by https://www.gitignore.io
 
+*.o
+build/linux/TemplateApp/PolycodeTemplate
+build/linux/TemplateApp/default
+build/linux/TemplateApp/default.pak
+
 docs/cldoc
 
 ### Windows ###

@@ -21,8 +21,12 @@
 */
 
 #include "polycode/core/PolySound.h"
-#define OV_EXCLUDE_STATIC_CALLBACKS
-#include <vorbis/vorbisfile.h>
+
+#ifndef NO_OGG
+	#define OV_EXCLUDE_STATIC_CALLBACKS
+	#include <vorbis/vorbisfile.h>
+#endif
+
 #undef OV_EXCLUDE_STATIC_CALLBACKS
 #include "polycode/core/PolyString.h"
 #include "polycode/core/PolyLogger.h"
@@ -40,6 +44,10 @@
 
 #ifndef INT32_MAX
 	#define INT32_MAX (std::numeric_limits<int32_t>::max())
+#endif
+
+#ifndef INT16_MAX
+	#define INT16_MAX (std::numeric_limits<int16_t>::max())
 #endif
 
 using namespace std;
@@ -60,7 +68,7 @@ unsigned int AudioStreamingSource::streamData(int16_t *buffer, unsigned int size
     return 0;
 }
 
-
+#ifndef NO_OGG
 size_t custom_readfunc(void *ptr, size_t size, size_t nmemb, void *datasource) {
     Polycode::CoreFile *file = (Polycode::CoreFile*) datasource;
 	return file->read(ptr, size, nmemb);
@@ -81,6 +89,7 @@ long custom_tellfunc(void *datasource) {
 	CoreFile *file = (CoreFile*) datasource;
 	return file->tell();
 }
+#endif
 
 Sound::Sound(const String& fileName) :  referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), numSamples(-1), streamingSound(false), playing(false), playbackOffset(0), streamingSource(NULL) {
 	soundLoaded = false;
@@ -421,6 +430,7 @@ unsigned int Sound::getFrequency() {
 
 
 bool Sound::loadOGG(const String& fileName) {
+#ifndef NO_OGG
     /*
 //	floatBuffer.clear();
 	vector<char> data;
@@ -483,7 +493,7 @@ bool Sound::loadOGG(const String& fileName) {
 	}
      */
 	return false;
-
+#endif
 }
 
 bool Sound::loadWAV(const String& fileName) {
