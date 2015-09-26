@@ -23,6 +23,7 @@
 #include "PolyString.h"
 #include <iomanip>
 #include <sstream>
+#include <algorithm>
 
 using namespace Polycode;
 using namespace std;
@@ -284,5 +285,17 @@ void wstrToUtf8(Str& dest, const WStr& src){
 		}
 		else
 			dest.push_back('?');
+	}
+}
+
+size_t String::count(const char str, size_t first, size_t last){
+	size_t tmp = MAX(first, last);
+	first = MIN(first, last);
+	last = tmp;
+
+	if (last <= 0 || (contents.begin() + last) > contents.end()){
+		return std::count(contents.begin() + first, contents.end(), str);
+	} else {
+		return std::count(contents.begin() + first, contents.begin() + last, str);
 	}
 }

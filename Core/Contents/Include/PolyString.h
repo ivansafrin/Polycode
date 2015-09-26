@@ -133,7 +133,19 @@ namespace Polycode {
 			size_t find_first_of(const String &str, size_t pos = 0) {
 				return contents.find_first_of(str.contents, pos); 
 			}
+
+			/**
+			* Erase an amount (len) of characters from pos.
+			* @param pos First character position to be removed. The default value indicates that the entire string is deleted from the beginning.
+			* @param len Amount of characters to be removed from pos. The default value indicates that the entire string beginning with pos is deleted.
+			* @return The cleaned String.
+			*/
+			String erase(size_t pos = 0, size_t len = std::wstring::npos){
+				return contents.erase(pos, len);
+			}
 		
+			size_t count(const char str, size_t first = 0, size_t last = 0);
+
 			inline String operator + (const char *str) const { return String(contents + String(str).contents); }		
 			inline String operator + (const String &str) const { return String(contents + str.contents); }		
 			String operator += (const String &str) { contents = contents + str.contents; return *this; }		

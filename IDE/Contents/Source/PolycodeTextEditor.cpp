@@ -448,6 +448,10 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String tex
 	return tokens;
 }
 
+int PolycodeSyntaxHighlighter::getMode(){
+	return mode;
+}
+
 PolycodeTextEditor::PolycodeTextEditor() : PolycodeEditor(true){
 	firstTimeResize = true;
 	editorType = "PolycodeTextEditor";
@@ -490,6 +494,8 @@ bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 	findBar->closeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	findBar->replaceAllButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	findBar->functionList->addEventListener(this, UIEvent::CHANGE_EVENT);
+
+	Services()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 			
 	syntaxHighligher = NULL;
 	
@@ -527,6 +533,100 @@ void PolycodeTextEditor::applyEditorConfig(ObjectEntry *configEntry) {
 	}
 }
 
+
+void PolycodeTextEditor::commentText(bool uncomment){
+	textInput->saveUndoState();
+	
+	String lineComment = "";
+	String multiLineCommentL = "";
+	String multiLineCommentR = "";
+	if (syntaxHighligher->getMode() == PolycodeSyntaxHighlighter::MODE_GLSL){
+		lineComment = "//";
+		multiLineCommentL = "/*";
+		multiLineCommentR = "*/";
+	} else if (syntaxHighligher->getMode() == PolycodeSyntaxHighlighter::MODE_LUA){
+		lineComment = "--";
+		multiLineCommentL = "--[[";
+		multiLineCommentR = "]]--";
+	}
+
+	int selT = 0, selB = 0, selR = 0, selL = 0;
+	textInput->readSelection(selT, selB, selL, selR);
+	String selText = textInput->getSelectionText();
+	vector<String> lines = selText.split("\n");
+	String topSelLine = selText.substr(0, selText.find("\n"));
+	String topLine = textInput->getLineText(selT);
+
+	if (!uncomment){
+		if (selText == "" || (textInput->getLineText(selT) == selText.substr(0, selText.find("\n")) && textInput->getLineText(selB) == selText.substr(selText.find_last_of('\n')+1))){
+			String newLines;
+			if (lines.size() == 0){
+				textInput->replaceLines(selT, lineComment + topLine);
+			} else {
+				newLines = lineComment + lines[0];
+				for (int i = 1; i < lines.size(); i++){
+					newLines = newLines + "\n" + lineComment + lines[i];
+				}
+				selR = lines[lines.size() - 1].length() + lineComment.length();
+				textInput->replaceLines(selT, newLines);
+			}
+		} else {
+			lines[0] = textInput->getLineText(selT);
+			lines[lines.size() - 1] = textInput->getLineText(selB);
+
+			lines[0] = lines[0].substr(0, selL) + multiLineCommentL + lines[0].substr(selL);
+			lines[lines.size() - 1] = lines[lines.size() - 1].substr(0, selR + multiLineCommentR.length()) + multiLineCommentR + lines[lines.size() - 1].substr(selR + multiLineCommentR.length());
+
+			textInput->replaceLines(selT, lines[0]);
+			textInput->replaceLines(selB, lines[lines.size() - 1]);
+
+			selL += multiLineCommentL.length();
+			selR += multiLineCommentR.length();
+		}
+	} else {
+		if (selText == "" || (textInput->getLineText(selT) == selText.substr(0, selText.find("\n")) && textInput->getLineText(selB) == selText.substr(selText.find_last_of('\n') + 1))){
+			if (lines.size() == 0){
+				lines.push_back(topLine);
+			}
+
+			String newLines;
+			if (lines[0].substr(0, lineComment.length()) == lineComment){
+				newLines = lines[0].substr(lineComment.length());
+			}
+			for (int i = 1; i < lines.size(); i++){
+				if (lines[i].substr(0, lineComment.length()) == lineComment){
+					newLines = newLines + "\n" + lines[i].substr(lineComment.length());
+				}
+			}
+
+			if (lines.size() > 1){
+				selR = lines[lines.size() - 1].length() - lineComment.length();
+			}
+
+			textInput->replaceLines(selT, newLines);
+
+		} else {
+			lines[0] = textInput->getLineText(selT);
+			lines[lines.size() - 1] = textInput->getLineText(selB);
+
+			int l = lines[0].find(multiLineCommentL, MAX(0, selL - multiLineCommentL.length()));
+			if (l > 0){
+				textInput->replaceLines(selT, lines[0].erase(l, multiLineCommentL.length()));
+				selL -= multiLineCommentL.length();
+			}
+
+			int r = lines[lines.size() - 1].find(multiLineCommentR, MAX(0, selR - multiLineCommentR.length()));
+			if (r > 0){
+				textInput->replaceLines(selB, lines[lines.size() - 1].erase(r, multiLineCommentR.length()));
+				selR -= multiLineCommentR.length();
+			}
+		}
+	}
+	textInput->setCaretPosition(selL);
+
+	textInput->setSelection(selT, selB, selL, selR);
+}
+
 void PolycodeTextEditor::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == textInput && event->getEventType() == "UIEvent") {
@@ -536,6 +636,13 @@ void PolycodeTextEditor::handleEvent(Event *event) {
 		}
 	}
 
+	if (event->getDispatcher() == Services()->getInput() && event->getEventCode() == InputEvent::EVENT_KEYDOWN){
+		CoreInput *input = Services()->getInput();
+		InputEvent* iEvent = (InputEvent*)event;
+		if (iEvent->getKey() == KEY_k && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))){
+			commentText(input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT));
+		}
+	}
 	if(event->getDispatcher() == findBar->functionList) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CHANGE_EVENT) {
 			FindMatch *match = (FindMatch*)findBar->functionList->getSelectedItem()->data;

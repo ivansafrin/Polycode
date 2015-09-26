@@ -75,6 +75,7 @@ class PolycodeSyntaxHighlighter : public UITextInputSyntaxHighlighter {
 		static const int MODE_LUA = 0;
 		static const int MODE_GLSL = 1;
 						
+		int getMode();
 	protected:
 
 		int mode;
@@ -102,6 +103,8 @@ public:
 	
 	void highlightLine(unsigned int lineNumber);
 	
+	void commentText(bool uncomment = false);
+
 protected:
 
 	FindBar *findBar;

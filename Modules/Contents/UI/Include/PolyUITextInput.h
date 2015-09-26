@@ -158,7 +158,7 @@ namespace Polycode {
 			 * If the input is single-line, insert the complete text into
 			 * the line, without taking linebreaks into account.
 			 *
-			* If the input is multi-line, each line is inserted separately
+			 * If the input is multi-line, each line is inserted separately
 			 * into the text field
 			 *
 			 * @param text The new text contents.
@@ -282,6 +282,14 @@ namespace Polycode {
 			 * @param withWhat The string to replace each occurrence with.
 			 */
 			void replaceAll(String what, String withWhat);
+
+			/**
+			 * Replace lines from index start with some new lines.
+			 *
+			 * @param start The index of the first line to be replaced.
+			 * @param newLines The string containing lines split by '\n' to replace the current once. If too many lines it is automatically adding them as new lines.
+			 */
+			void replaceLines(int start, String newLines);
 			
 			/**
 			 * Find and optionally replace a string.
@@ -346,6 +354,11 @@ namespace Polycode {
 			String getSelectionText();
 
 			/**
+			 * Reads the bounds of selection to the given integers.
+			 */
+			void readSelection(int& top, int& bottom, int& left, int& right);
+
+			/**
 			 * Replace the current selection with the given text.
 			 *
 			 * @param text The string to insert.
@@ -362,6 +375,8 @@ namespace Polycode {
             void convertIndentToTabs();
             void convertIndentToSpaces();
 			
+			void saveUndoState();
+
 			void doMultilineResize();
         
             virtual void onGainFocus();
@@ -390,7 +405,6 @@ namespace Polycode {
 			Color lineNumberColor;
 				
 			void setUndoState(UITextInputUndoState state);
-			void saveUndoState();
 			
 			void setTextDiff(String text);
 		
