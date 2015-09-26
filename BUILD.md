@@ -162,12 +162,10 @@ or using the package manager of your distribution.
     cd Build/Debug
     cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug ../..
     make
-    make install
     mkdir ../Release
     cd ../Release
     cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ../..
     make
-    make install
 
 This will install Polycode into the Release/Linux/Framework directory,
 which should mirror the binary download from the website and contain
