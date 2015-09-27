@@ -67,6 +67,37 @@ Camera *TrackballCamera::getTargetCamera() {
 	return targetCamera;
 }
 
+bool TrackballCamera::isActionKeyDown(String actionKey){
+	Config *config = CoreServices::getInstance()->getConfig();
+	Number key = config->getNumericValue("Polycode", actionKey);
+	if (key == 0){
+		return (coreInput->getKeyState(KEY_LALT) || coreInput->getKeyState(KEY_RALT));
+	} else if (key == 1){
+		return (coreInput->getKeyState(KEY_LSHIFT) || coreInput->getKeyState(KEY_RSHIFT));
+	} else if (key == 2){
+		return (coreInput->getKeyState(KEY_LCTRL) || coreInput->getKeyState(KEY_RCTRL));
+	} else if (key == 3){
+		return (coreInput->getKeyState(KEY_MODE));
+	} else if (key == 4){
+		return (coreInput->getKeyState(KEY_LSUPER) || coreInput->getKeyState(KEY_RSUPER));
+	} else if (key == 5){
+		return ((coreInput->getKeyState(KEY_LALT) || coreInput->getKeyState(KEY_RALT)) && (coreInput->getKeyState(KEY_LSHIFT) || coreInput->getKeyState(KEY_RSHIFT)));
+	} else if (key == 6){
+		return ((coreInput->getKeyState(KEY_LALT) || coreInput->getKeyState(KEY_RALT)) && (coreInput->getKeyState(KEY_LCTRL) || coreInput->getKeyState(KEY_RCTRL)));
+	} else if (key == 7){
+		return ((coreInput->getKeyState(KEY_LSHIFT) || coreInput->getKeyState(KEY_RSHIFT)) && (coreInput->getKeyState(KEY_LCTRL) || coreInput->getKeyState(KEY_RCTRL)));
+	} else if (key == 8){
+		return ((coreInput->getKeyState(KEY_LALT) || coreInput->getKeyState(KEY_RALT)) && (coreInput->getKeyState(KEY_LSHIFT) || coreInput->getKeyState(KEY_RSHIFT)) && (coreInput->getKeyState(KEY_LCTRL) || coreInput->getKeyState(KEY_RCTRL)));
+	} else if (key == 9){
+		return ((coreInput->getKeyState(KEY_MODE)) && (coreInput->getKeyState(KEY_LSHIFT) || coreInput->getKeyState(KEY_RSHIFT)));
+	} else if (key == 10){
+		return ((coreInput->getKeyState(KEY_MODE)) && (coreInput->getKeyState(KEY_LCTRL) || coreInput->getKeyState(KEY_RCTRL)));
+	} else if (key == 11){
+		return ((coreInput->getKeyState(KEY_LALT) || coreInput->getKeyState(KEY_RALT)) && (coreInput->getKeyState(KEY_MODE)));
+	} else {
+		return false;
+	}
+}
 
 bool TrackballCamera::isNavKeyDown() {
 	return (coreInput->getKeyState(KEY_LALT) || coreInput->getKeyState(KEY_RALT));
@@ -77,30 +108,24 @@ void TrackballCamera::handleEvent(Event *event) {
 		InputEvent *inputEvent = (InputEvent*) event;
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEDOWN:
-				if(isNavKeyDown() || inputEvent->mouseButton == CoreInput::MOUSE_BUTTON3) {
-					if(coreInput->getKeyState(KEY_LSHIFT) || coreInput->getKeyState(KEY_RSHIFT)) {
-						mouseMode = MOUSE_MODE_PANNING;
-						trackBallMouseStart = Vector2(
-							inputEvent->getMousePosition().x / trackballShape->getWidth(),
-							inputEvent->getMousePosition().y / trackballShape->getHeight()
+				if (isActionKeyDown("keyPan")) {
+					mouseMode = MOUSE_MODE_PANNING;
+					trackBallMouseStart = Vector2(
+						inputEvent->getMousePosition().x / trackballShape->getWidth(),
+						inputEvent->getMousePosition().y / trackballShape->getHeight()
 						);
-						trackBallMouseEnd = trackBallMouseStart;
-					} else if(coreInput->getKeyState(KEY_LCTRL) || coreInput->getKeyState(KEY_RCTRL)) {
-						mouseMode = MOUSE_MODE_ZOOMING;
-						trackBallMouseStart = Vector2(
-							inputEvent->getMousePosition().x / trackballShape->getWidth(),
-							inputEvent->getMousePosition().y / trackballShape->getHeight()
+					trackBallMouseEnd = trackBallMouseStart;
+				} else if (isActionKeyDown("keyZoom")) {
+					mouseMode = MOUSE_MODE_ZOOMING;
+					trackBallMouseStart = Vector2(
+						inputEvent->getMousePosition().x / trackballShape->getWidth(),
+						inputEvent->getMousePosition().y / trackballShape->getHeight()
 						);
-						trackBallMouseEnd = trackBallMouseStart;												
-					} else {
-                        if(!rotationDisabled) {
-                            mouseMode = MOUSE_MODE_ORBITING;
-							trackBallMouseStart = trackBallMouseEnd = Vector2(
+					trackBallMouseEnd = trackBallMouseStart;				} else if (isActionKeyDown("keyRot") || inputEvent->mouseButton == CoreInput::MOUSE_BUTTON3){					if (!rotationDisabled) {
+						mouseMode = MOUSE_MODE_ORBITING;							trackBallMouseStart = trackBallMouseEnd = Vector2(
 								inputEvent->getMousePosition().x / trackballShape->getWidth(),
-								inputEvent->getMousePosition().y / trackballShape->getHeight()
-							);
-                        }
-					}
+								inputEvent->getMousePosition().y / trackballShape->getHeight()							);
+						}					}
 				}
 			break;
 			case InputEvent::EVENT_MOUSEUP:

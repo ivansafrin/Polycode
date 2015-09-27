@@ -41,12 +41,28 @@ class SettingsWindow : public UIWindow {
 		void handleEvent(Event *event);
 		void updateUI();
 
+		/**
+		* Set the key properties
+		* @param keyString String of the selected label
+		* @return int describing which keys you use
+		*/
+		int setKeyProp(String keyString);
+
+		UITab *keys, *general;
+		UITabFrame *tabFrame;
+
+		UIElement *rootGeneral;
 		UICheckBox *useExternalTextEditorBox;
 		UITextInput *externalTextEditorCommand;
 		UIButton *browseButton;
 		UIComboBox *syntaxThemeBox;
 		UIComboBox *uiThemeBox;
 		UIComboBox *textureFilteringBox;
+
+		UIElement *rootKeys;
+		UIComboBox *keyPan;
+		UIComboBox *keyRot;
+		UIComboBox *keyZoom;
 		
 		UIButton *cancelButton;
 		UIButton *okButton;

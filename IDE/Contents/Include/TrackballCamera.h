@@ -39,7 +39,13 @@ class TrackballCamera : public EventDispatcher {
     
     
         void setCameraPosition(Vector3 cameraPosition);
-    
+		
+		/**
+		* Function to check if the keys needed for an action (like zooming)
+		* @param actionKey String with keyPan, keyRot or keyZoom for the saved key to return
+		* @return true if all keys for this action are down
+		*/
+		bool isActionKeyDown(String actionKey);
 		bool isNavKeyDown();
 
         void disableRotation(bool val);

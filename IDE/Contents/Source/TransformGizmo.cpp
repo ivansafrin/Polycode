@@ -1055,7 +1055,7 @@ void TransformGizmo::handleEvent(Event *event) {
         return;
     }
     
-	if(!coreInput->getKeyState(KEY_LALT) && !coreInput->getKeyState(KEY_RALT)) {
+	if (!coreInput->getKeyState(KEY_LALT) && !coreInput->getKeyState(KEY_RALT) && !coreInput->getKeyState(KEY_LSHIFT) && !coreInput->getKeyState(KEY_RSHIFT) && !coreInput->getKeyState(KEY_LCTRL) && !coreInput->getKeyState(KEY_RCTRL) && !coreInput->getKeyState(KEY_MODE) && !coreInput->getKeyState(KEY_LSUPER) && !coreInput->getKeyState(KEY_RSUPER)) {
 		if(event->getDispatcher() == pitchGrip) {
 			if(event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
 				if(((InputEvent*)event)->getMouseButton() != CoreInput::MOUSE_BUTTON3) {
