@@ -426,16 +426,17 @@ void CocoaCore::setCursor(int cursorType) {
 }
 
 void CocoaCore::warpCursor(int x, int y) {
-
-	CGSetLocalEventsSuppressionInterval(0);
-	NSArray *theScreens = [NSScreen screens];
-	for (NSScreen *theScreen in theScreens) {
-		CGPoint CenterOfWindow = CGPointMake([glView window].frame.origin.x+x, (-1)*([glView window].frame.origin.y-theScreen.frame.size.height)-yRes+y);
-		CGDisplayMoveCursorToPoint (kCGDirectMainDisplay, CenterOfWindow);		
-		break;
+	if(!paused){
+		CGSetLocalEventsSuppressionInterval(0);
+		NSArray *theScreens = [NSScreen screens];
+		for (NSScreen *theScreen in theScreens) {
+			CGPoint CenterOfWindow = CGPointMake([glView window].frame.origin.x+x, (-1)*([glView window].frame.origin.y-theScreen.frame.size.height)-yRes+y);
+			CGDisplayMoveCursorToPoint (kCGDirectMainDisplay, CenterOfWindow);		
+			break;
+		}
+		lastMouseX = x;
+		lastMouseY = y;
 	}
-	lastMouseX = x;
-	lastMouseY = y;
 }
 
 
@@ -668,13 +669,14 @@ bool CocoaCore::systemUpdate() {
 	if(!running)
 		return false;
 	doSleep();
-	
-	if(modeChangeInfo.needResolutionChange) {
-		_setVideoMode(modeChangeInfo.xRes, modeChangeInfo.yRes, modeChangeInfo.fullScreen, modeChangeInfo.vSync, modeChangeInfo.aaLevel, modeChangeInfo.anisotropyLevel);
-		modeChangeInfo.needResolutionChange = false;
-	}
+	if(!paused){
+		if(modeChangeInfo.needResolutionChange) {
+			_setVideoMode(modeChangeInfo.xRes, modeChangeInfo.yRes, modeChangeInfo.fullScreen, modeChangeInfo.vSync, modeChangeInfo.aaLevel, modeChangeInfo.anisotropyLevel);
+			modeChangeInfo.needResolutionChange = false;
+		}
 							
-	updateCore();
+		updateCore();
+	}
 	checkEvents();
 	return running;
 }

@@ -146,6 +146,12 @@ ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
                 break;
             }
         break;
+	  case WM_KILLFOCUS:
+		  core->handleFocusChange(false);
+		  break;
+	  case WM_SETFOCUS:
+		  core->handleFocusChange(true);
+		  break;
 	default:
 		useDefault = true;
 		break;

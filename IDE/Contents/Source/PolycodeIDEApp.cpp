@@ -39,7 +39,7 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1, true);
 #endif
 	
-//	core->pauseOnLoseFocus = true;
+	core->pauseOnLoseFocus = true;
     
 	printf("DIR: %s\n", core->getDefaultWorkingDirectory().c_str());
 
@@ -55,8 +55,6 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 	runNextFrame = false;
 	
 	core->addEventListener(this, Core::EVENT_CORE_RESIZE);
-	core->addEventListener(this, Core::EVENT_LOST_FOCUS);
-	core->addEventListener(this, Core::EVENT_GAINED_FOCUS);
 			
 	globalClipboard = new PolycodeClipboard();
 	
@@ -483,6 +481,8 @@ void PolycodeIDEApp::doRunProject() {
     
 	frame->showConsole();
 
+	CoreServices::getInstance()->getCore()->pauseOnLoseFocus = false;
+
 	String outPath = PolycodeToolLauncher::generateTempPath(projectManager->getActiveProject()) + ".polyapp";
 	PolycodeToolLauncher::buildProject(projectManager->getActiveProject(), outPath, false);
 	PolycodeToolLauncher::runPolyapp(outPath);
@@ -828,12 +828,6 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == core) {
 		switch(event->getEventCode()) {
-			case Core::EVENT_LOST_FOCUS:
-				core->setFramerate(3);
-			break;		
-			case Core::EVENT_GAINED_FOCUS:
-				core->setFramerate(60);			
-			break;					
 			case Core::EVENT_CORE_RESIZE:
 				if(menuBar) {
 					frame->Resize(core->getXRes(), core->getYRes()-25);
@@ -1368,51 +1362,51 @@ PolycodeIDEApp::~PolycodeIDEApp() {
 
 bool PolycodeIDEApp::Update() {
 
+	if(!core->paused){
+		if(willRunProject) {
+			willRunProject = false;
+			runProject();
+		}
 
-	if(willRunProject) {
-		willRunProject = false;
-		runProject();
-	}
+		if(runNextFrame) {
+			runNextFrame = false;
+			doRunProject();
+		}
 
-	if(runNextFrame) {
-		runNextFrame = false;
-		doRunProject();
-	}
+		if(lastConnected != debugger->isConnected()) {
+			needsRedraw = true;
+			lastConnected = debugger->isConnected();
+		}
 
-	if(lastConnected != debugger->isConnected()) {
-		needsRedraw = true;
-		lastConnected = debugger->isConnected();
-	}
-
-	if(debugger->isConnected()) {
-			frame->stopButton->visible = true;
-			frame->stopButton->enabled = true;			
+		if(debugger->isConnected()) {
+				frame->stopButton->visible = true;
+				frame->stopButton->enabled = true;			
 			
-			frame->playButton->visible = false;
-			frame->playButton->enabled = false;						
+				frame->playButton->visible = false;
+				frame->playButton->enabled = false;						
 			
-	} else {
-			frame->stopButton->visible = false;
-			frame->stopButton->enabled = false;			
+		} else {
+				frame->stopButton->visible = false;
+				frame->stopButton->enabled = false;			
 			
-			frame->playButton->visible = true;
-			frame->playButton->enabled = true;				
-	}
+				frame->playButton->visible = true;
+				frame->playButton->enabled = true;				
+		}
 	
 
-	if(projectManager->getProjectCount() == 1) {
-		projectManager->setActiveProject(projectManager->getProjectByIndex(0));
-	}
+		if(projectManager->getProjectCount() == 1) {
+			projectManager->setActiveProject(projectManager->getProjectByIndex(0));
+		}
 	
-	if(projectManager->getProjectCount() > 0) {
-		frame->welcomeEntity->enabled =  false;
+		if(projectManager->getProjectCount() > 0) {
+			frame->welcomeEntity->enabled =  false;
 		
-		frame->getConsoleSizer()->enabled = true;
-	} else {
-		frame->welcomeEntity->enabled =  true;
-		frame->getConsoleSizer()->enabled = false;		
-	}
-
+			frame->getConsoleSizer()->enabled = true;
+		} else {
+			frame->welcomeEntity->enabled =  true;
+			frame->getConsoleSizer()->enabled = false;		
+		}
+	}	
 
 	return core->updateAndRender();
 }

@@ -52,6 +52,7 @@ void PolycodeRemoteDebugger::Disconnect() {
 	for(int i=0; i < debuggerClients.size(); i++) {
 		server->DisconnectClient(debuggerClients[i]->client);
 	}
+	CoreServices::getInstance()->getCore()->pauseOnLoseFocus = true;
 	debuggerClients.clear();
 }
 
@@ -124,16 +125,20 @@ void PolycodeRemoteDebugger::handleEvent(Event *event) {
 						PolycodeConsole::print("Remote debugger client disconnected...\n");
 					}
 				}
+				if (debuggerClients.size() == 0){
+					CoreServices::getInstance()->getCore()->pauseOnLoseFocus = true;
+				}
 			}	
 				break;
 				
 			case ServerEvent::EVENT_CLIENT_CONNECTED:
 			{
+				CoreServices::getInstance()->getCore()->pauseOnLoseFocus = false;
 				DebuggerClient *newClient = new DebuggerClient();
 				newClient->client = serverEvent->client;
 				PolycodeConsole::print("Remote debugger client connected...\n");
                 printf("CLIENT CONNECTED\n");
-				debuggerClients.push_back(newClient);				
+				debuggerClients.push_back(newClient);
 			}
 				break;
 				
