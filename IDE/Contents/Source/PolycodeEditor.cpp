@@ -42,6 +42,10 @@ bool PolycodeEditorFactory::canHandleExtension(String extension) {
 	return false;
 }
 
+std::vector<String> PolycodeEditorFactory::getExtensions(){
+	return extensions;
+}
+
 void PolycodeEditor::setFilePath(String newPath) {
 	filePath = newPath;
 }

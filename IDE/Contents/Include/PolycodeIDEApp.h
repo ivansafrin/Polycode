@@ -70,6 +70,7 @@ public:
 	void openFileInProject(PolycodeProject *project, String filePath);
 	
 	void openFile(OSFileEntry file);
+	void openFilePicker();
 	
 	void stopProject();
 	

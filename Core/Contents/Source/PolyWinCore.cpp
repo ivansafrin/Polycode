@@ -1290,35 +1290,32 @@ std::vector<String> Win32Core::openFilePicker(std::vector<CoreFileExtension> ext
 	ofn.nMaxFileTitle = 0;
 	ofn.lpstrInitialDir=NULL;
 
-	if(allowMultiple) {
-		ofn.Flags = OFN_PATHMUSTEXIST|OFN_FILEMUSTEXIST|OFN_ALLOWMULTISELECT|OFN_EXPLORER;
-	} else {
+	if(!allowMultiple) {
 		ofn.Flags = OFN_PATHMUSTEXIST|OFN_FILEMUSTEXIST|OFN_EXPLORER;
+	} else {
+		ofn.Flags = OFN_PATHMUSTEXIST|OFN_FILEMUSTEXIST|OFN_ALLOWMULTISELECT|OFN_EXPLORER;
 	}
 
 	std::vector<String> retVec;
 
 	if(GetOpenFileName(&ofn)) {
 		if(allowMultiple) {
-			String path = fBuffer;
-
-			std::string buf;
-			for (int i = ofn.nFileOffset; i < sizeof( fBuffer ); i++)
-			{
-				if (fBuffer[i] != NULL)
-					buf.push_back(fBuffer[i]);
-				else if (fBuffer[i-1] != NULL)
-				{
-					retVec.push_back(path + "/" + buf);
-					buf = "";
-				}
-				else // 2 NULL characters = no more files
+			String dir = fBuffer;
+			size_t pos = dir.length(), last = 0;
+			while (true){
+				if (fBuffer[pos + 1] == NULL){
+					if (retVec.size() == 0){
+						retVec.push_back(dir);
+					}
 					break;
-			}
-			if (retVec.size() == 1)
-			{
-				retVec.clear();
-				retVec.push_back(path); // If only 1 file selected, path is the full path of the file
+				} else {
+					String fileName;
+					for (last = pos + 1; fBuffer[pos + 1] != NULL; pos++){
+						fileName.append(fBuffer[pos + 1]);
+					}
+					retVec.push_back(dir + "/" + fileName);
+					pos++;
+				}
 			}
 		} else {
 			retVec.push_back(String(fBuffer));

@@ -70,6 +70,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				case ID_FILE_OPEN_PROJECT:
 					globalApp->openProject();
 					break;
+				case ID_FILE_OPEN_FILE:
+					globalApp->openFilePicker();
+					break;
 				case ID_FILE_CLOSE_FILE:
 					globalApp->closeFile();
 					break;
