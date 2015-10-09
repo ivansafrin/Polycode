@@ -128,11 +128,22 @@ namespace Polycode {
 			* Find character in string from the beginning. Searches the string from the beginnign for any of the characters that are part of the passed string.
 			* @param str String containing the characters to search for.
 			* @param pos Position of the first character in the string to be taken into consideration for possible matches. The default value indicates that the entire string is searched.
-			* @return The position of the last occurrence in the string of any of the characters searched for.
-			*/			
+			* @return The position of the first occurrence in the string of any of the characters searched for.
+			*/
 			size_t find_first_of(const String &str, size_t pos = 0) {
-				return contents.find_first_of(str.contents, pos); 
+				return contents.find_first_of(str.contents, pos);
 			}
+
+			/**
+			* Find character in string from the beginning. Searches the string from the beginning for any other than the characters that are part of the passed string.
+			* @param str String containing the characters to not search for.
+			* @param pos Position of the first character in the string to be taken into consideration for possible matches. The default value indicates that the entire string is searched.
+			* @return The position of the first occurrence in the string of any of the characters searched for.
+			*/
+			size_t find_first_not_of(const String &str, size_t pos = 0) {
+				return contents.find_first_not_of(str.contents, pos);
+			}
+
 		
 			inline String operator + (const char *str) const { return String(contents + String(str).contents); }		
 			inline String operator + (const String &str) const { return String(contents + str.contents); }		
@@ -234,6 +245,12 @@ namespace Polycode {
 			* @return true if the string is a number
 			*/			
 			bool isNumber();
+
+			/**
+			* Checks if the string is an integer
+			* @return true if the string is an integer
+			*/
+			bool isInteger();
 
 			/**
 			* STL string version of the string.

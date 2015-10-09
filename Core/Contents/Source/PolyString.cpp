@@ -23,6 +23,9 @@
 #include "PolyString.h"
 #include <iomanip>
 #include <sstream>
+#ifdef _WINDOWS
+#include <ctype.h>
+#endif
 
 using namespace Polycode;
 using namespace std;
@@ -113,16 +116,16 @@ void String::setDataWithEncoding(char *data, int encoding) {
 }
 
 bool String::isNumber() {
-#ifdef _WINDOWS
+	if (contents.find_first_not_of("0123456789.+-") == string::npos)
+		return true;
 	return false;
-#else
-    std::string::const_iterator it = contents.begin();
-    while (it != contents.end() && std::isdigit(*it)) ++it;
-    return !contents.empty() && it == contents.end();
-#endif
-}				
+}
 
-
+bool String::isInteger(){
+	std::string::const_iterator it = contents.begin();
+	while (it != contents.end() && (isdigit(*it) || *it == '+' || *it == '-')) ++it;
+	return !contents.empty() && it == contents.end();
+}
 
 vector<String> String::split(const String &delim) const {
 	
