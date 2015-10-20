@@ -34,6 +34,7 @@
 		8A86536D1B729D77009F94DD /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8A86536C1B729D77009F94DD /* PolycodeView.mm */; };
 		8A8653701B72C431009F94DD /* default.pak in Resources */ = {isa = PBXBuildFile; fileRef = 8A86536F1B72C431009F94DD /* default.pak */; };
 		8A8653961B752DBE009F94DD /* main_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8A8653951B752DBE009F94DD /* main_icon.png */; };
+		8AAA3B4A1BD6D0660078953A /* white.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AAA3B491BD6D0660078953A /* white.png */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +70,7 @@
 		8A86536E1B72C301009F94DD /* PolycodeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeView.h; path = ../../../../include/polycode/view/osx/PolycodeView.h; sourceTree = "<group>"; };
 		8A86536F1B72C431009F94DD /* default.pak */ = {isa = PBXFileReference; lastKnownFileType = file; name = default.pak; path = ../../../../assets/default/default.pak; sourceTree = "<group>"; };
 		8A8653951B752DBE009F94DD /* main_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = main_icon.png; path = ../../../../assets/icons/main_icon.png; sourceTree = "<group>"; };
+		8AAA3B491BD6D0660078953A /* white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = white.png; path = ../../../../../Hellmouth/Resources/Resources/textures/white.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,6 +125,7 @@
 				8A86536A1B729559009F94DD /* PolycodeTemplateApp.mm */,
 				8A8653351B72931C009F94DD /* AppDelegate.h */,
 				8A8653361B72931C009F94DD /* AppDelegate.m */,
+				8AAA3B491BD6D0660078953A /* white.png */,
 				8A86536E1B72C301009F94DD /* PolycodeView.h */,
 				8A86536C1B729D77009F94DD /* PolycodeView.mm */,
 				8A86536F1B72C431009F94DD /* default.pak */,
@@ -220,6 +223,7 @@
 				8A36D1A41B8CF928009897D0 /* curve_02_c.wav in Resources */,
 				8A36D1A61B8CF928009897D0 /* koto_level.wav in Resources */,
 				8A36D1A71B8CF928009897D0 /* marimba-lo.wav in Resources */,
+				8AAA3B4A1BD6D0660078953A /* white.png in Resources */,
 				8A8653961B752DBE009F94DD /* main_icon.png in Resources */,
 				8A36D1A51B8CF928009897D0 /* initial_touch_01.wav in Resources */,
 				8A86533E1B72931C009F94DD /* MainMenu.xib in Resources */,

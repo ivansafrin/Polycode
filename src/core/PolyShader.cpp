@@ -60,6 +60,7 @@ void *ProgramParam::createParamData(int type) {
 		case PARAM_COLOR:
 		{
 			Color *val = new Color();
+            val->setColor(1.0, 1.0, 1.0, 1.0);
 			return (void*)val;
 		}
 		break;		
@@ -68,7 +69,19 @@ void *ProgramParam::createParamData(int type) {
 			Matrix4 *val = new Matrix4();
 			return (void*)val;
 		}
-		break;		
+		break;
+        case PARAM_TEXTURE:
+        {
+            Texture *val = Services()->getMaterialManager()->getTextureByResourcePath("default/default.png");
+            return (void*)val;
+        }
+        break;
+        case PARAM_CUBEMAP:
+        {
+            // RENDERER_TODO: default cubemap here?
+			return NULL;
+        }
+        break;
 		default:		
 			return NULL;
 		break;
@@ -144,6 +157,10 @@ LocalShaderParam * ShaderBinding::addParam(int type, const String& name) {
 	newParam->name = name;
     newParam->type = type;
     newParam->param = NULL;
+    
+    if(type == ProgramParam::PARAM_TEXTURE || type == ProgramParam::PARAM_CUBEMAP) {
+        newParam->ownsPointer = false;
+    }
 	localParams.push_back(newParam);
 	return newParam;
 }

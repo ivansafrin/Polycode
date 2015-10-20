@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8A22D92B1BCC67DE009EF0A6 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A22D92A1BCC67DE009EF0A6 /* OpenGL.framework */; };
+		8A22D92D1BCC67E6009EF0A6 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A22D92C1BCC67E6009EF0A6 /* AudioUnit.framework */; };
+		8A22D92F1BCC6809009EF0A6 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A22D92E1BCC6809009EF0A6 /* CoreAudio.framework */; };
+		8A22D9311BCC6810009EF0A6 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A22D9301BCC6810009EF0A6 /* AudioToolbox.framework */; };
 		8A36D2101B8E5751009897D0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D20F1B8E5751009897D0 /* AppDelegate.m */; };
 		8A36D2121B8E5751009897D0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2111B8E5751009897D0 /* main.m */; };
 		8A36D2141B8E5751009897D0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8A36D2131B8E5751009897D0 /* Images.xcassets */; };
@@ -46,10 +50,6 @@
 		8A36D2721B8E5BA9009897D0 /* ToolWindows.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2501B8E5BA9009897D0 /* ToolWindows.cpp */; };
 		8A36D2731B8E5BA9009897D0 /* TrackballCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2511B8E5BA9009897D0 /* TrackballCamera.cpp */; };
 		8A36D2741B8E5BA9009897D0 /* TransformGizmo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2521B8E5BA9009897D0 /* TransformGizmo.cpp */; };
-		8A36D30D1B8E6FB8009897D0 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3091B8E6FB8009897D0 /* AudioUnit.framework */; };
-		8A36D30E1B8E6FB9009897D0 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D30A1B8E6FB8009897D0 /* AudioToolbox.framework */; };
-		8A36D30F1B8E6FB9009897D0 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D30B1B8E6FB8009897D0 /* CoreAudio.framework */; };
-		8A36D3101B8E6FB9009897D0 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D30C1B8E6FB8009897D0 /* OpenGL.framework */; };
 		8A36D31B1B8E6FD5009897D0 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3111B8E6FD5009897D0 /* libfreetype.a */; };
 		8A36D31C1B8E6FD5009897D0 /* liblibogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3121B8E6FD5009897D0 /* liblibogg.a */; };
 		8A36D31D1B8E6FD5009897D0 /* liblibvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3131B8E6FD5009897D0 /* liblibvorbis.a */; };
@@ -65,6 +65,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8A22D92A1BCC67DE009EF0A6 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		8A22D92C1BCC67E6009EF0A6 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
+		8A22D92E1BCC6809009EF0A6 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		8A22D9301BCC6810009EF0A6 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		8A36D2091B8E5751009897D0 /* PolycodeStudio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PolycodeStudio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A36D20D1B8E5751009897D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8A36D20E1B8E5751009897D0 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -143,10 +147,6 @@
 		8A36D2951B8E5BE4009897D0 /* ToolWindows.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ToolWindows.h; path = ../../../include/polycode/ide/ToolWindows.h; sourceTree = "<group>"; };
 		8A36D2961B8E5BE4009897D0 /* TrackballCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TrackballCamera.h; path = ../../../include/polycode/ide/TrackballCamera.h; sourceTree = "<group>"; };
 		8A36D2971B8E5BE4009897D0 /* TransformGizmo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TransformGizmo.h; path = ../../../include/polycode/ide/TransformGizmo.h; sourceTree = "<group>"; };
-		8A36D3091B8E6FB8009897D0 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/System/Library/Frameworks/AudioUnit.framework; sourceTree = "<absolute>"; };
-		8A36D30A1B8E6FB8009897D0 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
-		8A36D30B1B8E6FB8009897D0 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/System/Library/Frameworks/CoreAudio.framework; sourceTree = "<absolute>"; };
-		8A36D30C1B8E6FB8009897D0 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		8A36D3111B8E6FD5009897D0 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/libfreetype.a; sourceTree = "<absolute>"; };
 		8A36D3121B8E6FD5009897D0 /* liblibogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibogg.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/liblibogg.a; sourceTree = "<absolute>"; };
 		8A36D3131B8E6FD5009897D0 /* liblibvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibvorbis.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/liblibvorbis.a; sourceTree = "<absolute>"; };
@@ -166,18 +166,18 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A22D9311BCC6810009EF0A6 /* AudioToolbox.framework in Frameworks */,
+				8A22D92F1BCC6809009EF0A6 /* CoreAudio.framework in Frameworks */,
+				8A22D92D1BCC67E6009EF0A6 /* AudioUnit.framework in Frameworks */,
+				8A22D92B1BCC67DE009EF0A6 /* OpenGL.framework in Frameworks */,
 				8A36D31D1B8E6FD5009897D0 /* liblibvorbis.a in Frameworks */,
-				8A36D30F1B8E6FB9009897D0 /* CoreAudio.framework in Frameworks */,
 				8A36D3231B8E6FD5009897D0 /* libPolycore.a in Frameworks */,
-				8A36D3101B8E6FB9009897D0 /* OpenGL.framework in Frameworks */,
 				8A36D3221B8E6FD5009897D0 /* libpng15.a in Frameworks */,
 				8A36D3201B8E6FD5009897D0 /* liblua5.1.a in Frameworks */,
 				8A36D31F1B8E6FD5009897D0 /* liblibvorbisfile.a in Frameworks */,
 				8A36D31E1B8E6FD5009897D0 /* libportaudio.a in Frameworks */,
 				8A36D3261B8E6FE7009897D0 /* libPolycodeUI.a in Frameworks */,
 				8A36D31B1B8E6FD5009897D0 /* libfreetype.a in Frameworks */,
-				8A36D30D1B8E6FB8009897D0 /* AudioUnit.framework in Frameworks */,
-				8A36D30E1B8E6FB9009897D0 /* AudioToolbox.framework in Frameworks */,
 				8A36D3211B8E6FD5009897D0 /* libphysfs.a in Frameworks */,
 				8A36D3241B8E6FD5009897D0 /* libz.a in Frameworks */,
 				8A36D31C1B8E6FD5009897D0 /* liblibogg.a in Frameworks */,
@@ -190,10 +190,10 @@
 		8A36D2001B8E5751009897D0 = {
 			isa = PBXGroup;
 			children = (
-				8A36D3091B8E6FB8009897D0 /* AudioUnit.framework */,
-				8A36D30A1B8E6FB8009897D0 /* AudioToolbox.framework */,
-				8A36D30B1B8E6FB8009897D0 /* CoreAudio.framework */,
-				8A36D30C1B8E6FB8009897D0 /* OpenGL.framework */,
+				8A22D9301BCC6810009EF0A6 /* AudioToolbox.framework */,
+				8A22D92E1BCC6809009EF0A6 /* CoreAudio.framework */,
+				8A22D92C1BCC67E6009EF0A6 /* AudioUnit.framework */,
+				8A22D92A1BCC67DE009EF0A6 /* OpenGL.framework */,
 				8A36D2301B8E5B73009897D0 /* include */,
 				8A36D22F1B8E5B6E009897D0 /* src */,
 				8A36D20B1B8E5751009897D0 /* PolycodeStudio */,

@@ -184,6 +184,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                                 localParam->param = shaderPass.shader->getParamPointer(localParam->name);
                             }
                             if(localParam->param) {
+                           //     printf("SETTING MATERIAL PARAM: %s\n", localParam->name.c_str());
                                 graphicsInterface->setParamInShader(shaderPass.shader, localParam->param, localParam);
                             }
                         }
@@ -199,6 +200,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                             localParam->param = shaderPass.shader->getParamPointer(localParam->name);
                         }
                         if(localParam->param) {
+                        //    printf("SETTING LOCAL PARAM: %s\n", localParam->name.c_str());
                             graphicsInterface->setParamInShader(shaderPass.shader, localParam->param, localParam);
                         }
                     }
@@ -266,6 +268,12 @@ void RenderThread::processJob(const RendererThreadJob &job) {
             graphicsInterface->createTexture(texture);
         }
         break;
+        case JOB_DESTROY_TEXTURE:
+        {
+            Texture *texture = (Texture*) job.data;
+            graphicsInterface->destroyTexture(texture);
+        }
+        break;
         case JOB_PROCESS_DRAW_BUFFER:
         {
             GPUDrawBuffer *buffer = (GPUDrawBuffer*) job.data;
@@ -309,8 +317,7 @@ void RenderThread::processJob(const RendererThreadJob &job) {
                     }
                 }
             }
-            
-            
+            shader->reloadResource();
         }
         break;
         case JOB_CREATE_VERTEX_BUFFERS:
@@ -444,8 +451,21 @@ void Renderer::createVertexBuffers(Mesh *mesh) {
 }
 
 void Renderer::destroyTexture(Texture *texture) {
-    
+    renderThread->enqueueJob(RenderThread::JOB_DESTROY_TEXTURE, (void*)texture);
 }
+
+void Renderer::destroyProgram(ShaderProgram *program) {
+    renderThread->enqueueJob(RenderThread::JOB_DESTROY_PROGRAM, (void*)program);
+}
+
+void Renderer::destroyShader(Shader *shader) {
+    renderThread->enqueueJob(RenderThread::JOB_DESTROY_SHADER, (void*)shader);
+}
+
+void Renderer::destroyBuffer(RenderDataArray *array) {
+     renderThread->enqueueJob(RenderThread::JOB_DESTROY_BUFFER, (void*)array);
+}
+
 
 Vector3 Renderer::project(const Vector3 &position, const Matrix4 &modelMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport) {
     

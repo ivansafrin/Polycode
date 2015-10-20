@@ -46,15 +46,22 @@ namespace Polycode {
             virtual void setAttributeInShader(Shader *shader, ProgramAttribute *attribute, AttributeBinding *attributeBinding) = 0;
             virtual void disableAttribute(Shader *shader, const ProgramAttribute &attribute) = 0;
             virtual void createTexture(Texture *texture) = 0;
+            virtual void destroyTexture(Texture *texture) = 0;
+        
             virtual void setViewport(unsigned int x,unsigned  int y,unsigned  int width, unsigned height) = 0;
             virtual void clearBuffers(const Color &clearColor, bool colorBuffer, bool depthBuffer, bool stencilBuffer) = 0;
             virtual void createProgram(ShaderProgram *program) = 0;
+            virtual void destroyProgram(ShaderProgram *program) = 0;
+
+            virtual void destroyShader(Shader *shader) = 0;
             virtual void createShader(Shader *shader) = 0;
             virtual void useShader(Shader *shader) = 0;
         
             virtual void createVertexBuffer(VertexDataArray *dataArray) = 0;
             virtual void createIndexBuffer(IndexDataArray *dataArray) = 0;
-
+            virtual void destroyBuffer(RenderDataArray *array) = 0;
+        
+        
             virtual void bindFramebuffer(Texture *framebufferTexture) = 0;
         
             virtual void drawIndices(int type, IndexDataArray *indexArray) = 0;
@@ -123,6 +130,10 @@ namespace Polycode {
             static const int JOB_CREATE_SHADER = 5;
             static const int JOB_BEGIN_FRAME = 6;
             static const int JOB_CREATE_VERTEX_BUFFERS = 7;
+            static const int JOB_DESTROY_TEXTURE = 8;
+            static const int JOB_DESTROY_SHADER = 9;
+            static const int JOB_DESTROY_PROGRAM = 10;
+            static const int JOB_DESTROY_BUFFER = 11;
         
         protected:
         
@@ -155,7 +166,9 @@ namespace Polycode {
 
         Cubemap *createCubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4, Texture *t5);
         Texture *createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type, unsigned int filteringMode, unsigned int anisotropy, bool framebufferTexture);
+        
         void destroyTexture(Texture *texture);
+
         void processDrawBuffer(GPUDrawBuffer *buffer);
         
         void setBackingResolutionScale(Number xScale, Number yScale);
@@ -164,6 +177,10 @@ namespace Polycode {
         ShaderProgram *createProgram(const String &fileName);
         Shader *createShader(ShaderProgram *vertexProgram, ShaderProgram *fragmentProgram);
         void createVertexBuffers(Mesh *mesh);
+        
+        void destroyProgram(ShaderProgram *program);
+        void destroyShader(Shader *shader);
+        void destroyBuffer(RenderDataArray *array);
         
         void setAnisotropyAmount(Number amount);
         Number getAnisotropyAmount();

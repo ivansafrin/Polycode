@@ -64,6 +64,8 @@ namespace Polycode {
         
 			void removeShaderPass(int shaderIndex);
 			
+            void recreateExpectedShaderParams();
+        
 			void addShaderRenderTarget(ShaderRenderTarget *newTarget);
 			int getNumShaderRenderTargets();
 			ShaderRenderTarget *getShaderRenderTarget(unsigned int index);

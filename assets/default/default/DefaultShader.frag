@@ -5,7 +5,6 @@ varying vec4 varPosition;
 uniform sampler2D diffuse;
 uniform vec4 diffuse_color;
 uniform vec4 specular_color;
-uniform vec4 ambient_color;
 uniform vec4 entityColor;
 uniform float shininess;
 
@@ -120,7 +119,7 @@ void main()
 		
 	vec4 texColor = texture2D(diffuse, texCoordVar);		
 		
-    vec4 color = diffuse_val + ambient_color; 	           
+    vec4 color = diffuse_val; 	           
     color = clamp((color*entityColor*texColor) + specular_val, 0.0, 1.0);  
 
 	color.a = entityColor.a * texColor.a * diffuse_color.a;	

@@ -2313,7 +2313,6 @@ void ShaderOptionsSheet::handleEvent(Event *event) {
                     param->setTexture(((TextureProp*)props[i])->get());
                     
                 }
-
                 
 				dispatchEvent(new Event(), Event::CHANGE_EVENT);				
 				return;
@@ -2389,7 +2388,7 @@ void ShaderOptionsSheet::setOptionsFromParams(std::vector<ProgramParam> &params)
                     }
                     colorProp->set(colorValue);
                     
-                    propHeight += 40;				
+                    propHeight += 40;
                 }
                 break;
             }

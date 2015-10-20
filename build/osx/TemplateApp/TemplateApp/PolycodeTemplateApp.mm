@@ -14,49 +14,29 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     
 	// Write your code here!
     
-    Scene *scene = new Scene(Scene::SCENE_2D);
+    Scene *scene = new Scene(Scene::SCENE_3D);
     scene->useClearColor = true;
     
-    ScenePrimitive *test = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.5, 0.5);
-    test->setMaterialByName("Unlit");
-    test->getLocalShaderOptions()->loadTextureForParam("diffuse", "main_icon.png");
+    scene->getDefaultCamera()->setPosition(5.0, 5.0, 5.0);
+    scene->getDefaultCamera()->lookAt(Vector3());
+    
+    ScenePrimitive *test = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 1.0, 1.0, 1.0);
+    test->setMaterialByName("DefaultTextured");
+//    test->getShaderPass(0).shaderBinding->loadTextureForParam("diffuse", "white.png");
+  //  test->getShaderPass(0).shaderBinding->addParam(ProgramParam::PARAM_COLOR, "diffuse_color")->setColor(Color(1.0, 1.0, 1.0, 1.0));
     scene->addChild(test);
     
-    SceneLabel *testLabel = new SceneLabel("Test!", 32, "sans", Label::ANTIALIAS_FULL, 0.2);
-    scene->addChild(testLabel);
-    
-    bgSound = new Sound("bedlayer_main.wav");
-    bgSound->Play();
-//    bgSound->setPitch(10.0);
-    
-    
-    sound1 = new Sound("marimba-lo.wav");
-    
-    sound1->setPitch(2.3);
-    
-    sound2 = new Sound("initial_touch_01.wav");
-    sound3 = new Sound("curve_02_c.wav");
-    
-    //sound2->Play(true);
+
+    SceneLight *light = new SceneLight(SceneLight::POINT_LIGHT, scene, 200.0);
+    scene->addLight(light);
+    scene->addChild(light);
+    light->setPosition(-10.0, 10.0, 10.0);
     
     Services()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 }
 
 void PolycodeTemplateApp::handleEvent(Event *event) {
     InputEvent *inputEvent = (InputEvent*) event;
-    
-    switch(inputEvent->getKey()) {
-        case KEY_z:
-            sound1->Play(true);
-        break;
-        case KEY_x:
-            sound2->Play();
-        break;
-        case KEY_c:
-            sound3->Play();
-        break;
-            
-    }
 }
 
 PolycodeTemplateApp::~PolycodeTemplateApp() {

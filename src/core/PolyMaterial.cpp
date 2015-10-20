@@ -194,22 +194,24 @@ void Material::recreateRenderTarget(ShaderRenderTarget *renderTarget) {
 }
 
 void Material::handleEvent(Event *event) {
-    // RENDERER_TODO
-    /*
-	//Fix the bindings when we detect a reload
-	for (int i = 0; i < materialShaders.size(); i++) {
-		Shader* shader = materialShaders[i];
-		ShaderBinding* shaderBinding = shaderBindings[i];
-		CoreServices::getInstance()->getRenderer()->setRendererShaderParams(shader, shaderBinding);
+    recreateExpectedShaderParams();
+}
 
-		for(int i=0; i < shader->expectedParams.size(); i++) {
-			if(!shaderBinding->getLocalParamByName(shader->expectedParams[i].name)) {
-				shaderBinding->addParam(shader->expectedParams[i].type, shader->expectedParams[i].name);
-			}
-		}
-	}
-	dispatchEvent(new Event(), Event::RESOURCE_RELOAD_EVENT);	
-     */
+void Material::recreateExpectedShaderParams() {
+    for (int i = 0; i < shaderPasses.size(); i++) {
+        
+        Shader* shader = shaderPasses[i].shader;
+        ShaderBinding* shaderBinding = shaderPasses[i].shaderBinding;
+        
+        for(int i=0; i < shader->expectedParams.size(); i++) {
+            if(!shaderBinding->getLocalParamByName(shader->expectedParams[i].name)) {
+                if(!shader->expectedParams[i].globalParam) {
+                    shaderBinding->addParam(shader->expectedParams[i].type, shader->expectedParams[i].name);
+                }
+            }
+        }
+    }
+    dispatchEvent(new Event(), Event::RESOURCE_RELOAD_EVENT);
 }
 
 void Material::removeShaderPass(int shaderIndex) {
@@ -230,6 +232,7 @@ void Material::addShaderAtIndex(Shader *shader,ShaderBinding *shaderBinding, int
 void Material::addShaderPass(const ShaderPass &pass) {
     shaderPasses.push_back(pass);
     pass.shader->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);
+    recreateExpectedShaderParams();
 }
 
 void Material::addShaderPassAtIndex(const ShaderPass &pass, unsigned int shaderIndex) {
@@ -242,8 +245,7 @@ void Material::addShader(Shader *shader,ShaderBinding *shaderBinding) {
     ShaderPass newPass;
     newPass.shader = shader;
     newPass.shaderBinding = shaderBinding;
-	shaderPasses.push_back(newPass);
-	shader->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);
+    addShaderPass(newPass);
 }
 
 

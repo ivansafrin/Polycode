@@ -104,12 +104,16 @@ void SceneLabel::updateFromLabel() {
 
 	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
     
-    // RENDERER_TODO:
-    /*
-    if(texture) {
-		materialManager->deleteTexture(texture);
+    LocalShaderParam *textureParam = getShaderPass(0).shaderBinding->getLocalParamByName("diffuse");
+    if(textureParam) {
+        Texture *currentTexture = textureParam->getTexture();
+        if(currentTexture) {
+            textureParam->ownsPointer = false;
+            getShaderPass(0).shaderBinding->removeParam("diffuse");
+            materialManager->deleteTexture(currentTexture);
+        }
     }
-    */
+
     Texture *texture;
 	if(SceneLabel::createMipmapsForLabels) {
 		texture = materialManager->createTextureFromImage(label, materialManager->clampDefault, materialManager->mipmapsDefault);	

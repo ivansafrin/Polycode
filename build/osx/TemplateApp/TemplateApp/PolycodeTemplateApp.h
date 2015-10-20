@@ -17,12 +17,6 @@ public:
     bool Update();
     
 private:
-    
-    Sound *bgSound;
-    
-    Sound *sound1;
-    Sound *sound2;
-    Sound *sound3;
-    
+
     Core *core;
 };

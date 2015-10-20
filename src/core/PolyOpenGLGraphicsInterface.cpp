@@ -334,6 +334,12 @@ void OpenGLGraphicsInterface::bindFramebuffer(Texture *framebufferTexture) {
     }
 }
 
+void OpenGLGraphicsInterface::destroyTexture(Texture *texture) {
+    glDeleteTextures(1, (GLuint*)texture->platformData);
+    delete (GLuint*)texture->platformData;
+    delete texture;
+}
+
 void OpenGLGraphicsInterface::createTexture(Texture *texture) {
     
     if(texture->framebufferTexture) {
@@ -343,7 +349,6 @@ void OpenGLGraphicsInterface::createTexture(Texture *texture) {
             glBindFramebuffer(GL_FRAMEBUFFER, *((GLuint*)texture->frameBufferPlatformData));
         }
     }
-    
     
     if(!texture->platformData) {
         texture->platformData = (void*) new GLuint;
@@ -440,6 +445,15 @@ void OpenGLGraphicsInterface::setViewport(unsigned int x,unsigned  int y,unsigne
     glViewport(x, y, width, height);
 }
 
+void OpenGLGraphicsInterface::destroyProgram(ShaderProgram *program) {
+    if(program->platformData) {
+        GLuint programID = *((GLuint*)program->platformData);
+        glDeleteShader(programID);
+        delete ((GLuint*)program->platformData);
+    }
+    delete program;
+}
+
 void OpenGLGraphicsInterface::createProgram(ShaderProgram *program) {
 
     if(!program->platformData) {
@@ -495,9 +509,18 @@ void OpenGLGraphicsInterface::createProgram(ShaderProgram *program) {
     *((GLuint*)program->platformData) = programID;
 }
 
+void OpenGLGraphicsInterface::destroyBuffer(RenderDataArray *array) {
+    if(array->hasVBO) {
+        GLuint vboID = *((GLuint*)array->platformData);
+        glDeleteBuffers(1, &vboID);
+        delete (GLuint*)array->platformData;
+    }
+}
+
 void OpenGLGraphicsInterface::createVertexBuffer(VertexDataArray *dataArray) {
     if(dataArray->hasVBO) {
-            // delete vbo
+        GLuint vboID = *((GLuint*)dataArray->platformData);
+        glDeleteBuffers(1, &vboID);
     } else {
         dataArray->platformData = (new GLuint);
     }
@@ -526,6 +549,17 @@ void OpenGLGraphicsInterface::createIndexBuffer(IndexDataArray *dataArray) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     dataArray->hasVBO = true;
     *((GLuint*)dataArray->platformData) = bufferID;
+}
+
+void OpenGLGraphicsInterface::destroyShader(Shader *shader) {
+    if(shader->platformData) {
+        GLuint shaderID = *((GLuint*)shader->platformData);
+        glDetachShader(shaderID, *((GLuint*)shader->fragmentProgram->platformData));
+        glDetachShader(shaderID, *((GLuint*)shader->vertexProgram->platformData));
+        glDeleteProgram(shaderID);
+        delete ((GLuint*)shader->platformData);
+    }
+    delete shader;
 }
 
 void OpenGLGraphicsInterface::createShader(Shader *shader) {

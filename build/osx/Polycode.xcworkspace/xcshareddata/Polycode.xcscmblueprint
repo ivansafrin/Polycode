@@ -1,0 +1,44 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "BA7B57CFFA0E2C9A820883F90A39AA6329AE6D93",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "BA7B57CFFA0E2C9A820883F90A39AA6329AE6D93" : 0,
+    "CD1A9AD17BC33D3B53EF8747306D590240F82D5F" : 0,
+    "89321558671A6A732B0AAA55C0ED9A0555A700D4" : 0,
+    "72C5045D78C89EEFD7A049056C14811D40BE1635" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "1C57ED24-A5B4-4784-9216-5B5D098605F9",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "BA7B57CFFA0E2C9A820883F90A39AA6329AE6D93" : "PolycodeNoCmake",
+    "CD1A9AD17BC33D3B53EF8747306D590240F82D5F" : "Hellmouth\/",
+    "89321558671A6A732B0AAA55C0ED9A0555A700D4" : "MSFT\/MicrosoftSurfaceHub",
+    "72C5045D78C89EEFD7A049056C14811D40BE1635" : "PolycodeNoCmake\/lib"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Polycode",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "build\/osx\/Polycode.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/ivansafrin\/PolycodeDepBinaries",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "72C5045D78C89EEFD7A049056C14811D40BE1635"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/hushstudios\/msft-surface-hub.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "89321558671A6A732B0AAA55C0ED9A0555A700D4"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/ivansafrin\/Polycode.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "BA7B57CFFA0E2C9A820883F90A39AA6329AE6D93"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/ivansafrin\/Hellmouth.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "CD1A9AD17BC33D3B53EF8747306D590240F82D5F"
+    }
+  ]
+}

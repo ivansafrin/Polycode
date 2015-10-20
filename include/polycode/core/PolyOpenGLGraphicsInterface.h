@@ -67,14 +67,21 @@ namespace Polycode {
 		// implementation
         
         void createTexture(Texture *texture);
+        void destroyTexture(Texture *texture);
+        
         void setViewport(unsigned int x,unsigned  int y,unsigned  int width, unsigned height);
         void clearBuffers(const Color &clearColor, bool colorBuffer, bool depthBuffer, bool stencilBuffer);
         void setParamInShader(Shader *shader, ProgramParam *param, LocalShaderParam *localParam);
         void setAttributeInShader(Shader *shader, ProgramAttribute *attribute, AttributeBinding *attributeBinding);
         void disableAttribute(Shader *shader, const ProgramAttribute &attribute);
         void useShader(Shader *shader);
+        
         void createProgram(ShaderProgram *program);
+        void destroyProgram(ShaderProgram *program);
+        
         void createShader(Shader *shader);
+        void destroyShader(Shader *shader);
+        
         void beginDrawCall();
         void endDrawCall();
         void setBlendingMode(unsigned int blendingMode);
@@ -83,6 +90,8 @@ namespace Polycode {
         
         void createVertexBuffer(VertexDataArray *dataArray);
         void createIndexBuffer(IndexDataArray *dataArray);
+        void destroyBuffer(RenderDataArray *array);
+        
         
         void drawIndices(int type, IndexDataArray *indexArray);
         void drawArrays(int type, unsigned int vertexCount);
