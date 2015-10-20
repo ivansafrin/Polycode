@@ -52,11 +52,10 @@ namespace Polycode {
             bool createMipmaps;
             unsigned int anisotropy;
             bool framebufferTexture;
+            bool depthTexture;
         
             static const int FILTERING_NEAREST = 0;
             static const int FILTERING_LINEAR = 1;
-        
-            void *frameBufferPlatformData;
         
 		protected:
 
@@ -64,4 +63,23 @@ namespace Polycode {
 			int width;
 			int height;
 	};
+    
+    class _PolyExport RenderBuffer {
+        public:
+            RenderBuffer(unsigned int width, unsigned int height, bool attachDepthBuffer);
+
+            unsigned int getWidth();
+            unsigned int getHeight();
+        
+            Texture *colorTexture;
+            Texture *depthTexture;
+
+            void *platformData;
+            void *depthBufferPlatformData;
+        private:
+        
+            unsigned int width;
+            unsigned int height;
+    };
+    
 }

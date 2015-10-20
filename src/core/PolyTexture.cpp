@@ -26,7 +26,7 @@
 
 using namespace Polycode;
 
-Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool clamp, bool createMipmaps, int type, bool framebufferTexture) : Resource(Resource::RESOURCE_TEXTURE), width(width), height(height), clamp(clamp), type(type), createMipmaps(createMipmaps), filteringMode(FILTERING_NEAREST), anisotropy(0), framebufferTexture(framebufferTexture), frameBufferPlatformData(NULL) {
+Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool clamp, bool createMipmaps, int type, bool framebufferTexture) : Resource(Resource::RESOURCE_TEXTURE), width(width), height(height), clamp(clamp), type(type), createMipmaps(createMipmaps), filteringMode(FILTERING_NEAREST), anisotropy(0), framebufferTexture(framebufferTexture), depthTexture(false) {
     
 	switch(type) {
 		case Image::IMAGE_RGB:
@@ -107,3 +107,22 @@ Texture::Texture(Image *image) : Resource(Resource::RESOURCE_TEXTURE) {
 	memcpy(this->textureData, image->getPixels(), image->getWidth()*image->getHeight()*pixelSize);	
 
 }
+
+RenderBuffer::RenderBuffer(unsigned int width, unsigned int height, bool attachDepthBuffer) : platformData(NULL), width(width), height(height), depthBufferPlatformData(NULL) {
+    colorTexture = new Texture(width, height, NULL, false, false);
+    if(attachDepthBuffer) {
+        depthTexture = new Texture(width, height, NULL, false, false);
+    } else {
+        depthTexture = NULL;
+    }
+    
+}
+
+unsigned int RenderBuffer::getWidth() {
+    return width;
+}
+
+unsigned int RenderBuffer::getHeight() {
+    return height;
+}
+

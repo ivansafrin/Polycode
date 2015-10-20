@@ -32,7 +32,7 @@ using namespace Polycode;
 
 SceneRenderTexture::SceneRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight, unsigned int textureFormat) : textureFormat(textureFormat) {
     
-    targetTexture = Services()->getRenderer()->createTexture(renderWidth, renderHeight, NULL, false, false, textureFormat, Services()->getMaterialManager()->getTextureFilteringMode(), 0, true);
+    targetFramebuffer = Services()->getRenderer()->createRenderBuffer(renderWidth, renderHeight, true);
     
 	this->targetScene = targetScene;
 	this->targetCamera = targetCamera;
@@ -46,15 +46,8 @@ SceneRenderTexture::SceneRenderTexture(Scene *targetScene, Camera *targetCamera,
 void SceneRenderTexture::resizeRenderTexture(int newWidth, int newHeight) {
 
 	if(newWidth > 0 && newHeight > 0) {
-        // RENDERER_TODO
-        /*
-		CoreServices::getInstance()->getRenderer()->destroyTexture(targetTexture);
-		CoreServices::getInstance()->getRenderer()->destroyTexture(depthTexture);	
-		CoreServices::getInstance()->getRenderer()->destroyTexture(filterColorBufferTexture);
-		CoreServices::getInstance()->getRenderer()->destroyTexture(filterZBufferTexture);	
-*/
-        targetTexture = Services()->getRenderer()->createTexture(newWidth, newHeight, NULL, false, false, textureFormat, Services()->getMaterialManager()->getTextureFilteringMode(), 0, true);
-
+        Services()->getRenderer()->destroyRenderBuffer(targetFramebuffer);
+        targetFramebuffer = Services()->getRenderer()->createRenderBuffer(newWidth, newHeight, true);
 	}
 }
 	
@@ -63,11 +56,11 @@ Scene *SceneRenderTexture::getTargetScene() {
 }
 
 Texture *SceneRenderTexture::getFilterColorBufferTexture() {
-	return filterColorBufferTexture;
+	return NULL;
 }
 
 Texture *SceneRenderTexture::getFilterZBufferTexture() {
-	return filterZBufferTexture;
+	return NULL;
 }
 
 Camera *SceneRenderTexture::getTargetCamera() {
@@ -76,11 +69,12 @@ Camera *SceneRenderTexture::getTargetCamera() {
 
 void SceneRenderTexture::Render() {
     
+    // RENDERER_TODO
 //    if(targetCamera->hasFilterShader()) {
        // targetCamera->drawFilter(targetTexture, targetTexture->getWidth(), targetTexture->getHeight(), filterColorBufferTexture, filterZBufferTexture);
   //  } else {
-        targetCamera->setViewport(Polycode::Rectangle(0.0, 0.0, targetTexture->getWidth(), targetTexture->getHeight()));
-        targetScene->Render(targetCamera, targetTexture);
+        targetCamera->setViewport(Polycode::Rectangle(0.0, 0.0, targetFramebuffer->getWidth(), targetFramebuffer->getHeight()));
+        targetScene->Render(targetCamera, targetFramebuffer);
    // }
 }
 
@@ -91,16 +85,10 @@ Image *SceneRenderTexture::saveToImage() {
 }
 
 Texture *SceneRenderTexture::getTargetTexture() {
-	return targetTexture;
+	return targetFramebuffer->colorTexture;
 }
 
 SceneRenderTexture::~SceneRenderTexture() {
 	CoreServices::getInstance()->getSceneManager()->unregisterRenderTexture(this);
-    // RENDERER_TODO
-    /*
-	CoreServices::getInstance()->getRenderer()->destroyTexture(targetTexture);
-	CoreServices::getInstance()->getRenderer()->destroyTexture(depthTexture);	
-	CoreServices::getInstance()->getRenderer()->destroyTexture(filterColorBufferTexture);
-	CoreServices::getInstance()->getRenderer()->destroyTexture(filterZBufferTexture);	
-     */
+    Services()->getRenderer()->destroyRenderBuffer(targetFramebuffer);
 }

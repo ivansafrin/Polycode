@@ -325,12 +325,58 @@ void OpenGLGraphicsInterface::drawArrays(int type, unsigned int vertexCount) {
     glDrawArrays(getGLDrawMode(type), 0, vertexCount);
 }
 
+void OpenGLGraphicsInterface::createRenderBuffer(RenderBuffer *renderBuffer) {
+    if(!renderBuffer->platformData) {
+        renderBuffer->platformData = (void*) new GLuint;
+        glGenFramebuffers(1, (GLuint*)renderBuffer->platformData);
+        glBindFramebuffer(GL_FRAMEBUFFER, *((GLuint*)renderBuffer->platformData));
+    }
+    
+    renderBuffer->colorTexture->framebufferTexture = true;
+    createTexture(renderBuffer->colorTexture);
+    
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, *((GLuint*)renderBuffer->colorTexture->platformData), 0);
+    
+    if(renderBuffer->depthTexture) {
+        
+        renderBuffer->depthBufferPlatformData = (void*) new GLuint;
+        glGenRenderbuffers(1, (GLuint*)renderBuffer->depthBufferPlatformData);
+        glBindRenderbuffer(GL_FRAMEBUFFER, *((GLuint*)renderBuffer->depthBufferPlatformData));
+        
+        renderBuffer->depthTexture->framebufferTexture = true;
+        renderBuffer->depthTexture->depthTexture = true;
+        renderBuffer->depthTexture->filteringMode = Texture::FILTERING_LINEAR;
+        createTexture(renderBuffer->depthTexture);
+        
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, *((GLuint*)renderBuffer->depthTexture->platformData), 0);
+    }
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
 
-void OpenGLGraphicsInterface::bindFramebuffer(Texture *framebufferTexture) {
-    if(framebufferTexture) {
-        glBindFramebuffer(GL_FRAMEBUFFER, *((GLuint*) framebufferTexture->frameBufferPlatformData));
+void OpenGLGraphicsInterface::destroyRenderBuffer(RenderBuffer *renderBuffer) {
+    glDeleteFramebuffers(1, (GLuint*)renderBuffer->platformData);
+    if(renderBuffer->colorTexture) {
+        destroyTexture(renderBuffer->colorTexture);
+    }
+    if(renderBuffer->depthTexture) {
+        destroyTexture(renderBuffer->depthTexture);
+        glDeleteRenderbuffers(1, (GLuint*)renderBuffer->depthBufferPlatformData);
+        delete (GLuint*)renderBuffer->depthBufferPlatformData;
+    }
+    delete (GLuint*)renderBuffer->platformData;
+    delete renderBuffer;
+}
+
+void OpenGLGraphicsInterface::bindRenderBuffer(RenderBuffer *renderBuffer) {
+    if(renderBuffer) {
+        glBindFramebuffer(GL_FRAMEBUFFER, *((GLuint*) renderBuffer->platformData));
+        if(renderBuffer->depthBufferPlatformData) {
+            glBindRenderbuffer(GL_RENDERBUFFER, *((GLuint*) renderBuffer->depthBufferPlatformData));            
+        }
     } else {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
     }
 }
 
@@ -342,13 +388,6 @@ void OpenGLGraphicsInterface::destroyTexture(Texture *texture) {
 
 void OpenGLGraphicsInterface::createTexture(Texture *texture) {
     
-    if(texture->framebufferTexture) {
-        if(!texture->frameBufferPlatformData) {
-            texture->frameBufferPlatformData = (void*) new GLuint;
-            glGenFramebuffers(1, (GLuint*)texture->frameBufferPlatformData);
-            glBindFramebuffer(GL_FRAMEBUFFER, *((GLuint*)texture->frameBufferPlatformData));
-        }
-    }
     
     if(!texture->platformData) {
         texture->platformData = (void*) new GLuint;
@@ -390,6 +429,20 @@ void OpenGLGraphicsInterface::createTexture(Texture *texture) {
             break;
     }
     
+    if(texture->depthTexture) {
+        glTextureType = GL_DEPTH_COMPONENT;
+        
+        if(texture->type == Image::IMAGE_FP16) {
+            pixelType = GL_FLOAT;
+            glTextureFormat = GL_DEPTH_COMPONENT16;
+        } else {
+            pixelType = GL_UNSIGNED_BYTE;
+            glTextureFormat = GL_DEPTH_COMPONENT;
+        }
+        
+        glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_LUMINANCE);
+        glRenderbufferStorage(GL_RENDERBUFFER, glTextureFormat, texture->getWidth(), texture->getHeight());
+    }
     
     switch(texture->filteringMode) {
         case Texture::FILTERING_LINEAR:
@@ -431,11 +484,6 @@ void OpenGLGraphicsInterface::createTexture(Texture *texture) {
     
     if(texture->createMipmaps && !texture->framebufferTexture) {
         glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    
-    if(texture->framebufferTexture) {
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureID, 0);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     
     glBindTexture(GL_TEXTURE_2D, 0);

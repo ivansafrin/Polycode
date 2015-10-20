@@ -78,7 +78,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
     ++currentDebugFrameInfo.buffersProcessed;
     
     if(buffer->targetFramebuffer) {
-        graphicsInterface->bindFramebuffer(buffer->targetFramebuffer);
+        graphicsInterface->bindRenderBuffer(buffer->targetFramebuffer);
     }
     
     graphicsInterface->setViewport(buffer->viewport.x, buffer->viewport.y, buffer->viewport.w, buffer->viewport.h);
@@ -248,7 +248,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
     }
     
     if(buffer->targetFramebuffer) {
-        graphicsInterface->bindFramebuffer(NULL);
+        graphicsInterface->bindRenderBuffer(NULL);
     }
     
 }
@@ -274,6 +274,18 @@ void RenderThread::processJob(const RendererThreadJob &job) {
             graphicsInterface->destroyTexture(texture);
         }
         break;
+        case JOB_CREATE_RENDER_BUFFER:
+        {
+            RenderBuffer *buffer = (RenderBuffer*) job.data;
+            graphicsInterface->createRenderBuffer(buffer);
+        }
+        break;
+        case JOB_DESTROY_RENDER_BUFFER:
+        {
+            RenderBuffer *buffer = (RenderBuffer*) job.data;
+            graphicsInterface->destroyRenderBuffer(buffer);
+        }
+            break;
         case JOB_PROCESS_DRAW_BUFFER:
         {
             GPUDrawBuffer *buffer = (GPUDrawBuffer*) job.data;
@@ -421,6 +433,16 @@ Texture *Renderer::createTexture(unsigned int width, unsigned int height, char *
     texture->anisotropy = anisotropy;
     renderThread->enqueueJob(RenderThread::JOB_CREATE_TEXTURE, (void*)texture);
     return texture;
+}
+
+RenderBuffer *Renderer::createRenderBuffer(unsigned int width, unsigned int height, bool attachDepthBuffer) {
+    RenderBuffer *buffer = new RenderBuffer(width, height, attachDepthBuffer);
+    renderThread->enqueueJob(RenderThread::JOB_CREATE_RENDER_BUFFER, (void*)buffer);
+    return buffer;
+}
+
+void Renderer::destroyRenderBuffer(RenderBuffer *buffer) {
+    renderThread->enqueueJob(RenderThread::JOB_DESTROY_RENDER_BUFFER, (void*)buffer);
 }
 
 Shader *Renderer::createShader(ShaderProgram *vertexProgram, ShaderProgram *fragmentProgram) {

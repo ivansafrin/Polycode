@@ -86,7 +86,9 @@ namespace Polycode {
         void endDrawCall();
         void setBlendingMode(unsigned int blendingMode);
         
-        void bindFramebuffer(Texture *framebufferTexture);
+        void createRenderBuffer(RenderBuffer *renderBuffer);
+        void destroyRenderBuffer(RenderBuffer *renderBuffer);
+        void bindRenderBuffer(RenderBuffer *renderBuffer);
         
         void createVertexBuffer(VertexDataArray *dataArray);
         void createIndexBuffer(IndexDataArray *dataArray);

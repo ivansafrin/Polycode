@@ -31,6 +31,8 @@
 
 namespace Polycode {
     
+    class RenderBuffer;
+    
     class _PolyExport LightInfo {
         public:
             unsigned short importance;
@@ -84,7 +86,7 @@ namespace Polycode {
         GPUDrawBuffer();
         ~GPUDrawBuffer();
         
-        Texture *targetFramebuffer;
+        RenderBuffer *targetFramebuffer;
         Matrix4 projectionMatrix;
         Matrix4 viewMatrix;
         Matrix4 cameraMatrix;

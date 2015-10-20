@@ -215,7 +215,7 @@ void Scene::setEntityVisibility(Entity *entity, Camera *camera) {
     }
 }
 
-void Scene::Render(Camera *targetCamera, Texture *targetFramebuffer) {
+void Scene::Render(Camera *targetCamera, RenderBuffer *targetFramebuffer) {
     if(!targetCamera && !activeCamera)
         return;
     if(!targetCamera)

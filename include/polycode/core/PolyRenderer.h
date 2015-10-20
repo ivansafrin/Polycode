@@ -39,6 +39,9 @@ THE SOFTWARE.
 
 namespace Polycode {
     
+    class Texture;
+    class RenderBuffer;
+    
     class _PolyExport GraphicsInterface : public PolyBase {
         public:
             GraphicsInterface();
@@ -61,9 +64,6 @@ namespace Polycode {
             virtual void createIndexBuffer(IndexDataArray *dataArray) = 0;
             virtual void destroyBuffer(RenderDataArray *array) = 0;
         
-        
-            virtual void bindFramebuffer(Texture *framebufferTexture) = 0;
-        
             virtual void drawIndices(int type, IndexDataArray *indexArray) = 0;
             virtual void drawArrays(int type, unsigned int vertexCount) = 0;
         
@@ -77,6 +77,10 @@ namespace Polycode {
             virtual void setScissorBox(const Polycode::Rectangle &box) = 0;
         
             virtual void setWireframeMode(bool val) = 0;
+        
+            virtual void createRenderBuffer(RenderBuffer *renderBuffer) = 0;
+            virtual void destroyRenderBuffer(RenderBuffer *renderBuffer) = 0;
+            virtual void bindRenderBuffer(RenderBuffer *buffer) = 0;
         
             virtual void beginDrawCall() = 0;
             virtual void endDrawCall() = 0;
@@ -134,6 +138,8 @@ namespace Polycode {
             static const int JOB_DESTROY_SHADER = 9;
             static const int JOB_DESTROY_PROGRAM = 10;
             static const int JOB_DESTROY_BUFFER = 11;
+            static const int JOB_CREATE_RENDER_BUFFER = 12;
+            static const int JOB_DESTROY_RENDER_BUFFER = 13;
         
         protected:
         
@@ -154,7 +160,7 @@ namespace Polycode {
             LightInfoBinding lights[RENDERER_MAX_LIGHTS];
         
     };
-    
+
     class _PolyExport Renderer : public PolyBase {
 	public:
         
@@ -166,6 +172,9 @@ namespace Polycode {
 
         Cubemap *createCubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4, Texture *t5);
         Texture *createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type, unsigned int filteringMode, unsigned int anisotropy, bool framebufferTexture);
+        
+        RenderBuffer *createRenderBuffer(unsigned int width, unsigned int height, bool attachDepthBuffer);
+        void destroyRenderBuffer(RenderBuffer *buffer);
         
         void destroyTexture(Texture *texture);
 

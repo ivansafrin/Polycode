@@ -30,6 +30,7 @@ namespace Polycode {
 	class Camera;
 	class Texture;
     class Renderer;
+    class RenderBuffer;
     class Image;
 	
 	/**
@@ -76,14 +77,9 @@ namespace Polycode {
 		protected:
         
             Renderer *renderer;
-		
-			Texture *filterColorBufferTexture;
-			Texture *filterZBufferTexture;
-		
             unsigned int textureFormat;
-		
-			Texture *depthTexture;		
-			Texture *targetTexture;
+            RenderBuffer *targetFramebuffer;
+        
 			Scene *targetScene;
 			Camera *targetCamera;
 	};
