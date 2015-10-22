@@ -199,11 +199,18 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                     }
                 }
                 
+                bool rebindAttributes = false;
+                
+                if(localShaderBinding->targetShader != shaderPass.shader) {
+                    localShaderBinding->targetShader = shaderPass.shader;
+                    rebindAttributes = true;
+                }
+                
                 for(int p=0; p < localShaderBinding->getNumLocalParams(); p++) {
                     
                     LocalShaderParam *localParam = localShaderBinding->getLocalParam(p);
                     if(localParam) {
-                        if(!localParam->param) {
+                        if(!localParam->param || rebindAttributes) {
                             localParam->param = shaderPass.shader->getParamPointer(localParam->name);
                         }
                         if(localParam->param) {
@@ -212,13 +219,6 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                         }
                     }
                     
-                }
-                
-                bool rebindAttributes = false;
-                
-                if(localShaderBinding->targetShader != shaderPass.shader) {
-                    localShaderBinding->targetShader = shaderPass.shader;
-                    rebindAttributes = true;
                 }
                 
                 

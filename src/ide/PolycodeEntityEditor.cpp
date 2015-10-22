@@ -993,6 +993,9 @@ void EntityEditorMainView::fixedUpdate() {
             Vector2 screenPos = parentEntity->getScreenPosition(mainScene->getDefaultCamera()->getProjectionMatrix(), mainScene->getDefaultCamera()->getConcatenatedMatrix().Inverse(), mainScene->getDefaultCamera()->getViewport());
             
             icons[i]->setPosition(screenPos.x, (mainScene->getDefaultCamera()->getViewport().h - screenPos.y) + 30);
+            
+            // RENDERER_TODO:
+            // check if icon is behind the camera and hide it now that the icons are in screenspace
 
         }
     }
