@@ -76,7 +76,6 @@ namespace Polycode {
 
             void *platformData;
             void *depthBufferPlatformData;
-            void *colorBufferPlatformData;
         private:
         
             unsigned int width;

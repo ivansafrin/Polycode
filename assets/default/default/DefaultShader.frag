@@ -101,11 +101,11 @@ void spotLight(in int i, in vec3 normal, in vec4 pos, inout vec4 diffuse, inout 
 
 void doLights(in int numLights, in vec3 normal, in vec4 pos, inout vec4 diffuse, inout vec4 specular) {
 	for (int i = 0; i < numLights; i++) {
-//		if (lights[i].spotCosCutoff == 180.0) {
+		if (lights[i].spotCosCutoff == 180.0) {
 			pointLight(i, normal, pos, diffuse, specular);
-//		} else {
-//			spotLight(i, normal, pos, diffuse, specular);
-//		}
+		} else {
+			spotLight(i, normal, pos, diffuse, specular);
+		}
     }
 }
 

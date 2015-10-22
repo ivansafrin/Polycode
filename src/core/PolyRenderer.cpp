@@ -95,7 +95,11 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
             lights[i].position->setVector3(buffer->lights[i].position);
             lights[i].direction->setVector3(buffer->lights[i].direction);
             lights[i].spotExponent->setNumber(buffer->lights[i].spotlightExponent);
-            lights[i].spotCosCutoff->setNumber(buffer->lights[i].spotlightCutoff);
+            if(buffer->lights[i].type == 0) {
+                lights[i].spotCosCutoff->setNumber(180.0);
+            } else {
+                lights[i].spotCosCutoff->setNumber(cos((buffer->lights[i].spotlightCutoff) * TORADIANS));
+            }
             
             lights[i].constantAttenuation->setNumber(buffer->lights[i].constantAttenuation);
             lights[i].linearAttenuation->setNumber(buffer->lights[i].linearAttenuation);
@@ -104,6 +108,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
         } else {
             lights[i].diffuse->setColor(Color(0.0, 0.0, 0.0, 1.0));
             lights[i].specular->setColor(Color(0.0, 0.0, 0.0, 1.0));
+            lights[i].spotCosCutoff->setNumber(180.0);
         }
     }
     
