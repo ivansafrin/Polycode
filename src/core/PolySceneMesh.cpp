@@ -202,7 +202,8 @@ void SceneMesh::setMaterial(Material *material) {
     
     for(int i=0; i < material->getNumShaderPasses(); i++)  {
         ShaderPass shaderPass = material->getShaderPass(i);
-        shaderPass.shaderBinding = new ShaderBinding();        
+        shaderPass.shaderBinding = new ShaderBinding();
+        shaderPass.shaderBinding->targetShader = shaderPass.shader;
         shaderPass.shaderBinding->addParamPointer(ProgramParam::PARAM_COLOR, "entityColor", &color);
         shaderPass.setExpectedAttributes(mesh);
         shaderPasses.push_back(shaderPass);

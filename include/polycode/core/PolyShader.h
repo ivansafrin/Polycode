@@ -249,7 +249,9 @@ namespace Polycode {
 			std::vector<RenderTargetBinding*> inTargetBindings;
 			std::vector<RenderTargetBinding*> outTargetBindings;
 			std::vector<RenderTargetBinding*> colorTargetBindings;
-			std::vector<RenderTargetBinding*> depthTargetBindings;			
+			std::vector<RenderTargetBinding*> depthTargetBindings;
+        
+            Shader *targetShader;
 	};
 
 }

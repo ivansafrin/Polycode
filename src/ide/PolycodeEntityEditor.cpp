@@ -1568,6 +1568,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
             {
                 Material *wireframeMaterial = (Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitWireframe");
                 
+                
                 if(!wireframeMaterial->getShaderPass(0).shaderBinding->getLocalParamByName("wireframeColor")) {
                     wireframeMaterial->getShaderPass(0).shaderBinding->addParam(ProgramParam::PARAM_COLOR, "wireframeColor")->setColor(Color(1.0, 1.0, 1.0, 1.0));
                 }
@@ -1790,6 +1791,7 @@ void EntityEditorMainView::setOverlayWireframeRecursive(Entity *targetEntity, bo
                 wireframePass.shader = (Shader*)Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_SHADER, "UnlitWireframe");
                 wireframePass.wireframe = true;
                 wireframePass.shaderBinding = new ShaderBinding();
+                wireframePass.shaderBinding->targetShader = wireframePass.shader;
                 wireframePass.blendingMode = Renderer::BLEND_MODE_NORMAL;
                 wireframePass.setExpectedAttributes(sceneMesh->getMesh());
                 wireframePass.shaderBinding->addParam(ProgramParam::PARAM_COLOR, "wireframeColor")->setColor(Color(0.5, 0.6, 1.0, 0.75));

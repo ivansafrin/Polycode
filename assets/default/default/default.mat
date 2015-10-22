@@ -5,6 +5,10 @@
 			<vp source="default/DefaultShader.vert"/>
 			<fp source="default/DefaultShader.frag"/>
 		</shader>
+		<shader type="glsl" name="DefaultUntexturedShader" numPointLights="6" numSpotLights="2">
+			<vp source="default/DefaultShader.vert"/>
+			<fp source="default/DefaultUntextured.frag"/>
+		</shader>		
 		<shader type="glsl" name="Unlit" numPointLights="0" numSpotLights="0">		
 			<vp source="default/Unlit.vert"/>
 			<fp source="default/Unlit.frag"/>
@@ -27,6 +31,10 @@
 		</shader>	
 	</shaders>	
 	<materials>	
+		<material name="Default">
+			<shader name="DefaultUntexturedShader">
+			</shader>
+		</material>				
 		<material name="DefaultTextured">
 			<shader name="DefaultShader">
 			</shader>

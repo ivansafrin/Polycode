@@ -322,6 +322,7 @@ void UIRect::setMaterial(Material *material) {
     
     ShaderPass pass;
     pass.shaderBinding = new ShaderBinding();
+    pass.shaderBinding->targetShader = pass.shader;
     pass.shader = material->getShaderPass(0).shader;
     shaderPasses.push_back(pass);
     

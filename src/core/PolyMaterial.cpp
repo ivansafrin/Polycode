@@ -225,6 +225,7 @@ void Material::addShaderAtIndex(Shader *shader,ShaderBinding *shaderBinding, int
     ShaderPass newPass;
     newPass.shader = shader;
     newPass.shaderBinding = shaderBinding;
+    shaderBinding->targetShader = shader;
 	shaderPasses.insert(shaderPasses.begin()+shaderIndex, newPass);
 	shader->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);
 }
@@ -245,6 +246,7 @@ void Material::addShader(Shader *shader,ShaderBinding *shaderBinding) {
     ShaderPass newPass;
     newPass.shader = shader;
     newPass.shaderBinding = shaderBinding;
+    shaderBinding->targetShader = shader;
     addShaderPass(newPass);
 }
 

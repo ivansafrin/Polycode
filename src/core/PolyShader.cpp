@@ -103,7 +103,7 @@ void ShaderProgram::reloadResource() {
 }
 
 
-ShaderBinding::ShaderBinding() {
+ShaderBinding::ShaderBinding() : targetShader(NULL) {
 }
 
 ShaderBinding::~ShaderBinding() {

@@ -214,18 +214,32 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                     
                 }
                 
+                bool rebindAttributes = false;
+                
+                if(localShaderBinding->targetShader != shaderPass.shader) {
+                    localShaderBinding->targetShader = shaderPass.shader;
+                    rebindAttributes = true;
+                }
+                
+                
                 for(int a=0; a < localShaderBinding->getNumAttributeBindings(); a++) {
                     
                     AttributeBinding *attributeBinding = localShaderBinding->getAttributeBinding(a);
                     
                     if(attributeBinding) {
-                        if(attributeBinding->enabled) {
+                        if(attributeBinding->enabled  || rebindAttributes) {
+                            
+                            if(rebindAttributes) {
+                                attributeBinding->attribute = NULL;
+                                attributeBinding->enabled = true;
+                            }
                             
                             if(!attributeBinding->attribute) {
                                 attributeBinding->attribute = shaderPass.shader->getAttribPointer(attributeBinding->name);
                             }
+                            
                             if(attributeBinding->attribute) {
-                                
+                                attributeBinding->enabled = true;
                                 if(attributeBinding->vertexData->data.size() / attributeBinding->vertexData->countPerVertex >= buffer->drawCalls[i].numVertices) {
                                     graphicsInterface->setAttributeInShader(shaderPass.shader, attributeBinding->attribute, attributeBinding);
                                 }
