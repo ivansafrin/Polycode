@@ -331,23 +331,32 @@ void OpenGLGraphicsInterface::createRenderBuffer(RenderBuffer *renderBuffer) {
         glGenFramebuffers(1, (GLuint*)renderBuffer->platformData);
         glBindFramebuffer(GL_FRAMEBUFFER, *((GLuint*)renderBuffer->platformData));
     }
+
     
     renderBuffer->colorTexture->framebufferTexture = true;
+    renderBuffer->colorTexture->type = Image::IMAGE_RGBA;
     createTexture(renderBuffer->colorTexture);
+    
+    
+    if(renderBuffer->depthTexture) {
+        renderBuffer->depthBufferPlatformData = (void*) new GLuint;
+        glGenRenderbuffers(1, (GLuint*)renderBuffer->depthBufferPlatformData);
+        glBindRenderbuffer(GL_FRAMEBUFFER, *((GLuint*)renderBuffer->depthBufferPlatformData));
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_COLOR_ATTACHMENT0, renderBuffer->getWidth(), renderBuffer->getHeight());
+    }
+    
     
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, *((GLuint*)renderBuffer->colorTexture->platformData), 0);
     
     if(renderBuffer->depthTexture) {
         
-        renderBuffer->depthBufferPlatformData = (void*) new GLuint;
-        glGenRenderbuffers(1, (GLuint*)renderBuffer->depthBufferPlatformData);
-        glBindRenderbuffer(GL_FRAMEBUFFER, *((GLuint*)renderBuffer->depthBufferPlatformData));
         
         renderBuffer->depthTexture->framebufferTexture = true;
         renderBuffer->depthTexture->depthTexture = true;
         renderBuffer->depthTexture->filteringMode = Texture::FILTERING_LINEAR;
         createTexture(renderBuffer->depthTexture);
         
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, renderBuffer->getWidth(), renderBuffer->getHeight());
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, *((GLuint*)renderBuffer->depthTexture->platformData), 0);
     }
     
@@ -371,12 +380,8 @@ void OpenGLGraphicsInterface::destroyRenderBuffer(RenderBuffer *renderBuffer) {
 void OpenGLGraphicsInterface::bindRenderBuffer(RenderBuffer *renderBuffer) {
     if(renderBuffer) {
         glBindFramebuffer(GL_FRAMEBUFFER, *((GLuint*) renderBuffer->platformData));
-        if(renderBuffer->depthBufferPlatformData) {
-            glBindRenderbuffer(GL_RENDERBUFFER, *((GLuint*) renderBuffer->depthBufferPlatformData));            
-        }
     } else {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glBindRenderbuffer(GL_RENDERBUFFER, 0);
     }
 }
 
@@ -440,8 +445,7 @@ void OpenGLGraphicsInterface::createTexture(Texture *texture) {
             glTextureFormat = GL_DEPTH_COMPONENT;
         }
         
-        glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_LUMINANCE);
-        glRenderbufferStorage(GL_RENDERBUFFER, glTextureFormat, texture->getWidth(), texture->getHeight());
+      //  glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_LUMINANCE);
     }
     
     switch(texture->filteringMode) {
@@ -733,6 +737,9 @@ void OpenGLGraphicsInterface::clearBuffers(const Color &clearColor, bool colorBu
         clearMask = clearMask | GL_STENCIL_BUFFER_BIT;
     }
     
+    
+    glDepthMask(GL_TRUE);
+    glDisable(GL_SCISSOR_TEST);
     
     glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
     glClear(clearMask);

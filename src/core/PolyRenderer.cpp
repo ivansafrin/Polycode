@@ -135,6 +135,8 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
         if(buffer->globalMaterial && !buffer->drawCalls[i].options.forceMaterial) {
             material = buffer->globalMaterial;
         }
+
+        
         
         if(material) {
             
