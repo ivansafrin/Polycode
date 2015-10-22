@@ -261,7 +261,9 @@ void Scene::Render(Camera *targetCamera, RenderBuffer *targetFramebuffer) {
 		direction.Normalize();
 		
 		direction = light->getConcatenatedMatrix().rotateVector(direction);
-		
+        direction = drawBuffer->viewMatrix.rotateVector(direction);
+        
+        
 		Texture *shadowMapTexture = NULL;
 		if(light->areShadowsEnabled()) {
 			if(light->getType() == SceneLight::SPOT_LIGHT) {
@@ -279,9 +281,9 @@ void Scene::Render(Camera *targetCamera, RenderBuffer *targetFramebuffer) {
 		
 		position = light->getPosition();
 		if(light->getParentEntity() != NULL) {
-			position = light->getParentEntity()->getConcatenatedMatrix() * position;			
+			position = light->getParentEntity()->getConcatenatedMatrix() * position;
 		}
-        
+        position = drawBuffer->viewMatrix * position;
         
         drawBuffer->lights.push_back(light->getLightInfo());
         drawBuffer->lights[drawBuffer->lights.size()-1].position = position;

@@ -26,11 +26,10 @@ void main()
 	mat4 modelViewMatrix = viewMatrix * modelMatrix;
 	vec4 p = modelViewMatrix  * position;
 
-	mat3 rotN = mat3_emu(modelMatrix);
+	mat3 rotN = mat3_emu(modelViewMatrix);
 	varNormal = normalize(rotN * normal);
 
-
-	varPosition = modelMatrix  * position;
+	varPosition = modelViewMatrix  * position;
 	gl_Position = projectionMatrix * p;
 
 	texCoordVar = texCoord;
