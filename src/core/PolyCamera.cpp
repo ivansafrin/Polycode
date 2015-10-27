@@ -163,7 +163,9 @@ void Camera::buildFrustumPlanes() {
 	Matrix4 mvp;
 	Number t;
 
-   // mv = renderer->getModelviewMatrix();
+    Matrix4 projectionMatrix = createProjectionMatrix();
+    
+    mv = getConcatenatedMatrix().Inverse();
 
     //
     // Concatenate the projection matrix and the model-view matrix to produce 
