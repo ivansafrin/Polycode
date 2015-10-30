@@ -81,8 +81,6 @@ namespace Polycode {
 			int getType() const;
 			
 			void renderDepthMap(Scene *scene);
-		
-			const Matrix4& getLightViewMatrix() const;
 			
 			static const int POINT_LIGHT = 0;
 			static const int SPOT_LIGHT = 1;
@@ -192,6 +190,8 @@ namespace Polycode {
         
             LightInfo lightInfo;
 
+            RenderBuffer *shadowMapRenderBuffer;
+            Material *unlitMaterial;
 			Camera *spotCamera;
 			Scene *parentScene;
 		

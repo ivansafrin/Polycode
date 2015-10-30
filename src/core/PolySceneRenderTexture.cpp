@@ -74,7 +74,7 @@ void SceneRenderTexture::Render() {
        // targetCamera->drawFilter(targetTexture, targetTexture->getWidth(), targetTexture->getHeight(), filterColorBufferTexture, filterZBufferTexture);
   //  } else {
         targetCamera->setViewport(Polycode::Rectangle(0.0, 0.0, targetFramebuffer->getWidth(), targetFramebuffer->getHeight()));
-        targetScene->Render(targetCamera, targetFramebuffer);
+        targetScene->Render(targetCamera, targetFramebuffer, NULL, true);
    // }
 }
 

@@ -215,9 +215,10 @@ void Scene::setEntityVisibility(Entity *entity, Camera *camera) {
     }
 }
 
-void Scene::Render(Camera *targetCamera, RenderBuffer *targetFramebuffer) {
+void Scene::Render(Camera *targetCamera, RenderBuffer *targetFramebuffer, Material *overrideMaterial, bool sendLights) {
     if(!targetCamera && !activeCamera)
         return;
+    
     if(!targetCamera)
         targetCamera = activeCamera;
     
@@ -227,69 +228,54 @@ void Scene::Render(Camera *targetCamera, RenderBuffer *targetFramebuffer) {
     drawBuffer->clearDepthBuffer = useClearDepth;
     drawBuffer->targetFramebuffer = targetFramebuffer;
     drawBuffer->viewport = targetCamera->getViewport();
-    drawBuffer->globalMaterial = overrideMaterial;	
-		
-	//make these the closest
-	
+    
+    if(overrideMaterial) {
+        drawBuffer->globalMaterial = overrideMaterial;
+    } else {
+        drawBuffer->globalMaterial = this->overrideMaterial;
+    }
+    
 	Matrix4 textureMatrix;
-	Matrix4 *matrixPtr;
-	
-	
 	targetCamera->rebuildTransformMatrix();
     
     drawBuffer->projectionMatrix = targetCamera->createProjectionMatrix();
     drawBuffer->viewMatrix = targetCamera->getConcatenatedMatrix().Inverse();
     drawBuffer->cameraMatrix = targetCamera->getConcatenatedMatrix();
-/*
-	if(useClearColor) {
-		CoreServices::getInstance()->getRenderer()->setClearColor(clearColor.r,clearColor.g,clearColor.b, clearColor.a);	
-	}
-	CoreServices::getInstance()->getRenderer()->setAmbientColor(ambientColor.r,ambientColor.g,ambientColor.b);
-*/
 	
-	for(int i=0; i < lights.size(); i++) {
-		SceneLight *light = lights[i];
-		if(!light->enabled)
-			continue;
-			
-		Vector3 direction;
-		Vector3 position;
-		matrixPtr = NULL;				
-		direction.x = 0;
-		direction.y = 0.0;
-		direction.z = -1.0;
-		direction.Normalize();
-		
-		direction = light->getConcatenatedMatrix().rotateVector(direction);
-        direction = drawBuffer->viewMatrix.rotateVector(direction);
-        
-        
-		Texture *shadowMapTexture = NULL;
-		if(light->areShadowsEnabled()) {
-			if(light->getType() == SceneLight::SPOT_LIGHT) {
-				Matrix4 matTexAdj(0.5f,	0.0f,	0.0f,	0.0f,
-								  0.0f,	0.5f,	0.0f,	0.0f,
-								  0.0f,	0.0f,	0.5f,	0.0f,
-								  0.5f,	0.5f,	0.5f,	1.0f );
-				
-				light->renderDepthMap(this);
-				textureMatrix = light->getLightViewMatrix() * matTexAdj;				
-				matrixPtr = &textureMatrix;
-				shadowMapTexture = light->getZBufferTexture();
-			}
-		}
-		
-		position = light->getPosition();
-		if(light->getParentEntity() != NULL) {
-			position = light->getParentEntity()->getConcatenatedMatrix() * position;
-		}
-        position = drawBuffer->viewMatrix * position;
-        
-        drawBuffer->lights.push_back(light->getLightInfo());
-        drawBuffer->lights[drawBuffer->lights.size()-1].position = position;
-        drawBuffer->lights[drawBuffer->lights.size()-1].direction = direction;
-	}	
-		
+    if(sendLights) {
+        for(int i=0; i < lights.size(); i++) {
+            SceneLight *light = lights[i];
+            if(!light->enabled)
+                continue;
+                
+            Vector3 direction;
+            Vector3 position;
+            
+            direction.x = 0;
+            direction.y = 0.0;
+            direction.z = -1.0;
+            direction.Normalize();
+            
+            direction = light->getConcatenatedMatrix().rotateVector(direction);
+            direction = drawBuffer->viewMatrix.rotateVector(direction);
+            
+            if(light->areShadowsEnabled()) {
+                if(light->getType() == SceneLight::SPOT_LIGHT) {
+                    light->renderDepthMap(this);
+                }
+            }
+            
+            position = light->getPosition();
+            if(light->getParentEntity() != NULL) {
+                position = light->getParentEntity()->getConcatenatedMatrix() * position;
+            }
+            position = drawBuffer->viewMatrix * position;
+            
+            drawBuffer->lights.push_back(light->getLightInfo());
+            drawBuffer->lights[drawBuffer->lights.size()-1].position = position;
+            drawBuffer->lights[drawBuffer->lights.size()-1].direction = direction;
+        }
+    }
     
     if(_doVisibilityChecking) {
         targetCamera->buildFrustumPlanes();
@@ -298,29 +284,6 @@ void Scene::Render(Camera *targetCamera, RenderBuffer *targetFramebuffer) {
 
 	rootEntity.transformAndRender(drawBuffer, NULL);
     renderer->processDrawBuffer(drawBuffer);
-}
-
-
-void Scene::RenderDepthOnly(Camera *targetCamera) {
-    // RENDERER_TODO
-    /*
-	CoreServices::getInstance()->getRenderer()->cullFrontFaces(true);
-
-	targetCamera->rebuildTransformMatrix();	
-	targetCamera->doCameraTransform();
-	
-	CoreServices::getInstance()->getRenderer()->setTexture(NULL);
-	CoreServices::getInstance()->getRenderer()->enableShaders(false);
-		
-    if(_doVisibilityChecking) {
-        targetCamera->buildFrustumPlanes();
-        setEntityVisibility(&rootEntity, targetCamera);
-    }
-	rootEntity.transformAndRender();	
-	
-	CoreServices::getInstance()->getRenderer()->enableShaders(true);
-	CoreServices::getInstance()->getRenderer()->cullFrontFaces(false);	
-     */
 }
 
 Ray Scene::projectRayFromCameraAndViewportCoordinate(Camera *camera, Vector2 coordinate) {

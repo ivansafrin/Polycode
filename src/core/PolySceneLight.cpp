@@ -25,8 +25,10 @@
 #include "polycode/core/PolyCore.h"
 #include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyMesh.h"
+#include "polycode/core/PolyResourceManager.h"
 #include "polycode/core/PolyRenderer.h"
 #include "polycode/core/PolyScenePrimitive.h"
+#include "polycode/core/PolyTexture.h"
 #include "polycode/core/PolyScene.h"
 
 using namespace Polycode;
@@ -43,7 +45,9 @@ SceneLight::SceneLight(int type, Scene *parentScene, Number intensity, Number co
 		
     shadowMapRes = 256;
 	this->depthWrite = false;
-	    
+    
+    shadowMapRenderBuffer = NULL;
+    
 	shadowMapFOV = 60.0f;
 	lightInfo.shadowMapTexture = NULL;
 	spotCamera = NULL;
@@ -52,6 +56,8 @@ SceneLight::SceneLight(int type, Scene *parentScene, Number intensity, Number co
 	lightInfo.diffuseColor.setColor(1.0f,1.0f,1.0f,1.0f);
 	setSpotlightProperties(40,0.1);
 	
+    unlitMaterial = (Material*) Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit");
+    
 	lightInfo.importance = 0;
 }
 
@@ -68,26 +74,29 @@ int SceneLight::getLightImportance() const {
 }
 
 void SceneLight::enableShadows(bool val, unsigned int resolution) {
-        // RENDERER_TODO
-    /*
+
 	if(val) {
-        if(zBufferTexture) {
-            CoreServices::getInstance()->getMaterialManager()->deleteTexture(zBufferTexture);
+        if(shadowMapRenderBuffer) {
+            Services()->getRenderer()->destroyRenderBuffer(shadowMapRenderBuffer);
         }
-        CoreServices::getInstance()->getRenderer()->createRenderTextures(NULL, &zBufferTexture, resolution, resolution, false);
+        
+        shadowMapRenderBuffer = Services()->getRenderer()->createRenderBuffer(resolution, resolution, true);
+        
 		if(!spotCamera) {
 			spotCamera = new Camera(parentScene);
             spotCamera->editorOnly = true;
-            spotCamera->setClippingPlanes(0.01, 100.0);
-//            spotCamera->setPitch(90.0);
+            spotCamera->setClippingPlanes(0.01, 50.0);
 			addChild(spotCamera);	
 		}
+        
 		shadowMapRes = resolution;
-		shadowsEnabled = true;
+		lightInfo.shadowsEnabled = true;
 	} else {
-		shadowsEnabled = false;
+		lightInfo.shadowsEnabled = false;
+        if(shadowMapRenderBuffer) {
+            Services()->getRenderer()->destroyRenderBuffer(shadowMapRenderBuffer);
+        }
 	}
-*/
 }
 
 bool SceneLight::areShadowsEnabled() const {
@@ -114,10 +123,18 @@ Number SceneLight::getShadowMapFOV() const {
 }
 
 SceneLight::~SceneLight() {
+    
+    if(shadowMapRenderBuffer) {
+        Services()->getRenderer()->destroyRenderBuffer(shadowMapRenderBuffer);
+    }
+    
+    if(!ownsChildren) {
+        delete spotCamera;
+    }
+    
     if(parentScene) {
         parentScene->removeLight(this);
     }
-	printf("Destroying scene light...\n");
 }
 
 unsigned int SceneLight::getShadowMapResolution() const {
@@ -125,26 +142,20 @@ unsigned int SceneLight::getShadowMapResolution() const {
 }
 
 void SceneLight::renderDepthMap(Scene *scene) {
-        // RENDERER_TODO
-    /*
+    if(!unlitMaterial) {
+        return;
+    }
     spotCamera->setFOV(shadowMapFOV);
-	Renderer* renderer = CoreServices::getInstance()->getRenderer();
-	renderer->pushMatrix();
-	renderer->loadIdentity();
-
-    Number vpW = renderer->getViewportWidth();
-    Number vpH = renderer->getViewportHeight();
+    spotCamera->setViewport(Polycode::Rectangle(0, 0, shadowMapRes, shadowMapRes));
+    scene->Render(spotCamera, shadowMapRenderBuffer, unlitMaterial, false);
     
-	renderer->setViewportSize(shadowMapRes, shadowMapRes);
-	renderer->bindFrameBufferTexture(zBufferTexture);
-
-	scene->RenderDepthOnly(spotCamera);
-		
-	lightViewMatrix = getConcatenatedMatrix().Inverse() *  renderer->getProjectionMatrix();
-	renderer->unbindFramebuffers();
-	renderer->popMatrix();
-	renderer->setViewportSize(vpW , vpH);
-     */
+    Matrix4 matTexAdj(0.5f,	0.0f,	0.0f,	0.0f,
+                      0.0f,	0.5f,	0.0f,	0.0f,
+                      0.0f,	0.0f,	0.5f,	0.0f,
+                      0.5f,	0.5f,	0.5f,	1.0f);
+    
+    lightInfo.lightViewMatrix = getConcatenatedMatrix().Inverse() *  spotCamera->getProjectionMatrix() * matTexAdj;
+    lightInfo.shadowMapTexture = shadowMapRenderBuffer->depthTexture;
 }
 
 LightInfo SceneLight::getLightInfo() const {
@@ -213,10 +224,6 @@ void SceneLight::setParentScene(Scene *scene) {
 
 Camera *SceneLight::getSpotlightCamera() {
     return spotCamera;
-}
-
-const Matrix4& SceneLight::getLightViewMatrix() const {
-	return lightInfo.lightViewMatrix;
 }
 
 Texture *SceneLight::getZBufferTexture() const {

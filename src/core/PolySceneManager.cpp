@@ -89,7 +89,7 @@ void SceneManager::Render(const Polycode::Rectangle &viewport) {
 				scene->getActiveCamera()->drawFilter();
 			} else {
                 scene->getActiveCamera()->setViewport(viewport);
-				scene->Render();
+				scene->Render(NULL, NULL, NULL, true);
 			}
 		}
 	}

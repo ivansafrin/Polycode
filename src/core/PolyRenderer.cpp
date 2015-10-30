@@ -50,6 +50,14 @@ RenderThread::RenderThread() : graphicsInterface(NULL) {
         lights[i].constantAttenuation = rendererShaderBinding->addParam(ProgramParam::PARAM_NUMBER, "lights["+String::IntToString(i)+"].constantAttenuation");
         lights[i].linearAttenuation = rendererShaderBinding->addParam(ProgramParam::PARAM_NUMBER, "lights["+String::IntToString(i)+"].linearAttenuation");
         lights[i].quadraticAttenuation = rendererShaderBinding->addParam(ProgramParam::PARAM_NUMBER, "lights["+String::IntToString(i)+"].quadraticAttenuation");
+        lights[i].shadowEnabled = rendererShaderBinding->addParam(ProgramParam::PARAM_NUMBER, "lights["+String::IntToString(i)+"].shadowEnabled");
+
+    }
+    
+    for(int i=0; i < RENDERER_MAX_LIGHT_SHADOWS; i++) {
+        lightShadows[i].shadowMatrix = rendererShaderBinding->addParam(ProgramParam::PARAM_MATRIX, "lightsShadows["+String::IntToString(i)+"].shadowMatrix");
+        lightShadows[i].shadowBuffer = rendererShaderBinding->addParam(ProgramParam::PARAM_TEXTURE, "lightsShadows["+String::IntToString(i)+"].shadowBuffer");
+        lightShadows[i].shadowBuffer->setTexture(NULL);
         
     }
     
@@ -87,6 +95,8 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
     projectionMatrixParam->setMatrix4(buffer->projectionMatrix);
     viewMatrixParam->setMatrix4(buffer->viewMatrix);
 
+    int lightShadowIndex = 0;
+    
     for(int i=0; i <RENDERER_MAX_LIGHTS; i++) {
         if(i < buffer->lights.size()) {
             lights[i].diffuse->setColor(buffer->lights[i].diffuseColor * buffer->lights[i].intensity);
@@ -105,10 +115,23 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
             lights[i].linearAttenuation->setNumber(buffer->lights[i].linearAttenuation);
             lights[i].quadraticAttenuation->setNumber(buffer->lights[i].quadraticAttenuation);
             
+            
+            if(buffer->lights[i].shadowsEnabled) {
+                lightShadows[lightShadowIndex].shadowMatrix->setMatrix4(buffer->lights[i].lightViewMatrix);
+                lightShadows[lightShadowIndex].shadowBuffer->setTexture(buffer->lights[i].shadowMapTexture);
+                lights[i].shadowEnabled->setNumber(1.0);
+                
+                if(lightShadowIndex < RENDERER_MAX_LIGHT_SHADOWS-1) {
+                    lightShadowIndex++;
+                }
+            } else {
+                lights[i].shadowEnabled->setNumber(0.0);
+            }
         } else {
             lights[i].diffuse->setColor(Color(0.0, 0.0, 0.0, 1.0));
             lights[i].specular->setColor(Color(0.0, 0.0, 0.0, 1.0));
             lights[i].spotCosCutoff->setNumber(180.0);
+            lights[i].shadowEnabled->setNumber(0.0);
         }
     }
     

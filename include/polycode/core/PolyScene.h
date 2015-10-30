@@ -128,8 +128,7 @@ namespace Polycode {
 		bool isEnabled();		
 		void setEnabled(bool enabled);
 		
-		void Render(Camera *targetCamera = NULL, RenderBuffer *targetFramebuffer = NULL);
-		void RenderDepthOnly(Camera *targetCamera);
+		void Render(Camera *targetCamera, RenderBuffer *targetFramebuffer, Material *overrideMaterial, bool sendLights);
         
         void setOverrideMaterial(Material *material);
 		
