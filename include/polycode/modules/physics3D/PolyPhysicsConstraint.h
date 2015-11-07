@@ -21,9 +21,9 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyQuaternion.h"
-#include "PolyCollisionSceneEntity.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyQuaternion.h"
+#include "polycode/modules/physics3D/PolyCollisionSceneEntity.h"
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
 #include <vector>

@@ -21,9 +21,9 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyScene.h"
-#include "PolyVector3.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyScene.h"
+#include "polycode/core/PolyVector3.h"
 #include "btBulletCollisionCommon.h"
 #include <vector>
 

@@ -20,9 +20,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "PolyCollisionScene.h"
-#include "PolyCollisionSceneEntity.h"
-#include "PolyEntity.h"
+#include "polycode/modules/physics3D/PolyCollisionScene.h"
+#include "polycode/modules/physics3D/PolyCollisionSceneEntity.h"
+#include "polycode/core/PolyEntity.h"
 
 using namespace Polycode;
 

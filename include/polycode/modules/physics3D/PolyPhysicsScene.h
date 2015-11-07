@@ -21,9 +21,9 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyCollisionScene.h"
-#include "PolyPhysicsConstraint.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/modules/physics3D/PolyCollisionScene.h"
+#include "polycode/modules/physics3D/PolyPhysicsConstraint.h"
 #include <vector>
 
 class btDiscreteDynamicsWorld;

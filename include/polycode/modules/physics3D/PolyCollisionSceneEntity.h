@@ -21,8 +21,8 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyVector3.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyVector3.h"
 
 class btConvexShape;
 class btConcaveShape;

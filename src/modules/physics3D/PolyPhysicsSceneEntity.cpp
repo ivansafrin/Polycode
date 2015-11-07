@@ -20,11 +20,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "PolyPhysicsSceneEntity.h"
+#include "polycode/modules/physics3D/PolyPhysicsSceneEntity.h"
 #include "BulletDynamics/Character/btKinematicCharacterController.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
-#include "PolyMatrix4.h"
-#include "PolyEntity.h"
+#include "polycode/core/PolyMatrix4.h"
+#include "polycode/core/PolyEntity.h"
 
 using namespace Polycode;
 

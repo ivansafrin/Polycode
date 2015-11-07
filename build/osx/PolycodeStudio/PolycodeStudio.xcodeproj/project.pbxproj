@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6DE288291BE96D7B00F7B42C /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DE288281BE96D7B00F7B42C /* PolycodeView.mm */; };
 		8A22D92B1BCC67DE009EF0A6 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A22D92A1BCC67DE009EF0A6 /* OpenGL.framework */; };
 		8A22D92D1BCC67E6009EF0A6 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A22D92C1BCC67E6009EF0A6 /* AudioUnit.framework */; };
 		8A22D92F1BCC6809009EF0A6 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A22D92E1BCC6809009EF0A6 /* CoreAudio.framework */; };
@@ -15,7 +16,6 @@
 		8A36D2121B8E5751009897D0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2111B8E5751009897D0 /* main.m */; };
 		8A36D2141B8E5751009897D0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8A36D2131B8E5751009897D0 /* Images.xcassets */; };
 		8A36D2171B8E5751009897D0 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A36D2151B8E5751009897D0 /* MainMenu.xib */; };
-		8A36D22E1B8E5ACC009897D0 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D22D1B8E5ACC009897D0 /* PolycodeView.mm */; };
 		8A36D2531B8E5BA9009897D0 /* EditorGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2311B8E5BA9009897D0 /* EditorGrid.cpp */; };
 		8A36D2541B8E5BA9009897D0 /* EntityEditorPropertyView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2321B8E5BA9009897D0 /* EntityEditorPropertyView.cpp */; };
 		8A36D2551B8E5BA9009897D0 /* EntityEditorSettingsView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A36D2331B8E5BA9009897D0 /* EntityEditorSettingsView.cpp */; };
@@ -65,6 +65,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6DE288271BE96D7100F7B42C /* PolycodeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeView.h; path = ../../../../include/polycode/view/osx/PolycodeView.h; sourceTree = "<group>"; };
+		6DE288281BE96D7B00F7B42C /* PolycodeView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PolycodeView.mm; path = ../../../../src/view/osx/PolycodeView.mm; sourceTree = "<group>"; };
 		8A22D92A1BCC67DE009EF0A6 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		8A22D92C1BCC67E6009EF0A6 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
 		8A22D92E1BCC6809009EF0A6 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
@@ -76,8 +78,6 @@
 		8A36D2111B8E5751009897D0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8A36D2131B8E5751009897D0 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		8A36D2161B8E5751009897D0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		8A36D22C1B8E5ACC009897D0 /* PolycodeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeView.h; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../include/polycode/view/osx/PolycodeView.h; sourceTree = "<absolute>"; };
-		8A36D22D1B8E5ACC009897D0 /* PolycodeView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PolycodeView.mm; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../src/view/osx/PolycodeView.mm; sourceTree = "<absolute>"; };
 		8A36D2311B8E5BA9009897D0 /* EditorGrid.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = EditorGrid.cpp; path = ../../../src/ide/EditorGrid.cpp; sourceTree = "<group>"; };
 		8A36D2321B8E5BA9009897D0 /* EntityEditorPropertyView.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = EntityEditorPropertyView.cpp; path = ../../../src/ide/EntityEditorPropertyView.cpp; sourceTree = "<group>"; };
 		8A36D2331B8E5BA9009897D0 /* EntityEditorSettingsView.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = EntityEditorSettingsView.cpp; path = ../../../src/ide/EntityEditorSettingsView.cpp; sourceTree = "<group>"; };
@@ -212,9 +212,9 @@
 		8A36D20B1B8E5751009897D0 /* PolycodeStudio */ = {
 			isa = PBXGroup;
 			children = (
+				6DE288271BE96D7100F7B42C /* PolycodeView.h */,
+				6DE288281BE96D7B00F7B42C /* PolycodeView.mm */,
 				8A36D3281B8E7096009897D0 /* default.pak */,
-				8A36D22C1B8E5ACC009897D0 /* PolycodeView.h */,
-				8A36D22D1B8E5ACC009897D0 /* PolycodeView.mm */,
 				8A36D20E1B8E5751009897D0 /* AppDelegate.h */,
 				8A36D20F1B8E5751009897D0 /* AppDelegate.m */,
 				8A36D2131B8E5751009897D0 /* Images.xcassets */,
@@ -433,12 +433,12 @@
 				8A36D2591B8E5BA9009897D0 /* NewFileWindow.cpp in Sources */,
 				8A36D25C1B8E5BA9009897D0 /* PolycodeConsole.cpp in Sources */,
 				8A36D2711B8E5BA9009897D0 /* TextureBrowser.cpp in Sources */,
+				6DE288291BE96D7B00F7B42C /* PolycodeView.mm in Sources */,
 				8A36D2741B8E5BA9009897D0 /* TransformGizmo.cpp in Sources */,
 				8A36D2721B8E5BA9009897D0 /* ToolWindows.cpp in Sources */,
 				8A36D2541B8E5BA9009897D0 /* EntityEditorPropertyView.cpp in Sources */,
 				8A36D2101B8E5751009897D0 /* AppDelegate.m in Sources */,
 				8A36D2681B8E5BA9009897D0 /* PolycodeProjectEditor.cpp in Sources */,
-				8A36D22E1B8E5ACC009897D0 /* PolycodeView.mm in Sources */,
 				8A36D2701B8E5BA9009897D0 /* SettingsWindow.cpp in Sources */,
 				8A36D26A1B8E5BA9009897D0 /* PolycodeProps.cpp in Sources */,
 				8A36D2601B8E5BA9009897D0 /* PolycodeFontEditor.cpp in Sources */,

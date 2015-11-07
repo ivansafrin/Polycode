@@ -20,16 +20,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "PolyPhysicsScene.h"
 #include "btBulletCollisionCommon.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #include "BulletDynamics/Character/btKinematicCharacterController.h"
 
-#include "PolyCollisionScene.h"
-#include "PolyCoreServices.h"
-#include "PolyVector3.h"
-#include "PolyPhysicsSceneEntity.h"
-#include "PolyCore.h"
+#include "polycode/modules/physics3D/PolyPhysicsScene.h"
+#include "polycode/modules/physics3D/PolyCollisionScene.h"
+#include "polycode/modules/physics3D/PolyPhysicsSceneEntity.h"
+
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyVector3.h"
+#include "polycode/core/PolyCore.h"
 
 using namespace Polycode;
 
