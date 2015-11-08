@@ -103,7 +103,7 @@ void SceneMesh::setMesh(Mesh *mesh) {
 
 void SceneMesh::rebuildAttributes() {
     for(int i=0; i < shaderPasses.size(); i++) {
-        shaderPasses[i].setExpectedAttributes(mesh);
+        shaderPasses[i].shaderBinding->resetAttributes = true;
     }
 }
 
@@ -205,7 +205,7 @@ void SceneMesh::setMaterial(Material *material) {
         shaderPass.shaderBinding = new ShaderBinding();
         shaderPass.shaderBinding->targetShader = shaderPass.shader;
         shaderPass.shaderBinding->addParamPointer(ProgramParam::PARAM_COLOR, "entityColor", &color);
-        shaderPass.setExpectedAttributes(mesh);
+        shaderPass.shaderBinding->resetAttributes = true;
         shaderPasses.push_back(shaderPass);
     }
     
@@ -379,19 +379,7 @@ void SceneMesh::Render(GPUDrawBuffer *buffer) {
     drawCall.options.depthTest = depthTest;
     drawCall.options.depthWrite = depthWrite;
 
-    drawCall.mode = mesh->getMeshType();
-    
-    
-    drawCall.numVertices = mesh->getVertexCount();
-    
-    if(mesh->indexedMesh) {
-        drawCall.indexed = true;
-        drawCall.indexArray = &mesh->indexArray;
-    } else {
-        drawCall.indexed = false;
-    }
-    
-    
+    drawCall.mesh = mesh;
     drawCall.material = material;
     drawCall.shaderPasses = shaderPasses;
     

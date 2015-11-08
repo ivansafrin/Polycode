@@ -7,11 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8A36D1A31B8CF928009897D0 /* bedlayer_main.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8A36D19E1B8CF928009897D0 /* bedlayer_main.wav */; };
-		8A36D1A41B8CF928009897D0 /* curve_02_c.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8A36D19F1B8CF928009897D0 /* curve_02_c.wav */; };
-		8A36D1A51B8CF928009897D0 /* initial_touch_01.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8A36D1A01B8CF928009897D0 /* initial_touch_01.wav */; };
-		8A36D1A61B8CF928009897D0 /* koto_level.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8A36D1A11B8CF928009897D0 /* koto_level.wav */; };
-		8A36D1A71B8CF928009897D0 /* marimba-lo.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8A36D1A21B8CF928009897D0 /* marimba-lo.wav */; };
+		6DD2D0B61BEEDC150026D85C /* libportaudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DD2D0B51BEEDC150026D85C /* libportaudio.a */; };
+		6DD2D0B81BEEDCC90026D85C /* white.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DD2D0B71BEEDCC80026D85C /* white.png */; };
 		8A825F271B82A2680039E823 /* libportaudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A825F261B82A2680039E823 /* libportaudio.a */; };
 		8A825F291B82A29B0039E823 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A825F281B82A29B0039E823 /* CoreAudio.framework */; };
 		8A825F2E1B82A2C80039E823 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A825F2C1B82A2B10039E823 /* AudioUnit.framework */; };
@@ -34,15 +31,11 @@
 		8A86536D1B729D77009F94DD /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8A86536C1B729D77009F94DD /* PolycodeView.mm */; };
 		8A8653701B72C431009F94DD /* default.pak in Resources */ = {isa = PBXBuildFile; fileRef = 8A86536F1B72C431009F94DD /* default.pak */; };
 		8A8653961B752DBE009F94DD /* main_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8A8653951B752DBE009F94DD /* main_icon.png */; };
-		8AAA3B4A1BD6D0660078953A /* white.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AAA3B491BD6D0660078953A /* white.png */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		8A36D19E1B8CF928009897D0 /* bedlayer_main.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = bedlayer_main.wav; path = ../../../../../MSFT/MicrosoftSurfaceHub/Resources/samples/bedlayer_main.wav; sourceTree = "<group>"; };
-		8A36D19F1B8CF928009897D0 /* curve_02_c.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = curve_02_c.wav; path = ../../../../../MSFT/MicrosoftSurfaceHub/Resources/samples/curve_02_c.wav; sourceTree = "<group>"; };
-		8A36D1A01B8CF928009897D0 /* initial_touch_01.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = initial_touch_01.wav; path = ../../../../../MSFT/MicrosoftSurfaceHub/Resources/samples/initial_touch_01.wav; sourceTree = "<group>"; };
-		8A36D1A11B8CF928009897D0 /* koto_level.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = koto_level.wav; path = ../../../../../MSFT/MicrosoftSurfaceHub/Resources/samples/koto_level.wav; sourceTree = "<group>"; };
-		8A36D1A21B8CF928009897D0 /* marimba-lo.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = "marimba-lo.wav"; path = "../../../../../MSFT/MicrosoftSurfaceHub/Resources/samples/marimba-lo.wav"; sourceTree = "<group>"; };
+		6DD2D0B51BEEDC150026D85C /* libportaudio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libportaudio.a; path = ../../../../lib/osx/libportaudio.a; sourceTree = "<group>"; };
+		6DD2D0B71BEEDCC80026D85C /* white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = white.png; path = ../../../../../THU/HELLMOUTH/App/Resources/Resources/textures/white.png; sourceTree = "<group>"; };
 		8A825F261B82A2680039E823 /* libportaudio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libportaudio.a; path = ../../../../lib/osx/libportaudio.a; sourceTree = "<group>"; };
 		8A825F281B82A29B0039E823 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		8A825F2A1B82A2A50039E823 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -70,7 +63,6 @@
 		8A86536E1B72C301009F94DD /* PolycodeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeView.h; path = ../../../../include/polycode/view/osx/PolycodeView.h; sourceTree = "<group>"; };
 		8A86536F1B72C431009F94DD /* default.pak */ = {isa = PBXFileReference; lastKnownFileType = file; name = default.pak; path = ../../../../assets/default/default.pak; sourceTree = "<group>"; };
 		8A8653951B752DBE009F94DD /* main_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = main_icon.png; path = ../../../../assets/icons/main_icon.png; sourceTree = "<group>"; };
-		8AAA3B491BD6D0660078953A /* white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = white.png; path = ../../../../../Hellmouth/Resources/Resources/textures/white.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +82,7 @@
 				8A86535E1B72949F009F94DD /* liblibvorbis.a in Frameworks */,
 				8A86535C1B72949F009F94DD /* libfreetype.a in Frameworks */,
 				8A8653601B72949F009F94DD /* liblua5.1.a in Frameworks */,
+				6DD2D0B61BEEDC150026D85C /* libportaudio.a in Frameworks */,
 				8A8653611B72949F009F94DD /* libphysfs.a in Frameworks */,
 				8A86535D1B72949F009F94DD /* liblibogg.a in Frameworks */,
 			);
@@ -125,17 +118,12 @@
 				8A86536A1B729559009F94DD /* PolycodeTemplateApp.mm */,
 				8A8653351B72931C009F94DD /* AppDelegate.h */,
 				8A8653361B72931C009F94DD /* AppDelegate.m */,
-				8AAA3B491BD6D0660078953A /* white.png */,
 				8A86536E1B72C301009F94DD /* PolycodeView.h */,
 				8A86536C1B729D77009F94DD /* PolycodeView.mm */,
 				8A86536F1B72C431009F94DD /* default.pak */,
 				8A86533A1B72931C009F94DD /* Images.xcassets */,
+				6DD2D0B71BEEDCC80026D85C /* white.png */,
 				8A8653951B752DBE009F94DD /* main_icon.png */,
-				8A36D19E1B8CF928009897D0 /* bedlayer_main.wav */,
-				8A36D19F1B8CF928009897D0 /* curve_02_c.wav */,
-				8A36D1A01B8CF928009897D0 /* initial_touch_01.wav */,
-				8A36D1A11B8CF928009897D0 /* koto_level.wav */,
-				8A36D1A21B8CF928009897D0 /* marimba-lo.wav */,
 				8A86533C1B72931C009F94DD /* MainMenu.xib */,
 				8A8653331B72931C009F94DD /* Supporting Files */,
 			);
@@ -151,6 +139,7 @@
 				8A825F261B82A2680039E823 /* libportaudio.a */,
 				8A8653561B72949F009F94DD /* liblibvorbisfile.a */,
 				8A8653571B72949F009F94DD /* liblua5.1.a */,
+				6DD2D0B51BEEDC150026D85C /* libportaudio.a */,
 				8A8653581B72949F009F94DD /* libphysfs.a */,
 				8A8653591B72949F009F94DD /* libpng15.a */,
 				8A86535A1B72949F009F94DD /* libPolycore.a */,
@@ -218,14 +207,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6DD2D0B81BEEDCC90026D85C /* white.png in Resources */,
 				8A86533B1B72931C009F94DD /* Images.xcassets in Resources */,
-				8A36D1A31B8CF928009897D0 /* bedlayer_main.wav in Resources */,
-				8A36D1A41B8CF928009897D0 /* curve_02_c.wav in Resources */,
-				8A36D1A61B8CF928009897D0 /* koto_level.wav in Resources */,
-				8A36D1A71B8CF928009897D0 /* marimba-lo.wav in Resources */,
-				8AAA3B4A1BD6D0660078953A /* white.png in Resources */,
 				8A8653961B752DBE009F94DD /* main_icon.png in Resources */,
-				8A36D1A51B8CF928009897D0 /* initial_touch_01.wav in Resources */,
 				8A86533E1B72931C009F94DD /* MainMenu.xib in Resources */,
 				8A8653701B72C431009F94DD /* default.pak in Resources */,
 			);
@@ -354,7 +338,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/isafrin/Desktop/Workshop/PolycodeNoCmake/lib/osx,
+					"\"$(SRCROOT)/../../../lib/osx\"",
+					/Users/ivansafrin/Desktop/Workshop/PolycodeNoCmake/lib/osx,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -377,7 +362,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/isafrin/Desktop/Workshop/PolycodeNoCmake/lib/osx,
+					"\"$(SRCROOT)/../../../lib/osx\"",
+					/Users/ivansafrin/Desktop/Workshop/PolycodeNoCmake/lib/osx,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -327,7 +327,7 @@ void UIRect::setMaterial(Material *material) {
     shaderPasses.push_back(pass);
     
     shaderPasses[0].shaderBinding->addParamPointer(ProgramParam::PARAM_COLOR, "entityColor", &color);
-    shaderPasses[0].setExpectedAttributes(rectMesh);
+    shaderPasses[0].shaderBinding->resetAttributes = true;
 }
 
 Texture *UIRect::getTexture() {
@@ -339,16 +339,7 @@ void UIRect::Render(GPUDrawBuffer *buffer) {
     drawCall.options.depthTest = depthTest;
     drawCall.options.depthWrite = depthWrite;
     
-    drawCall.mode = rectMesh->getMeshType();
-    drawCall.numVertices = rectMesh->getVertexCount();
-    
-    if(rectMesh->indexedMesh) {
-        drawCall.indexed = true;
-        drawCall.indexArray = &rectMesh->indexArray;
-    } else {
-        drawCall.indexed = false;
-    }
-    
+    drawCall.mesh = rectMesh;
     drawCall.material = material;
     drawCall.shaderPasses = shaderPasses;
     

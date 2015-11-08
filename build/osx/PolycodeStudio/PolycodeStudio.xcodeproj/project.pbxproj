@@ -568,8 +568,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx,
-					/Users/isafrin/Desktop/Workshop/PolycodeNoCmake/lib/osx,
+					"\"$(SRCROOT)/../../../lib/osx\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -584,8 +583,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx,
-					/Users/isafrin/Desktop/Workshop/PolycodeNoCmake/lib/osx,
+					"\"$(SRCROOT)/../../../lib/osx\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

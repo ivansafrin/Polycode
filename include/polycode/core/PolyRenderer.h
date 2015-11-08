@@ -195,6 +195,8 @@ namespace Polycode {
         Shader *createShader(ShaderProgram *vertexProgram, ShaderProgram *fragmentProgram);
         void createVertexBuffers(Mesh *mesh);
         
+        void setExpectedAttributes(Mesh *mesh, Shader *shader);
+        
         void destroyProgram(ShaderProgram *program);
         void destroyShader(Shader *shader);
         void destroyBuffer(RenderDataArray *array);

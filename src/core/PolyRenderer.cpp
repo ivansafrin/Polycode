@@ -128,10 +128,14 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                 lights[i].shadowEnabled->setNumber(0.0);
             }
         } else {
-            lights[i].diffuse->setColor(Color(0.0, 0.0, 0.0, 1.0));
-            lights[i].specular->setColor(Color(0.0, 0.0, 0.0, 1.0));
+            lights[i].diffuse->setColor(Color(0.0, 0.0, 0.0, 0.0));
+            lights[i].specular->setColor(Color(0.0, 0.0, 0.0, 0.0));
             lights[i].spotCosCutoff->setNumber(180.0);
             lights[i].shadowEnabled->setNumber(0.0);
+            lights[i].constantAttenuation->setNumber(1.0);
+            lights[i].linearAttenuation->setNumber(1.0);
+            lights[i].quadraticAttenuation->setNumber(1.0);
+
         }
     }
     
@@ -214,7 +218,6 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                                 localParam->param = shaderPass.shader->getParamPointer(localParam->name);
                             }
                             if(localParam->param) {
-                           //     printf("SETTING MATERIAL PARAM: %s\n", localParam->name.c_str());
                                 graphicsInterface->setParamInShader(shaderPass.shader, localParam->param, localParam);
                             }
                         }
@@ -237,16 +240,17 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                             localParam->param = shaderPass.shader->getParamPointer(localParam->name);
                         }
                         if(localParam->param) {
-                        //    printf("SETTING LOCAL PARAM: %s\n", localParam->name.c_str());
                             graphicsInterface->setParamInShader(shaderPass.shader, localParam->param, localParam);
                         }
                     }
-                    
                 }
                 
-                
+                if(rebindAttributes || localShaderBinding->resetAttributes ) {
+                    buffer->drawCalls[i].shaderPasses[s].setExpectedAttributes(buffer->drawCalls[i].mesh);
+                    localShaderBinding->resetAttributes = false;
+                }
+
                 for(int a=0; a < localShaderBinding->getNumAttributeBindings(); a++) {
-                    
                     AttributeBinding *attributeBinding = localShaderBinding->getAttributeBinding(a);
                     
                     if(attributeBinding) {
@@ -263,7 +267,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                             
                             if(attributeBinding->attribute) {
                                 attributeBinding->enabled = true;
-                                if(attributeBinding->vertexData->data.size() / attributeBinding->vertexData->countPerVertex >= buffer->drawCalls[i].numVertices) {
+                                if(attributeBinding->vertexData->data.size() / attributeBinding->vertexData->countPerVertex >= buffer->drawCalls[i].mesh->getVertexCount()) {
                                     graphicsInterface->setAttributeInShader(shaderPass.shader, attributeBinding->attribute, attributeBinding);
                                 }
                             } else {
@@ -271,13 +275,12 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                             }
                         }
                     }
-                    
                 }
                 
-                if(buffer->drawCalls[i].indexed) {
-                    graphicsInterface->drawIndices(buffer->drawCalls[i].mode, buffer->drawCalls[i].indexArray);
+                if(buffer->drawCalls[i].mesh->indexedMesh) {
+                    graphicsInterface->drawIndices(buffer->drawCalls[i].mesh->getMeshType(), &buffer->drawCalls[i].mesh->indexArray);
                 } else {
-                    graphicsInterface->drawArrays(buffer->drawCalls[i].mode, buffer->drawCalls[i].numVertices);
+                    graphicsInterface->drawArrays(buffer->drawCalls[i].mesh->getMeshType(), buffer->drawCalls[i].mesh->getVertexCount());
                 }
                 
                 
@@ -531,7 +534,6 @@ void Renderer::destroyShader(Shader *shader) {
 void Renderer::destroyBuffer(RenderDataArray *array) {
      renderThread->enqueueJob(RenderThread::JOB_DESTROY_BUFFER, (void*)array);
 }
-
 
 Vector3 Renderer::project(const Vector3 &position, const Matrix4 &modelMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport) {
     

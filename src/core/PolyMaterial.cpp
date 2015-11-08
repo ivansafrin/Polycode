@@ -53,11 +53,9 @@ void ShaderPass::setExpectedAttributes(Mesh *mesh) {
     if(!shader || !shaderBinding) {
         return;
     }
-    
     shaderBinding->attributes.clear();
-    
+
     for(int i=0; i < shader->expectedAttributes.size(); i++) {
-        
         VertexDataArray *targetArray = NULL;
         
         if(shader->expectedAttributes[i].name == "position") {

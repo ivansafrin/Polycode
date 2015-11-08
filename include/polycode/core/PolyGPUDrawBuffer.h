@@ -70,15 +70,11 @@ namespace Polycode {
     
     class _PolyExport GPUDrawCall {
     public:
-        unsigned int numVertices;
-        unsigned char mode;
-        bool indexed;
-        
+        Mesh *mesh;
         GPUDrawOptions options;
         Matrix4 modelMatrix;
         Material *material;
         std::vector<ShaderPass> shaderPasses;
-        IndexDataArray *indexArray;
     };
     
     class _PolyExport GPUDrawBuffer {
