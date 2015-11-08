@@ -24,6 +24,7 @@
 #include "polycode/core/PolyCore.h"
 #include "polycode/core/PolyCoreInput.h"
 #include "polycode/core/PolyRenderer.h"
+#include "polycode/core/PolyLogger.h"
 #include "polycode/core/PolyCoreServices.h"
 
 #if PLATFORM == PLATFORM_WINDOWS
@@ -316,7 +317,7 @@ namespace Polycode {
 		int sleepTimeMs = refreshInterval - ticksSinceLastFrame;
 		if(sleepTimeMs > 0) {
 #if PLATFORM == PLATFORM_WINDOWS
-			Sleep(sleepTimeMs);
+			//Sleep(sleepTimeMs);
 #else
 			usleep(sleepTimeMs * 1000);
 #endif

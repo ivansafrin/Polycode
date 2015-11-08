@@ -20,12 +20,15 @@
  THE SOFTWARE.
 */		
 
-#include "PolyWinCore.h"
-#include "PolyCoreInput.h"
-#include "PolyCoreServices.h"
-#include "PolyInputEvent.h"
-#include "PolyLogger.h"
-#include "PolyThreaded.h"
+#include "polycode/core/PolyWinCore.h"
+#include "polycode/core/PolyCoreInput.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyInputEvent.h"
+#include "polycode/core/PolyLogger.h"
+#include "polycode/core/PolyThreaded.h"
+
+#include "polycode/core/PolyBasicFileProvider.h"
+#include "polycode/core/PolyPhysFSFileProvider.h"
 
 #include <direct.h>
 #include <stdlib.h>
@@ -44,20 +47,42 @@
 #ifndef MAPVK_VSC_TO_VK_EX
 #define MAPVK_VSC_TO_VK_EX 3
 #endif
-#else
-PFNWGLSWAPINTERVALEXTPROC       wglSwapIntervalEXT = NULL;
-PFNWGLGETSWAPINTERVALEXTPROC    wglGetSwapIntervalEXT = NULL;
-PFNWGLCHOOSEPIXELFORMATARBPROC	wglChoosePixelFormatARB = NULL;
-
 #endif
 
 using namespace Polycode;
+
+void wtoc(char* Dest, const WCHAR* Source)
+{
+	int i = 0;
+	while (Source[i] != '\0') {
+		Dest[i] = (char)Source[i];
+		++i;
+	}
+	Dest[i] = 0;
+}
+void ctow(WCHAR* Dest, const char* Source)
+{
+	int i = 0;
+	while (Source[i] != '\0') {
+		Dest[i] = (WCHAR)Source[i];
+		++i;
+	}
+	Dest[i] = 0;
+}
 
 long getThreadID() {
 	return GetCurrentThreadId();
 }
 
 extern Win32Core *core;
+
+void Win32Mutex::lock() {
+	WaitForSingleObject(winMutex, INFINITE);
+}
+
+void Win32Mutex::unlock() {
+	ReleaseMutex(winMutex);
+}
 
 void ClientResize(HWND hWnd, int nWidth, int nHeight)
 {
@@ -83,10 +108,15 @@ void Core::getScreenInfo(int *width, int *height, int *hz) {
 }
 
 Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate,  int monitorIndex, bool retinaSupport) 
-	: Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
+	: Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex), view(view) {
+
 
 	hWnd = *((HWND*)view->windowData);
-	hInstance = (HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE);
+	hInstance = (HINSTANCE)GetWindowLong(hWnd, GWLP_HINSTANCE);
+
+	fileProviders.push_back(new BasicFileProvider());
+	fileProviders.push_back(new PhysFSFileProvider());
+
 	core = this;
 	hasCopyDataString = false;
 
@@ -119,29 +149,22 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 	isFullScreen = fullScreen;
 	this->resizable = view->resizable;
 
-	renderer = new OpenGLRenderer();
+	renderer = new Renderer();
+	OpenGLGraphicsInterface *renderInterface = new OpenGLGraphicsInterface();
+	renderInterface->lineSmooth = true;
+	renderer->setGraphicsInterface(this, renderInterface);
 	services->setRenderer(renderer);
+	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
 
-	renderer->setBackingResolutionScale(scaleFactor, scaleFactor);
-
-	getWglFunctionPointers();
-
-	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel);
-		
 	WSADATA WsaData;
 	if(WSAStartup( MAKEWORD(2,2), &WsaData ) != NO_ERROR ){
 		Logger::log("Error initializing sockets!\n");
 	}
-
-	((OpenGLRenderer*)renderer)->Init();
-
 	LARGE_INTEGER li;
 	QueryPerformanceFrequency(&li);
 	pcFreq = double(li.QuadPart)/1000.0;
 	
 	setVSync(vSync);
-
-	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
 }
 
 Number Win32Core::getBackingXRes() {
@@ -210,10 +233,61 @@ unsigned int Win32Core::getTicks() {
 }
 
 void Win32Core::Render() {
-	renderer->BeginRender();
-	services->Render();
-	renderer->EndRender();
+	renderer->beginFrame();
+	services->Render(Polycode::Rectangle(0, 0, getBackingXRes(), getBackingYRes()));
+	renderer->endFrame();
+}
+
+
+void  Win32Core::flushRenderContext() {
 	SwapBuffers(hDC);
+}
+
+bool Win32Core::systemParseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector) {
+
+	WIN32_FIND_DATA findFileData;
+
+	WCHAR curDir[4096];
+	GetCurrentDirectory(4096, curDir);
+
+	WCHAR tmp[4096];
+	memset(tmp, 0, sizeof(WCHAR) * 4096);
+	ctow(tmp, pathString.c_str());
+
+
+	DWORD dwAttrib = GetFileAttributes(tmp);
+	if (!(dwAttrib != INVALID_FILE_ATTRIBUTES &&
+		(dwAttrib & FILE_ATTRIBUTE_DIRECTORY))) {
+		return false;
+	}
+
+
+	SetCurrentDirectory(tmp);
+
+
+	HANDLE hFind = FindFirstFile(L"*", &findFileData);
+	if (hFind == INVALID_HANDLE_VALUE) {
+		SetCurrentDirectory(curDir);
+		return false;
+	}
+
+	do {
+		String fname(findFileData.cFileName);
+
+		if ((fname.c_str()[0] != '.' || (fname.c_str()[0] == '.'  && showHidden)) && fname != "..") {
+			if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+				targetVector.push_back(OSFileEntry(pathString, fname, OSFileEntry::TYPE_FOLDER));
+			}
+			else {
+				targetVector.push_back(OSFileEntry(pathString, fname, OSFileEntry::TYPE_FILE));
+			}
+		}
+	} while (FindNextFile(hFind, &findFileData));
+
+	FindClose(hFind);
+	SetCurrentDirectory(curDir);
+	
+	return true;
 }
 
 bool Win32Core::systemUpdate() {
@@ -239,36 +313,25 @@ void Win32Core::setVSync(bool vSyncVal) {
 
 void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport) {
 
-	bool resetContext = false;
-
-	if(aaLevel != this->aaLevel) {
-		resetContext = true;
-	}
-
-	bool wasFullscreen = this->fullScreen;
-
-	this->xRes = xRes;
-	this->yRes = yRes;
-	this->fullScreen = fullScreen;
-	this->aaLevel = aaLevel;
-
-	if(fullScreen) {
+	if (fullScreen) {
 
 		SetWindowLong(hWnd, GWL_STYLE, WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP);
-		ShowWindow(hWnd, SW_SHOW);
+		ShowWindowAsync(hWnd, SW_SHOW);
 		MoveWindow(hWnd, 0, 0, xRes, yRes, TRUE);
 
 		DEVMODE dmScreenSettings;					// Device Mode
-		memset(&dmScreenSettings,0,sizeof(dmScreenSettings));		// Makes Sure Memory's Cleared
-		dmScreenSettings.dmSize=sizeof(dmScreenSettings);		// Size Of The Devmode Structure
-		dmScreenSettings.dmPelsWidth	= xRes;			// Selected Screen Width
-		dmScreenSettings.dmPelsHeight	= yRes;			// Selected Screen Height
-		dmScreenSettings.dmBitsPerPel	= 32;				// Selected Bits Per Pixel
-		dmScreenSettings.dmFields=DM_BITSPERPEL|DM_PELSWIDTH|DM_PELSHEIGHT;
-		ChangeDisplaySettings(&dmScreenSettings,CDS_FULLSCREEN);
+		memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));		// Makes Sure Memory's Cleared
+		dmScreenSettings.dmSize = sizeof(dmScreenSettings);		// Size Of The Devmode Structure
+		dmScreenSettings.dmPelsWidth = xRes;			// Selected Screen Width
+		dmScreenSettings.dmPelsHeight = yRes;			// Selected Screen Height
+		dmScreenSettings.dmBitsPerPel = 32;				// Selected Bits Per Pixel
+		dmScreenSettings.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
+		ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN);
 
 		//SetWindowPos(hWnd, NULL, 0, 0, xRes, yRes, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
-	} else {
+	}
+	else {
+
 		RECT rect;
 		rect.left = 0;
 		rect.top = 0;
@@ -277,91 +340,48 @@ void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 		if (resizable){
 			SetWindowLongPtr(hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_SYSMENU | WS_VISIBLE);
 			AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW | WS_SYSMENU, FALSE);
-		} else {
+		}
+		else {
 			SetWindowLongPtr(hWnd, GWL_STYLE, WS_CAPTION | WS_POPUP | WS_SYSMENU | WS_VISIBLE);
 			AdjustWindowRect(&rect, WS_CAPTION | WS_POPUP | WS_SYSMENU, FALSE);
 		}
 		MoveWindow(hWnd, 0, 0, rect.right-rect.left, rect.bottom-rect.top, TRUE);
 
 		ChangeDisplaySettings(0, 0);
-	
 	}
 
-
-	isFullScreen = fullScreen;
-
-	if(resetContext) {
-		initContext(aaLevel);
-	}
-
-	setVSync(vSync);
-
-	renderer->setAnisotropyAmount(anisotropyLevel);
-	renderer->Resize(xRes, yRes);
-
-	core->dispatchEvent(new Event(), Core::EVENT_CORE_RESIZE);
+	Core::setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
 }
 
-void Win32Core::getWglFunctionPointers() {
 
-	PIXELFORMATDESCRIPTOR pfd;
-	memset(&pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
-	pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
-	pfd.nVersion = 1;
-	pfd.dwFlags = PFD_DOUBLEBUFFER |
-		PFD_SUPPORT_OPENGL |
-		PFD_DRAW_TO_WINDOW;
-	pfd.iPixelType = PFD_TYPE_RGBA;
-	pfd.cColorBits = 24;
-	pfd.cDepthBits = 16;
-	pfd.cAccumBlueBits = 8;
-	pfd.cAccumRedBits = 8;
-	pfd.cAccumGreenBits = 8;
-	pfd.cAccumAlphaBits = 8;
-	pfd.cAccumBits = 24;
-	pfd.iLayerType = PFD_MAIN_PLANE;
+void Win32Core::handleVideoModeChange(VideoModeChangeInfo *modeInfo) {
 
-	WNDCLASSEX wcex;
 
-	wcex.cbSize = sizeof(WNDCLASSEX);
-	wcex.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-	wcex.lpfnWndProc = DefWindowProc;
-	wcex.cbClsExtra = 0;
-	wcex.cbWndExtra = 0;
-	wcex.hInstance = hInstance;
-	wcex.hIcon = LoadIcon(hInstance, IDI_APPLICATION);
-	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wcex.hbrBackground = NULL;
-	wcex.lpszMenuName = NULL;
-	wcex.lpszClassName = L"FAKECONTEXTCLASS";
-	wcex.hIconSm = LoadIcon(hInstance, IDI_APPLICATION);
+	bool resetContext = false;
 
-	RegisterClassEx(&wcex);
+	if (modeInfo->aaLevel != this->aaLevel) {
+		resetContext = true;
+	}
 
-	HWND tempHWND = CreateWindowEx(WS_EX_APPWINDOW, L"FAKECONTEXTCLASS", L"FAKE", WS_OVERLAPPEDWINDOW | WS_MAXIMIZE | WS_CLIPCHILDREN, 0, 0, 0, 0, NULL, NULL, hInstance, NULL);
-	//CreateWindow(_T("FakeWindow"), _T("FAKE"), WS_OVERLAPPEDWINDOW | WS_MAXIMIZE | WS_CLIPCHILDREN, 0, 0, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, hInstance, NULL);
+	if (resetContext) {
+		initContext(modeInfo->aaLevel);
+	}
 
-	HGLRC tempHRC;
-	unsigned int PixelFormat;
-	
-	HDC tempDC = GetDC(tempHWND);
-	PixelFormat = ChoosePixelFormat(tempDC, &pfd);
-	SetPixelFormat(tempDC, PixelFormat, &pfd);
+	bool wasFullscreen = this->fullScreen;
 
-	tempHRC = wglCreateContext(tempDC);
-	wglMakeCurrent(tempDC, tempHRC);
+	this->xRes = modeInfo->xRes;
+	this->yRes = modeInfo->yRes;
+	this->fullScreen = modeInfo->fullScreen;
+	this->aaLevel = modeInfo->aaLevel;
 
-	wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
-	wglGetSwapIntervalEXT = (PFNWGLGETSWAPINTERVALEXTPROC)wglGetProcAddress("wglGetSwapIntervalEXT");
-	wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
+	isFullScreen = modeInfo->fullScreen;
 
-	wglMakeCurrent(NULL, NULL);
-	wglDeleteContext(tempHRC);
-	DestroyWindow(tempHWND);
-
+	setVSync(modeInfo->vSync);
+	renderer->setAnisotropyAmount(modeInfo->anisotropyLevel);
 }
 
 void Win32Core::initContext(int aaLevel) {
+	
 
 	destroyContext();
 
@@ -449,9 +469,17 @@ void Win32Core::initContext(int aaLevel) {
 		return;							// Return FALSE
 	}
 
+	GLenum err = glewInit();
+	if (GLEW_OK != err) {
+		Logger::log("Error initializing glew\n");
+	} else  {
+		Logger::log("glew initialized successfully\n");
+	}
+
 	if (intializedAA) {
 		glEnable(GL_MULTISAMPLE_ARB); 
 	}
+
 }
 
 void Win32Core::destroyContext() {
@@ -596,7 +624,6 @@ void Win32Core::initKeymap() {
 void Win32Core::handleViewResize(int width, int height) {
 	this->xRes = width;
 	this->yRes = height;
-	renderer->Resize(width, height);
 	dispatchEvent(new Event(), EVENT_CORE_RESIZE);
 }
 
@@ -1173,14 +1200,6 @@ void Win32Core::createThread(Threaded *target) {
 	Core::createThread(target);
 	DWORD dwGenericThread; 
 	HANDLE handle = CreateThread(NULL,0,Win32LaunchThread,target,0,&dwGenericThread);
-}
-
-void Win32Core::lockMutex(CoreMutex *mutex) {	
-	WaitForSingleObject(((Win32Mutex*)mutex)->winMutex,INFINITE);
-}
-
-void Win32Core::unlockMutex(CoreMutex *mutex) {
-	ReleaseMutex(((Win32Mutex*)mutex)->winMutex);
 }
 
 void Win32Core::platformSleep(int msecs) {

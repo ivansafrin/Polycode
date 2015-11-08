@@ -22,11 +22,12 @@
 
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyCore.h"
-#include "PolyInputKeys.h"
-#include "PolyInputEvent.h"
-#include "PolyRectangle.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyCore.h"
+#include "polycode/core/PolyInputKeys.h"
+#include "polycode/core/PolyInputEvent.h"
+#include "polycode/core/PolyRectangle.h"
+#include "polycode/core/PolyOpenGLGraphicsInterface.h"
 
 #include <winsock2.h>
 #include <windows.h>
@@ -35,7 +36,8 @@
 
 #include <mmsystem.h>
 #include <regstr.h>
-
+#include <glew/GL/glew.h>
+#include <glew/GL/wglew.h>
 
 #include <vector>
 
@@ -109,6 +111,9 @@ namespace Polycode {
 
 	class _PolyExport Win32Mutex : public CoreMutex {
 	public:
+		void lock();
+		void unlock();
+
 		HANDLE winMutex; 
 	};
 
@@ -200,25 +205,24 @@ public:
 		void handleTouchEvent(LPARAM lParam, WPARAM wParam);
 		void handlePointerUpdate(LPARAM lParam, WPARAM wParam);
 
+		void handleVideoModeChange(VideoModeChangeInfo *modeInfo);
+
 		bool isMultiTouchEnabled() { return hasMultiTouch; }
 
-		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport = true);
-		
 		void initContext(int aaLevel);
 		void destroyContext();
-
-		void getWglFunctionPointers();
 
 		void createThread(Threaded *target);
 
 		PolyKEY mapKey(LPARAM lParam, WPARAM wParam);
 
-		void lockMutex(CoreMutex *mutex);
-		void unlockMutex(CoreMutex *mutex);
 		CoreMutex *createMutex();
 
 		void checkEvents();
 		void initKeymap();
+
+		void flushRenderContext();
+		bool systemParseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector);
 
 		void platformSleep(int msecs);
 
@@ -235,6 +239,7 @@ public:
 
 		void initTouch();
 
+		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport);
 		void handleViewResize(int width, int height);
 		
 		String executeExternalCommand(String command,  String args, String inDirectory);
@@ -266,6 +271,8 @@ public:
 		String copyDataString;
 
 	private:
+
+		PolycodeViewBase *view;
 
 		Number scaleFactor;
 		bool checkSpecialKeyEvents(PolyKEY key);
