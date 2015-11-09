@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
  
-#include "ToolWindows.h"
+#include "polycode/ide/ToolWindows.h"
 #include "polycode/ide/PolycodeToolLauncher.h"
 
 TextInputPopup::TextInputPopup() : UIWindow(L"", 300, 80) {

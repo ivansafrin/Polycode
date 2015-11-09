@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#include "EntityEditorTreeView.h"
+#include "polycode/ide/EntityEditorTreeView.h"
 
 EntityEditorTreeSheet::EntityEditorTreeSheet() : PropSheet("LIST VIEW", "list_view"){
     treeContainer = new UITreeContainer("folder.png", "Root", 10, 10);

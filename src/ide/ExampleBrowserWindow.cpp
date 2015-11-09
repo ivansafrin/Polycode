@@ -20,7 +20,7 @@
  THE SOFTWARE.
 */
 
-#include "ExampleBrowserWindow.h"
+#include "polycode/ide/ExampleBrowserWindow.h"
 
 ExampleBrowserWindow::ExampleBrowserWindow() : UIWindow(L"Example Browser", 320, 400){
 	

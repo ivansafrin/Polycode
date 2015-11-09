@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
  
-#include "EntityEditorPropertyView.h"
+#include "polycode/ide/EntityEditorPropertyView.h"
 
 
 EntityEditorPropertyView::EntityEditorPropertyView() : UIElement() {

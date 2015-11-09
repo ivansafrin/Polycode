@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#include "EntityEditorSettingsView.h"
+#include "polycode/ide/EntityEditorSettingsView.h"
 
 EntityEditorSettingsView::EntityEditorSettingsView() : UIElement() {
     entityProps = new PropList("ENTITY SETTINGS");

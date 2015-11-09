@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
  
-#include "TextureBrowser.h"
+#include "polycode/ide/TextureBrowser.h"
 
 AssetEntry::AssetEntry(String assetPath, String assetName, String extension, Resource *resource) : UIElement() {
 

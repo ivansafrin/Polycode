@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
  
-#include "EditorGrid.h"
+#include "polycode/ide/EditorGrid.h"
 
 EditorGridSettingsWindow::EditorGridSettingsWindow(EditorGrid *grid) : UIWindow("Grid Settings", 100, 190) {
     

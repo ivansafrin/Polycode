@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
  
-#include "ExportProjectWindow.h"
+#include "polycode/ide/ExportProjectWindow.h"
 #include "polycode/ide/PolycodeFrame.h"
 
 extern PolycodeFrame *globalFrame;

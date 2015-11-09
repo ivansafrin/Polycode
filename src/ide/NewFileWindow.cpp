@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
  
-#include "NewFileWindow.h"
+#include "polycode/ide/NewFileWindow.h"
 
 NewFileWindow::NewFileWindow() : UIWindow(L"Create New File", 580, 280) {
 	defaultTemplateTree = NULL;

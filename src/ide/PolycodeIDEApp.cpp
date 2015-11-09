@@ -68,14 +68,15 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
     core->addFileSource("archive", "default.pak");
     globalPool->loadResourcesFromFolder("default", true);
   
+	/*
     core->addFileSource("archive", "hdr.pak");
     globalPool->loadResourcesFromFolder("hdr", true);
-
     core->addFileSource("archive", "api.pak");
     core->addFileSource("archive", "Physics2D.pak");
     core->addFileSource("archive", "Physics3D.pak");
     core->addFileSource("archive", "UI.pak");
-    
+    */
+
     globalPool->loadResourcesFromFolder("Materials", true);
 			
 	CoreServices::getInstance()->getFontManager()->registerFont("section", "Fonts/Lato-Black.ttf");

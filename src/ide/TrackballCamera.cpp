@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
  
-#include "TrackballCamera.h"
+#include "polycode/ide/TrackballCamera.h"
 
 
 TrackballCamera::TrackballCamera(Camera *targetCamera, Entity *trackballShape) : EventDispatcher() {

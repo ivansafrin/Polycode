@@ -16,7 +16,7 @@
  THE SOFTWARE.
  */
 
-#include "SettingsWindow.h"
+#include "polycode/ide/SettingsWindow.h"
 #include "polycode/ide/PolycodeFrame.h"
 #include "polycode/ide/PolycodeTextEditor.h"
 

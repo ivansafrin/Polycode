@@ -1,0 +1,236 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A9A71037-BC64-45D6-B872-90EF22ABB23A}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>PolycodeStudio</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>..\..\..\..\include;.;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\..\..\lib\win32\x64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>..\..\..\..\include;.;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\..\..\lib\win32\x64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>Shlwapi.lib;PolycodeUI.lib;ws2_32.lib;opengl32.lib;glew32.lib;zlib.lib;freetype.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;lua5.1.lib;physfs.lib;PolycodeCore.lib;Winmm.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy /E /Y "$(ProjectDir)\..\..\..\..\assets\ide\*" "$(ProjectDir)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>Shlwapi.lib;PolycodeUI.lib;ws2_32.lib;opengl32.lib;glew32.lib;zlib.lib;freetype.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;lua5.1.lib;physfs.lib;PolycodeCore.lib;Winmm.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy /E /Y "$(ProjectDir)\..\..\..\..\assets\ide\*" "$(OutDir)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\ide\EditorGrid.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\EntityEditorPropertyView.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\EntityEditorSettingsView.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\EntityEditorTreeView.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\ExampleBrowserWindow.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\ExportProjectWindow.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\NewFileWindow.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\NewProjectWindow.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\PolycodeClipboard.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\PolycodeConsole.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\PolycodeEditor.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\PolycodeEditorManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\PolycodeEntityEditor.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\PolycodeFontEditor.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\PolycodeFrame.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\PolycodeIDEApp.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\PolycodeImageEditor.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\PolycodeMaterialEditor.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\PolycodeMeshEditor.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\PolycodeProject.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\PolycodeProjectBrowser.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\PolycodeProjectEditor.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\PolycodeProjectManager.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\PolycodeProps.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\PolycodeRemoteDebugger.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\PolycodeSoundEditor.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\PolycodeSpriteEditor.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\PolycodeTextEditor.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\PolycodeToolLauncher.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\PolycodeWinIDEView.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\SettingsWindow.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\TextureBrowser.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\ToolWindows.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\TrackballCamera.cpp" />
+    <ClCompile Include="..\..\..\..\src\ide\TransformGizmo.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\include\polycode\ide\EditorGrid.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\EntityEditorPropertyView.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\EntityEditorSettingsView.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\EntityEditorTreeView.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\ExampleBrowserWindow.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\ExportProjectWindow.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\NewFileWindow.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\NewProjectWindow.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\PolycodeClipboard.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\PolycodeConsole.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\PolycodeEditor.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\PolycodeEditorManager.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\PolycodeEntityEditor.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\PolycodeFontEditor.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\PolycodeFrame.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\PolycodeGlobals.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\PolycodeIDEApp.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\PolycodeImageEditor.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\PolycodeMaterialEditor.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\PolycodeMeshEditor.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\PolycodeProject.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\PolycodeProjectBrowser.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\PolycodeProjectEditor.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\PolycodeProjectManager.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\PolycodeProps.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\PolycodeRemoteDebugger.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\PolycodeSoundEditor.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\PolycodeSpriteEditor.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\PolycodeTextEditor.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\PolycodeToolLauncher.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\PolycodeWinIDEView.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\SettingsWindow.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\TextureBrowser.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\ToolWindows.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\TrackballCamera.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\ide\TransformGizmo.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Polycode.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

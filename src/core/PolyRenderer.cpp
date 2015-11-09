@@ -415,7 +415,7 @@ void RenderThread::setGraphicsInterface(Core *core, GraphicsInterface *graphicsI
     this->core = core;
 }
 
-Renderer::Renderer() {
+Renderer::Renderer() : backingResolutionScaleX(1.0), backingResolutionScaleY(1.0) {
     renderThread = new RenderThread();
     Services()->getCore()->createThread(renderThread);
     

@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
  
-#include "TransformGizmo.h"
+#include "polycode/ide/TransformGizmo.h"
 #include <cmath>
 
 extern UIGlobalMenu *globalMenu;
