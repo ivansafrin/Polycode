@@ -149,7 +149,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
             scissorBox.x *= buffer->backingResolutionScale.x;
             scissorBox.w *= buffer->backingResolutionScale.x;
             scissorBox.h *= buffer->backingResolutionScale.y;
-            scissorBox.y = ((buffer->viewport.h*buffer->backingResolutionScale.y)-(scissorBox.y*buffer->backingResolutionScale.y))-scissorBox.h;
+            scissorBox.y = ((buffer->viewport.h-(scissorBox.y*buffer->backingResolutionScale.y)))-scissorBox.h;
             
             graphicsInterface->setScissorBox(scissorBox);
         } else {

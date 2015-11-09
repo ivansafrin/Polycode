@@ -55,7 +55,7 @@ SceneMesh::SceneMesh(const String& fileName) : Entity(), material(NULL), skeleto
     backfaceCulled = true;
 	alphaTest = false;
     sendBoneMatricesToMaterial = false;
-    setMaterialByName("UnlitUntextured");
+    setMaterialByName("Unlit");
 }
 
 SceneMesh::SceneMesh(Mesh *mesh) : Entity(), material(NULL), skeleton(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
@@ -71,7 +71,7 @@ SceneMesh::SceneMesh(Mesh *mesh) : Entity(), material(NULL), skeleton(NULL), ske
     backfaceCulled = true;
 	alphaTest = false;
     sendBoneMatricesToMaterial = false;
-    setMaterialByName("UnlitUntextured");
+    setMaterialByName("Unlit");
 }
 
 SceneMesh::SceneMesh(int meshType) : material(NULL), skeleton(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
@@ -86,7 +86,7 @@ SceneMesh::SceneMesh(int meshType) : material(NULL), skeleton(NULL), skeletalVer
     backfaceCulled = true;
 	alphaTest = false;
     sendBoneMatricesToMaterial = false;
-    setMaterialByName("UnlitUntextured");    
+    setMaterialByName("Unlit");
 }
 
 void SceneMesh::setMesh(Mesh *mesh) {

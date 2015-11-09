@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6D6FD3E11BF122A2005AA8E9 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6D6FD3E01BF122A2005AA8E9 /* PolycodeView.mm */; };
 		6DD2D0B61BEEDC150026D85C /* libportaudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DD2D0B51BEEDC150026D85C /* libportaudio.a */; };
 		6DD2D0B81BEEDCC90026D85C /* white.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DD2D0B71BEEDCC80026D85C /* white.png */; };
 		8A825F271B82A2680039E823 /* libportaudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A825F261B82A2680039E823 /* libportaudio.a */; };
@@ -28,12 +29,12 @@
 		8A8653641B72949F009F94DD /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A86535B1B72949F009F94DD /* libz.a */; };
 		8A8653681B7294B7009F94DD /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A8653671B7294B7009F94DD /* OpenGL.framework */; };
 		8A86536B1B729559009F94DD /* PolycodeTemplateApp.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8A86536A1B729559009F94DD /* PolycodeTemplateApp.mm */; };
-		8A86536D1B729D77009F94DD /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8A86536C1B729D77009F94DD /* PolycodeView.mm */; };
 		8A8653701B72C431009F94DD /* default.pak in Resources */ = {isa = PBXBuildFile; fileRef = 8A86536F1B72C431009F94DD /* default.pak */; };
 		8A8653961B752DBE009F94DD /* main_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8A8653951B752DBE009F94DD /* main_icon.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6D6FD3E01BF122A2005AA8E9 /* PolycodeView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PolycodeView.mm; path = ../../../../src/view/osx/PolycodeView.mm; sourceTree = "<group>"; };
 		6DD2D0B51BEEDC150026D85C /* libportaudio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libportaudio.a; path = ../../../../lib/osx/libportaudio.a; sourceTree = "<group>"; };
 		6DD2D0B71BEEDCC80026D85C /* white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = white.png; path = ../../../../../THU/HELLMOUTH/App/Resources/Resources/textures/white.png; sourceTree = "<group>"; };
 		8A825F261B82A2680039E823 /* libportaudio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libportaudio.a; path = ../../../../lib/osx/libportaudio.a; sourceTree = "<group>"; };
@@ -59,7 +60,6 @@
 		8A8653671B7294B7009F94DD /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		8A8653691B729559009F94DD /* PolycodeTemplateApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeTemplateApp.h; sourceTree = "<group>"; };
 		8A86536A1B729559009F94DD /* PolycodeTemplateApp.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PolycodeTemplateApp.mm; sourceTree = "<group>"; };
-		8A86536C1B729D77009F94DD /* PolycodeView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PolycodeView.mm; path = ../../../../src/view/osx/PolycodeView.mm; sourceTree = "<group>"; };
 		8A86536E1B72C301009F94DD /* PolycodeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeView.h; path = ../../../../include/polycode/view/osx/PolycodeView.h; sourceTree = "<group>"; };
 		8A86536F1B72C431009F94DD /* default.pak */ = {isa = PBXFileReference; lastKnownFileType = file; name = default.pak; path = ../../../../assets/default/default.pak; sourceTree = "<group>"; };
 		8A8653951B752DBE009F94DD /* main_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = main_icon.png; path = ../../../../assets/icons/main_icon.png; sourceTree = "<group>"; };
@@ -118,8 +118,8 @@
 				8A86536A1B729559009F94DD /* PolycodeTemplateApp.mm */,
 				8A8653351B72931C009F94DD /* AppDelegate.h */,
 				8A8653361B72931C009F94DD /* AppDelegate.m */,
+				6D6FD3E01BF122A2005AA8E9 /* PolycodeView.mm */,
 				8A86536E1B72C301009F94DD /* PolycodeView.h */,
-				8A86536C1B729D77009F94DD /* PolycodeView.mm */,
 				8A86536F1B72C431009F94DD /* default.pak */,
 				8A86533A1B72931C009F94DD /* Images.xcassets */,
 				6DD2D0B71BEEDCC80026D85C /* white.png */,
@@ -223,7 +223,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8A8653391B72931C009F94DD /* main.m in Sources */,
-				8A86536D1B729D77009F94DD /* PolycodeView.mm in Sources */,
+				6D6FD3E11BF122A2005AA8E9 /* PolycodeView.mm in Sources */,
 				8A86536B1B729559009F94DD /* PolycodeTemplateApp.mm in Sources */,
 				8A8653371B72931C009F94DD /* AppDelegate.m in Sources */,
 			);

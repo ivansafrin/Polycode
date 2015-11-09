@@ -212,10 +212,8 @@ void SceneEntityInstance::applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMes
                                             }
                                              */
                                         } else {
-                                            // RENDERER_TODO
-                                            /*
-                                            sceneMesh->getLocalShaderOptions()->setTextureForParam(nameEntry->stringVal, CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(textureEntry->stringVal));
-                                             */
+                                            
+                                            sceneMesh->getShaderPass(0).shaderBinding->loadTextureForParam(nameEntry->stringVal, textureEntry->stringVal);
                                         }
                                     }
                                 }

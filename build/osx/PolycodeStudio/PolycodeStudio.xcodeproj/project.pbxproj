@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6DE288291BE96D7B00F7B42C /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6DE288281BE96D7B00F7B42C /* PolycodeView.mm */; };
+		6D6FD3E31BF122A7005AA8E9 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6D6FD3E21BF122A7005AA8E9 /* PolycodeView.mm */; };
 		8A22D92B1BCC67DE009EF0A6 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A22D92A1BCC67DE009EF0A6 /* OpenGL.framework */; };
 		8A22D92D1BCC67E6009EF0A6 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A22D92C1BCC67E6009EF0A6 /* AudioUnit.framework */; };
 		8A22D92F1BCC6809009EF0A6 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A22D92E1BCC6809009EF0A6 /* CoreAudio.framework */; };
@@ -65,8 +65,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6D6FD3E21BF122A7005AA8E9 /* PolycodeView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PolycodeView.mm; path = ../../../../src/view/osx/PolycodeView.mm; sourceTree = "<group>"; };
 		6DE288271BE96D7100F7B42C /* PolycodeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeView.h; path = ../../../../include/polycode/view/osx/PolycodeView.h; sourceTree = "<group>"; };
-		6DE288281BE96D7B00F7B42C /* PolycodeView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PolycodeView.mm; path = ../../../../src/view/osx/PolycodeView.mm; sourceTree = "<group>"; };
 		8A22D92A1BCC67DE009EF0A6 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		8A22D92C1BCC67E6009EF0A6 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
 		8A22D92E1BCC6809009EF0A6 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
@@ -213,8 +213,8 @@
 			isa = PBXGroup;
 			children = (
 				6DE288271BE96D7100F7B42C /* PolycodeView.h */,
-				6DE288281BE96D7B00F7B42C /* PolycodeView.mm */,
 				8A36D3281B8E7096009897D0 /* default.pak */,
+				6D6FD3E21BF122A7005AA8E9 /* PolycodeView.mm */,
 				8A36D20E1B8E5751009897D0 /* AppDelegate.h */,
 				8A36D20F1B8E5751009897D0 /* AppDelegate.m */,
 				8A36D2131B8E5751009897D0 /* Images.xcassets */,
@@ -433,7 +433,7 @@
 				8A36D2591B8E5BA9009897D0 /* NewFileWindow.cpp in Sources */,
 				8A36D25C1B8E5BA9009897D0 /* PolycodeConsole.cpp in Sources */,
 				8A36D2711B8E5BA9009897D0 /* TextureBrowser.cpp in Sources */,
-				6DE288291BE96D7B00F7B42C /* PolycodeView.mm in Sources */,
+				6D6FD3E31BF122A7005AA8E9 /* PolycodeView.mm in Sources */,
 				8A36D2741B8E5BA9009897D0 /* TransformGizmo.cpp in Sources */,
 				8A36D2721B8E5BA9009897D0 /* ToolWindows.cpp in Sources */,
 				8A36D2541B8E5BA9009897D0 /* EntityEditorPropertyView.cpp in Sources */,

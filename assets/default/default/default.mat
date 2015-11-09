@@ -51,6 +51,10 @@
 			<shader name="Unlit">
 			</shader>
 		</material>
+		<material name="UnlitAdditive" blendingMode="2">
+			<shader name="Unlit">
+			</shader>
+		</material>		
 		<material name="UnlitPointUntextured">
 			<shader name="UnlitPointUntextured">
 			</shader>
