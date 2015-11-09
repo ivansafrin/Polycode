@@ -49,38 +49,72 @@ ShaderPass::ShaderPass(Shader *shader) :
     
 }
 
-void ShaderPass::setExpectedAttributes(Mesh *mesh) {
+ String ShaderPass::arrayToAttributeName(VertexDataArray *array) {
+    switch(array->type) {
+        case RenderDataArray::VERTEX_DATA_ARRAY:
+            return "position";
+        break;
+        case RenderDataArray::NORMAL_DATA_ARRAY:
+            return "normal";
+        break;
+        case RenderDataArray::TEXCOORD_DATA_ARRAY:
+            return "texCoord";
+        break;
+        case RenderDataArray::COLOR_DATA_ARRAY:
+            return "color";
+        break;
+        case RenderDataArray::TANGENT_DATA_ARRAY:
+            return "tangent";
+        break;
+        case RenderDataArray::TEXCOORD2_DATA_ARRAY:
+            return "texCoord2";
+        break;
+        case RenderDataArray::BONE_WEIGHT_DATA_ARRAY:
+            return "boneWeights";
+        break;
+        case RenderDataArray::BONE_INDEX_DATA_ARRAY:
+            return "boneIndices";
+        break;
+        default:
+            return array->customArrayName;
+        break;
+    }
+}
+
+void ShaderPass::setAttributeArraysFromMesh(Mesh *mesh) {
+    attributeArrays.clear();
+    attributeArrays.push_back(&mesh->vertexPositionArray);
+    attributeArrays.push_back(&mesh->vertexNormalArray);
+    attributeArrays.push_back(&mesh->vertexTexCoordArray);
+    attributeArrays.push_back(&mesh->vertexColorArray);
+    attributeArrays.push_back(&mesh->vertexBoneIndexArray);
+    attributeArrays.push_back(&mesh->vertexBoneWeightArray);
+    attributeArrays.push_back(&mesh->vertexTangentArray);
+    attributeArrays.push_back(&mesh->vertexTexCoord2Array);
+}
+
+void ShaderPass::setExpectedAttributes() {
     if(!shader || !shaderBinding) {
         return;
     }
     shaderBinding->attributes.clear();
-
+    
     for(int i=0; i < shader->expectedAttributes.size(); i++) {
         VertexDataArray *targetArray = NULL;
         
-        if(shader->expectedAttributes[i].name == "position") {
-            targetArray = &mesh->vertexPositionArray;
-        } else if(shader->expectedAttributes[i].name == "texCoord"){
-            targetArray = &mesh->vertexTexCoordArray;
-        } else if(shader->expectedAttributes[i].name == "normal") {
-            targetArray = &mesh->vertexNormalArray;
-        } else if(shader->expectedAttributes[i].name == "color") {
-            targetArray = &mesh->vertexColorArray;
-        } else if(shader->expectedAttributes[i].name == "tangent") {
-            targetArray = &mesh->vertexTangentArray;
-        } else if(shader->expectedAttributes[i].name == "texCoord2") {
-            targetArray = &mesh->vertexTexCoord2Array;
-        } else if(shader->expectedAttributes[i].name == "boneWeights") {
-            targetArray = &mesh->vertexBoneWeightArray;
-        } else if(shader->expectedAttributes[i].name == "boneIndices") {
-            targetArray = &mesh->vertexBoneIndexArray;
+        for(int j=0; j < attributeArrays.size(); j++)  {
+            if(shader->expectedAttributes[i].name == arrayToAttributeName(attributeArrays[j])) {
+                targetArray = attributeArrays[j];
+            }
         }
         
-        AttributeBinding *attributeBinding = shaderBinding->getAttributeBindingByName(shader->expectedAttributes[i].name);
-        if(attributeBinding) {
-            attributeBinding->vertexData = targetArray;
-        } else {
-            shaderBinding->addAttributeBinding(shader->expectedAttributes[i].name, targetArray);
+        if(targetArray) {
+            AttributeBinding *attributeBinding = shaderBinding->getAttributeBindingByName(shader->expectedAttributes[i].name);
+            if(attributeBinding) {
+                attributeBinding->vertexData = targetArray;
+            } else {
+                shaderBinding->addAttributeBinding(shader->expectedAttributes[i].name, targetArray);
+            }
         }
     }
 }

@@ -246,7 +246,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                 }
                 
                 if(rebindAttributes || localShaderBinding->resetAttributes ) {
-                    buffer->drawCalls[i].shaderPasses[s].setExpectedAttributes(buffer->drawCalls[i].mesh);
+                    buffer->drawCalls[i].shaderPasses[s].setExpectedAttributes();
                     localShaderBinding->resetAttributes = false;
                 }
 

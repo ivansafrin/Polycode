@@ -22,6 +22,7 @@
 
 #pragma once
 #include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyString.h"
 #include <vector>
 
 namespace Polycode {
@@ -34,6 +35,7 @@ namespace Polycode {
         virtual void *getArrayData();
         virtual unsigned int getDataSize();
         
+        String customArrayName;
         bool hasVBO;
         void *platformData;
         

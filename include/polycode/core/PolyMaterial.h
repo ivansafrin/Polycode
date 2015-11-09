@@ -33,18 +33,23 @@ namespace Polycode {
 	class ShaderBinding;
 	class ShaderRenderTarget;
     class Mesh;
+    class VertexDataArray;
     
     class _PolyExport ShaderPass {
         public:
             ShaderPass();
             ShaderPass(Shader *shader);
         
-            void setExpectedAttributes(Mesh *mesh);
+            void setAttributeArraysFromMesh(Mesh *mesh);
+            void setExpectedAttributes();
+            static String arrayToAttributeName(VertexDataArray *array);
         
             Shader *shader;
             bool wireframe;
             unsigned short blendingMode;
             ShaderBinding* shaderBinding;
+        
+            std::vector<VertexDataArray*> attributeArrays;
     };
 
 	class _PolyExport Material : public Resource {

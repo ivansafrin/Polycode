@@ -132,7 +132,7 @@ namespace Polycode {
 			*/
 			Skeleton *getSkeleton();
 		
-			void renderMeshLocally();
+			void applySkeletonLocally();
 			
             /**
              * Sets the line width for line-based meshes.

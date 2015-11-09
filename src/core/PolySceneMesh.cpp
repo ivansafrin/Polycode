@@ -55,7 +55,7 @@ SceneMesh::SceneMesh(const String& fileName) : Entity(), material(NULL), skeleto
     backfaceCulled = true;
 	alphaTest = false;
     sendBoneMatricesToMaterial = false;
-    setMaterialByName("Unlit");
+    setMaterialByName("UnlitUntextured");
 }
 
 SceneMesh::SceneMesh(Mesh *mesh) : Entity(), material(NULL), skeleton(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
@@ -71,7 +71,7 @@ SceneMesh::SceneMesh(Mesh *mesh) : Entity(), material(NULL), skeleton(NULL), ske
     backfaceCulled = true;
 	alphaTest = false;
     sendBoneMatricesToMaterial = false;
-    setMaterialByName("Unlit");
+    setMaterialByName("UnlitUntextured");
 }
 
 SceneMesh::SceneMesh(int meshType) : material(NULL), skeleton(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
@@ -86,7 +86,7 @@ SceneMesh::SceneMesh(int meshType) : material(NULL), skeleton(NULL), skeletalVer
     backfaceCulled = true;
 	alphaTest = false;
     sendBoneMatricesToMaterial = false;
-    setMaterialByName("Unlit");
+    setMaterialByName("UnlitUntextured");
 }
 
 void SceneMesh::setMesh(Mesh *mesh) {
@@ -103,6 +103,11 @@ void SceneMesh::setMesh(Mesh *mesh) {
 
 void SceneMesh::rebuildAttributes() {
     for(int i=0; i < shaderPasses.size(); i++) {
+        shaderPasses[i].setAttributeArraysFromMesh(mesh);
+        if(skeleton) {
+            shaderPasses[i].attributeArrays.push_back(&skeletalVertexPositions);
+            shaderPasses[i].attributeArrays.push_back(&skeletalVertexNormals);
+        }
         shaderPasses[i].shaderBinding->resetAttributes = true;
     }
 }
@@ -206,6 +211,11 @@ void SceneMesh::setMaterial(Material *material) {
         shaderPass.shaderBinding->targetShader = shaderPass.shader;
         shaderPass.shaderBinding->addParamPointer(ProgramParam::PARAM_COLOR, "entityColor", &color);
         shaderPass.shaderBinding->resetAttributes = true;
+        shaderPass.setAttributeArraysFromMesh(mesh);
+        if(skeleton) {
+            shaderPass.attributeArrays.push_back(&skeletalVertexPositions);
+            shaderPass.attributeArrays.push_back(&skeletalVertexNormals);
+        }
         shaderPasses.push_back(shaderPass);
     }
     
@@ -247,6 +257,7 @@ Skeleton *SceneMesh::loadSkeleton(const String& fileName) {
 
 void SceneMesh::setSkeleton(Skeleton *skeleton) {
 	this->skeleton = skeleton;
+    rebuildAttributes();
 }
 
 void SceneMesh::setLineWidth(Number newWidth) {
@@ -259,76 +270,6 @@ Material *SceneMesh::getMaterial() {
 
 Skeleton *SceneMesh::getSkeleton() {
 	return skeleton;
-}
-
-void SceneMesh::renderMeshLocally() {
-    /*
-	Renderer *renderer = CoreServices::getInstance()->getRenderer();
-
-	
-	if(skeleton) {
-        
-        skeletalVertexPositions.data.clear();
-        skeletalVertexNormals.data.clear();
-        
-		for(int i=0; i < mesh->vertexPositionArray.data.size()/3; i++) {
-            
-            Vector3 norm;
-            Vector3 tPos;
-            
-            for(int b=0; b < 4; b++) {
-            
-                PolyRendererVertexType boneWeight = mesh->vertexBoneWeightArray.data[(i*4)+b];
-                
-                if(boneWeight > 0.0) {
-                    
-                    Bone *bone = skeleton->getBone(mesh->vertexBoneIndexArray.data[(i*4)+b]);
-                    if(bone) {
-                        Vector3 restVert(mesh->vertexPositionArray.data[i*3], mesh->vertexPositionArray.data[(i*3)+1], mesh->vertexPositionArray.data[(i*3)+2]);
-                        
-                        tPos += bone->finalMatrix * restVert * (boneWeight);
-                            
-                        Vector3 nvec(mesh->vertexNormalArray.data[i*3], mesh->vertexNormalArray.data[(i*3)+1], mesh->vertexNormalArray.data[(i*3)+2]);
-                        
-                        nvec = bone->finalMatrix.rotateVector(nvec);
-                        
-                        norm += nvec * (boneWeight);
-                    }
-                }
-            }
-
-            skeletalVertexPositions.data.push_back(tPos.x);
-            skeletalVertexPositions.data.push_back(tPos.y);
-            skeletalVertexPositions.data.push_back(tPos.z);
-        
-            norm.Normalize();
-            
-            skeletalVertexNormals.data.push_back(norm.x);
-            skeletalVertexNormals.data.push_back(norm.y);
-            skeletalVertexNormals.data.push_back(norm.z);
-        }
-        
-        renderer->pushRenderDataArray(&skeletalVertexPositions);
-        renderer->pushRenderDataArray(&skeletalVertexNormals);
-        
-    } else {
-        renderer->pushRenderDataArray(&mesh->vertexPositionArray);
-        renderer->pushRenderDataArray(&mesh->vertexNormalArray);
-    }
-    
-    renderer->pushRenderDataArray(&mesh->vertexTangentArray);
-    renderer->pushRenderDataArray(&mesh->vertexTexCoordArray);
-    
-	if(mesh->useVertexColors) {
-		renderer->pushRenderDataArray(&mesh->vertexColorArray);
-	}
-    
-    if(mesh->indexedMesh) {
-        renderer->drawArrays(mesh->getMeshType(), &mesh->indexArray);
-    } else {
-        renderer->drawArrays(mesh->getMeshType(), NULL);
-    }
-     */
 }
 
 bool SceneMesh::customHitDetection(const Ray &ray) {
@@ -371,6 +312,43 @@ void SceneMesh::removeShaderPass(int shaderIndex) {
     }
 }
 
+void SceneMesh::applySkeletonLocally() {
+    skeletalVertexPositions.data.clear();
+    skeletalVertexNormals.data.clear();
+    
+    for(int i=0; i < mesh->vertexPositionArray.data.size()/3; i++) {
+        
+        Vector3 norm;
+        Vector3 tPos;
+        
+        for(int b=0; b < 4; b++) {
+            
+            PolyRendererVertexType boneWeight = mesh->vertexBoneWeightArray.data[(i*4)+b];
+            if(boneWeight > 0.0) {
+                Bone *bone = skeleton->getBone(mesh->vertexBoneIndexArray.data[(i*4)+b]);
+                if(bone) {
+                    Vector3 restVert(mesh->vertexPositionArray.data[i*3], mesh->vertexPositionArray.data[(i*3)+1], mesh->vertexPositionArray.data[(i*3)+2]);
+                    tPos += bone->finalMatrix * restVert * (boneWeight);
+                    Vector3 nvec(mesh->vertexNormalArray.data[i*3], mesh->vertexNormalArray.data[(i*3)+1], mesh->vertexNormalArray.data[(i*3)+2]);
+                    
+                    nvec = bone->finalMatrix.rotateVector(nvec);
+                    norm += nvec * (boneWeight);
+                }
+            }
+        }
+        
+        skeletalVertexPositions.data.push_back(tPos.x);
+        skeletalVertexPositions.data.push_back(tPos.y);
+        skeletalVertexPositions.data.push_back(tPos.z);
+        
+        norm.Normalize();
+        
+        skeletalVertexNormals.data.push_back(norm.x);
+        skeletalVertexNormals.data.push_back(norm.y);
+        skeletalVertexNormals.data.push_back(norm.z);
+    }
+}
+
 void SceneMesh::Render(GPUDrawBuffer *buffer) {
     
     drawCall.options.alphaTest = alphaTest;
@@ -382,6 +360,10 @@ void SceneMesh::Render(GPUDrawBuffer *buffer) {
     drawCall.mesh = mesh;
     drawCall.material = material;
     drawCall.shaderPasses = shaderPasses;
+    
+    if(skeleton) {
+        applySkeletonLocally();
+    }
     
     buffer->drawCalls.push_back(drawCall);
     
