@@ -91,7 +91,7 @@ long custom_tellfunc(void *datasource) {
 }
 #endif
 
-Sound::Sound(const String& fileName) :  referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), numSamples(-1), streamingSound(false), playing(false), playbackOffset(0), streamingSource(NULL) {
+Sound::Sound(const String& fileName) :  referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), numSamples(-1), streamingSound(false), playing(false), playbackOffset(0), streamingSource(NULL), frequencyAdjust(1.0) {
 	soundLoaded = false;
 	setIsPositional(false);
 	loadFile(fileName);
@@ -100,7 +100,7 @@ Sound::Sound(const String& fileName) :  referenceDistance(1), maxDistance(MAX_FL
     }
 }
 
-Sound::Sound(int size, const char *data, int channels, unsigned int freq, SoundFormat format) : referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), numSamples(-1), streamingSound(false), playing(false) , playbackOffset(0), streamingSource(NULL) {
+Sound::Sound(int size, const char *data, int channels, unsigned int freq, SoundFormat format) : referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), numSamples(-1), streamingSound(false), playing(false) , playbackOffset(0), streamingSource(NULL), frequencyAdjust(1.0) {
 	setIsPositional(false);
     soundLoaded = loadBytes(data, size, channels, freq, format);
     if(soundLoaded) {
@@ -108,7 +108,7 @@ Sound::Sound(int size, const char *data, int channels, unsigned int freq, SoundF
     }
 }
 
-Sound::Sound(AudioStreamingSource *streamingSource) : referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1),  numSamples(-1), streamingSound(true), streamingSource(streamingSource), playing(false), playbackOffset(0) {
+Sound::Sound(AudioStreamingSource *streamingSource) : referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1),  numSamples(-1), streamingSound(true), streamingSource(streamingSource), playing(false), playbackOffset(0), frequencyAdjust(1.0) {
 
     soundBuffer = (int16_t*) malloc(sizeof(int16_t) * streamingSource->getNumChannels() * POLY_MIX_BUFFER_SIZE);
     Services()->getSoundManager()->registerSound(this);
@@ -287,7 +287,7 @@ int Sound::getOffset() {
 void Sound::setOffset(unsigned int offset) {
     playbackOffset = (offset);
     
-    Number adjustedOffset = ((Number)playbackOffset) * pitch;
+    Number adjustedOffset = ((Number)playbackOffset) * pitch * frequencyAdjust;
     
     if((unsigned int)adjustedOffset >= numSamples) {
         playbackOffset = 0;
@@ -360,15 +360,13 @@ void Sound::Stop() {
 
 
 Number Sound::getSampleAsNumber(unsigned int offset, unsigned int channel) {
-    Number adjustedOffset = ((Number)offset) * pitch;
+    Number adjustedOffset = ((Number)offset) * pitch * frequencyAdjust;
     Number ret = (((Number)(soundBuffer[((((unsigned int )adjustedOffset)%numSamples)*numChannels)+(channel % numChannels)])/((Number)INT16_MAX))) * volume;
     return ret;
 }
 
 
 bool Sound::loadBytes(const char *data, int size, int channels, unsigned int freq, SoundFormat format) {
-    
-    printf("LOADING %d bytes in %d channels of %d freq\n", size, channels, freq);
     
     if(format == SoundFormatUnsupported) {
         Logger::log("[%s] Error: sound format unsupported!\n", fileName.c_str());
@@ -417,7 +415,10 @@ bool Sound::loadBytes(const char *data, int size, int channels, unsigned int fre
     
     numChannels = channels;
     frequency = freq;
-
+    
+    // adjust for different frequency
+    frequencyAdjust = (Number)freq/(Number)POLY_AUDIO_FREQ;
+    
     return true;
 }
 

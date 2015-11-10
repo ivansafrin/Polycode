@@ -150,11 +150,6 @@ namespace Polycode {
 		bool loadBytes(const char *data, int size, int channels, unsigned int freq, SoundFormat format);
 		bool loadWAV(const String& fileName);
 		bool loadOGG(const String& fileName);
-		/*
-		ALuint GenSource(ALuint buffer);
-		ALuint GenSource();
-        */
-        // NOAL_TODO
         
 		void soundCheck(bool result, const String& err);
 		static unsigned long readByte32(const unsigned char buffer[4]);		
@@ -171,6 +166,8 @@ namespace Polycode {
         AudioStreamingSource *streamingSource;
         
 		Number pitch;
+		Number frequencyAdjust;
+        
 		Number volume;
 	
 		String fileName;
