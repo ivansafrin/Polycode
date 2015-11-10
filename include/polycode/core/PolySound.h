@@ -156,7 +156,6 @@ namespace Polycode {
         */
         // NOAL_TODO
         
-		void soundError(const String& err);
 		void soundCheck(bool result, const String& err);
 		static unsigned long readByte32(const unsigned char buffer[4]);		
 		static unsigned short readByte16(const unsigned char buffer[2]);

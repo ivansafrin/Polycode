@@ -25,6 +25,8 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     test->scissorBox.setRect(100, 50, 100, 30);
     scene->addChild(test);
     
+    Sound *music = new Sound("BUGSHUFFLE.ogg");
+    music->Play();
     
     Services()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 }

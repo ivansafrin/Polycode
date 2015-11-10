@@ -174,11 +174,7 @@ Sound::~Sound() {
 
 void Sound::soundCheck(bool result, const String& err) {
 	if(!result)
-		soundError(err);
-}
-
-void Sound::soundError(const String& err) {
-	Logger::log("SOUND ERROR: %s\n", err.c_str());
+		Logger::log(err);
 }
 
 unsigned long Sound::readByte32(const unsigned char data[4]) {
@@ -372,6 +368,8 @@ Number Sound::getSampleAsNumber(unsigned int offset, unsigned int channel) {
 
 bool Sound::loadBytes(const char *data, int size, int channels, unsigned int freq, SoundFormat format) {
     
+    printf("LOADING %d bytes in %d channels of %d freq\n", size, channels, freq);
+    
     if(format == SoundFormatUnsupported) {
         Logger::log("[%s] Error: sound format unsupported!\n", fileName.c_str());
         return false;
@@ -396,7 +394,6 @@ bool Sound::loadBytes(const char *data, int size, int channels, unsigned int fre
         default:
         break;
     }
-    
     
     for(int i=0; i < numSamples; i++){
         for(int c=0; c < channels; c++) {
@@ -431,24 +428,16 @@ unsigned int Sound::getFrequency() {
 
 bool Sound::loadOGG(const String& fileName) {
 #ifndef NO_OGG
-    /*
-//	floatBuffer.clear();
+
 	vector<char> data;
-	
-	alGenBuffers(1, &buffer);
-	int endian = 0;             // 0 for Little-Endian, 1 for Big-Endian
 	int bitStream;
 	long bytes;
-	char array[BUFFER_SIZE];    // Local fixed size array
-	CoreFile *f;
-	ALenum format;
-	ALsizei freq;
+	char array[BUFFER_SIZE];
 	
-	// Open for binary reading
-	f = Services()->getCore()->openFile(fileName.c_str(), "rb");
+	CoreFile *f = Services()->getCore()->openFile(fileName.c_str(), "rb");
 	if(!f) {
-		soundError("Error loading OGG file!\n");
-		return buffer;
+        Logger::log("Error loading OGG file!\n");
+        return false;
 	}
 	vorbis_info *pInfo;
 	OggVorbis_File oggFile;	
@@ -460,39 +449,18 @@ bool Sound::loadOGG(const String& fileName) {
 	callbacks.tell_func = custom_tellfunc;
 	
 	ov_open_callbacks( (void*)f, &oggFile, NULL, 0, callbacks);
-//	ov_open(f, &oggFile, NULL, 0);
-	// Get some information about the OGG file
 	pInfo = ov_info(&oggFile, -1);
-	
-	// Check the number of channels... always use 16-bit samples
-	if (pInfo->channels == 1)
-		format = AL_FORMAT_MONO16;
-	else
-		format = AL_FORMAT_STEREO16;
-	// end if
-	
-	// The frequency of the sampling rate
-	freq = pInfo->rate;	
+
 	do {
-		// Read up to a buffer's worth of decoded sound data
-		bytes = ov_read(&oggFile, array, BUFFER_SIZE, endian, 2, 1, &bitStream);
-		// Append to end of buffer
+		bytes = ov_read(&oggFile, array, BUFFER_SIZE, 0, 2, 1, &bitStream);
 		data.insert(data.end(), array, array + bytes);
 	} while (bytes > 0);
+    
+    bool retVal = loadBytes(data.data(), data.size(), pInfo->channels, pInfo->rate, SoundFormat16);
 	ov_clear(&oggFile);
-	
-	sampleLength = data.size() / sizeof(unsigned short);
-	
-	alBufferData(buffer, format, &data[0], static_cast<ALsizei>(data.size()), freq);
-	
-	if(generateFloatBuffer) {
-		int32_t *ptr32 = (int32_t*) &data[0];
-		for(int i=0; i < data.size()/4; i++ ) {
-			floatBuffer.push_back(((Number)ptr32[i])/((Number)INT32_MAX));
-		}	
-	}
-     */
-	return false;
+    return retVal;
+#else
+    return false;
 #endif
 }
 
@@ -508,7 +476,7 @@ bool Sound::loadWAV(const String& fileName) {
     // Open for binary reading
     f = Services()->getCore()->openFile(fileName.c_str(), "rb");
     if (!f) {
-        soundError("LoadWav: Could not load wav from " + fileName);
+        Logger::log("LoadWav: Could not load wav from " + fileName);
         return false;
     }
     
@@ -601,9 +569,7 @@ bool Sound::loadWAV(const String& fileName) {
     
     Services()->getCore()->closeFile(f);
     f = NULL;
-    
-    
-    
+
     return loadBytes(&data[0], data.size(), channels, frequency, format);
 
 }
