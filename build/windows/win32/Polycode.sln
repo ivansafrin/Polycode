@@ -1,15 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2013 for Windows Desktop
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PolycodeCore", "PolycodeCore\PolycodeCore.vcxproj", "{92C7971A-F305-4B93-A9DC-6B01AF222FF9}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TemplateApp", "TemplateApp\TemplateApp.vcxproj", "{E09F38FA-C860-4E70-8FA4-45DD7165778B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{92C7971A-F305-4B93-A9DC-6B01AF222FF9} = {92C7971A-F305-4B93-A9DC-6B01AF222FF9}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PolycodeStudio", "PolycodeStudio\PolycodeStudio.vcxproj", "{A9A71037-BC64-45D6-B872-90EF22ABB23A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{92C7971A-F305-4B93-A9DC-6B01AF222FF9} = {92C7971A-F305-4B93-A9DC-6B01AF222FF9}
+		{3E46FB61-BF79-46C9-8D1A-A6FFF1EA49FA} = {3E46FB61-BF79-46C9-8D1A-A6FFF1EA49FA}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PolycodeUI", "PolycodeUI\PolycodeUI.vcxproj", "{3E46FB61-BF79-46C9-8D1A-A6FFF1EA49FA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{92C7971A-F305-4B93-A9DC-6B01AF222FF9} = {92C7971A-F305-4B93-A9DC-6B01AF222FF9}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

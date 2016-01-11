@@ -24,9 +24,6 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyClient.h">
       <Filter>Include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyCocoaCore.h">
-      <Filter>Include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\Polycode.h">
       <Filter>Include</Filter>
     </ClInclude>

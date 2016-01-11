@@ -53,9 +53,9 @@ THE SOFTWARE.
 	#endif
 #else	
 	#if defined(USE_EGL)
-		#include <EGL/egl.h>
-		#include <EGL/eglext.h>
-		#include <GLES2/gl2.h>
+		#include <angle/EGL/egl.h>
+		#include <angle/EGL/eglext.h>
+		#include <angle/GLES2/gl2.h>
 	#else
 		#include <GL/gl.h>
 		#include <GL/glu.h>

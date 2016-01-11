@@ -95,7 +95,7 @@ namespace Polycode {
 		* @param keyCode The key to check for
 		* @return True if the key is pressed, false otherwise.
 		*/				
-		bool getKeyState(PolyKEY keyCode);		
+		bool getKeyState(PolyKEY keyCode);
 		
 		/** 
 		* Returns the state of the specified joystick button for the specified joystick index. If the joystick index is invalid, returns false
