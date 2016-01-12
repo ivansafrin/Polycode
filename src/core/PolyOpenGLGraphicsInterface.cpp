@@ -363,6 +363,7 @@ void OpenGLGraphicsInterface::createRenderBuffer(RenderBuffer *renderBuffer) {
         createTexture(renderBuffer->depthTexture);
         
         glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, renderBuffer->getWidth(), renderBuffer->getHeight());
+
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, *((GLuint*)renderBuffer->depthTexture->platformData), 0);
     }
     

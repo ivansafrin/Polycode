@@ -23,7 +23,7 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     
     ScenePrimitive *test = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.5, 0.5);
     test->setMaterialByName("Unlit");
-    test->getLocalShaderOptions()->loadTextureForParam("diffuse", "main_icon.png");
+	test->getShaderPass(0).shaderBinding->loadTextureForParam("diffuse", "white.png");
     scene->addChild(test);
 
 	Sound *bgSound = new Sound("bedlayer_main.wav");

@@ -69,16 +69,18 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <LibraryPath>..\..\..\..\lib\win32\$(PlatformShortName);$(LibraryPath)</LibraryPath>
+    <OutDir>$(ProjectDir)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>..\..\..\..\include;$(IncludePath)</IncludePath>
     <LibraryPath>..\..\..\..\lib\win32\$(PlatformShortName);$(LibraryPath)</LibraryPath>
-    <OutDir>$(ProjectDir)$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(ProjectDir)\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>..\..\..\..\lib\win32\$(PlatformShortName);$(LibraryPath)</LibraryPath>
+    <OutDir>$(ProjectDir)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -98,7 +100,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>ws2_32.lib;winmm.lib;portaudio.lib;libvorbisfile.lib;libvorbis.lib;libogg.lib;opengl32.lib;glew32s.lib;glew32.lib;freetype.lib;physfs.lib;zlib.lib;PolycodeCore_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;winmm.lib;portaudio.lib;libvorbisfile.lib;libvorbis.lib;libogg.lib;opengl32.lib;glew32s.lib;glew32.lib;freetype.lib;physfs.lib;zlib.lib;Polycore_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if not exist "$(TargetDir)default.pak" copy "..\..\..\..\assets\default\default.pak" "$(TargetDir)"
@@ -117,7 +119,7 @@ if not exist "$(TargetDir)glew32.dll" copy "..\..\..\..\lib\win32\$(PlatformTarg
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>ws2_32.lib;winmm.lib;portaudio.lib;libvorbisfile.lib;libvorbis.lib;libogg.lib;opengl32.lib;glew32s.lib;glew32.lib;freetype.lib;physfs.lib;zlib.lib;PolycodeCore_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;winmm.lib;portaudio.lib;libvorbisfile.lib;libvorbis.lib;libogg.lib;opengl32.lib;glew32s.lib;glew32.lib;freetype.lib;physfs.lib;zlib.lib;Polycore_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if not exist "$(TargetDir)default.pak" copy "..\..\..\..\assets\default\default.pak" "$(TargetDir)"
@@ -140,7 +142,7 @@ if not exist "$(TargetDir)glew32.dll" copy "..\..\..\..\lib\win32\$(PlatformTarg
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>ws2_32.lib;winmm.lib;portaudio.lib;lua5.1.lib;libvorbisfile.lib;libvorbis.lib;libogg.lib;opengl32.lib;glew32s.lib;glew32.lib;freetype.lib;physfs.lib;zlib.lib;PolycodeCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;winmm.lib;portaudio.lib;libvorbisfile.lib;libvorbis.lib;libogg.lib;opengl32.lib;glew32s.lib;glew32.lib;freetype.lib;physfs.lib;zlib.lib;Polycore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if not exist "$(TargetDir)default.pak" copy "..\..\..\..\assets\default\default.pak" "$(TargetDir)"
@@ -163,7 +165,7 @@ if not exist "$(TargetDir)glew32.dll" copy "..\..\..\..\lib\win32\$(PlatformTarg
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>ws2_32.lib;winmm.lib;portaudio.lib;lua5.1.lib;libvorbisfile.lib;libvorbis.lib;libogg.lib;opengl32.lib;glew32s.lib;glew32.lib;freetype.lib;physfs.lib;zlib.lib;PolycodeCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;winmm.lib;portaudio.lib;libvorbisfile.lib;libvorbis.lib;libogg.lib;opengl32.lib;glew32s.lib;glew32.lib;freetype.lib;physfs.lib;zlib.lib;Polycore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if not exist "$(TargetDir)default.pak" copy "..\..\..\..\assets\default\default.pak" "$(TargetDir)"

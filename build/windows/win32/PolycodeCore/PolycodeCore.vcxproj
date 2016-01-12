@@ -69,20 +69,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>..\..\..\..\include;$(IncludePath)</IncludePath>
     <OutDir>..\..\..\..\lib\win32\x86</OutDir>
-    <TargetName>$(ProjectName)_d</TargetName>
+    <TargetName>Polycore_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>..\..\..\..\include;$(IncludePath)</IncludePath>
     <OutDir>..\..\..\..\lib\win32\x64</OutDir>
-    <TargetName>$(ProjectName)_d</TargetName>
+    <TargetName>Polycore_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>..\..\..\..\include;$(IncludePath)</IncludePath>
     <OutDir>..\..\..\..\lib\win32\x86</OutDir>
+    <TargetName>Polycore</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>..\..\..\..\include;$(IncludePath)</IncludePath>
     <OutDir>..\..\..\..\lib\win32\x64</OutDir>
+    <TargetName>Polycore</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
