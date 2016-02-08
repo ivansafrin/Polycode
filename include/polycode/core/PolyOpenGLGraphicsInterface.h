@@ -34,20 +34,17 @@ THE SOFTWARE.
 	#include <OpenGL/glu.h>
 
 #elif PLATFORM == PLATFORM_WINDOWS
-/*
 	#if defined(WINAPI_FAMILY)
-		#include <GLES2/gl2.h>
-		#include <GLES2/gl2ext.h>
-		#include <EGL/egl.h>
-		#include <EGL/eglext.h>
-		#include <EGL/eglplatform.h>
-		#include <angle_windowsstore.h>
+		#define STRICT_OPENGLES2
+		#include <angle/GLES2/gl2.h>
+		#include <angle/GLES2/gl2ext.h>
+		#include <angle/EGL/egl.h>
+		#include <angle/EGL/eglext.h>
+		#include <angle/EGL/eglplatform.h>
+		#include <angle/angle_windowsstore.h>
 	#else
-	*/
 		#include <glew/GL/glew.h>
-/*
 	#endif
-	*/
 #else	
 	#if defined(USE_EGL)
 		#include <EGL/egl.h>

@@ -33,12 +33,12 @@ THE SOFTWARE.
 #include <wrl\client.h>
 #include <wrl.h>
 
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
-#include <EGL/eglplatform.h>
-#include <angle_windowsstore.h>
+#include <angle/GLES2/gl2.h>
+#include <angle/GLES2/gl2ext.h>
+#include <angle/EGL/egl.h>
+#include <angle/EGL/eglext.h>
+#include <angle/EGL/eglplatform.h>
+#include <angle/angle_windowsstore.h>
 
 #include "polycode/core/PolyXAudio2AudioInterface.h"
 
