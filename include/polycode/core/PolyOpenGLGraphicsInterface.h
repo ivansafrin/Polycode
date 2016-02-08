@@ -29,9 +29,15 @@ THE SOFTWARE.
 #include "polycode/core/PolyTexture.h"
 
 #if PLATFORM == PLATFORM_MAC
+    
 	#include <OpenGL/gl.h>
 	#include <OpenGL/glext.h>
 	#include <OpenGL/glu.h>
+
+#elif PLATFORM == PLATFORM_IOS
+
+    #include <OpenGLES/ES2/gl.h>
+    #include <OpenGLES/ES2/glext.h>
 
 #elif PLATFORM == PLATFORM_WINDOWS
 /*

@@ -90,7 +90,10 @@
 #include "polycode/core/PolyGlobals.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
-//    #import "polycode/view/osx/PolycodeView.h"
+	#include <TargetConditionals.h>
+    #if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
+		#include "polycode/core/PolyIOSCore.h"
+ 	#endif
 #else
     #if defined(_WINDOWS) && !defined(_MINGW)
         #include "polycode/core/PolyWinCore.h"
@@ -106,6 +109,7 @@
 		#endif
     #endif
 #endif
+
 
 
 

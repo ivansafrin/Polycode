@@ -360,7 +360,7 @@ void OpenGLGraphicsInterface::createRenderBuffer(RenderBuffer *renderBuffer) {
         renderBuffer->depthTexture->filteringMode = Texture::FILTERING_LINEAR;
         createTexture(renderBuffer->depthTexture);
         
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, renderBuffer->getWidth(), renderBuffer->getHeight());
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, renderBuffer->getWidth(), renderBuffer->getHeight());
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, *((GLuint*)renderBuffer->depthTexture->platformData), 0);
     }
     
