@@ -222,7 +222,6 @@ namespace Polycode {
         
 		Core *core;
 		
-		bool lightingEnabled;
 		bool fogEnabled;
 		int fogMode;
 		Number fogDensity;

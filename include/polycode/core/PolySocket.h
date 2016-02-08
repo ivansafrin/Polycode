@@ -45,7 +45,7 @@ THE SOFTWARE.
 
 #if PLATFORM == PLATFORM_WINDOWS
 	#include <winsock2.h>
-#elif PLATFORM == PLATFORM_MAC || PLATFORM == PLATFORM_UNIX
+#else
 	#include <sys/socket.h>
 	#include <sys/types.h>
 	#include <netinet/in.h>

@@ -70,11 +70,19 @@ typedef unsigned int PolyRendererIndexType;
 #define PLATFORM_WINDOWS  1
 #define PLATFORM_MAC      2
 #define PLATFORM_UNIX     3
+#define PLATFORM_IOS      4
 
 #if defined(_WINDOWS) || defined(WINAPI_FAMILY)  || defined(WIN32)
 	#define PLATFORM PLATFORM_WINDOWS
-#elif defined(__APPLE__) && defined(__MACH__)
-	#define PLATFORM PLATFORM_MAC
+#elif __APPLE__ && __MACH__
+    #include <TargetConditionals.h>
+    #if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
+        #define PLATFORM PLATFORM_IOS
+        #define STRICT_OPENGLES2 1
+        #define NO_OGG 1
+    #else
+        #define PLATFORM PLATFORM_MAC
+    #endif
 #else
 	#include <cstddef>
 	#define PLATFORM PLATFORM_UNIX

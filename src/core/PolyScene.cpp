@@ -54,7 +54,6 @@ void Scene::initScene(int sceneType, bool virtualScene) {
 	defaultCamera = new Camera(this);
 	activeCamera = defaultCamera;
     overrideMaterial = NULL;
-	lightingEnabled = false;
 	enabled = true;
 	isSceneVirtual = virtualScene;	
 	hasLightmaps = false;
@@ -146,13 +145,6 @@ Scene::~Scene() {
     core->removeAllHandlersForListener(this);
 	CoreServices::getInstance()->getSceneManager()->removeScene(this);	
 	delete defaultCamera;
-}
-
-void Scene::enableLighting(bool enable) {
-	lightingEnabled = enable;
-
-    // RENDERER_TODO
-//	CoreServices::getInstance()->getRenderer()->enableLighting(enable);
 }
 
 void Scene::enableFog(bool enable) {

@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "BA7B57CFFA0E2C9A820883F90A39AA6329AE6D93",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "BA7B57CFFA0E2C9A820883F90A39AA6329AE6D93" : 0,
+    "72C5045D78C89EEFD7A049056C14811D40BE1635" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "8475355D-9A0B-46E4-AAF3-D707BCDC07DF",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "BA7B57CFFA0E2C9A820883F90A39AA6329AE6D93" : "PolycodeNoCmake\/",
+    "72C5045D78C89EEFD7A049056C14811D40BE1635" : "PolycodeNoCmake\/lib\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Polycode",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "build\/ios\/Polycode.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/ivansafrin\/PolycodeDepBinaries",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "72C5045D78C89EEFD7A049056C14811D40BE1635"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/ivansafrin\/Polycode.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "BA7B57CFFA0E2C9A820883F90A39AA6329AE6D93"
+    }
+  ]
+}
