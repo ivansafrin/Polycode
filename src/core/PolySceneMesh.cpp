@@ -367,6 +367,7 @@ void SceneMesh::Render(GPUDrawBuffer *buffer) {
     
     buffer->drawCalls.push_back(drawCall);
     
+    // RENDERERTODO: FIX GPU SKINNING
     /*
    	if(material) {
         

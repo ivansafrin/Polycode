@@ -37,7 +37,8 @@ namespace Polycode {
 	class Texture;
     class VertexDataArray;
     class LocalShaderParam;
-	
+    class RenderBuffer;
+    
 	class _PolyExport ProgramParam {
 		public:
 	
@@ -134,7 +135,7 @@ namespace Polycode {
 			Number width;
 			Number height;
 			int sizeMode;
-			Texture *texture;			
+			RenderBuffer *buffer;
 			
 			Number normalizedWidth;
 			Number normalizedHeight;
@@ -192,7 +193,7 @@ namespace Polycode {
 			String id;
 			String name;
 			int mode;
-			Texture *texture;
+			RenderBuffer *buffer;
 			static const int MODE_IN = 0;
 			static const int MODE_OUT = 1;
 			static const int MODE_COLOR = 2;

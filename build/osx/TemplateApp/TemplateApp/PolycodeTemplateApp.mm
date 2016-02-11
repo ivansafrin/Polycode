@@ -16,7 +16,6 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     
     Scene *scene = new Scene(Scene::SCENE_2D);
     scene->useClearColor = true;
-   
     
     ScenePrimitive *test = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 10.0, 10.0);
     test->setMaterialByName("UnlitUntextured");
@@ -25,8 +24,9 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     test->scissorBox.setRect(100, 50, 100, 30);
     scene->addChild(test);
     
-    Sound *music = new Sound("BUGSHUFFLE.ogg");
-    music->Play();
+    scene->getDefaultCamera()->setPostFilterByName("Invert");
+//    Sound *music = new Sound("BUGSHUFFLE.ogg");
+  //  music->Play();
     
     Services()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 }

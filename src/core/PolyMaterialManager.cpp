@@ -575,7 +575,7 @@ Material *MaterialManager::materialFromXMLNode(ResourcePool *resourcePool, TiXml
 								for(int l=0; l < renderTargets.size(); l++) {
 									if(renderTargets[l]->id == newBinding->id) {
 										printf("Assigning texture to %s\n", newBinding->id.c_str());
-										newBinding->texture = renderTargets[l]->texture;
+										newBinding->buffer = renderTargets[l]->buffer;
 									}
 								}
 								

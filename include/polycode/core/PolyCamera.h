@@ -33,6 +33,7 @@ namespace Polycode {
 	class Material;
 	class ShaderBinding;
 	class Texture;
+    class GPUDrawCall;
 
 	/**
 	* Camera in a 3D scene. Cameras can be added to a scene and changed between dynamically. You can also set a shader to a camera that will run as a screen shader for post-processing effects.
@@ -188,7 +189,7 @@ namespace Polycode {
             /**
              * Binds target buffers and renders the scene in multiple passes based on the post filter material.
              */
-			void drawFilter(Texture *targetTexture = NULL, Number targetTextureWidth = 0.0, Number targetTextureHeight = 0.0, Texture *targetColorTexture = NULL, Texture *targetZTexture = NULL);
+			void drawFilter(RenderBuffer *targetBuffer);
 			
 			/**
 			* Sets the exposure for the camera. The exposure value is passed automatically to  post material shaders using an "exposure" uniform.
@@ -210,7 +211,7 @@ namespace Polycode {
 			* Sets the post-processing shader for the camera.
 			* @param shaderMaterial Post processing shader material.
 			*/
-			void setPostFilter(Material *shaderMaterial);
+			void setPostFilter(Material *material);
 			
 			/**
 			* Sets the post-processing shader for the camera by name. The material needs have been added as a resource.
@@ -223,24 +224,6 @@ namespace Polycode {
 			*/
 			void removePostFilter();
 			
-			/**
-			* Returns the local shader options for the camera post processing material.
-			*/
-			std::vector<ShaderBinding*> getLocalShaderOptions() { return localShaderOptions; }
-			
-            /**
-             * Returns the number of local material shader options.
-             * @return Number of local material shader options.
-             */
-            unsigned int getNumLocalShaderOptions() const;
-        
-            /**
-             * Returns the shader option binding at the specified shader index.
-             * @param Specified shader index.
-             * @return Shader binding at specified shader index or NULL if index is out of bounds.
-             */
-            ShaderBinding* getLocalShaderOption(unsigned int index) const;
-        
 			/**
 			* Returns the shader material applied to the camera.
 			*/			
@@ -309,23 +292,24 @@ namespace Polycode {
              */
 			int getProjectionMode() const { return projectionMode; }
 
-            void setUseGlobalFramebuffer(bool val);
-            bool getUseGlobalFramebuffer() const;
-        
             Vector3 projectRayFrom2DCoordinate(const Vector2 &coordinate, const Polycode::Rectangle &viewport);
 
+            void renderFullScreenQuad(GPUDrawBuffer *drawBuffer, int shaderPass);
+        
 		protected:
+        
+            Mesh *screenQuadMesh;
 
             void setOrthoMatrix(Matrix4 &matrix, Number xSize, Number ySize, Number _near, Number _far, bool centered);
         
-            bool useGlobalFramebuffer;
-			int projectionMode;
-        
+			int projectionMode;        
 			Matrix4 projectionMatrix;
 
 			Polycode::Rectangle viewport;
 			Number orthoSizeX;
 			Number orthoSizeY;
+        
+            std::vector<ShaderPass> shaderPasses;
 
 			Number nearClipPlane;
 			Number farClipPlane;
@@ -340,9 +324,8 @@ namespace Polycode {
 			Scene *parentScene;
 
 			Material *filterShaderMaterial;			
-			Texture *originalSceneTexture;			
-			Texture *zBufferSceneTexture;
-			std::vector<ShaderBinding*> localShaderOptions;
+            RenderBuffer *originalFramebuffer;
+        
 			bool _hasFilterShader;
 	};	
 }
