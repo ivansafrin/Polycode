@@ -174,7 +174,9 @@ void OpenGLGraphicsInterface::setParamInShader(Shader *shader, ProgramParam *par
             if(localParam) {
                 Texture* texture = localParam->getTexture();
                 if(texture) {
-                    glBindTexture(GL_TEXTURE_2D, *((GLuint*) texture->platformData));
+                    if(texture->platformData) {
+                        glBindTexture(GL_TEXTURE_2D, *((GLuint*) texture->platformData));
+                    }
                 } else {
                     glBindTexture(GL_TEXTURE_2D, 0);                    
                 }
