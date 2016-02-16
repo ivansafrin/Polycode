@@ -32,9 +32,20 @@
 		<shader type="glsl" name="UnlitWireframe" numPointLights="0" numSpotLights="0">		
 			<vp source="default/UnlitUntextured.vert"/>
 			<fp source="default/UnlitWireframe.frag"/>
-		</shader>	
+		</shader>
+		<shader type="glsl" name="InvertShader" screen="true">		
+			<vp source="default/ScreenShader.vert"/>
+			<fp source="default/Invert.frag"/>
+		</shader>		
 	</shaders>	
-	<materials>	
+	<materials>
+		<material name="Invert">
+			<shader name="InvertShader">
+				<targettextures>			
+					<targettexture mode="color" name="screenColorBuffer"/>				
+				</targettextures>				
+			</shader>
+		</material>		
 		<material name="Default">
 			<shader name="DefaultUntexturedShader">
 			</shader>

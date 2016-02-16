@@ -133,8 +133,6 @@ String IOSCore::executeExternalCommand(String command, String args, String inDir
 }
 
 
-
-
 bool IOSCore::systemParseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector) {
 
 	return true; 

@@ -27,7 +27,7 @@
 using namespace Polycode;
 
 ShaderRenderTarget::ShaderRenderTarget() : PolyBase() {
-	texture = NULL;
+	buffer = NULL;
 }
 
 ProgramParam::ProgramParam() : type(PARAM_UNKNOWN), platformData(NULL), globalParam(NULL) {
