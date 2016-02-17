@@ -1,9 +1,11 @@
 # Created by https://www.gitignore.io
 
 *.o
+*.do
 build/linux/TemplateApp/PolycodeTemplate
 build/linux/TemplateApp/default
 build/linux/TemplateApp/default.pak
+build/linux/Studio/*
 
 docs/cldoc
 
@@ -89,6 +91,9 @@ bld/
 
 # Visual Studo 2015 cache/options directory
 .vs/
+
+# KDev Files
+*.kdev*
 
 # MSTest test Results
 [Tt]est[Rr]esult*/

@@ -8,7 +8,7 @@
 PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     core = new POLYCODE_CORE(view, 800,480,false,false, 0,0,60);
     
-    core->addFileSource("archive", "default.pak");
+  //  core->addFileSource("archive", "default.pak");
     ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
     globalPool->loadResourcesFromFolder("default", true);
     
@@ -42,24 +42,25 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     
     //sound2->Play(true);
   */
+  
     Services()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 }
 
 void PolycodeTemplateApp::handleEvent(Event *event) {
     InputEvent *inputEvent = (InputEvent*) event;
     
-//     switch(inputEvent->getKey()) {
-//         case KEY_z:
-//             sound1->Play(true);
-//         break;
-//         case KEY_x:
-//             sound2->Play();
-//         break;
-//         case KEY_c:
-//             sound3->Play();
-//         break;
-//             
-//     }
+    switch(inputEvent->getKey()) {
+        case KEY_z:
+            sound1->Play(true);
+        break;
+        case KEY_x:
+            sound2->Play();
+        break;
+        case KEY_c:
+            sound3->Play();
+        break;
+            
+    }
 }
 
 PolycodeTemplateApp::~PolycodeTemplateApp() {

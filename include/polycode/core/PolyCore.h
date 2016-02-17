@@ -298,18 +298,18 @@ namespace Polycode {
 		
 		virtual String saveFilePicker(std::vector<CoreFileExtension> extensions) = 0;
 
-        virtual void handleVideoModeChange(VideoModeChangeInfo *modeInfo) = 0;
-        virtual void flushRenderContext() = 0;
-        
-        CoreFile *openFile(const Polycode::String& fileName, const Polycode::String& opts);
-        void closeFile(CoreFile *file);
-        
-        void addFileSource(const String &type, const String &source);
-        void removeFileSource(const String &type, const String &source);
-        
-        std::vector<OSFileEntry> parseFolder(const Polycode::String& pathString, bool showHidden);
+		virtual void handleVideoModeChange(VideoModeChangeInfo *modeInfo) = 0;
+		virtual void flushRenderContext() = 0;
+		
+		CoreFile *openFile(const Polycode::String& fileName, const Polycode::String& opts);
+		void closeFile(CoreFile *file);
+		
+		void addFileSource(const String &type, const String &source);
+		void removeFileSource(const String &type, const String &source);
+		
+		std::vector<OSFileEntry> parseFolder(const Polycode::String& pathString, bool showHidden);
 
-        virtual bool systemParseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector) = 0;
+		virtual bool systemParseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector) = 0;
         
         
 		/**
@@ -357,7 +357,7 @@ namespace Polycode {
 			return timeSleptMs;
 		}
         
-        Number getFixedTimestep();
+		Number getFixedTimestep();
 		
 		/**
 		* Returns the total ticks elapsed since launch.
