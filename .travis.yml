@@ -1,0 +1,5 @@
+language: cpp
+
+install: libsdl1.2-dev python-ply
+
+script: cd build/linux/ && make all
