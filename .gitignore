@@ -2,6 +2,8 @@
 
 *.o
 *.do
+*.io
+*.dio
 build/linux/TemplateApp/PolycodeTemplate
 build/linux/TemplateApp/default
 build/linux/TemplateApp/default.pak
