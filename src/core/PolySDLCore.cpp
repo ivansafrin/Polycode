@@ -119,7 +119,12 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 	if(sdlerror < 0) {
 	  Logger::log("SDL_Init failed! Code: %d, %s\n", sdlerror, SDL_GetError());
 	}
-	  
+	
+	SDL_Surface* icon = SDL_LoadBMP("icon.bmp");
+	if(icon){
+		SDL_WM_SetIcon(icon, NULL);
+	}
+	
 	eventMutex = createMutex();
 	
 	renderer = new Renderer();
@@ -128,7 +133,7 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 	renderer->setGraphicsInterface(this, renderInterface);
 	services->setRenderer(renderer);
 	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
-
+	
 	SDL_WM_SetCaption(windowTitle->c_str(), windowTitle->c_str());
 	
 	SDL_EnableUNICODE(1);
@@ -142,6 +147,8 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 		SDL_JoystickOpen(i);
 		input->addJoystick(i);
 	}
+	
+	services->getSoundManager()->setAudioInterface(new PAAudioInterface());
 	
 	lastMouseX = 0;
 	lastMouseY = 0;

@@ -27,6 +27,8 @@
 #include <vector>
 // #include <SDL2/SDL.h>
 
+#include "polycode/core/PolyPAAudioInterface.h"
+
 #define POLYCODE_CORE SDLCore
 
 struct SDL_mutex;

@@ -25,10 +25,14 @@ CFLAGSSTUDIO=$(CFLAGS) -DUSE_POLYCODEUI_FILE_DIALOGS -DUSE_POLYCODEUI_MENUBAR
 
 LIBDIR=../../lib/linux
 
+OPTFLAGS=-O2
 DEBUGFLAGS=-g -DDEBUG
 
-LDFLAGSTEMPLATE=-L$(LIBDIR) -lPolycore -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lz -lSDL -lGLEW -lGL
-LDFLAGSSTUDIO=-L$(LIBDIR) -lPolycore -lPolycodeUI -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lz -lSDL -lGLEW -lGL
+LDFLAGSTEMPLATE=-L$(LIBDIR) $(OPTFLAGS) -pthread -lrt -lPolycore -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -ljack -lz -lSDL -lGLEW -lGL
+DLDFLAGSTEMPLATE=-L$(LIBDIR) -pthread -lrt -lPolycored -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -ljack -lz -lSDL -lGLEW -lGL
+
+LDFLAGSSTUDIO=-L$(LIBDIR) $(OPTFLAGS) -pthread -lrt -lPolycore -lPolycodeUI -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -ljack -lz -lSDL -lGLEW -lGL
+DLDFLAGSSTUDIO=-L$(LIBDIR) -pthread -lrt -lPolycored -lPolycodeUId -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -ljack -lz -lSDL -lGLEW -lGL
 
 default: setup core
 
@@ -42,7 +46,7 @@ setup:
 
 .cpp.o:
 	@echo "\033[1;32mBuilding \033[0m[\033[1;33m$<\033[0m]"
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) $(OPTFLAGS) -c $< -o $@
 
 .cpp.do:
 	@echo "\033[1;32mBuilding Debug \033[0m[\033[1;33m$<\033[0m]"
@@ -50,7 +54,7 @@ setup:
 
 .cpp.io:
 	@echo "\033[1;32mBuilding \033[0m[\033[1;33m$<\033[0m]"
-	@$(CC) $(CFLAGSSTUDIO) -c $< -o $@
+	@$(CC) $(CFLAGSSTUDIO) $(OPTFLAGS) -c $< -o $@
 
 .cpp.dio:
 	@echo "\033[1;32mBuilding Debug \033[0m[\033[1;33m$<\033[0m]"
@@ -74,7 +78,7 @@ ui_debug: $(DOBJUI)
 	
 template: core $(OBJTEMPLATE)
 	@echo "\033[1;32mLinking \033[0m[\033[1;33mTemplateApp/PolycodeTemplate\033[0m]"
-	@$(CC) -o TemplateApp/PolycodeTemplate $(OBJTEMPLATE) $(LDFLAGSTEMPLATE)
+	@$(CC) -o TemplateApp/PolycodeTemplate $(OBJTEMPLATE) $(LDFLAGSTEMPLATE) $(OPTFLAGS)
 	@echo "\033[1;32mCopy Assets to: \033[0m[\033[1;33mTemplateApp\033[0m]"
 	@cp $(ASSETDIR)/default/default.pak TemplateApp
 
@@ -86,7 +90,7 @@ template_debug: core_debug $(DOBJTEMPLATE)
 
 studio: core ui $(OBJSTUDIO)
 	@echo "\033[1;32mLinking \033[0m[\033[1;33mStudio/Polycode\033[0m]"
-	@$(CC) -o Studio/Polycode $(OBJSTUDIO) $(LDFLAGSSTUDIO) $(CFLAGSSTUDIO)
+	@$(CC) -o Studio/Polycode $(OBJSTUDIO) $(LDFLAGSSTUDIO) $(CFLAGSSTUDIO) $(OPTFLAGS)
 	@echo "\033[1;32mCopy Assets to: \033[0m[\033[1;33mStudio\033[0m]"
 	@cp -r $(ASSETDIR)/ide/* Studio
 	@cp $(ASSETDIR)/default/default.pak Studio
