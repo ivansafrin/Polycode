@@ -25,6 +25,9 @@
 #include "PolyGlobals.h"
 #include "PolyCore.h"
 #include <vector>
+// #include <SDL2/SDL.h>
+
+#include "polycode/core/PolyPAAudioInterface.h"
 
 #define POLYCODE_CORE SDLCore
 
@@ -36,6 +39,8 @@ namespace Polycode {
 
 	class _PolyExport SDLCoreMutex : public CoreMutex {
 	public:
+		void lock();
+		void unlock();
 		SDL_mutex *pMutex;
 	};
 
@@ -51,14 +56,19 @@ namespace Polycode {
 		unsigned int getTicks();
 		bool systemUpdate();
 		void Render();
+		void flushRenderContext();
+		
+		void handleVideoModeChange(VideoModeChangeInfo *modeInfo);
 		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport = true);
 		void createThread(Threaded *target);
 		std::vector<Rectangle> getVideoModes();
 		
+		bool systemParseFolder(const String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector);
+				
 		void setCursor(int cursorType);
 		void warpCursor(int x, int y);
-		void lockMutex(CoreMutex *mutex);
-		void unlockMutex(CoreMutex *mutex);
+		//void lockMutex(CoreMutex *mutex);
+		//void unlockMutex(CoreMutex *mutex);
 		CoreMutex *createMutex();
 		void copyStringToClipboard(const String& str);
 		String getClipboardString();
@@ -74,12 +84,15 @@ namespace Polycode {
 		String executeExternalCommand(String command, String args, String inDirectory="");
 		void openURL(String url);
 
-
 	private:
 		bool checkSpecialKeyEvents(PolyKEY key);
-
+		
 		uint32_t flags;
 		bool resizableWindow;
 		
+		String* windowTitle;
+		
+		int lastMouseX;
+		int lastMouseY;
 	};
 }

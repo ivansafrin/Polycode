@@ -1677,9 +1677,10 @@ TargetBindingProp::TargetBindingProp(Shader *shader, Material *material, ShaderB
 	for(int i=0; i < material->getNumShaderRenderTargets(); i++) {
 		ShaderRenderTarget *target = material->getShaderRenderTarget(i);		
 		targetComboBox->addComboItem(target->id, (void*) target);
-		if(targetBinding->texture == target->texture) {
-			targetComboBox->setSelectedIndex(i);
-		}
+		//RENDERER_UPGRADE: TODO
+		//if(targetBinding->texture == target->texture) {
+		//	targetComboBox->setSelectedIndex(i);
+		//}
 	}
 	targetComboBox->addEventListener(this, UIEvent::CHANGE_EVENT);
 	propContents->addFocusChild(targetComboBox);
@@ -1731,7 +1732,8 @@ void TargetBindingProp::handleEvent(Event *event) {
 		} else {
 			textureComboBox->enabled = true;
 			textureComboBox->visible = true;
-			binding->setTextureForParam(targetBinding->name, targetBinding->texture);
+			//RENDERER_UPGRADE: TODO
+			//binding->setTextureForParam(targetBinding->name, targetBinding->texture);
 		}		
 		
 		if(typeComboBox->getSelectedIndex() == 2 || typeComboBox->getSelectedIndex() == 3) {
@@ -1750,7 +1752,8 @@ void TargetBindingProp::handleEvent(Event *event) {
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	} else if(event->getDispatcher() == targetComboBox && event->getEventCode() == UIEvent::CHANGE_EVENT) {
 		ShaderRenderTarget *target = (ShaderRenderTarget*)targetComboBox->getSelectedItem()->data;		
-		targetBinding->texture = target->texture;
+		//RENDERER_UPGRADE: TODO
+// 		targetBinding->texture = target->texture;
 		targetBinding->id  = target->id;
 		
 		binding->removeRenderTargetBinding(targetBinding);		
@@ -1758,7 +1761,8 @@ void TargetBindingProp::handleEvent(Event *event) {
 
 		binding->removeParam(targetBinding->name);
 		if(targetBinding->mode == RenderTargetBinding::MODE_IN) {
-			binding->setTextureForParam(targetBinding->name, targetBinding->texture);
+			//RENDERER_UPGRADE: TODO
+// 			binding->setTextureForParam(targetBinding->name, targetBinding->texture);
 		}
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);		
 	} else if(event->getDispatcher() == textureComboBox && event->getEventCode() == UIEvent::CHANGE_EVENT) {
@@ -1768,7 +1772,8 @@ void TargetBindingProp::handleEvent(Event *event) {
 		binding->addRenderTargetBinding(targetBinding);		
 
 		binding->removeParam(targetBinding->name);
-		binding->setTextureForParam(targetBinding->name, targetBinding->texture);
+		//RENDERER_UPGRADE: TODO
+// 		binding->setTextureForParam(targetBinding->name, targetBinding->texture);
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 }
@@ -2040,7 +2045,8 @@ void TargetBindingsSheet::handleEvent(Event *event) {
 	if(event->getDispatcher() == addButton->getButton()) {
 		RenderTargetBinding* newBinding = new RenderTargetBinding();
 		newBinding->mode = RenderTargetBinding::MODE_COLOR;
-		newBinding->texture = NULL;		
+		//RENDERER_UPGRADE: TODO
+// 		newBinding->texture = NULL;		
 		binding->addRenderTargetBinding(newBinding);				
 		refreshTargets();			
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);

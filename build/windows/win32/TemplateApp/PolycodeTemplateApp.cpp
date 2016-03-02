@@ -20,10 +20,10 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     scene->getDefaultCamera()->setPosition(5.0, 5.0, 5.0);
     scene->getDefaultCamera()->lookAt(Vector3());
     
-   test = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 1.0, 1.0, 1.0);
-    test->setMaterialByName("DefaultTextured");
-//    test->getShaderPass(0).shaderBinding->loadTextureForParam("diffuse", "white.png");
-  //  test->getShaderPass(0).shaderBinding->addParam(ProgramParam::PARAM_COLOR, "diffuse_color")->setColor(Color(1.0, 1.0, 1.0, 1.0));
+	test = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 1.0, 1.0, 1.0);
+	test->setMaterialByName("DefaultTextured");
+	test->getShaderPass(0).shaderBinding->loadTextureForParam("diffuse", "white.png");
+	test->getShaderPass(0).shaderBinding->addParam(ProgramParam::PARAM_COLOR, "diffuse_color")->setColor(Color(1.0, 1.0, 1.0, 1.0));
     scene->addChild(test);
     
 

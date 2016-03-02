@@ -25,7 +25,7 @@
 #elif defined(_WINDOWS)
 #include "polycode/ide/PolycodeWinIDEView.h"
 #else
-#include "polycode/ide/PolycodeView.h"
+#include "polycode/view/linux/PolycodeView.h"
 #endif
 
 #include "polycode/ide/PolycodeGlobals.h"

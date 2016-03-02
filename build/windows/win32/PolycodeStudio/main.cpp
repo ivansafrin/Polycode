@@ -6,6 +6,7 @@
 #include <Shlobj.h>
 #include <Shlwapi.h>
 #include <shellapi.h>
+#include <Pathcch.h>
 
 extern PolycodeIDEApp *globalApp;
 
@@ -72,7 +73,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	TCHAR FilePath[MAX_PATH] = { 0 };
 	GetModuleFileName( 0, FilePath, MAX_PATH );
-	PathRemoveFileSpec( FilePath );    
+	PathCchRemoveFileSpec( FilePath, MAX_PATH);
 	SetCurrentDirectory( FilePath );
 
 	PolycodeWinIDEView *view = new PolycodeWinIDEView(hInstance, nCmdShow, L"Polycode", true, false);
