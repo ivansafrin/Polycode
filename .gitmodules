@@ -1,3 +1,3 @@
 [submodule "lib"]
 	path = lib
-	url = https://github.com/fodinabor/PolycodeDepBinaries
+	url = https://github.com/ivansafrin/PolycodeDepBinaries
