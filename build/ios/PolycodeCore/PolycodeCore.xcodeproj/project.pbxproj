@@ -43,7 +43,6 @@
 		8A0F81681BF541F900E24F9B /* PolyParticleEmitter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A0F811A1BF541F800E24F9B /* PolyParticleEmitter.cpp */; };
 		8A0F81691BF541F900E24F9B /* PolyPeer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A0F811B1BF541F800E24F9B /* PolyPeer.cpp */; };
 		8A0F816A1BF541F900E24F9B /* PolyPerlin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A0F811C1BF541F800E24F9B /* PolyPerlin.cpp */; };
-		8A0F816B1BF541F900E24F9B /* PolyPhysFSFileProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A0F811D1BF541F800E24F9B /* PolyPhysFSFileProvider.cpp */; };
 		8A0F816C1BF541F900E24F9B /* PolyQuaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A0F811E1BF541F800E24F9B /* PolyQuaternion.cpp */; };
 		8A0F816D1BF541F900E24F9B /* PolyQuaternionCurve.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A0F811F1BF541F800E24F9B /* PolyQuaternionCurve.cpp */; };
 		8A0F816E1BF541F900E24F9B /* PolyRay.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A0F81201BF541F800E24F9B /* PolyRay.cpp */; };
@@ -138,7 +137,6 @@
 		8A0F80D01BF5417E00E24F9B /* PolyParticleEmitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyParticleEmitter.h; path = ../../../include/polycode/core/PolyParticleEmitter.h; sourceTree = "<group>"; };
 		8A0F80D11BF5417E00E24F9B /* PolyPeer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyPeer.h; path = ../../../include/polycode/core/PolyPeer.h; sourceTree = "<group>"; };
 		8A0F80D21BF5417E00E24F9B /* PolyPerlin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyPerlin.h; path = ../../../include/polycode/core/PolyPerlin.h; sourceTree = "<group>"; };
-		8A0F80D31BF5417E00E24F9B /* PolyPhysFSFileProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyPhysFSFileProvider.h; path = ../../../include/polycode/core/PolyPhysFSFileProvider.h; sourceTree = "<group>"; };
 		8A0F80D41BF5417E00E24F9B /* PolyQuaternion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyQuaternion.h; path = ../../../include/polycode/core/PolyQuaternion.h; sourceTree = "<group>"; };
 		8A0F80D51BF5417E00E24F9B /* PolyQuaternionCurve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyQuaternionCurve.h; path = ../../../include/polycode/core/PolyQuaternionCurve.h; sourceTree = "<group>"; };
 		8A0F80D61BF5417E00E24F9B /* PolyRay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyRay.h; path = ../../../include/polycode/core/PolyRay.h; sourceTree = "<group>"; };
@@ -212,7 +210,6 @@
 		8A0F811A1BF541F800E24F9B /* PolyParticleEmitter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyParticleEmitter.cpp; path = ../../../src/core/PolyParticleEmitter.cpp; sourceTree = "<group>"; };
 		8A0F811B1BF541F800E24F9B /* PolyPeer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyPeer.cpp; path = ../../../src/core/PolyPeer.cpp; sourceTree = "<group>"; };
 		8A0F811C1BF541F800E24F9B /* PolyPerlin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyPerlin.cpp; path = ../../../src/core/PolyPerlin.cpp; sourceTree = "<group>"; };
-		8A0F811D1BF541F800E24F9B /* PolyPhysFSFileProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyPhysFSFileProvider.cpp; path = ../../../src/core/PolyPhysFSFileProvider.cpp; sourceTree = "<group>"; };
 		8A0F811E1BF541F800E24F9B /* PolyQuaternion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyQuaternion.cpp; path = ../../../src/core/PolyQuaternion.cpp; sourceTree = "<group>"; };
 		8A0F811F1BF541F800E24F9B /* PolyQuaternionCurve.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyQuaternionCurve.cpp; path = ../../../src/core/PolyQuaternionCurve.cpp; sourceTree = "<group>"; };
 		8A0F81201BF541F800E24F9B /* PolyRay.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyRay.cpp; path = ../../../src/core/PolyRay.cpp; sourceTree = "<group>"; };
@@ -324,7 +321,6 @@
 				8A0F80D01BF5417E00E24F9B /* PolyParticleEmitter.h */,
 				8A0F80D11BF5417E00E24F9B /* PolyPeer.h */,
 				8A0F80D21BF5417E00E24F9B /* PolyPerlin.h */,
-				8A0F80D31BF5417E00E24F9B /* PolyPhysFSFileProvider.h */,
 				8A0F80D41BF5417E00E24F9B /* PolyQuaternion.h */,
 				8A0F80D51BF5417E00E24F9B /* PolyQuaternionCurve.h */,
 				8A0F80D61BF5417E00E24F9B /* PolyRay.h */,
@@ -405,7 +401,6 @@
 				8A0F811A1BF541F800E24F9B /* PolyParticleEmitter.cpp */,
 				8A0F811B1BF541F800E24F9B /* PolyPeer.cpp */,
 				8A0F811C1BF541F800E24F9B /* PolyPerlin.cpp */,
-				8A0F811D1BF541F800E24F9B /* PolyPhysFSFileProvider.cpp */,
 				8A0F811E1BF541F800E24F9B /* PolyQuaternion.cpp */,
 				8A0F811F1BF541F800E24F9B /* PolyQuaternionCurve.cpp */,
 				8A0F81201BF541F800E24F9B /* PolyRay.cpp */,
@@ -592,7 +587,6 @@
 				8A0F81691BF541F900E24F9B /* PolyPeer.cpp in Sources */,
 				8A0F81531BF541F900E24F9B /* PolyCubemap.cpp in Sources */,
 				8A0F817E1BF541F900E24F9B /* PolySceneSound.cpp in Sources */,
-				8A0F816B1BF541F900E24F9B /* PolyPhysFSFileProvider.cpp in Sources */,
 				8A0F81791BF541F900E24F9B /* PolySceneLine.cpp in Sources */,
 				8A0F81661BF541F900E24F9B /* PolyObject.cpp in Sources */,
 				8A0F81841BF541F900E24F9B /* PolySound.cpp in Sources */,

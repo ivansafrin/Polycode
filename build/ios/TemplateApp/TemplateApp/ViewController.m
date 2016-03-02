@@ -17,6 +17,21 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    
+    app = new PolycodeTemplateApp(_mainView);
+    timer = [NSTimer timerWithTimeInterval:(1.0f/60.0f)
+                                    target:self
+                                  selector:@selector(animationTimer:)
+                                  userInfo:nil
+                                   repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
+}
+
+- (void)animationTimer:(NSTimer *)timer
+{
+    if(!app->Update()) {
+        //       [[NSApplication sharedApplication] stop:self];
+    }
 }
 
 - (void)didReceiveMemoryWarning {

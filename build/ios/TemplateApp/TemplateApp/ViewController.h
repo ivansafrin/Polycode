@@ -7,9 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "polycode/view/ios/PolycodeView.h"
+#include "PolycodeTemplateApp.h"
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController {
+@private
+    PolycodeView *_mainView;
+    PolycodeTemplateApp *app;
+    NSTimer *timer;
+}
 
+@property (strong, nonatomic) IBOutlet PolycodeView *mainView;
 
 @end
 

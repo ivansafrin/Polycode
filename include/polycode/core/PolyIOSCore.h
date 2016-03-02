@@ -24,8 +24,23 @@ THE SOFTWARE.
 
 #include "polycode/core/PolyCore.h"
 #import "polycode/view/ios/PolycodeView.h"
+#include "polycode/core/PolyOpenGLGraphicsInterface.h"
+#include <pthread.h>
+
+@class PolycodeView;
+
+using namespace Polycode;
 
 #define POLYCODE_CORE IOSCore
+
+class _PolyExport PosixMutex : public CoreMutex {
+public:
+    void lock();
+    void unlock();
+    pthread_mutex_t pMutex;
+};
+
+
 
 namespace Polycode {
 
@@ -64,7 +79,7 @@ namespace Polycode {
 
 	private:
         
-        
+        PolycodeView *glView;
 
 	};
 }

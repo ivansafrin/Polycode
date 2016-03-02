@@ -24,7 +24,7 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     test->scissorBox.setRect(100, 50, 100, 30);
     scene->addChild(test);
     
-    scene->getDefaultCamera()->setPostFilterByName("Invert");
+  //  scene->getDefaultCamera()->setPostFilterByName("Invert");
 //    Sound *music = new Sound("BUGSHUFFLE.ogg");
   //  music->Play();
     

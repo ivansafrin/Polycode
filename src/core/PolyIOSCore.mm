@@ -25,9 +25,26 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
+void PosixMutex::lock() {
+    pthread_mutex_lock(&pMutex);
+}
+
+void PosixMutex::unlock() {
+    pthread_mutex_unlock(&pMutex);
+}
 
 IOSCore::IOSCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex, bool retinaSupport)
 	: Core(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
+        
+        glView = view;
+        
+        renderer = new Renderer();
+                
+        OpenGLGraphicsInterface *interface = new OpenGLGraphicsInterface();
+        renderer->setGraphicsInterface(this, interface);
+        services->setRenderer(renderer);
+        
+        setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
 
 }
 
@@ -36,7 +53,10 @@ IOSCore::~IOSCore() {
 }
 
 void IOSCore::Render() {
-
+    renderer->beginFrame();
+    services->Render(Polycode::Rectangle(0, 0, 800, 600));
+    renderer->endFrame();
+    [glView display];
 }
 
 
@@ -65,13 +85,23 @@ void launchThread(Threaded *target) {
 	target->scheduledForRemoval = true;
 }
 
-void IOSCore::createThread(Threaded * target) {
+void *ManagedThreadFunc(void *data) {
+    Threaded *target = static_cast<Threaded*>(data);
+    target->runThread();
+    target->scheduledForRemoval = true;
+    return NULL;
+}
 
-	 
+void IOSCore::createThread(Threaded *target) {
+    Core::createThread(target);
+    pthread_t thread;
+    pthread_create( &thread, NULL, ManagedThreadFunc, (void*)target);
 }
 
 CoreMutex *IOSCore::createMutex() {
-    return NULL;
+    PosixMutex *mutex = new PosixMutex();
+    pthread_mutex_init(&mutex->pMutex, NULL);
+    return mutex;
 }
 
 void IOSCore::copyStringToClipboard(const String& str) {
@@ -112,7 +142,19 @@ String IOSCore::saveFilePicker(std::vector<CoreFileExtension> extensions) {
 }
 
 void IOSCore::handleVideoModeChange(VideoModeChangeInfo *modeInfo) {
-
+    
+    EAGLContext *context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+    
+    if (!context) {
+        printf("Failed to create ES context...\n");
+    }
+    
+    glView.context = context;
+    glView.drawableDepthFormat = GLKViewDrawableDepthFormat24;
+    
+    [EAGLContext setCurrentContext:context];
+    
+    
 }
 
 void IOSCore::flushRenderContext() {
@@ -148,9 +190,9 @@ void IOSCore::setDeviceSize(Number x, Number y) {
 }
 
 Number IOSCore::getBackingXRes() {
-	return 1.0;
+	return getXRes();
 }
 
 Number IOSCore::getBackingYRes() {
-	return 1.0;
+	return getYRes();
 }
