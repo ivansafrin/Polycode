@@ -23,6 +23,9 @@ THE SOFTWARE.
 
 #include "polycode/core/PolyIOSCore.h"
 
+#include "polycode/core/PolyBasicFileProvider.h"
+#include "polycode/core/PolyPhysFSFileProvider.h"
+
 using namespace Polycode;
 
 void PosixMutex::lock() {
@@ -36,6 +39,10 @@ void PosixMutex::unlock() {
 IOSCore::IOSCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex, bool retinaSupport)
 	: Core(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
         
+        
+        fileProviders.push_back(new BasicFileProvider());
+        fileProviders.push_back(new PhysFSFileProvider());
+        
         glView = view;
         
         renderer = new Renderer();
@@ -44,7 +51,7 @@ IOSCore::IOSCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool v
         renderer->setGraphicsInterface(this, interface);
         services->setRenderer(renderer);
         
-        setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
+        setVideoMode([glView frame].size.width , [glView frame].size.height, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
 
 }
 
@@ -54,7 +61,7 @@ IOSCore::~IOSCore() {
 
 void IOSCore::Render() {
     renderer->beginFrame();
-    services->Render(Polycode::Rectangle(0, 0, 800, 600));
+    services->Render(Polycode::Rectangle(0, 0, getBackingXRes(), getBackingYRes()));
     renderer->endFrame();
     [glView display];
 }
@@ -142,6 +149,9 @@ String IOSCore::saveFilePicker(std::vector<CoreFileExtension> extensions) {
 }
 
 void IOSCore::handleVideoModeChange(VideoModeChangeInfo *modeInfo) {
+    
+    xRes = modeInfo->xRes;
+    yRes = modeInfo->yRes;
     
     EAGLContext *context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
     

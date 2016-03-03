@@ -84,6 +84,7 @@
 		8A0F81921BF541F900E24F9B /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A0F81441BF541F900E24F9B /* tinyxml.cpp */; };
 		8A0F81931BF541F900E24F9B /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A0F81451BF541F900E24F9B /* tinyxmlerror.cpp */; };
 		8A0F81941BF541F900E24F9B /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A0F81461BF541F900E24F9B /* tinyxmlparser.cpp */; };
+		8A35E1A11C87B25900BF9EEA /* PolyPhysFSFileProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A35E1A01C87B25900BF9EEA /* PolyPhysFSFileProvider.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -251,6 +252,8 @@
 		8A0F81441BF541F900E24F9B /* tinyxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tinyxml.cpp; path = ../../../src/core/tinyxml.cpp; sourceTree = "<group>"; };
 		8A0F81451BF541F900E24F9B /* tinyxmlerror.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tinyxmlerror.cpp; path = ../../../src/core/tinyxmlerror.cpp; sourceTree = "<group>"; };
 		8A0F81461BF541F900E24F9B /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tinyxmlparser.cpp; path = ../../../src/core/tinyxmlparser.cpp; sourceTree = "<group>"; };
+		8A35E19F1C87B20400BF9EEA /* PolyPhysFSFileProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyPhysFSFileProvider.h; path = ../../../include/polycode/core/PolyPhysFSFileProvider.h; sourceTree = "<group>"; };
+		8A35E1A01C87B25900BF9EEA /* PolyPhysFSFileProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyPhysFSFileProvider.cpp; path = ../../../src/core/PolyPhysFSFileProvider.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -309,6 +312,7 @@
 				8A0F80C41BF5417E00E24F9B /* PolyImage.h */,
 				8A0F80C51BF5417E00E24F9B /* PolyInputEvent.h */,
 				8A0F80C61BF5417E00E24F9B /* PolyInputKeys.h */,
+				8A35E19F1C87B20400BF9EEA /* PolyPhysFSFileProvider.h */,
 				8A0F80C71BF5417E00E24F9B /* PolyIOSCore.h */,
 				8A0F80C81BF5417E00E24F9B /* PolyLabel.h */,
 				8A0F80C91BF5417E00E24F9B /* PolyLogger.h */,
@@ -378,6 +382,7 @@
 				8A0F81031BF541F800E24F9B /* PolyCoreInput.cpp */,
 				8A0F81041BF541F800E24F9B /* PolyCoreServices.cpp */,
 				8A0F81051BF541F800E24F9B /* PolyCubemap.cpp */,
+				8A35E1A01C87B25900BF9EEA /* PolyPhysFSFileProvider.cpp */,
 				8A0F81061BF541F800E24F9B /* PolyData.cpp */,
 				8A0F81071BF541F800E24F9B /* PolyEntity.cpp */,
 				8A0F81081BF541F800E24F9B /* PolyEvent.cpp */,
@@ -522,6 +527,7 @@
 				8A0F815F1BF541F900E24F9B /* PolyIOSCore.mm in Sources */,
 				8A0F81911BF541F900E24F9B /* tinystr.cpp in Sources */,
 				8A0F81701BF541F900E24F9B /* PolyRenderDataArray.cpp in Sources */,
+				8A35E1A11C87B25900BF9EEA /* PolyPhysFSFileProvider.cpp in Sources */,
 				8A0F814C1BF541F900E24F9B /* PolyClient.cpp in Sources */,
 				8A0F814E1BF541F900E24F9B /* PolyConfig.cpp in Sources */,
 				8A0F815B1BF541F900E24F9B /* PolyFontManager.cpp in Sources */,

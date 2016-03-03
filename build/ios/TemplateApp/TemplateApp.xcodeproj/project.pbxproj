@@ -16,6 +16,8 @@
 		8A0F81991BF56A2D00E24F9B /* PolycodeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A0F81981BF56A2D00E24F9B /* PolycodeView.m */; };
 		8A35E14B1C877A8B00BF9EEA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A35E14A1C877A8B00BF9EEA /* main.m */; };
 		8A35E14F1C877DDB00BF9EEA /* libFreetype2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A35E14E1C877DDB00BF9EEA /* libFreetype2.a */; };
+		8A35E1C61C87B3BC00BF9EEA /* libphysfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A35E1C51C87B3BC00BF9EEA /* libphysfs.a */; };
+		8A35E1DC1C87B50600BF9EEA /* default.pak in Resources */ = {isa = PBXBuildFile; fileRef = 8A35E1DB1C87B50600BF9EEA /* default.pak */; };
 		8AD300AB1BF68290004D243B /* libPolycodeCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AD300AA1BF68290004D243B /* libPolycodeCore.a */; };
 /* End PBXBuildFile section */
 
@@ -35,6 +37,8 @@
 		8A35E14A1C877A8B00BF9EEA /* main.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; path = main.m; sourceTree = "<group>"; };
 		8A35E14E1C877DDB00BF9EEA /* libFreetype2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFreetype2.a; path = ../../../../lib/ios/iphonesimulator/libFreetype2.a; sourceTree = "<group>"; };
 		8A35E19E1C87A54A00BF9EEA /* PolycodeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeView.h; path = ../../../../include/polycode/view/ios/PolycodeView.h; sourceTree = "<group>"; };
+		8A35E1C51C87B3BC00BF9EEA /* libphysfs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libphysfs.a; path = ../../../../lib/ios/iphonesimulator/libphysfs.a; sourceTree = "<group>"; };
+		8A35E1DB1C87B50600BF9EEA /* default.pak */ = {isa = PBXFileReference; lastKnownFileType = file; name = default.pak; path = ../../../../assets/default/default.pak; sourceTree = "<group>"; };
 		8AD300AA1BF68290004D243B /* libPolycodeCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeCore.a; path = ../../../../lib/ios/iphonesimulator/libPolycodeCore.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -44,6 +48,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8A35E14F1C877DDB00BF9EEA /* libFreetype2.a in Frameworks */,
+				8A35E1C61C87B3BC00BF9EEA /* libphysfs.a in Frameworks */,
 				8AD300AB1BF68290004D243B /* libPolycodeCore.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -71,6 +76,7 @@
 			isa = PBXGroup;
 			children = (
 				8A35E14E1C877DDB00BF9EEA /* libFreetype2.a */,
+				8A35E1C51C87B3BC00BF9EEA /* libphysfs.a */,
 				8AD300AA1BF68290004D243B /* libPolycodeCore.a */,
 				8A0F80621BF536C800E24F9B /* AppDelegate.h */,
 				8A0F80631BF536C800E24F9B /* AppDelegate.m */,
@@ -78,6 +84,7 @@
 				8A0F80661BF536C800E24F9B /* ViewController.m */,
 				8A0F80791BF53DD200E24F9B /* PolycodeTemplateApp.h */,
 				8A0F807A1BF53DD200E24F9B /* PolycodeTemplateApp.mm */,
+				8A35E1DB1C87B50600BF9EEA /* default.pak */,
 				8A0F80681BF536C800E24F9B /* Main.storyboard */,
 				8A35E19E1C87A54A00BF9EEA /* PolycodeView.h */,
 				8A0F81981BF56A2D00E24F9B /* PolycodeView.m */,
@@ -148,6 +155,7 @@
 			files = (
 				8A0F806F1BF536C800E24F9B /* LaunchScreen.storyboard in Resources */,
 				8A0F806C1BF536C800E24F9B /* Assets.xcassets in Resources */,
+				8A35E1DC1C87B50600BF9EEA /* default.pak in Resources */,
 				8A0F806A1BF536C800E24F9B /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
