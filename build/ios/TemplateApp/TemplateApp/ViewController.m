@@ -25,6 +25,7 @@
                                   userInfo:nil
                                    repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
+    [_mainView setNeedsDisplay];
 }
 
 - (void)animationTimer:(NSTimer *)timer

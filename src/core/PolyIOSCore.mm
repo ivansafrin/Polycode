@@ -25,6 +25,8 @@ THE SOFTWARE.
 
 #include "polycode/core/PolyBasicFileProvider.h"
 #include "polycode/core/PolyPhysFSFileProvider.h"
+#include <mach/mach.h>
+#include <mach/mach_time.h>
 
 using namespace Polycode;
 
@@ -39,6 +41,7 @@ void PosixMutex::unlock() {
 IOSCore::IOSCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex, bool retinaSupport)
 	: Core(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
         
+        initTime = mach_absolute_time();
         
         fileProviders.push_back(new BasicFileProvider());
         fileProviders.push_back(new PhysFSFileProvider());
@@ -56,16 +59,15 @@ IOSCore::IOSCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool v
 }
 
 IOSCore::~IOSCore() {
-
+    glDeleteFramebuffers(1, &defaultFBOName);
+    glDeleteRenderbuffers(1, &colorRenderbuffer);
 }
 
 void IOSCore::Render() {
     renderer->beginFrame();
     services->Render(Polycode::Rectangle(0, 0, getBackingXRes(), getBackingYRes()));
     renderer->endFrame();
-    [glView display];
 }
-
 
 void IOSCore::checkEvents() {
 
@@ -150,23 +152,52 @@ String IOSCore::saveFilePicker(std::vector<CoreFileExtension> extensions) {
 
 void IOSCore::handleVideoModeChange(VideoModeChangeInfo *modeInfo) {
     
+    // IOS_TODO: Implement CADisplayLink
+    
     xRes = modeInfo->xRes;
     yRes = modeInfo->yRes;
     
-    EAGLContext *context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+    CAEAGLLayer *eaglLayer = (CAEAGLLayer *)glView.layer;
+    eaglLayer.opaque = TRUE;
+    eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
+                                    [NSNumber numberWithBool:FALSE], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
     
-    if (!context) {
-        printf("Failed to create ES context...\n");
+    
+    context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+    
+    if (!context || ![EAGLContext setCurrentContext:context]) {
+        printf("ERROR CREATING GL CONTEXT\n");
+        return;
     }
+
+    glGenFramebuffers(1, &defaultFBOName);
     
-    glView.context = context;
-    glView.drawableDepthFormat = GLKViewDrawableDepthFormat24;
+    glGenRenderbuffers(1, &colorRenderbuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, defaultFBOName);
+    glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
     
-    [EAGLContext setCurrentContext:context];
+    [context renderbufferStorage:GL_RENDERBUFFER fromDrawable: (id<EAGLDrawable>) glView.layer];
+
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderbuffer);
     
+    GLint backingWidth;
+    GLint backingHeight;
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &backingWidth);
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &backingHeight);
+    
+    glGenRenderbuffers(1, &depthRenderbuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, depthRenderbuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, modeInfo->xRes, modeInfo->yRes);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
+    
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    {
+        printf("ERROR CREATING RENDERBUFFER\n");
+    }
+
 }
 
-String IOSCore::getResourcePathForFile(const String &fileName) {    
+String IOSCore::getResourcePathForFile(const String &fileName) {
     NSString* fullFileName = [NSString stringWithUTF8String:fileName.c_str()];
     NSString* fileNameNoExt = [[fullFileName lastPathComponent] stringByDeletingPathExtension];
     NSString* extension = [fullFileName pathExtension];
@@ -174,8 +205,13 @@ String IOSCore::getResourcePathForFile(const String &fileName) {
     return String([str UTF8String]);
 }
 
-void IOSCore::flushRenderContext() {
+void IOSCore::prepareRenderContext() {
+    glBindFramebuffer(GL_FRAMEBUFFER, defaultFBOName);
+}
 
+void IOSCore::flushRenderContext() {
+    glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
+    [context presentRenderbuffer:GL_RENDERBUFFER];
 }
 
 void IOSCore::openURL(String url) {
@@ -183,8 +219,14 @@ void IOSCore::openURL(String url) {
 }
 
 unsigned int IOSCore::getTicks() {
-
-	return 0;
+    uint64_t time = mach_absolute_time();
+    double conversion = 0.0;
+    
+    mach_timebase_info_data_t info;
+    mach_timebase_info( &info );
+    conversion = 1e-9 * (double) info.numer / (double) info.denom;
+    
+    return (((double)(time - initTime)) * conversion) * 1000.0f;
 }
 
 String IOSCore::executeExternalCommand(String command, String args, String inDirectory) {

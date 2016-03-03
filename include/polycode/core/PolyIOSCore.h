@@ -65,7 +65,10 @@ namespace Polycode {
 		std::vector<String> openFilePicker(std::vector<CoreFileExtension> extensions, bool allowMultiple);
 		String saveFilePicker(std::vector<CoreFileExtension> extensions);
 		void handleVideoModeChange(VideoModeChangeInfo *modeInfo);
-		void flushRenderContext();
+		
+        void flushRenderContext();
+        void prepareRenderContext();
+        
 		void openURL(String url);
 		unsigned int getTicks();
 		String executeExternalCommand(String command, String args, String inDirectory);
@@ -75,12 +78,20 @@ namespace Polycode {
 
 		void checkEvents();
 		void setDeviceSize(Number x, Number y);
+        
+        void renderTest();
 
 		Number getBackingXRes();
 		Number getBackingYRes();
 
 	private:
         
+        GLuint colorRenderbuffer;
+        GLuint depthRenderbuffer;
+        GLuint defaultFBOName;
+        
+        EAGLContext *context;
+        uint64_t initTime;
         PolycodeView *glView;
 
 	};

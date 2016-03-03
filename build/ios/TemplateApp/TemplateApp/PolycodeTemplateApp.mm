@@ -6,7 +6,7 @@
 
 
 PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
-    core = new POLYCODE_CORE(view, 64,64,false,false, 0,0,60, 0, true);
+    core = new POLYCODE_CORE(view, 1920, 1080,false,false, 0,0,60, 0, true);
     
     core->addFileSource("archive", core->getResourcePathForFile("default.pak"));
     ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
@@ -18,11 +18,11 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     scene->useClearColor = true;
     scene->clearColor.setColor(0.2, 0.0, 0.0, 1.0);
     
-    ScenePrimitive *test = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 10.0, 10.0);
+    test = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.5, 0.2);
     test->setMaterialByName("UnlitUntextured");
     test->color = Color(1.0, 0.0, 0.0, 1.0);
-    test->enableScissor = true;
-    test->scissorBox.setRect(100, 50, 100, 30);
+//    test->enableScissor = true;
+//    test->scissorBox.setRect(100, 50, 100, 30);
     scene->addChild(test);
     
 //    Sound *music = new Sound("BUGSHUFFLE.ogg");
@@ -40,5 +40,9 @@ PolycodeTemplateApp::~PolycodeTemplateApp() {
 }
 
 bool PolycodeTemplateApp::Update() {
+    Number elapsed = core->getElapsed();
+    
+    test->Roll(elapsed * 45.0);
+    
     return core->updateAndRender();
 }

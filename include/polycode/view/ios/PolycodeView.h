@@ -1,9 +1,7 @@
 
 #import <UIKit/UIKit.h>
-#import <GLKit/GLKView.h>
 
-@interface PolycodeView : GLKView {
-    
-}
+@interface PolycodeView : UIView
+
 
 @end

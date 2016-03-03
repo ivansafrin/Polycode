@@ -348,6 +348,7 @@ void RenderThread::processJob(const RendererThreadJob &job) {
             currentDebugFrameInfo.drawCallsProcessed = 0;
             currentDebugFrameInfo.timeTaken = 0;
             frameStart = Services()->getCore()->getTicks();
+            core->prepareRenderContext();
         }
         break;
         case JOB_END_FRAME:
@@ -417,12 +418,14 @@ void RenderThread::setGraphicsInterface(Core *core, GraphicsInterface *graphicsI
     this->core = core;
 }
 
-Renderer::Renderer() : backingResolutionScaleX(1.0), backingResolutionScaleY(1.0) {
+Renderer::Renderer() :
+    backingResolutionScaleX(1.0),
+    backingResolutionScaleY(1.0),
+    cpuBufferIndex(0),
+    gpuBufferIndex(1) {
+        
     renderThread = new RenderThread();
     Services()->getCore()->createThread(renderThread);
-    
-    cpuBufferIndex = 0;
-    gpuBufferIndex = 1;
 }
 
 Renderer::~Renderer() {

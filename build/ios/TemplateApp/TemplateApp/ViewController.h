@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "polycode/view/ios/PolycodeView.h"
 #include "PolycodeTemplateApp.h"
+#import <GLKit/GLKit.h>
 
 @interface ViewController : UIViewController {
 @private

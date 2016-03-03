@@ -17,5 +17,6 @@ public:
     
 private:
 
+    ScenePrimitive *test;
     Core *core;
 };
