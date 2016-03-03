@@ -42,7 +42,7 @@ PolycodeTemplateApp::~PolycodeTemplateApp() {
 bool PolycodeTemplateApp::Update() {
     Number elapsed = core->getElapsed();
     
-    test->Roll(elapsed * 45.0);
+    test->Roll(elapsed * 20.0);
     
     return core->updateAndRender();
 }

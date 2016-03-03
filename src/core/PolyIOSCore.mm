@@ -194,7 +194,7 @@ void IOSCore::handleVideoModeChange(VideoModeChangeInfo *modeInfo) {
     {
         printf("ERROR CREATING RENDERBUFFER\n");
     }
-
+    
 }
 
 String IOSCore::getResourcePathForFile(const String &fileName) {
@@ -206,6 +206,8 @@ String IOSCore::getResourcePathForFile(const String &fileName) {
 }
 
 void IOSCore::prepareRenderContext() {
+    while(![glView needsUpdate]) {} // wait for frame sync
+    
     glBindFramebuffer(GL_FRAMEBUFFER, defaultFBOName);
 }
 

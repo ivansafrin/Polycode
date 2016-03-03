@@ -86,6 +86,8 @@ namespace Polycode {
 
 	private:
         
+        CADisplayLink *displayLink;
+        
         GLuint colorRenderbuffer;
         GLuint depthRenderbuffer;
         GLuint defaultFBOName;
