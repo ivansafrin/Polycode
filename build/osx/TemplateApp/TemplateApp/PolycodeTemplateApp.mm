@@ -37,7 +37,7 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     camera->getShaderPass(3).shaderBinding->addParam(ProgramParam::PARAM_NUMBER, "bloomFactor")->setNumber(2.0);
     camera->getShaderPass(3).shaderBinding->addParam(ProgramParam::PARAM_NUMBER, "exposure")->setNumber(0.7);
     
-    
+  //  scene->getDefaultCamera()->setPostFilterByName("Invert");
 //    Sound *music = new Sound("BUGSHUFFLE.ogg");
   //  music->Play();
     

@@ -105,28 +105,30 @@
     <PackageCertificateKeyFile>TemplateApp_TemporaryKey.pfx</PackageCertificateKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>..\..\..\..\include;$(IncludePath)</IncludePath>
+    <IncludePath>../../../../include/angle;../../../../include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\..\..\lib\windows\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>..\..\..\..\include;$(IncludePath)</IncludePath>
+    <IncludePath>../../../../include/angle;../../../../include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\..\..\lib\windows\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <IncludePath>..\..\..\..\include;$(IncludePath)</IncludePath>
+    <IncludePath>../../../../include/angle;../../../../include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
-    <IncludePath>..\..\..\..\include;$(IncludePath)</IncludePath>
+    <IncludePath>../../../../include/angle;../../../../include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>..\..\..\..\include;$(IncludePath)</IncludePath>
+    <IncludePath>../../../../include/angle;../../../../include;$(IncludePath)</IncludePath>
     <LibraryPath>..\..\..\..\lib\windows\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>..\..\..\..\include;$(IncludePath)</IncludePath>
+    <IncludePath>../../../../include/angle;../../../../include;$(IncludePath)</IncludePath>
     <LibraryPath>..\..\..\..\lib\windows\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <Link>
-      <AdditionalDependencies>mincore.lib;d3d12.lib;dxgi.lib;windowscodecs.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetype.lib;mincore.lib;libGLESv2.lib;libEGL.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;physfs.lib;portaudio.lib;Xaudio2.lib;Polycored.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories); $(VCInstallDir)\lib\store\arm; $(VCInstallDir)\lib\arm</AdditionalLibraryDirectories>
     </Link>
     <ClCompile>
@@ -140,7 +142,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <Link>
-      <AdditionalDependencies>mincore.lib;d3d12.lib;dxgi.lib;windowscodecs.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetype.lib;mincore.lib;libGLESv2.lib;libEGL.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;physfs.lib;portaudio.lib;Xaudio2.lib;Polycore.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories); $(VCInstallDir)\lib\store\arm; $(VCInstallDir)\lib\arm</AdditionalLibraryDirectories>
     </Link>
     <ClCompile>
@@ -154,7 +156,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Link>
-      <AdditionalDependencies>mincore.lib;d3d12.lib;dxgi.lib;windowscodecs.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetype.lib;mincore.lib;libGLESv2.lib;libEGL.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;physfs.lib;portaudio.lib;Xaudio2.lib;Polycored.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories); $(VCInstallDir)\lib\store; $(VCInstallDir)\lib</AdditionalLibraryDirectories>
     </Link>
     <ClCompile>
@@ -164,11 +166,12 @@
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <DisableSpecificWarnings>4453;28204</DisableSpecificWarnings>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Link>
-      <AdditionalDependencies>mincore.lib;d3d12.lib;dxgi.lib;windowscodecs.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetype.lib;mincore.lib;libGLESv2.lib;libEGL.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;physfs.lib;portaudio.lib;Xaudio2.lib;Polycore.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories); $(VCInstallDir)\lib\store; $(VCInstallDir)\lib</AdditionalLibraryDirectories>
     </Link>
     <ClCompile>
@@ -182,7 +185,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
-      <AdditionalDependencies>freetype.lib;Polycored.lib;libGLESv2.lib;libEGL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetype.lib;mincore.lib;libGLESv2.lib;libEGL.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;physfs.lib;portaudio.lib;Xaudio2.lib;Polycored.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories); $(VCInstallDir)\lib\store\amd64; $(VCInstallDir)\lib\amd64</AdditionalLibraryDirectories>
     </Link>
     <ClCompile>
@@ -199,7 +202,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Link>
-      <AdditionalDependencies>freetype.lib;Polycore.lib;mincore.lib;libGLESv2.lib;libEGL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetype.lib;mincore.lib;libGLESv2.lib;libEGL.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;physfs.lib;portaudio.lib;Xaudio2.lib;Polycore.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories); $(VCInstallDir)\lib\store\amd64; $(VCInstallDir)\lib\amd64</AdditionalLibraryDirectories>
     </Link>
     <ClCompile>

@@ -1677,6 +1677,7 @@ TargetBindingProp::TargetBindingProp(Shader *shader, Material *material, ShaderB
 	for(int i=0; i < material->getNumShaderRenderTargets(); i++) {
 		ShaderRenderTarget *target = material->getShaderRenderTarget(i);		
 		targetComboBox->addComboItem(target->id, (void*) target);
+
 		if(targetBinding->buffer == target->buffer) {
 			targetComboBox->setSelectedIndex(i);
 		}
@@ -1732,7 +1733,7 @@ void TargetBindingProp::handleEvent(Event *event) {
 			textureComboBox->enabled = true;
 			textureComboBox->visible = true;
 			binding->setTextureForParam(targetBinding->name, targetBinding->buffer->colorTexture);
-		}		
+		}
 		
 		if(typeComboBox->getSelectedIndex() == 2 || typeComboBox->getSelectedIndex() == 3) {
 			targetComboBox->enabled = false;
@@ -1750,6 +1751,7 @@ void TargetBindingProp::handleEvent(Event *event) {
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	} else if(event->getDispatcher() == targetComboBox && event->getEventCode() == UIEvent::CHANGE_EVENT) {
 		ShaderRenderTarget *target = (ShaderRenderTarget*)targetComboBox->getSelectedItem()->data;		
+
 		targetBinding->buffer = target->buffer;
 		targetBinding->id  = target->id;
 		
@@ -1758,7 +1760,7 @@ void TargetBindingProp::handleEvent(Event *event) {
 
 		binding->removeParam(targetBinding->name);
 		if(targetBinding->mode == RenderTargetBinding::MODE_IN) {
-			binding->setTextureForParam(targetBinding->name, targetBinding->buffer->colorTexture);
+        binding->setTextureForParam(targetBinding->name, targetBinding->buffer->colorTexture);
 		}
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);		
 	} else if(event->getDispatcher() == textureComboBox && event->getEventCode() == UIEvent::CHANGE_EVENT) {
@@ -2040,7 +2042,7 @@ void TargetBindingsSheet::handleEvent(Event *event) {
 	if(event->getDispatcher() == addButton->getButton()) {
 		RenderTargetBinding* newBinding = new RenderTargetBinding();
 		newBinding->mode = RenderTargetBinding::MODE_COLOR;
-		newBinding->buffer = NULL;		
+		newBinding->buffer = NULL;
 		binding->addRenderTargetBinding(newBinding);				
 		refreshTargets();			
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);

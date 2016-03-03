@@ -1,9 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TemplateApp", "TemplateApp\TemplateApp.vcxproj", "{A19BD860-B494-4D18-8AFB-B788E29236CF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EE7AE05C-9AE5-47FA-8A08-28E8D8D89B94} = {EE7AE05C-9AE5-47FA-8A08-28E8D8D89B94}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PolycodeCore", "PolycodeCore\PolycodeCore.vcxproj", "{EE7AE05C-9AE5-47FA-8A08-28E8D8D89B94}"
 EndProject

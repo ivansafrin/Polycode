@@ -6,17 +6,19 @@
 
 
 PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
-    core = new POLYCODE_CORE(view, 1280/2,720/2,false,false, 0,0,60, 0, true);
+    core = new POLYCODE_CORE(view, 64,64,false,false, 0,0,60, 0, true);
     
-    core->addFileSource("archive", "default.pak");
+    NSString *str = [[NSBundle mainBundle] pathForResource: @"default" ofType: @"pak"];
+    
+    core->addFileSource("archive", [str UTF8String]);
     ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
     globalPool->loadResourcesFromFolder("default", true);
     
-	// Write your code here!
+    // Write your code here!
     
     Scene *scene = new Scene(Scene::SCENE_2D);
     scene->useClearColor = true;
-   
+    scene->clearColor.setColor(0.2, 0.0, 0.0, 1.0);
     
     ScenePrimitive *test = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 10.0, 10.0);
     test->setMaterialByName("UnlitUntextured");
@@ -25,8 +27,8 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     test->scissorBox.setRect(100, 50, 100, 30);
     scene->addChild(test);
     
-    Sound *music = new Sound("BUGSHUFFLE.ogg");
-    music->Play();
+//    Sound *music = new Sound("BUGSHUFFLE.ogg");
+//    music->Play();
     
     Services()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 }

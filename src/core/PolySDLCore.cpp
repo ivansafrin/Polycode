@@ -20,21 +20,23 @@
  THE SOFTWARE.
 */		
 
-#include "PolySDLCore.h"
-#include "PolycodeView.h"
-#include "PolyCoreServices.h"
-#include "PolyCoreInput.h"
-#include "PolyMaterialManager.h"
-#include "PolyThreaded.h"
+#include "polycode/core/PolySDLCore.h"
+#include "polycode/view/linux/PolycodeView.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyCoreInput.h"
+#include "polycode/core/PolyMaterialManager.h"
+#include "polycode/core/PolyThreaded.h"
+#include "polycode/core/PolyLogger.h"
 
-#include "PolyGLRenderer.h"
-#include "PolyGLSLShaderModule.h"
-#include "PolyRectangle.h"
+#include "polycode/core/PolyOpenGLGraphicsInterface.h"
+#include "polycode/core/PolyBasicFileProvider.h"
+#include "polycode/core/PolyPhysFSFileProvider.h"
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_syswm.h>
 #include <stdio.h>
 #include <limits.h>
+#include <dirent.h>
 
 #include <iostream>
 
@@ -68,6 +70,16 @@ namespace {
 using namespace Polycode;
 using std::vector;
 
+void SDLCoreMutex::lock()
+{
+	SDL_mutexP(pMutex);
+}
+
+void SDLCoreMutex::unlock() {
+	SDL_mutexV(pMutex);
+}
+
+
 long getThreadID() {
 	return (long)pthread_self();
 }
@@ -81,9 +93,12 @@ void Core::getScreenInfo(int *width, int *height, int *hz) {
 }
 
 SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex, bool retinaSupport) : Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
-
+  
 	this->resizableWindow = view->resizable;
 
+	fileProviders.push_back(new BasicFileProvider());
+	fileProviders.push_back(new PhysFSFileProvider());
+	
 	char *buffer = getcwd(NULL, 0);
 	defaultWorkingDirectory = String(buffer);
 	free(buffer);
@@ -92,22 +107,33 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 	const char *homedir = pw->pw_dir;
 	userHomeDirectory = String(homedir);
 
-	String *windowTitle = (String*)view->windowData;
-
+	windowTitle = (String*)view->windowData;
+	
 	if(resizableWindow) {
 		unsetenv("SDL_VIDEO_CENTERED");
 	} else {
 		setenv("SDL_VIDEO_CENTERED", "1", 1);
 	}
-
-	if(SDL_Init(SDL_INIT_VIDEO|SDL_INIT_JOYSTICK) < 0) {
+	
+	int sdlerror = SDL_Init(SDL_INIT_VIDEO|SDL_INIT_JOYSTICK);
+	if(sdlerror < 0) {
+	  Logger::log("SDL_Init failed! Code: %d, %s\n", sdlerror, SDL_GetError());
+	}
+	
+	SDL_Surface* icon = SDL_LoadBMP("icon.bmp");
+	if(icon){
+		SDL_WM_SetIcon(icon, NULL);
 	}
 	
 	eventMutex = createMutex();
-	renderer = new OpenGLRenderer();
+	
+	renderer = new Renderer();
+	OpenGLGraphicsInterface *renderInterface = new OpenGLGraphicsInterface();
+	renderInterface->lineSmooth = true;
+	renderer->setGraphicsInterface(this, renderInterface);
 	services->setRenderer(renderer);
-
-	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel);
+	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
+	
 	SDL_WM_SetCaption(windowTitle->c_str(), windowTitle->c_str());
 	
 	SDL_EnableUNICODE(1);
@@ -121,6 +147,11 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 		SDL_JoystickOpen(i);
 		input->addJoystick(i);
 	}
+	
+	services->getSoundManager()->setAudioInterface(new PAAudioInterface());
+	
+	lastMouseX = 0;
+	lastMouseY = 0;
 
 #ifdef USE_X11
 	// Start listening to clipboard events.
@@ -128,30 +159,37 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 	//  clipboard events and respond to them)
 	init_scrap();
 #endif // USE_X11
-
-	((OpenGLRenderer*)renderer)->Init();
-	CoreServices::getInstance()->installModule(new GLSLShaderModule());	
 }
 
 void SDLCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport) {
-	this->xRes = xRes;
-	this->yRes = yRes;
-	this->fullScreen = fullScreen;
-	this->aaLevel = aaLevel;
+	//renderer->Resize(xRes, yRes);
+	//CoreServices::getInstance()->getMaterialManager()->reloadProgramsAndTextures();
+	//dispatchEvent(new Event(), EVENT_CORE_RESIZE);
+	Core::setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
+}
 
-	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24);	
-	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1);			
+void SDLCore::handleVideoModeChange(VideoModeChangeInfo* modeInfo){
+
+	this->xRes = modeInfo->xRes;
+	this->yRes = modeInfo->yRes;
+	this->fullScreen = modeInfo->fullScreen;
+	this->aaLevel = modeInfo->aaLevel;
+	this->anisotropyLevel = modeInfo->anisotropyLevel;
+	this->vSync = modeInfo->vSync;
+	
+	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24);
+	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute( SDL_GL_RED_SIZE,   8);
 	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8);
 	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE,  8);
 	SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8);
 	
 	if(aaLevel > 0) {
-		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1);
-		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, aaLevel); //0, 2, 4	
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, aaLevel); //0, 2, 4
 	} else {
-		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 0);
-		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, 0);
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
 	}
 	
 	flags = SDL_OPENGL;
@@ -163,6 +201,10 @@ void SDLCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int 
 	if(resizableWindow) {
 		flags |= SDL_RESIZABLE;
 	}
+	
+// 	if(modeInfo->retinaSupport) {
+// 		flags |= SDL_WINDOW_ALLOW_HIGHDPI;
+// 	}
 /*
 	if(vSync) {
 		flags |= SDL_DOUBLEBUF;
@@ -170,14 +212,19 @@ void SDLCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int 
 		SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
 	} else {
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
-		SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 0);
+ -		SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 0);
 	}
 */
+
 	SDL_SetVideoMode(xRes, yRes, 0, flags);
+
+	int glewcode = glewInit();
+	if (glewcode != GLEW_OK){
+	  Logger::log("glewInit failed! code: %d, %s\n", glewcode, glewGetErrorString(glewcode));
+	}
 	
-	renderer->Resize(xRes, yRes);
-	//CoreServices::getInstance()->getMaterialManager()->reloadProgramsAndTextures();
-	dispatchEvent(new Event(), EVENT_CORE_RESIZE);	
+	//setVSync(modeInfo->vSync);
+	renderer->setAnisotropyAmount(modeInfo->anisotropyLevel);
 }
 
 vector<Polycode::Rectangle> SDLCore::getVideoModes() {
@@ -254,10 +301,10 @@ unsigned int SDLCore::getTicks() {
 void SDLCore::enableMouse(bool newval) {
 	if(newval) {
 		SDL_ShowCursor(1);
-		SDL_WM_GrabInput(SDL_GRAB_OFF);
+		//SDL_WM_GrabInput(SDL_GRAB_OFF);
 	} else {
 		SDL_ShowCursor(0);
-		SDL_WM_GrabInput(SDL_GRAB_ON);
+		//SDL_WM_GrabInput(SDL_GRAB_ON);
 	}
 	Core::enableMouse(newval);
 }
@@ -307,9 +354,12 @@ bool SDLCore::checkSpecialKeyEvents(PolyKEY key) {
 }
 
 void SDLCore::Render() {
-	renderer->BeginRender();
-	services->Render();
-	renderer->EndRender();
+	renderer->beginFrame();
+	services->Render(Polycode::Rectangle(0, 0, getBackingXRes(), getBackingYRes()));
+	renderer->endFrame();
+}
+
+void SDLCore::flushRenderContext(){
 	SDL_GL_SwapBuffers();
 }
 
@@ -327,20 +377,19 @@ bool SDLCore::systemUpdate() {
 					running = false;
 				break;
 				case SDL_VIDEORESIZE:
-	if(resizableWindow) {
-		unsetenv("SDL_VIDEO_CENTERED");
-	} else {
-		setenv("SDL_VIDEO_CENTERED", "1", 1);
-	}
+					if(resizableWindow) {
+						unsetenv("SDL_VIDEO_CENTERED");
+					} else {
+						setenv("SDL_VIDEO_CENTERED", "1", 1);
+					}
 					this->xRes = event.resize.w;
 					this->yRes = event.resize.h;
 					SDL_SetVideoMode(xRes, yRes, 0, flags);
-					renderer->Resize(xRes, yRes);	
 					dispatchEvent(new Event(), EVENT_CORE_RESIZE);	
 				break;
 				case SDL_ACTIVEEVENT:
-					if(event.active.state == SDL_APPINPUTFOCUS) {
-						if(event.active.gain == 1) {
+					if(event.active.state == SDL_APPINPUTFOCUS){
+						if(event.active.gain == 1){
 							gainFocus();
 						} else {
 							loseFocus();
@@ -358,16 +407,16 @@ bool SDLCore::systemUpdate() {
 				break;
 				case SDL_KEYDOWN:
 					if(!checkSpecialKeyEvents((PolyKEY)(event.key.keysym.sym))) {
-						input->setKeyState((PolyKEY)(event.key.keysym.sym), (char)event.key.keysym.unicode, true, getTicks());
+						input->setKeyState((PolyKEY)(event.key.keysym.sym), event.key.keysym.unicode, true, getTicks());
 					}
 				break;
 				case SDL_KEYUP:
-					input->setKeyState((PolyKEY)(event.key.keysym.sym), (char)event.key.keysym.unicode, false, getTicks());
+					input->setKeyState((PolyKEY)(event.key.keysym.sym), event.key.keysym.unicode, false, getTicks());
 				break;
 				case SDL_MOUSEBUTTONDOWN:
-					if(event.button.button == SDL_BUTTON_WHEELUP) {
+					if(event.button.button == SDL_BUTTON_WHEELUP){
 						input->mouseWheelUp(getTicks());
-					} else if(event.button.button == SDL_BUTTON_WHEELDOWN) {
+					} else if (event.button.button == SDL_BUTTON_WHEELDOWN){
 						input->mouseWheelDown(getTicks());
 					} else {
 						switch(event.button.button) {
@@ -384,24 +433,23 @@ bool SDLCore::systemUpdate() {
 					}
 				break;
 				case SDL_MOUSEBUTTONUP:
-					if(event.button.button == SDL_BUTTON_WHEELUP || event.button.button == SDL_BUTTON_WHEELDOWN) {						
-					} else {
-						switch(event.button.button) {
-							case SDL_BUTTON_LEFT:
-								input->setMouseButtonState(CoreInput::MOUSE_BUTTON1, false, getTicks());
-							break;
-							case SDL_BUTTON_RIGHT:
-								input->setMouseButtonState(CoreInput::MOUSE_BUTTON2, false, getTicks());
-							break;
-							case SDL_BUTTON_MIDDLE:
-								input->setMouseButtonState(CoreInput::MOUSE_BUTTON3, false, getTicks());
-							break;
-						}
+					switch(event.button.button) {
+						case SDL_BUTTON_LEFT:
+							input->setMouseButtonState(CoreInput::MOUSE_BUTTON1, false, getTicks());
+						break;
+						case SDL_BUTTON_RIGHT:
+							input->setMouseButtonState(CoreInput::MOUSE_BUTTON2, false, getTicks());
+						break;
+						case SDL_BUTTON_MIDDLE:
+							input->setMouseButtonState(CoreInput::MOUSE_BUTTON3, false, getTicks());
+						break;
 					}
 				break;
 				case SDL_MOUSEMOTION:
-					input->setDeltaPosition(event.motion.xrel, event.motion.yrel);					
+					input->setDeltaPosition(lastMouseX - event.motion.x, lastMouseY - event.motion.y);					
 					input->setMousePosition(event.motion.x, event.motion.y, getTicks());
+					lastMouseY = event.motion.y;
+					lastMouseX = event.motion.x;
 				break;
 				default:
 					break;
@@ -418,9 +466,11 @@ void SDLCore::setCursor(int cursorType) {
 
 void SDLCore::warpCursor(int x, int y) {
 	SDL_WarpMouse(x, y);
+	lastMouseX = x;
+	lastMouseY = y;
 }
 
-void SDLCore::lockMutex(CoreMutex *mutex) {
+/*void SDLCore::lockMutex(CoreMutex *mutex) {
 	SDLCoreMutex *smutex = (SDLCoreMutex*)mutex;
 	SDL_mutexP(smutex->pMutex);
 
@@ -429,7 +479,7 @@ void SDLCore::lockMutex(CoreMutex *mutex) {
 void SDLCore::unlockMutex(CoreMutex *mutex) {
 	SDLCoreMutex *smutex = (SDLCoreMutex*)mutex;
 	SDL_mutexV(smutex->pMutex);
-}
+}*/
 
 CoreMutex *SDLCore::createMutex() {
 	SDLCoreMutex *mutex = new SDLCoreMutex();
@@ -441,6 +491,7 @@ void SDLCore::copyStringToClipboard(const String& str) {
 #ifdef USE_X11
 	put_scrap(T('T', 'E', 'X', 'T'), str.size(), str.c_str());
 #endif
+// 	SDL_SetClipboardText(str.c_str());
 }
 
 String SDLCore::getClipboardString() {
@@ -452,7 +503,14 @@ String SDLCore::getClipboardString() {
 	String rval(buffer, dstlen);
 	free(buffer);
 	return rval;
-#endif
+	#endif
+// 	String rval;
+// 	if(SDL_HasClipboardText() ==SDL_TRUE){
+// 		rval=SDL_GetClipboardText();
+// 	} else {
+// 		rval="";
+// 	}
+// 	return rval;
 }
 
 void SDLCore::createFolder(const String& folderPath) {
@@ -505,9 +563,30 @@ String SDLCore::saveFilePicker(std::vector<CoreFileExtension> extensions) {
 }
 
 void SDLCore::resizeTo(int xRes, int yRes) {
-	renderer->Resize(xRes, yRes);
+	this->xRes = xRes;
+	this->yRes = yRes;
+	dispatchEvent(new Event(), EVENT_CORE_RESIZE);
 }
 
+bool SDLCore::systemParseFolder(const String& pathString, bool showHidden, vector< OSFileEntry >& targetVector) {
+    DIR           *d;
+    struct dirent *dir;
+    
+    d = opendir(pathString.c_str());
+    if(d) {
+        while ((dir = readdir(d)) != NULL) {
+            if(dir->d_name[0] != '.' || (dir->d_name[0] == '.'  && showHidden)) {
+                if(dir->d_type == DT_DIR) {
+                    targetVector.push_back(OSFileEntry(pathString, dir->d_name, OSFileEntry::TYPE_FOLDER));
+                } else {
+                    targetVector.push_back(OSFileEntry(pathString, dir->d_name, OSFileEntry::TYPE_FILE));
+                }
+            }
+        }
+        closedir(d);
+    }
+    return true;
+}
 
 #ifdef USE_X11
 // SDL_scrap.c

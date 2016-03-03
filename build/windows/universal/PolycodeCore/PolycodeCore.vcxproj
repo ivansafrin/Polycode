@@ -33,7 +33,6 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyBone.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyCamera.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyClient.h" />
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyCocoaCore.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyColor.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyConfig.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyCore.h" />
@@ -264,7 +263,7 @@
   <PropertyGroup />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <GenerateManifest>false</GenerateManifest>
-    <IncludePath>../../../../include;$(IncludePath)</IncludePath>
+    <IncludePath>../../../../include/angle;../../../../include;$(IncludePath)</IncludePath>
     <OutDir>..\..\..\..\lib\windows\x86</OutDir>
     <TargetName>Polycored</TargetName>
   </PropertyGroup>
@@ -276,9 +275,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <GenerateManifest>false</GenerateManifest>
+    <TargetName>Polycored</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <GenerateManifest>false</GenerateManifest>
+    <TargetName>Polycore</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <GenerateManifest>false</GenerateManifest>
@@ -348,7 +349,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NO_OGG;_CRT_SECURE_NO_WARNINGS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -364,7 +365,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINDOWS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NO_OGG;_CRT_SECURE_NO_WARNINGS;_WINDOWS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

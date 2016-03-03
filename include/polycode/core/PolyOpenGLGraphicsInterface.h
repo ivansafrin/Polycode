@@ -40,29 +40,29 @@ THE SOFTWARE.
     #include <OpenGLES/ES2/glext.h>
 
 #elif PLATFORM == PLATFORM_WINDOWS
-/*
-	#if defined(WINAPI_FAMILY)
-		#include <GLES2/gl2.h>
-		#include <GLES2/gl2ext.h>
-		#include <EGL/egl.h>
-		#include <EGL/eglext.h>
-		#include <EGL/eglplatform.h>
-		#include <angle_windowsstore.h>
+
+	#if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PC_APP || WINAPI == WINAPI_FAMILIY_PHONE_APP)
+		#define STRICT_OPENGLES2
+		#include <angle/GLES2/gl2.h>
+		#include <angle/GLES2/gl2ext.h>
+		#include <angle/EGL/egl.h>
+		#include <angle/EGL/eglext.h>
+		#include <angle/EGL/eglplatform.h>
+		#include <angle/angle_windowsstore.h>
 	#else
-	*/
 		#include <glew/GL/glew.h>
-/*
 	#endif
-	*/
 #else	
 	#if defined(USE_EGL)
 		#include <EGL/egl.h>
 		#include <EGL/eglext.h>
 		#include <GLES2/gl2.h>
 	#else
-		#include <GL/gl.h>
+		#include <glew/GL/glew.h>
+		
+		/*#include <GL/gl.h>
 		#include <GL/glu.h>
-		#include <GL/glext.h>
+		#include <GL/glext.h>*/
 	#endif
 #endif
 

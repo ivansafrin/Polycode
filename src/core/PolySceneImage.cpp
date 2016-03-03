@@ -38,7 +38,8 @@ SceneImage* SceneImage::SceneImageWithTexture(Texture *texture) {
 SceneImage::SceneImage(const String& fileName) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1) {
     
     // RENDERER_TODO
-    Texture *texture = getShaderPass(0).shaderBinding->loadTextureForParam("diffuse", fileName);
+	setMaterialByName("Unlit");
+	Texture *texture = getShaderPass(0).shaderBinding->loadTextureForParam("diffuse", fileName);
 
 	imageWidth = texture->getWidth();
 	imageHeight = texture->getHeight();
@@ -51,6 +52,7 @@ SceneImage::SceneImage(const String& fileName) : ScenePrimitive(ScenePrimitive::
 SceneImage::SceneImage(Image *image) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1) {
     // RENDERER_TODO
 	//loadTextureFromImage(image);
+	setMaterialByName("Unlit");
     Texture *texture = Services()->getMaterialManager()->createTextureFromImage(image);
     getShaderPass(0).shaderBinding->setTextureForParam("diffuse", texture);
 
@@ -63,7 +65,8 @@ SceneImage::SceneImage(Image *image) : ScenePrimitive(ScenePrimitive::TYPE_VPLAN
 }
 
 SceneImage::SceneImage(Texture *texture) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1)  {
-    getShaderPass(0).shaderBinding->setTextureForParam("diffuse", texture);
+	setMaterialByName("Unlit");
+	getShaderPass(0).shaderBinding->setTextureForParam("diffuse", texture);
 
 	imageWidth = texture->getWidth();
 	imageHeight = texture->getHeight();

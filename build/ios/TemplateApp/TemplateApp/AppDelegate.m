@@ -1,4 +1,10 @@
-
+//
+//  AppDelegate.m
+//  Testing222
+//
+//  Created by Ivan Safrin on 3/2/16.
+//  Copyright © 2016 Polycode. All rights reserved.
+//
 
 #import "AppDelegate.h"
 

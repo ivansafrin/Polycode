@@ -27,7 +27,7 @@
 using namespace Polycode;
 
 PAAudioInterface::PAAudioInterface() {
-    
+    mixer = NULL;
     
     PaError error = Pa_Initialize();
     if(error != paNoError) {
@@ -77,7 +77,7 @@ int PAAudioInterface::paCallback(const void *inputBuffer, void *outputBuffer,
                       PaStreamCallbackFlags statusFlags,
                                  void *userData) {
     PAAudioInterface *audioInterface = (PAAudioInterface*) userData;
-    if(outputBuffer) {
+    if(outputBuffer && audioInterface->getMixer()) {
         int16_t *out = (int16_t*)outputBuffer;
         audioInterface->getMixer()->mixIntoBuffer(out, framesPerBuffer);
     }

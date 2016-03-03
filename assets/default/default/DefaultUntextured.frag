@@ -1,3 +1,7 @@
+#ifdef GL_ES
+	precision mediump float;
+#endif
+
 varying vec2 texCoordVar;
 varying vec3 varNormal;
 varying vec4 varPosition;
