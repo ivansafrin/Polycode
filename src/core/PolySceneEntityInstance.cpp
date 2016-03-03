@@ -492,7 +492,6 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
             
 			Camera *camera = new Camera(parentScene);
             
-            camera->setExposureLevel((*cameraEntry)["exposure"]->NumberVal);
             camera->setClippingPlanes((*cameraEntry)["nearClip"]->NumberVal, (*cameraEntry)["farClip"]->NumberVal);
             camera->setOrthoMode((*cameraEntry)["ortho"]->boolVal);
             

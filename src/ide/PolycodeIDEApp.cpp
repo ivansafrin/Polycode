@@ -32,10 +32,10 @@ Scene *globalScene;
 
 #ifdef _WINDOWS
 PolycodeIDEApp::PolycodeIDEApp(PolycodeWinIDEView *view) : EventDispatcher() {
-core = new POLYCODE_CORE((PolycodeWinIDEView*)view, 1100, 700,false,false, 0, 0,60, -1, true);
+core = new POLYCODE_CORE((PolycodeWinIDEView*)view, 1100, 700,false,false, 0, 0,60, -1, false);
 #else
 PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
-core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1, true);
+core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1, false);
 #endif
 	
 //	core->pauseOnLoseFocus = true;
@@ -1280,7 +1280,7 @@ void PolycodeIDEApp::applyFinalConfig() {
 		int newYRes = appHeight->intVal;		
 		if(newXRes > 100 && newYRes > 100) {
 			setResFromConfig = true;
-            core->setVideoMode(newXRes, newYRes, false, true, 0, 0);
+            core->setVideoMode(newXRes, newYRes, false, true, 0, 0, false);
 			frame->Resize(newXRes, newYRes);
 		}
 	}

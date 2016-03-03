@@ -17,6 +17,6 @@ public:
     bool Update();
     
 private:
-
+    ScenePrimitive *test ;
     Core *core;
 };

@@ -108,10 +108,15 @@ Texture::Texture(Image *image) : Resource(Resource::RESOURCE_TEXTURE) {
 
 }
 
-RenderBuffer::RenderBuffer(unsigned int width, unsigned int height, bool attachDepthBuffer) : platformData(NULL), width(width), height(height), depthBufferPlatformData(NULL) {
-    colorTexture = new Texture(width, height, NULL, false, false);
+RenderBuffer::RenderBuffer(unsigned int width, unsigned int height, bool attachDepthBuffer, bool floatingPoint) : platformData(NULL), width(width), height(height), depthBufferPlatformData(NULL), floatingPoint(floatingPoint) {
+    
+    int imageType = Image::IMAGE_RGBA;
+    if(floatingPoint) {
+        imageType = Image::IMAGE_FP16;
+    }
+    colorTexture = new Texture(width, height, NULL, false, false, imageType, true);
     if(attachDepthBuffer) {
-        depthTexture = new Texture(width, height, NULL, false, false);
+        depthTexture = new Texture(width, height, NULL, false, false, Image::IMAGE_RGBA, true);
     } else {
         depthTexture = NULL;
     }

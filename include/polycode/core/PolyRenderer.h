@@ -181,7 +181,7 @@ namespace Polycode {
         Cubemap *createCubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4, Texture *t5);
         Texture *createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type, unsigned int filteringMode, unsigned int anisotropy, bool framebufferTexture);
         
-        RenderBuffer *createRenderBuffer(unsigned int width, unsigned int height, bool attachDepthBuffer);
+        RenderBuffer *createRenderBuffer(unsigned int width, unsigned int height, bool attachDepthBuffer, bool floatingPoint);
         void destroyRenderBuffer(RenderBuffer *buffer);
         
         void destroyTexture(Texture *texture);

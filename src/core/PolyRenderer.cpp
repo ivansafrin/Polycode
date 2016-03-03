@@ -167,8 +167,6 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
         if(buffer->globalMaterial && !buffer->drawCalls[i].options.forceMaterial) {
             material = buffer->globalMaterial;
         }
-
-        
         
         if(material) {
             
@@ -185,12 +183,17 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                 graphicsInterface->beginDrawCall();
                 
                 ShaderPass shaderPass;
+
                 if(s < material->getNumShaderPasses()) {
                     shaderPass = material->getShaderPass(s);
                 } else {
                     shaderPass = buffer->drawCalls[i].shaderPasses[s];
                     graphicsInterface->setBlendingMode(shaderPass.blendingMode);
                 }
+                
+                //shaderPass = buffer->drawCalls[i].shaderPasses[s];
+                //graphicsInterface->setBlendingMode(shaderPass.blendingMode);
+                
                 ShaderBinding *localShaderBinding = buffer->drawCalls[i].shaderPasses[s].shaderBinding;
 
                 if(!shaderPass.shader || !localShaderBinding) {
@@ -198,10 +201,9 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                 }
                 
                 graphicsInterface->useShader(shaderPass.shader);
-
                 graphicsInterface->setWireframeMode(shaderPass.wireframe);
                 
-                ShaderBinding *materialShaderBinding = material->getShaderBinding(s);
+                ShaderBinding *materialShaderBinding = shaderPass.materialShaderBinding;
 
                 // set global params
                 for(int p=0; p < shaderPass.shader->expectedParams.size(); p++) {
@@ -482,8 +484,8 @@ Texture *Renderer::createTexture(unsigned int width, unsigned int height, char *
     return texture;
 }
 
-RenderBuffer *Renderer::createRenderBuffer(unsigned int width, unsigned int height, bool attachDepthBuffer) {
-    RenderBuffer *buffer = new RenderBuffer(width, height, attachDepthBuffer);
+RenderBuffer *Renderer::createRenderBuffer(unsigned int width, unsigned int height, bool attachDepthBuffer, bool floatingPoint) {
+    RenderBuffer *buffer = new RenderBuffer(width, height, attachDepthBuffer, floatingPoint);
     renderThread->enqueueJob(RenderThread::JOB_CREATE_RENDER_BUFFER, (void*)buffer);
     return buffer;
 }

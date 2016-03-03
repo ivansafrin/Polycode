@@ -632,7 +632,7 @@ PostPreviewBox::PostPreviewBox() : UIElement() {
 	cameraExposureInput = new UITextInput(false, 40, 12);
 	addChild(cameraExposureInput);
 	cameraExposureInput->setPosition(370, 2);
-	cameraExposureInput->setText(String::NumberToString(previewScene->getDefaultCamera()->getExposureLevel()));	
+//	cameraExposureInput->setText(String::NumberToString(previewScene->getDefaultCamera()->getExposureLevel()));
 	cameraExposureInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 
 	label = new UILabel("LIGHT INT.", 18, "section", Label::ANTIALIAS_FULL);
@@ -696,7 +696,7 @@ void PostPreviewBox::clearMaterial() {
 void PostPreviewBox::handleEvent(Event *event) {
 	if(event->getDispatcher() == cameraExposureInput && event->getEventCode() == UIEvent::CHANGE_EVENT) {
 		Number newExposure = atof(cameraExposureInput->getText().c_str());
-		previewScene->getDefaultCamera()->setExposureLevel(newExposure);
+		//previewScene->getDefaultCamera()->setExposureLevel(newExposure);
 	} else if(event->getDispatcher() == lightStrength && event->getEventCode() == UIEvent::CHANGE_EVENT) {
 		Number newStrength = atof(lightStrength->getText().c_str());
 		mainLight->setIntensity(newStrength);
@@ -708,7 +708,7 @@ MaterialPreviewBox::MaterialPreviewBox() : UIElement() {
 	currentMaterial = NULL;
 	previewScene = new Scene(Scene::SCENE_3D, true);	
 	
-	renderTexture = new SceneRenderTexture(previewScene, previewScene->getDefaultCamera(), 512, 512);
+	renderTexture = new SceneRenderTexture(previewScene, previewScene->getDefaultCamera(), 512, 512, false);
 	
 	ScenePrimitive *previewBg = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 15.0, 15.0, 15.0);
 	previewBg->Yaw(45.0);

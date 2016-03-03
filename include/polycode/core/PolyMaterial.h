@@ -48,6 +48,7 @@ namespace Polycode {
             bool wireframe;
             unsigned short blendingMode;
             ShaderBinding* shaderBinding;
+            ShaderBinding* materialShaderBinding;
         
             std::vector<VertexDataArray*> attributeArrays;
     };

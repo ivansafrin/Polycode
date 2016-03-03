@@ -481,7 +481,7 @@ void CameraPreviewWindow::Resize(Number width, Number height) {
         if(renderTexture) {
             delete renderTexture;
         }
-        renderTexture = new SceneRenderTexture(scene, camera, previewRect->getWidth(), previewRect->getHeight());
+        renderTexture = new SceneRenderTexture(scene, camera, previewRect->getWidth(), previewRect->getHeight(), false);
         previewRect->setTexture(renderTexture->getTargetTexture());
     }
     pinButton->setPosition(width-70, 3);
@@ -538,7 +538,7 @@ void CameraPreviewWindow::setCamera(Scene *scene, Camera *camera) {
         if(renderTexture) {
             delete renderTexture;
         }
-        renderTexture = new SceneRenderTexture(scene, camera, previewRect->getWidth(), previewRect->getHeight());
+        renderTexture = new SceneRenderTexture(scene, camera, previewRect->getWidth(), previewRect->getHeight(), false);
         previewRect->setTexture(renderTexture->getTargetTexture());
         
     } else {
@@ -563,7 +563,7 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
 //    mainScene->getDefaultCamera()->frustumCulling = false;
 //    mainScene->doVisibilityChecking(false);
     
-	renderTexture = new SceneRenderTexture(mainScene, mainScene->getDefaultCamera(), 512, 512);
+	renderTexture = new SceneRenderTexture(mainScene, mainScene->getDefaultCamera(), 512, 512, false);
 	mainScene->clearColor.setColor(0.2, 0.2, 0.2, 1.0);	
 	mainScene->useClearColor = true;
 	mainScene->rootEntity.processInputEvents = true;
@@ -2364,7 +2364,7 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
         
         ObjectEntry *cameraEntry = entry->addChild("Camera");
         
-        cameraEntry->addChild("exposure", camera->getExposureLevel());
+        //cameraEntry->addChild("exposure", camera->getExposureLevel());
         cameraEntry->addChild("nearClip", camera->getNearClippingPlane());
         cameraEntry->addChild("farClip", camera->getFarClippingPlane());
         cameraEntry->addChild("ortho", camera->getOrthoMode());

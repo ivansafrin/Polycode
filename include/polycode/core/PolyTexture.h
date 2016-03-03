@@ -66,7 +66,7 @@ namespace Polycode {
     
     class _PolyExport RenderBuffer {
         public:
-            RenderBuffer(unsigned int width, unsigned int height, bool attachDepthBuffer);
+            RenderBuffer(unsigned int width, unsigned int height, bool attachDepthBuffer, bool floatingPoint);
 
             unsigned int getWidth();
             unsigned int getHeight();
@@ -76,7 +76,10 @@ namespace Polycode {
 
             void *platformData;
             void *depthBufferPlatformData;
+    
         private:
+        
+            bool floatingPoint;
         
             unsigned int width;
             unsigned int height;

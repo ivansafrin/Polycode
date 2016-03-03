@@ -27,7 +27,7 @@ extern UIGlobalMenu *globalMenu;
 PolycodeMeshEditor::PolycodeMeshEditor() : PolycodeEditor(true){
 	
 	previewScene = new Scene(Scene::SCENE_3D, true);		
-	renderTexture = new SceneRenderTexture(previewScene, previewScene->getDefaultCamera(), 512, 512);
+	renderTexture = new SceneRenderTexture(previewScene, previewScene->getDefaultCamera(), 512, 512, false);
     
     ownsChildren = true;
 

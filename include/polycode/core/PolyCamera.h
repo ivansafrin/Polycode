@@ -190,22 +190,6 @@ namespace Polycode {
              * Binds target buffers and renders the scene in multiple passes based on the post filter material.
              */
 			void drawFilter(RenderBuffer *targetBuffer);
-			
-			/**
-			* Sets the exposure for the camera. The exposure value is passed automatically to  post material shaders using an "exposure" uniform.
-			* @param level The new exposure value.
-			*/						
-			void setExposureLevel(Number level) {
-				exposureLevel = level;
-			}
-			
-			/**
-			* Returns the camera's exposure value.
-			* @return Current exposure value.
-			*/									
-			Number getExposureLevel() {
-				return exposureLevel;
-			}
 
 			/**
 			* Sets the post-processing shader for the camera.
@@ -296,6 +280,9 @@ namespace Polycode {
 
             void renderFullScreenQuad(GPUDrawBuffer *drawBuffer, int shaderPass);
         
+            ShaderPass getShaderPass(unsigned int index);
+            unsigned int getNumShaderPasses();        
+        
 		protected:
         
             Mesh *screenQuadMesh;
@@ -313,8 +300,6 @@ namespace Polycode {
 
 			Number nearClipPlane;
 			Number farClipPlane;
-								
-			Number exposureLevel;
 			Number fov;
 
 			Number leftFrustum,rightFrustum,topFrustum,bottomFrustum;

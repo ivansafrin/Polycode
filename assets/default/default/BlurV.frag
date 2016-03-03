@@ -16,4 +16,5 @@ void main(void)
    sum += texture2D(screenTexture, vec2(texCoordVar.x, texCoordVar.y + 4.0*blurSize)) * 0.05;
    
    gl_FragColor = sum;
+
 }

@@ -36,9 +36,33 @@
 		<shader type="glsl" name="InvertShader" screen="true">		
 			<vp source="default/ScreenShader.vert"/>
 			<fp source="default/Invert.frag"/>
+		</shader>	
+		<shader type="glsl" name="BlurHShader" screen="true">		
+			<vp source="default/ScreenShader.vert"/>
+			<fp source="default/BlurH.frag"/>
+		</shader>
+		<shader type="glsl" name="BlurVShader" screen="true">		
+			<vp source="default/ScreenShader.vert"/>
+			<fp source="default/BlurV.frag"/>
 		</shader>		
 	</shaders>	
 	<materials>
+		<material name="Blur">
+			<rendertargets type="rgba">
+				<rendertarget id="blurtarget" sizeMode="pixels" width="512" height="512"/>
+			</rendertargets>		
+			<shader name="BlurHShader">
+				<targettextures>
+					<targettexture mode="color" name="screenTexture"/>
+					<targettexture mode="out" id="blurtarget"/>					
+				</targettextures>				
+			</shader>
+			<shader name="BlurVShader">
+				<targettextures>
+					<targettexture mode="in" name="screenTexture" id="blurtarget"/>
+				</targettextures>				
+			</shader>			
+		</material>	
 		<material name="Invert">
 			<shader name="InvertShader">
 				<targettextures>			

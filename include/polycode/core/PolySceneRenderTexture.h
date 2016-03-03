@@ -46,7 +46,7 @@ namespace Polycode {
 			* @param renderHeight Vertical size of the render texture.
 			* @param floatingPoint Pass true if you want fp16 target renders			
 			*/
-            SceneRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight, unsigned int textureFormat = Image::IMAGE_RGBA);
+            SceneRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight, bool floatingPoint);
 			virtual ~SceneRenderTexture();
 						
 			/**
@@ -76,8 +76,9 @@ namespace Polycode {
 			
 		protected:
         
+            bool floatingPoint;
+        
             Renderer *renderer;
-            unsigned int textureFormat;
             RenderBuffer *targetFramebuffer;
         
 			Scene *targetScene;

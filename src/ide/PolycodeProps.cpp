@@ -1249,7 +1249,7 @@ MaterialProp::MaterialProp(const String &caption) : PropProp(caption, "Material"
 	}
 	previewScene->addChild(previewBg);
 	
-   	renderTexture = new SceneRenderTexture(previewScene, previewScene->getDefaultCamera(), 48*2, 48*2);
+   	renderTexture = new SceneRenderTexture(previewScene, previewScene->getDefaultCamera(), 48*2, 48*2, false);
     
 	previewScene->clearColor.setColor(0.1, 0.1, 0.1, 0.0);
 	previewScene->ambientColor.setColor(0.2, 0.2, 0.2, 1.0);
@@ -1677,7 +1677,7 @@ TargetBindingProp::TargetBindingProp(Shader *shader, Material *material, ShaderB
 	for(int i=0; i < material->getNumShaderRenderTargets(); i++) {
 		ShaderRenderTarget *target = material->getShaderRenderTarget(i);		
 		targetComboBox->addComboItem(target->id, (void*) target);
-		if(targetBinding->texture == target->texture) {
+		if(targetBinding->buffer == target->buffer) {
 			targetComboBox->setSelectedIndex(i);
 		}
 	}
@@ -1731,7 +1731,7 @@ void TargetBindingProp::handleEvent(Event *event) {
 		} else {
 			textureComboBox->enabled = true;
 			textureComboBox->visible = true;
-			binding->setTextureForParam(targetBinding->name, targetBinding->texture);
+			binding->setTextureForParam(targetBinding->name, targetBinding->buffer->colorTexture);
 		}		
 		
 		if(typeComboBox->getSelectedIndex() == 2 || typeComboBox->getSelectedIndex() == 3) {
@@ -1750,7 +1750,7 @@ void TargetBindingProp::handleEvent(Event *event) {
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	} else if(event->getDispatcher() == targetComboBox && event->getEventCode() == UIEvent::CHANGE_EVENT) {
 		ShaderRenderTarget *target = (ShaderRenderTarget*)targetComboBox->getSelectedItem()->data;		
-		targetBinding->texture = target->texture;
+		targetBinding->buffer = target->buffer;
 		targetBinding->id  = target->id;
 		
 		binding->removeRenderTargetBinding(targetBinding);		
@@ -1758,7 +1758,7 @@ void TargetBindingProp::handleEvent(Event *event) {
 
 		binding->removeParam(targetBinding->name);
 		if(targetBinding->mode == RenderTargetBinding::MODE_IN) {
-			binding->setTextureForParam(targetBinding->name, targetBinding->texture);
+			binding->setTextureForParam(targetBinding->name, targetBinding->buffer->colorTexture);
 		}
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);		
 	} else if(event->getDispatcher() == textureComboBox && event->getEventCode() == UIEvent::CHANGE_EVENT) {
@@ -1768,7 +1768,7 @@ void TargetBindingProp::handleEvent(Event *event) {
 		binding->addRenderTargetBinding(targetBinding);		
 
 		binding->removeParam(targetBinding->name);
-		binding->setTextureForParam(targetBinding->name, targetBinding->texture);
+		binding->setTextureForParam(targetBinding->name, targetBinding->buffer->colorTexture);
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 }
@@ -2040,7 +2040,7 @@ void TargetBindingsSheet::handleEvent(Event *event) {
 	if(event->getDispatcher() == addButton->getButton()) {
 		RenderTargetBinding* newBinding = new RenderTargetBinding();
 		newBinding->mode = RenderTargetBinding::MODE_COLOR;
-		newBinding->texture = NULL;		
+		newBinding->buffer = NULL;		
 		binding->addRenderTargetBinding(newBinding);				
 		refreshTargets();			
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
@@ -3348,7 +3348,7 @@ void CameraSheet::handleEvent(Event *event) {
         camera->setFOV(fovProp->get());
         dispatchEvent(new Event(), Event::CHANGE_EVENT);
     } else if(event->getDispatcher() == exposureProp) {
-        camera->setExposureLevel(exposureProp->get());
+      //  camera->setExposureLevel(exposureProp->get());
         dispatchEvent(new Event(), Event::CHANGE_EVENT);
     } else if(event->getDispatcher() == orthoProp) {
         camera->setOrthoMode(orthoProp->get());
@@ -3380,7 +3380,7 @@ void CameraSheet::setCamera(Camera *camera) {
     if(camera) {
         enabled = true;
         
-        exposureProp->set(camera->getExposureLevel());
+       // exposureProp->set(camera->getExposureLevel());
         orthoProp->set(camera->getOrthoMode());
         orthoWidthProp->set(camera->getOrthoSizeX());
         orthoHeightProp->set(camera->getOrthoSizeY());

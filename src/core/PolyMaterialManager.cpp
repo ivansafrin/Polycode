@@ -473,11 +473,8 @@ Material *MaterialManager::materialFromXMLNode(ResourcePool *resourcePool, TiXml
 					ShaderRenderTarget *newTarget = new ShaderRenderTarget;
 					newTarget->id = pChildElement->Attribute("id");
                     
-                    // RENDERER_TODO
-                    /*
-					newTarget->width = CoreServices::getInstance()->getRenderer()->getXRes();
-					newTarget->height = CoreServices::getInstance()->getRenderer()->getYRes();
-                    */
+                    newTarget->width = CoreServices::getInstance()->getCore()->getXRes();
+					newTarget->height = CoreServices::getInstance()->getCore()->getYRes();
                     
 					newTarget->sizeMode = ShaderRenderTarget::SIZE_MODE_PIXELS;					
 					if(pChildElement->Attribute("width") && pChildElement->Attribute("height")) {
@@ -577,11 +574,6 @@ Material *MaterialManager::materialFromXMLNode(ResourcePool *resourcePool, TiXml
 										printf("Assigning texture to %s\n", newBinding->id.c_str());
 										newBinding->buffer = renderTargets[l]->buffer;
 									}
-								}
-								
-								if(newBinding->mode == RenderTargetBinding::MODE_IN) {
-                                    // RENDERER_TODO
-									//newShaderBinding->addTexture(newBinding->name, newBinding->texture);
 								}
 							}						
 						}

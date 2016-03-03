@@ -30,9 +30,9 @@
 
 using namespace Polycode;
 
-SceneRenderTexture::SceneRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight, unsigned int textureFormat) : textureFormat(textureFormat) {
+SceneRenderTexture::SceneRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight, bool floatingPoint) : floatingPoint(floatingPoint) {
     
-    targetFramebuffer = Services()->getRenderer()->createRenderBuffer(renderWidth, renderHeight, true);
+    targetFramebuffer = Services()->getRenderer()->createRenderBuffer(renderWidth, renderHeight, true, floatingPoint);
     
 	this->targetScene = targetScene;
 	this->targetCamera = targetCamera;
@@ -47,7 +47,7 @@ void SceneRenderTexture::resizeRenderTexture(int newWidth, int newHeight) {
 
 	if(newWidth > 0 && newHeight > 0) {
         Services()->getRenderer()->destroyRenderBuffer(targetFramebuffer);
-        targetFramebuffer = Services()->getRenderer()->createRenderBuffer(newWidth, newHeight, true);
+        targetFramebuffer = Services()->getRenderer()->createRenderBuffer(newWidth, newHeight, true, floatingPoint);
 	}
 }
 	

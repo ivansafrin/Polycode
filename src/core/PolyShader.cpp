@@ -151,6 +151,7 @@ AttributeBinding *ShaderBinding::getAttributeBindingByName(const String &name) {
 
 
 LocalShaderParam * ShaderBinding::addParam(int type, const String& name) {
+
 	void *defaultData = ProgramParam::createParamData(type);
 	LocalShaderParam *newParam = new LocalShaderParam();
 	newParam->data = defaultData;

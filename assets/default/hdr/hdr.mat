@@ -41,6 +41,9 @@
 		</material>									
 		<material name="HDRProcess" screen="true">
 			<shader name="HDRProcessShader">
+				<targettextures>			
+					<targettexture mode="color" name="screenColorBuffer"/>
+				</targettextures>			
 			</shader>
 		</material>	
 		<material name="HDRProcessBloom" screen="true">

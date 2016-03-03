@@ -35,6 +35,7 @@ ShaderPass::ShaderPass() :
     shader(NULL),
     wireframe(false),
     shaderBinding(NULL),
+    materialShaderBinding(NULL),
     blendingMode(Renderer::BLEND_MODE_NONE)
 {
     
@@ -44,6 +45,7 @@ ShaderPass::ShaderPass(Shader *shader) :
     shader(shader),
     wireframe(false),
     shaderBinding(NULL),
+    materialShaderBinding(NULL),
     blendingMode(Renderer::BLEND_MODE_NONE)
 {
     
@@ -170,11 +172,10 @@ void Material::recreateRenderTargets() {
 
 void Material::recreateRenderTarget(ShaderRenderTarget *renderTarget) {
     
-    // RENDERER_TODO
-    /*
+
 	int textureWidth;
 	int textureHeight;
-	Texture *newTexture;
+	RenderBuffer *newBuffer;
 	
 	if(renderTarget->sizeMode == ShaderRenderTarget::SIZE_MODE_NORMALIZED) {
 		Number safeWidth = renderTarget->width;
@@ -193,24 +194,23 @@ void Material::recreateRenderTarget(ShaderRenderTarget *renderTarget) {
 			textureWidth = (int) (renderTarget->normalizedWidth * safeWidth);
 			textureHeight = (int) (renderTarget->normalizedHeight * safeHeight);		
 		} else {
-			textureWidth = (int) (CoreServices::getInstance()->getCore()->getXRes() * safeWidth);
-			textureHeight = (int) (CoreServices::getInstance()->getCore()->getYRes() * safeHeight);
+			textureWidth = (int) (CoreServices::getInstance()->getCore()->getXRes() * safeWidth * Services()->getRenderer()->getBackingResolutionScaleX());
+			textureHeight = (int) (CoreServices::getInstance()->getCore()->getYRes() * safeHeight * Services()->getRenderer()->getBackingResolutionScaleY());
 		}
 	} else {
 		textureWidth = (int)renderTarget->width;
 		textureHeight = (int)renderTarget->height;		
 	}
-	
-	CoreServices::getInstance()->getRenderer()->createRenderTextures(&newTexture, NULL, textureWidth, textureHeight, fp16RenderTargets);
     
-	newTexture->setResourceName(renderTarget->id);
+    newBuffer = Services()->getRenderer()->createRenderBuffer(textureWidth, textureHeight, false, fp16RenderTargets);
+//	newBuffer->setResourceName(renderTarget->id);
 	
-	Texture *oldTexture = renderTarget->texture;
-	renderTarget->texture = newTexture;
+	RenderBuffer *oldBuffer = renderTarget->buffer;
+	renderTarget->buffer = newBuffer;
 
-	if(oldTexture) {	
+    /*
+	if(oldBuffer) {
 		for(int i=0; i < shaderBindings.size(); i++) {
-				
 			for(int j=0; j < shaderBindings[i]->getNumRenderTargetBindings(); j++) {
 				if(shaderBindings[i]->getRenderTargetBinding(j)->texture == oldTexture) {
 					shaderBindings[i]->getRenderTargetBinding(j)->texture = newTexture;
@@ -222,14 +222,15 @@ void Material::recreateRenderTarget(ShaderRenderTarget *renderTarget) {
 		
 		CoreServices::getInstance()->getRenderer()->destroyTexture(oldTexture);
 	}
-    */
+*/
 }
 
 void Material::handleEvent(Event *event) {
-    recreateExpectedShaderParams();
+//    recreateExpectedShaderParams();
 }
 
 void Material::recreateExpectedShaderParams() {
+    return;
     for (int i = 0; i < shaderPasses.size(); i++) {
         
         Shader* shader = shaderPasses[i].shader;

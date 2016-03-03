@@ -30,6 +30,7 @@
 #include "polycode/core/PolyScene.h"
 #include "polycode/core/PolyShader.h"
 #include "polycode/core/PolyTexture.h"
+#include "polycode/core/PolyLogger.h"
 #include "polycode/core/PolyGPUDrawBuffer.h"
 
 using namespace Polycode;
@@ -41,7 +42,6 @@ Camera::Camera(Scene *parentScene) : Entity() {
 	setFOV(45.0f);
 	filterShaderMaterial = NULL;
 	originalFramebuffer = NULL;
-	exposureLevel = 1.0f;
 	_hasFilterShader = false;
 	frustumCulling = true;
 	nearClipPlane = 1.0;
@@ -298,7 +298,6 @@ void Camera::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) co
 	cloneCamera->setOrthoSize(orthoSizeX, orthoSizeY);
 	cloneCamera->projectionMode = projectionMode;
 	cloneCamera->setClippingPlanes(nearClipPlane, farClipPlane);
-    cloneCamera->setExposureLevel(exposureLevel);
 }
 
 Scene *Camera::getParentScene() const {
@@ -334,26 +333,8 @@ void Camera::setPostFilter(Material *material) {
     this->filterShaderMaterial = material;
 
     if(!originalFramebuffer) {
-        originalFramebuffer = Services()->getRenderer()->createRenderBuffer(CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes(), true);
+        originalFramebuffer = Services()->getRenderer()->createRenderBuffer(CoreServices::getInstance()->getCore()->getXRes() * renderer->getBackingResolutionScaleX(), CoreServices::getInstance()->getCore()->getYRes() * renderer->getBackingResolutionScaleY(), true, material->fp16RenderTargets);
     }
-    
-    for(int i=0; i < material->getNumShaderPasses(); i++)  {
-        ShaderPass shaderPass = material->getShaderPass(i);
-        shaderPass.shaderBinding = new ShaderBinding();
-        shaderPass.shaderBinding->targetShader = shaderPass.shader;
-        shaderPass.shaderBinding->resetAttributes = true;
-        shaderPasses.push_back(shaderPass);
-    }
-    
-    _hasFilterShader = true;
-}
-
-bool Camera::hasFilterShader() {
-	return _hasFilterShader;
-}
-
-void Camera::renderFullScreenQuad(GPUDrawBuffer *drawBuffer, int shaderPass) {
-    GPUDrawCall drawCall;
     
     if(!screenQuadMesh) {
         screenQuadMesh = new Mesh(Mesh::TRI_MESH);
@@ -365,54 +346,92 @@ void Camera::renderFullScreenQuad(GPUDrawBuffer *drawBuffer, int shaderPass) {
         screenQuadMesh->addVertexWithUV(-1.0, -1.0, 0.0, 0.0, 0.0);
         screenQuadMesh->addVertexWithUV(-1.0, 1.0, 0.0, 0.0, 1.0);
         screenQuadMesh->addVertexWithUV(1.0, 1.0, 0.0, 1.0, 1.0);
+        
     }
     
+    for(int i=0; i < shaderPasses.size(); i++)  {
+        delete shaderPasses[i].shaderBinding;
+    }
+    shaderPasses.clear();
+    
+    for(int i=0; i < material->getNumShaderPasses(); i++)  {
+        
+        ShaderBinding* materialBinding = material->getShaderBinding(i);
+        
+        ShaderPass shaderPass = material->getShaderPass(i);
+        shaderPass.materialShaderBinding = shaderPass.shaderBinding;
+        shaderPass.shaderBinding = new ShaderBinding();
+        shaderPass.shaderBinding->targetShader = shaderPass.shader;
+        shaderPass.setAttributeArraysFromMesh(screenQuadMesh);
+        shaderPass.shaderBinding->resetAttributes = true;
+        
+        for(int j=0; j < materialBinding->getNumColorTargetBindings(); j++) {
+            RenderTargetBinding *colorBinding = materialBinding->getColorTargetBinding(j);
+            shaderPass.shaderBinding->setTextureForParam(colorBinding->name, originalFramebuffer->colorTexture);
+        }
+        
+        for(int j=0; j < materialBinding->getNumDepthTargetBindings(); j++) {
+            RenderTargetBinding *depthBinding = materialBinding->getDepthTargetBinding(j);
+            shaderPass.shaderBinding->setTextureForParam(depthBinding->name, originalFramebuffer->depthTexture);
+        }
+        
+        for(int j=0; j < materialBinding->getNumInTargetBindings(); j++) {
+            RenderTargetBinding *inBinding = materialBinding->getInTargetBinding(j);
+            if(inBinding->buffer) {
+                shaderPass.shaderBinding->setTextureForParam(inBinding->name, inBinding->buffer->colorTexture);
+            } else {
+                Logger::log("WARNING: Post filter IN target ["+ inBinding->name + "] does not exist!\n");
+            }
+        }
+        
+        shaderPasses.push_back(shaderPass);
+    }
+    
+    _hasFilterShader = true;
+}
+
+bool Camera::hasFilterShader() {
+	return _hasFilterShader;
+}
+
+ShaderPass Camera::getShaderPass(unsigned int index) {
+    if(index >= shaderPasses.size()) {
+        printf("WARNING: ACCESSING NON EXISTING SHADER PASS!\n");
+        return ShaderPass();
+    }
+    return shaderPasses[index];
+}
+
+unsigned int Camera::getNumShaderPasses() {
+    return shaderPasses.size();
+}
+
+void Camera::renderFullScreenQuad(GPUDrawBuffer *drawBuffer, int shaderPass) {
+    GPUDrawCall drawCall;
     drawCall.options.alphaTest = false;
-    drawCall.options.backfaceCull = true;
+    drawCall.options.backfaceCull = false;
     drawCall.options.depthTest = false;
     drawCall.options.depthWrite = false;
     drawCall.mesh = screenQuadMesh;
     drawCall.material = filterShaderMaterial;
     drawCall.shaderPasses.push_back(shaderPasses[shaderPass]);
-    
     drawBuffer->drawCalls.push_back(drawCall);
 }
 
 void Camera::drawFilter(RenderBuffer *targetBuffer) {
 	if(!filterShaderMaterial)
 		return;
-
-    RenderBuffer *finalTargetBuffer = NULL;
-		
-	if(targetBuffer) {
-        finalTargetBuffer = targetBuffer;
-        Polycode::Rectangle newVP(0.0, 0.0, targetBuffer->getWidth(), targetBuffer->getHeight());
-        setViewport(newVP);
-	} else {
-        finalTargetBuffer = originalFramebuffer;
-	}
-
-    parentScene->Render(this, finalTargetBuffer, NULL, true);
     
-	ShaderBinding* materialBinding;
-	for(int i=0; i < filterShaderMaterial->getNumShaderPasses(); i++) {
+    parentScene->Render(this, originalFramebuffer, NULL, true);
+    
+	for(int i=0; i < shaderPasses.size(); i++) {
         
-        materialBinding = filterShaderMaterial->getShaderPass(i).shaderBinding;
-        
-		for(int j=0; j < materialBinding->getNumColorTargetBindings(); j++) {
-			RenderTargetBinding *colorBinding = materialBinding->getColorTargetBinding(j);
-            materialBinding->setTextureForParam(colorBinding->name, finalTargetBuffer->colorTexture);
-		}
+        ShaderBinding* materialBinding = filterShaderMaterial->getShaderPass(i).shaderBinding;
 
-		for(int j=0; j < materialBinding->getNumDepthTargetBindings(); j++) {
-			RenderTargetBinding *depthBinding = materialBinding->getDepthTargetBinding(j);
-            materialBinding->setTextureForParam(depthBinding->name, finalTargetBuffer->depthTexture);
-		}
-
-		if(i == filterShaderMaterial->getNumShaderPasses()-1) {
+		if(i == shaderPasses.size()-1) {
             GPUDrawBuffer *drawBuffer = new GPUDrawBuffer();
-            drawBuffer->clearColorBuffer = true;
-            drawBuffer->clearDepthBuffer = true;
+            drawBuffer->clearColorBuffer = false;
+            drawBuffer->clearDepthBuffer = false;
             drawBuffer->globalMaterial = NULL;
             if(targetBuffer) {
                 drawBuffer->targetFramebuffer = targetBuffer;
@@ -423,14 +442,13 @@ void Camera::drawFilter(RenderBuffer *targetBuffer) {
             }
             renderFullScreenQuad(drawBuffer, i);
             renderer->processDrawBuffer(drawBuffer);
-		} else {
-            
+		} else {            
 			for(int j=0; j < materialBinding->getNumOutTargetBindings(); j++) {
 				RenderBuffer *bindingBuffer = materialBinding->getOutTargetBinding(j)->buffer;
 				if(bindingBuffer) {
                     GPUDrawBuffer *drawBuffer = new GPUDrawBuffer();
-                    drawBuffer->clearColorBuffer = true;
-                    drawBuffer->clearDepthBuffer = true;
+                    drawBuffer->clearColorBuffer = false;
+                    drawBuffer->clearDepthBuffer = false;
                     drawBuffer->globalMaterial = NULL;
 					drawBuffer->viewport.setRect(0.0, 0.0, bindingBuffer->getWidth(), bindingBuffer->getHeight());
                     drawBuffer->targetFramebuffer = bindingBuffer;

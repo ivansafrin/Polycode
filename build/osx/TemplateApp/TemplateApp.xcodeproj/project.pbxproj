@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		6D6FD3E11BF122A2005AA8E9 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6D6FD3E01BF122A2005AA8E9 /* PolycodeView.mm */; };
+		6DCDD7231C71B150007E90E1 /* hdr.pak in Resources */ = {isa = PBXBuildFile; fileRef = 6DCDD7221C71B150007E90E1 /* hdr.pak */; };
+		6DCDD7251C724726007E90E1 /* main_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DCDD7241C724726007E90E1 /* main_icon.png */; };
 		6DD2D0B61BEEDC150026D85C /* libportaudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DD2D0B51BEEDC150026D85C /* libportaudio.a */; };
 		8A825F271B82A2680039E823 /* libportaudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A825F261B82A2680039E823 /* libportaudio.a */; };
 		8A825F291B82A29B0039E823 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A825F281B82A29B0039E823 /* CoreAudio.framework */; };
@@ -30,11 +32,12 @@
 		8A86536B1B729559009F94DD /* PolycodeTemplateApp.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8A86536A1B729559009F94DD /* PolycodeTemplateApp.mm */; };
 		8A8653701B72C431009F94DD /* default.pak in Resources */ = {isa = PBXBuildFile; fileRef = 8A86536F1B72C431009F94DD /* default.pak */; };
 		8A8653961B752DBE009F94DD /* main_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8A8653951B752DBE009F94DD /* main_icon.png */; };
-		8A9D4BE31BF25DE0002FD7DD /* BUGSHUFFLE.ogg in Resources */ = {isa = PBXBuildFile; fileRef = 8A9D4BE21BF25DE0002FD7DD /* BUGSHUFFLE.ogg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		6D6FD3E01BF122A2005AA8E9 /* PolycodeView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PolycodeView.mm; path = ../../../../src/view/osx/PolycodeView.mm; sourceTree = "<group>"; };
+		6DCDD7221C71B150007E90E1 /* hdr.pak */ = {isa = PBXFileReference; lastKnownFileType = file; name = hdr.pak; path = ../../../../assets/default/hdr.pak; sourceTree = "<group>"; };
+		6DCDD7241C724726007E90E1 /* main_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = main_icon.png; path = ../../../../assets/icons/main_icon.png; sourceTree = "<group>"; };
 		6DD2D0B51BEEDC150026D85C /* libportaudio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libportaudio.a; path = ../../../../lib/osx/libportaudio.a; sourceTree = "<group>"; };
 		8A825F261B82A2680039E823 /* libportaudio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libportaudio.a; path = ../../../../lib/osx/libportaudio.a; sourceTree = "<group>"; };
 		8A825F281B82A29B0039E823 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
@@ -62,7 +65,6 @@
 		8A86536E1B72C301009F94DD /* PolycodeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeView.h; path = ../../../../include/polycode/view/osx/PolycodeView.h; sourceTree = "<group>"; };
 		8A86536F1B72C431009F94DD /* default.pak */ = {isa = PBXFileReference; lastKnownFileType = file; name = default.pak; path = ../../../../assets/default/default.pak; sourceTree = "<group>"; };
 		8A8653951B752DBE009F94DD /* main_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = main_icon.png; path = ../../../../assets/icons/main_icon.png; sourceTree = "<group>"; };
-		8A9D4BE21BF25DE0002FD7DD /* BUGSHUFFLE.ogg */ = {isa = PBXFileReference; lastKnownFileType = file; name = BUGSHUFFLE.ogg; path = ../../../../../Hellmouth/Resources/Sounds/music/BUGSHUFFLE.ogg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,11 +118,12 @@
 			children = (
 				8A8653691B729559009F94DD /* PolycodeTemplateApp.h */,
 				8A86536A1B729559009F94DD /* PolycodeTemplateApp.mm */,
+				6DCDD7241C724726007E90E1 /* main_icon.png */,
 				8A8653351B72931C009F94DD /* AppDelegate.h */,
 				8A8653361B72931C009F94DD /* AppDelegate.m */,
 				6D6FD3E01BF122A2005AA8E9 /* PolycodeView.mm */,
-				8A9D4BE21BF25DE0002FD7DD /* BUGSHUFFLE.ogg */,
 				8A86536E1B72C301009F94DD /* PolycodeView.h */,
+				6DCDD7221C71B150007E90E1 /* hdr.pak */,
 				8A86536F1B72C431009F94DD /* default.pak */,
 				8A86533A1B72931C009F94DD /* Images.xcassets */,
 				8A8653951B752DBE009F94DD /* main_icon.png */,
@@ -210,7 +213,8 @@
 				8A86533B1B72931C009F94DD /* Images.xcassets in Resources */,
 				8A8653961B752DBE009F94DD /* main_icon.png in Resources */,
 				8A86533E1B72931C009F94DD /* MainMenu.xib in Resources */,
-				8A9D4BE31BF25DE0002FD7DD /* BUGSHUFFLE.ogg in Resources */,
+				6DCDD7251C724726007E90E1 /* main_icon.png in Resources */,
+				6DCDD7231C71B150007E90E1 /* hdr.pak in Resources */,
 				8A8653701B72C431009F94DD /* default.pak in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

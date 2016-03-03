@@ -86,6 +86,7 @@ void SceneManager::Render(const Polycode::Rectangle &viewport) {
 		if(scenes[i]->isEnabled() && !scenes[i]->isVirtual()) {
 			Scene *scene = scenes[i];
 			if(scene->getActiveCamera()->hasFilterShader()) {
+                scene->getActiveCamera()->setViewport(viewport);                
 				scene->getActiveCamera()->drawFilter(NULL);
 			} else {
                 scene->getActiveCamera()->setViewport(viewport);

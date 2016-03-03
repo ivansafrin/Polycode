@@ -80,7 +80,7 @@ void SceneLight::enableShadows(bool val, unsigned int resolution) {
             Services()->getRenderer()->destroyRenderBuffer(shadowMapRenderBuffer);
         }
         
-        shadowMapRenderBuffer = Services()->getRenderer()->createRenderBuffer(resolution, resolution, true);
+        shadowMapRenderBuffer = Services()->getRenderer()->createRenderBuffer(resolution, resolution, true, false);
         
 		if(!spotCamera) {
 			spotCamera = new Camera(parentScene);
