@@ -70,6 +70,8 @@ namespace Polycode {
 		unsigned int getTicks();
 		String executeExternalCommand(String command, String args, String inDirectory);
 		bool systemParseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector);
+        
+        String getResourcePathForFile(const String &fileName);
 
 		void checkEvents();
 		void setDeviceSize(Number x, Number y);

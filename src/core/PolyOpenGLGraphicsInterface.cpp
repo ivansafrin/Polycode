@@ -436,7 +436,7 @@ void OpenGLGraphicsInterface::createTexture(Texture *texture) {
             break;
         case Image::IMAGE_FP16:
             glTextureType = GL_RGBA;
-            glTextureFormat = GL_RGBA16F_ARB;
+            glTextureFormat = GL_RGBA16F_EXT;
             pixelType = GL_FLOAT;
             break;
         default:

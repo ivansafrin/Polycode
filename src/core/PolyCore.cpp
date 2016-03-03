@@ -365,6 +365,10 @@ namespace Polycode {
         }
     }
     
+    String Core::getResourcePathForFile(const String &fileName) {
+        return fileName;
+    }
+    
     void Core::removeFileSource(const String &type, const String &source) {
         for(int i=0; i < fileProviders.size(); i++) {
             if(fileProviders[i]->type == type) {

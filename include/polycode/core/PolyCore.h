@@ -311,6 +311,7 @@ namespace Polycode {
 
 		virtual bool systemParseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector) = 0;
         
+        virtual String getResourcePathForFile(const String &fileName);
         
 		/**
 		* Sets a new video mode.

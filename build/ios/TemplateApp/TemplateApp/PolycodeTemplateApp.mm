@@ -8,9 +8,7 @@
 PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     core = new POLYCODE_CORE(view, 64,64,false,false, 0,0,60, 0, true);
     
-    NSString *str = [[NSBundle mainBundle] pathForResource: @"default" ofType: @"pak"];
-    
-    core->addFileSource("archive", [str UTF8String]);
+    core->addFileSource("archive", core->getResourcePathForFile("default.pak"));
     ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
     globalPool->loadResourcesFromFolder("default", true);
     

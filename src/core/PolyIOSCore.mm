@@ -164,7 +164,14 @@ void IOSCore::handleVideoModeChange(VideoModeChangeInfo *modeInfo) {
     
     [EAGLContext setCurrentContext:context];
     
-    
+}
+
+String IOSCore::getResourcePathForFile(const String &fileName) {    
+    NSString* fullFileName = [NSString stringWithUTF8String:fileName.c_str()];
+    NSString* fileNameNoExt = [[fullFileName lastPathComponent] stringByDeletingPathExtension];
+    NSString* extension = [fullFileName pathExtension];
+    NSString *str = [[NSBundle mainBundle] pathForResource: fileNameNoExt ofType: extension];
+    return String([str UTF8String]);
 }
 
 void IOSCore::flushRenderContext() {

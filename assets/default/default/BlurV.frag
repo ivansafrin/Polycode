@@ -1,3 +1,7 @@
+#ifdef GL_ES
+   precision mediump float;
+#endif
+
 uniform sampler2D screenTexture;
 uniform float blurSize;
 varying vec2 texCoordVar;
