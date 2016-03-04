@@ -26,6 +26,8 @@
 #include "polycode/core/PolyCore.h"
 #include "polycode/core/PolyTexture.h"
 #include "polycode/core/PolyVector4.h"
+#include "polycode/core/PolyLogger.h"
+#include <unistd.h>
 
 using namespace Polycode;
 
@@ -74,13 +76,13 @@ void RenderThread::runThread() {
         initGlobals();
     
        while(threadRunning) {
-        
+//         Logger::log("processJob lock");
         Services()->getCore()->lockMutex(jobQueueMutex);
         
         if(jobQueue.size() > 0) {
             RendererThreadJob nextJob = jobQueue.front();
-            jobQueue.pop();
-            processJob(nextJob);
+			jobQueue.pop();
+			processJob(nextJob);
         }
         
         RenderFrame *nextFrame = NULL;
@@ -99,6 +101,7 @@ void RenderThread::runThread() {
             delete nextFrame;
         }
         Services()->getCore()->unlockMutex(jobQueueMutex);
+// 		Logger::log("processJob unlocked");
     }
 }
 
@@ -347,9 +350,20 @@ void RenderThread::unlockRenderMutex() {
 
 
 void RenderThread::processJob(const RendererThreadJob &job) {
-    
-    lockRenderMutex();
-    switch(job.jobType) {
+	lockRenderMutex();	if(!core->isWindowInitialized() && job.jobType != JOB_REQUEST_CONTEXT_CHANGE){
+		jobQueue.push(job);
+		for(int i = 0; i < jobQueue.size()-1; i++){
+			RendererThreadJob fJob = jobQueue.front();
+			if(fJob.jobType != JOB_REQUEST_CONTEXT_CHANGE){
+				jobQueue.push(fJob);
+			} else {
+				processJob(fJob);
+				i--;
+			}
+			jobQueue.pop();
+		}
+		return;
+	}    switch(job.jobType) {
         case JOB_REQUEST_CONTEXT_CHANGE:
         {
             VideoModeChangeInfo *modeInfo = (VideoModeChangeInfo*) job.data;
@@ -431,12 +445,12 @@ void RenderThread::processJob(const RendererThreadJob &job) {
         break;
         case JOB_CREATE_SHADER:
         {
-            Shader *shader = (Shader*) job.data;
-            graphicsInterface->createShader(shader);
+			Shader *shader = (Shader*) job.data;
+			graphicsInterface->createShader(shader);
             
             // set renderer global params
             for(int p=0; p < rendererShaderBinding->getNumLocalParams(); p++) {
-                LocalShaderParam *localParam = rendererShaderBinding->getLocalParam(p);
+				LocalShaderParam *localParam = rendererShaderBinding->getLocalParam(p);
                 if(localParam) {
                     ProgramParam *paramPtr = shader->getParamPointer(localParam->name);
                     if(paramPtr) {
@@ -445,7 +459,7 @@ void RenderThread::processJob(const RendererThreadJob &job) {
                 }
             }
             shader->reloadResource();
-        }
+		}
         break;
         case JOB_CREATE_VERTEX_BUFFERS:
         {
@@ -464,14 +478,19 @@ void RenderThread::processJob(const RendererThreadJob &job) {
 
 RenderThreadDebugInfo RenderThread::getFrameInfo() {
     RenderThreadDebugInfo info;
-    Services()->getCore()->lockMutex(jobQueueMutex);
+//     Logger::log("Frame lock");
+	Services()->getCore()->lockMutex(jobQueueMutex);
+// 	Logger::log("Frame locked");
     info = lastFrameDebugInfo;
     Services()->getCore()->unlockMutex(jobQueueMutex);
+// 	Logger::log("Frame unlock");
     return info;
 }
 
 void RenderThread::enqueueFrame(RenderFrame *frame) {
-    Services()->getCore()->lockMutex(jobQueueMutex);
+// 	Logger::log("lock Mutex [%d]", jobType);
+	Services()->getCore()->lockMutex(jobQueueMutex);
+// 	Logger::log("locked Mutex");
     frameQueue.push(frame);
     if(frameQueue.size() > MAX_QUEUED_FRAMES) {
         // drop frames if necessary
@@ -488,6 +507,7 @@ void RenderThread::enqueueJob(int jobType, void *data, void *data2) {
     job.data2 = data2;
     jobQueue.push(job);
     Services()->getCore()->unlockMutex(jobQueueMutex);
+// 	Logger::log("unlocked Mutex [%d]", jobType);
 }
 
 void RenderThread::setGraphicsInterface(Core *core, GraphicsInterface *graphicsInterface) {

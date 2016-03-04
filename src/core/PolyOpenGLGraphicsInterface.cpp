@@ -526,6 +526,7 @@ void OpenGLGraphicsInterface::createProgram(ShaderProgram *program) {
 
     if(!program->platformData) {
         program->platformData = (void*) new GLuint;
+		*((GLuint*)program->platformData) = 0;
     }
 
     GLuint programID = *((GLuint*)program->platformData);
@@ -631,40 +632,46 @@ void OpenGLGraphicsInterface::destroyShader(Shader *shader) {
 }
 
 void OpenGLGraphicsInterface::createShader(Shader *shader) {
-    
+//     Logger::log("createShader");
     shader->expectedParams.clear();
     shader->expectedTextures.clear();
     shader->expectedCubemaps.clear();
     shader->expectedAttributes.clear();
-    
+//     Logger::log("createShader2");
     if(!shader->platformData) {
+// 		Logger::log("createShader2.1");
         shader->platformData = (void*) new GLuint;
+		*((GLuint*)shader->platformData) = 0;
     }
-    
+//     Logger::log("createShader3");
     GLuint shaderID = *((GLuint*)shader->platformData);
-    
+//     Logger::log("createShader3.2 [%u]", shaderID);
     if(shaderID != 0) {
+// 		Logger::log("createShader3.1 [%u]", shaderID);
         glDetachShader(shaderID, *((GLuint*)shader->fragmentProgram->platformData));
         glDetachShader(shaderID, *((GLuint*)shader->vertexProgram->platformData));
         glDeleteProgram(shaderID);
     }
-    
+//     Logger::log("createShader4");
     shaderID = glCreateProgram();
-    
+//     Logger::log("createShader5 [%u]", shaderID);
+	if(!shader->fragmentProgram || !shader->vertexProgram)
+// 		Logger::log("createShader5.1");
     glAttachShader(shaderID, *((GLuint*)shader->fragmentProgram->platformData));
     glAttachShader(shaderID, *((GLuint*)shader->vertexProgram->platformData));
     glLinkProgram(shaderID);
-
+// 	Logger::log("createShader6");
 
     GLint result;
     glGetProgramiv( shaderID, GL_LINK_STATUS, &result);
-    
+//     Logger::log("createShader7");
     if(result == GL_INVALID_VALUE || result == GL_INVALID_OPERATION) {
         Services()->getLogger()->logBroadcast("ERROR: Error linking shader. Invalid shader program.");
     }
-
+// 	Logger::log("createShader8");
     int total = -1;
     glGetProgramiv( shaderID, GL_ACTIVE_UNIFORMS, &total );
+// 	Logger::log("createShader8.1 [%d]", total);
     for(int i=0; i < total; i++)  {
         int name_len=-1, num=-1;
         GLenum type = GL_ZERO;
@@ -681,21 +688,20 @@ void OpenGLGraphicsInterface::createShader(Shader *shader) {
         param.type = getPolycodeParamType(type);
         shader->expectedParams.push_back(param);
     }
-    
+//     Logger::log("createShader9");
     total = -1;
     glGetProgramiv( shaderID, GL_ACTIVE_ATTRIBUTES, &total );
-    
-    for(GLuint i=0; i < total; i++)  {
-        
+//     Logger::log("createShader9.1 [%d]", total);
+    for(int i=0; i < total; i++)  {
         int name_len=-1, num=-1;
         GLenum type = GL_ZERO;
         char name[128];
         
-        glGetActiveAttrib(shaderID, i, sizeof(name)-1, &name_len, &num, &type, name);
+        glGetActiveAttrib(shaderID, GLuint(i), sizeof(name)-1, &name_len, &num, &type, name);
         name[name_len] = 0;
-
+		
         int attribLocation = glGetAttribLocation(shaderID, name);
-        
+		
         ProgramAttribute attribute;
         attribute.name = String(name);
         attribute.platformData = (void*) new GLuint;
@@ -704,7 +710,7 @@ void OpenGLGraphicsInterface::createShader(Shader *shader) {
         shader->expectedAttributes.push_back(attribute);
     }
     
-    
+//     Logger::log("createShader10");
      *((GLuint*)shader->platformData) = shaderID;
     
 }
