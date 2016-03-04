@@ -69,6 +69,7 @@ typedef unsigned int PolyRendererIndexType;
 #define PLATFORM_MAC	  2
 #define PLATFORM_UNIX	  3
 #define PLATFORM_IOS	  4
+#define PLATFORM_ANDROID  5
 
 #if defined(_WINDOWS) || defined(WINAPI_FAMILY)	 || defined(WIN32)
 	#define PLATFORM PLATFORM_WINDOWS
@@ -82,6 +83,8 @@ typedef unsigned int PolyRendererIndexType;
 	#else
 		#define PLATFORM PLATFORM_MAC
 	#endif
+#elif defined(__ANDROID__)
+	#define PLATFORM PLATFORM_ANDROID
 #else
 	#include <cstddef>
 	#define PLATFORM PLATFORM_UNIX

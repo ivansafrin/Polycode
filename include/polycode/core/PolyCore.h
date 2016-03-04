@@ -307,8 +307,8 @@ namespace Polycode {
 
 		virtual void handleVideoModeChange(VideoModeChangeInfo *modeInfo) = 0;
 		virtual void flushRenderContext() = 0;
-		virtual void prepareRenderContext() {}
-		
+        virtual void prepareRenderContext() {}
+        virtual bool isWindowInitialized() = 0;
 		CoreFile *openFile(const Polycode::String& fileName, const Polycode::String& opts);
 		void closeFile(CoreFile *file);
 		

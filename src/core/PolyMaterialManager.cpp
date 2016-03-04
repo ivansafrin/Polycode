@@ -353,7 +353,7 @@ std::vector<Shader*> MaterialManager::loadShadersFromFile(ResourcePool *resource
 	} else {
 		TiXmlElement *mElem = doc.RootElement()->FirstChildElement("shaders");
 		if(mElem) {
-			TiXmlNode* pChild;					
+			TiXmlNode* pChild;
 			for (pChild = mElem->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {	
 				Shader *newShader = createShaderFromXMLNode(resourcePool, pChild);
 				if(newShader != NULL) {
