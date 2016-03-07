@@ -27,17 +27,21 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
 //    test->color = Color(2.0, 2.0, 2.0, 1.0);
     scene->addChild(test);
 
+       Camera *camera = scene->getDefaultCamera();
 
     scene->getDefaultCamera()->setPostFilterByName("HDRProcessBloom");
-    Camera *camera = scene->getDefaultCamera();
 
     camera->getShaderPass(0).shaderBinding->addParam(ProgramParam::PARAM_NUMBER, "brightThreshold")->setNumber(0.1);
     camera->getShaderPass(1).shaderBinding->addParam(ProgramParam::PARAM_NUMBER, "blurSize")->setNumber(0.01);
     camera->getShaderPass(2).shaderBinding->addParam(ProgramParam::PARAM_NUMBER, "blurSize")->setNumber(0.01);
     camera->getShaderPass(3).shaderBinding->addParam(ProgramParam::PARAM_NUMBER, "bloomFactor")->setNumber(2.0);
     camera->getShaderPass(3).shaderBinding->addParam(ProgramParam::PARAM_NUMBER, "exposure")->setNumber(0.7);
-    
-  //  scene->getDefaultCamera()->setPostFilterByName("Invert");
+ 
+    /*
+    scene->getDefaultCamera()->setPostFilterByName("Blur");
+    camera->getShaderPass(0).shaderBinding->addParam(ProgramParam::PARAM_NUMBER, "blurSize")->setNumber(0.01);
+    camera->getShaderPass(1).shaderBinding->addParam(ProgramParam::PARAM_NUMBER, "blurSize")->setNumber(0.01);
+    */
 //    Sound *music = new Sound("BUGSHUFFLE.ogg");
   //  music->Play();
     

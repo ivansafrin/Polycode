@@ -141,7 +141,6 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
     
     for(int i=0; i < buffer->drawCalls.size(); i++) {
         
-        
         if(buffer->drawCalls[i].options.enableScissor) {
             graphicsInterface->enableScissor(true);
             Polycode::Rectangle scissorBox = buffer->drawCalls[i].options.scissorBox;
@@ -248,8 +247,6 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                     buffer->drawCalls[i].shaderPasses[s].setExpectedAttributes();
                     localShaderBinding->resetAttributes = false;
                 }
-                
-                // TODO: this is all garbage, REWRITE
 
                 for(int a=0; a < buffer->drawCalls[i].shaderPasses[s].shaderBinding->getNumAttributeBindings(); a++) {
 

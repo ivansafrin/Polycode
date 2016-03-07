@@ -403,7 +403,7 @@ ShaderPass Camera::getShaderPass(unsigned int index) {
 }
 
 unsigned int Camera::getNumShaderPasses() {
-    return shaderPasses.size();
+    return (unsigned int) shaderPasses.size();
 }
 
 void Camera::renderFullScreenQuad(GPUDrawBuffer *drawBuffer, int shaderPass) {

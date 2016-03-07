@@ -439,7 +439,7 @@ void OpenGLGraphicsInterface::createTexture(Texture *texture) {
 #ifdef GL_RGBA16F_EXT
             glTextureFormat = GL_RGBA16F_EXT;
 #else
-            glTextureFormat = GL_RGBA16F_ARB;
+            glTextureFormat = GL_RGBA16;
 #endif
             pixelType = GL_FLOAT;
             break;
