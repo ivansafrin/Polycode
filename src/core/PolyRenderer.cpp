@@ -184,26 +184,25 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                 
                 ShaderPass shaderPass;
 
-                if(s < material->getNumShaderPasses()) {
-                    shaderPass = material->getShaderPass(s);
-                } else {
-                    shaderPass = buffer->drawCalls[i].shaderPasses[s];
-                    graphicsInterface->setBlendingMode(shaderPass.blendingMode);
-                }
-                
-                //shaderPass = buffer->drawCalls[i].shaderPasses[s];
+                shaderPass = buffer->drawCalls[i].shaderPasses[s];
                 //graphicsInterface->setBlendingMode(shaderPass.blendingMode);
                 
                 ShaderBinding *localShaderBinding = buffer->drawCalls[i].shaderPasses[s].shaderBinding;
-
+                ShaderBinding *materialShaderBinding = shaderPass.materialShaderBinding;
+                
+                if(buffer->globalMaterial) {
+                    if(s < buffer->globalMaterial->getNumShaderPasses()) {
+                        shaderPass = buffer->globalMaterial->getShaderPass(s);
+                        localShaderBinding = shaderPass.shaderBinding;
+                    }
+                }
+                
                 if(!shaderPass.shader || !localShaderBinding) {
                     continue;
                 }
                 
                 graphicsInterface->useShader(shaderPass.shader);
                 graphicsInterface->setWireframeMode(shaderPass.wireframe);
-                
-                ShaderBinding *materialShaderBinding = shaderPass.materialShaderBinding;
 
                 // set global params
                 for(int p=0; p < shaderPass.shader->expectedParams.size(); p++) {
@@ -223,19 +222,17 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                                 graphicsInterface->setParamInShader(shaderPass.shader, localParam->param, localParam);
                             }
                         }
-
                     }
                 }
                 
                 bool rebindAttributes = false;
                 
-                if(localShaderBinding->targetShader != shaderPass.shader) {
-                    localShaderBinding->targetShader = shaderPass.shader;
+                if(buffer->drawCalls[i].shaderPasses[s].shaderBinding->targetShader != shaderPass.shader) {
+                    buffer->drawCalls[i].shaderPasses[s].shaderBinding->targetShader = shaderPass.shader;
                     rebindAttributes = true;
                 }
                 
                 for(int p=0; p < localShaderBinding->getNumLocalParams(); p++) {
-                    
                     LocalShaderParam *localParam = localShaderBinding->getLocalParam(p);
                     if(localParam) {
                         if(!localParam->param || rebindAttributes) {
@@ -246,14 +243,17 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                         }
                     }
                 }
-                
+
                 if(rebindAttributes || localShaderBinding->resetAttributes ) {
                     buffer->drawCalls[i].shaderPasses[s].setExpectedAttributes();
                     localShaderBinding->resetAttributes = false;
                 }
+                
+                // TODO: this is all garbage, REWRITE
 
-                for(int a=0; a < localShaderBinding->getNumAttributeBindings(); a++) {
-                    AttributeBinding *attributeBinding = localShaderBinding->getAttributeBinding(a);
+                for(int a=0; a < buffer->drawCalls[i].shaderPasses[s].shaderBinding->getNumAttributeBindings(); a++) {
+
+                    AttributeBinding *attributeBinding = buffer->drawCalls[i].shaderPasses[s].shaderBinding->getAttributeBinding(a);
                     
                     if(attributeBinding) {
                         if(attributeBinding->enabled  || rebindAttributes) {
@@ -270,6 +270,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                             if(attributeBinding->attribute) {
                                 attributeBinding->enabled = true;
                                 if(attributeBinding->vertexData->data.size() / attributeBinding->vertexData->countPerVertex >= buffer->drawCalls[i].mesh->getVertexCount()) {
+                                    
                                     graphicsInterface->setAttributeInShader(shaderPass.shader, attributeBinding->attribute, attributeBinding);
                                 }
                             } else {
@@ -284,8 +285,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                 } else {
                     graphicsInterface->drawArrays(buffer->drawCalls[i].mesh->getMeshType(), buffer->drawCalls[i].mesh->getVertexCount());
                 }
-                
-                
+
                 for(int a=0; a < shaderPass.shader->expectedAttributes.size(); a++) {
                     ProgramAttribute attribute = shaderPass.shader->expectedAttributes[a];
                     graphicsInterface->disableAttribute(shaderPass.shader, attribute);
