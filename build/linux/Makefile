@@ -28,11 +28,11 @@ LIBDIR=../../lib/linux
 OPTFLAGS=-O2
 DEBUGFLAGS=-g -DDEBUG
 
-LDFLAGSTEMPLATE=-L$(LIBDIR) $(OPTFLAGS) -pthread -lrt -lPolycore -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lX11 -lGLEW -lGL
-DLDFLAGSTEMPLATE=-L$(LIBDIR) -pthread -lrt -lPolycored -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lX11 -lGLEW -lGL
+LDFLAGSTEMPLATE=-L$(LIBDIR) $(OPTFLAGS) -pthread -lPolycore -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lrt -lasound -lz -lSDL -lX11 -lGLEW -lGL
+DLDFLAGSTEMPLATE=-L$(LIBDIR) -pthread -lPolycored -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lrt -lasound -lz -lSDL -lX11 -lGLEW -lGL
 
-LDFLAGSSTUDIO=-L$(LIBDIR) $(OPTFLAGS) -pthread -lrt -lPolycore -lPolycodeUI -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lX11 -lGLEW -lGL
-DLDFLAGSSTUDIO=-L$(LIBDIR) -pthread -lrt -lPolycored -lPolycodeUId -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lX11 -lGLEW -lGL
+LDFLAGSSTUDIO=-L$(LIBDIR) $(OPTFLAGS) -pthread -lPolycore -lPolycodeUI -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lrt -lasound -lz -lSDL -lX11 -lGLEW -lGL
+DLDFLAGSSTUDIO=-L$(LIBDIR) -pthread -lPolycored -lPolycodeUId -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lrt -lasound -lz -lSDL -lX11 -lGLEW -lGL
 
 default: setup core
 
