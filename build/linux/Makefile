@@ -20,7 +20,7 @@ SRCSTUDIO=Studio/main.cpp $(SRCDIR)/ide/EditorGrid.cpp $(SRCDIR)/ide/EntityEdito
 OBJSTUDIO=$(SRCSTUDIO:.cpp=.io)
 DOBJSTUDIO=$(SRCSTUDIO:.cpp=.dio)
 
-CFLAGS=-I../../include
+CFLAGS=-I../../include -DUSE_X11
 CFLAGSSTUDIO=$(CFLAGS) -DUSE_POLYCODEUI_FILE_DIALOGS -DUSE_POLYCODEUI_MENUBAR
 
 LIBDIR=../../lib/linux
@@ -28,11 +28,11 @@ LIBDIR=../../lib/linux
 OPTFLAGS=-O2
 DEBUGFLAGS=-g -DDEBUG
 
-LDFLAGSTEMPLATE=-L$(LIBDIR) $(OPTFLAGS) -pthread -lrt -lPolycore -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lGLEW -lGL
-DLDFLAGSTEMPLATE=-L$(LIBDIR) -pthread -lrt -lPolycored -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lGLEW -lGL
+LDFLAGSTEMPLATE=-L$(LIBDIR) $(OPTFLAGS) -pthread -lPolycore -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lGLEW -lGL -lX11 -lrt
+DLDFLAGSTEMPLATE=-L$(LIBDIR) -pthread -lPolycored -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lGLEW -lGL -lX11 -lrt 
 
-LDFLAGSSTUDIO=-L$(LIBDIR) $(OPTFLAGS) -pthread -lrt -lPolycore -lPolycodeUI -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lGLEW -lGL
-DLDFLAGSSTUDIO=-L$(LIBDIR) -pthread -lrt -lPolycored -lPolycodeUId -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lGLEW -lGL
+LDFLAGSSTUDIO=-L$(LIBDIR) $(OPTFLAGS) -pthread -lPolycore -lPolycodeUI -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lGLEW -lGL -lX11 -lrt
+DLDFLAGSSTUDIO=-L$(LIBDIR) -pthread -lPolycored -lPolycodeUId -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lGLEW -lGL -lX11 -lrt
 
 default: setup core
 
@@ -97,7 +97,7 @@ studio: core ui $(OBJSTUDIO)
 
 studio_debug: core_debug ui_debug $(DOBJSTUDIO)
 	@echo "\033[1;32mLinking \033[0m[\033[1;33mStudio/Polycoded\033[0m]"
-	@$(CC) -o Studio/Polycoded $(DOBJSTUDIO) $(LDFLAGSSTUDIO) $(CFLAGSSTUDIO) $(DEBUGFLAGS)
+	@$(CC) -o Studio/Polycoded $(DOBJSTUDIO) $(DLDFLAGSSTUDIO) $(CFLAGSSTUDIO) $(DEBUGFLAGS)
 	@echo "\033[1;32mCopy Assets to: \033[0m[\033[1;33mStudio\033[0m]"
 	@cp -r $(ASSETDIR)/ide/* Studio
 	@cp $(ASSETDIR)/default/default.pak Studio
