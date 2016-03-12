@@ -161,12 +161,6 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 #endif // USE_X11
 }
 
-void SDLCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport) {
-	//renderer->Resize(xRes, yRes);
-	//CoreServices::getInstance()->getMaterialManager()->reloadProgramsAndTextures();
-	//dispatchEvent(new Event(), EVENT_CORE_RESIZE);
-	Core::setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
-}
 
 void SDLCore::handleVideoModeChange(VideoModeChangeInfo* modeInfo){
 

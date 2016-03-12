@@ -13,11 +13,6 @@ LOCAL_SRC_FILES := $(LIBDIR)/libfreetype.a
 include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE := libpng
-LOCAL_SRC_FILES := $(LIBDIR)/libpng.a
-include $(PREBUILT_STATIC_LIBRARY)
-
-include $(CLEAR_VARS)
 LOCAL_MODULE := ogg
 LOCAL_SRC_FILES := $(LIBDIR)/libogg.so
 include $(PREBUILT_SHARED_LIBRARY)
@@ -30,7 +25,7 @@ include $(PREBUILT_SHARED_LIBRARY)
 include $(CLEAR_VARS)
 LOCAL_MODULE := TemplateApp
 LOCAL_LDLIBS := -landroid -lEGL -lGLESv2 -lz -llog
-LOCAL_STATIC_LIBRARIES := Polycore freetype libpng
+LOCAL_STATIC_LIBRARIES := Polycore freetype
 LOCAL_SHARED_LIBRARIES := ogg vorbis
 LOCAL_CFLAGS += -I$(LOCAL_PATH)/../../../../include -DUSE_EGL -DSTRICT_OPENGLES2
 LOCAL_SRC_FILES := PolycodeTemplate.cpp PolycodeTemplateApp.cpp

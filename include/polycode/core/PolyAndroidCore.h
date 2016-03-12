@@ -120,6 +120,8 @@ namespace Polycode {
 		Number getBackingXRes();
 		Number getBackingYRes();
 		
+		CoreMutex* getEGLMutex();
+		
 		bool recreateContext;
 	private:
 

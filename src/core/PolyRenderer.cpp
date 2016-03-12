@@ -350,8 +350,10 @@ void RenderThread::unlockRenderMutex() {
 
 
 void RenderThread::processJob(const RendererThreadJob &job) {
-	lockRenderMutex();	if(!core->isWindowInitialized() && job.jobType != JOB_REQUEST_CONTEXT_CHANGE){
-		jobQueue.push(job);
+
+	lockRenderMutex();
+#if PLATFORM == PLATFORM_ANDROID
+	if(!core->isWindowInitialized() && job.jobType != JOB_REQUEST_CONTEXT_CHANGE){		jobQueue.push(job);
 		for(int i = 0; i < jobQueue.size()-1; i++){
 			RendererThreadJob fJob = jobQueue.front();
 			if(fJob.jobType != JOB_REQUEST_CONTEXT_CHANGE){
@@ -363,7 +365,10 @@ void RenderThread::processJob(const RendererThreadJob &job) {
 			jobQueue.pop();
 		}
 		return;
-	}    switch(job.jobType) {
+	}
+#endif
+	
+    switch(job.jobType) {
         case JOB_REQUEST_CONTEXT_CHANGE:
         {
             VideoModeChangeInfo *modeInfo = (VideoModeChangeInfo*) job.data;
@@ -424,7 +429,7 @@ void RenderThread::processJob(const RendererThreadJob &job) {
         }
         break;
         case JOB_END_FRAME:
-        {
+		{
             core->flushRenderContext();
             currentDebugFrameInfo.timeTaken = Services()->getCore()->getTicks() - frameStart;
             lastFrameDebugInfo = currentDebugFrameInfo;
@@ -478,19 +483,15 @@ void RenderThread::processJob(const RendererThreadJob &job) {
 
 RenderThreadDebugInfo RenderThread::getFrameInfo() {
     RenderThreadDebugInfo info;
-//     Logger::log("Frame lock");
 	Services()->getCore()->lockMutex(jobQueueMutex);
-// 	Logger::log("Frame locked");
     info = lastFrameDebugInfo;
     Services()->getCore()->unlockMutex(jobQueueMutex);
-// 	Logger::log("Frame unlock");
     return info;
 }
 
 void RenderThread::enqueueFrame(RenderFrame *frame) {
-// 	Logger::log("lock Mutex [%d]", jobType);
 	Services()->getCore()->lockMutex(jobQueueMutex);
-// 	Logger::log("locked Mutex");
+	
     frameQueue.push(frame);
     if(frameQueue.size() > MAX_QUEUED_FRAMES) {
         // drop frames if necessary
@@ -506,8 +507,8 @@ void RenderThread::enqueueJob(int jobType, void *data, void *data2) {
     job.data = data;
     job.data2 = data2;
     jobQueue.push(job);
+	
     Services()->getCore()->unlockMutex(jobQueueMutex);
-// 	Logger::log("unlocked Mutex [%d]", jobType);
 }
 
 void RenderThread::setGraphicsInterface(Core *core, GraphicsInterface *graphicsInterface) {

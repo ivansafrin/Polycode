@@ -38,8 +38,13 @@ android {
         }
     }
 
+    task copyAssets(type: Copy) {
+        from '../../../assets/default/default'
+        into 'src/main/assets/default'
+    }
+
     tasks.withType(JavaCompile) {
-        compileTask -> compileTask.dependsOn ndkBuild
+        compileTask -> compileTask.dependsOn ndkBuild, copyAssets
     }
 }
 

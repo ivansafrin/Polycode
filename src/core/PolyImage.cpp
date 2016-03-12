@@ -580,9 +580,10 @@ bool Image::loadSTB(const String &fileName) {
     
     int x,y,n;
     stbi_uc *data = stbi_load_from_memory((const stbi_uc*)buffer, bufferLen, &x, &y, &n, 4);
-    
+
     if(!data) {
         Logger::log("Error reading image data: %s\n", fileName.c_str());
+		Services()->getCore()->closeFile(infile);
         return false;
     }
     
