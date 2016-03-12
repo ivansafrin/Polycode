@@ -332,9 +332,10 @@ void RenderThread::clearFrameQueue() {
 
 void RenderThread::processJob(const RendererThreadJob &job) {
 	lockRenderMutex();
-	if (!core->isWindowInitialized() && job.jobType != JOB_REQUEST_CONTEXT_CHANGE) {
+#if PLATFORM == PLATFORM_ANDROID
+	if(!core->isWindowInitialized() && job.jobType != JOB_REQUEST_CONTEXT_CHANGE){
 		jobQueue.push(job);
-		for (int i = 0; i < jobQueue.size() - 1; i++) {
+		for(int i = 0; i < jobQueue.size()-1; i++){
 			RendererThreadJob fJob = jobQueue.front();
 			if (fJob.jobType != JOB_REQUEST_CONTEXT_CHANGE) {
 				jobQueue.push(fJob);
@@ -346,6 +347,8 @@ void RenderThread::processJob(const RendererThreadJob &job) {
 		}
 		return;
 	}
+	#endif
+
 	switch(job.jobType) {
 		case JOB_REQUEST_CONTEXT_CHANGE:
 		{

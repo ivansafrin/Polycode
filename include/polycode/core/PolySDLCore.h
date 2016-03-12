@@ -59,7 +59,7 @@ namespace Polycode {
 		void flushRenderContext();
 		
 		void handleVideoModeChange(VideoModeChangeInfo *modeInfo);
-		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport = true);
+//		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport = true);
 		void createThread(Threaded *target);
 		std::vector<Rectangle> getVideoModes();
 		

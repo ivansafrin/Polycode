@@ -21,13 +21,12 @@
  */
 
 #include "polycode/core/PolyAndroidCore.h"
-// #include "polycode/core/PolyBasicFileProvider.h"
 #include "polycode/core/PolyOpenGLGraphicsInterface.h"
 #include "polycode/core/PolyAAssetFileProvider.h"
 #include "polycode/core/PolyLogger.h"
+#include "polycode/core/PolyResourceManager.h"
 #include "polycode/view/android/PolycodeView.h"
 
-// #include <EGL/egl.h>
 #include <dirent.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -56,6 +55,8 @@ AndroidCore::AndroidCore(PolycodeView *view, int xRes, int yRes, bool fullScreen
 	renderer->setGraphicsInterface(this, graphicsInterface);
 	services->setRenderer(renderer);
 	
+	context = NULL;
+	surface = NULL;
 	recreateContext = true;
 	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
 	//services->getSoundManager()->setAudioInterface(new XAudio2AudioInterface());
@@ -147,13 +148,13 @@ void AndroidCore::checkEvents() {
 
 bool AndroidCore::systemUpdate() {
 	if (!running) {
-		Logger::log("not running...");
 		return false;
 	}
 	doSleep();
-	updateCore();
 
+	updateCore();
 	checkEvents();
+
 	return running;
 }
 
@@ -224,7 +225,6 @@ String AndroidCore::saveFilePicker(std::vector<CoreFileExtension> extensions) {
 }
 
 void AndroidCore::handleVideoModeChange(VideoModeChangeInfo *modeInfo) {
-	Logger::log("handleVideoModeChange");
 	int32_t success = 0;
 	EGLBoolean result;
 	EGLint num_config;
@@ -237,10 +237,8 @@ void AndroidCore::handleVideoModeChange(VideoModeChangeInfo *modeInfo) {
 	this->anisotropyLevel = modeInfo->anisotropyLevel;
 
 	if(!view->native_window){
-		Logger::log("handleVideoModeChange2");
 		return;
 	}
-	Logger::log("handleVideoModeChange3");
 	
 	if (recreateContext){
 		eglMutex->lock();
@@ -262,21 +260,26 @@ void AndroidCore::handleVideoModeChange(VideoModeChangeInfo *modeInfo) {
 
 		EGLConfig config;
 		EGLint format;
-		Logger::log("handleVideoModeChange4");
+		
 		display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
 		result = eglInitialize(display, NULL, NULL);
+		
 		result = eglChooseConfig(display, attribute_list, &config, 1, &num_config);
 		assert(EGL_FALSE != result);
-		Logger::log("Config chosen");
 		
 		if (eglQueryAPI() == EGL_NONE){
 			result = eglBindAPI(EGL_OPENGL_ES_API);
 			assert(EGL_FALSE != result);
 		}
-	
-		context = eglCreateContext(display, config, EGL_NO_CONTEXT, context_attributes);
-		assert(context!=EGL_NO_CONTEXT);
-
+		
+		if(!context){
+			context = eglCreateContext(display, config, EGL_NO_CONTEXT, context_attributes);
+			assert(context!=EGL_NO_CONTEXT);
+		}
+		
+		if(surface)
+			eglDestroySurface(display, surface);
+		
 		surface = eglCreateWindowSurface( display, config, view->native_window, NULL );
 		assert(surface != EGL_NO_SURFACE);
 
@@ -297,7 +300,7 @@ void AndroidCore::flushRenderContext() {
 
 bool AndroidCore::isWindowInitialized(){
 	eglMutex->lock();
-	if (eglGetCurrentContext() == EGL_NO_CONTEXT){
+	if (eglGetCurrentContext() == EGL_NO_CONTEXT || recreateContext){
 		eglMutex->unlock();
 		return false;
 	} else {
@@ -306,14 +309,18 @@ bool AndroidCore::isWindowInitialized(){
 	}
 }
 
+CoreMutex* AndroidCore::getEGLMutex(){
+	return eglMutex;
+}
+
 void AndroidCore::openURL(String url) {
 
 }
 
 unsigned int AndroidCore::getTicks() {
 	struct timespec now;
-	clock_gettime(CLOCK_MONOTONIC, &now);
-	return now.tv_sec*1000000000LL + now.tv_nsec;
+	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &now);
+	return now.tv_sec * 1000000L + now.tv_nsec/1000;
 }
 
 String AndroidCore::executeExternalCommand(String command, String args, String inDirectory) {

@@ -22,6 +22,7 @@
 
 #include "polycode/view/android/PolycodeView.h"
 #include "polycode/core/PolyLogger.h"
+#include "polycode/core/PolyRenderer.h"
 #include <android/looper.h>
 
 using namespace Polycode;
@@ -114,13 +115,15 @@ void onNativeWindowCreated(ANativeActivity* activity, ANativeWindow *window){
 	int height = ANativeWindow_getHeight(window);
 	if (width < 0)
 		width = 100;
-	if (height)
+	if (height < 0)
 		height = 100;
 	if(core){
 		core->recreateContext = true;
-		core->setVideoMode(width, height, true, false, core->getAALevel(), 0, (core->getBackingXRes() > core->getXRes()));
+ 		core->setDeviceSize(width, height);
+		//Logger::log("Width: %d, Height; %d", width, height);
+		core->getEGLMutex()->unlock();
+		core->setVideoMode(width, height, true, false, core->getAALevel(), 0, false);
 	}
-	Logger::log("core exists");
 }
 
 void onNativeWindowResized(ANativeActivity* activity, ANativeWindow *window){
@@ -134,8 +137,11 @@ void onNativeWindowRedrawNeeded(ANativeActivity* activity, ANativeWindow *window
 void onNativeWindowDestroyed(ANativeActivity* activity, ANativeWindow *window){
 	Logger::log("onNativeWindowDestroyed");
 	((PolycodeView*)activity->instance)->native_window = NULL;
-	if (core)
+	if (core){
+		core->getEGLMutex()->lock();
 		core->recreateContext = true;
+		Services()->getRenderer()->getRenderThread()->getFrameInfo();
+	}
 }
 
 void onInputQueueCreated(ANativeActivity* activity, AInputQueue *queue){

@@ -9,21 +9,21 @@
 PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     core = new POLYCODE_CORE(view, 800,480,false,false, 0,0,60);
 
-    core->addFileSource("android", "default");
     ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
     globalPool->loadResourcesFromFolder("default", true);
 
 	// Write your code here!
-    
+    srand(time(NULL));
     Scene *scene = new Scene(Scene::SCENE_2D);
     scene->useClearColor = true;
-    scene->clearColor.setColor(1.0f,1.0f,0.13f,1.0f);
+    scene->clearColor.setColor(1.0f / (float)(rand() % 5),1.0f / (float)(rand()%5),1.0f / (float)(rand() % 5),1.0f);
 
-    ScenePrimitive *test = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 2, 2);
+    ScenePrimitive *test = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.5, 0.5);
     scene->addChild(test);
-    test->setColor(1.0,0.0,0.0,1.0);
-	test->setPositionY(0.2);
-    LOGI("scene prim worked");
+    test->setPositionY(0.2);
+    test->setMaterialByName("Unlit");
+    test->getShaderPass(0).shaderBinding->loadTextureForParam("diffuse", "main_icon.png");
+    //test->setColor(1.0,0.0,0.0,1.0);
 
     SceneLabel *testLabel = new SceneLabel("Hello Polycode!", 32, "sans", Label::ANTIALIAS_FULL, 0.2);
 	testLabel->setPositionY(-0.2);
@@ -70,10 +70,9 @@ PolycodeTemplateApp::~PolycodeTemplateApp() {
 
 bool PolycodeTemplateApp::Update() {
     if (!core->paused) {
-        //LOGI("Update");
         return core->updateAndRender();
     } else {
-        usleep(200*1000);
+        usleep(200000);
         return true;
     }
 }

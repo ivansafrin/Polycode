@@ -250,12 +250,13 @@ std::vector<Resource*> ResourcePool::getResources(int resourceType) {
 }
 
 Resource *ResourcePool::getResource(int resourceType, const String& resourceName) const {
+
 	for(int i =0; i < resources.size(); i++) {
 		if(resources[i]->getResourceName() == resourceName && resources[i]->getResourceType() == resourceType) {
 			return resources[i];
 		}
 	}
-	
+
 	if(resourceType == Resource::RESOURCE_TEXTURE && resourceName != "default/default.png") {
 		Logger::log("Texture [%s] not found in pool [%s], using default\n", resourceName.c_str(), name.c_str());
 		return getResource(Resource::RESOURCE_TEXTURE, "default/default.png");

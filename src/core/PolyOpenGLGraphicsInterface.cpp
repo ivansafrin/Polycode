@@ -735,6 +735,7 @@ void OpenGLGraphicsInterface::createShader(Shader *shader) {
 	
 	if(!shader->platformData) {
 		shader->platformData = (void*) new GLuint;
+		*((GLuint*)shader->platformData) = 0;
 	}
 	
 	GLuint shaderID = *((GLuint*)shader->platformData);
@@ -750,7 +751,6 @@ void OpenGLGraphicsInterface::createShader(Shader *shader) {
 	glAttachShader(shaderID, *((GLuint*)shader->fragmentProgram->platformData));
 	glAttachShader(shaderID, *((GLuint*)shader->vertexProgram->platformData));
 	glLinkProgram(shaderID);
-// 	Logger::log("createShader6");
 
 	GLint result;
 	glGetProgramiv( shaderID, GL_LINK_STATUS, &result);
@@ -758,7 +758,7 @@ void OpenGLGraphicsInterface::createShader(Shader *shader) {
 	if(result == GL_INVALID_VALUE || result == GL_INVALID_OPERATION) {
 		Services()->getLogger()->logBroadcast("ERROR: Error linking shader. Invalid shader program.");
 	}
-// 	Logger::log("createShader8");
+
 	int total = -1;
 	glGetProgramiv( shaderID, GL_ACTIVE_UNIFORMS, &total );
 	for(int i=0; i < total; i++)  {

@@ -36,7 +36,7 @@ void AAssetFileProvider::addSource(const String &source) {
 	dir.name = source;
 	dir.system = AAssetManager_openDir(manager, source.c_str());
 	sourceFolders.push_back(dir);
-	Logger::log("addSource");
+// 	Logger::log("addSource");
 }
 
 void AAssetFileProvider::removeSource(const String &source) {
@@ -74,7 +74,7 @@ Polycode::CoreFile *AAssetFileProvider::openFile(const String &fileName, const S
 }
 
 bool AAssetFileProvider::parseFolder(const String& pathString, bool showHidden, std::vector< OSFileEntry >& targetVector){
-	Logger::log("Parse AAsset [%s]", pathString.c_str());
+// 	Logger::log("Parse AAsset [%s]", pathString.c_str());
 	String path = pathString;
 	if(pathString.substr(pathString.length(),1)!="/")
 		path = pathString + "/";
@@ -87,7 +87,7 @@ bool AAssetFileProvider::parseFolder(const String& pathString, bool showHidden, 
 		String name = AAssetDir_getNextFileName(dir);
 		if(name == "")
 			break;
-		Logger::log("Parse AAsset Found File: %s", (path+name).c_str());
+// 		Logger::log("Parse AAsset Found File: %s", (path+name).c_str());
 		OSFileEntry entry = OSFileEntry(path + name, OSFileEntry::TYPE_FILE);
 		targetVector.push_back(entry);
 	}
