@@ -107,7 +107,7 @@ namespace Polycode {
         modeChangeInfo->vSync = vSync;
         modeChangeInfo->aaLevel = aaLevel;
         modeChangeInfo->anisotropyLevel = anisotropyLevel;
-        
+
         renderer->getRenderThread()->enqueueJob(RenderThread::JOB_REQUEST_CONTEXT_CHANGE, modeChangeInfo);
     }
     

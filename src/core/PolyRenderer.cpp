@@ -34,6 +34,12 @@ GraphicsInterface::GraphicsInterface() {
 
 RenderThread::RenderThread() : graphicsInterface(NULL) {
     
+    
+    jobQueueMutex = Services()->getCore()->createMutex();
+    renderMutex = Services()->getCore()->createMutex();
+}
+
+void RenderThread::initGlobals() {
     rendererShaderBinding = new ShaderBinding();
     
     projectionMatrixParam = rendererShaderBinding->addParam(ProgramParam::PARAM_MATRIX, "projectionMatrix");
@@ -51,7 +57,7 @@ RenderThread::RenderThread() : graphicsInterface(NULL) {
         lights[i].linearAttenuation = rendererShaderBinding->addParam(ProgramParam::PARAM_NUMBER, "lights["+String::IntToString(i)+"].linearAttenuation");
         lights[i].quadraticAttenuation = rendererShaderBinding->addParam(ProgramParam::PARAM_NUMBER, "lights["+String::IntToString(i)+"].quadraticAttenuation");
         lights[i].shadowEnabled = rendererShaderBinding->addParam(ProgramParam::PARAM_NUMBER, "lights["+String::IntToString(i)+"].shadowEnabled");
-
+        
     }
     
     for(int i=0; i < RENDERER_MAX_LIGHT_SHADOWS; i++) {
@@ -60,18 +66,37 @@ RenderThread::RenderThread() : graphicsInterface(NULL) {
         lightShadows[i].shadowBuffer->setTexture(NULL);
         
     }
-    
-    jobQueueMutex = Services()->getCore()->createMutex();
 }
 
+
 void RenderThread::runThread() {
-    while(threadRunning) {
+    
+        initGlobals();
+    
+       while(threadRunning) {
         
         Services()->getCore()->lockMutex(jobQueueMutex);
+        
         if(jobQueue.size() > 0) {
             RendererThreadJob nextJob = jobQueue.front();
             jobQueue.pop();
             processJob(nextJob);
+        }
+        
+        RenderFrame *nextFrame = NULL;
+        if(frameQueue.size() > 0) {
+            nextFrame = frameQueue.front();
+            frameQueue.pop();
+        }
+        // RENDERER_TODO: Unlock mutex here?
+           
+        if(nextFrame) {
+            while(nextFrame->jobQueue.size() > 0) {
+                RendererThreadJob frameJob = nextFrame->jobQueue.front();
+                nextFrame->jobQueue.pop();
+                processJob(frameJob);
+            }
+            delete nextFrame;
         }
         Services()->getCore()->unlockMutex(jobQueueMutex);
     }
@@ -299,7 +324,18 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
     
 }
 
+void RenderThread::lockRenderMutex() {
+    Services()->getCore()->lockMutex(renderMutex);
+}
+
+void RenderThread::unlockRenderMutex() {
+    Services()->getCore()->unlockMutex(renderMutex);
+}
+
+
 void RenderThread::processJob(const RendererThreadJob &job) {
+    
+    lockRenderMutex();
     switch(job.jobType) {
         case JOB_REQUEST_CONTEXT_CHANGE:
         {
@@ -331,7 +367,19 @@ void RenderThread::processJob(const RendererThreadJob &job) {
             RenderBuffer *buffer = (RenderBuffer*) job.data;
             graphicsInterface->destroyRenderBuffer(buffer);
         }
-            break;
+        break;
+        case JOB_DESTROY_SHADER_BINDING:
+        {
+            ShaderBinding *binding = (ShaderBinding*) job.data;
+            delete binding;
+        }
+        break;
+        case JOB_DESTROY_SHADER_PARAM:
+        {
+            LocalShaderParam *param = (LocalShaderParam*) job.data;
+            delete param;
+        }
+        break;
         case JOB_PROCESS_DRAW_BUFFER:
         {
             GPUDrawBuffer *buffer = (GPUDrawBuffer*) job.data;
@@ -359,6 +407,20 @@ void RenderThread::processJob(const RendererThreadJob &job) {
         {
             ShaderProgram *program = (ShaderProgram*) job.data;
             graphicsInterface->createProgram(program);
+        }
+        break;
+        case JOB_SET_TEXTURE_PARAM:
+        {
+            LocalShaderParam *param = (LocalShaderParam*) job.data;
+            Texture *texture = (Texture*) job.data2;
+            param->data = (void*) texture;
+        }
+        break;
+        case JOB_ADD_PARAM_TO_BINDING:
+        {
+            LocalShaderParam *param = (LocalShaderParam*) job.data;
+            ShaderBinding *binding = (ShaderBinding*) job.data2;
+            binding->localParams.push_back(param);
         }
         break;
         case JOB_CREATE_SHADER:
@@ -391,6 +453,7 @@ void RenderThread::processJob(const RendererThreadJob &job) {
         }
         break;
     }
+    unlockRenderMutex();
 }
 
 RenderThreadDebugInfo RenderThread::getFrameInfo() {
@@ -401,11 +464,22 @@ RenderThreadDebugInfo RenderThread::getFrameInfo() {
     return info;
 }
 
-void RenderThread::enqueueJob(int jobType, void *data) {
+void RenderThread::enqueueFrame(RenderFrame *frame) {
+    Services()->getCore()->lockMutex(jobQueueMutex);
+    frameQueue.push(frame);
+    if(frameQueue.size() > MAX_QUEUED_FRAMES) {
+        // drop frames if necessary
+        frameQueue.pop();
+    }
+    Services()->getCore()->unlockMutex(jobQueueMutex);
+}
+
+void RenderThread::enqueueJob(int jobType, void *data, void *data2) {
     Services()->getCore()->lockMutex(jobQueueMutex);
     RendererThreadJob job;
     job.jobType = jobType;
     job.data = data;
+    job.data2 = data2;
     jobQueue.push(job);
     Services()->getCore()->unlockMutex(jobQueueMutex);
 }
@@ -419,7 +493,8 @@ Renderer::Renderer() :
     backingResolutionScaleX(1.0),
     backingResolutionScaleY(1.0),
     cpuBufferIndex(0),
-    gpuBufferIndex(1) {
+    gpuBufferIndex(1),
+    currentFrame(NULL) {
         
     renderThread = new RenderThread();
     Services()->getCore()->createThread(renderThread);
@@ -465,15 +540,25 @@ Cubemap *Renderer::createCubemap(Texture *t0, Texture *t1, Texture *t2, Texture 
 void Renderer::processDrawBuffer(GPUDrawBuffer *buffer) {
     buffer->backingResolutionScale.x = backingResolutionScaleX;
     buffer->backingResolutionScale.y = backingResolutionScaleY;
-    renderThread->enqueueJob(RenderThread::JOB_PROCESS_DRAW_BUFFER, buffer);
+    enqueueFrameJob(RenderThread::JOB_PROCESS_DRAW_BUFFER, buffer);
+}
+
+void Renderer::enqueueFrameJob(int jobType, void *data) {
+    RendererThreadJob job;
+    job.jobType = jobType;
+    job.data = data;
+    currentFrame->jobQueue.push(job);
 }
 
 void Renderer::beginFrame() {
-    renderThread->enqueueJob(RenderThread::JOB_BEGIN_FRAME, NULL);
+    currentFrame = new RenderFrame();
+    enqueueFrameJob(RenderThread::JOB_BEGIN_FRAME, NULL);
 }
 
 void Renderer::endFrame() {
-    renderThread->enqueueJob(RenderThread::JOB_END_FRAME, NULL);
+    enqueueFrameJob(RenderThread::JOB_END_FRAME, NULL);
+    renderThread->enqueueFrame(currentFrame);
+    currentFrame = NULL;
 }
 
 Texture *Renderer::createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type, unsigned int filteringMode, unsigned int anisotropy, bool framebufferTexture) {
@@ -527,6 +612,22 @@ void Renderer::destroyTexture(Texture *texture) {
 
 void Renderer::destroyProgram(ShaderProgram *program) {
     renderThread->enqueueJob(RenderThread::JOB_DESTROY_PROGRAM, (void*)program);
+}
+
+void Renderer::setTextureParam(LocalShaderParam *param, Texture *texture) {
+    renderThread->enqueueJob(RenderThread::JOB_SET_TEXTURE_PARAM, (void*)param, (void*)texture);
+}
+
+void Renderer::addParamToShaderBinding(LocalShaderParam *param, ShaderBinding *binding) {
+    renderThread->enqueueJob(RenderThread::JOB_ADD_PARAM_TO_BINDING, (void*)param, (void*)binding);
+}
+
+void Renderer::destroyShaderBinding(ShaderBinding *binding) {
+    renderThread->enqueueJob(RenderThread::JOB_DESTROY_SHADER_BINDING, (void*)binding);
+}
+
+void Renderer::destroyShaderParam(LocalShaderParam *param) {
+    renderThread->enqueueJob(RenderThread::JOB_DESTROY_SHADER_PARAM, (void*)param);
 }
 
 void Renderer::destroyShader(Shader *shader) {

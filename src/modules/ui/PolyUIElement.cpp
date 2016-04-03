@@ -276,7 +276,7 @@ void UIRect::initRect(Number width, Number height) {
 
 UIRect::~UIRect() {
 	delete rectMesh;
-    delete shaderPasses[0].shaderBinding;
+    Services()->getRenderer()->destroyShaderBinding(shaderPasses[0].shaderBinding);
 }
 
 void UIRect::loadTexture(String fileName) {
@@ -314,7 +314,7 @@ void UIRect::setTexture(Texture *texture) {
 void UIRect::setMaterial(Material *material) {
     
     for(int i=0; i < shaderPasses.size(); i++) {
-        delete shaderPasses[i].shaderBinding;
+        Services()->getRenderer()->destroyShaderBinding(shaderPasses[i].shaderBinding);
     }
     shaderPasses.clear();
     

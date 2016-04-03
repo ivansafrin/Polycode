@@ -38,6 +38,8 @@ THE SOFTWARE.
 #define RENDERER_MAX_LIGHTS 8
 #define RENDERER_MAX_LIGHT_SHADOWS 2
 
+#define MAX_QUEUED_FRAMES 2
+
 namespace Polycode {
     
     class Texture;
@@ -91,6 +93,7 @@ namespace Polycode {
         public:
             int jobType;
             void *data;
+            void *data2;
     };
     
     class RenderThreadDebugInfo {
@@ -120,19 +123,31 @@ namespace Polycode {
         LocalShaderParam *shadowBuffer;
     };
     
+    class _PolyExport RenderFrame : public PolyBase {
+    public:
+        std::queue<RendererThreadJob> jobQueue;
+    };
+    
     class _PolyExport RenderThread : public Threaded {
         public:
             RenderThread();
              void setGraphicsInterface(Core *core, GraphicsInterface *graphicsInterface);
             virtual void runThread();
-            void enqueueJob(int jobType, void *data);
+        
+            void enqueueFrame(RenderFrame *frame);
+        
+            void enqueueJob(int jobType, void *data, void *data2=NULL);
             void processJob(const RendererThreadJob &job);
         
             ShaderBinding *getShaderBinding();
         
             void processDrawBuffer(GPUDrawBuffer *buffer);
-        
             RenderThreadDebugInfo getFrameInfo();
+        
+            void initGlobals();
+        
+            void lockRenderMutex();
+            void unlockRenderMutex();
         
             static const int JOB_REQUEST_CONTEXT_CHANGE = 0;
             static const int JOB_CREATE_TEXTURE = 1;
@@ -148,6 +163,10 @@ namespace Polycode {
             static const int JOB_DESTROY_BUFFER = 11;
             static const int JOB_CREATE_RENDER_BUFFER = 12;
             static const int JOB_DESTROY_RENDER_BUFFER = 13;
+            static const int JOB_SET_TEXTURE_PARAM = 14;
+            static const int JOB_ADD_PARAM_TO_BINDING = 15;
+            static const int JOB_DESTROY_SHADER_BINDING = 16;
+            static const int JOB_DESTROY_SHADER_PARAM = 17;
         
         protected:
         
@@ -157,7 +176,10 @@ namespace Polycode {
         
             Core *core;
             CoreMutex *jobQueueMutex;
+            CoreMutex *renderMutex;
+        
             std::queue<RendererThreadJob> jobQueue;
+            std::queue<RenderFrame*> frameQueue;
             GraphicsInterface *graphicsInterface;
         
             ShaderBinding *rendererShaderBinding;
@@ -195,11 +217,19 @@ namespace Polycode {
         Shader *createShader(ShaderProgram *vertexProgram, ShaderProgram *fragmentProgram);
         void createVertexBuffers(Mesh *mesh);
         
+        void enqueueFrameJob(int jobType, void *data);
+        
         void setExpectedAttributes(Mesh *mesh, Shader *shader);
         
         void destroyProgram(ShaderProgram *program);
         void destroyShader(Shader *shader);
         void destroyBuffer(RenderDataArray *array);
+        
+        void destroyShaderBinding(ShaderBinding *binding);
+        void destroyShaderParam(LocalShaderParam *param);
+        
+        void setTextureParam(LocalShaderParam *param, Texture *texture);
+        void addParamToShaderBinding(LocalShaderParam *param, ShaderBinding *binding);
         
         void setAnisotropyAmount(Number amount);
         Number getAnisotropyAmount();
@@ -224,8 +254,9 @@ namespace Polycode {
         
         
 	protected:
-        
       
+        RenderFrame *currentFrame;
+        
         Number backingResolutionScaleX;
         Number backingResolutionScaleY;
         

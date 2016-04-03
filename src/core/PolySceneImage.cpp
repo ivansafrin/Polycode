@@ -37,7 +37,6 @@ SceneImage* SceneImage::SceneImageWithTexture(Texture *texture) {
 
 SceneImage::SceneImage(const String& fileName) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1) {
     
-    // RENDERER_TODO
 	setMaterialByName("Unlit");
 	Texture *texture = getShaderPass(0).shaderBinding->loadTextureForParam("diffuse", fileName);
 
@@ -50,8 +49,6 @@ SceneImage::SceneImage(const String& fileName) : ScenePrimitive(ScenePrimitive::
 }
 
 SceneImage::SceneImage(Image *image) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1) {
-    // RENDERER_TODO
-	//loadTextureFromImage(image);
 	setMaterialByName("Unlit");
     Texture *texture = Services()->getMaterialManager()->createTextureFromImage(image);
     getShaderPass(0).shaderBinding->setTextureForParam("diffuse", texture);

@@ -23,6 +23,7 @@
 #include "polycode/core/PolyShader.h"
 #include "polycode/core/PolyMatrix4.h"
 #include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyRenderer.h"
 
 using namespace Polycode;
 
@@ -108,7 +109,7 @@ ShaderBinding::ShaderBinding() : targetShader(NULL) {
 
 ShaderBinding::~ShaderBinding() {
 	for(int i=0; i < localParams.size(); i++) {
-		delete localParams[i];
+        delete localParams[i]; //Services()->getRenderer()->destroyShaderParam(localParams[i]);
 	}	
 	for(int i=0; i < renderTargetBindings.size(); i++) {
 		delete renderTargetBindings[i];
@@ -150,8 +151,7 @@ AttributeBinding *ShaderBinding::getAttributeBindingByName(const String &name) {
 }
 
 
-LocalShaderParam * ShaderBinding::addParam(int type, const String& name) {
-
+LocalShaderParam *ShaderBinding::addParam(int type, const String& name) {
 	void *defaultData = ProgramParam::createParamData(type);
 	LocalShaderParam *newParam = new LocalShaderParam();
 	newParam->data = defaultData;
@@ -162,7 +162,7 @@ LocalShaderParam * ShaderBinding::addParam(int type, const String& name) {
     if(type == ProgramParam::PARAM_TEXTURE || type == ProgramParam::PARAM_CUBEMAP) {
         newParam->ownsPointer = false;
     }
-	localParams.push_back(newParam);
+    Services()->getRenderer()->addParamToShaderBinding(newParam, this);
 	return newParam;
 }
 
@@ -173,7 +173,7 @@ LocalShaderParam *ShaderBinding::addParamPointer(int type, const String& name, v
     newParam->type = type;
     newParam->param = NULL;
     newParam->ownsPointer = false;
-    localParams.push_back(newParam);
+    Services()->getRenderer()->addParamToShaderBinding(newParam, this);
     return newParam;
 }
 
@@ -306,7 +306,7 @@ void ShaderBinding::setCubemapForParam(const String &paramName, Cubemap *cubemap
 void ShaderBinding::removeParam(const String &name) {
     for(int i=0; i < localParams.size(); i++) {
         if(localParams[i]->name == name) {
-            delete localParams[i];
+            Services()->getRenderer()->destroyShaderParam(localParams[i]);
             localParams.erase(localParams.begin()+i);
         }
     }
@@ -440,7 +440,7 @@ LocalShaderParam::LocalShaderParam() {
 }
 
 void LocalShaderParam::setTexture(Texture *texture) {
-    data = (void*) texture;
+    Services()->getRenderer()->setTextureParam(this, texture);
 }
 
 Texture *LocalShaderParam::getTexture() {

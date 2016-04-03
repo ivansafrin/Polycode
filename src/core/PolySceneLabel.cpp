@@ -103,7 +103,6 @@ Number SceneLabel::getLabelActualHeight() {
 void SceneLabel::updateFromLabel() {
 
 	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
-    
     LocalShaderParam *textureParam = getShaderPass(0).shaderBinding->getLocalParamByName("diffuse");
     if(textureParam) {
         Texture *currentTexture = textureParam->getTexture();

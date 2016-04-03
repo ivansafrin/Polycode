@@ -154,7 +154,7 @@ void Material::clearShaders() {
 	
 	for(int i=0; i < shaderPasses.size(); i++)	{
 		shaderPasses[i].shader->removeAllHandlersForListener(this);
-        delete shaderPasses[i].shaderBinding;
+        Services()->getRenderer()->destroyShaderBinding(shaderPasses[i].shaderBinding);
 	}	
 	shaderPasses.clear();
 	

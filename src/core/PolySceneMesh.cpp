@@ -186,7 +186,7 @@ Mesh *SceneMesh::getMesh() {
 
 void SceneMesh::clearMaterial() {
     for(int i=0; i < shaderPasses.size(); i++)  {
-        delete shaderPasses[i].shaderBinding;
+        Services()->getRenderer()->destroyShaderBinding(shaderPasses[i].shaderBinding);
     }
     shaderPasses.clear();
     this->material = NULL;
@@ -218,8 +218,7 @@ void SceneMesh::setMaterial(Material *material) {
             shaderPass.attributeArrays.push_back(&skeletalVertexNormals);
         }
         shaderPasses.push_back(shaderPass);
-    }
-    
+    }    
 }
 
 void SceneMesh::setMaterialByName(const String& materialName, ResourcePool *resourcePool) {
@@ -308,7 +307,7 @@ bool SceneMesh::customHitDetection(const Ray &ray) {
 
 void SceneMesh::removeShaderPass(int shaderIndex) {
     if(shaderIndex >= 0 && shaderIndex < shaderPasses.size()) {
-        delete shaderPasses[shaderIndex].shaderBinding;
+        Services()->getRenderer()->destroyShaderBinding(shaderPasses[shaderIndex].shaderBinding);
         shaderPasses.erase(shaderPasses.begin() + shaderIndex);
     }
 }

@@ -131,7 +131,7 @@ CocoaCore::CocoaCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, 
     renderer = new Renderer();
     
     OpenGLGraphicsInterface *interface = new OpenGLGraphicsInterface();
-    interface->lineSmooth = true;
+   // interface->lineSmooth = true;
     renderer->setGraphicsInterface(this, interface);
     services->setRenderer(renderer);
     setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
