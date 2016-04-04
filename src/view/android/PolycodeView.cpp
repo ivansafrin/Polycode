@@ -192,7 +192,50 @@ int inputLoop(int fd, int events, void* data){
 				}
 				
 			} else if(type == AINPUT_EVENT_TYPE_MOTION){
-				
+				int evSource = AInputEvent_getSource(aev);
+				if (evSource & AINPUT_SOURCE_CLASS_POINTER){
+					std::vector<TouchInfo> touches;
+					int count = AMotionEvent_getPointerCount(aev);
+					for (int i = 0; i <count; i++){
+						TouchInfo ti;
+						ti.position = Vector2(AMotionEvent_getX(aev,i), AMotionEvent_getY(aev,i));
+						if(evSource & AINPUT_SOURCE_TOUCHSCREEN){
+							ti.type = TouchInfo::TYPE_TOUCH;
+						} else {
+							ti.type = TouchInfo::TYPE_PEN;
+						}
+						ti.id = AMotionEvent_getPointerId(aev, i);
+						
+						touches.push_back(ti);
+					}
+					event.touches = touches;
+					
+					action = AMotionEvent_getAction(aev);
+					if (action == AMOTION_EVENT_ACTION_UP){
+						event.eventCode = InputEvent::EVENT_TOUCHES_ENDED;
+						event.touch = touches[0];
+						core->handleSystemEvent(event);
+					} else if (action == AMOTION_EVENT_ACTION_DOWN){
+						event.eventCode = InputEvent::EVENT_TOUCHES_BEGAN;
+						event.touch = touches[0];
+						core->handleSystemEvent(event);
+					} else if (action == AMOTION_EVENT_ACTION_MOVE){
+						event.eventCode = InputEvent::EVENT_TOUCHES_MOVED;
+						event.touch = touches[action | AMOTION_EVENT_ACTION_POINTER_INDEX_MASK];
+						core->handleSystemEvent(event);
+					} else if (action == AMOTION_EVENT_ACTION_POINTER_DOWN){
+						event.eventCode = InputEvent::EVENT_TOUCHES_BEGAN;
+						event.touch = touches[action | AMOTION_EVENT_ACTION_POINTER_INDEX_MASK];
+						core->handleSystemEvent(event);
+					} else if (action == AMOTION_EVENT_ACTION_POINTER_UP){
+						event.eventCode = InputEvent::EVENT_TOUCHES_ENDED;
+						event.touch = touches[action | AMOTION_EVENT_ACTION_POINTER_INDEX_MASK];
+						core->handleSystemEvent(event);
+					}
+					
+				} else if (evSource & AINPUT_SOURCE_CLASS_POSITION){
+					
+				}
 			}
 		}
 	}

@@ -162,6 +162,18 @@ String UILabel::getText() {
 	return label->getText();
 }
 
+void UILabel::setColor(Color color) {
+	label->color.setColor(&color);
+}
+
+void UILabel::setColorInt(int r, int g, int b, int a) {
+	label->color.setColorRGBA(r, g, b, a);
+}
+
+void UILabel::setColor(Number r, Number g, Number b, Number a) {
+	label->color.setColor(r, g, b, a);
+}
+
 UILabel::~UILabel() {
 	if(!ownsChildren) {
 		delete label;

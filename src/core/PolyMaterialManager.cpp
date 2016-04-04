@@ -69,10 +69,19 @@ void MaterialManager::deleteTexture(Texture *texture) {
 
 void MaterialManager::reloadPrograms() {
 
-	vector<Resource *> shaders = CoreServices::getInstance()->getResourceManager()->getResources(Resource::RESOURCE_SHADER);
+// 	vector<Resource *> shaders = CoreServices::getInstance()->getResourceManager()->getResources(Resource::RESOURCE_SHADER);
+	String vertName;
+	String fragName;
 	for(int s = 0; s < shaders.size(); s++) {
 		Shader *shader = (Shader *)shaders[s];
-		shader->reload();
+		fragName = shader->fragmentProgram->getResourceName();
+		Services()->getRenderer()->destroyProgram(shader->fragmentProgram);
+		
+		vertName = shader->vertexProgram->getResourceName();
+		Services()->getRenderer()->destroyProgram(shader->vertexProgram);
+		
+		Services()->getRenderer()->destroyShader(shader);
+		shaders[s] = Services()->getRenderer()->createShader(Services()->getRenderer()->createProgram(vertName), Services()->getRenderer()->createProgram(fragName));
 	}
 }
 
@@ -190,6 +199,15 @@ void MaterialManager::reloadTextures() {
 		Texture *texture = textures[i];
 		//RENDERER_TODO
 //		texture->recreateFromImageData();
+	}
+		
+// 	vector<Resource *> textures = CoreServices::getInstance()->getResourceManager()->getResources(Resource::RESOURCE_TEXTURE);
+	String texName;
+	for(int s = 0; s < textures.size(); s++) {
+		Texture *texture = textures[s];
+		texName = texture->getResourceName();
+		Services()->getRenderer()->destroyTexture(texture);
+		textures[s] = Services()->getRenderer()->createTexture(texture->getWidth(), texture->getHeight(), texture->getTextureData(), texture->clamp, texture->getCreateMipmaps(), texture->type,texture->filteringMode, texture->anisotropy, texture->framebufferTexture);
 	}
 }
 

@@ -25,6 +25,7 @@
 #include "polycode/core/PolyAAssetFileProvider.h"
 #include "polycode/core/PolyLogger.h"
 #include "polycode/core/PolyResourceManager.h"
+#include "polycode/core/PolyOpenSLAudioInterface.h"
 #include "polycode/view/android/PolycodeView.h"
 
 #include <dirent.h>
@@ -49,6 +50,10 @@ AndroidCore::AndroidCore(PolycodeView *view, int xRes, int yRes, bool fullScreen
 	: Core(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
 	
 	fileProviders.push_back(new AAssetFileProvider(view->native_activity->assetManager));
+	
+	eventMutex = createMutex();
+	eglMutex = createMutex();
+	
 	renderer = new Renderer();
 	renderer->setBackingResolutionScale(1.0, 1.0);
 	graphicsInterface = new OpenGLGraphicsInterface();
@@ -59,9 +64,8 @@ AndroidCore::AndroidCore(PolycodeView *view, int xRes, int yRes, bool fullScreen
 	surface = NULL;
 	recreateContext = true;
 	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
-	//services->getSoundManager()->setAudioInterface(new XAudio2AudioInterface());
-	eventMutex = createMutex();
-	eglMutex = createMutex();
+
+	//services->getSoundManager()->setAudioInterface(new OpenSLAudioInterface());
 	
 	paused = true;
 	
@@ -299,7 +303,9 @@ void AndroidCore::flushRenderContext() {
 }
 
 bool AndroidCore::isWindowInitialized(){
+// 	Logger::log("isWindowInitialized");
 	eglMutex->lock();
+// 	Logger::log("locked");
 	if (eglGetCurrentContext() == EGL_NO_CONTEXT || recreateContext){
 		eglMutex->unlock();
 		return false;
