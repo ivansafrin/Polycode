@@ -164,7 +164,6 @@ namespace Polycode {
             static const int JOB_CREATE_RENDER_BUFFER = 12;
             static const int JOB_DESTROY_RENDER_BUFFER = 13;
             static const int JOB_SET_TEXTURE_PARAM = 14;
-            static const int JOB_ADD_PARAM_TO_BINDING = 15;
             static const int JOB_DESTROY_SHADER_BINDING = 16;
             static const int JOB_DESTROY_SHADER_PARAM = 17;
         
@@ -229,7 +228,6 @@ namespace Polycode {
         void destroyShaderParam(LocalShaderParam *param);
         
         void setTextureParam(LocalShaderParam *param, Texture *texture);
-        void addParamToShaderBinding(LocalShaderParam *param, ShaderBinding *binding);
         
         void setAnisotropyAmount(Number amount);
         Number getAnisotropyAmount();

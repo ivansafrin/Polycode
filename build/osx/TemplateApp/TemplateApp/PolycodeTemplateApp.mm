@@ -48,9 +48,9 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     camera->getShaderPass(3).shaderBinding->addParam(ProgramParam::PARAM_NUMBER, "exposure")->setNumber(0.7);
  */
 
-    scene->getDefaultCamera()->setPostFilterByName("Blur");
-    camera->getShaderPass(0).shaderBinding->addParam(ProgramParam::PARAM_NUMBER, "blurSize")->setNumber(0.003);
-    camera->getShaderPass(1).shaderBinding->addParam(ProgramParam::PARAM_NUMBER, "blurSize")->setNumber(0.003);
+    //scene->getDefaultCamera()->setPostFilterByName("Blur");
+    //camera->getShaderPass(0).shaderBinding->addParam(ProgramParam::PARAM_NUMBER, "blurSize")->setNumber(0.003);
+    //camera->getShaderPass(1).shaderBinding->addParam(ProgramParam::PARAM_NUMBER, "blurSize")->setNumber(0.003);
 
 //    Sound *music = new Sound("BUGSHUFFLE.ogg");
   //  music->Play();

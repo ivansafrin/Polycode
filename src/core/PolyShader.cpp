@@ -24,6 +24,7 @@
 #include "polycode/core/PolyMatrix4.h"
 #include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyRenderer.h"
+#include "polycode/core/PolyCore.h"
 
 using namespace Polycode;
 
@@ -105,15 +106,19 @@ void ShaderProgram::reloadResource() {
 
 
 ShaderBinding::ShaderBinding() : targetShader(NULL) {
+    accessMutex = Services()->getCore()->createMutex();
 }
 
 ShaderBinding::~ShaderBinding() {
+    accessMutex->lock();
 	for(int i=0; i < localParams.size(); i++) {
         delete localParams[i]; //Services()->getRenderer()->destroyShaderParam(localParams[i]);
 	}	
 	for(int i=0; i < renderTargetBindings.size(); i++) {
 		delete renderTargetBindings[i];
-	}	
+	}
+    accessMutex->unlock();
+    delete accessMutex;
 }
 
 unsigned int ShaderBinding::getNumLocalParams() {
@@ -162,7 +167,11 @@ LocalShaderParam *ShaderBinding::addParam(int type, const String& name) {
     if(type == ProgramParam::PARAM_TEXTURE || type == ProgramParam::PARAM_CUBEMAP) {
         newParam->ownsPointer = false;
     }
-    Services()->getRenderer()->addParamToShaderBinding(newParam, this);
+    
+    accessMutex->lock();
+    localParams.push_back(newParam);
+    accessMutex->unlock();
+    
 	return newParam;
 }
 
@@ -173,7 +182,9 @@ LocalShaderParam *ShaderBinding::addParamPointer(int type, const String& name, v
     newParam->type = type;
     newParam->param = NULL;
     newParam->ownsPointer = false;
-    Services()->getRenderer()->addParamToShaderBinding(newParam, this);
+    accessMutex->lock();
+    localParams.push_back(newParam);
+    accessMutex->unlock();
     return newParam;
 }
 
@@ -231,10 +242,12 @@ void ShaderBinding::removeRenderTargetBinding(RenderTargetBinding *binding) {
 }
 
 void ShaderBinding::copyTo(ShaderBinding *targetBinding) {
+    targetBinding->accessMutex->lock();
     for(int i=0; i < localParams.size(); i++) {
         LocalShaderParam *copyParam = localParams[i]->Copy();
         targetBinding->localParams.push_back(copyParam);
     }
+   targetBinding->accessMutex->unlock();
 }
 
 unsigned int ShaderBinding::getNumRenderTargetBindings() {
@@ -307,7 +320,10 @@ void ShaderBinding::removeParam(const String &name) {
     for(int i=0; i < localParams.size(); i++) {
         if(localParams[i]->name == name) {
             Services()->getRenderer()->destroyShaderParam(localParams[i]);
+            accessMutex->lock();
             localParams.erase(localParams.begin()+i);
+            accessMutex->unlock();
+            return;
         }
     }
 }

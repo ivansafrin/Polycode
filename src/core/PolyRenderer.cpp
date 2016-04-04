@@ -120,6 +120,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
     projectionMatrixParam->setMatrix4(buffer->projectionMatrix);
     viewMatrixParam->setMatrix4(buffer->viewMatrix);
 
+    
     int lightShadowIndex = 0;
     
     for(int i=0; i <RENDERER_MAX_LIGHTS; i++) {
@@ -143,7 +144,8 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
             
             if(buffer->lights[i].shadowsEnabled) {
                 lightShadows[lightShadowIndex].shadowMatrix->setMatrix4(buffer->lights[i].lightViewMatrix);
-                lightShadows[lightShadowIndex].shadowBuffer->setTexture(buffer->lights[i].shadowMapTexture);
+                lightShadows[lightShadowIndex].shadowBuffer->data = (void*) buffer->lights[i].shadowMapTexture;
+                
                 lights[i].shadowEnabled->setNumber(1.0);
                 
                 if(lightShadowIndex < RENDERER_MAX_LIGHT_SHADOWS-1) {
@@ -214,6 +216,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                 ShaderBinding *localShaderBinding = buffer->drawCalls[i].shaderPasses[s].shaderBinding;
                 ShaderBinding *materialShaderBinding = shaderPass.materialShaderBinding;
                 
+                
                 if(buffer->globalMaterial) {
                     if(s < buffer->globalMaterial->getNumShaderPasses()) {
                         shaderPass = buffer->globalMaterial->getShaderPass(s);
@@ -221,6 +224,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                     }
                 }
                 
+
                 if(!shaderPass.shader || !localShaderBinding) {
                     continue;
                 }
@@ -234,7 +238,11 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                         graphicsInterface->setParamInShader(shaderPass.shader, &shaderPass.shader->expectedParams[p], shaderPass.shader->expectedParams[p].globalParam);
                     }
                 }
-                 
+                
+                
+                if(materialShaderBinding && materialShaderBinding != localShaderBinding) {
+                    materialShaderBinding->accessMutex->lock();
+                }
                 if(materialShaderBinding) {
                     for(int p=0; p < materialShaderBinding->getNumLocalParams(); p++) {                        
                         LocalShaderParam *localParam = materialShaderBinding->getLocalParam(p);
@@ -248,6 +256,9 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                         }
                     }
                 }
+                if(materialShaderBinding  && materialShaderBinding != localShaderBinding) {
+                    materialShaderBinding->accessMutex->unlock();
+                }
                 
                 bool rebindAttributes = false;
                 
@@ -256,6 +267,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                     rebindAttributes = true;
                 }
                 
+                localShaderBinding->accessMutex->lock();
                 for(int p=0; p < localShaderBinding->getNumLocalParams(); p++) {
                     LocalShaderParam *localParam = localShaderBinding->getLocalParam(p);
                     if(localParam) {
@@ -267,6 +279,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                         }
                     }
                 }
+                localShaderBinding->accessMutex->unlock();
 
                 if(rebindAttributes || localShaderBinding->resetAttributes ) {
                     buffer->drawCalls[i].shaderPasses[s].setExpectedAttributes();
@@ -414,13 +427,6 @@ void RenderThread::processJob(const RendererThreadJob &job) {
             LocalShaderParam *param = (LocalShaderParam*) job.data;
             Texture *texture = (Texture*) job.data2;
             param->data = (void*) texture;
-        }
-        break;
-        case JOB_ADD_PARAM_TO_BINDING:
-        {
-            LocalShaderParam *param = (LocalShaderParam*) job.data;
-            ShaderBinding *binding = (ShaderBinding*) job.data2;
-            binding->localParams.push_back(param);
         }
         break;
         case JOB_CREATE_SHADER:
@@ -616,10 +622,6 @@ void Renderer::destroyProgram(ShaderProgram *program) {
 
 void Renderer::setTextureParam(LocalShaderParam *param, Texture *texture) {
     renderThread->enqueueJob(RenderThread::JOB_SET_TEXTURE_PARAM, (void*)param, (void*)texture);
-}
-
-void Renderer::addParamToShaderBinding(LocalShaderParam *param, ShaderBinding *binding) {
-    renderThread->enqueueJob(RenderThread::JOB_ADD_PARAM_TO_BINDING, (void*)param, (void*)binding);
 }
 
 void Renderer::destroyShaderBinding(ShaderBinding *binding) {

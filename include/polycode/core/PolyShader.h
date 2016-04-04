@@ -38,6 +38,7 @@ namespace Polycode {
     class VertexDataArray;
     class LocalShaderParam;
     class RenderBuffer;
+    class CoreMutex;
     
 	class _PolyExport ProgramParam {
 		public:
@@ -254,6 +255,8 @@ namespace Polycode {
         
             bool resetAttributes;
             Shader *targetShader;
+        
+            CoreMutex *accessMutex;
 	};
 
 }
