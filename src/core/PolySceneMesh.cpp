@@ -119,7 +119,7 @@ SceneMesh::~SceneMesh() {
 		delete mesh;
     
     for(int i=0; i < shaderPasses.size(); i++)  {
-        delete shaderPasses[i].shaderBinding;
+        Services()->getRenderer()->destroyShaderBinding(shaderPasses[i].shaderBinding);
     }
 }
 
