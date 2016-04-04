@@ -84,7 +84,7 @@ template: core $(OBJTEMPLATE)
 
 template_debug: core_debug $(DOBJTEMPLATE)
 	@echo "\033[1;32mLinking \033[0m[\033[1;33mTemplateApp/PolycodeTemplated\033[0m]"
-	@$(CC) -o TemplateApp/PolycodeTemplated $(DOBJTEMPLATE) $(LDFLAGSTEMPLATE) $(DEBUGFLAGS)
+	@$(CC) -o TemplateApp/PolycodeTemplated $(DOBJTEMPLATE) $(DLDFLAGSTEMPLATE) $(DEBUGFLAGS)
 	@echo "\033[1;32mCopy Assets to: \033[0m[\033[1;33mTemplateApp\033[0m]"
 	@cp $(ASSETDIR)/default/default.pak TemplateApp
 

@@ -27,39 +27,38 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
 	testLabel->setPositionY(-0.2);
     scene->addChild(testLabel);
     
-/*
-    bgSound = new Sound("bedlayer_main.wav");
+    bgSound = new Sound("FightBG.WAV");
     bgSound->Play();
 //    bgSound->setPitch(10.0);
     
     
-    sound1 = new Sound("marimba-lo.wav");
+    sound1 = new Sound("hit.wav");
     
     sound1->setPitch(2.3);
     
-    sound2 = new Sound("initial_touch_01.wav");
-    sound3 = new Sound("curve_02_c.wav");
+    sound2 = new Sound("test.wav");
+//     sound3 = new Sound("curve_02_c.wav");
     
     //sound2->Play(true);
-  */
+ 
     Services()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 }
 
 void PolycodeTemplateApp::handleEvent(Event *event) {
     InputEvent *inputEvent = (InputEvent*) event;
     
-//     switch(inputEvent->getKey()) {
-//         case KEY_z:
-//             sound1->Play(true);
-//         break;
-//         case KEY_x:
-//             sound2->Play();
-//         break;
+    switch(inputEvent->getKey()) {
+        case KEY_z:
+            sound1->Play(true);
+        break;
+        case KEY_x:
+            sound2->Play();
+        break;
 //         case KEY_c:
 //             sound3->Play();
 //         break;
 //             
-//     }
+    }
 }
 
 PolycodeTemplateApp::~PolycodeTemplateApp() {

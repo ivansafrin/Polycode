@@ -5,6 +5,7 @@
 using namespace Polycode;
 
 Threaded::Threaded() : EventDispatcher() {
+	core = NULL;
 	threadRunning = true;
 	scheduledForRemoval = false;
 }
