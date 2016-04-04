@@ -149,6 +149,10 @@ UILabel::UILabel(const String& text, int size, const String& fontName, int amode
 	setLocalBoundingBox(label->getLocalBoundingBox());
 }
 
+void UILabel::setLabelColor(const Color &color) {
+    label->color = color;
+}
+
 void UILabel::setText(const String& text) {
 	label->setText(text);
     setLocalBoundingBox(label->getLocalBoundingBox());

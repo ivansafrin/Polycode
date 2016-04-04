@@ -120,6 +120,7 @@ namespace Polycode {
 		public:
 			UILabel(const String& text, int size=-1, const String& fontName = "sans", int amode = 0);
 			void setText(const String& text);
+            void setLabelColor(const Color &color);
 			Label *getLabel();
 			String getText();
 			
