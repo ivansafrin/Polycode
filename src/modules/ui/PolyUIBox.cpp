@@ -24,6 +24,9 @@
 #include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyConfig.h"
 #include "polycode/core/PolyRenderer.h"
+#include "polycode/core/PolyMesh.h"
+#include "polycode/core/PolyResourceManager.h"
+#include "polycode/core/PolyTexture.h"
 
 using namespace Polycode;
 
@@ -36,106 +39,134 @@ UIBox::UIBox(String imageFile, Number t, Number r, Number b, Number l, Number bo
 	
 	setWidth(boxWidth);
 	setHeight(boxHeight);
-	
-	tlImage = new UIRect(imageFile);
-	tlImage->setImageCoordinates(0,0,l,t, uiScale);
-	addChild(tlImage);
-	tlImage->setPosition(0, 0);
-    tlImage->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     
-	trImage = new UIRect(imageFile);
-	trImage->setImageCoordinates((trImage->getWidth()/uiScale)-r,0,r,t, uiScale);
-	addChild(trImage);	
-	trImage->setPosition(boxWidth-r, 0);
-    trImage->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
+    texture = materialManager->createTextureFromFile(imageFile, materialManager->clampDefault, false);
     
-	blImage = new UIRect(imageFile);
-	blImage->setImageCoordinates(0,(blImage->getHeight()/uiScale)-b,l,b, uiScale);
-	addChild(blImage);	
-	blImage->setPosition(0, boxHeight-b);
-    blImage->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    boxMesh = new Mesh(Mesh::TRI_MESH);
+    boxMesh->indexedMesh = true;
     
-	brImage = new UIRect(imageFile);
-	brImage->setImageCoordinates((brImage->getWidth()/uiScale)-r,(brImage->getHeight()/uiScale)-b,r,b, uiScale);
-	addChild(brImage);	
-	brImage->setPosition(boxWidth-r, boxHeight-b);	
-    brImage->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
     
-	centerImage = new UIRect(imageFile);
-	centerImage->setImageCoordinates(l,t,(centerImage->getWidth()/uiScale)-l-r, (centerImage->getHeight()/uiScale)-t-b, uiScale);
-	addChild(centerImage);	
-	centerImage->setPosition(l,t);	
-	centerImage->Resize(boxWidth-l-r, boxHeight-t-b);
-    centerImage->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    shaderPasses[0].shaderBinding->setTextureForParam("diffuse", texture);
     
-	tImage = new UIRect(imageFile);
-	tImage->setImageCoordinates(l,0,(tImage->getWidth()/uiScale)-l-r,t, uiScale);
-	addChild(tImage);
-	tImage->setPosition(l,0);	
-	tImage->Resize(boxWidth-l-r, t);
-    tImage->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    imageWidth = texture->getWidth();
+    imageHeight = texture->getHeight();
     
-	bImage = new UIRect(imageFile);
-	bImage->setImageCoordinates(l,(bImage->getHeight()/uiScale)-b,(bImage->getWidth()/uiScale)-l-r,b, uiScale);
-	addChild(bImage);
-	bImage->setPosition(l,boxHeight-b);	
-	bImage->Resize(boxWidth-l-r, b);
-    bImage->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    this->t = t;
+    this->r = r;
+    this->b = b;
+    this->l = l;
     
-	lImage = new UIRect(imageFile);
-	lImage->setImageCoordinates(0,t,l,(lImage->getHeight()/uiScale)-t-b, uiScale);
-	addChild(lImage);
-	lImage->setPosition(0,t);	
-	lImage->Resize(l, boxHeight-t-b);
-    lImage->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     
-	rImage = new UIRect(imageFile);
-	rImage->setImageCoordinates((rImage->getWidth()/uiScale)-r,t,r,(rImage->getHeight()/uiScale)-t-b, uiScale);
-	addChild(rImage);
-	rImage->setPosition(boxWidth-r,t);	
-	rImage->Resize(r, boxHeight-t-b);	
-    rImage->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
-	
-	this->t = t;
-	this->r = r;
-	this->b = b;
-	this->l = l;
-
+    redrawMesh();
+    
 	ownsChildren = true;	
 }
 
+
+void UIBox::redrawMesh() {
+    
+    boxMesh->clearMesh();
+
+    boxMesh->addVertexWithUV(0.0, 0.0, 0.0, 0.0, 0.0);
+    boxMesh->addVertexWithUV(l, 0.0, 0.0, l/imageWidth, 0.0);
+    boxMesh->addVertexWithUV(getWidth() - r, 0.0, 0.0, 1.0-r/imageWidth, 0.0);
+    boxMesh->addVertexWithUV(getWidth(), 0.0, 0.0, 1.0, 0.0);
+    
+    boxMesh->addVertexWithUV(0.0, t, 0.0, 0.0, t/imageHeight);
+    boxMesh->addVertexWithUV(l, t, 0.0, l/imageWidth, t/imageHeight);
+    boxMesh->addVertexWithUV(getWidth() - r, t, 0.0, 1.0-r/imageWidth, t/imageHeight);
+    boxMesh->addVertexWithUV(getWidth(), t, 0.0, 1.0, t/imageHeight);
+    
+    
+    boxMesh->addVertexWithUV(0.0, getHeight()-t, 0.0, 0.0, 1.0-b/imageHeight);
+    boxMesh->addVertexWithUV(l, getHeight()-t, 0.0, l/imageWidth, 1.0-b/imageHeight);
+    boxMesh->addVertexWithUV(getWidth() - r, getHeight()-t, 0.0, 1.0-r/imageWidth, 1.0-b/imageHeight);
+    boxMesh->addVertexWithUV(getWidth(), getHeight()-t, 0.0, 1.0, 1.0-b/imageHeight);
+
+    boxMesh->addVertexWithUV(0.0, getHeight(), 0.0, 0.0, 1.0);
+    boxMesh->addVertexWithUV(l, getHeight(), 0.0, l/imageWidth, 1.0);
+    boxMesh->addVertexWithUV(getWidth() - r, getHeight(), 0.0, 1.0-r/imageWidth, 1.0);
+    boxMesh->addVertexWithUV(getWidth(), getHeight(), 0.0, 1.0, 1.0);
+    
+    boxMesh->addIndexedFace(1, 0, 4);
+    boxMesh->addIndexedFace(1, 4, 5);
+    
+    boxMesh->addIndexedFace(2, 1, 5);
+    boxMesh->addIndexedFace(5, 6, 2);
+    
+    boxMesh->addIndexedFace(3, 2, 6);
+    boxMesh->addIndexedFace(3, 6, 7);
+
+    boxMesh->addIndexedFace(5, 4, 8);
+    boxMesh->addIndexedFace(5, 8, 9);
+    
+    boxMesh->addIndexedFace(6, 5, 9);
+    boxMesh->addIndexedFace(6, 9, 10);
+    
+    boxMesh->addIndexedFace(7, 6, 10);
+    boxMesh->addIndexedFace(7, 10, 11);
+    
+    boxMesh->addIndexedFace(9, 8, 12);
+    boxMesh->addIndexedFace(9, 12, 13);
+    
+    boxMesh->addIndexedFace(10, 9, 13);
+    boxMesh->addIndexedFace(10, 13, 14);
+
+    boxMesh->addIndexedFace(11, 10, 14);
+    boxMesh->addIndexedFace(11, 14, 15);
+    
+    
+    for(int i=0; i < boxMesh->getVertexCount(); i++) {
+        Vector3 v = boxMesh->getVertexPosition(i);
+        boxMesh->setVertexAtOffset(i, v.x-getWidth()/2.0, v.y-getHeight()/2.0, v.z);
+    }
+
+    shaderPasses[0].shaderBinding->resetAttributes = true;
+}
+
+void UIBox::setMaterial(Material *material) {
+    
+    for(int i=0; i < shaderPasses.size(); i++) {
+        Services()->getRenderer()->destroyShaderBinding(shaderPasses[i].shaderBinding);
+    }
+    shaderPasses.clear();
+    
+    this->material = material;
+    
+    ShaderPass pass;
+    pass.shaderBinding = new ShaderBinding();
+    pass.shaderBinding->targetShader = pass.shader;
+    pass.shader = material->getShaderPass(0).shader;
+    shaderPasses.push_back(pass);
+    
+    shaderPasses[0].shaderBinding->addParamPointer(ProgramParam::PARAM_COLOR, "entityColor", &color);
+    shaderPasses[0].setAttributeArraysFromMesh(boxMesh);
+    shaderPasses[0].shaderBinding->resetAttributes = true;
+}
+
+void UIBox::Render(GPUDrawBuffer *buffer) {
+    drawCall.options.depthTest = false;
+    drawCall.options.depthWrite = false;
+    drawCall.options.backfaceCull = false;
+    
+    drawCall.mesh = boxMesh;
+    drawCall.material = material;
+    drawCall.shaderPasses = shaderPasses;
+    
+    buffer->drawCalls.push_back(drawCall);
+    
+}
+
 void UIBox::resizeBox(Number newWidth, Number newHeight) {
-
-	brImage->setPosition(newWidth-brImage->getWidth(), newHeight-brImage->getHeight());
-	trImage->setPosition(newWidth-trImage->getWidth(), 0);
-	blImage->setPosition(0, newHeight-blImage->getHeight());
-
-	centerImage->Resize(ceil(newWidth-l-r), ceil(newHeight-t-b));
-
-	lImage->Resize(l, newHeight-t-b);	
-	rImage->Resize(r, newHeight-t-b);		
-	bImage->Resize(ceil(newWidth-l-r), b);
-	tImage->Resize(ceil(newWidth-l-r), t);
-
-	bImage->setPosition(bImage->getPosition().x, newHeight-bImage->getHeight());	
-	rImage->setPosition(newWidth-rImage->getWidth(),rImage->getPosition().y);
-
 	setWidth(newWidth);
 	setHeight(newHeight);
-
+    redrawMesh();
 	this->rebuildTransformMatrix();
 }
 
 UIBox::~UIBox() {
-	if(!ownsChildren) {
-		delete tlImage;
-		delete trImage;		
-		delete blImage;		
-		delete brImage;					
-		delete centerImage;		
-		delete tImage;
-		delete rImage;
-		delete bImage;
-		delete lImage;		
-	}
+    delete boxMesh;
 }

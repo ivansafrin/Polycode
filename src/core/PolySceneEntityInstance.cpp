@@ -363,14 +363,6 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
             label->positionAtBaseline = false;
             applySceneMesh((*entry)["SceneMesh"], label);
             
-            // RENDERER_TODO
-            /*
-            if(label->getLocalShaderOptions()) {
-                label->getLocalShaderOptions()->clearTexture("diffuse");
-                label->getLocalShaderOptions()->addTexture("diffuse", label->getTexture());
-            }
-            */
-            
 			entity = label;
         } else if(entityType->stringVal == "SceneParticleEmitter") {
             

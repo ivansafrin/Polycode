@@ -27,10 +27,16 @@
 
 namespace Polycode {
 	
+    class Mesh;
+    
 	class _PolyExport UIBox : public UIElement {
 	public:
 		UIBox(String imageFile, Number t, Number r, Number b, Number l, Number boxWidth, Number boxHeight);
 		virtual ~UIBox();
+                                    
+        void setMaterial(Material *material);
+        void redrawMesh();
+        void Render(GPUDrawBuffer *buffer);
 		
 		void resizeBox(Number newWidth, Number newHeight);		
 		
@@ -40,17 +46,15 @@ namespace Polycode {
 		Number r;
 		Number b;
 		Number l;
-		
-		UIRect *tlImage;
-		UIRect *trImage;		
-		UIRect *blImage;		
-		UIRect *brImage;			
-		
-		UIRect *centerImage;
-		
-		UIRect *tImage;
-		UIRect *rImage;
-		UIRect *bImage;
-		UIRect *lImage;		
+        
+        Number imageWidth;
+        Number imageHeight;
+        Number uiScale;
+        
+        Texture *texture;
+        
+        Mesh *boxMesh;
+        Material *material;
+        std::vector<ShaderPass> shaderPasses;
 	};
 }
