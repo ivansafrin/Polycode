@@ -72,38 +72,68 @@
 		</material>		
 		<material name="Default">
 			<shader name="DefaultUntexturedShader">
+				<params>
+					<param name="entityColor" value="1.0 1.0 1.0 1.0" />
+					<param name="diffuse_color" value="1.0 1.0 1.0 1.0" />
+				</params>					
 			</shader>
 		</material>				
 		<material name="DefaultTextured">
 			<shader name="DefaultShader">
+				<params>
+					<param name="entityColor" value="1.0 1.0 1.0 1.0" />
+					<param name="diffuse_color" value="1.0 1.0 1.0 1.0" />
+				</params>					
 			</shader>
 		</material>
 		<material name="DefaultTexturedShadows">
 			<shader name="DefaultShaderShadows">
+				<params>
+					<param name="entityColor" value="1.0 1.0 1.0 1.0" />
+					<param name="diffuse_color" value="1.0 1.0 1.0 1.0" />
+				</params>					
 			</shader>
 		</material>	
 		<material name="Unlit">
 			<shader name="Unlit">
+				<params>
+					<param name="entityColor" value="1.0 1.0 1.0 1.0" />
+				</params>				
 			</shader>
 		</material>
 		<material name="UnlitAdditive" blendingMode="2">
 			<shader name="Unlit">
+				<params>
+					<param name="entityColor" value="1.0 1.0 1.0 1.0" />
+				</params>				
 			</shader>
 		</material>		
 		<material name="UnlitPointUntextured">
 			<shader name="UnlitPointUntextured">
+				<params>
+					<param name="entityColor" value="1.0 1.0 1.0 1.0" />
+				</params>					
 			</shader>
 		</material>		
 		<material name="UnlitUntextured">
 			<shader name="UnlitUntextured">
+				<params>
+					<param name="entityColor" value="1.0 1.0 1.0 1.0" />
+				</params>					
 			</shader>
 		</material>
 		<material name="UnlitUntexturedVertexColor">
 			<shader name="UnlitUntexturedVertexColor">
+				<params>
+					<param name="entityColor" value="1.0 1.0 1.0 1.0" />
+				</params>					
 			</shader>
 		</material>
 		<material name="UnlitWireframe">
 			<shader name="UnlitWireframe" wireframe="true">
+				<params>
+					<param name="entityColor" value="1.0 1.0 1.0 1.0" />
+				</params>					
 			</shader>
 		</material>				
 	</materials>

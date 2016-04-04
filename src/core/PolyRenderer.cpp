@@ -262,6 +262,12 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                 
                 bool rebindAttributes = false;
                 
+                // TODO: this is a slow solution
+                
+                if(buffer->globalMaterial) {
+                    rebindAttributes = true;
+                }
+                
                 if(buffer->drawCalls[i].shaderPasses[s].shaderBinding->targetShader != shaderPass.shader) {
                     buffer->drawCalls[i].shaderPasses[s].shaderBinding->targetShader = shaderPass.shader;
                     rebindAttributes = true;
