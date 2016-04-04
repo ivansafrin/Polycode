@@ -249,7 +249,7 @@ void Material::recreateExpectedShaderParams() {
 
 void Material::removeShaderPass(int shaderIndex) {
 	if(shaderIndex >= 0 && shaderIndex < shaderPasses.size()) {
-        delete shaderPasses[shaderIndex].shaderBinding;
+        Services()->getRenderer()->destroyShaderBinding(shaderPasses[shaderIndex].shaderBinding);
 		shaderPasses.erase(shaderPasses.begin() + shaderIndex);
 	}
 }

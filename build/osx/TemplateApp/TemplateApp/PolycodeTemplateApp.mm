@@ -23,9 +23,9 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     scene->clearColor.setColor(0.2, 0.2, 0.2, 1.0);
     
     
-    scene->setOverrideMaterial((Material*)globalPool->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
+   // scene->setOverrideMaterial((Material*)globalPool->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
     
-    for(int i=0; i  < 1; i++) {
+    for(int i=0; i  < 3000; i++) {
         test = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.5, 0.5);
         test->setMaterialByName("Unlit");
         test->getShaderPass(0).shaderBinding->loadTextureForParam("diffuse", "main_icon.png");
@@ -38,7 +38,7 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
        Camera *camera = scene->getDefaultCamera();
 
     fpsLabel = new SceneLabel("FPS:", 32, "main", Label::ANTIALIAS_FULL, 0.1);
-  //  scene->addChild(fpsLabel);
+    scene->addChild(fpsLabel);
     fpsLabel->setPositionX(-0.6);
     /*
     scene->getDefaultCamera()->setPostFilterByName("HDRProcessBloom");

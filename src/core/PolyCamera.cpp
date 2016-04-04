@@ -54,7 +54,7 @@ Camera::Camera(Scene *parentScene) : Entity() {
 
 Camera::~Camera() {	
     for(int i=0; i < shaderPasses.size(); i++)  {
-        delete shaderPasses[i].shaderBinding;
+        Services()->getRenderer()->destroyShaderBinding(shaderPasses[i].shaderBinding);
     }
     delete screenQuadMesh;
     Services()->getRenderer()->destroyRenderBuffer(originalFramebuffer);
@@ -350,7 +350,7 @@ void Camera::setPostFilter(Material *material) {
     }
     
     for(int i=0; i < shaderPasses.size(); i++)  {
-        delete shaderPasses[i].shaderBinding;
+        Services()->getRenderer()->destroyShaderBinding(shaderPasses[i].shaderBinding);
     }
     shaderPasses.clear();
     
