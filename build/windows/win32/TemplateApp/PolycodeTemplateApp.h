@@ -9,14 +9,16 @@ using namespace Polycode;
 
 class PolycodeTemplateApp : public EventHandler {
 public:
-    PolycodeTemplateApp(PolycodeView *view);
-    ~PolycodeTemplateApp();
-    
-    void handleEvent(Event *event);
-    
-    bool Update();
-    
+	PolycodeTemplateApp(PolycodeView *view);
+	~PolycodeTemplateApp();
+
+	void handleEvent(Event *event);
+
+	bool Update();
+
 private:
 	ScenePrimitive *test;
-    Core *core;
+	Core *core;
+	std::vector<ScenePrimitive*> tests;
+	SceneLabel *fpsLabel;
 };

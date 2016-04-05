@@ -408,6 +408,9 @@ unsigned int Camera::getNumShaderPasses() {
 
 void Camera::renderFullScreenQuad(GPUDrawBuffer *drawBuffer, int shaderPass) {
     GPUDrawCall drawCall;
+	drawCall.options.enableScissor = false;
+	drawCall.options.depthOnly = false;
+	drawCall.options.blendingMode = Renderer::BLEND_MODE_NONE;
     drawCall.options.alphaTest = false;
     drawCall.options.backfaceCull = false;
     drawCall.options.depthTest = false;

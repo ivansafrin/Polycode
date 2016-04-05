@@ -9,6 +9,8 @@ build/linux/TemplateApp/default
 build/linux/TemplateApp/default.pak
 build/linux/Studio/*
 
+*.opendb
+
 docs/cldoc
 
 ### Windows ###
