@@ -21,6 +21,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PolycodeUI", "PolycodeUI\Po
 		{92C7971A-F305-4B93-A9DC-6B01AF222FF9} = {92C7971A-F305-4B93-A9DC-6B01AF222FF9}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Polycode3DPhysics", "Polycode3DPhysics\Polycode3DPhysics.vcxproj", "{8467AAFE-8DB1-464E-8929-56D6747ADA81}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -76,6 +78,18 @@ Global
 		{3E46FB61-BF79-46C9-8D1A-A6FFF1EA49FA}.Release|Win32.ActiveCfg = Release|Win32
 		{3E46FB61-BF79-46C9-8D1A-A6FFF1EA49FA}.Release|Win32.Build.0 = Release|Win32
 		{3E46FB61-BF79-46C9-8D1A-A6FFF1EA49FA}.Release|x64.ActiveCfg = Release|x64
+		{8467AAFE-8DB1-464E-8929-56D6747ADA81}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{8467AAFE-8DB1-464E-8929-56D6747ADA81}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{8467AAFE-8DB1-464E-8929-56D6747ADA81}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8467AAFE-8DB1-464E-8929-56D6747ADA81}.Debug|Win32.Build.0 = Debug|Win32
+		{8467AAFE-8DB1-464E-8929-56D6747ADA81}.Debug|x64.ActiveCfg = Debug|x64
+		{8467AAFE-8DB1-464E-8929-56D6747ADA81}.Debug|x64.Build.0 = Debug|x64
+		{8467AAFE-8DB1-464E-8929-56D6747ADA81}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{8467AAFE-8DB1-464E-8929-56D6747ADA81}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{8467AAFE-8DB1-464E-8929-56D6747ADA81}.Release|Win32.ActiveCfg = Release|Win32
+		{8467AAFE-8DB1-464E-8929-56D6747ADA81}.Release|Win32.Build.0 = Release|Win32
+		{8467AAFE-8DB1-464E-8929-56D6747ADA81}.Release|x64.ActiveCfg = Release|x64
+		{8467AAFE-8DB1-464E-8929-56D6747ADA81}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

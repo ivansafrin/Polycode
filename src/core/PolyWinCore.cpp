@@ -165,6 +165,8 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 	pcFreq = double(li.QuadPart)/1000.0;
 	
 	setVSync(vSync);
+
+	services->getSoundManager()->setAudioInterface(new PAAudioInterface());
 }
 
 Number Win32Core::getBackingXRes() {

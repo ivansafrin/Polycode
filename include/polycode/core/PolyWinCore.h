@@ -28,6 +28,7 @@
 #include "polycode/core/PolyInputEvent.h"
 #include "polycode/core/PolyRectangle.h"
 #include "polycode/core/PolyOpenGLGraphicsInterface.h"
+#include "polycode/core/PolyPAAudioInterface.h"
 
 #include <winsock2.h>
 #include <windows.h>

@@ -35,7 +35,7 @@ THE SOFTWARE.
 #include <stack>
 #include <queue>  
 
-#define RENDERER_MAX_LIGHTS 8
+#define RENDERER_MAX_LIGHTS 12
 #define RENDERER_MAX_LIGHT_SHADOWS 2
 
 #define MAX_QUEUED_FRAMES 2
