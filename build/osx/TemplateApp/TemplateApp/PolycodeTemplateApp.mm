@@ -40,7 +40,7 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     fpsLabel = new SceneLabel("FPS:", 32, "main", Label::ANTIALIAS_FULL, 0.1);
     scene->addChild(fpsLabel);
     fpsLabel->setPositionX(-0.6);
-    /*
+
     scene->getDefaultCamera()->setPostFilterByName("HDRProcessBloom");
 
     camera->getShaderPass(0).shaderBinding->addParam(ProgramParam::PARAM_NUMBER, "brightThreshold")->setNumber(0.1);
@@ -48,7 +48,7 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     camera->getShaderPass(2).shaderBinding->addParam(ProgramParam::PARAM_NUMBER, "blurSize")->setNumber(0.01);
     camera->getShaderPass(3).shaderBinding->addParam(ProgramParam::PARAM_NUMBER, "bloomFactor")->setNumber(2.0);
     camera->getShaderPass(3).shaderBinding->addParam(ProgramParam::PARAM_NUMBER, "exposure")->setNumber(0.7);
- */
+
 
     //scene->getDefaultCamera()->setPostFilterByName("Blur");
     //camera->getShaderPass(0).shaderBinding->addParam(ProgramParam::PARAM_NUMBER, "blurSize")->setNumber(0.003);
