@@ -24,6 +24,7 @@ THE SOFTWARE.
 #include "polycode/core/PolyServer.h"
 #include "polycode/core/PolyTimer.h"
 #include "polycode/core/PolyLogger.h"
+#include "polycode/core/PolyServerWorld.h"
 
 using namespace Polycode;
 using std::vector;

@@ -25,12 +25,14 @@ THE SOFTWARE.
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyPeer.h"
 #include "polycode/core/PolyEvent.h"
-#include "polycode/core/PolyServerWorld.h"
 #include <vector>
 
 using std::vector;
 
 namespace Polycode {
+
+	class ServerClient;
+	class ServerWorld;
 
 	class _PolyExport ServerClientEvent : public Event {
 	public:
