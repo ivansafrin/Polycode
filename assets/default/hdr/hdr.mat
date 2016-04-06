@@ -48,9 +48,9 @@
 		</material>	
 		<material name="HDRProcessBloom" screen="true">
 			<rendertargets type="rgba_fp16">
-				<rendertarget id="bloomtarget"  sizeMode="pixels" width="512" height="512"/>
-				<rendertarget id="bloomtarget2"  sizeMode="pixels" width="512" height="512"/>				
-				<rendertarget id="bloomtarget_final"  sizeMode="pixels" width="512" height="512"/>
+				<rendertarget id="bloomtarget"  sizeMode="pixels" width="640" height="360"/>
+				<rendertarget id="bloomtarget2"  sizeMode="pixels" width="640" height="360"/>				
+				<rendertarget id="bloomtarget_final"  sizeMode="pixels" width="640" height="360"/>
 			</rendertargets>
 			<shader name="ExtractBloom">
 				<targettextures>			

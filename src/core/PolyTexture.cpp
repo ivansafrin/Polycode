@@ -26,7 +26,7 @@
 
 using namespace Polycode;
 
-Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool clamp, bool createMipmaps, int type, bool framebufferTexture) : Resource(Resource::RESOURCE_TEXTURE), width(width), height(height), clamp(clamp), type(type), createMipmaps(createMipmaps), filteringMode(FILTERING_NEAREST), anisotropy(0), framebufferTexture(framebufferTexture), depthTexture(false) {
+Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool clamp, bool createMipmaps, int type, bool framebufferTexture) : Resource(Resource::RESOURCE_TEXTURE), width(width), height(height), clamp(true), type(type), createMipmaps(createMipmaps), filteringMode(FILTERING_LINEAR), anisotropy(0), framebufferTexture(framebufferTexture), depthTexture(false) {
     
 	switch(type) {
 		case Image::IMAGE_RGB:

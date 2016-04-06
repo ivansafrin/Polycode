@@ -10,11 +10,12 @@ void main(void)
 	
 	vec4 colorBloom = texture2D(bloomTexture, texCoordVar);
 	vec4 color = texture2D(baseTexture, texCoordVar);
+
+	float YD = exposure * (exposure/brightMax + 1.0) / (exposure + 1.0);
+	color *= YD;
 	
 	color += colorBloom * bloomFactor;
-//	color = colorBloom * bloomFactor;
 	
-	float YD = exposure * (exposure/brightMax + 1.0) / (exposure + 1.0);
-	gl_FragColor = color * YD;
+	gl_FragColor = color;
 	gl_FragColor.a = 1.0;
 }
