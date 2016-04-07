@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#include "PolycodeLinuxPlayer.h"
+#include "polycode/player/PolycodeLinuxPlayer.h"
 
 
 PolycodeLinuxPlayer::PolycodeLinuxPlayer(PolycodeView *view, String fileName, bool knownArchive, bool useDebugger) : PolycodePlayer(fileName, knownArchive, useDebugger) {

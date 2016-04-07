@@ -20,7 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "PolycodePlayer.h"
+#include "polycode/player/PolycodePlayer.h"
 #include <string>
 
 PolycodeRemoteDebuggerClient::PolycodeRemoteDebuggerClient() : EventDispatcher() {
@@ -103,24 +103,24 @@ extern "C" {
 		const char* fullPath = module.c_str();		
         Logger::log("Loading custom class: %s\n", module.c_str());
 
-		OSFILE *inFile = OSBasics::open(module, "r");	
+		Polycode::CoreFile *inFile = Services()->getCore()->openFile(module, "r");
 		
 		if(!inFile) {
-			inFile =  OSBasics::open(defaultPath, "r");	
+			inFile =  Services()->getCore()->openFile(defaultPath, "r");
 		}
 		
 		if(inFile) {
-			OSBasics::seek(inFile, 0, SEEK_END);	
-			long progsize = OSBasics::tell(inFile);
-			OSBasics::seek(inFile, 0, SEEK_SET);
+			inFile->seek(0, SEEK_END);
+			long progsize = inFile->tell();
+			inFile->seek(0, SEEK_SET);
 			char *buffer = (char*)malloc(progsize+1);
 			memset(buffer, 0, progsize+1);
-			OSBasics::read(buffer, progsize, 1, inFile);
+			inFile->read(buffer, progsize, 1);
 	
 			PolycodePlayer *player = (PolycodePlayer*)CoreServices::getInstance()->getCore()->getUserPointer();	
 			player->report(pState, luaL_loadbuffer(pState, (const char*)buffer, progsize, fullPath));		
 			free(buffer);
-			OSBasics::close(inFile);	
+			Services()->getCore()->closeFile(inFile);	
 		} else {
 			std::string err = "\n\tError - Could could not find ";
 			err += module;
@@ -364,8 +364,8 @@ extern "C" {
 		lua_pushstring(L, "defaults");		
 		lua_call(L, 1, 0);
 		
-		luaopen_Physics2D(L);
-		luaopen_Physics3D(L);
+// 		luaopen_Physics2D(L);
+// 		luaopen_Physics3D(L);
 		luaopen_UI(L);
         
         printf("CORE SERVICES: %d\n", CoreServices::getInstance());
@@ -482,7 +482,8 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	
 	if(ext == ".polyapp" || _knownArchive) {
 		ResourceManager *rman = CoreServices::getInstance()->getResourceManager();
-		rman->addArchive(nameString);
+		core->addFileSource("archive", nameString);
+// 		rman->addArchive(nameString);
 		configPath = "runinfo.polyrun";
 		loadingArchive = true;
 		Logger::log("Reading configuration from POLYAPP file... (%s)\n", nameString.c_str());
@@ -495,7 +496,8 @@ void PolycodePlayer::loadFile(const char *fileName) {
 			fileDir += "/"+bits[i];
 		}
 		
-		rman->addArchive(fileDir);
+		core->addFileSource("archive", fileDir);
+// 		rman->addArchive(fileDir);
 		configPath = fileName;
 		Logger::log("Reading configuration from .polycode file directly... (%s)\n", fileName);		
 	}
@@ -581,21 +583,21 @@ void PolycodePlayer::loadFile(const char *fileName) {
 				String moduleDestPath = String("/tmp/") + moduleName+ String(".so");
 	#endif
 #endif				
-				OSFILE *inFile = OSBasics::open(moduleFileName, "rb");	
+				Polycode::CoreFile *inFile = core->openFile(moduleFileName, "rb");	
 				if(inFile) {
-					OSBasics::seek(inFile, 0, SEEK_END);	
-					long progsize = OSBasics::tell(inFile);
-					OSBasics::seek(inFile, 0, SEEK_SET);
+					inFile->seek(0, SEEK_END);
+					long progsize = inFile->tell();
+					inFile->seek(0, SEEK_SET);
 					char *buffer = (char*)malloc(progsize+1);
 					memset(buffer, 0, progsize+1);
-					OSBasics::read(buffer, progsize, 1, inFile);
+					inFile->read(buffer, progsize, 1);
 					
-					OSFILE *outFile = OSBasics::open(moduleDestPath, "wb");						
-					OSBasics::write(buffer, progsize, 1, outFile);
-					OSBasics::close(outFile);	
+					Polycode::CoreFile *outFile = core->openFile(moduleDestPath, "wb");						
+					inFile->write(buffer, progsize, 1);
+					core->closeFile(outFile);	
 					
 					free(buffer);
-					OSBasics::close(inFile);	
+					core->closeFile(inFile);	
 					
 					loadedModules.push_back(moduleName);
 				} else {
@@ -630,13 +632,18 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	
 	Logger::log("Core created...\n");
 
-	CoreServices::getInstance()->getResourceManager()->addArchive("UIThemes.pak");
+	core->addFileSource("archive", "UIThemes.pak");
+// 	CoreServices::getInstance()->getResourceManager()->addArchive("UIThemes.pak");
 	CoreServices::getInstance()->getConfig()->loadConfig("Polycode", "UIThemes/default/theme.xml");
 	
-	CoreServices::getInstance()->getResourceManager()->addArchive("api.pak");
-	CoreServices::getInstance()->getResourceManager()->addArchive("Physics2D.pak");
-	CoreServices::getInstance()->getResourceManager()->addArchive("Physics3D.pak");
-	CoreServices::getInstance()->getResourceManager()->addArchive("UI.pak");			
+	core->addFileSource("archive", "api.pak");
+// 	core->addFileSource("archive", "Physics2D.pak");
+// 	core->addFileSource("archive", "Physics3D.pak");
+	core->addFileSource("archive", "UI.pak");
+// 	CoreServices::getInstance()->getResourceManager()->addArchive("api.pak");
+// 	CoreServices::getInstance()->getResourceManager()->addArchive("Physics2D.pak");
+// 	CoreServices::getInstance()->getResourceManager()->addArchive("Physics3D.pak");
+// 	CoreServices::getInstance()->getResourceManager()->addArchive("UI.pak");
 	if(configFile.root["packedItems"]) {
 		ObjectEntry *packed = configFile.root["packedItems"];
 		if(packed) {
@@ -645,7 +652,7 @@ void PolycodePlayer::loadFile(const char *fileName) {
 				ObjectEntry *entryPath = (*(*packed)[i])["path"];
 				if(entryIsResource && entryPath) {
 					if(entryIsResource->boolVal == true) {
-						CoreServices::getInstance()->getResourceManager()->addDirResource(entryPath->stringVal, true);
+						Services()->getResourceManager()->getGlobalPool()->loadResourcesFromFolder(entryPath->stringVal, true);
 					}
 				}
 			}
@@ -658,19 +665,20 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	core->setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel);
 	
 	if(textureFiltering == "nearest") {
-		CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_NEAREST);
+		Services()->getMaterialManager()->setTextureFilteringMode(Texture::FILTERING_NEAREST);
 	} else {
-		CoreServices::getInstance()->getRenderer()->setTextureFilteringMode(Renderer::TEX_FILTERING_LINEAR);
+		Services()->getMaterialManager()->setTextureFilteringMode(Texture::FILTERING_LINEAR);
 	}
 				
-	CoreServices::getInstance()->getResourceManager()->addArchive("default.pak");
-	CoreServices::getInstance()->getResourceManager()->addDirResource("default", false);
+	core->addFileSource("archive", "default.pak");
+	Services()->getResourceManager()->getGlobalPool()->loadResourcesFromFolder("default", false);
 
 
 //	dispatchEvent(event, PolycodeDebugEvent::EVENT_RESIZE);		
 	
-	CoreServices::getInstance()->getRenderer()->setClearColor(red, green, blue);
+// 	CoreServices::getInstance()->getRenderer()->setClearColor(red, green, blue);
 //	CoreServices::getInstance()->getRenderer()->setClearColor(1,0,0);
+	
 	srand(core->getTicks());
 	
 	if(loadingArchive) {

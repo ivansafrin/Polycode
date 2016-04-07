@@ -22,9 +22,9 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "PolycodeView.h"
-#include "PolycodePlayer.h"
-#include "PolySDLCore.h"
+#include "polycode/view/linux/PolycodeView.h"
+#include "polycode/player/PolycodePlayer.h"
+#include "polycode/core/PolySDLCore.h"
 
 class PolycodeLinuxPlayer : public PolycodePlayer {
 	public:

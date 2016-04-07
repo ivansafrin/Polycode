@@ -26,18 +26,18 @@ THE SOFTWARE.
 #include <fstream>
 
 #include "Polycode.h"
-#include "PolycodeLUA.h"
-#include "UILUA.h"
-#include "Physics2DLUA.h"
-#include "Physics3DLUA.h"
-#include "PolyGLSLShaderModule.h"
-#include "OSBasics.h"
+#include "polycode/lua/core/PolycodeLUA.h"
+#include "polycode/lua/ui/UILUA.h"
+// #include "Physics2DLUA.h"
+// #include "Physics3DLUA.h"
+// #include "PolyGLSLShaderModule.h"
+// #include "OSBasics.h"
 
 extern "C" {	
 #include <stdio.h>
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
+#include "lua5.1/lua.h"
+#include "lua5.1/lualib.h"
+#include "lua5.1/lauxlib.h"
 // #include "lapi.h"	
 
 using namespace Polycode;

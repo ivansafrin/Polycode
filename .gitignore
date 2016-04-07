@@ -4,12 +4,18 @@
 *.do
 *.io
 *.dio
+
 build/linux/TemplateApp/PolycodeTemplate
-build/linux/TemplateApp/default
+build/linux/TemplateApp/PolycodeTemplated
 build/linux/TemplateApp/default.pak
 build/linux/Studio/*
 
+include/polycode/lua
+src/lua
+scripts/lua
+
 docs/cldoc
+docs/lua
 
 ### Windows ###
 # Windows image file caches
