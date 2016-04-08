@@ -100,11 +100,11 @@ void PolycodeToolLauncher::buildProject(PolycodeProject *project, String destina
 	
 #ifdef _WINDOWS
 	String targetFolder = projectBasePath;
-	String command = "\""+polycodeBasePath+"/Standalone/Bin/polybuild.exe\"";
+	String command = "\""+polycodeBasePath+"/bin/polybuild.exe\"";
 	String args =  "--config=\""+projectPath+"\" --out=\""+destinationPath+"\" --compileScripts=\""+((compileScripts)?"true":"false")+"\"";
 	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, targetFolder);
 #else
-	String command = polycodeBasePath+"/Standalone/Bin/polybuild";
+	String command = polycodeBasePath+"/bin/polybuild";
 	String inFolder = projectBasePath; 
 	String args = "--config=\""+projectPath+"\" --out=\""+destinationPath+"\" --compileScripts=\""+((compileScripts)?"true":"false")+"\"";
 	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, inFolder);
@@ -171,10 +171,10 @@ String PolycodeToolLauncher::importAssets(String sourceFile, String inFolder, bo
 
 	
 #ifdef _WINDOWS
-	String command = "\""+polycodeBasePath+"/Standalone/Bin/polyimport.exe\"";
+	String command = "\""+polycodeBasePath+"/bin/polyimport.exe\"";
 	ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, inFolder);
 #else
-	String command = polycodeBasePath+"/Standalone/Bin/polyimport";
+	String command = polycodeBasePath+"/bin/polyimport";
 	ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, inFolder);
 #endif
 	return ret;

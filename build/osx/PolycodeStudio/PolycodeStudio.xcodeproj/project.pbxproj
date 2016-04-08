@@ -57,7 +57,6 @@
 		8A36D31F1B8E6FD5009897D0 /* liblibvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3151B8E6FD5009897D0 /* liblibvorbisfile.a */; };
 		8A36D3201B8E6FD5009897D0 /* liblua5.1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3161B8E6FD5009897D0 /* liblua5.1.a */; };
 		8A36D3211B8E6FD5009897D0 /* libphysfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3171B8E6FD5009897D0 /* libphysfs.a */; };
-		8A36D3221B8E6FD5009897D0 /* libpng15.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3181B8E6FD5009897D0 /* libpng15.a */; };
 		8A36D3231B8E6FD5009897D0 /* libPolycore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3191B8E6FD5009897D0 /* libPolycore.a */; };
 		8A36D3241B8E6FD5009897D0 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D31A1B8E6FD5009897D0 /* libz.a */; };
 		8A36D3261B8E6FE7009897D0 /* libPolycodeUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3251B8E6FE7009897D0 /* libPolycodeUI.a */; };
@@ -154,7 +153,6 @@
 		8A36D3151B8E6FD5009897D0 /* liblibvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibvorbisfile.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/liblibvorbisfile.a; sourceTree = "<absolute>"; };
 		8A36D3161B8E6FD5009897D0 /* liblua5.1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua5.1.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/liblua5.1.a; sourceTree = "<absolute>"; };
 		8A36D3171B8E6FD5009897D0 /* libphysfs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libphysfs.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/libphysfs.a; sourceTree = "<absolute>"; };
-		8A36D3181B8E6FD5009897D0 /* libpng15.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng15.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/libpng15.a; sourceTree = "<absolute>"; };
 		8A36D3191B8E6FD5009897D0 /* libPolycore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycore.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/libPolycore.a; sourceTree = "<absolute>"; };
 		8A36D31A1B8E6FD5009897D0 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/libz.a; sourceTree = "<absolute>"; };
 		8A36D3251B8E6FE7009897D0 /* libPolycodeUI.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeUI.a; path = ../../../../lib/osx/libPolycodeUI.a; sourceTree = "<group>"; };
@@ -172,7 +170,6 @@
 				8A22D92B1BCC67DE009EF0A6 /* OpenGL.framework in Frameworks */,
 				8A36D31D1B8E6FD5009897D0 /* liblibvorbis.a in Frameworks */,
 				8A36D3231B8E6FD5009897D0 /* libPolycore.a in Frameworks */,
-				8A36D3221B8E6FD5009897D0 /* libpng15.a in Frameworks */,
 				8A36D3201B8E6FD5009897D0 /* liblua5.1.a in Frameworks */,
 				8A36D31F1B8E6FD5009897D0 /* liblibvorbisfile.a in Frameworks */,
 				8A36D31E1B8E6FD5009897D0 /* libportaudio.a in Frameworks */,
@@ -235,7 +232,6 @@
 				8A36D3161B8E6FD5009897D0 /* liblua5.1.a */,
 				8A36D3171B8E6FD5009897D0 /* libphysfs.a */,
 				8A36D3251B8E6FE7009897D0 /* libPolycodeUI.a */,
-				8A36D3181B8E6FD5009897D0 /* libpng15.a */,
 				8A36D3191B8E6FD5009897D0 /* libPolycore.a */,
 				8A36D31A1B8E6FD5009897D0 /* libz.a */,
 				8A36D20D1B8E5751009897D0 /* Info.plist */,
@@ -405,7 +401,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -R \"$PROJECT_DIR/../../../assets/ide/\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
+			shellScript = "cp -R \"$PROJECT_DIR/../../../assets/ide/\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"\ncp -R \"$PROJECT_DIR/../../../bin\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 

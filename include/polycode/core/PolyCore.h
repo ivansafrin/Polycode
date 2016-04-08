@@ -484,5 +484,38 @@ namespace Polycode {
 		Renderer *renderer;
 		CoreServices *services;
 	};
+    
+    class _PolyExport DummyCore : public Core {
+    public:
+        
+        DummyCore();
+        ~DummyCore();
+        
+        void Render();
+        bool systemUpdate();
+        void setCursor(int cursorType);
+        void createThread(Threaded *target);
+        CoreMutex *createMutex();
+        void copyStringToClipboard(const String& str);
+        String getClipboardString();
+        void createFolder(const String& folderPath);
+        void copyDiskItem(const String& itemPath, const String& destItemPath);
+        void moveDiskItem(const String& itemPath, const String& destItemPath);
+        void removeDiskItem(const String& itemPath);
+        String openFolderPicker();
+        std::vector<String> openFilePicker(std::vector<CoreFileExtension> extensions, bool allowMultiple);
+        String saveFilePicker(std::vector<CoreFileExtension> extensions);
+        void handleVideoModeChange(VideoModeChangeInfo *modeInfo);
+        void flushRenderContext();
+        void openURL(String url);
+        unsigned int getTicks();
+        String executeExternalCommand(String command, String args, String inDirectory);
+        bool systemParseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector);
+        
+        
+        
+    };
+    
+    
 	
 }

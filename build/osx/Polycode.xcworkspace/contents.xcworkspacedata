@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:polyimport/polyimport.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Polycode3DPhsyics/Polycode3DPhsyics.xcodeproj">
    </FileRef>
    <FileRef

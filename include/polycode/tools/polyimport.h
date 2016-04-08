@@ -1,11 +1,10 @@
-#include "assimp.h"
 
-#include "assimp.h"
-#include "aiPostProcess.h"
-#include "aiScene.h"
+#include "postprocess.h"
+#include "scene.h"
+
 #include <stdio.h>
-#include "PolyMesh.h"
-#include "PolyString.h"
+#include "polycode/core/PolyMesh.h"
+#include "polycode/core/PolyString.h"
 #include <vector>
 
 using std::vector;

@@ -1,9 +1,11 @@
 
-#include "polyimport.h"
-#include "OSBasics.h"
-#include "PolyObject.h"
+#include "polycode/tools/polyimport.h"
 
-#include "physfs.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyObject.h"
+
+#include <assimp/cimport.h>
+
 #ifdef WIN32
 #include "getopt.h"
 #define getopt getopt_a
@@ -105,6 +107,9 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
 		}
 		//apply_material(sc->mMaterials[mesh->mMaterialIndex]);
         
+        
+        int baseVertexCount = tmesh->getVertexCount();
+        
 		for (t = 0; t < mesh->mNumVertices; ++t) {
 
             Vector3 vPosition;
@@ -193,15 +198,13 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
 
              for(i = 0; i < face->mNumIndices; i++) {
                  int index = face->mIndices[i];
-                 tmesh->addIndex(index);
+                 tmesh->addIndex(baseVertexCount+index);
              }
          }
 		
 		if(!addSubmeshes && !listOnly) {
-			String fileNameMesh = prefix+meshFileName+".mesh";			
-			OSFILE *outFile = OSBasics::open(fileNameMesh.c_str(), "wb");	
-			tmesh->saveToFile(outFile, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs);
-			OSBasics::close(outFile);
+			String fileNameMesh = prefix+meshFileName+".mesh";
+			tmesh->saveToFile(fileNameMesh, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs);
 			delete tmesh;
             
             ObjectEntry *meshEntry = parentSceneObject->addChild("child");
@@ -399,9 +402,7 @@ int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly, b
 		if(listOnly) {
 			printf("%s\n", fileNameMesh.c_str());
 		} else {
-			OSFILE *outFile = OSBasics::open(fileNameMesh.c_str(), "wb");	
-			mesh->saveToFile(outFile, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs);
-			OSBasics::close(outFile);
+			mesh->saveToFile(fileNameMesh, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs);
 		}
 	}
 		
@@ -497,6 +498,8 @@ int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly, b
 int main(int argc, char **argv) {
 
 
+    Core *core = new DummyCore();
+    
 	bool argsValid = true;
 	bool showHelp = false;
 
@@ -581,7 +584,7 @@ int main(int argc, char **argv) {
 	}
 		
 	if(!listOnly) {
-		printf("Polycode import tool v"POLYCODE_VERSION_STRING"\n");	
+		printf("Polycode import tool v%s\n", POLYCODE_VERSION_STRING);
 	}
 	
 	if(!argsValid) {
@@ -616,8 +619,6 @@ int main(int argc, char **argv) {
 		printf("\n");
 		return 0;
 	}
-	
-	PHYSFS_init(argv[0]);
 	
 	if(showAssimpDebug) {
 		struct aiLogStream stream;
@@ -659,5 +660,6 @@ int main(int argc, char **argv) {
 	}
 
 	aiReleaseImport(scene);
+    delete core;
 	return 1;
 }

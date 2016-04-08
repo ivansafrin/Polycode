@@ -244,8 +244,6 @@ ResourceManager::ResourceManager() : EventDispatcher() {
 }
 
 ResourceManager::~ResourceManager() {
-    printf("Shutting down resource manager...\n");
-
     for(int i=0; i < resourceLoaders.size(); i++)	{
         delete resourceLoaders[i];
     }

@@ -1,5 +1,8 @@
 # Created by https://www.gitignore.io
 
+bin/polyimport
+bin/polybuild
+
 *.o
 *.do
 *.io

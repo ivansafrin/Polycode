@@ -24,7 +24,6 @@
 		8A86535F1B72949F009F94DD /* liblibvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A8653561B72949F009F94DD /* liblibvorbisfile.a */; };
 		8A8653601B72949F009F94DD /* liblua5.1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A8653571B72949F009F94DD /* liblua5.1.a */; };
 		8A8653611B72949F009F94DD /* libphysfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A8653581B72949F009F94DD /* libphysfs.a */; };
-		8A8653621B72949F009F94DD /* libpng15.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A8653591B72949F009F94DD /* libpng15.a */; };
 		8A8653631B72949F009F94DD /* libPolycore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A86535A1B72949F009F94DD /* libPolycore.a */; };
 		8A8653641B72949F009F94DD /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A86535B1B72949F009F94DD /* libz.a */; };
 		8A8653681B7294B7009F94DD /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A8653671B7294B7009F94DD /* OpenGL.framework */; };
@@ -55,7 +54,6 @@
 		8A8653561B72949F009F94DD /* liblibvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibvorbisfile.a; path = ../../../../lib/osx/liblibvorbisfile.a; sourceTree = "<group>"; };
 		8A8653571B72949F009F94DD /* liblua5.1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua5.1.a; path = ../../../../lib/osx/liblua5.1.a; sourceTree = "<group>"; };
 		8A8653581B72949F009F94DD /* libphysfs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libphysfs.a; path = ../../../../lib/osx/libphysfs.a; sourceTree = "<group>"; };
-		8A8653591B72949F009F94DD /* libpng15.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng15.a; path = ../../../../lib/osx/libpng15.a; sourceTree = "<group>"; };
 		8A86535A1B72949F009F94DD /* libPolycore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycore.a; path = ../../../../lib/osx/libPolycore.a; sourceTree = "<group>"; };
 		8A86535B1B72949F009F94DD /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = ../../../../lib/osx/libz.a; sourceTree = "<group>"; };
 		8A8653671B7294B7009F94DD /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -80,7 +78,6 @@
 				8A825F271B82A2680039E823 /* libportaudio.a in Frameworks */,
 				8A8653631B72949F009F94DD /* libPolycore.a in Frameworks */,
 				8A86535F1B72949F009F94DD /* liblibvorbisfile.a in Frameworks */,
-				8A8653621B72949F009F94DD /* libpng15.a in Frameworks */,
 				8A86535E1B72949F009F94DD /* liblibvorbis.a in Frameworks */,
 				8A86535C1B72949F009F94DD /* libfreetype.a in Frameworks */,
 				8A8653601B72949F009F94DD /* liblua5.1.a in Frameworks */,
@@ -144,7 +141,6 @@
 				8A8653571B72949F009F94DD /* liblua5.1.a */,
 				6DD2D0B51BEEDC150026D85C /* libportaudio.a */,
 				8A8653581B72949F009F94DD /* libphysfs.a */,
-				8A8653591B72949F009F94DD /* libpng15.a */,
 				8A86535A1B72949F009F94DD /* libPolycore.a */,
 				8A86535B1B72949F009F94DD /* libz.a */,
 				8A8653341B72931C009F94DD /* Info.plist */,

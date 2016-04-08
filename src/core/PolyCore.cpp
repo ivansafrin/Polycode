@@ -26,6 +26,7 @@
 #include "polycode/core/PolyRenderer.h"
 #include "polycode/core/PolyLogger.h"
 #include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyBasicFileProvider.h"
 
 #if PLATFORM == PLATFORM_WINDOWS
 #include <windows.h>
@@ -151,7 +152,6 @@ namespace Polycode {
 	}	
 	
 	Core::~Core() {
-		printf("Shutting down core");
 		delete services;
         delete input;
 	}
@@ -401,5 +401,45 @@ namespace Polycode {
 	void Core::unlockMutex(CoreMutex *mutex) {
 		mutex->unlock();
 	}
-	
+    
+    DummyCore::DummyCore(): Core(0, 0, false, false, 0, 0, 0, 0) {
+        fileProviders.push_back(new BasicFileProvider());
+    }
+    
+    DummyCore::~DummyCore() {}
+    void DummyCore::Render() {}
+    bool DummyCore::systemUpdate()  {
+        if(!running)
+            return false;
+        doSleep();
+        updateCore();
+        return running;
+    }
+    void DummyCore::setCursor(int cursorType) {}
+    void DummyCore::createThread(Threaded *target) {}
+    CoreMutex *DummyCore::createMutex() { return NULL; }
+    void DummyCore::copyStringToClipboard(const String& str) {}
+    String DummyCore::getClipboardString() { return ""; }
+    void DummyCore::createFolder(const String& folderPath) {}
+    void DummyCore::copyDiskItem(const String& itemPath, const String& destItemPath) {}
+    void DummyCore::moveDiskItem(const String& itemPath, const String& destItemPath) {}
+    void DummyCore::removeDiskItem(const String& itemPath) {}
+    String DummyCore::openFolderPicker() { return "";}
+    std::vector<String> DummyCore::openFilePicker(std::vector<CoreFileExtension> extensions, bool allowMultiple) {
+        std::vector<String> ret;
+        return ret;
+    }
+    String DummyCore::saveFilePicker(std::vector<CoreFileExtension> extensions) {
+        return "";
+    }
+    void DummyCore::handleVideoModeChange(VideoModeChangeInfo *modeInfo) {}
+    void DummyCore::flushRenderContext() {}
+    void DummyCore::openURL(String url) {}
+    unsigned int DummyCore::getTicks() { return 0;}
+    String DummyCore::executeExternalCommand(String command, String args, String inDirectory) {
+        return "";
+    }
+    bool DummyCore::systemParseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector) {
+        return false;
+    }
 }
