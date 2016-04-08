@@ -37,9 +37,6 @@ class PolycodeMeshEditor : public PolycodeEditor {
 		virtual ~PolycodeMeshEditor();
 	
 		void handleEvent(Event *event);
-	
-		void reloadMaterials();
-    
         void Activate();
         void Deactivate();
 	
@@ -57,11 +54,7 @@ class PolycodeMeshEditor : public PolycodeEditor {
 		SceneMesh *previewMesh;
 		Entity *previewBase;
 		
-		Material *currentMaterial;
-				
-		UIComboBox *materialDropDown;
-		UIRect *headerBg;
-		
+		Material *currentMaterial;		
 		TrackballCamera *trackballCamera;
 
 };

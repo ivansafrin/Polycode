@@ -47,26 +47,11 @@ PolycodeMeshEditor::PolycodeMeshEditor() : PolycodeEditor(true){
 	mainLight->setPosition(9999, 9999, 9999);
 	secondLight->setPosition(-9999, -9999, -9999);
 
-	headerBg = new UIRect(10,10);
-	addChild(headerBg);
-	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
-	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
 	previewShape = new UIRect(256, 256);
 	previewShape->setAnchorPoint(-1.0, -1.0, 0.0);	
 	previewShape->setTexture(renderTexture->getTargetTexture());
-	addChild(previewShape);
-	
-	UILabel *label = new UILabel("MATERIAL", 18, "section", Label::ANTIALIAS_FULL);
-	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
-	addChild(label);
-	label->setPosition(10, 3);
-	
-	materialDropDown = new UIComboBox(globalMenu, 200);
-	addChild(materialDropDown);
-	materialDropDown->setPosition(150, 3);
-
-	reloadMaterials();
+	addChild(previewShape);	
 
 	previewBase = new Entity();
 	previewScene->addChild(previewBase);
@@ -92,37 +77,7 @@ void PolycodeMeshEditor::Deactivate() {
     
 }
 
-void PolycodeMeshEditor::reloadMaterials() {
-
-	Resource *selectedMaterial = NULL;
-		
-	if(materialDropDown->getSelectedItem()) {
-		selectedMaterial = (Resource*) materialDropDown->getSelectedItem()->data;
-	}
-	
-	materialDropDown->removeAllHandlersForListener(this);
-	
-	materialDropDown->clearItems();
-	std::vector<Resource*> materials = CoreServices::getInstance()->getResourceManager()->getResources(Resource::RESOURCE_MATERIAL);
-	for(int i=0; i < materials.size(); i++) {
-		materialDropDown->addComboItem(materials[i]->getResourceName(), (void*) materials[i]);
-		if(selectedMaterial == materials[i]) {
-			materialDropDown->setSelectedIndex(i);
-		}
-	}
-	
-	materialDropDown->addEventListener(this, UIEvent::CHANGE_EVENT);	
-}
-
 void PolycodeMeshEditor::handleEvent(Event *event) {
-	
-    if(event->getDispatcher() == materialDropDown) {
-		if(previewMesh) {
-			previewMesh->setMaterial((Material*)materialDropDown->getSelectedItem()->data);
-		}
-	} else if(event->getDispatcher() == CoreServices::getInstance()->getResourceManager()) {
-		reloadMaterials();
-	}
 }
 
 PolycodeMeshEditor::~PolycodeMeshEditor() {
@@ -145,7 +100,6 @@ bool PolycodeMeshEditor::openFile(OSFileEntry filePath) {
 
 void PolycodeMeshEditor::Resize(int x, int y) {
     
-	headerBg->Resize(x, 30);	
 	renderTexture->resizeRenderTexture(x, y-30);
 	previewShape->setTexture(renderTexture->getTargetTexture());	
 	previewShape->Resize(x, y-30);	
