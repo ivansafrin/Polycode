@@ -51,7 +51,7 @@ PolycodeMeshEditor::PolycodeMeshEditor() : PolycodeEditor(true){
 	previewShape = new UIRect(256, 256);
 	previewShape->setAnchorPoint(-1.0, -1.0, 0.0);	
 	previewShape->setTexture(renderTexture->getTargetTexture());
-	addChild(previewShape);	
+	addChild(previewShape);
 
 	previewBase = new Entity();
 	previewScene->addChild(previewBase);

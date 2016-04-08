@@ -2,9 +2,8 @@
 #pragma once
 
 #include "stdio.h"
-#include "PolyString.h"
-#include "PolyObject.h"
-#include "OSBasics.h"
+#include "polycode/core/PolyString.h"
+#include "polycode/core/PolyObject.h"
 
 #ifdef _WINDOWS
 #include <time.h>

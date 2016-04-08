@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:polybuild/polybuild.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:polyimport/polyimport.xcodeproj">
    </FileRef>
    <FileRef

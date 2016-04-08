@@ -1,0 +1,339 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8AC7B36C1CB8623A00624970 /* polybuild.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8AC7B36B1CB8623A00624970 /* polybuild.cpp */; };
+		8AC7B3781CB866CC00624970 /* libarchive.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B36E1CB866CC00624970 /* libarchive.a */; };
+		8AC7B3791CB866CC00624970 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B36F1CB866CC00624970 /* libfreetype.a */; };
+		8AC7B37A1CB866CC00624970 /* liblibogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B3701CB866CC00624970 /* liblibogg.a */; };
+		8AC7B37B1CB866CC00624970 /* liblibvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B3711CB866CC00624970 /* liblibvorbis.a */; };
+		8AC7B37C1CB866CC00624970 /* liblibvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B3721CB866CC00624970 /* liblibvorbisfile.a */; };
+		8AC7B37D1CB866CC00624970 /* liblua5.1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B3731CB866CC00624970 /* liblua5.1.a */; };
+		8AC7B37E1CB866CC00624970 /* libphysfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B3741CB866CC00624970 /* libphysfs.a */; };
+		8AC7B37F1CB866CC00624970 /* libPolycore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B3751CB866CC00624970 /* libPolycore.a */; };
+		8AC7B3801CB866CC00624970 /* libportaudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B3761CB866CC00624970 /* libportaudio.a */; };
+		8AC7B3811CB866CC00624970 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B3771CB866CC00624970 /* libz.a */; };
+		8AC7B3831CB866F800624970 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B3821CB866F800624970 /* AudioToolbox.framework */; };
+		8AC7B3851CB866FD00624970 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B3841CB866FD00624970 /* AudioUnit.framework */; };
+		8AC7B3871CB8670200624970 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B3861CB8670200624970 /* CoreAudio.framework */; };
+		8AC7B3891CB8670800624970 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B3881CB8670800624970 /* IOKit.framework */; };
+		8AC7B38B1CB8670E00624970 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B38A1CB8670E00624970 /* OpenGL.framework */; };
+		8AC7B38D1CB8671500624970 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B38C1CB8671500624970 /* Cocoa.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8AC7B35D1CB861F200624970 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		8AC7B35F1CB861F200624970 /* polybuild */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = polybuild; sourceTree = BUILT_PRODUCTS_DIR; };
+		8AC7B36B1CB8623A00624970 /* polybuild.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = polybuild.cpp; path = ../../../../src/tools/polybuild.cpp; sourceTree = "<group>"; };
+		8AC7B36D1CB8626300624970 /* polybuild.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = polybuild.h; path = ../../../../include/polycode/tools/polybuild.h; sourceTree = "<group>"; };
+		8AC7B36E1CB866CC00624970 /* libarchive.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libarchive.a; path = ../../../lib/osx/libarchive.a; sourceTree = "<group>"; };
+		8AC7B36F1CB866CC00624970 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../../../lib/osx/libfreetype.a; sourceTree = "<group>"; };
+		8AC7B3701CB866CC00624970 /* liblibogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibogg.a; path = ../../../lib/osx/liblibogg.a; sourceTree = "<group>"; };
+		8AC7B3711CB866CC00624970 /* liblibvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibvorbis.a; path = ../../../lib/osx/liblibvorbis.a; sourceTree = "<group>"; };
+		8AC7B3721CB866CC00624970 /* liblibvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibvorbisfile.a; path = ../../../lib/osx/liblibvorbisfile.a; sourceTree = "<group>"; };
+		8AC7B3731CB866CC00624970 /* liblua5.1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua5.1.a; path = ../../../lib/osx/liblua5.1.a; sourceTree = "<group>"; };
+		8AC7B3741CB866CC00624970 /* libphysfs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libphysfs.a; path = ../../../lib/osx/libphysfs.a; sourceTree = "<group>"; };
+		8AC7B3751CB866CC00624970 /* libPolycore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycore.a; path = ../../../lib/osx/libPolycore.a; sourceTree = "<group>"; };
+		8AC7B3761CB866CC00624970 /* libportaudio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libportaudio.a; path = ../../../lib/osx/libportaudio.a; sourceTree = "<group>"; };
+		8AC7B3771CB866CC00624970 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = ../../../lib/osx/libz.a; sourceTree = "<group>"; };
+		8AC7B3821CB866F800624970 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		8AC7B3841CB866FD00624970 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
+		8AC7B3861CB8670200624970 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		8AC7B3881CB8670800624970 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		8AC7B38A1CB8670E00624970 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		8AC7B38C1CB8671500624970 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8AC7B35C1CB861F200624970 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8AC7B38D1CB8671500624970 /* Cocoa.framework in Frameworks */,
+				8AC7B38B1CB8670E00624970 /* OpenGL.framework in Frameworks */,
+				8AC7B3891CB8670800624970 /* IOKit.framework in Frameworks */,
+				8AC7B3871CB8670200624970 /* CoreAudio.framework in Frameworks */,
+				8AC7B3851CB866FD00624970 /* AudioUnit.framework in Frameworks */,
+				8AC7B3831CB866F800624970 /* AudioToolbox.framework in Frameworks */,
+				8AC7B3811CB866CC00624970 /* libz.a in Frameworks */,
+				8AC7B3801CB866CC00624970 /* libportaudio.a in Frameworks */,
+				8AC7B37F1CB866CC00624970 /* libPolycore.a in Frameworks */,
+				8AC7B37B1CB866CC00624970 /* liblibvorbis.a in Frameworks */,
+				8AC7B37D1CB866CC00624970 /* liblua5.1.a in Frameworks */,
+				8AC7B3781CB866CC00624970 /* libarchive.a in Frameworks */,
+				8AC7B3791CB866CC00624970 /* libfreetype.a in Frameworks */,
+				8AC7B37C1CB866CC00624970 /* liblibvorbisfile.a in Frameworks */,
+				8AC7B37E1CB866CC00624970 /* libphysfs.a in Frameworks */,
+				8AC7B37A1CB866CC00624970 /* liblibogg.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		8AC7B3561CB861F200624970 = {
+			isa = PBXGroup;
+			children = (
+				8AC7B38C1CB8671500624970 /* Cocoa.framework */,
+				8AC7B38A1CB8670E00624970 /* OpenGL.framework */,
+				8AC7B3881CB8670800624970 /* IOKit.framework */,
+				8AC7B3861CB8670200624970 /* CoreAudio.framework */,
+				8AC7B3841CB866FD00624970 /* AudioUnit.framework */,
+				8AC7B3821CB866F800624970 /* AudioToolbox.framework */,
+				8AC7B36E1CB866CC00624970 /* libarchive.a */,
+				8AC7B36F1CB866CC00624970 /* libfreetype.a */,
+				8AC7B3701CB866CC00624970 /* liblibogg.a */,
+				8AC7B3711CB866CC00624970 /* liblibvorbis.a */,
+				8AC7B3721CB866CC00624970 /* liblibvorbisfile.a */,
+				8AC7B3731CB866CC00624970 /* liblua5.1.a */,
+				8AC7B3741CB866CC00624970 /* libphysfs.a */,
+				8AC7B3751CB866CC00624970 /* libPolycore.a */,
+				8AC7B3761CB866CC00624970 /* libportaudio.a */,
+				8AC7B3771CB866CC00624970 /* libz.a */,
+				8AC7B3611CB861F200624970 /* polybuild */,
+				8AC7B3601CB861F200624970 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8AC7B3601CB861F200624970 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8AC7B35F1CB861F200624970 /* polybuild */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8AC7B3611CB861F200624970 /* polybuild */ = {
+			isa = PBXGroup;
+			children = (
+				8AC7B36D1CB8626300624970 /* polybuild.h */,
+				8AC7B36B1CB8623A00624970 /* polybuild.cpp */,
+			);
+			path = polybuild;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8AC7B35E1CB861F200624970 /* polybuild */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8AC7B3661CB861F200624970 /* Build configuration list for PBXNativeTarget "polybuild" */;
+			buildPhases = (
+				8AC7B35B1CB861F200624970 /* Sources */,
+				8AC7B35C1CB861F200624970 /* Frameworks */,
+				8AC7B35D1CB861F200624970 /* CopyFiles */,
+				8AC7B36A1CB8620700624970 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = polybuild;
+			productName = polybuild;
+			productReference = 8AC7B35F1CB861F200624970 /* polybuild */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8AC7B3571CB861F200624970 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0730;
+				ORGANIZATIONNAME = Polycode;
+				TargetAttributes = {
+					8AC7B35E1CB861F200624970 = {
+						CreatedOnToolsVersion = 7.3;
+					};
+				};
+			};
+			buildConfigurationList = 8AC7B35A1CB861F200624970 /* Build configuration list for PBXProject "polybuild" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 8AC7B3561CB861F200624970;
+			productRefGroup = 8AC7B3601CB861F200624970 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8AC7B35E1CB861F200624970 /* polybuild */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		8AC7B36A1CB8620700624970 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cp $TARGET_BUILD_DIR//$EXECUTABLE_NAME ../../../bin";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8AC7B35B1CB861F200624970 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8AC7B36C1CB8623A00624970 /* polybuild.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		8AC7B3641CB861F200624970 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		8AC7B3651CB861F200624970 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		8AC7B3671CB861F200624970 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/../../../include\"",
+					"\"$(SRCROOT)/../../../include/archive\"",
+				);
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../../../lib/osx\"";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		8AC7B3681CB861F200624970 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/../../../include\"",
+					"\"$(SRCROOT)/../../../include/archive\"",
+				);
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../../../lib/osx\"";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8AC7B35A1CB861F200624970 /* Build configuration list for PBXProject "polybuild" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8AC7B3641CB861F200624970 /* Debug */,
+				8AC7B3651CB861F200624970 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8AC7B3661CB861F200624970 /* Build configuration list for PBXNativeTarget "polybuild" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8AC7B3671CB861F200624970 /* Debug */,
+				8AC7B3681CB861F200624970 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 8AC7B3571CB861F200624970 /* Project object */;
+}

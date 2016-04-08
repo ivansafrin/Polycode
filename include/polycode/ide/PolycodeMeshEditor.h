@@ -54,7 +54,7 @@ class PolycodeMeshEditor : public PolycodeEditor {
 		SceneMesh *previewMesh;
 		Entity *previewBase;
 		
-		Material *currentMaterial;		
+		Material *currentMaterial;
 		TrackballCamera *trackballCamera;
 
 };

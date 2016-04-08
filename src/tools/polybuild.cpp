@@ -1,5 +1,8 @@
 
-#include "polybuild.h"
+#include "polycode/tools/polybuild.h"
+
+#include <Polycode.h>
+
 #include "string.h"
 #include "archive.h"
 #include "archive_entry.h"
@@ -70,8 +73,10 @@ void addFileToZip(struct archive *a, String filePath, String pathInZip, bool sil
     
 }
 
-void addFolderToZip(struct archive *a, String folderPath, String parentFolder, bool silent) {
-	std::vector<OSFileEntry> files = OSBasics::parseFolder(folderPath, false);
+void addFolderToZip(Core *core, struct archive *a, String folderPath, String parentFolder, bool silent) {
+    
+    std::vector<OSFileEntry> files = core->parseFolder(folderPath, false);
+    
 	for(int i=0; i < files.size(); i++) {
 		if(files[i].type == OSFileEntry::TYPE_FILE) {
             
@@ -86,9 +91,9 @@ void addFolderToZip(struct archive *a, String folderPath, String parentFolder, b
             
 		} else {
 			if(parentFolder == "") {
-				addFolderToZip(a, files[i].fullPath.c_str(), files[i].name, silent);
+				addFolderToZip(core, a, files[i].fullPath.c_str(), files[i].name, silent);
 			} else {
-				addFolderToZip(a, files[i].fullPath.c_str(), parentFolder + "/" + files[i].name, silent);
+				addFolderToZip(core, a, files[i].fullPath.c_str(), parentFolder + "/" + files[i].name, silent);
 			}
 		}
 	}
@@ -96,7 +101,9 @@ void addFolderToZip(struct archive *a, String folderPath, String parentFolder, b
 
 
 int main(int argc, char **argv) {
-		
+    
+    Core *core = new DummyCore();
+    
 	PHYSFS_init(argv[0]);
 
 #if defined(__APPLE__) && defined(__MACH__)
@@ -134,7 +141,7 @@ int main(int argc, char **argv) {
 	}
 #endif
 
-	printf("Polycode build tool v"POLYCODE_VERSION_STRING"\n");
+	printf("Polycode build tool v%s\n", POLYCODE_VERSION_STRING);
 
 	for(int i=0; i < argc; i++) {
 		String argString = String(argv[i]);
@@ -342,8 +349,8 @@ int main(int argc, char **argv) {
 				printf("Path:%s\n", moduleAPIPath.c_str());		
 
 
-				addFolderToZip(a, moduleAPIPath, "", false);
-				addFolderToZip(a, moduleLibPath, "__lib", false);
+				addFolderToZip(core, a, moduleAPIPath, "", false);
+				addFolderToZip(core, a, moduleLibPath, "__lib", false);
 
 				//String module = configFile.root["entryPoint"]->stringVal;
 			}
@@ -361,7 +368,7 @@ int main(int argc, char **argv) {
 				if(entryPath && entryType) {
 					if (!entrySource) entrySource = entryPath;
 					if(entryType->stringVal == "folder") {
-						addFolderToZip(a, entrySource->stringVal, entryPath->stringVal, false);
+						addFolderToZip(core, a, entrySource->stringVal, entryPath->stringVal, false);
 					} else {
 						addFileToZip(a, entrySource->stringVal, entryPath->stringVal, false);
 					}
@@ -384,7 +391,7 @@ int main(int argc, char **argv) {
 	free(buffer);
 	OSBasics::removeItem(workingDir+"/runinfo_tmp_zzzz.polyrun");
 #else
-	OSBasics::removeItem("runinfo_tmp_zzzz.polyrun");
+    core->removeDiskItem("runinfo_tmp_zzzz.polyrun");
 #endif
 	return 0;
 }
