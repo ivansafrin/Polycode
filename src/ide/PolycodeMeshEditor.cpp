@@ -29,9 +29,10 @@ PolycodeMeshEditor::PolycodeMeshEditor() : PolycodeEditor(true){
 	previewScene = new Scene(Scene::SCENE_3D, true);		
 	renderTexture = new SceneRenderTexture(previewScene, previewScene->getDefaultCamera(), 512, 512, false);
     
+    
     ownsChildren = true;
 
-	previewScene->clearColor.setColor(0.2, 0.2, 0.2, 1.0);	
+	previewScene->clearColor.setColor(0.2, 0.2, 0.2, 1.0);
 	previewScene->useClearColor = true;
 	
 //	previewScene->ambientColor.setColor(0.0, 0.0, 0.0, 1.0);
@@ -49,13 +50,12 @@ PolycodeMeshEditor::PolycodeMeshEditor() : PolycodeEditor(true){
 	headerBg = new UIRect(10,10);
 	addChild(headerBg);
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
-	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));		
+	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
 	previewShape = new UIRect(256, 256);
 	previewShape->setAnchorPoint(-1.0, -1.0, 0.0);	
 	previewShape->setTexture(renderTexture->getTargetTexture());
 	addChild(previewShape);
-	
 	
 	UILabel *label = new UILabel("MATERIAL", 18, "section", Label::ANTIALIAS_FULL);
 	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
@@ -64,7 +64,7 @@ PolycodeMeshEditor::PolycodeMeshEditor() : PolycodeEditor(true){
 	
 	materialDropDown = new UIComboBox(globalMenu, 200);
 	addChild(materialDropDown);
-	materialDropDown->setPosition(100, 3);
+	materialDropDown->setPosition(150, 3);
 
 	reloadMaterials();
 
@@ -76,7 +76,9 @@ PolycodeMeshEditor::PolycodeMeshEditor() : PolycodeEditor(true){
 	
 	previewMesh = NULL;	
 	trackballCamera = new TrackballCamera(previewScene->getDefaultCamera(), previewShape);
-	
+    trackballCamera->getTargetCamera()->setClippingPlanes(0.1, 1000.0);
+    //trackballCamera->getTargetCamera()->setPosition(0.0, 0.0, 50.);
+    trackballCamera->setOrbitingCenter(Vector3(0.0, 0.0, 0.0));
 }
 
 void PolycodeMeshEditor::Activate() {
@@ -136,21 +138,18 @@ bool PolycodeMeshEditor::openFile(OSFileEntry filePath) {
 	previewBase->addChild(previewMesh);
 	previewMesh->setMaterialByName("Default");
 	PolycodeEditor::openFile(filePath);
-
-	previewMesh->alphaTest = true;
-    
-    // RENDERER_TODO
-	//CoreServices::getInstance()->getRenderer()->alphaTestValue = 0.9;
-				
-	trackballCamera->setCameraDistance(previewMesh->getLocalBoundingBox().x);
+    trackballCamera->setCameraDistance(previewMesh->getMesh()->getRadius() * 3.0);
+    trackballCamera->setCameraPosition(trackballCamera->getOribitingCenter()+Vector3(0.0, 0.0, trackballCamera->getCameraDistance()));
 	return true;
 }
 
 void PolycodeMeshEditor::Resize(int x, int y) {
+    
 	headerBg->Resize(x, 30);	
 	renderTexture->resizeRenderTexture(x, y-30);
 	previewShape->setTexture(renderTexture->getTargetTexture());	
 	previewShape->Resize(x, y-30);	
 	previewShape->setPosition(0, 30);
+	PolycodeEditor::Resize(x,y);
 }
 

@@ -94,8 +94,8 @@ void Mesh::clearMesh() {
 Number Mesh::getRadius() {
     Number hRad = 0;
     Number len;
-    for(int i=0; i < vertexPositionArray.data.size()-2; i += 3) {
-        Vector3 vec;
+    for(int i=0; i < getVertexCount(); i ++) {
+        Vector3 vec = getVertexPosition(i);
         len = vec.length();
         if(len > hRad) {
             hRad = len;
