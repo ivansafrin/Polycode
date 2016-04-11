@@ -24,7 +24,6 @@
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolySceneLabel.h"
 #include "polycode/core/PolyScenePrimitive.h"
-#include "polycode/core/PolyFontManager.h"
 #include "polycode/core/PolyFont.h"
 #include "polycode/core/PolyEntity.h"
 #include "polycode/modules/ui/PolyUIEvent.h"

@@ -37,7 +37,10 @@ PolycodeFontEditor::~PolycodeFontEditor() {
 
 bool PolycodeFontEditor::openFile(OSFileEntry filePath) {
 	
-	CoreServices::getInstance()->getFontManager()->registerFont(filePath.fullPath, filePath.fullPath);
+    
+    ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
+    
+    Resource *resource = globalPool->loadResourceWithName(filePath.fullPath, filePath.fullPath);
 		
 	anchor = new UIElement();
 	addChild(anchor);
@@ -70,9 +73,7 @@ bool PolycodeFontEditor::openFile(OSFileEntry filePath) {
 	
 	PolycodeEditor::openFile(filePath);
 	
-	// remove the font entry so it doesn't show up in project font lists
-	FontEntry *entry = 	CoreServices::getInstance()->getFontManager()->getFontEntryByFontPath(filePath.fullPath);
-	CoreServices::getInstance()->getFontManager()->removeFontEntry(entry, false);	
+    globalPool->removeResource(resource);
 	
 	return true;
 }

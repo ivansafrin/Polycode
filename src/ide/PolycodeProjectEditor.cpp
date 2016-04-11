@@ -60,20 +60,29 @@ ProjectFontEntry::ProjectFontEntry(String fontPath, String fontName) : UIElement
 	addFocusChild(fontFileLabel);
 	fontFileLabel->setPosition(140, 3);
 	
-	CoreServices::getInstance()->getFontManager()->registerFont(fontName, fontPath);
+    ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
+    globalPool->loadResourceWithName(fontPath, fontName);
 }
 
 void ProjectFontEntry::handleEvent(Event *event) {
+    
+    ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
+    
 	if(event->getDispatcher() == fontNameInput && event->getEventCode() == UIEvent::CHANGE_EVENT && event->getEventType() == "UIEvent") {
-		FontEntry *entry = CoreServices::getInstance()->getFontManager()->getFontEntryByFontPath(fontPath);
-		if(entry) {
-			entry->fontName = fontNameInput->getText();
+        Font *font = (Font*) globalPool->getResourceByPath(fontPath);
+		if(font) {
+			font->setResourceName(fontNameInput->getText());
 		}
 	}
 	
 	if(event->getDispatcher() == removeButton && event->getEventCode() == UIEvent::CLICK_EVENT && event->getEventType() == "UIEvent") {
-		FontEntry *entry = 	CoreServices::getInstance()->getFontManager()->getFontEntryByFontPath(fontPath);
-		CoreServices::getInstance()->getFontManager()->removeFontEntry(entry, false);
+        
+        Font *font = (Font*) globalPool->getResourceByPath(fontPath);
+        if(font) {
+            globalPool->removeResource(font);
+            font->setResourceName(fontNameInput->getText());
+        }
+        
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 }

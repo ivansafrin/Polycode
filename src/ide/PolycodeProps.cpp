@@ -3625,14 +3625,15 @@ SceneLabelSheet::SceneLabelSheet() : PropSheet("LABEL", "UILabel") {
 
 void SceneLabelSheet::refreshFonts() {
 	
-	FontManager *fontManager = CoreServices::getInstance()->getFontManager();
+    ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
 	
 	font->comboEntry->clearItems();
 	
-	for(int i=0; i < fontManager->getNumFonts(); i++) {
-		FontEntry *entry = fontManager->getFontEntryByIndex(i);
-		if(entry->fontName != "section") {
-			font->comboEntry->addComboItem(entry->fontName);
+    std::vector<Resource*> fonts = pool->getResources(Resource::RESOURCE_FONT);
+    
+	for(int i=0; i < fonts.size(); i++) {
+		if(fonts[i]->getResourceName() != "section") {
+			font->comboEntry->addComboItem(fonts[i]->getResourceName());
 		}
 	}
 
@@ -3677,8 +3678,9 @@ void SceneLabelSheet::handleEvent(Event *event) {
 	}
 
 	if(event->getDispatcher() == font) {
-		String fontName = font->comboEntry->getSelectedItem()->label;
-		Font *font = CoreServices::getInstance()->getFontManager()->getFontByName(fontName);
+		String fontName = font->comboEntry->getSelectedItem()->label;        
+        ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
+        Font *font = (Font*)pool->getResource(Resource::RESOURCE_FONT, fontName);
 		label->getLabel()->setFont(font);
 		label->setText(caption->get());
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);

@@ -29,7 +29,6 @@
 		8A8652431B72865C009F94DD /* PolyEventHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8651F81B72865C009F94DD /* PolyEventHandler.h */; };
 		8A8652441B72865C009F94DD /* PolyFont.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8651F91B72865C009F94DD /* PolyFont.h */; };
 		8A8652451B72865C009F94DD /* PolyFontGlyphSheet.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8651FA1B72865C009F94DD /* PolyFontGlyphSheet.h */; };
-		8A8652461B72865C009F94DD /* PolyFontManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8651FB1B72865C009F94DD /* PolyFontManager.h */; };
 		8A8652471B72865C009F94DD /* PolyGlobals.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8651FC1B72865C009F94DD /* PolyGlobals.h */; };
 		8A8652481B72865C009F94DD /* PolyGPUDrawBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8651FD1B72865C009F94DD /* PolyGPUDrawBuffer.h */; };
 		8A8652491B72865C009F94DD /* PolyImage.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8651FE1B72865C009F94DD /* PolyImage.h */; };
@@ -106,7 +105,6 @@
 		8A8652E51B72867F009F94DD /* PolyEventHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A86529A1B72867E009F94DD /* PolyEventHandler.cpp */; };
 		8A8652E61B72867F009F94DD /* PolyFont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A86529B1B72867E009F94DD /* PolyFont.cpp */; };
 		8A8652E71B72867F009F94DD /* PolyFontGlyphSheet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A86529C1B72867E009F94DD /* PolyFontGlyphSheet.cpp */; };
-		8A8652E81B72867F009F94DD /* PolyFontManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A86529D1B72867E009F94DD /* PolyFontManager.cpp */; };
 		8A8652E91B72867F009F94DD /* PolyGPUDrawBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A86529E1B72867E009F94DD /* PolyGPUDrawBuffer.cpp */; };
 		8A8652EA1B72867F009F94DD /* PolyImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A86529F1B72867E009F94DD /* PolyImage.cpp */; };
 		8A8652EB1B72867F009F94DD /* PolyInputEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8652A01B72867E009F94DD /* PolyInputEvent.cpp */; };
@@ -193,7 +191,6 @@
 		8A8651F81B72865C009F94DD /* PolyEventHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyEventHandler.h; path = ../../../include/polycode/core/PolyEventHandler.h; sourceTree = "<group>"; };
 		8A8651F91B72865C009F94DD /* PolyFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyFont.h; path = ../../../include/polycode/core/PolyFont.h; sourceTree = "<group>"; };
 		8A8651FA1B72865C009F94DD /* PolyFontGlyphSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyFontGlyphSheet.h; path = ../../../include/polycode/core/PolyFontGlyphSheet.h; sourceTree = "<group>"; };
-		8A8651FB1B72865C009F94DD /* PolyFontManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyFontManager.h; path = ../../../include/polycode/core/PolyFontManager.h; sourceTree = "<group>"; };
 		8A8651FC1B72865C009F94DD /* PolyGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyGlobals.h; path = ../../../include/polycode/core/PolyGlobals.h; sourceTree = "<group>"; };
 		8A8651FD1B72865C009F94DD /* PolyGPUDrawBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyGPUDrawBuffer.h; path = ../../../include/polycode/core/PolyGPUDrawBuffer.h; sourceTree = "<group>"; };
 		8A8651FE1B72865C009F94DD /* PolyImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyImage.h; path = ../../../include/polycode/core/PolyImage.h; sourceTree = "<group>"; };
@@ -270,7 +267,6 @@
 		8A86529A1B72867E009F94DD /* PolyEventHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyEventHandler.cpp; path = ../../../src/core/PolyEventHandler.cpp; sourceTree = "<group>"; };
 		8A86529B1B72867E009F94DD /* PolyFont.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyFont.cpp; path = ../../../src/core/PolyFont.cpp; sourceTree = "<group>"; };
 		8A86529C1B72867E009F94DD /* PolyFontGlyphSheet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyFontGlyphSheet.cpp; path = ../../../src/core/PolyFontGlyphSheet.cpp; sourceTree = "<group>"; };
-		8A86529D1B72867E009F94DD /* PolyFontManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyFontManager.cpp; path = ../../../src/core/PolyFontManager.cpp; sourceTree = "<group>"; };
 		8A86529E1B72867E009F94DD /* PolyGPUDrawBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyGPUDrawBuffer.cpp; path = ../../../src/core/PolyGPUDrawBuffer.cpp; sourceTree = "<group>"; };
 		8A86529F1B72867E009F94DD /* PolyImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyImage.cpp; path = ../../../src/core/PolyImage.cpp; sourceTree = "<group>"; };
 		8A8652A01B72867E009F94DD /* PolyInputEvent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyInputEvent.cpp; path = ../../../src/core/PolyInputEvent.cpp; sourceTree = "<group>"; };
@@ -380,7 +376,6 @@
 				8A86529A1B72867E009F94DD /* PolyEventHandler.cpp */,
 				8A86529B1B72867E009F94DD /* PolyFont.cpp */,
 				8A86529C1B72867E009F94DD /* PolyFontGlyphSheet.cpp */,
-				8A86529D1B72867E009F94DD /* PolyFontManager.cpp */,
 				8A86529E1B72867E009F94DD /* PolyGPUDrawBuffer.cpp */,
 				8A86529F1B72867E009F94DD /* PolyImage.cpp */,
 				8A8652A01B72867E009F94DD /* PolyInputEvent.cpp */,
@@ -472,7 +467,6 @@
 				8A8651F81B72865C009F94DD /* PolyEventHandler.h */,
 				8A8651F91B72865C009F94DD /* PolyFont.h */,
 				8A8651FA1B72865C009F94DD /* PolyFontGlyphSheet.h */,
-				8A8651FB1B72865C009F94DD /* PolyFontManager.h */,
 				8A8651FC1B72865C009F94DD /* PolyGlobals.h */,
 				8A8651FD1B72865C009F94DD /* PolyGPUDrawBuffer.h */,
 				8A8651FE1B72865C009F94DD /* PolyImage.h */,
@@ -545,7 +539,6 @@
 				8A86526D1B72865C009F94DD /* PolyServerWorld.h in Headers */,
 				8A825F231B829BA70039E823 /* PolyPAAudioInterface.h in Headers */,
 				8A86524F1B72865C009F94DD /* PolyMaterialManager.h in Headers */,
-				8A8652461B72865C009F94DD /* PolyFontManager.h in Headers */,
 				8A8652891B72866C009F94DD /* tinyxml.h in Headers */,
 				8A8652351B72865C009F94DD /* PolyCamera.h in Headers */,
 				8A86524E1B72865C009F94DD /* PolyMaterial.h in Headers */,
@@ -772,7 +765,6 @@
 				8A8653051B72867F009F94DD /* PolySceneManager.cpp in Sources */,
 				8A8652FD1B72867F009F94DD /* PolyResource.cpp in Sources */,
 				8A8653111B72867F009F94DD /* PolyString.cpp in Sources */,
-				8A8652E81B72867F009F94DD /* PolyFontManager.cpp in Sources */,
 				8A8652D91B72867F009F94DD /* PolyClient.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

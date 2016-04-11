@@ -32,7 +32,6 @@ namespace Polycode {
 	class PolycodeModule;
 	class Renderer;
 	class Config;
-	class FontManager;
 	class SceneManager;
 	class TimerManager;
 	class TweenManager;
@@ -131,13 +130,6 @@ namespace Polycode {
 			* @see SoundManager
 			*/																								
 			SoundManager *getSoundManager();
-			
-			/**
-			* Returns the font manager. The font manager is responsible for loading and managing fonts.
-			* @return Font Manager
-			* @see FontManager
-			*/																											
-			FontManager *getFontManager();
 
 			/**
 			* Returns the logger. It can log messages and broadcast them to listeners.
@@ -175,7 +167,6 @@ namespace Polycode {
 			TweenManager *tweenManager;
 			ResourceManager *resourceManager;
 			SoundManager *soundManager;
-			FontManager *fontManager;
 			Renderer *renderer;
 	};
     

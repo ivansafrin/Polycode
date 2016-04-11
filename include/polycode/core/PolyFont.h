@@ -27,12 +27,13 @@ THE SOFTWARE.
 #include FT_FREETYPE_H
 #undef generic
 #include "polycode/core/PolyString.h"
+#include "polycode/core/PolyResource.h"
 
 namespace Polycode {
 	
 	class String;
 
-	class _PolyExport Font : public PolyBase {
+	class _PolyExport Font : public Resource {
 		public:
 			Font(const String& fileName, FT_Library FTLibrary);
 			virtual ~Font();

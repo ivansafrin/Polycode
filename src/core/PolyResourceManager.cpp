@@ -24,11 +24,11 @@
 #include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyCubemap.h"
 #include "polycode/core/PolyMaterialManager.h"
-#include "polycode/core/PolyFontManager.h"
 #include "polycode/core/PolyLogger.h"
 #include "polycode/core/PolyMaterial.h"
 #include "polycode/core/PolyShader.h"
 #include "polycode/core/PolyTexture.h"
+#include "polycode/core/PolyFont.h"
 #include "tinyxml.h"
 
 using std::vector;
@@ -148,7 +148,9 @@ void ResourcePool::loadResourcesFromFolderWithLoader(const String &folder, bool 
                 newResource = loader->loadResource(resourceDir[i].fullPath, this);
             }
             if(newResource) {
-                newResource->setResourceName(resourceDir[i].name);
+                if(newResource->getResourceName() == "") {
+                    newResource->setResourceName(resourceDir[i].name);
+                }
                 newResource->setResourcePath(resourceDir[i].fullPath);
                 addResource(newResource);
             }
@@ -160,11 +162,43 @@ void ResourcePool::loadResourcesFromFolderWithLoader(const String &folder, bool 
     }
 }
 
+Resource *ResourcePool::loadResource(const String &path) {
+    OSFileEntry entry(path, OSFileEntry::TYPE_FILE);
+    Resource *newResource = NULL;
+    for(int r = 0; r < Services()->getResourceManager()->getNumResourceLoaders(); r++) {
+        ResourceLoader *loader = Services()->getResourceManager()->getResourceLoaderAtIndex(r);
+        if(loader->canHandleExtension(entry.extension)) {
+            newResource = loader->loadResource(entry.fullPath, this);
+            if(newResource) {
+                newResource->setResourceName(entry.name);
+                newResource->setResourcePath(entry.fullPath);
+                addResource(newResource);
+                break;
+            }
+        }
+    }
+    return newResource;
+}
+
+Resource *ResourcePool::loadResourceWithName(const String &path, const String &name) {
+    OSFileEntry entry(path, OSFileEntry::TYPE_FILE);
+    Resource *newResource = NULL;
+    for(int r = 0; r < Services()->getResourceManager()->getNumResourceLoaders(); r++) {
+        ResourceLoader *loader = Services()->getResourceManager()->getResourceLoaderAtIndex(r);
+        if(loader->canHandleExtension(entry.extension)) {
+            newResource = loader->loadResource(entry.fullPath, this);
+            if(newResource) {
+                newResource->setResourceName(name);
+                newResource->setResourcePath(entry.fullPath);
+                addResource(newResource);
+                break;
+            }
+        }
+    }
+    return newResource;
+}
+
 void ResourcePool::loadResourcesFromFolder(const String &folder, bool recursive) {
-    
-    // need to do separate passes for each loader so that different types of resources load
-    // after each other
-    
     for(int r = 0; r < Services()->getResourceManager()->getNumResourceLoaders(); r++) {
         ResourceLoader *loader = Services()->getResourceManager()->getResourceLoaderAtIndex(r);
         loadResourcesFromFolderWithLoader(folder, recursive, loader, "");
@@ -321,15 +355,23 @@ Resource *ProgramResourceLoader::loadResource(const String &path, ResourcePool *
 }
 
 FontResourceLoader::FontResourceLoader() {
+    
+    FT_Init_FreeType(&FTLibrary);
+    FT_Library_SetLcdFilter(FTLibrary, FT_LCD_FILTER_LIGHT);
+    
     extensions.push_back("ttf");
     extensions.push_back("otf");
 }
 
+FontResourceLoader::~FontResourceLoader() {
+    FT_Done_FreeType(FTLibrary);
+}
+
 Resource *FontResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
     OSFileEntry entry = OSFileEntry(path, OSFileEntry::TYPE_FILE);
-    Services()->getFontManager()->registerFont(entry.nameWithoutExtension, path);
-    // TODO: make fonts resources, get rid of font manager
-    return NULL;
+    Font *font = new Font(path, FTLibrary);
+    font->setResourceName(entry.nameWithoutExtension);
+    return font;
 }
 
 void ResourceManager::handleEvent(Event *event) {

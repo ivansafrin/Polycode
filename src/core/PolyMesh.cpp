@@ -33,8 +33,8 @@ using std::vector;
 
 using namespace Polycode;
 
-Mesh::Mesh(const String& fileName)
-: vertexPositionArray(3, RenderDataArray::VERTEX_DATA_ARRAY),
+Mesh::Mesh(const String& fileName) : Resource(Resource::RESOURCE_MESH),
+vertexPositionArray(3, RenderDataArray::VERTEX_DATA_ARRAY),
 vertexColorArray(4, RenderDataArray::COLOR_DATA_ARRAY),
 vertexNormalArray(3, RenderDataArray::NORMAL_DATA_ARRAY),
 vertexTexCoordArray(2, RenderDataArray::TEXCOORD_DATA_ARRAY),
@@ -49,10 +49,11 @@ indexArray(RenderDataArray::INDEX_DATA_ARRAY)
     meshType = TRI_MESH;
     meshHasVertexBuffer = false;
     loadMesh(fileName);
+    setResourcePath(fileName);
 }
 
-Mesh::Mesh(int meshType)
-: vertexPositionArray(3, RenderDataArray::VERTEX_DATA_ARRAY),
+Mesh::Mesh(int meshType) : Resource(Resource::RESOURCE_MESH),
+vertexPositionArray(3, RenderDataArray::VERTEX_DATA_ARRAY),
 vertexColorArray(4, RenderDataArray::COLOR_DATA_ARRAY),
 vertexNormalArray(3, RenderDataArray::NORMAL_DATA_ARRAY),
 vertexTexCoordArray(2, RenderDataArray::TEXCOORD_DATA_ARRAY),

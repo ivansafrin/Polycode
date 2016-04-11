@@ -63,7 +63,8 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 
     ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
     
-    CoreServices::getInstance()->getFontManager()->registerFont("sans", "Fonts/Lato-Semibold.ttf");
+    //TODO: this results in doubling "sans" in the font browsers, need to fix
+    globalPool->loadResourceWithName("Fonts/Lato-Semibold.ttf", "sans");
     
     core->addFileSource("archive", "default.pak");
     globalPool->loadResourcesFromFolder("default", true);
@@ -78,9 +79,8 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
     */
 
     globalPool->loadResourcesFromFolder("Materials", true);
-			
-	CoreServices::getInstance()->getFontManager()->registerFont("section", "Fonts/Lato-Black.ttf");
-    
+    globalPool->loadResourceWithName("Fonts/Lato-Black.ttf", "section");
+	
 
 	CoreServices::getInstance()->getMaterialManager()->setTextureFilteringMode(Texture::FILTERING_LINEAR);
 	

@@ -29,7 +29,6 @@
 #include "polycode/core/PolyMaterialManager.h"
 #include "polycode/core/PolyRenderer.h"
 #include "polycode/core/PolyConfig.h"
-#include "polycode/core/PolyFontManager.h"
 #include "polycode/core/PolySceneManager.h"
 #include "polycode/core/PolyTimerManager.h"
 #include "polycode/core/PolyTweenManager.h"
@@ -75,9 +74,6 @@ TimerManager *CoreServices::getTimerManager() {
 	return timerManager;
 }
 
-FontManager *CoreServices::getFontManager() {
-	return fontManager;
-}
 
 Config *CoreServices::getConfig() {
 	return config;
@@ -97,7 +93,6 @@ CoreServices::CoreServices() : EventDispatcher() {
 	timerManager = new TimerManager();
 	tweenManager = new TweenManager();
 	soundManager = new SoundManager();
-	fontManager = new FontManager();
 }
 
 CoreServices::~CoreServices() {
@@ -107,7 +102,6 @@ CoreServices::~CoreServices() {
 	delete tweenManager;
 	delete resourceManager;
 	delete soundManager;
-	delete fontManager;
     delete logger;
     delete config;
     delete renderer;

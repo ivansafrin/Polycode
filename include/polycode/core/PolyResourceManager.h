@@ -26,6 +26,11 @@ THE SOFTWARE.
 #include "polycode/core/PolyEventDispatcher.h"
 #include <vector>
 
+#define generic GenericFreetypeLibrary
+#include "ft2build.h"
+#include FT_FREETYPE_H
+#include FT_LCD_FILTER_H
+
 #define RESOURCE_CHECK_INTERVAL	2000
 
 namespace Polycode {
@@ -47,6 +52,9 @@ namespace Polycode {
             bool hasResource(Resource *resource);
         
             void loadResourcesFromFolder(const String &folder, bool recursive);
+        
+            Resource *loadResource(const String &path);
+            Resource *loadResourceWithName(const String &path, const String &name);
         
 			Resource *getResource(int resourceType, const String& resourceName) const;
             String getName();
@@ -107,7 +115,10 @@ namespace Polycode {
     class _PolyExport FontResourceLoader : public ResourceLoader {
     public:
         FontResourceLoader();
+        ~FontResourceLoader();
         Resource *loadResource(const String &path, ResourcePool *targetPool);
+    private:
+        FT_Library FTLibrary;
     };
     
 	/**

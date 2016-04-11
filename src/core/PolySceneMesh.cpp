@@ -356,7 +356,7 @@ void SceneMesh::Render(GPUDrawBuffer *buffer) {
     drawCall.options.backfaceCull = backfaceCulled;
     drawCall.options.depthTest = depthTest;
     drawCall.options.depthWrite = depthWrite;
-
+    
     drawCall.mesh = mesh;
     drawCall.material = material;
     drawCall.shaderPasses = shaderPasses;

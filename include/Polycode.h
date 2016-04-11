@@ -54,7 +54,6 @@
 #include "polycode/core/PolyLabel.h"
 #include "polycode/core/PolyFont.h"
 #include "polycode/core/PolyFontGlyphSheet.h"
-#include "polycode/core/PolyFontManager.h"
 #include "polycode/core/PolyTexture.h"
 #include "polycode/core/PolyMaterial.h"
 #include "polycode/core/PolyMesh.h"

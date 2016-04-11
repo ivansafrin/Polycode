@@ -27,6 +27,7 @@ THE SOFTWARE.
 #include "polycode/core/PolyVector3.h"
 #include "polycode/core/PolyVector2.h"
 #include "polycode/core/PolyCore.h"
+#include "polycode/core/PolyResource.h"
 #include <vector>
 
 class CoreFile;
@@ -57,7 +58,7 @@ namespace Polycode {
 	/**
 	*  A mesh comprised of vertices. When data in the mesh changes, arrayDirtyMap must be set to true for the appropriate array types (color, position, normal, etc). Available types are defined in RenderDataArray.
 	*/
-	class _PolyExport Mesh : public PolyBase {
+	class _PolyExport Mesh : public Resource {
 		public:
 		
 			

@@ -70,7 +70,8 @@ PolycodeProject* PolycodeProjectManager::openProject(String path) {
 	for(int i=0; i < newProject->data.fonts.size(); i++) {
 		String fontPath = projectPath+"/"+newProject->data.fonts[i].fontPath;
 		String fontName = newProject->data.fonts[i].fontName;
-		CoreServices::getInstance()->getFontManager()->registerFont(fontName, fontPath);		
+        ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
+        pool->loadResourceWithName(fontPath, fontName);
 	}
 	
 	setActiveProject(newProject);
