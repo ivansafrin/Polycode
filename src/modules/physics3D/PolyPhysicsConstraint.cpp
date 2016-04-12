@@ -20,7 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "polycode\modules\physics3D\PolyPhysicsConstraint.h"
+#include "polycode/modules/physics3D/PolyPhysicsConstraint.h"
 
 using namespace Polycode;
 

@@ -24,8 +24,7 @@ THE SOFTWARE.
 
 #include "btBulletCollisionCommon.h"
 #include "btBulletDynamicsCommon.h"
-
-#include "PolyCollisionScene.h"
-#include "PolyCollisionSceneEntity.h"
-#include "PolyPhysicsScene.h"
-#include "PolyPhysicsSceneEntity.h"
+#include "polycode/modules/physics3D/PolyCollisionScene.h"
+#include "polycode/modules/physics3D/PolyCollisionSceneEntity.h"
+#include "polycode/modules/physics3D/PolyPhysicsScene.h"
+#include "polycode/modules/physics3D/PolyPhysicsSceneEntity.h"

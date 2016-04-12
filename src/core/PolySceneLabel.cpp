@@ -107,13 +107,11 @@ void SceneLabel::updateFromLabel() {
 
 	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
     LocalShaderParam *textureParam = getShaderPass(0).shaderBinding->getLocalParamByName("diffuse");
+    
+    Texture *oldTexture = NULL;
     if(textureParam) {
-        Texture *currentTexture = textureParam->getTexture();
-        if(currentTexture) {
-            textureParam->ownsPointer = false;
-            getShaderPass(0).shaderBinding->removeParam("diffuse");
-            materialManager->deleteTexture(currentTexture);
-        }
+        oldTexture = textureParam->getTexture();
+        textureParam->ownsPointer = false;
     }
 
     Texture *texture;
@@ -128,7 +126,9 @@ void SceneLabel::updateFromLabel() {
     setLocalBoundingBox(label->getWidth()*labelScale / CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), label->getHeight()*labelScale/ CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), 0.001);
     
     getShaderPass(0).shaderBinding->setTextureForParam("diffuse", texture);
-    
+    if(oldTexture) {
+        materialManager->deleteTexture(oldTexture);
+    }
 }
 
 void SceneLabel::Render(GPUDrawBuffer *buffer) {

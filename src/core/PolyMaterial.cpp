@@ -99,6 +99,9 @@ void ShaderPass::setExpectedAttributes() {
     if(!shader || !shaderBinding) {
         return;
     }
+    for(int i=0; i < shaderBinding->attributes.size(); i++) {
+        delete shaderBinding->attributes[i];
+    }
     shaderBinding->attributes.clear();
     
     for(int i=0; i < shader->expectedAttributes.size(); i++) {

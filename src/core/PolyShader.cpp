@@ -138,11 +138,15 @@ LocalShaderParam *ShaderBinding::getLocalParam(unsigned int index) {
 }
 
 LocalShaderParam *ShaderBinding::getLocalParamByName(const String& name) {
+    accessMutex->lock();
 	for(int i=0; i < localParams.size(); i++) {
 		if(localParams[i]->name == name) {
-			return localParams[i];
+            LocalShaderParam *retParam = localParams[i];
+            accessMutex->unlock();
+			return retParam;
 		}
 	}
+    accessMutex->unlock();
 	return NULL;
 }
 

@@ -88,7 +88,8 @@ void RenderThread::runThread() {
             nextFrame = frameQueue.front();
             frameQueue.pop();
         }
-        // RENDERER_TODO: Unlock mutex here?
+
+        Services()->getCore()->unlockMutex(jobQueueMutex);
            
         if(nextFrame) {
             while(nextFrame->jobQueue.size() > 0) {
@@ -98,7 +99,6 @@ void RenderThread::runThread() {
             }
             delete nextFrame;
         }
-        Services()->getCore()->unlockMutex(jobQueueMutex);
     }
 }
 
