@@ -27,6 +27,7 @@ THE SOFTWARE.
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyRenderer.h"
 #include "polycode/core/PolyTexture.h"
+#include "polycode/core/PolyMesh.h"
 
 #if PLATFORM == PLATFORM_MAC
     
@@ -89,6 +90,11 @@ namespace Polycode {
         void createProgram(ShaderProgram *program);
         void destroyProgram(ShaderProgram *program);
         
+        void createVBOForVertexArray(VertexDataArray *array);
+        
+        void createMesh(Mesh *mesh);
+        void destroyMesh(Mesh *mesh);
+        
         void createShader(Shader *shader);
         void destroyShader(Shader *shader);
         
@@ -103,7 +109,6 @@ namespace Polycode {
         void createVertexBuffer(VertexDataArray *dataArray);
         void createIndexBuffer(IndexDataArray *dataArray);
         void destroyBuffer(RenderDataArray *array);
-        
         
         void drawIndices(int type, IndexDataArray *indexArray);
         void drawArrays(int type, unsigned int vertexCount);

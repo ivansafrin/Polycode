@@ -191,6 +191,35 @@ void OpenGLGraphicsInterface::setParamInShader(Shader *shader, ProgramParam *par
     }
 }
 
+void OpenGLGraphicsInterface::createVBOForVertexArray(VertexDataArray *array) {
+    if(array->getDataSize() == 0) {
+        return;
+    }
+    GLuint bufferID;
+    glGenBuffers(1, &bufferID);
+    glBindBuffer(GL_ARRAY_BUFFER, bufferID);
+    glBufferDataARB(GL_ARRAY_BUFFER, array->getDataSize() * sizeof(PolyRendererVertexType), array->getArrayData(), GL_STATIC_DRAW);
+    array->hasVBO = true;
+    array->platformData = (void*) malloc(sizeof(GLuint));
+    *((GLuint*)array->platformData) = bufferID;
+}
+
+void OpenGLGraphicsInterface::createMesh(Mesh *mesh) {
+    createVBOForVertexArray(&mesh->vertexPositionArray);
+    createVBOForVertexArray(&mesh->vertexTexCoordArray);
+    createVBOForVertexArray(&mesh->vertexNormalArray);
+    createVBOForVertexArray(&mesh->vertexColorArray);
+    createVBOForVertexArray(&mesh->vertexTangentArray);
+    createVBOForVertexArray(&mesh->vertexBoneIndexArray);
+    createVBOForVertexArray(&mesh->vertexBoneWeightArray);
+    createVBOForVertexArray(&mesh->vertexTexCoord2Array);
+    createVBOForVertexArray(&mesh->vertexBoneIndexArray);
+}
+
+void OpenGLGraphicsInterface::destroyMesh(Mesh *mesh) {
+    
+}
+
 void OpenGLGraphicsInterface::setBlendingMode(unsigned int blendingMode) {
     if(blendingMode == Renderer::BLEND_MODE_NONE) {
         glDisable(GL_BLEND);

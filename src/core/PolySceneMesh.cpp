@@ -47,7 +47,6 @@ SceneMesh::SceneMesh(const String& fileName) : Entity(), material(NULL), skeleto
     loadFromFile(fileName);
 	useVertexBuffer = false;
 	lineSmooth = false;
-	ownsMesh = true;
 	ownsSkeleton = true;
 	lineWidth = 1.0;
 	pointSmooth = false;
@@ -105,8 +104,8 @@ void SceneMesh::rebuildAttributes() {
     for(int i=0; i < shaderPasses.size(); i++) {
         shaderPasses[i].setAttributeArraysFromMesh(mesh);
         if(skeleton) {
-            shaderPasses[i].attributeArrays.push_back(&skeletalVertexPositions);
-            shaderPasses[i].attributeArrays.push_back(&skeletalVertexNormals);
+          //  shaderPasses[i].attributeArrays.push_back(&skeletalVertexPositions);
+          //  shaderPasses[i].attributeArrays.push_back(&skeletalVertexNormals);
         }
         shaderPasses[i].shaderBinding->resetAttributes = true;
     }
@@ -171,7 +170,9 @@ void SceneMesh::loadFromFile(String fileName) {
     if(mesh && ownsMesh) {
         delete mesh;
     }
-	mesh = new Mesh(fileName);
+    ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
+    mesh = (Mesh*) pool->loadResourceWithName(fileName, fileName);
+    ownsMesh = false;
 	setLocalBoundingBox(mesh->calculateBBox());
     this->fileName = fileName;
 }

@@ -54,6 +54,9 @@ namespace Polycode {
             virtual void createTexture(Texture *texture) = 0;
             virtual void destroyTexture(Texture *texture) = 0;
         
+            virtual void createMesh(Mesh *mesh) = 0;
+            virtual void destroyMesh(Mesh *mesh) = 0;
+        
             virtual void setViewport(unsigned int x,unsigned  int y,unsigned  int width, unsigned height) = 0;
             virtual void clearBuffers(const Color &clearColor, bool colorBuffer, bool depthBuffer, bool stencilBuffer) = 0;
             virtual void createProgram(ShaderProgram *program) = 0;
@@ -166,6 +169,8 @@ namespace Polycode {
             static const int JOB_SET_TEXTURE_PARAM = 14;
             static const int JOB_DESTROY_SHADER_BINDING = 16;
             static const int JOB_DESTROY_SHADER_PARAM = 17;
+            static const int JOB_CREATE_MESH = 18;
+            static const int JOB_DESTROY_MESH = 19;
         
         protected:
         
@@ -231,6 +236,9 @@ namespace Polycode {
         
         void setAnisotropyAmount(Number amount);
         Number getAnisotropyAmount();
+        
+        Mesh *createMesh(const String &fileName);
+        void destroyMesh(Mesh *mesh);
         
         static Vector3 unProject(const Vector3 &position, const Matrix4 &modelMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport);
         static Vector3 project(const Vector3 &position, const Matrix4 &modelMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport);

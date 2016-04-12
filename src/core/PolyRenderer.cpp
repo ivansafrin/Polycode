@@ -464,6 +464,19 @@ void RenderThread::processJob(const RendererThreadJob &job) {
             }
         }
         break;
+        case JOB_CREATE_MESH:
+        {
+            Mesh *mesh = (Mesh*) job.data;
+            graphicsInterface->createMesh(mesh);
+        }
+        break;
+        case JOB_DESTROY_MESH:
+        {
+            Mesh *mesh = (Mesh*) job.data;
+            graphicsInterface->destroyMesh(mesh);
+        }
+        break;
+            
     }
     unlockRenderMutex();
 }
@@ -666,6 +679,16 @@ Vector3 Renderer::project(const Vector3 &position, const Matrix4 &modelMatrix, c
     in.y = in.y * (viewport.h) + viewport.y;
     
     return Vector3(in.x, in.y, in.z);
+}
+
+Mesh *Renderer::createMesh(const String &fileName) {
+    Mesh *mesh = new Mesh(fileName);
+    renderThread->enqueueJob(RenderThread::JOB_CREATE_MESH, (void*)mesh);
+    return mesh;
+}
+
+void Renderer::destroyMesh(Mesh *mesh) {
+    renderThread->enqueueJob(RenderThread::JOB_DESTROY_MESH, (void*)mesh);
 }
 
 Vector3 Renderer::unProject(const Vector3 &position, const Matrix4 &modelMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport) {

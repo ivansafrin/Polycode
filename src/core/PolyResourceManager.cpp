@@ -28,7 +28,9 @@
 #include "polycode/core/PolyMaterial.h"
 #include "polycode/core/PolyShader.h"
 #include "polycode/core/PolyTexture.h"
+#include "polycode/core/PolyRenderer.h"
 #include "polycode/core/PolyFont.h"
+#include "polycode/core/PolyMesh.h"
 #include "tinyxml.h"
 
 using std::vector;
@@ -163,8 +165,13 @@ void ResourcePool::loadResourcesFromFolderWithLoader(const String &folder, bool 
 }
 
 Resource *ResourcePool::loadResource(const String &path) {
+    
+    Resource *newResource = getResourceByPath(path);
+    if(newResource) {
+        return newResource;
+    }
+    
     OSFileEntry entry(path, OSFileEntry::TYPE_FILE);
-    Resource *newResource = NULL;
     for(int r = 0; r < Services()->getResourceManager()->getNumResourceLoaders(); r++) {
         ResourceLoader *loader = Services()->getResourceManager()->getResourceLoaderAtIndex(r);
         if(loader->canHandleExtension(entry.extension)) {
@@ -181,8 +188,13 @@ Resource *ResourcePool::loadResource(const String &path) {
 }
 
 Resource *ResourcePool::loadResourceWithName(const String &path, const String &name) {
+    
+    Resource *newResource = getResourceByPath(path);
+    if(newResource) {
+        return newResource;
+    }
+    
     OSFileEntry entry(path, OSFileEntry::TYPE_FILE);
-    Resource *newResource = NULL;
     for(int r = 0; r < Services()->getResourceManager()->getNumResourceLoaders(); r++) {
         ResourceLoader *loader = Services()->getResourceManager()->getResourceLoaderAtIndex(r);
         if(loader->canHandleExtension(entry.extension)) {
@@ -275,6 +287,7 @@ ResourceManager::ResourceManager() : EventDispatcher() {
     resourceLoaders.push_back(new ProgramResourceLoader());
     resourceLoaders.push_back(new MaterialResourceLoader());
     resourceLoaders.push_back(new FontResourceLoader());
+    resourceLoaders.push_back(new MeshResourceLoader());
 }
 
 ResourceManager::~ResourceManager() {
@@ -366,6 +379,16 @@ FontResourceLoader::FontResourceLoader() {
 FontResourceLoader::~FontResourceLoader() {
     FT_Done_FreeType(FTLibrary);
 }
+
+MeshResourceLoader::MeshResourceLoader() {
+    extensions.push_back("mesh");
+}
+
+Resource *MeshResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
+    Mesh *mesh = Services()->getRenderer()->createMesh(path);
+    return mesh;
+}
+
 
 Resource *FontResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
     OSFileEntry entry = OSFileEntry(path, OSFileEntry::TYPE_FILE);

@@ -121,8 +121,14 @@ namespace Polycode {
         FT_Library FTLibrary;
     };
     
+    class _PolyExport MeshResourceLoader : public ResourceLoader {
+    public:
+        MeshResourceLoader();
+        Resource *loadResource(const String &path, ResourcePool *targetPool);
+    };
+    
 	/**
-	* Manages loading and unloading of resources from directories and archives. Should only be accessed via the CoreServices singleton. 
+	* Manages loading and unloading of resources from directories and archives. Should only be accessed via the CoreServices singleton.
 	*/ 
 	class _PolyExport ResourceManager : public EventDispatcher {
 		public:
