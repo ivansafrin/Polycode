@@ -77,7 +77,7 @@ void RenderThread::runThread() {
         
         Services()->getCore()->lockMutex(jobQueueMutex);
         
-        if(jobQueue.size() > 0) {
+        while(jobQueue.size() > 0) {
             RendererThreadJob nextJob = jobQueue.front();
             jobQueue.pop();
             processJob(nextJob);

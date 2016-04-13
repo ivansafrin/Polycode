@@ -175,7 +175,6 @@
     <ClCompile Include="..\..\..\..\src\core\PolyEventHandler.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyFont.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyFontGlyphSheet.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyFontManager.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyGPUDrawBuffer.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyImage.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyInputEvent.cpp" />
@@ -256,7 +255,6 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyEventHandler.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyFont.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyFontGlyphSheet.h" />
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyFontManager.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyGlobals.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyGPUDrawBuffer.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyImage.h" />
