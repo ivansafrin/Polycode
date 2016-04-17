@@ -86,6 +86,7 @@
 #include "polycode/core/PolyRay.h"
 #include "polycode/core/PolySceneSprite.h"
 #include "polycode/core/PolySceneEntityInstance.h"
+#include "polycode/core/PolyScript.h"
 #include "polycode/core/PolyGlobals.h"
 
 #if defined(__APPLE__) && defined(__MACH__)

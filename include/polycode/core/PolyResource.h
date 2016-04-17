@@ -60,6 +60,7 @@ namespace Polycode {
 			static const int RESOURCE_SPRITE = 7;
 			static const int RESOURCE_ENTITY_INSTANCE = 8;
             static const int RESOURCE_FONT = 9;
+            static const int RESOURCE_SCRIPT = 10;
         
 			bool reloadOnFileModify;
         

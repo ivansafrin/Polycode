@@ -37,6 +37,8 @@ namespace Polycode {
 
 	class Renderer;
     class Scene;
+    class Script;
+    class ScriptInstance;
 
 	class _PolyExport MouseEventResult {
 		public:
@@ -94,7 +96,8 @@ namespace Polycode {
 			/**
 			* Main update method. Override this to do your updates before the render cycle.
 			*/			
-			virtual void Update(){};			
+			virtual void Update();
+        
 			virtual void fixedUpdate(){};
         
             void transformAndRender(GPUDrawBuffer *drawBuffer, Polycode::Rectangle *parentScissorBox);
@@ -883,8 +886,15 @@ namespace Polycode {
     
             Scene *getContainerScene();
         
+            void attachScript(Script *script);
+            void detachScript(Script *script);
+            unsigned int getNumScripts();
+            ScriptInstance *getScriptAtIndex(unsigned int index);
+        
 		protected:
 
+            std::vector<ScriptInstance*> scripts;
+        
             GPUDrawCall drawCall;
         
             Scene *containerScene;

@@ -23,6 +23,7 @@
 #include "polycode/core/PolyRenderer.h"
 #include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyInputEvent.h"
+#include "polycode/core/PolyScript.h"
 
 using namespace Polycode;
 
@@ -1196,6 +1197,12 @@ MouseEventResult Entity::onMouseWheelUp(const Ray &ray, int timestamp) {
 	return ret;
 }
 
+void Entity::Update() {
+    for(int i=0; i < scripts.size(); i++) {
+        scripts[i]->script->callUpdate(scripts[i], this, Services()->getCore()->getElapsed());
+    }
+}
+
 MouseEventResult Entity::onMouseWheelDown(const Ray &ray, int timestamp) {
 	MouseEventResult ret;
 	ret.hit = false;
@@ -1232,4 +1239,32 @@ MouseEventResult Entity::onMouseWheelDown(const Ray &ray, int timestamp) {
 		}
 	}
 	return ret;
+}
+
+void Entity::attachScript(Script *script) {
+    ScriptInstance *instance = script->callInit(this);
+    scripts.push_back(instance);
+}
+
+void Entity::detachScript(Script *script) {
+    for(int i=0; i < scripts.size(); i++) {
+        if(scripts[i]->script == script) {
+            ScriptInstance *instance = scripts[i];
+            scripts.erase(scripts.begin()+i);
+            delete instance;
+            return;
+        }
+    }
+}
+
+unsigned int Entity::getNumScripts() {
+    return scripts.size();
+}
+
+ScriptInstance *Entity::getScriptAtIndex(unsigned int index) {
+    if(index < scripts.size()) {
+        return scripts[index];
+    } else {
+        return NULL;
+    }
 }

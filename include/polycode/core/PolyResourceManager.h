@@ -31,6 +31,12 @@ THE SOFTWARE.
 #include FT_FREETYPE_H
 #include FT_LCD_FILTER_H
 
+extern "C" {
+    #include "lua.h"
+    #include "lualib.h"
+    #include "lauxlib.h"
+}
+
 #define RESOURCE_CHECK_INTERVAL	2000
 
 namespace Polycode {
@@ -119,6 +125,15 @@ namespace Polycode {
         Resource *loadResource(const String &path, ResourcePool *targetPool);
     private:
         FT_Library FTLibrary;
+    };
+    
+    class _PolyExport ScriptResourceLoader : public ResourceLoader {
+    public:
+        ScriptResourceLoader();
+        ~ScriptResourceLoader();
+        Resource *loadResource(const String &path, ResourcePool *targetPool);
+    private:
+        lua_State *luaState;
     };
     
     class _PolyExport MeshResourceLoader : public ResourceLoader {

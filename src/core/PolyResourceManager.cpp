@@ -31,6 +31,7 @@
 #include "polycode/core/PolyRenderer.h"
 #include "polycode/core/PolyFont.h"
 #include "polycode/core/PolyMesh.h"
+#include "polycode/core/PolyScript.h"
 #include "tinyxml.h"
 
 using std::vector;
@@ -228,7 +229,6 @@ Resource *ResourcePool::getResourceByPath(const String& resourcePath) const {
     if(fallbackPool) {
         return fallbackPool->getResourceByPath(resourcePath);
     } else {
-        Logger::log("Could not find resource for path [%s] in pool [%s]\n", resourcePath.c_str(), name.c_str());
         return NULL;
     }
 }
@@ -288,6 +288,7 @@ ResourceManager::ResourceManager() : EventDispatcher() {
     resourceLoaders.push_back(new MaterialResourceLoader());
     resourceLoaders.push_back(new FontResourceLoader());
     resourceLoaders.push_back(new MeshResourceLoader());
+    resourceLoaders.push_back(new ScriptResourceLoader());
 }
 
 ResourceManager::~ResourceManager() {
@@ -365,6 +366,22 @@ ProgramResourceLoader::ProgramResourceLoader() {
 Resource *ProgramResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
     ShaderProgram *newProgram = Services()->getMaterialManager()->createProgramFromFile(path);
     return newProgram;
+}
+
+ScriptResourceLoader::ScriptResourceLoader() {
+    luaState =  lua_open();
+    luaL_openlibs(luaState);
+    luaopen_debug(luaState);
+    extensions.push_back("lua");
+}
+
+ScriptResourceLoader::~ScriptResourceLoader() {
+    lua_close(luaState);
+}
+
+Resource *ScriptResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
+    Script *newScript = new LuaScript(luaState, path);
+    return newScript;
 }
 
 FontResourceLoader::FontResourceLoader() {

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6D904FCD1CC2A4DA00D0E80A /* PolyScript.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D904FCC1CC2A4DA00D0E80A /* PolyScript.cpp */; };
+		6D904FCF1CC2A4E900D0E80A /* PolyScript.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D904FCE1CC2A4E900D0E80A /* PolyScript.h */; };
 		8A7349081B86A53C00F660C0 /* lodepng.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A7349071B86A53C00F660C0 /* lodepng.h */; };
 		8A73490A1B86A54800F660C0 /* lodepng.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A7349091B86A54800F660C0 /* lodepng.cpp */; };
 		8A825F231B829BA70039E823 /* PolyPAAudioInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A825F221B829BA70039E823 /* PolyPAAudioInterface.h */; };
@@ -169,6 +171,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6D904FCC1CC2A4DA00D0E80A /* PolyScript.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyScript.cpp; path = ../../../src/core/PolyScript.cpp; sourceTree = "<group>"; };
+		6D904FCE1CC2A4E900D0E80A /* PolyScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyScript.h; path = ../../../include/polycode/core/PolyScript.h; sourceTree = "<group>"; };
 		8A7349071B86A53C00F660C0 /* lodepng.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lodepng.h; path = ../../../include/lodepng.h; sourceTree = "<group>"; };
 		8A7349091B86A54800F660C0 /* lodepng.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lodepng.cpp; path = ../../../src/core/lodepng.cpp; sourceTree = "<group>"; };
 		8A825F221B829BA70039E823 /* PolyPAAudioInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyPAAudioInterface.h; path = ../../../include/polycode/core/PolyPAAudioInterface.h; sourceTree = "<group>"; };
@@ -410,6 +414,7 @@
 				8A8652BD1B72867F009F94DD /* PolySceneRenderTexture.cpp */,
 				8A8652BE1B72867F009F94DD /* PolySceneSound.cpp */,
 				8A8652BF1B72867F009F94DD /* PolySceneSprite.cpp */,
+				6D904FCC1CC2A4DA00D0E80A /* PolyScript.cpp */,
 				8A8652C01B72867F009F94DD /* PolyServer.cpp */,
 				8A8652C11B72867F009F94DD /* PolyShader.cpp */,
 				8A8652C21B72867F009F94DD /* PolySkeleton.cpp */,
@@ -503,6 +508,7 @@
 				8A86521D1B72865C009F94DD /* PolySceneRenderTexture.h */,
 				8A86521E1B72865C009F94DD /* PolySceneSound.h */,
 				8A86521F1B72865C009F94DD /* PolySceneSprite.h */,
+				6D904FCE1CC2A4E900D0E80A /* PolyScript.h */,
 				8A8652211B72865C009F94DD /* PolyServer.h */,
 				8A8652221B72865C009F94DD /* PolyServerWorld.h */,
 				8A8652231B72865C009F94DD /* PolyShader.h */,
@@ -536,6 +542,7 @@
 				8A7349081B86A53C00F660C0 /* lodepng.h in Headers */,
 				8A86523E1B72865C009F94DD /* PolyCubemap.h in Headers */,
 				8A8652741B72865C009F94DD /* PolyTexture.h in Headers */,
+				6D904FCF1CC2A4E900D0E80A /* PolyScript.h in Headers */,
 				8A86526D1B72865C009F94DD /* PolyServerWorld.h in Headers */,
 				8A825F231B829BA70039E823 /* PolyPAAudioInterface.h in Headers */,
 				8A86524F1B72865C009F94DD /* PolyMaterialManager.h in Headers */,
@@ -706,6 +713,7 @@
 				8A8653001B72867F009F94DD /* PolySceneEntityInstance.cpp in Sources */,
 				8A8652DC1B72867F009F94DD /* PolyConfig.cpp in Sources */,
 				8A8652FE1B72867F009F94DD /* PolyResourceManager.cpp in Sources */,
+				6D904FCD1CC2A4DA00D0E80A /* PolyScript.cpp in Sources */,
 				8A8652FF1B72867F009F94DD /* PolyScene.cpp in Sources */,
 				8A8652DB1B72867F009F94DD /* PolyColor.cpp in Sources */,
 				8A8652ED1B72867F009F94DD /* PolyLogger.cpp in Sources */,
