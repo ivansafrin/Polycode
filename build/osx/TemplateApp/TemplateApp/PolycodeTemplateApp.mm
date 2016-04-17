@@ -15,14 +15,13 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     core->addFileSource("archive", "hdr.pak");
     globalPool->loadResourcesFromFolder("hdr", true);
     
-    Polycode::Script *rotateScript = (Polycode::Script*) globalPool->loadResource("rotate.lua");
+    Polycode:Script *rotateScript = (Script*) globalPool->loadResource("rotate.lua");
     
 	// Write your code here!
     
     Scene *scene = new Scene(Scene::SCENE_2D);
     scene->useClearColor = true;
     scene->clearColor.setColor(0.2, 0.2, 0.2, 1.0);
-    
     
    // scene->setOverrideMaterial((Material*)globalPool->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
     

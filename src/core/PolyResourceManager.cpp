@@ -32,6 +32,7 @@
 #include "polycode/core/PolyFont.h"
 #include "polycode/core/PolyMesh.h"
 #include "polycode/core/PolyScript.h"
+#include "polycode/core/PolyLuaApi.h"
 #include "tinyxml.h"
 
 using std::vector;
@@ -372,6 +373,7 @@ ScriptResourceLoader::ScriptResourceLoader() {
     luaState =  lua_open();
     luaL_openlibs(luaState);
     luaopen_debug(luaState);
+    luaopen_Polycode(luaState);
     extensions.push_back("lua");
 }
 

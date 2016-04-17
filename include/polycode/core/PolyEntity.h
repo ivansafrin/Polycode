@@ -492,7 +492,7 @@ namespace Polycode {
              * Returns the bounding box Y value.
              */
 			Number getHeight() const;
-
+        
             /**
              * Returns the bounding box Z value.
              */
