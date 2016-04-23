@@ -29,6 +29,20 @@ Polycode::Script::Script(const String &path) : Resource(Resource::RESOURCE_SCRIP
     setResourcePath(path);
 }
 
+JSScript::JSScript(duk_context *context, const String &path) : Script(path) {
+    this->context = context;
+}
+
+ScriptInstance *JSScript::callInit(Entity *entity) {
+    JSScriptInstance *scriptInstance = new JSScriptInstance();
+    scriptInstance->script = this;
+    return scriptInstance;
+}
+
+void JSScript::callUpdate(ScriptInstance *instance, Entity *entity, Number elapsed) {
+    
+}
+
 LuaScript::LuaScript(lua_State *state, const String &path) : Script(path) {
     luaL_loadfile(state, path.c_str());
     lua_pcall(state,0,1,0);

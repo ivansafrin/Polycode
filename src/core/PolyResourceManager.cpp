@@ -374,15 +374,30 @@ ScriptResourceLoader::ScriptResourceLoader() {
     luaL_openlibs(luaState);
     luaopen_debug(luaState);
     luaopen_Polycode(luaState);
+    
+    // init duktape
+    
+    duktapeContext = duk_create_heap_default();
+    
     extensions.push_back("lua");
+    extensions.push_back("js");
+    
+    
 }
 
 ScriptResourceLoader::~ScriptResourceLoader() {
     lua_close(luaState);
+    duk_destroy_heap(duktapeContext);
 }
 
 Resource *ScriptResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
-    Script *newScript = new LuaScript(luaState, path);
+    OSFileEntry entry(path, OSFileEntry::TYPE_FILE);
+    Script *newScript = NULL;
+    if(entry.extension == "lua") {
+        newScript = new LuaScript(luaState, path);
+    } else if(entry.extension == "js") {
+        newScript = new JSScript(duktapeContext, path);
+    }
     return newScript;
 }
 

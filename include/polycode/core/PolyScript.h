@@ -29,6 +29,8 @@ extern "C" {
     #include "lua.h"
     #include "lualib.h"
     #include "lauxlib.h"
+    
+    #include "duktape.h"
 }
 
 namespace Polycode {
@@ -65,6 +67,22 @@ namespace Polycode {
             lua_State *state;
             String tableName;
             int tableRef;
+    };
+    
+    class JSScriptInstance : public ScriptInstance {
+    public:
+        int tableRef;
+    };
+    
+    class JSScript : public Script {
+    public:
+        JSScript(duk_context *context, const String &path);
+        
+        ScriptInstance *callInit(Entity *entity);
+        void callUpdate(ScriptInstance *instance, Entity *entity, Number elapsed);
+        
+    private:
+        duk_context *context;
     };
 
 }

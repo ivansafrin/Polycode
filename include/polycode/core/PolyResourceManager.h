@@ -35,6 +35,8 @@ extern "C" {
     #include "lua.h"
     #include "lualib.h"
     #include "lauxlib.h"
+    
+    #include "duktape.h"
 }
 
 #define RESOURCE_CHECK_INTERVAL	2000
@@ -134,6 +136,7 @@ namespace Polycode {
         Resource *loadResource(const String &path, ResourcePool *targetPool);
     private:
         lua_State *luaState;
+        duk_context *duktapeContext;
     };
     
     class _PolyExport MeshResourceLoader : public ResourceLoader {

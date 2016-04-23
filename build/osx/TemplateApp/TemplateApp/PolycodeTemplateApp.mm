@@ -15,7 +15,7 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     core->addFileSource("archive", "hdr.pak");
     globalPool->loadResourcesFromFolder("hdr", true);
     
-    Polycode:Script *rotateScript = (Script*) globalPool->loadResource("rotate.lua");
+    Polycode:Script *rotateScript = (Script*) globalPool->loadResource("rotate.js");
     
 	// Write your code here!
     
