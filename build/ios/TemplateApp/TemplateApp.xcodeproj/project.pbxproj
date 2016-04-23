@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6D90505D1CCBFFD400D0E80A /* liblua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D90505C1CCBFFD400D0E80A /* liblua.a */; };
 		8A0F80641BF536C800E24F9B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A0F80631BF536C800E24F9B /* AppDelegate.m */; };
 		8A0F80671BF536C800E24F9B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A0F80661BF536C800E24F9B /* ViewController.m */; };
 		8A0F806A1BF536C800E24F9B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8A0F80681BF536C800E24F9B /* Main.storyboard */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6D90505C1CCBFFD400D0E80A /* liblua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua.a; path = ../../../../lib/ios/iphonesimulator/liblua.a; sourceTree = "<group>"; };
 		8A0F805C1BF536C800E24F9B /* TemplateApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TemplateApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A0F80621BF536C800E24F9B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		8A0F80631BF536C800E24F9B /* AppDelegate.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -47,6 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D90505D1CCBFFD400D0E80A /* liblua.a in Frameworks */,
 				8A35E14F1C877DDB00BF9EEA /* libFreetype2.a in Frameworks */,
 				8A35E1C61C87B3BC00BF9EEA /* libphysfs.a in Frameworks */,
 				8AD300AB1BF68290004D243B /* libPolycodeCore.a in Frameworks */,
@@ -77,6 +80,7 @@
 			children = (
 				8A35E14E1C877DDB00BF9EEA /* libFreetype2.a */,
 				8A35E1C51C87B3BC00BF9EEA /* libphysfs.a */,
+				6D90505C1CCBFFD400D0E80A /* liblua.a */,
 				8AD300AA1BF68290004D243B /* libPolycodeCore.a */,
 				8A0F80621BF536C800E24F9B /* AppDelegate.h */,
 				8A0F80631BF536C800E24F9B /* AppDelegate.m */,
@@ -127,6 +131,7 @@
 				TargetAttributes = {
 					8A0F805B1BF536C800E24F9B = {
 						CreatedOnToolsVersion = 7.1;
+						DevelopmentTeam = L5CB3G5LX2;
 					};
 				};
 			};
@@ -283,6 +288,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_NO_COMMON_BLOCKS = YES;
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../../include\"";
 				INFOPLIST_FILE = TemplateApp/Info.plist;
@@ -291,6 +298,7 @@
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = org.polycode.TemplateApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -298,6 +306,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_NO_COMMON_BLOCKS = YES;
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../../include\"";
 				INFOPLIST_FILE = TemplateApp/Info.plist;
@@ -306,6 +316,7 @@
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = org.polycode.TemplateApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

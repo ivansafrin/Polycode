@@ -370,7 +370,7 @@ Resource *ProgramResourceLoader::loadResource(const String &path, ResourcePool *
 }
 
 ScriptResourceLoader::ScriptResourceLoader() {
-    luaState =  lua_open();
+    luaState =  luaL_newstate();
     luaL_openlibs(luaState);
     luaopen_debug(luaState);
     luaopen_Polycode(luaState);

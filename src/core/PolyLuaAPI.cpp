@@ -35,7 +35,7 @@ static int Lua_Entity_Roll(lua_State *L) {
 }
 
 int luaopen_Polycode(lua_State *L) {
-    
+    /*
     static const luaL_reg entityFunctions[] =
     {
         { "Roll", Lua_Entity_Roll},
@@ -43,5 +43,6 @@ int luaopen_Polycode(lua_State *L) {
     };
     
     luaL_register(L, "Entity", entityFunctions);
+     */
     return 1;
 }

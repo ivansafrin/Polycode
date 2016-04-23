@@ -198,7 +198,7 @@ void OpenGLGraphicsInterface::createVBOForVertexArray(VertexDataArray *array) {
     GLuint bufferID;
     glGenBuffers(1, &bufferID);
     glBindBuffer(GL_ARRAY_BUFFER, bufferID);
-    glBufferDataARB(GL_ARRAY_BUFFER, array->getDataSize() * sizeof(PolyRendererVertexType), array->getArrayData(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, array->getDataSize() * sizeof(PolyRendererVertexType), array->getArrayData(), GL_STATIC_DRAW);
     array->hasVBO = true;
     array->platformData = (void*) malloc(sizeof(GLuint));
     *((GLuint*)array->platformData) = bufferID;
