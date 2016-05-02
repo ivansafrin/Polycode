@@ -116,7 +116,7 @@ void SceneLabel::updateFromLabel() {
 
     Texture *texture;
 	if(SceneLabel::createMipmapsForLabels) {
-		texture = materialManager->createTextureFromImage(label, materialManager->clampDefault, materialManager->mipmapsDefault);	
+		texture = materialManager->createTextureFromImage(label, materialManager->clampDefault, materialManager->mipmapsDefault);
 	} else {
 		texture = materialManager->createTextureFromImage(label, materialManager->clampDefault, false);		
 	}

@@ -29,6 +29,7 @@ THE SOFTWARE.
 #include "polycode/core/PolyCoreInput.h"
 #include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyThreaded.h"
+#include "polycode/core/PolyQuaternion.h"
 #include "polycode/core/PolyCoreFileProvider.h"
 
 long getThreadID();
@@ -88,6 +89,11 @@ namespace Polycode {
         int aaLevel;
         int anisotropyLevel;
         bool retinaSupport;
+    };
+    
+    class CoreMotionEvent : public Event {
+        public:
+            Vector3 amount;
     };
 
 	/**
@@ -381,7 +387,10 @@ namespace Polycode {
 		static const int EVENT_CUT = EVENTBASE_CORE+6;
 		static const int EVENT_SELECT_ALL = EVENTBASE_CORE+7;
 		static const int EVENT_PASTE = EVENTBASE_CORE+8;
-		
+        
+		static const int EVENT_GYRO_ROTATION = EVENTBASE_CORE+9;
+		static const int EVENT_ACCELEROMETER_MOTION = EVENTBASE_CORE+10;
+        
 		virtual String executeExternalCommand(String command, String args, String inDirectory) = 0;
 		
 		/**
@@ -423,7 +432,9 @@ namespace Polycode {
 		/**
 		* Default height of the desktop screen
 		*/		
-		int defaultScreenHeight;		
+		int defaultScreenHeight;
+        
+        Quaternion deviceAttitude;
 				
 	protected:	
 	

@@ -1,24 +1,24 @@
 #ifdef GL_ES
-	precision mediump float;
+	precision mediump float;	
 #endif
 
-varying vec2 texCoordVar;
-varying vec3 varNormal;
-varying vec4 varPosition;
+varying lowp vec2 texCoordVar;
+varying lowp vec3 varNormal;
+varying lowp vec4 varPosition;
 
 uniform sampler2D diffuse;
-uniform vec4 diffuse_color;
-uniform vec4 specular_color;
-uniform vec4 entityColor;
+uniform lowp vec4 diffuse_color;
+uniform lowp vec4 specular_color;
+uniform lowp vec4 entityColor;
 uniform float shininess;
 
-#define MAX_LIGHTS 8
+#define MAX_LIGHTS 4
 
 struct LightInfo {
-	vec3 position;
-	vec3 direction;
-	vec4 specular;
-	vec4 diffuse;
+	lowp vec3 position;
+	lowp vec3 direction;
+	lowp vec4 specular;
+	lowp vec4 diffuse;
 
 	float spotExponent;
 	float spotCosCutoff;
@@ -38,19 +38,19 @@ float calculateAttenuation(in int i, in float dist)
 }
 
 void pointLight(in int i, in vec3 normal, in vec4 pos, inout vec4 diffuse, inout vec4 specular) {
-	vec4 color = diffuse_color;
-	vec4 matspec = specular_color;
+	lowp vec4 color = diffuse_color;
+	lowp vec4 matspec = specular_color;
 	float shininess = shininess;
-	vec4 lightspec = lights[i].specular;
-	vec4 lpos = vec4(lights[i].position, 1.0);
-	vec4 s = pos-lpos; 
-	vec4 sn = -normalize(s);
+	lowp vec4 lightspec = lights[i].specular;
+	lowp vec4 lpos = vec4(lights[i].position, 1.0);
+	lowp vec4 s = pos-lpos; 
+	lowp vec4 sn = -normalize(s);
 	
-	vec3 light = sn.xyz;
-	vec3 n = normalize(normal);
-	vec3 r = -reflect(light, n);
+	lowp vec3 light = sn.xyz;
+	lowp vec3 n = normalize(normal);
+	lowp vec3 r = -reflect(light, n);
 	r = normalize(r);
-	vec3 v = -pos.xyz;
+	lowp vec3 v = -pos.xyz;
 	v = normalize(v);
 
 	float nDotL = dot(n, sn.xyz);
@@ -105,25 +105,25 @@ void spotLight(in int i, in vec3 normal, in vec4 pos, inout vec4 diffuse, inout 
 
 void doLights(in int numLights, in vec3 normal, in vec4 pos, inout vec4 diffuse, inout vec4 specular) {
 	for (int i = 0; i < numLights; i++) {
-		if (lights[i].spotCosCutoff == 180.0) {
+		//if (lights[i].spotCosCutoff == 180.0) {
 			pointLight(i, normal, pos, diffuse, specular);
-		} else {
-			spotLight(i, normal, pos, diffuse, specular);
-		}
+		//} else {
+		//	spotLight(i, normal, pos, diffuse, specular);
+		//}
     }
 }
 
 
 void main()
 {
-	vec4 diffuse_val  = vec4(0.0);
-	vec4 specular_val = vec4(0.0);
+	lowp vec4 diffuse_val  = vec4(0.0);
+	lowp vec4 specular_val = vec4(0.0);
 
 	doLights(MAX_LIGHTS, varNormal, varPosition, diffuse_val, specular_val);
 		
-	vec4 texColor = texture2D(diffuse, texCoordVar);		
+	lowp vec4 texColor = texture2D(diffuse, texCoordVar);		
 		
-    vec4 color = diffuse_val; 	           
+    lowp vec4 color = diffuse_val; 	           
     color = clamp((color*entityColor*texColor) + specular_val, 0.0, 1.0);  
 
 	color.a = entityColor.a * texColor.a * diffuse_color.a;	

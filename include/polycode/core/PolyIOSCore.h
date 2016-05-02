@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 #include "polycode/core/PolyCore.h"
 #import "polycode/view/ios/PolycodeView.h"
+#include "polycode/core/PolyInputEvent.h"
 #include "polycode/core/PolyOpenGLGraphicsInterface.h"
 #include <pthread.h>
 
@@ -40,7 +41,26 @@ public:
     pthread_mutex_t pMutex;
 };
 
-
+class IOSEvent {
+    public:
+    int eventGroup;
+    int eventCode;
+    
+    int mouseX;
+    int mouseY;
+    
+    std::vector<TouchInfo> touches;
+    TouchInfo touch;
+    
+    PolyKEY keyCode;
+    wchar_t unicodeChar;
+    
+    char mouseButton;
+    
+    static const int EVENTBASE_PLATFORMEVENT = 0x300;
+    static const int INPUT_EVENT = EVENTBASE_PLATFORMEVENT+0;
+    static const int FOCUS_EVENT = EVENTBASE_PLATFORMEVENT+1;
+};
 
 namespace Polycode {
 
@@ -83,7 +103,12 @@ namespace Polycode {
 
 		Number getBackingXRes();
 		Number getBackingYRes();
-
+        
+        void _setAcceleration(const Vector3 &acceleration);
+        void _setGyroRotation(const Vector3 &rotation);
+        
+        std::vector<IOSEvent> iosEvents;
+        
 	private:
         
         CADisplayLink *displayLink;
@@ -91,6 +116,7 @@ namespace Polycode {
         GLuint colorRenderbuffer;
         GLuint depthRenderbuffer;
         GLuint defaultFBOName;
+        bool retinaSupport;
         
         EAGLContext *context;
         uint64_t initTime;

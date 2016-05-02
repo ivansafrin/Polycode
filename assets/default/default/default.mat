@@ -44,6 +44,14 @@
 		<shader type="glsl" name="BlurVShader" screen="true">		
 			<vp source="default/ScreenShader.vert"/>
 			<fp source="default/BlurV.frag"/>
+		</shader>
+		<shader type="glsl" name="LightcubePolar" numPointLights="0" numSpotLights="0">
+			<vp source="default/LightCube.vert"/>
+			<fp source="default/LightcubePolar.frag"/>
+		</shader>
+		<shader type="glsl" name="LightcubeAngular" numPointLights="0" numSpotLights="0">
+			<vp source="default/LightCube.vert"/>
+			<fp source="default/LightcubeAngular.frag"/>
 		</shader>		
 	</shaders>	
 	<materials>

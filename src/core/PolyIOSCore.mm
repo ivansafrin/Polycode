@@ -43,10 +43,13 @@ IOSCore::IOSCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool v
         
         initTime = mach_absolute_time();
         
+        eventMutex = createMutex();
+        
         fileProviders.push_back(new BasicFileProvider());
         fileProviders.push_back(new PhysFSFileProvider());
         
         glView = view;
+        [glView setCore:this];
         
         renderer = new Renderer();
                 
@@ -54,7 +57,9 @@ IOSCore::IOSCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool v
         renderer->setGraphicsInterface(this, interface);
         services->setRenderer(renderer);
         
-        setVideoMode([glView frame].size.width , [glView frame].size.height, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
+        CGRect screenBounds = [[UIScreen mainScreen] bounds];
+        
+        setVideoMode(screenBounds.size.width, screenBounds.size.height, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
 
 }
 
@@ -70,8 +75,29 @@ void IOSCore::Render() {
 }
 
 void IOSCore::checkEvents() {
-
-
+    lockMutex(eventMutex);    
+    for(int i=0; i < iosEvents.size(); i++) {
+        IOSEvent event = iosEvents[i];
+        switch(event.eventGroup) {
+            case IOSEvent::INPUT_EVENT:
+            {
+                    case InputEvent::EVENT_TOUCHES_BEGAN:
+                        input->touchesBegan(event.touch, event.touches, getTicks());
+                        break;
+                    case InputEvent::EVENT_TOUCHES_ENDED:
+                        input->touchesEnded(event.touch, event.touches, getTicks());
+                        break;
+                    case InputEvent::EVENT_TOUCHES_MOVED:
+                        input->touchesMoved(event.touch, event.touches, getTicks());
+                        break;
+            }
+            break;
+            case IOSEvent::FOCUS_EVENT:
+            break;
+        }
+    }
+    iosEvents.clear();
+    unlockMutex(eventMutex);
 }
 
 bool IOSCore::systemUpdate() {
@@ -150,12 +176,25 @@ String IOSCore::saveFilePicker(std::vector<CoreFileExtension> extensions) {
 	return "";
 }
 
+void IOSCore::_setAcceleration(const Vector3 &acceleration) {
+    CoreMotionEvent *event = new CoreMotionEvent();
+    event->amount = acceleration;
+    dispatchEvent(event, Core::EVENT_ACCELEROMETER_MOTION);
+}
+
+void IOSCore::_setGyroRotation(const Vector3 &rotation) {
+    CoreMotionEvent *event = new CoreMotionEvent();
+    event->amount = rotation;
+    dispatchEvent(event, Core::EVENT_GYRO_ROTATION);
+}
+
 void IOSCore::handleVideoModeChange(VideoModeChangeInfo *modeInfo) {
     
     // IOS_TODO: Implement CADisplayLink
     
     xRes = modeInfo->xRes;
     yRes = modeInfo->yRes;
+    retinaSupport = modeInfo->retinaSupport;
     
     CAEAGLLayer *eaglLayer = (CAEAGLLayer *)glView.layer;
     eaglLayer.opaque = TRUE;
@@ -170,12 +209,21 @@ void IOSCore::handleVideoModeChange(VideoModeChangeInfo *modeInfo) {
         return;
     }
 
+    CGFloat screenScale = 1.0;
+    if(modeInfo->retinaSupport) {
+        screenScale = [[UIScreen mainScreen] scale];
+        renderer->setBackingResolutionScale(screenScale, screenScale);
+    } else {
+        renderer->setBackingResolutionScale(1.0, 1.0);
+    }
+    
     glGenFramebuffers(1, &defaultFBOName);
     
     glGenRenderbuffers(1, &colorRenderbuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, defaultFBOName);
     glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
     
+    glView.layer.contentsScale = screenScale;
     [context renderbufferStorage:GL_RENDERBUFFER fromDrawable: (id<EAGLDrawable>) glView.layer];
 
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderbuffer);
@@ -187,7 +235,7 @@ void IOSCore::handleVideoModeChange(VideoModeChangeInfo *modeInfo) {
     
     glGenRenderbuffers(1, &depthRenderbuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, depthRenderbuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, modeInfo->xRes, modeInfo->yRes);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, modeInfo->xRes * screenScale, modeInfo->yRes  * screenScale);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
     
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -251,9 +299,17 @@ void IOSCore::setDeviceSize(Number x, Number y) {
 }
 
 Number IOSCore::getBackingXRes() {
-	return getXRes();
+    if(!retinaSupport) {
+        return getXRes();
+    } else {
+        return getXRes() * [[UIScreen mainScreen] scale];
+    }
 }
 
 Number IOSCore::getBackingYRes() {
-	return getYRes();
+    if(!retinaSupport) {
+        return getYRes();
+    } else {
+        return getYRes()  * [[UIScreen mainScreen] scale];
+    }
 }

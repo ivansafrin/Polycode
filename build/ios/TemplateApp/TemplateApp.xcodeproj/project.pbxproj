@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6D1992381CD692ED00DE01FA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D1992341CD692ED00DE01FA /* QuartzCore.framework */; };
+		6D1992391CD692ED00DE01FA /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D1992351CD692ED00DE01FA /* CoreMotion.framework */; };
+		6D19923A1CD692ED00DE01FA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D1992361CD692ED00DE01FA /* UIKit.framework */; };
+		6D19923B1CD692ED00DE01FA /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D1992371CD692ED00DE01FA /* OpenGLES.framework */; };
 		6D90505D1CCBFFD400D0E80A /* liblua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D90505C1CCBFFD400D0E80A /* liblua.a */; };
 		8A0F80641BF536C800E24F9B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A0F80631BF536C800E24F9B /* AppDelegate.m */; };
 		8A0F80671BF536C800E24F9B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A0F80661BF536C800E24F9B /* ViewController.m */; };
@@ -23,6 +27,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6D1992341CD692ED00DE01FA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		6D1992351CD692ED00DE01FA /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		6D1992361CD692ED00DE01FA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		6D1992371CD692ED00DE01FA /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		6D90505C1CCBFFD400D0E80A /* liblua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua.a; path = ../../../../lib/ios/iphonesimulator/liblua.a; sourceTree = "<group>"; };
 		8A0F805C1BF536C800E24F9B /* TemplateApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TemplateApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A0F80621BF536C800E24F9B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -35,7 +43,7 @@
 		8A0F80701BF536C800E24F9B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8A0F80791BF53DD200E24F9B /* PolycodeTemplateApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolycodeTemplateApp.h; sourceTree = "<group>"; };
 		8A0F807A1BF53DD200E24F9B /* PolycodeTemplateApp.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PolycodeTemplateApp.mm; sourceTree = "<group>"; };
-		8A0F81981BF56A2D00E24F9B /* PolycodeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PolycodeView.m; path = ../../../../src/view/ios/PolycodeView.m; sourceTree = "<group>"; };
+		8A0F81981BF56A2D00E24F9B /* PolycodeView.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; name = PolycodeView.m; path = ../../../../src/view/ios/PolycodeView.m; sourceTree = "<group>"; };
 		8A35E14A1C877A8B00BF9EEA /* main.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; fileEncoding = 4; path = main.m; sourceTree = "<group>"; };
 		8A35E14E1C877DDB00BF9EEA /* libFreetype2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFreetype2.a; path = ../../../../lib/ios/iphonesimulator/libFreetype2.a; sourceTree = "<group>"; };
 		8A35E19E1C87A54A00BF9EEA /* PolycodeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeView.h; path = ../../../../include/polycode/view/ios/PolycodeView.h; sourceTree = "<group>"; };
@@ -49,9 +57,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D1992381CD692ED00DE01FA /* QuartzCore.framework in Frameworks */,
+				6D1992391CD692ED00DE01FA /* CoreMotion.framework in Frameworks */,
 				6D90505D1CCBFFD400D0E80A /* liblua.a in Frameworks */,
+				6D19923B1CD692ED00DE01FA /* OpenGLES.framework in Frameworks */,
 				8A35E14F1C877DDB00BF9EEA /* libFreetype2.a in Frameworks */,
 				8A35E1C61C87B3BC00BF9EEA /* libphysfs.a in Frameworks */,
+				6D19923A1CD692ED00DE01FA /* UIKit.framework in Frameworks */,
 				8AD300AB1BF68290004D243B /* libPolycodeCore.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -78,6 +90,10 @@
 		8A0F805E1BF536C800E24F9B /* TemplateApp */ = {
 			isa = PBXGroup;
 			children = (
+				6D1992341CD692ED00DE01FA /* QuartzCore.framework */,
+				6D1992351CD692ED00DE01FA /* CoreMotion.framework */,
+				6D1992361CD692ED00DE01FA /* UIKit.framework */,
+				6D1992371CD692ED00DE01FA /* OpenGLES.framework */,
 				8A35E14E1C877DDB00BF9EEA /* libFreetype2.a */,
 				8A35E1C51C87B3BC00BF9EEA /* libphysfs.a */,
 				6D90505C1CCBFFD400D0E80A /* liblua.a */,

@@ -1,0 +1,305 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		6D1992BD1CD6971200DE01FA /* PolyCollisionScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D1992B81CD6971200DE01FA /* PolyCollisionScene.cpp */; };
+		6D1992BE1CD6971200DE01FA /* PolyCollisionSceneEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D1992B91CD6971200DE01FA /* PolyCollisionSceneEntity.cpp */; };
+		6D1992BF1CD6971200DE01FA /* PolyPhysicsConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D1992BA1CD6971200DE01FA /* PolyPhysicsConstraint.cpp */; };
+		6D1992C01CD6971200DE01FA /* PolyPhysicsScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D1992BB1CD6971200DE01FA /* PolyPhysicsScene.cpp */; };
+		6D1992C11CD6971200DE01FA /* PolyPhysicsSceneEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D1992BC1CD6971200DE01FA /* PolyPhysicsSceneEntity.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		6D1992AA1CD6970200DE01FA /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		6D1992AC1CD6970200DE01FA /* libPolycode3DPhysics.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPolycode3DPhysics.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		6D1992B81CD6971200DE01FA /* PolyCollisionScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyCollisionScene.cpp; path = ../../../../src/modules/physics3D/PolyCollisionScene.cpp; sourceTree = "<group>"; };
+		6D1992B91CD6971200DE01FA /* PolyCollisionSceneEntity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyCollisionSceneEntity.cpp; path = ../../../../src/modules/physics3D/PolyCollisionSceneEntity.cpp; sourceTree = "<group>"; };
+		6D1992BA1CD6971200DE01FA /* PolyPhysicsConstraint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyPhysicsConstraint.cpp; path = ../../../../src/modules/physics3D/PolyPhysicsConstraint.cpp; sourceTree = "<group>"; };
+		6D1992BB1CD6971200DE01FA /* PolyPhysicsScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyPhysicsScene.cpp; path = ../../../../src/modules/physics3D/PolyPhysicsScene.cpp; sourceTree = "<group>"; };
+		6D1992BC1CD6971200DE01FA /* PolyPhysicsSceneEntity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyPhysicsSceneEntity.cpp; path = ../../../../src/modules/physics3D/PolyPhysicsSceneEntity.cpp; sourceTree = "<group>"; };
+		6D1992C31CD6974200DE01FA /* Polycode3DPhysics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Polycode3DPhysics.h; path = ../../../include/polycode/modules/physics3D/Polycode3DPhysics.h; sourceTree = "<group>"; };
+		6D1992C41CD6974200DE01FA /* PolyCollisionScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyCollisionScene.h; path = ../../../include/polycode/modules/physics3D/PolyCollisionScene.h; sourceTree = "<group>"; };
+		6D1992C51CD6974200DE01FA /* PolyCollisionSceneEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyCollisionSceneEntity.h; path = ../../../include/polycode/modules/physics3D/PolyCollisionSceneEntity.h; sourceTree = "<group>"; };
+		6D1992C61CD6974200DE01FA /* PolyPhysicsConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyPhysicsConstraint.h; path = ../../../include/polycode/modules/physics3D/PolyPhysicsConstraint.h; sourceTree = "<group>"; };
+		6D1992C71CD6974200DE01FA /* PolyPhysicsScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyPhysicsScene.h; path = ../../../include/polycode/modules/physics3D/PolyPhysicsScene.h; sourceTree = "<group>"; };
+		6D1992C81CD6974200DE01FA /* PolyPhysicsSceneEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyPhysicsSceneEntity.h; path = ../../../include/polycode/modules/physics3D/PolyPhysicsSceneEntity.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		6D1992A91CD6970200DE01FA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		6D1992A31CD6970200DE01FA = {
+			isa = PBXGroup;
+			children = (
+				6D1992C21CD6973400DE01FA /* include */,
+				6D1992AE1CD6970200DE01FA /* src */,
+				6D1992AD1CD6970200DE01FA /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		6D1992AD1CD6970200DE01FA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6D1992AC1CD6970200DE01FA /* libPolycode3DPhysics.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6D1992AE1CD6970200DE01FA /* src */ = {
+			isa = PBXGroup;
+			children = (
+				6D1992B81CD6971200DE01FA /* PolyCollisionScene.cpp */,
+				6D1992B91CD6971200DE01FA /* PolyCollisionSceneEntity.cpp */,
+				6D1992BA1CD6971200DE01FA /* PolyPhysicsConstraint.cpp */,
+				6D1992BB1CD6971200DE01FA /* PolyPhysicsScene.cpp */,
+				6D1992BC1CD6971200DE01FA /* PolyPhysicsSceneEntity.cpp */,
+			);
+			name = src;
+			path = Polycode3DPhysics;
+			sourceTree = "<group>";
+		};
+		6D1992C21CD6973400DE01FA /* include */ = {
+			isa = PBXGroup;
+			children = (
+				6D1992C31CD6974200DE01FA /* Polycode3DPhysics.h */,
+				6D1992C41CD6974200DE01FA /* PolyCollisionScene.h */,
+				6D1992C51CD6974200DE01FA /* PolyCollisionSceneEntity.h */,
+				6D1992C61CD6974200DE01FA /* PolyPhysicsConstraint.h */,
+				6D1992C71CD6974200DE01FA /* PolyPhysicsScene.h */,
+				6D1992C81CD6974200DE01FA /* PolyPhysicsSceneEntity.h */,
+			);
+			name = include;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		6D1992AB1CD6970200DE01FA /* Polycode3DPhysics */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6D1992B51CD6970200DE01FA /* Build configuration list for PBXNativeTarget "Polycode3DPhysics" */;
+			buildPhases = (
+				6D1992A81CD6970200DE01FA /* Sources */,
+				6D1992A91CD6970200DE01FA /* Frameworks */,
+				6D1992AA1CD6970200DE01FA /* CopyFiles */,
+				6D1992C91CD697C400DE01FA /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Polycode3DPhysics;
+			productName = Polycode3DPhysics;
+			productReference = 6D1992AC1CD6970200DE01FA /* libPolycode3DPhysics.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6D1992A41CD6970200DE01FA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = "Ivan Safrin";
+				TargetAttributes = {
+					6D1992AB1CD6970200DE01FA = {
+						CreatedOnToolsVersion = 7.2;
+					};
+				};
+			};
+			buildConfigurationList = 6D1992A71CD6970200DE01FA /* Build configuration list for PBXProject "Polycode3DPhysics" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 6D1992A31CD6970200DE01FA;
+			productRefGroup = 6D1992AD1CD6970200DE01FA /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6D1992AB1CD6970200DE01FA /* Polycode3DPhysics */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		6D1992C91CD697C400DE01FA /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cp $TARGET_BUILD_DIR//$EXECUTABLE_NAME ../../../lib/ios/${PLATFORM_NAME}";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6D1992A81CD6970200DE01FA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D1992BD1CD6971200DE01FA /* PolyCollisionScene.cpp in Sources */,
+				6D1992C01CD6971200DE01FA /* PolyPhysicsScene.cpp in Sources */,
+				6D1992BF1CD6971200DE01FA /* PolyPhysicsConstraint.cpp in Sources */,
+				6D1992BE1CD6971200DE01FA /* PolyCollisionSceneEntity.cpp in Sources */,
+				6D1992C11CD6971200DE01FA /* PolyPhysicsSceneEntity.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		6D1992B31CD6970200DE01FA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		6D1992B41CD6970200DE01FA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		6D1992B61CD6970200DE01FA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../../include\"";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		6D1992B71CD6970200DE01FA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../../include\"";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6D1992A71CD6970200DE01FA /* Build configuration list for PBXProject "Polycode3DPhysics" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6D1992B31CD6970200DE01FA /* Debug */,
+				6D1992B41CD6970200DE01FA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6D1992B51CD6970200DE01FA /* Build configuration list for PBXNativeTarget "Polycode3DPhysics" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6D1992B61CD6970200DE01FA /* Debug */,
+				6D1992B71CD6970200DE01FA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 6D1992A41CD6970200DE01FA /* Project object */;
+}

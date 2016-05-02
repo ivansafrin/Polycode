@@ -35,7 +35,7 @@ using std::vector;
 
 MaterialManager::MaterialManager() {
 	premultiplyAlphaOnLoad = false;
-	clampDefault = false;
+	clampDefault = true;
 	mipmapsDefault = true;
     keepTextureData = true;
     textureFilteringMode = Texture::FILTERING_LINEAR;

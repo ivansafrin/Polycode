@@ -50,8 +50,6 @@ typedef unsigned int PolyRendererIndexType;
     #ifndef NOMINMAX
 	#define NOMINMAX
     #endif
-
-
 #endif
 #include <stdint.h>
  
@@ -126,6 +124,10 @@ inline Number clampf(Number x, Number a, Number b)
 #endif
 #ifndef MAX
 	#define MAX(a, b)  (((a) > (b)) ? (a) : (b))
+#endif
+
+#if PLATFORM == PLATFORM_IOS
+//    #define BGRA_TEXTURE_FORMAT
 #endif
 
 // Special flag read by create_lua_library parser, suppresses Lua bindings for item.

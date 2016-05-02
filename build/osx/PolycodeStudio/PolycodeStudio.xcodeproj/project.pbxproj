@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6D6FD3E31BF122A7005AA8E9 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6D6FD3E21BF122A7005AA8E9 /* PolycodeView.mm */; };
+		6D90506D1CCC058F00D0E80A /* liblua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D90506C1CCC058F00D0E80A /* liblua.a */; };
 		8A22D92B1BCC67DE009EF0A6 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A22D92A1BCC67DE009EF0A6 /* OpenGL.framework */; };
 		8A22D92D1BCC67E6009EF0A6 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A22D92C1BCC67E6009EF0A6 /* AudioUnit.framework */; };
 		8A22D92F1BCC6809009EF0A6 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A22D92E1BCC6809009EF0A6 /* CoreAudio.framework */; };
@@ -55,7 +56,6 @@
 		8A36D31D1B8E6FD5009897D0 /* liblibvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3131B8E6FD5009897D0 /* liblibvorbis.a */; };
 		8A36D31E1B8E6FD5009897D0 /* libportaudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3141B8E6FD5009897D0 /* libportaudio.a */; };
 		8A36D31F1B8E6FD5009897D0 /* liblibvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3151B8E6FD5009897D0 /* liblibvorbisfile.a */; };
-		8A36D3201B8E6FD5009897D0 /* liblua5.1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3161B8E6FD5009897D0 /* liblua5.1.a */; };
 		8A36D3211B8E6FD5009897D0 /* libphysfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3171B8E6FD5009897D0 /* libphysfs.a */; };
 		8A36D3231B8E6FD5009897D0 /* libPolycore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D3191B8E6FD5009897D0 /* libPolycore.a */; };
 		8A36D3241B8E6FD5009897D0 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A36D31A1B8E6FD5009897D0 /* libz.a */; };
@@ -65,6 +65,7 @@
 
 /* Begin PBXFileReference section */
 		6D6FD3E21BF122A7005AA8E9 /* PolycodeView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PolycodeView.mm; path = ../../../../src/view/osx/PolycodeView.mm; sourceTree = "<group>"; };
+		6D90506C1CCC058F00D0E80A /* liblua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua.a; path = ../../../../lib/osx/liblua.a; sourceTree = "<group>"; };
 		6DE288271BE96D7100F7B42C /* PolycodeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeView.h; path = ../../../../include/polycode/view/osx/PolycodeView.h; sourceTree = "<group>"; };
 		8A22D92A1BCC67DE009EF0A6 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		8A22D92C1BCC67E6009EF0A6 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
@@ -151,7 +152,6 @@
 		8A36D3131B8E6FD5009897D0 /* liblibvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibvorbis.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/liblibvorbis.a; sourceTree = "<absolute>"; };
 		8A36D3141B8E6FD5009897D0 /* libportaudio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libportaudio.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/libportaudio.a; sourceTree = "<absolute>"; };
 		8A36D3151B8E6FD5009897D0 /* liblibvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibvorbisfile.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/liblibvorbisfile.a; sourceTree = "<absolute>"; };
-		8A36D3161B8E6FD5009897D0 /* liblua5.1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua5.1.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/liblua5.1.a; sourceTree = "<absolute>"; };
 		8A36D3171B8E6FD5009897D0 /* libphysfs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libphysfs.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/libphysfs.a; sourceTree = "<absolute>"; };
 		8A36D3191B8E6FD5009897D0 /* libPolycore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycore.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/libPolycore.a; sourceTree = "<absolute>"; };
 		8A36D31A1B8E6FD5009897D0 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = /Users/isafrin/Desktop/Workshop/PolycodeNoCmake/build/osx/TemplateApp/TemplateApp/../../../../lib/osx/libz.a; sourceTree = "<absolute>"; };
@@ -170,11 +170,11 @@
 				8A22D92B1BCC67DE009EF0A6 /* OpenGL.framework in Frameworks */,
 				8A36D31D1B8E6FD5009897D0 /* liblibvorbis.a in Frameworks */,
 				8A36D3231B8E6FD5009897D0 /* libPolycore.a in Frameworks */,
-				8A36D3201B8E6FD5009897D0 /* liblua5.1.a in Frameworks */,
 				8A36D31F1B8E6FD5009897D0 /* liblibvorbisfile.a in Frameworks */,
 				8A36D31E1B8E6FD5009897D0 /* libportaudio.a in Frameworks */,
 				8A36D3261B8E6FE7009897D0 /* libPolycodeUI.a in Frameworks */,
 				8A36D31B1B8E6FD5009897D0 /* libfreetype.a in Frameworks */,
+				6D90506D1CCC058F00D0E80A /* liblua.a in Frameworks */,
 				8A36D3211B8E6FD5009897D0 /* libphysfs.a in Frameworks */,
 				8A36D3241B8E6FD5009897D0 /* libz.a in Frameworks */,
 				8A36D31C1B8E6FD5009897D0 /* liblibogg.a in Frameworks */,
@@ -229,7 +229,7 @@
 				8A36D3131B8E6FD5009897D0 /* liblibvorbis.a */,
 				8A36D3141B8E6FD5009897D0 /* libportaudio.a */,
 				8A36D3151B8E6FD5009897D0 /* liblibvorbisfile.a */,
-				8A36D3161B8E6FD5009897D0 /* liblua5.1.a */,
+				6D90506C1CCC058F00D0E80A /* liblua.a */,
 				8A36D3171B8E6FD5009897D0 /* libphysfs.a */,
 				8A36D3251B8E6FE7009897D0 /* libPolycodeUI.a */,
 				8A36D3191B8E6FD5009897D0 /* libPolycore.a */,

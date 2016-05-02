@@ -459,12 +459,20 @@ void OpenGLGraphicsInterface::createTexture(Texture *texture) {
     
     switch(texture->type) {
         case Image::IMAGE_RGB:
-            glTextureType = GL_RGB;
+#ifdef BGRA_TEXTURE_FORMAT
+            glTextureType = GL_BGRA;
+#else
+            glTextureType = GL_RGBA;
+#endif
             glTextureFormat = GL_RGB;
             pixelType = GL_UNSIGNED_BYTE;
             break;
         case Image::IMAGE_FP16:
+#ifdef BGRA_TEXTURE_FORMAT
+            glTextureType = GL_BGRA;
+#else
             glTextureType = GL_RGBA;
+#endif
 #if defined(GL_RGBA16F_EXT)
             glTextureFormat = GL_RGBA16F_EXT;
 #elif defined(GL_RGBA16F_ARB)
@@ -475,8 +483,12 @@ void OpenGLGraphicsInterface::createTexture(Texture *texture) {
             pixelType = GL_FLOAT;
             break;
         default:
+#ifdef BGRA_TEXTURE_FORMAT
+            glTextureType = GL_BGRA;
+#else
             glTextureType = GL_RGBA;
-            glTextureFormat = GL_RGBA;	
+#endif
+            glTextureFormat = GL_RGBA;
             pixelType = GL_UNSIGNED_BYTE;	
             break;
     }

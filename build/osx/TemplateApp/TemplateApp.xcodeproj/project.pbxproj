@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		6D6FD3E11BF122A2005AA8E9 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6D6FD3E01BF122A2005AA8E9 /* PolycodeView.mm */; };
-		6D904FD11CC2AAA500D0E80A /* liblua5.1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D904FD01CC2AAA500D0E80A /* liblua5.1.a */; };
 		6D904FD31CC2AEB400D0E80A /* rotate.lua in Resources */ = {isa = PBXBuildFile; fileRef = 6D904FD21CC2AEB400D0E80A /* rotate.lua */; };
+		6D90506B1CCC057C00D0E80A /* liblua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D90506A1CCC057C00D0E80A /* liblua.a */; };
 		6DCDD7251C724726007E90E1 /* main_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DCDD7241C724726007E90E1 /* main_icon.png */; };
 		6DD2D0B61BEEDC150026D85C /* libportaudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DD2D0B51BEEDC150026D85C /* libportaudio.a */; };
 		8A825F271B82A2680039E823 /* libportaudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A825F261B82A2680039E823 /* libportaudio.a */; };
@@ -36,8 +36,8 @@
 
 /* Begin PBXFileReference section */
 		6D6FD3E01BF122A2005AA8E9 /* PolycodeView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PolycodeView.mm; path = ../../../../src/view/osx/PolycodeView.mm; sourceTree = "<group>"; };
-		6D904FD01CC2AAA500D0E80A /* liblua5.1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua5.1.a; path = ../../../../lib/osx/liblua5.1.a; sourceTree = "<group>"; };
 		6D904FD21CC2AEB400D0E80A /* rotate.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = rotate.lua; sourceTree = "<group>"; };
+		6D90506A1CCC057C00D0E80A /* liblua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua.a; path = ../../../../lib/osx/liblua.a; sourceTree = "<group>"; };
 		6DCDD7241C724726007E90E1 /* main_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = main_icon.png; path = ../../../../assets/icons/main_icon.png; sourceTree = "<group>"; };
 		6DD2D0B51BEEDC150026D85C /* libportaudio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libportaudio.a; path = ../../../../lib/osx/libportaudio.a; sourceTree = "<group>"; };
 		8A825F261B82A2680039E823 /* libportaudio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libportaudio.a; path = ../../../../lib/osx/libportaudio.a; sourceTree = "<group>"; };
@@ -55,7 +55,6 @@
 		8A8653541B72949F009F94DD /* liblibogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibogg.a; path = ../../../../lib/osx/liblibogg.a; sourceTree = "<group>"; };
 		8A8653551B72949F009F94DD /* liblibvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibvorbis.a; path = ../../../../lib/osx/liblibvorbis.a; sourceTree = "<group>"; };
 		8A8653561B72949F009F94DD /* liblibvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibvorbisfile.a; path = ../../../../lib/osx/liblibvorbisfile.a; sourceTree = "<group>"; };
-		8A8653571B72949F009F94DD /* liblua5.1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua5.1.a; path = ../../../../lib/osx/liblua5.1.a; sourceTree = "<group>"; };
 		8A8653581B72949F009F94DD /* libphysfs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libphysfs.a; path = ../../../../lib/osx/libphysfs.a; sourceTree = "<group>"; };
 		8A86535A1B72949F009F94DD /* libPolycore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycore.a; path = ../../../../lib/osx/libPolycore.a; sourceTree = "<group>"; };
 		8A86535B1B72949F009F94DD /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = ../../../../lib/osx/libz.a; sourceTree = "<group>"; };
@@ -78,15 +77,14 @@
 				8A825F291B82A29B0039E823 /* CoreAudio.framework in Frameworks */,
 				8A8653681B7294B7009F94DD /* OpenGL.framework in Frameworks */,
 				8A8653641B72949F009F94DD /* libz.a in Frameworks */,
-				6D904FD11CC2AAA500D0E80A /* liblua5.1.a in Frameworks */,
 				8A825F271B82A2680039E823 /* libportaudio.a in Frameworks */,
 				8A8653631B72949F009F94DD /* libPolycore.a in Frameworks */,
 				8A86535F1B72949F009F94DD /* liblibvorbisfile.a in Frameworks */,
 				8A86535E1B72949F009F94DD /* liblibvorbis.a in Frameworks */,
 				8A86535C1B72949F009F94DD /* libfreetype.a in Frameworks */,
+				6D90506B1CCC057C00D0E80A /* liblua.a in Frameworks */,
 				6DD2D0B61BEEDC150026D85C /* libportaudio.a in Frameworks */,
 				8A8653611B72949F009F94DD /* libphysfs.a in Frameworks */,
-				6D904FD11CC2AAA500D0E80A /* liblua5.1.a in Frameworks */,
 				8A86535D1B72949F009F94DD /* liblibogg.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -139,12 +137,11 @@
 			isa = PBXGroup;
 			children = (
 				8A8653531B72949F009F94DD /* libfreetype.a */,
-				6D904FD01CC2AAA500D0E80A /* liblua5.1.a */,
 				8A8653541B72949F009F94DD /* liblibogg.a */,
 				8A8653551B72949F009F94DD /* liblibvorbis.a */,
 				8A825F261B82A2680039E823 /* libportaudio.a */,
 				8A8653561B72949F009F94DD /* liblibvorbisfile.a */,
-				8A8653571B72949F009F94DD /* liblua5.1.a */,
+				6D90506A1CCC057C00D0E80A /* liblua.a */,
 				6DD2D0B51BEEDC150026D85C /* libportaudio.a */,
 				8A8653581B72949F009F94DD /* libphysfs.a */,
 				8A86535A1B72949F009F94DD /* libPolycore.a */,

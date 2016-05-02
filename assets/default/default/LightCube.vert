@@ -1,5 +1,5 @@
 #ifdef GL_ES
-	precision mediump float;
+   precision mediump float;
 #endif
 
 attribute vec4 position;

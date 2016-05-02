@@ -50,10 +50,10 @@ namespace Polycode {
 			
 			void Update(int elapsed);
 
-			Texture *createTexture(int width, int height, char *imageData, bool clamp=false, bool createMipmaps = true, int type=Image::IMAGE_RGBA);
-			Texture *createNewTexture(int width, int height, bool clamp=false, bool createMipmaps = true, int type=Image::IMAGE_RGBA);
-			Texture *createTextureFromImage(Image *image, bool clamp=false, bool createMipmaps = true);
-			Texture *createTextureFromFile(const String& fileName, bool clamp=false, bool createMipmaps = true, ResourcePool *resourcePool = NULL);
+			Texture *createTexture(int width, int height, char *imageData, bool clamp=true, bool createMipmaps = false, int type=Image::IMAGE_RGBA);
+			Texture *createNewTexture(int width, int height, bool clamp=true, bool createMipmaps = false, int type=Image::IMAGE_RGBA);
+			Texture *createTextureFromImage(Image *image, bool clamp=true, bool createMipmaps = false);
+			Texture *createTextureFromFile(const String& fileName, bool clamp=true, bool createMipmaps = false, ResourcePool *resourcePool = NULL);
 			void deleteTexture(Texture *texture);
 		
 			void reloadTextures();

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6D90506F1CCC0B0A00D0E80A /* liblua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D90506E1CCC0B0A00D0E80A /* liblua.a */; };
 		8AE1F6B61CB82FDF0001557D /* polyimport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8AE1F6B51CB82FDF0001557D /* polyimport.cpp */; };
 		8AE1F6B91CB837050001557D /* libassimp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE1F6B71CB837050001557D /* libassimp.a */; };
 		8AE1F6D41CB8391D0001557D /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE1F6D31CB8391D0001557D /* libz.a */; };
@@ -38,6 +39,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6D90506E1CCC0B0A00D0E80A /* liblua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua.a; path = ../../../../lib/osx/liblua.a; sourceTree = "<group>"; };
 		8AE1F6AB1CB82FBD0001557D /* polyimport */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = polyimport; sourceTree = BUILT_PRODUCTS_DIR; };
 		8AE1F6B51CB82FDF0001557D /* polyimport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = polyimport.cpp; path = ../../../../src/tools/polyimport.cpp; sourceTree = "<group>"; };
 		8AE1F6B71CB837050001557D /* libassimp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libassimp.a; path = ../../../../lib/osx/libassimp.a; sourceTree = "<group>"; };
@@ -63,6 +65,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D90506F1CCC0B0A00D0E80A /* liblua.a in Frameworks */,
 				8AE1F7011CB83CFE0001557D /* liblibvorbis.a in Frameworks */,
 				8AE1F6FC1CB83CF00001557D /* AudioToolbox.framework in Frameworks */,
 				8AE1F6FA1CB83CE10001557D /* AudioUnit.framework in Frameworks */,
@@ -114,6 +117,7 @@
 				8AE1F6FD1CB83CFE0001557D /* liblibogg.a */,
 				8AE1F6FE1CB83CFE0001557D /* liblibvorbis.a */,
 				8AE1F6FF1CB83CFE0001557D /* liblibvorbisfile.a */,
+				6D90506E1CCC0B0A00D0E80A /* liblua.a */,
 				8AE1F6F11CB83C990001557D /* libphysfs.a */,
 				8AE1F6EB1CB83C720001557D /* libfreetype.a */,
 				8AE1F6D31CB8391D0001557D /* libz.a */,
@@ -330,6 +334,7 @@
 				8AE1F6B41CB82FBD0001557D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

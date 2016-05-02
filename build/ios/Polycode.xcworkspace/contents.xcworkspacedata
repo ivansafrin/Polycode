@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:Polycode3DPhysics/Polycode3DPhysics.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:PolycodeCore/PolycodeCore.xcodeproj">
    </FileRef>
    <FileRef
