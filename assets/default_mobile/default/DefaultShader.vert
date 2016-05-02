@@ -2,17 +2,17 @@
 	precision mediump float;
 #endif
 
-attribute vec4 position;
-attribute vec3 normal;
-attribute vec2 texCoord;
+attribute lowp vec4 position;
+attribute lowp vec3 normal;
+attribute lowp vec2 texCoord;
 
 uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 
-varying vec2 texCoordVar;
-varying vec3 varNormal;
-varying vec4 varPosition;
+varying lowp vec2 texCoordVar;
+varying lowp vec3 varNormal;
+varying lowp vec4 varPosition;
 
 mat3 mat3_emu(mat4 m4) {
   return mat3(
@@ -24,9 +24,9 @@ mat3 mat3_emu(mat4 m4) {
 void main()
 {
 	mat4 modelViewMatrix = viewMatrix * modelMatrix;
-	vec4 p = modelViewMatrix  * position;
+	lowp vec4 p = modelViewMatrix  * position;
 
-	mat3 rotN = mat3_emu(modelViewMatrix);
+	lowp mat3 rotN = mat3_emu(modelViewMatrix);
 	varNormal = normalize(rotN * normal);
 
 	varPosition = modelViewMatrix  * position;

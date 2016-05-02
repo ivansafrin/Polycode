@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<sprite>
+    <image frameWidth="32" frameHeight="32" fileName="default/default.png" />
+    <animations>
+        <animation name="default" frames="0" speed="1.0" />
+    </animations>
+</sprite>

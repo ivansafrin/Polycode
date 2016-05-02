@@ -1,0 +1,148 @@
+<?xml version="1.0" ?>
+<polycode>	
+	<shaders>		
+		<shader type="glsl" name="DefaultShader" numPointLights="6" numSpotLights="2">
+			<vp source="default/DefaultShader.vert"/>
+			<fp source="default/DefaultShader.frag"/>
+		</shader>
+		<shader type="glsl" name="DefaultShaderShadows" numPointLights="6" numSpotLights="2">
+			<vp source="default/DefaultShaderShadows.vert"/>
+			<fp source="default/DefaultShaderShadows.frag"/>
+		</shader>		
+		<shader type="glsl" name="DefaultUntexturedShader" numPointLights="6" numSpotLights="2">
+			<vp source="default/DefaultShader.vert"/>
+			<fp source="default/DefaultUntextured.frag"/>
+		</shader>		
+		<shader type="glsl" name="Unlit" numPointLights="0" numSpotLights="0">		
+			<vp source="default/Unlit.vert"/>
+			<fp source="default/Unlit.frag"/>
+		</shader>
+		<shader type="glsl" name="UnlitPointUntextured" numPointLights="0" numSpotLights="0">		
+			<vp source="default/UnlitPoint.vert"/>
+			<fp source="default/UnlitUntextured.frag"/>
+		</shader>
+		<shader type="glsl" name="UnlitUntextured" numPointLights="0" numSpotLights="0">		
+			<vp source="default/UnlitUntextured.vert"/>
+			<fp source="default/UnlitUntextured.frag"/>
+		</shader>
+		<shader type="glsl" name="UnlitUntexturedVertexColor" numPointLights="0" numSpotLights="0">		
+			<vp source="default/UnlitUntexturedVertexColor.vert"/>
+			<fp source="default/UnlitUntexturedVertexColor.frag"/>
+		</shader>		
+		<shader type="glsl" name="UnlitWireframe" numPointLights="0" numSpotLights="0">		
+			<vp source="default/UnlitUntextured.vert"/>
+			<fp source="default/UnlitWireframe.frag"/>
+		</shader>
+		<shader type="glsl" name="InvertShader" screen="true">		
+			<vp source="default/ScreenShader.vert"/>
+			<fp source="default/Invert.frag"/>
+		</shader>	
+		<shader type="glsl" name="BlurHShader" screen="true">		
+			<vp source="default/ScreenShader.vert"/>
+			<fp source="default/BlurH.frag"/>
+		</shader>
+		<shader type="glsl" name="BlurVShader" screen="true">		
+			<vp source="default/ScreenShader.vert"/>
+			<fp source="default/BlurV.frag"/>
+		</shader>
+		<shader type="glsl" name="LightcubePolar" numPointLights="0" numSpotLights="0">
+			<vp source="default/LightCube.vert"/>
+			<fp source="default/LightcubePolar.frag"/>
+		</shader>
+		<shader type="glsl" name="LightcubeAngular" numPointLights="0" numSpotLights="0">
+			<vp source="default/LightCube.vert"/>
+			<fp source="default/LightcubeAngular.frag"/>
+		</shader>		
+	</shaders>	
+	<materials>
+		<material name="Blur">
+			<rendertargets type="rgba">
+				<rendertarget id="blurtarget" sizeMode="pixels" width="512" height="512"/>
+			</rendertargets>		
+			<shader name="BlurHShader">
+				<targettextures>
+					<targettexture mode="color" name="screenTexture"/>
+					<targettexture mode="out" id="blurtarget"/>					
+				</targettextures>				
+			</shader>
+			<shader name="BlurVShader">
+				<targettextures>
+					<targettexture mode="in" name="screenTexture" id="blurtarget"/>
+				</targettextures>				
+			</shader>			
+		</material>	
+		<material name="Invert">
+			<shader name="InvertShader">
+				<targettextures>			
+					<targettexture mode="color" name="screenColorBuffer"/>				
+				</targettextures>				
+			</shader>
+		</material>		
+		<material name="Default">
+			<shader name="DefaultUntexturedShader">
+				<params>
+					<param name="entityColor" value="1.0 1.0 1.0 1.0" />
+					<param name="diffuse_color" value="1.0 1.0 1.0 1.0" />
+				</params>					
+			</shader>
+		</material>				
+		<material name="DefaultTextured">
+			<shader name="DefaultShader">
+				<params>
+					<param name="entityColor" value="1.0 1.0 1.0 1.0" />
+					<param name="diffuse_color" value="1.0 1.0 1.0 1.0" />
+				</params>					
+			</shader>
+		</material>
+		<material name="DefaultTexturedShadows">
+			<shader name="DefaultShaderShadows">
+				<params>
+					<param name="entityColor" value="1.0 1.0 1.0 1.0" />
+					<param name="diffuse_color" value="1.0 1.0 1.0 1.0" />
+				</params>					
+			</shader>
+		</material>	
+		<material name="Unlit">
+			<shader name="Unlit">
+				<params>
+					<param name="entityColor" value="1.0 1.0 1.0 1.0" />
+				</params>				
+			</shader>
+		</material>
+		<material name="UnlitAdditive" blendingMode="2">
+			<shader name="Unlit">
+				<params>
+					<param name="entityColor" value="1.0 1.0 1.0 1.0" />
+				</params>				
+			</shader>
+		</material>		
+		<material name="UnlitPointUntextured">
+			<shader name="UnlitPointUntextured">
+				<params>
+					<param name="entityColor" value="1.0 1.0 1.0 1.0" />
+				</params>					
+			</shader>
+		</material>		
+		<material name="UnlitUntextured">
+			<shader name="UnlitUntextured">
+				<params>
+					<param name="entityColor" value="1.0 1.0 1.0 1.0" />
+				</params>					
+			</shader>
+		</material>
+		<material name="UnlitUntexturedVertexColor">
+			<shader name="UnlitUntexturedVertexColor">
+				<params>
+					<param name="entityColor" value="1.0 1.0 1.0 1.0" />
+				</params>					
+			</shader>
+		</material>
+		<material name="UnlitWireframe">
+			<shader name="UnlitWireframe" wireframe="true">
+				<params>
+					<param name="entityColor" value="1.0 1.0 1.0 1.0" />
+				</params>					
+			</shader>
+		</material>				
+	</materials>
+</polycode>

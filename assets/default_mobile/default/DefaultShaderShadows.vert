@@ -13,6 +13,7 @@ uniform mat4 projectionMatrix;
 varying vec2 texCoordVar;
 varying vec3 varNormal;
 varying vec4 varPosition;
+varying vec4 rawPosition;
 
 mat3 mat3_emu(mat4 m4) {
   return mat3(
@@ -28,6 +29,8 @@ void main()
 
 	mat3 rotN = mat3_emu(modelViewMatrix);
 	varNormal = normalize(rotN * normal);
+
+	rawPosition = position;
 
 	varPosition = modelViewMatrix  * position;
 	gl_Position = projectionMatrix * p;

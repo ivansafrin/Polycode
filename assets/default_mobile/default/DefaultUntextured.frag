@@ -6,7 +6,6 @@ varying vec2 texCoordVar;
 varying vec3 varNormal;
 varying vec4 varPosition;
 
-uniform sampler2D diffuse;
 uniform vec4 diffuse_color;
 uniform vec4 specular_color;
 uniform vec4 entityColor;
@@ -120,13 +119,11 @@ void main()
 	vec4 specular_val = vec4(0.0);
 
 	doLights(MAX_LIGHTS, varNormal, varPosition, diffuse_val, specular_val);
-		
-	vec4 texColor = texture2D(diffuse, texCoordVar);		
-		
+			
     vec4 color = diffuse_val; 	           
-    color = clamp((color*entityColor*texColor) + specular_val, 0.0, 1.0);  
+    color = clamp((color*entityColor) + specular_val, 0.0, 1.0);  
 
-	color.a = entityColor.a * texColor.a * diffuse_color.a;	
+	color.a = entityColor.a * diffuse_color.a;	
 	gl_FragColor = color;
 
 }
