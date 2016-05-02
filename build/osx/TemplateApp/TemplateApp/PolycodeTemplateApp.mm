@@ -25,7 +25,7 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     
    // scene->setOverrideMaterial((Material*)globalPool->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
     
-    for(int i=0; i  < 5; i++) {
+    for(int i=0; i  < 5000; i++) {
         test = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.5, 0.5);
         test->setMaterialByName("Unlit");
         test->attachScript(rotateScript);
@@ -40,7 +40,7 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
 
     fpsLabel = new SceneLabel("FPS:", 32, "mono", Label::ANTIALIAS_FULL, 0.1);
     scene->addChild(fpsLabel);
-    fpsLabel->setPositionX(-0.6);
+    fpsLabel->setPositionY(-0.4);
     
     Services()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 }
@@ -56,8 +56,17 @@ PolycodeTemplateApp::~PolycodeTemplateApp() {
 bool PolycodeTemplateApp::Update() {
     Number elapsed = core->getElapsed();
     
-    if(Services()->getRenderer()->getRenderThread()->getFrameInfo().timeTaken > 0) {
-        fpsLabel->setText("FPS:"+String::IntToString(1000/Services()->getRenderer()->getRenderThread()->getFrameInfo().timeTaken));
+    
+    for(int i=0; i < tests.size(); i++) {
+        tests[i]->Roll(elapsed * 20.0);
+    }
+    
+    ++numFrames;
+    counter += elapsed;
+    if(counter >= 1.0) {
+        counter = 0.0;
+        fpsLabel->setText("FPS:"+String::IntToString(numFrames)+" FRAME MS:"+String::IntToString(Services()->getRenderer()->getRenderThread()->getFrameInfo().timeTaken));
+        numFrames = 0;
     }
     
     return core->updateAndRender();

@@ -35,7 +35,7 @@ THE SOFTWARE.
 #include <stack>
 #include <queue>  
 
-#define RENDERER_MAX_LIGHTS 4
+#define RENDERER_MAX_LIGHTS 8
 #define RENDERER_MAX_LIGHT_SHADOWS 2
 
 #define MAX_QUEUED_FRAMES 2
@@ -146,6 +146,8 @@ namespace Polycode {
         
             void processDrawBuffer(GPUDrawBuffer *buffer);
             RenderThreadDebugInfo getFrameInfo();
+        
+            void clearFrameQueue();
         
             void initGlobals();
         

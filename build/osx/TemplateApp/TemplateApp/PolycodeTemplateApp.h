@@ -21,4 +21,6 @@ private:
     Core *core;
     std::vector<ScenePrimitive*> tests;
     SceneLabel *fpsLabel;
+    Number counter;
+    int numFrames;
 };

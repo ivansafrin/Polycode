@@ -88,7 +88,9 @@ void RenderThread::runThread() {
             nextFrame = frameQueue.front();
             frameQueue.pop();
         }
-           
+
+        Services()->getCore()->unlockMutex(jobQueueMutex);
+
         if(nextFrame) {
             while(nextFrame->jobQueue.size() > 0) {
                 RendererThreadJob frameJob = nextFrame->jobQueue.front();
@@ -97,8 +99,6 @@ void RenderThread::runThread() {
             }
             delete nextFrame;
         }
-           
-        Services()->getCore()->unlockMutex(jobQueueMutex);
     }
 }
 
@@ -351,6 +351,11 @@ void RenderThread::unlockRenderMutex() {
     Services()->getCore()->unlockMutex(renderMutex);
 }
 
+void RenderThread::clearFrameQueue() {
+    while(!frameQueue.empty()) {
+        frameQueue.pop();
+    }
+}
 
 void RenderThread::processJob(const RendererThreadJob &job) {
     
@@ -373,6 +378,7 @@ void RenderThread::processJob(const RendererThreadJob &job) {
         {
             Texture *texture = (Texture*) job.data;
             graphicsInterface->destroyTexture(texture);
+            clearFrameQueue();
         }
         break;
         case JOB_CREATE_RENDER_BUFFER:
@@ -385,18 +391,22 @@ void RenderThread::processJob(const RendererThreadJob &job) {
         {
             RenderBuffer *buffer = (RenderBuffer*) job.data;
             graphicsInterface->destroyRenderBuffer(buffer);
+            clearFrameQueue();
         }
         break;
         case JOB_DESTROY_SHADER_BINDING:
         {
             ShaderBinding *binding = (ShaderBinding*) job.data;
             delete binding;
+            clearFrameQueue();
         }
         break;
         case JOB_DESTROY_SHADER_PARAM:
         {
             LocalShaderParam *param = (LocalShaderParam*) job.data;
             delete param;
+            clearFrameQueue();
+
         }
         break;
         case JOB_PROCESS_DRAW_BUFFER:
