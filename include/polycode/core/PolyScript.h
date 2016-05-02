@@ -71,7 +71,7 @@ namespace Polycode {
     
     class JSScriptInstance : public ScriptInstance {
     public:
-        int tableRef;
+        void *objectRef;
     };
     
     class JSScript : public Script {

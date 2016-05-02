@@ -25,7 +25,7 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     
    // scene->setOverrideMaterial((Material*)globalPool->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
     
-    for(int i=0; i  < 5000; i++) {
+    for(int i=0; i  < 3; i++) {
         test = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.5, 0.5);
         test->setMaterialByName("Unlit");
         test->attachScript(rotateScript);
@@ -56,10 +56,6 @@ PolycodeTemplateApp::~PolycodeTemplateApp() {
 bool PolycodeTemplateApp::Update() {
     Number elapsed = core->getElapsed();
     
-    
-    for(int i=0; i < tests.size(); i++) {
-        tests[i]->Roll(elapsed * 20.0);
-    }
     
     ++numFrames;
     counter += elapsed;

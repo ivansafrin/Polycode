@@ -369,6 +369,13 @@ Resource *ProgramResourceLoader::loadResource(const String &path, ResourcePool *
     return newProgram;
 }
 
+duk_ret_t entity_Roll(duk_context *context) {
+    Entity *entity = (Entity*)duk_to_pointer(context, 0);
+    Number amt = duk_to_number(context, 1);
+    entity->Roll(amt);
+    return 0;
+}
+
 ScriptResourceLoader::ScriptResourceLoader() {
     luaState =  luaL_newstate();
     luaL_openlibs(luaState);
@@ -378,6 +385,9 @@ ScriptResourceLoader::ScriptResourceLoader() {
     // init duktape
     
     duktapeContext = duk_create_heap_default();
+    
+    duk_push_c_function(duktapeContext, entity_Roll, 2);
+    duk_put_global_string(duktapeContext, "entity_Roll");
     
     extensions.push_back("lua");
     extensions.push_back("js");

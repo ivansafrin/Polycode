@@ -22,6 +22,7 @@
 
 #include "polycode/core/PolyScript.h"
 #include "polycode/core/PolyEntity.h"
+#include "polycode/core/PolyLogger.h"
 
 using namespace Polycode;
 
@@ -35,12 +36,32 @@ JSScript::JSScript(duk_context *context, const String &path) : Script(path) {
 
 ScriptInstance *JSScript::callInit(Entity *entity) {
     JSScriptInstance *scriptInstance = new JSScriptInstance();
+    
+    if(duk_peval_file(context, getResourcePath().c_str()) != 0) {
+        Logger::log("JAVASCRIPT ERROR: [%s]\n", duk_safe_to_string(context, -1));
+    }
+    
+    scriptInstance->objectRef = duk_get_heapptr(context, -1);
     scriptInstance->script = this;
+    
+    duk_push_heapptr(context, scriptInstance->objectRef);
+    duk_get_prop_string(context, -1, "init");
+    duk_push_pointer(context, entity);
+    if(duk_pcall(context, 1) != 0) {
+        Logger::log("JAVASCRIPT ERROR: [%s]\n", duk_safe_to_string(context, -1));
+    }
+    duk_pop_2(context);
     return scriptInstance;
 }
 
 void JSScript::callUpdate(ScriptInstance *instance, Entity *entity, Number elapsed) {
-    
+    duk_push_heapptr(context, ((JSScriptInstance*)instance)->objectRef);
+    duk_get_prop_string(context, -1, "update");
+    duk_push_number(context, elapsed);
+    if(duk_pcall(context, 1) != 0) {
+        Logger::log("JAVASCRIPT ERROR: [%s]\n", duk_safe_to_string(context, -1));
+    }
+    duk_pop_2(context);
 }
 
 LuaScript::LuaScript(lua_State *state, const String &path) : Script(path) {

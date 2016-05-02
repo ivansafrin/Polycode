@@ -1,16 +1,17 @@
--- test script
 
-Rotator = {}
-Rotator.__index = Rotator
 
-function Rotator.init(entity)
-	local rotator = {}
-	rotator.entity = entity
-	return rotator
-end
+var test = "Testing"
 
-function Rotator:update(elapsed)
-	Entity.Roll(self.entity, elapsed * 100.0)
-end
+var Rotator = function() {
+    
+}
 
-return Rotator
+Rotator.prototype.init = function(entity) {
+    this.entity = entity
+}
+
+Rotator.prototype.update = function(elapsed) {
+    entity_Roll(this.entity, elapsed * 30.0)
+}
+
+new Rotator()

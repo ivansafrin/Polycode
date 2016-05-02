@@ -12,6 +12,7 @@
 		6D90506B1CCC057C00D0E80A /* liblua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D90506A1CCC057C00D0E80A /* liblua.a */; };
 		6DCDD7251C724726007E90E1 /* main_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DCDD7241C724726007E90E1 /* main_icon.png */; };
 		6DD2D0B61BEEDC150026D85C /* libportaudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DD2D0B51BEEDC150026D85C /* libportaudio.a */; };
+		8A7E202F1CD7D11A00EFC3CB /* rotate.js in Resources */ = {isa = PBXBuildFile; fileRef = 8A7E202E1CD7D11A00EFC3CB /* rotate.js */; };
 		8A825F271B82A2680039E823 /* libportaudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A825F261B82A2680039E823 /* libportaudio.a */; };
 		8A825F291B82A29B0039E823 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A825F281B82A29B0039E823 /* CoreAudio.framework */; };
 		8A825F2E1B82A2C80039E823 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A825F2C1B82A2B10039E823 /* AudioUnit.framework */; };
@@ -40,6 +41,7 @@
 		6D90506A1CCC057C00D0E80A /* liblua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua.a; path = ../../../../lib/osx/liblua.a; sourceTree = "<group>"; };
 		6DCDD7241C724726007E90E1 /* main_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = main_icon.png; path = ../../../../assets/icons/main_icon.png; sourceTree = "<group>"; };
 		6DD2D0B51BEEDC150026D85C /* libportaudio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libportaudio.a; path = ../../../../lib/osx/libportaudio.a; sourceTree = "<group>"; };
+		8A7E202E1CD7D11A00EFC3CB /* rotate.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = rotate.js; sourceTree = "<group>"; };
 		8A825F261B82A2680039E823 /* libportaudio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libportaudio.a; path = ../../../../lib/osx/libportaudio.a; sourceTree = "<group>"; };
 		8A825F281B82A29B0039E823 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		8A825F2A1B82A2A50039E823 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -121,6 +123,7 @@
 				8A8653351B72931C009F94DD /* AppDelegate.h */,
 				8A8653361B72931C009F94DD /* AppDelegate.m */,
 				6D6FD3E01BF122A2005AA8E9 /* PolycodeView.mm */,
+				8A7E202E1CD7D11A00EFC3CB /* rotate.js */,
 				8A86536E1B72C301009F94DD /* PolycodeView.h */,
 				6D904FD21CC2AEB400D0E80A /* rotate.lua */,
 				8ADFECF91C8E0852007B57A2 /* default.pak */,
@@ -212,6 +215,7 @@
 				8A86533B1B72931C009F94DD /* Images.xcassets in Resources */,
 				8A8653961B752DBE009F94DD /* main_icon.png in Resources */,
 				8ADFECFA1C8E0852007B57A2 /* default.pak in Resources */,
+				8A7E202F1CD7D11A00EFC3CB /* rotate.js in Resources */,
 				8A86533E1B72931C009F94DD /* MainMenu.xib in Resources */,
 				6D904FD31CC2AEB400D0E80A /* rotate.lua in Resources */,
 				8ADFECF61C8E07FB007B57A2 /* hdr.pak in Resources */,
