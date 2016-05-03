@@ -3,6 +3,7 @@ class "Rotator"
 
 function Rotator:Rotator(entity)
 	self.entity = entity
+    self.speed = math.random()
 end
 
 function Rotator:update(elapsed)

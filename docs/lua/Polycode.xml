@@ -7032,6 +7032,18 @@
 			</method>
 		</methods>
 	</class>
+	<class name="DebugBackTraceEntry">
+		<static_members>
+		</static_members>
+		<members>
+			<member name="fileName" type="String">
+			</member>
+			<member name="lineNumber" type="Integer">
+			</member>
+		</members>
+		<methods>
+		</methods>
+	</class>
 	<class name="MeshResourceLoader" extends="ResourceLoader">
 		<static_members>
 		</static_members>
@@ -7048,18 +7060,6 @@
 					</param>
 				</params>
 			</method>
-		</methods>
-	</class>
-	<class name="BackTraceEntry">
-		<static_members>
-		</static_members>
-		<members>
-			<member name="fileName" type="String">
-			</member>
-			<member name="lineNumber" type="Integer">
-			</member>
-		</members>
-		<methods>
 		</methods>
 	</class>
 	<class name="MaterialResourceLoader" extends="ResourceLoader">

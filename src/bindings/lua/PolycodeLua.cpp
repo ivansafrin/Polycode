@@ -1413,14 +1413,14 @@ int luaopen_Polycode(lua_State *L) {
 		{"ProgramResourceLoader", Polycore_ProgramResourceLoader},
 		{"ProgramResourceLoader_loadResource", Polycore_ProgramResourceLoader_loadResource},
 		{"delete_ProgramResourceLoader", Polycore_delete_ProgramResourceLoader},
+		{"DebugBackTraceEntry_get_fileName", Polycore_DebugBackTraceEntry_get_fileName},
+		{"DebugBackTraceEntry_get_lineNumber", Polycore_DebugBackTraceEntry_get_lineNumber},
+		{"DebugBackTraceEntry_set_fileName", Polycore_DebugBackTraceEntry_set_fileName},
+		{"DebugBackTraceEntry_set_lineNumber", Polycore_DebugBackTraceEntry_set_lineNumber},
+		{"delete_DebugBackTraceEntry", Polycore_delete_DebugBackTraceEntry},
 		{"MeshResourceLoader", Polycore_MeshResourceLoader},
 		{"MeshResourceLoader_loadResource", Polycore_MeshResourceLoader_loadResource},
 		{"delete_MeshResourceLoader", Polycore_delete_MeshResourceLoader},
-		{"BackTraceEntry_get_fileName", Polycore_BackTraceEntry_get_fileName},
-		{"BackTraceEntry_get_lineNumber", Polycore_BackTraceEntry_get_lineNumber},
-		{"BackTraceEntry_set_fileName", Polycore_BackTraceEntry_set_fileName},
-		{"BackTraceEntry_set_lineNumber", Polycore_BackTraceEntry_set_lineNumber},
-		{"delete_BackTraceEntry", Polycore_delete_BackTraceEntry},
 		{"MaterialResourceLoader", Polycore_MaterialResourceLoader},
 		{"MaterialResourceLoader_loadResource", Polycore_MaterialResourceLoader_loadResource},
 		{"delete_MaterialResourceLoader", Polycore_delete_MaterialResourceLoader},
@@ -2583,15 +2583,15 @@ int luaopen_Polycode(lua_State *L) {
 	lua_settable(L, -3);
 	lua_pop(L, 1);
 
-	luaL_newmetatable(L, "Polycore.MeshResourceLoader");
+	luaL_newmetatable(L, "Polycore.DebugBackTraceEntry");
 	lua_pushstring(L, "__gc");
-	lua_pushcfunction(L, Polycore_delete_MeshResourceLoader);
+	lua_pushcfunction(L, Polycore_delete_DebugBackTraceEntry);
 	lua_settable(L, -3);
 	lua_pop(L, 1);
 
-	luaL_newmetatable(L, "Polycore.BackTraceEntry");
+	luaL_newmetatable(L, "Polycore.MeshResourceLoader");
 	lua_pushstring(L, "__gc");
-	lua_pushcfunction(L, Polycore_delete_BackTraceEntry);
+	lua_pushcfunction(L, Polycore_delete_MeshResourceLoader);
 	lua_settable(L, -3);
 	lua_pop(L, 1);
 

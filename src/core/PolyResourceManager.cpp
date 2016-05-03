@@ -378,7 +378,7 @@ duk_ret_t entity_Roll(duk_context *context) {
 }
 
 static int customError(lua_State *L) {
-    std::vector<BackTraceEntry> backTrace;
+    std::vector<DebugBackTraceEntry> backTrace;
     lua_Debug entry;
     int depth = 0;
     while (lua_getstack(L, depth, &entry)) {
@@ -389,7 +389,7 @@ static int customError(lua_State *L) {
             String fileName = bits[1];
             if(fileName != "class.lua") {
                 
-                BackTraceEntry trace;
+                DebugBackTraceEntry trace;
                 trace.lineNumber = entry.currentline;
                 trace.fileName = fileName;
                 backTrace.push_back(trace);
@@ -403,7 +403,7 @@ static int customError(lua_State *L) {
     String stringThatIsTheMainFile;
     
     if(backTrace.size() == 0) {
-        BackTraceEntry trace;
+        DebugBackTraceEntry trace;
         trace.lineNumber = 0;
         trace.fileName = "TODO: Figure out full pathHere";
         backTrace.push_back(trace);

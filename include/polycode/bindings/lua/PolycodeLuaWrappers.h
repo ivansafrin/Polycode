@@ -13908,6 +13908,44 @@ static int Polycore_delete_ProgramResourceLoader(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_DebugBackTraceEntry_get_fileName(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	DebugBackTraceEntry *inst = (DebugBackTraceEntry*) *((PolyBase**)lua_touserdata(L, 1));
+	lua_pushstring(L, inst->fileName.c_str());
+	return 1;
+}
+
+static int Polycore_DebugBackTraceEntry_get_lineNumber(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	DebugBackTraceEntry *inst = (DebugBackTraceEntry*) *((PolyBase**)lua_touserdata(L, 1));
+	lua_pushinteger(L, inst->lineNumber);
+	return 1;
+}
+
+static int Polycore_DebugBackTraceEntry_set_fileName(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	DebugBackTraceEntry *inst = (DebugBackTraceEntry*) *((PolyBase**)lua_touserdata(L, 1));
+	String param = lua_tostring(L, 2);
+	inst->fileName = param;
+	return 0;
+}
+
+static int Polycore_DebugBackTraceEntry_set_lineNumber(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	DebugBackTraceEntry *inst = (DebugBackTraceEntry*) *((PolyBase**)lua_touserdata(L, 1));
+	int param = lua_tointeger(L, 2);
+	inst->lineNumber = param;
+	return 0;
+}
+
+static int Polycore_delete_DebugBackTraceEntry(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	PolyBase **inst = (PolyBase**)lua_touserdata(L, 1);
+	delete ((DebugBackTraceEntry*) *inst);
+	*inst = NULL;
+	return 0;
+}
+
 static int Polycore_MeshResourceLoader(lua_State *L) {
 	MeshResourceLoader *inst = new MeshResourceLoader();
 	PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
@@ -13938,44 +13976,6 @@ static int Polycore_delete_MeshResourceLoader(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	PolyBase **inst = (PolyBase**)lua_touserdata(L, 1);
 	delete ((MeshResourceLoader*) *inst);
-	*inst = NULL;
-	return 0;
-}
-
-static int Polycore_BackTraceEntry_get_fileName(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	BackTraceEntry *inst = (BackTraceEntry*) *((PolyBase**)lua_touserdata(L, 1));
-	lua_pushstring(L, inst->fileName.c_str());
-	return 1;
-}
-
-static int Polycore_BackTraceEntry_get_lineNumber(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	BackTraceEntry *inst = (BackTraceEntry*) *((PolyBase**)lua_touserdata(L, 1));
-	lua_pushinteger(L, inst->lineNumber);
-	return 1;
-}
-
-static int Polycore_BackTraceEntry_set_fileName(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	BackTraceEntry *inst = (BackTraceEntry*) *((PolyBase**)lua_touserdata(L, 1));
-	String param = lua_tostring(L, 2);
-	inst->fileName = param;
-	return 0;
-}
-
-static int Polycore_BackTraceEntry_set_lineNumber(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	BackTraceEntry *inst = (BackTraceEntry*) *((PolyBase**)lua_touserdata(L, 1));
-	int param = lua_tointeger(L, 2);
-	inst->lineNumber = param;
-	return 0;
-}
-
-static int Polycore_delete_BackTraceEntry(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	PolyBase **inst = (PolyBase**)lua_touserdata(L, 1);
-	delete ((BackTraceEntry*) *inst);
 	*inst = NULL;
 	return 0;
 }

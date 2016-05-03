@@ -129,7 +129,7 @@ namespace Polycode {
         FT_Library FTLibrary;
     };
     
-    class BackTraceEntry {
+    class DebugBackTraceEntry {
     public:
         String fileName;
         unsigned int lineNumber;
