@@ -129,12 +129,22 @@ namespace Polycode {
         FT_Library FTLibrary;
     };
     
+    class BackTraceEntry {
+    public:
+        String fileName;
+        unsigned int lineNumber;
+    };
+    
     class _PolyExport ScriptResourceLoader : public ResourceLoader {
     public:
         ScriptResourceLoader();
         ~ScriptResourceLoader();
         Resource *loadResource(const String &path, ResourcePool *targetPool);
     private:
+        
+        void initLua();
+        void initJavascript();
+        
         lua_State *luaState;
         duk_context *duktapeContext;
     };

@@ -65,7 +65,7 @@ def typeFilter(ty):
 	ty = ty.replace(" ", "") # Not very safe!
 	return ty
 
-def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, apiPath, apiClassPath, includePath, sourcePath, luaDocPath, inheritInModuleFiles):
+def createLuaBindings(inputPath, prefix, mainInclude, libSmallName, libName, apiPath, apiClassPath, includePath, sourcePath, luaDocPath, headerIncludePath, inheritInModuleFiles):
 	wrappersHeaderOut = "" # Def: Global C++ *LUAWrappers.h
 	cppRegisterOut = "" # Def: Global C++ *LUA.cpp
 	cppLoaderOut = "" # Def: Global C++ *LUA.cpp
@@ -74,16 +74,16 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	luaIndexOut = "" # Def: Global Lua everything-gets-required-from-this-file file
 	
 	# Header boilerplate for wrappersHeaderOut and cppRegisterOut
-	cppRegisterOut += "#include \"%sLUA.h\"\n" % (prefix)
-	cppRegisterOut += "#include \"%sLUAWrappers.h\"\n" % (prefix)
-	cppRegisterOut += "#include \"PolyCoreServices.h\"\n\n"
+	cppRegisterOut += "#include \"polycode/bindings/lua/%sLua.h\"\n" % (prefix)
+	cppRegisterOut += "#include \"polycode/bindings/lua/%sLuaWrappers.h\"\n" % (prefix)
+	cppRegisterOut += "#include \"polycode/core/PolyCoreServices.h\"\n\n"
 	cppRegisterOut += "using namespace Polycode;\n\n"
 	cppRegisterOut += "int luaopen_%s(lua_State *L) {\n" % (prefix)
 
 	if prefix != "Polycode" and prefix != "Physics2D" and prefix != "Physics3D" and prefix != "UI":
 		cppRegisterOut += "CoreServices *inst = (CoreServices*) *((PolyBase**)lua_touserdata(L, 1));\n"
 		cppRegisterOut += "CoreServices::setInstance(inst);\n"
-	cppRegisterOut += "\tstatic const struct luaL_reg %sLib [] = {" % (libSmallName)
+	cppRegisterOut += "\tstatic const luaL_Reg %sLib [] = {" % (libSmallName)
 	
 	wrappersHeaderOut += "#pragma once\n\n"
 
@@ -117,10 +117,10 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 		if os.path.isdir(fileName):
 			continue
 		head, tail = os.path.split(fileName)
-		ignore = ["PolyTween", "PolyTweenManager", "PolyGLSLProgram", "PolyGLSLShader", "PolyGLSLShaderModule", "PolyWinCore", "PolyCocoaCore", "PolyAGLCore", "PolySDLCore", "Poly_iPhone", "PolyGLES1Renderer", "PolyGLRenderer", "tinyxml", "tinystr", "OpenGLCubemap", "PolyiPhoneCore", "PolyGLES1Texture", "PolyGLTexture", "PolyGLVertexBuffer", "PolyThreaded", "PolyGLHeaders", "GLee", "PolyPeer", "PolySocket", "PolyClient", "PolyServer", "PolyServerWorld", "OSFILE", "OSFileEntry", "OSBasics", "PolyLogger", "PolyFontGlyphSheet"]
+		ignore = ["PolyTween", "PolyTweenManager", "PolyGLSLProgram", "PolyGLSLShader", "PolyGLSLShaderModule", "PolyWinCore", "PolyIOSCore", "PolyRPICore", "PolyUWPCore", "PolyCocoaCore", "PolyAGLCore", "PolySDLCore", "Poly_iPhone", "PolyGLES1Renderer", "PolyGLRenderer", "tinyxml", "tinystr", "OpenGLCubemap", "PolyiPhoneCore", "PolyGLES1Texture", "PolyGLTexture", "PolyGLVertexBuffer", "PolyThreaded", "PolyGLHeaders", "GLee", "PolyPeer", "PolySocket", "PolyClient", "PolyServer", "PolyServerWorld", "OSFILE", "OSFileEntry", "OSBasics", "PolyLogger", "PolyFontGlyphSheet", "PolyXAudio2AudioInterface"]
 		if tail.split(".")[1] == "h" and tail.split(".")[0] not in ignore:
 			filteredFiles.append(fileName)
-			wrappersHeaderOut += "#include \"%s\"\n" % (tail)
+			wrappersHeaderOut += "#include \"%s/%s\"\n" % (headerIncludePath, tail)
 
 	wrappersHeaderOut += "\nusing namespace std;\n\n"
 	wrappersHeaderOut += "\nnamespace Polycode {\n\n"
@@ -138,9 +138,9 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 		wrappersHeaderOut += "public:\n"
 		wrappersHeaderOut += "	LuaEventHandler() : EventHandler() {}\n"
 		wrappersHeaderOut += "	void handleEvent(Event *e) {\n"
-		wrappersHeaderOut += "		lua_getfield (L, LUA_GLOBALSINDEX, \"__customError\");\n"
+		wrappersHeaderOut += "		lua_getglobal(L, \"__customError\");\n"
 		wrappersHeaderOut += "		int errH = lua_gettop(L);\n"
-		wrappersHeaderOut += "		lua_getfield(L, LUA_GLOBALSINDEX, \"__handleEvent\");\n"
+		wrappersHeaderOut += "		lua_getglobal(L, \"__handleEvent\");\n"
 		wrappersHeaderOut += "		lua_rawgeti( L, LUA_REGISTRYINDEX, wrapperIndex );\n"
 		wrappersHeaderOut += "		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));\n"
 		wrappersHeaderOut += "		*userdataPtr = (PolyBase*)e;\n"
@@ -170,7 +170,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 			f = open(fileName) # Def: Input file handle
 			contents = f.read().replace("_PolyExport", "") # Def: Input file contents, strip out "_PolyExport"
 			cppHeader = CppHeaderParser.CppHeader(contents, "string") # Def: Input file contents, parsed structure
-			ignore_classes = ["PolycodeShaderModule", "Object", "Threaded", "OpenGLCubemap", "PolyBase", "Matrix4::union "]
+			ignore_classes = ["PAAudioInterface", "AudioInterface", "ResourceLoader", "CoreFile", "CoreFileProvider", "GraphicsInterface", "Script", "LuaScript", "JSScript", "Object", "Threaded", "OpenGLCubemap", "PolyBase", "Matrix4::union "]
 
 			# Iterate, check each class in this file.
 			for ckey in cppHeader.classes: 
@@ -795,7 +795,9 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	
 	cppRegisterOut += "\t\t{NULL, NULL}\n"
 	cppRegisterOut += "\t};\n"
-	cppRegisterOut += "\tluaL_openlib(L, \"%s\", %sLib, 0);\n" % (libName, libSmallName)
+	cppRegisterOut += "\tlua_newtable(L);\n"
+	cppRegisterOut += "\tluaL_setfuncs (L,%sLib,0);\n" % (libSmallName)
+	cppRegisterOut += "\tlua_setglobal(L,\"%s\");" % (libName)
 	cppRegisterOut += cppLoaderOut
 	cppRegisterOut += "\treturn 1;\n"
 	cppRegisterOut += "}"
@@ -816,41 +818,34 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	mkdir_p(includePath)
 	mkdir_p(apiPath)
 	mkdir_p(sourcePath)
+	mkdir_p(luaDocPath)
 
-	fout = open("%s/%sLUA.h" % (includePath, prefix), "w")
+	fout = open("%s/%sLua.h" % (includePath, prefix), "w")
 	fout.write(cppRegisterHeaderOut)
 
-	if luaDocPath is None:
-		luaDocPath = "../../../Documentation/Lua/xml"
-	if luaDocPath != "-":
+	if luaDocPath is not None:
 		fout = open("%s/%s.xml" % (luaDocPath, prefix), "w")
 		fout.write(luaDocOut)
 
 	fout = open("%s/%s.lua" % (apiPath, prefix), "w")
 	fout.write(luaIndexOut)
 	
-	fout = open("%s/%sLUAWrappers.h" % (includePath, prefix), "w")
+	fout = open("%s/%sLuaWrappers.h" % (includePath, prefix), "w")
 	fout.write(wrappersHeaderOut)
 	
-	fout = open("%s/%sLUA.cpp" % (sourcePath, prefix), "w")
+	fout = open("%s/%sLua.cpp" % (sourcePath, prefix), "w")
 	fout.write(cppRegisterOut)
 	
 	# Create .pak zip archive
 	pattern = '*.lua'
 	os.chdir(apiPath)
-	if libName == "Polycore":
-		with ZipFile("api.pak", 'w') as myzip:
-			for root, dirs, files in os.walk("."):
-				for filename in fnmatch.filter(files, pattern):
-					myzip.write(os.path.join(root, filename))
-	else:
-		with ZipFile("%s.pak" % (libName), 'w') as myzip:
-			for root, dirs, files in os.walk("."):
-				for filename in fnmatch.filter(files, pattern):
-					myzip.write(os.path.join(root, filename))
+	with ZipFile("lua_%s.pak" % (libName), 'w') as myzip:
+		for root, dirs, files in os.walk("."):
+			for filename in fnmatch.filter(files, pattern):
+				myzip.write(os.path.join(root, filename))
 
 if len(sys.argv) < 10:
 	print ("Usage:\n%s [input path] [prefix] [main include] [lib small name] [lib name] [api path] [api class-path] [include path] [source path] [lua doc path (optional) (or - for omit)] [inherit-in-module-file path (optional)]" % (sys.argv[0]))
 	sys.exit(1)
 else:
-	createLUABindings(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10] if len(sys.argv)>10 else None, sys.argv[11] if len(sys.argv)>11 else None)
+	createLuaBindings(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10] if len(sys.argv)>10 else None, sys.argv[11] if len(sys.argv)>11 else None, sys.argv[12] if len(sys.argv)>12 else None)

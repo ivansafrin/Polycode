@@ -225,8 +225,6 @@ namespace Polycode {
         
         void enqueueFrameJob(int jobType, void *data);
         
-        void setExpectedAttributes(Mesh *mesh, Shader *shader);
-        
         void destroyProgram(ShaderProgram *program);
         void destroyShader(Shader *shader);
         void destroyBuffer(RenderDataArray *array);

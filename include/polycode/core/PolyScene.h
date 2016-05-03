@@ -97,12 +97,6 @@ namespace Polycode {
 		void setActiveCamera(Camera *camera);
 		
 		/**
-		* Enables and disables lighting in the scene.
-		* @param enable If false, disables lighting in the scene, if true, enables it.		
-		*/
-		void enableLighting(bool enable);				
-		
-		/**
 		* Enables and disables fog in the scene.
 		* @param enable If false, disables lighting in the scene, if true, enables it.		
 		*/		

@@ -69,28 +69,48 @@ void JSScript::callUpdate(ScriptInstance *instance, Entity *entity, Number elaps
 }
 
 LuaScript::LuaScript(lua_State *state, const String &path) : Script(path) {
+
+    lua_getglobal(state, "__customError");
+    errH = lua_gettop(state);
+    
     luaL_loadfile(state, path.c_str());
-    lua_pcall(state,0,1,0);
+    lua_pcall(state,0,1,errH);
     tableRef = luaL_ref(state, LUA_REGISTRYINDEX);
     this->state = state;
 }
 
 ScriptInstance *LuaScript::callInit(Entity *entity) {
-    lua_getglobal(state, tableName.c_str());
-    lua_rawgeti(state, LUA_REGISTRYINDEX, tableRef);
-    lua_getfield(state, -1, "init");
-    lua_pushlightuserdata(state, entity);
-    lua_pcall(state, 1, 1, 0);
     LuaScriptInstance *scriptInstance = new LuaScriptInstance();
-    scriptInstance->tableRef = luaL_ref(state, LUA_REGISTRYINDEX);
-    scriptInstance->script = this;
+    if(tableRef != -1) {
+        lua_rawgeti(state, LUA_REGISTRYINDEX, tableRef);
+        
+        // create a Lua entity wrapper
+        lua_getglobal(state, "Entity");
+        lua_pushstring(state, "__skip_ptr__");
+        lua_pcall(state, 1, 1, errH);
+        
+        lua_pushstring(state, "__ptr");
+
+        PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(state, sizeof(PolyBase*));
+        *userdataPtr = (PolyBase*)entity;
+        
+        lua_settable(state, -3);
+        
+        lua_pcall(state, 1, 1, errH);
+        scriptInstance->tableRef = luaL_ref(state, LUA_REGISTRYINDEX);
+    } else {
+        scriptInstance->tableRef = -1;
+    }
+        scriptInstance->script = this;
     return scriptInstance;
 }
 
 void LuaScript::callUpdate(ScriptInstance *instance, Entity *entity, Number elapsed) {
-    lua_rawgeti(state, LUA_REGISTRYINDEX, tableRef);
-    lua_getfield(state, -1, "update");
-    lua_rawgeti(state, LUA_REGISTRYINDEX, ((LuaScriptInstance*)instance)->tableRef);
-    lua_pushnumber(state, elapsed);
-    lua_pcall(state, 2, 0, 0);
+    if(((LuaScriptInstance*)instance)->tableRef != -1 && tableRef != -1) {
+        lua_rawgeti(state, LUA_REGISTRYINDEX, tableRef);
+        lua_getfield(state, -1, "update");
+        lua_rawgeti(state, LUA_REGISTRYINDEX, ((LuaScriptInstance*)instance)->tableRef);
+        lua_pushnumber(state, elapsed);
+        lua_pcall(state, 2, 0, errH);
+    }
 }

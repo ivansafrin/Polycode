@@ -65,8 +65,8 @@ namespace Polycode {
         
         private:
             lua_State *state;
-            String tableName;
             int tableRef;
+            int errH;
     };
     
     class JSScriptInstance : public ScriptInstance {

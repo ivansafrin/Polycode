@@ -3,6 +3,8 @@
 bin/polyimport
 bin/polybuild
 
+*.pyc
+
 *.o
 *.do
 *.io

@@ -81,9 +81,6 @@ Services.ResourceManager.__ptr = Polycore.CoreServices_getResourceManager(Polyco
 Services.SoundManager = SoundManager("__skip_ptr__")
 Services.SoundManager.__ptr = Polycore.CoreServices_getSoundManager(Polycore.CoreServices_getInstance())
 
-Services.FontManager = FontManager("__skip_ptr__")
-Services.FontManager.__ptr = Polycore.CoreServices_getFontManager(Polycore.CoreServices_getInstance())
-
 Services.TweenManager = TweenManager()
 
 function delete(c)

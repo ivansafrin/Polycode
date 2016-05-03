@@ -32,7 +32,8 @@
 #include "polycode/core/PolyFont.h"
 #include "polycode/core/PolyMesh.h"
 #include "polycode/core/PolyScript.h"
-#include "polycode/core/PolyLuaApi.h"
+#include "polycode/core/PolyCore.h"
+#include "polycode/bindings/lua/PolycodeLua.h"
 #include "tinyxml.h"
 
 using std::vector;
@@ -376,23 +377,166 @@ duk_ret_t entity_Roll(duk_context *context) {
     return 0;
 }
 
-ScriptResourceLoader::ScriptResourceLoader() {
+static int customError(lua_State *L) {
+    std::vector<BackTraceEntry> backTrace;
+    lua_Debug entry;
+    int depth = 0;
+    while (lua_getstack(L, depth, &entry)) {
+        lua_getinfo(L, "Sln", &entry);
+        
+        std::vector<String> bits = String(entry.short_src).split("\"");
+        if(bits.size() > 1) {
+            String fileName = bits[1];
+            if(fileName != "class.lua") {
+                
+                BackTraceEntry trace;
+                trace.lineNumber = entry.currentline;
+                trace.fileName = fileName;
+                backTrace.push_back(trace);
+            }
+        }
+        depth++;
+    }
+    
+    // horrible hack to determine the filenames of things
+    bool stringThatIsTheMainFileSet = false;
+    String stringThatIsTheMainFile;
+    
+    if(backTrace.size() == 0) {
+        BackTraceEntry trace;
+        trace.lineNumber = 0;
+        trace.fileName = "TODO: Figure out full pathHere";
+        backTrace.push_back(trace);
+        
+    } else {
+        stringThatIsTheMainFileSet = true;
+        stringThatIsTheMainFile = backTrace[backTrace.size()-1].fileName;
+        backTrace[backTrace.size()-1].fileName = "TODO: Figure out full pathHere";
+    }
+    
+    if(stringThatIsTheMainFileSet) {
+        for(int i=0; i < backTrace.size(); i++) {
+            if(backTrace[i].fileName == stringThatIsTheMainFile) {
+                backTrace[i].fileName = "TODO: Figure out full pathHere";
+            }
+        }
+    }
+    
+    const char *msg = lua_tostring(L, -1);
+    if (msg == NULL) msg = "(error with no message)";
+    lua_pop(L, 1);
+    printf("%s\n", msg);
+    
+    return 0;
+}
+
+int customLuaLoader(lua_State* pState)
+{
+    std::string module = lua_tostring(pState, 1);
+    
+    module += ".lua";
+    
+    std::string defaultPath = "default/";
+    defaultPath.append(module);
+    
+    const char* fullPath = module.c_str();
+    Logger::log("Loading custom class: %s\n", module.c_str());
+    
+    Polycode::CoreFile *inFile = Services()->getCore()->openFile(module, "r");
+    
+    if(!inFile) {
+        inFile =  Services()->getCore()->openFile(defaultPath, "r");
+    }
+    
+    if(inFile) {
+        inFile->seek(0, SEEK_END);
+        long progsize = inFile->tell();
+        inFile->seek(0, SEEK_SET);
+        char *buffer = (char*)malloc(progsize+1);
+        memset(buffer, 0, progsize+1);
+        inFile->read(buffer, progsize, 1);
+        int status = luaL_loadbuffer(pState, (const char*)buffer, progsize, fullPath);
+        if(status) {
+            const char *msg;
+            msg = lua_tostring(pState, -1);
+            if (msg == NULL) msg = "(error with no message)";
+            Logger::log("status=%d, (%s)\n", status, msg);
+            lua_pop(pState, 1);
+        }
+        free(buffer);
+        Services()->getCore()->closeFile(inFile);
+    } else {
+        std::string err = "\n\tError - Could could not find ";
+        err += module;
+        err += ".";			
+        lua_pushstring(pState, err.c_str());			
+    }
+    return 1;
+}
+
+void ScriptResourceLoader::initLua() {
     luaState =  luaL_newstate();
     luaL_openlibs(luaState);
     luaopen_debug(luaState);
     luaopen_Polycode(luaState);
     
-    // init duktape
+    /* install custom loader function */
     
+    lua_getglobal(luaState, "package");
+    lua_getfield(luaState, -1, "searchers");
+    lua_remove(luaState, -2);
+    
+    int numLoaders = 0;
+    lua_pushnil(luaState);
+    while (lua_next(luaState, -2) != 0)
+    {
+        lua_pop(luaState, 1);
+        numLoaders++;
+    }
+    
+    lua_pushinteger(luaState, numLoaders + 1);
+    lua_pushcfunction(luaState, customLuaLoader);
+    lua_rawset(luaState, -3);
+    lua_pop(luaState, 1);
+    
+    /* install custom error function */
+    
+    lua_register(luaState, "__customError", customError);
+    lua_getglobal(luaState, "__customError");
+    int errH = lua_gettop(luaState);
+    
+    /* require default lua files */
+    
+    lua_getglobal(luaState, "require");
+    lua_pushstring(luaState, "class");
+    lua_pcall(luaState, 1, 0, errH);
+
+    lua_getglobal(luaState, "require");
+    lua_pushstring(luaState, "Polycode");
+    lua_pcall(luaState, 1, 0, errH);
+    
+    lua_getglobal(luaState, "require");
+    lua_pushstring(luaState, "tweens");
+    lua_pcall(luaState, 1, 0, errH);
+    
+    lua_getglobal(luaState, "require");
+    lua_pushstring(luaState, "defaults");
+    lua_pcall(luaState, 1, 0, errH);
+}
+
+void ScriptResourceLoader::initJavascript() {
     duktapeContext = duk_create_heap_default();
     
     duk_push_c_function(duktapeContext, entity_Roll, 2);
     duk_put_global_string(duktapeContext, "entity_Roll");
+}
+
+ScriptResourceLoader::ScriptResourceLoader() {
+    luaState = NULL;
+    duktapeContext = NULL;
     
     extensions.push_back("lua");
     extensions.push_back("js");
-    
-    
 }
 
 ScriptResourceLoader::~ScriptResourceLoader() {
@@ -404,8 +548,14 @@ Resource *ScriptResourceLoader::loadResource(const String &path, ResourcePool *t
     OSFileEntry entry(path, OSFileEntry::TYPE_FILE);
     Script *newScript = NULL;
     if(entry.extension == "lua") {
+        if(!luaState) {
+            initLua();
+        }
         newScript = new LuaScript(luaState, path);
     } else if(entry.extension == "js") {
+        if(!duktapeContext) {
+            initJavascript();
+        }
         newScript = new JSScript(duktapeContext, path);
     }
     return newScript;

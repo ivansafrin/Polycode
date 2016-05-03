@@ -1,16 +1,12 @@
--- test script
 
-Rotator = {}
-Rotator.__index = Rotator
+class "Rotator"
 
-function Rotator.init(entity)
-	local rotator = {}
-	rotator.entity = entity
-	return rotator
+function Rotator:Rotator(entity)
+	self.entity = entity
 end
 
 function Rotator:update(elapsed)
-	Entity.Roll(self.entity, elapsed * 100.0)
+    self.entity:Roll(elapsed * 100.0)
 end
 
 return Rotator

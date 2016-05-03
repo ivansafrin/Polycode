@@ -8,6 +8,8 @@
 PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     core = new CocoaCore(view, 1280/2,720/2,false,false, 0,0,60, 0, true);
     
+    core->addFileSource("archive", "lua_Polycore.pak");
+    
     core->addFileSource("archive", "default.pak");
     ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
     globalPool->loadResourcesFromFolder("default", true);
@@ -15,7 +17,7 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     core->addFileSource("archive", "hdr.pak");
     globalPool->loadResourcesFromFolder("hdr", true);
     
-    Polycode:Script *rotateScript = (Script*) globalPool->loadResource("rotate.js");
+    Polycode:Script *rotateScript = (Script*) globalPool->loadResource("rotate.lua");
     
 	// Write your code here!
     

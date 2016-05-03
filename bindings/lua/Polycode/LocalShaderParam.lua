@@ -1,0 +1,157 @@
+class "LocalShaderParam"
+
+
+
+function LocalShaderParam:__getvar(name)
+	if name == "name" then
+		return Polycore.LocalShaderParam_get_name(self.__ptr)
+	elseif name == "data" then
+		local retVal = Polycore.LocalShaderParam_get_data(self.__ptr)
+		if retVal == nil then return nil end
+		local __c = _G["void"]("__skip_ptr__")
+		__c.__ptr = retVal
+		return __c
+	elseif name == "type" then
+		return Polycore.LocalShaderParam_get_type(self.__ptr)
+	elseif name == "ownsPointer" then
+		return Polycore.LocalShaderParam_get_ownsPointer(self.__ptr)
+	elseif name == "arraySize" then
+		return Polycore.LocalShaderParam_get_arraySize(self.__ptr)
+	elseif name == "param" then
+		local retVal = Polycore.LocalShaderParam_get_param(self.__ptr)
+		if retVal == nil then return nil end
+		local __c = _G["ProgramParam"]("__skip_ptr__")
+		__c.__ptr = retVal
+		return __c
+	end
+end
+
+
+function LocalShaderParam:__setvar(name,value)
+	if name == "name" then
+		Polycore.LocalShaderParam_set_name(self.__ptr, value)
+		return true
+	elseif name == "type" then
+		Polycore.LocalShaderParam_set_type(self.__ptr, value)
+		return true
+	elseif name == "ownsPointer" then
+		Polycore.LocalShaderParam_set_ownsPointer(self.__ptr, value)
+		return true
+	elseif name == "arraySize" then
+		Polycore.LocalShaderParam_set_arraySize(self.__ptr, value)
+		return true
+	end
+	return false
+end
+
+
+function LocalShaderParam:LocalShaderParam(...)
+	local arg = {...}
+	for k,v in pairs(arg) do
+		if type(v) == "table" then
+			if v.__ptr ~= nil then
+				arg[k] = v.__ptr
+			end
+		end
+	end
+	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
+		self.__ptr = Polycore.LocalShaderParam(unpack(arg))
+	end
+end
+
+function LocalShaderParam:Copy()
+	local retVal =  Polycore.LocalShaderParam_Copy(self.__ptr)
+	if retVal == nil then return nil end
+	local __c = _G["LocalShaderParam"]("__skip_ptr__")
+	__c.__ptr = retVal
+	return __c
+end
+
+function LocalShaderParam:getNumber()
+	local retVal =  Polycore.LocalShaderParam_getNumber(self.__ptr)
+	return retVal
+end
+
+function LocalShaderParam:getVector2()
+	local retVal =  Polycore.LocalShaderParam_getVector2(self.__ptr)
+	if retVal == nil then return nil end
+	local __c = _G["Vector2"]("__skip_ptr__")
+	__c.__ptr = retVal
+	return __c
+end
+
+function LocalShaderParam:getVector3()
+	local retVal =  Polycore.LocalShaderParam_getVector3(self.__ptr)
+	if retVal == nil then return nil end
+	local __c = _G["Vector3"]("__skip_ptr__")
+	__c.__ptr = retVal
+	return __c
+end
+
+function LocalShaderParam:getMatrix4()
+	local retVal =  Polycore.LocalShaderParam_getMatrix4(self.__ptr)
+	if retVal == nil then return nil end
+	local __c = _G["Matrix4"]("__skip_ptr__")
+	__c.__ptr = retVal
+	return __c
+end
+
+function LocalShaderParam:getColor()
+	local retVal =  Polycore.LocalShaderParam_getColor(self.__ptr)
+	if retVal == nil then return nil end
+	local __c = _G["Color"]("__skip_ptr__")
+	__c.__ptr = retVal
+	return __c
+end
+
+function LocalShaderParam:setNumber(x)
+	local retVal = Polycore.LocalShaderParam_setNumber(self.__ptr, x)
+end
+
+function LocalShaderParam:setVector2(x)
+	local retVal = Polycore.LocalShaderParam_setVector2(self.__ptr, x.__ptr)
+end
+
+function LocalShaderParam:setVector3(x)
+	local retVal = Polycore.LocalShaderParam_setVector3(self.__ptr, x.__ptr)
+end
+
+function LocalShaderParam:setMatrix4(x)
+	local retVal = Polycore.LocalShaderParam_setMatrix4(self.__ptr, x.__ptr)
+end
+
+function LocalShaderParam:setColor(x)
+	local retVal = Polycore.LocalShaderParam_setColor(self.__ptr, x.__ptr)
+end
+
+function LocalShaderParam:setTexture(texture)
+	local retVal = Polycore.LocalShaderParam_setTexture(self.__ptr, texture.__ptr)
+end
+
+function LocalShaderParam:getTexture()
+	local retVal =  Polycore.LocalShaderParam_getTexture(self.__ptr)
+	if retVal == nil then return nil end
+	local __c = _G["Texture"]("__skip_ptr__")
+	__c.__ptr = retVal
+	return __c
+end
+
+function LocalShaderParam:setCubemap(cubemap)
+	local retVal = Polycore.LocalShaderParam_setCubemap(self.__ptr, cubemap.__ptr)
+end
+
+function LocalShaderParam:getCubemap()
+	local retVal =  Polycore.LocalShaderParam_getCubemap(self.__ptr)
+	if retVal == nil then return nil end
+	local __c = _G["Cubemap"]("__skip_ptr__")
+	__c.__ptr = retVal
+	return __c
+end
+
+function LocalShaderParam:setParamValueFromString(type, pvalue)
+	local retVal = Polycore.LocalShaderParam_setParamValueFromString(self.__ptr, type, pvalue)
+end
+
+function LocalShaderParam:__delete()
+	if self then Polycore.delete_LocalShaderParam(self.__ptr) end
+end
