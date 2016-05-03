@@ -41,13 +41,16 @@ ScriptInstance *JSScript::callInit(Entity *entity) {
         Logger::log("JAVASCRIPT ERROR: [%s]\n", duk_safe_to_string(context, -1));
     }
     
+    duk_new(context, 0);
+    
     scriptInstance->objectRef = duk_get_heapptr(context, -1);
     scriptInstance->script = this;
     
     duk_push_heapptr(context, scriptInstance->objectRef);
     duk_get_prop_string(context, -1, "init");
+    duk_push_heapptr(context, scriptInstance->objectRef);
     duk_push_pointer(context, entity);
-    if(duk_pcall(context, 1) != 0) {
+    if(duk_pcall_method(context, 1) != 0) {
         Logger::log("JAVASCRIPT ERROR: [%s]\n", duk_safe_to_string(context, -1));
     }
     duk_pop_2(context);
@@ -57,8 +60,9 @@ ScriptInstance *JSScript::callInit(Entity *entity) {
 void JSScript::callUpdate(ScriptInstance *instance, Entity *entity, Number elapsed) {
     duk_push_heapptr(context, ((JSScriptInstance*)instance)->objectRef);
     duk_get_prop_string(context, -1, "update");
+    duk_push_heapptr(context, ((JSScriptInstance*)instance)->objectRef);
     duk_push_number(context, elapsed);
-    if(duk_pcall(context, 1) != 0) {
+    if(duk_pcall_method(context, 1) != 0) {
         Logger::log("JAVASCRIPT ERROR: [%s]\n", duk_safe_to_string(context, -1));
     }
     duk_pop_2(context);

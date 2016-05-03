@@ -29,6 +29,10 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
         test = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.5, 0.5);
         test->setMaterialByName("Unlit");
         test->attachScript(rotateScript);
+        /*
+         ScriptInstance *scriptInstance = test->attachScript(rotateScript);
+         scriptInstance->setPropNumber("speed", 1.0);
+         */
         test->getShaderPass(0).shaderBinding->loadTextureForParam("diffuse", "main_icon.png");
         test->setPosition(RANDOM_NUMBER * 0.5, RANDOM_NUMBER * 0.4);
         test->setBlendingMode(Renderer::BLEND_MODE_NONE);
