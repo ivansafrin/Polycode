@@ -114,6 +114,7 @@
 				6D8883B71CBC8B6900626AD7 /* Sources */,
 				6D8883B81CBC8B6900626AD7 /* Frameworks */,
 				6D8883B91CBC8B6900626AD7 /* Headers */,
+				6DB2E6B11CD97C9400FB0E28 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -154,6 +155,22 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		6DB2E6B11CD97C9400FB0E28 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cp $TARGET_BUILD_DIR//$EXECUTABLE_NAME ../../../lib/osx";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		6D8883B71CBC8B6900626AD7 /* Sources */ = {
@@ -287,6 +304,7 @@
 				6D8883C11CBC8B6900626AD7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -131,7 +131,9 @@ void SoundManager::setAudioInterface(AudioInterface *audioInterface) {
 	if (!mixer->mixerMutex) {
 		mixer->mixerMutex = Services()->getCore()->createMutex();
 	}
-    audioInterface->setMixer(mixer);
+    if(audioInterface) {
+        audioInterface->setMixer(mixer);
+    }
 }
 
 

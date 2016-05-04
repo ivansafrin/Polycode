@@ -26,7 +26,18 @@ THE SOFTWARE.
 #import "polycode/view/ios/PolycodeView.h"
 #include "polycode/core/PolyInputEvent.h"
 #include "polycode/core/PolyOpenGLGraphicsInterface.h"
+#include "polycode/core/PolySoundManager.h"
 #include <pthread.h>
+#include <AudioToolbox/AudioQueue.h>
+#include <CoreAudio/CoreAudioTypes.h>
+
+/* CONFIG */
+
+// number of CoreAudio AudioQueue buffers
+
+#define NUM_AQ_BUFFERS 3
+
+/* ------ */
 
 @class PolycodeView;
 
@@ -63,6 +74,19 @@ class IOSEvent {
 };
 
 namespace Polycode {
+    
+    class IOSCoreAudioInterface : public Polycode::AudioInterface {
+    public:
+        IOSCoreAudioInterface();
+        ~IOSCoreAudioInterface();
+        
+        static void CoreAudioCallback(void *custom_data, AudioQueueRef queue, AudioQueueBufferRef buffer);
+    private:
+        AudioQueueBufferRef buffers[NUM_AQ_BUFFERS];
+        AudioStreamBasicDescription format;
+        AudioQueueRef queue;
+        
+    };
 
 	class _PolyExport IOSCore : public Core {
 	public:

@@ -7,11 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6D086CF21CD9B3770057F210 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D086CF11CD9B3770057F210 /* AudioToolbox.framework */; };
+		6D086D661CD9BC330057F210 /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D086D631CD9BC330057F210 /* libogg.a */; };
+		6D086D671CD9BC330057F210 /* libvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D086D641CD9BC330057F210 /* libvorbis.a */; };
+		6D086D681CD9BC330057F210 /* libvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D086D651CD9BC330057F210 /* libvorbisfile.a */; };
+		6D086D6A1CD9BC820057F210 /* test.ogg in Resources */ = {isa = PBXBuildFile; fileRef = 6D086D691CD9BC820057F210 /* test.ogg */; };
 		6D1992381CD692ED00DE01FA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D1992341CD692ED00DE01FA /* QuartzCore.framework */; };
 		6D1992391CD692ED00DE01FA /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D1992351CD692ED00DE01FA /* CoreMotion.framework */; };
 		6D19923A1CD692ED00DE01FA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D1992361CD692ED00DE01FA /* UIKit.framework */; };
 		6D19923B1CD692ED00DE01FA /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D1992371CD692ED00DE01FA /* OpenGLES.framework */; };
 		6D90505D1CCBFFD400D0E80A /* liblua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D90505C1CCBFFD400D0E80A /* liblua.a */; };
+		6DB2E6B51CD9ABD000FB0E28 /* test.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6DB2E6B41CD9ABD000FB0E28 /* test.wav */; };
 		8A0F80641BF536C800E24F9B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A0F80631BF536C800E24F9B /* AppDelegate.m */; };
 		8A0F80671BF536C800E24F9B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A0F80661BF536C800E24F9B /* ViewController.m */; };
 		8A0F806A1BF536C800E24F9B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8A0F80681BF536C800E24F9B /* Main.storyboard */; };
@@ -27,11 +33,17 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6D086CF11CD9B3770057F210 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		6D086D631CD9BC330057F210 /* libogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libogg.a; path = ../../../../lib/ios/iphonesimulator/libogg.a; sourceTree = "<group>"; };
+		6D086D641CD9BC330057F210 /* libvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbis.a; path = ../../../../lib/ios/iphonesimulator/libvorbis.a; sourceTree = "<group>"; };
+		6D086D651CD9BC330057F210 /* libvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbisfile.a; path = ../../../../lib/ios/iphonesimulator/libvorbisfile.a; sourceTree = "<group>"; };
+		6D086D691CD9BC820057F210 /* test.ogg */ = {isa = PBXFileReference; lastKnownFileType = file; name = test.ogg; path = ../../../../../../../Downloads/test.ogg; sourceTree = "<group>"; };
 		6D1992341CD692ED00DE01FA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		6D1992351CD692ED00DE01FA /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		6D1992361CD692ED00DE01FA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		6D1992371CD692ED00DE01FA /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		6D90505C1CCBFFD400D0E80A /* liblua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua.a; path = ../../../../lib/ios/iphonesimulator/liblua.a; sourceTree = "<group>"; };
+		6DB2E6B41CD9ABD000FB0E28 /* test.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = test.wav; path = ../../../../../../../Downloads/test.wav; sourceTree = "<group>"; };
 		8A0F805C1BF536C800E24F9B /* TemplateApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TemplateApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A0F80621BF536C800E24F9B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		8A0F80631BF536C800E24F9B /* AppDelegate.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp.preprocessed; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -57,13 +69,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D086CF21CD9B3770057F210 /* AudioToolbox.framework in Frameworks */,
 				6D1992381CD692ED00DE01FA /* QuartzCore.framework in Frameworks */,
 				6D1992391CD692ED00DE01FA /* CoreMotion.framework in Frameworks */,
+				6D086D661CD9BC330057F210 /* libogg.a in Frameworks */,
 				6D90505D1CCBFFD400D0E80A /* liblua.a in Frameworks */,
 				6D19923B1CD692ED00DE01FA /* OpenGLES.framework in Frameworks */,
+				6D086D681CD9BC330057F210 /* libvorbisfile.a in Frameworks */,
 				8A35E14F1C877DDB00BF9EEA /* libFreetype2.a in Frameworks */,
 				8A35E1C61C87B3BC00BF9EEA /* libphysfs.a in Frameworks */,
 				6D19923A1CD692ED00DE01FA /* UIKit.framework in Frameworks */,
+				6D086D671CD9BC330057F210 /* libvorbis.a in Frameworks */,
 				8AD300AB1BF68290004D243B /* libPolycodeCore.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -90,6 +106,10 @@
 		8A0F805E1BF536C800E24F9B /* TemplateApp */ = {
 			isa = PBXGroup;
 			children = (
+				6D086D631CD9BC330057F210 /* libogg.a */,
+				6D086D641CD9BC330057F210 /* libvorbis.a */,
+				6D086D651CD9BC330057F210 /* libvorbisfile.a */,
+				6D086CF11CD9B3770057F210 /* AudioToolbox.framework */,
 				6D1992341CD692ED00DE01FA /* QuartzCore.framework */,
 				6D1992351CD692ED00DE01FA /* CoreMotion.framework */,
 				6D1992361CD692ED00DE01FA /* UIKit.framework */,
@@ -105,10 +125,12 @@
 				8A0F80791BF53DD200E24F9B /* PolycodeTemplateApp.h */,
 				8A0F807A1BF53DD200E24F9B /* PolycodeTemplateApp.mm */,
 				8A35E1DB1C87B50600BF9EEA /* default.pak */,
+				6D086D691CD9BC820057F210 /* test.ogg */,
 				8A0F80681BF536C800E24F9B /* Main.storyboard */,
 				8A35E19E1C87A54A00BF9EEA /* PolycodeView.h */,
 				8A0F81981BF56A2D00E24F9B /* PolycodeView.m */,
 				8A0F806B1BF536C800E24F9B /* Assets.xcassets */,
+				6DB2E6B41CD9ABD000FB0E28 /* test.wav */,
 				8A0F806D1BF536C800E24F9B /* LaunchScreen.storyboard */,
 				8A35E14A1C877A8B00BF9EEA /* main.m */,
 				8A0F80701BF536C800E24F9B /* Info.plist */,
@@ -147,7 +169,7 @@
 				TargetAttributes = {
 					8A0F805B1BF536C800E24F9B = {
 						CreatedOnToolsVersion = 7.1;
-						DevelopmentTeam = L5CB3G5LX2;
+						DevelopmentTeam = 8R477NNJLJ;
 					};
 				};
 			};
@@ -174,10 +196,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6DB2E6B51CD9ABD000FB0E28 /* test.wav in Resources */,
 				8A0F806F1BF536C800E24F9B /* LaunchScreen.storyboard in Resources */,
 				8A0F806C1BF536C800E24F9B /* Assets.xcassets in Resources */,
 				8A35E1DC1C87B50600BF9EEA /* default.pak in Resources */,
 				8A0F806A1BF536C800E24F9B /* Main.storyboard in Resources */,
+				6D086D6A1CD9BC820057F210 /* test.ogg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -310,7 +334,7 @@
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../../include\"";
 				INFOPLIST_FILE = TemplateApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../../../lib/ios/iphonesimulator\"";
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../../../lib/ios/iphoneos\"";
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = org.polycode.TemplateApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -328,7 +352,7 @@
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../../include\"";
 				INFOPLIST_FILE = TemplateApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../../../lib/ios/iphonesimulator\"";
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../../../lib/ios/iphoneos\"";
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = org.polycode.TemplateApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";

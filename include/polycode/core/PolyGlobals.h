@@ -79,7 +79,6 @@ typedef unsigned int PolyRendererIndexType;
     #if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
         #define PLATFORM PLATFORM_IOS
         #define STRICT_OPENGLES2 1
-        #define NO_OGG 1
     #else
         #define PLATFORM PLATFORM_MAC
     #endif

@@ -25,6 +25,7 @@ THE SOFTWARE.
 
 #include "polycode/core/PolyBasicFileProvider.h"
 #include "polycode/core/PolyPhysFSFileProvider.h"
+#include "polycode/core/PolySoundManager.h"
 #include <mach/mach.h>
 #include <mach/mach_time.h>
 
@@ -36,6 +37,41 @@ void PosixMutex::lock() {
 
 void PosixMutex::unlock() {
     pthread_mutex_unlock(&pMutex);
+}
+
+IOSCoreAudioInterface::IOSCoreAudioInterface() {
+    
+    format.mSampleRate       = POLY_AUDIO_FREQ;
+    format.mFormatID         = kAudioFormatLinearPCM;
+    format.mFormatFlags      = kLinearPCMFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
+    format.mBitsPerChannel   = 8 * sizeof(short);
+    format.mChannelsPerFrame = POLY_NUM_CHANNELS;
+    format.mBytesPerFrame    = sizeof(short) * POLY_NUM_CHANNELS;
+    format.mFramesPerPacket  = 1;
+    format.mBytesPerPacket   = format.mBytesPerFrame * format.mFramesPerPacket;
+    format.mReserved         = 0;
+    
+    AudioQueueNewOutput(&format, CoreAudioCallback, this, CFRunLoopGetCurrent(), kCFRunLoopCommonModes, 0, &queue);
+    
+    for (int i = 0; i < NUM_AQ_BUFFERS; i++) {
+        AudioQueueAllocateBuffer(queue, POLY_FRAMES_PER_BUFFER * sizeof(short) * POLY_NUM_CHANNELS, &buffers[i]);
+        buffers[i]->mAudioDataByteSize = POLY_FRAMES_PER_BUFFER * sizeof(short) * POLY_NUM_CHANNELS;
+        memset(buffers[i]->mAudioData, 0, POLY_FRAMES_PER_BUFFER * sizeof(short) * POLY_NUM_CHANNELS);
+        AudioQueueEnqueueBuffer(queue, buffers[i], 0, NULL);
+    }
+    AudioQueueStart(queue, NULL);
+}
+
+void IOSCoreAudioInterface::CoreAudioCallback(void *custom_data, AudioQueueRef queue, AudioQueueBufferRef buffer) {
+    IOSCoreAudioInterface *audioInterface = (IOSCoreAudioInterface*) custom_data;
+    audioInterface->getMixer()->mixIntoBuffer((int16_t*)buffer->mAudioData, POLY_FRAMES_PER_BUFFER);
+    AudioQueueEnqueueBuffer(queue, buffer, 0, NULL);
+}
+
+IOSCoreAudioInterface::~IOSCoreAudioInterface() {
+    AudioQueueReset(queue);
+    AudioQueueStop(queue, YES);
+    AudioQueueDispose(queue, YES);
 }
 
 IOSCore::IOSCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex, bool retinaSupport)
@@ -56,6 +92,8 @@ IOSCore::IOSCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool v
         OpenGLGraphicsInterface *interface = new OpenGLGraphicsInterface();
         renderer->setGraphicsInterface(this, interface);
         services->setRenderer(renderer);
+        
+        Services()->getSoundManager()->setAudioInterface(new IOSCoreAudioInterface());
         
         CGRect screenBounds = [[UIScreen mainScreen] bounds];
         
