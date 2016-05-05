@@ -1,10 +1,9 @@
 class "ScriptInstance"
 
 
-
 function ScriptInstance:__getvar(name)
 	if name == "script" then
-		local retVal = Polycore.ScriptInstance_get_script(self.__ptr)
+		local retVal = Polycode.ScriptInstance_get_script(self.__ptr)
 		if retVal == nil then return nil end
 		local __c = _G["Script"]("__skip_ptr__")
 		__c.__ptr = retVal
@@ -12,12 +11,13 @@ function ScriptInstance:__getvar(name)
 	end
 end
 
-
 function ScriptInstance:__setvar(name,value)
+	if name == "script" then
+		Polycode.ScriptInstance_set_script(self.__ptr, value.__ptr)
+		return true
+	end
 	return false
 end
-
-
 function ScriptInstance:__delete()
-	if self then Polycore.delete_ScriptInstance(self.__ptr) end
+	if self then Polycode.delete_ScriptInstance(self.__ptr) end
 end

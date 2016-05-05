@@ -88,13 +88,20 @@ class BindingsGenerator(object):
 			classPP["type"] = self.typeFilter(pp["type"])
 			if pp["type"].find("POLYIGNORE") != -1:
 				continue
+			if pp["name"] == "" or pp["array"] == 1:
+				continue
+			if "::union" in pp["name"]:
+				continue
+
 			if pp["type"].find("static ") != -1:
+				classPP["isStatic"] = True
 				if "defaltValue" in pp: #this is misspelled in parser library
 					classPP["defaultValue"] = pp["defaltValue"]
 				if 'doxygen' in pp:
 					classPP["doc"] = self.cleanDocs(pp['doxygen'])
 				properties.append(classPP)
 			else:
+				classPP["isStatic"] = False
 				if pp["type"].find("vector") == -1 and pp["name"] != "setScale" and pp["name"] != "setPosition" and pp["name"] != "BUFFER_CACHE_PRECISION" and not pp["name"].isdigit():
 					properties.append(classPP)
 		return properties
@@ -108,6 +115,12 @@ class BindingsGenerator(object):
 		for pm in c["methods"]["public"]:
 			method = {}
 			method["name"] = pm["name"]
+
+			if pm["rtnType"].find("static ") == -1:
+				method["isStatic"] = False
+			else:
+				method["isStatic"] = True
+
 			method["type"] = self.typeFilter(pm["rtnType"])
 			if pm["name"] in parsedMethods or pm["name"].find("operator") > -1 or pm["rtnType"].find("POLYIGNORE") > -1 or pm["name"] in self.ignoreMethods :
 				continue
@@ -139,10 +152,18 @@ class BindingsGenerator(object):
 		classData = {}
 		classData["name"] = ckey
 		if len(c["inherits"]) > 0:
-			classData["parent"] = c["inherits"][0]["class"]
+			if c["inherits"][0]["class"] not in self.ignoreClasses:
+				classData["parent"] = c["inherits"][0]["class"]
 		if 'doxygen' in c:
 			classData["doc"] = self.cleanDocs(c['doxygen'])
-		classData["properties"] = self.parseClassProperties(c)
+		properties = self.parseClassProperties(c)
+		classData["properties"] = []
+		classData["staticProperties"] = []
+		for p in properties:
+			if p["isStatic"] == True:
+				classData["staticProperties"].append(p)
+			else:
+				classData["properties"].append(p)
 		classData["methods"] = self.parseClassMethods(c)
 		return classData
 
@@ -180,6 +201,8 @@ class BindingsGenerator(object):
 				cppHeader = CppHeaderParser.CppHeader(contents, "string")
 				for ckey in cppHeader.classes: 
 					if ckey in self.ignoreClasses:
+						continue
+					if "::union" in ckey:
 						continue
 					print("\033[93mParsing class \033[0m[\033[92m%s\033[0m]" % ckey)
 					c = cppHeader.classes[ckey]

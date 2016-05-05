@@ -2,12 +2,7 @@ require "Polycode/EventDispatcher"
 
 class "Timer" (EventDispatcher)
 
-
-
 Timer.EVENT_TRIGGER = 0
-
-
-
 
 function Timer:Timer(...)
 	local arg = {...}
@@ -25,46 +20,46 @@ function Timer:Timer(...)
 		end
 	end
 	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
-		self.__ptr = Polycore.Timer(unpack(arg))
+		self.__ptr = Polycode.Timer(unpack(arg))
 	end
 end
 
 function Timer:Pause(paused)
-	local retVal = Polycore.Timer_Pause(self.__ptr, paused)
+	local retVal = Polycode.Timer_Pause(self.__ptr, paused)
 end
 
 function Timer:isPaused()
-	local retVal =  Polycore.Timer_isPaused(self.__ptr)
+	local retVal =  Polycode.Timer_isPaused(self.__ptr)
 	return retVal
 end
 
 function Timer:getTicks()
-	local retVal =  Polycore.Timer_getTicks(self.__ptr)
+	local retVal =  Polycode.Timer_getTicks(self.__ptr)
 	return retVal
 end
 
 function Timer:Update(ticks)
-	local retVal = Polycore.Timer_Update(self.__ptr, ticks)
+	local retVal = Polycode.Timer_Update(self.__ptr, ticks)
 end
 
 function Timer:Reset()
-	local retVal =  Polycore.Timer_Reset(self.__ptr)
+	local retVal =  Polycode.Timer_Reset(self.__ptr)
 end
 
 function Timer:hasElapsed()
-	local retVal =  Polycore.Timer_hasElapsed(self.__ptr)
+	local retVal =  Polycode.Timer_hasElapsed(self.__ptr)
 	return retVal
 end
 
 function Timer:getElapsedf()
-	local retVal =  Polycore.Timer_getElapsedf(self.__ptr)
+	local retVal =  Polycode.Timer_getElapsedf(self.__ptr)
 	return retVal
 end
 
 function Timer:setTimerInterval(msecs)
-	local retVal = Polycore.Timer_setTimerInterval(self.__ptr, msecs)
+	local retVal = Polycode.Timer_setTimerInterval(self.__ptr, msecs)
 end
 
 function Timer:__delete()
-	if self then Polycore.delete_Timer(self.__ptr) end
+	if self then Polycode.delete_Timer(self.__ptr) end
 end

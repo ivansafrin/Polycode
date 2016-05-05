@@ -51,35 +51,35 @@ _G["__handleEvent"] = function(target, event)
 	target.callback(target.listener, evt)
 end
 
-__core__services__instance = Polycore.CoreServices_getInstance()
+__core__services__instance = Polycode.CoreServices_getInstance()
 
 Services = {}
 
 Services.Core = Core("__skip_ptr__")
-Services.Core.__ptr = Polycore.CoreServices_getCore(Polycore.CoreServices_getInstance())
+Services.Core.__ptr = Polycode.CoreServices_getCore(Polycode.CoreServices_getInstance())
 
 Services.Input = Services.Core:getInput()
 
 Services.Renderer = Renderer("__skip_ptr__")
-Services.Renderer.__ptr = Polycore.CoreServices_getRenderer(Polycore.CoreServices_getInstance())
+Services.Renderer.__ptr = Polycode.CoreServices_getRenderer(Polycode.CoreServices_getInstance())
 
 Services.Config = Config("__skip_ptr__")
-Services.Config.__ptr = Polycore.CoreServices_getConfig(Polycore.CoreServices_getInstance())
+Services.Config.__ptr = Polycode.CoreServices_getConfig(Polycode.CoreServices_getInstance())
 
 Services.MaterialManager = MaterialManager("__skip_ptr__")
-Services.MaterialManager.__ptr = Polycore.CoreServices_getMaterialManager(Polycore.CoreServices_getInstance())
+Services.MaterialManager.__ptr = Polycode.CoreServices_getMaterialManager(Polycode.CoreServices_getInstance())
 
 Services.SceneManager = SceneManager("__skip_ptr__")
-Services.SceneManager.__ptr = Polycore.CoreServices_getSceneManager(Polycore.CoreServices_getInstance())
+Services.SceneManager.__ptr = Polycode.CoreServices_getSceneManager(Polycode.CoreServices_getInstance())
 
 Services.TimerManager = TimerManager("__skip_ptr__")
-Services.TimerManager.__ptr = Polycore.CoreServices_getTimerManager(Polycore.CoreServices_getInstance())
+Services.TimerManager.__ptr = Polycode.CoreServices_getTimerManager(Polycode.CoreServices_getInstance())
 
 Services.ResourceManager = ResourceManager("__skip_ptr__")
-Services.ResourceManager.__ptr = Polycore.CoreServices_getResourceManager(Polycore.CoreServices_getInstance())
+Services.ResourceManager.__ptr = Polycode.CoreServices_getResourceManager(Polycode.CoreServices_getInstance())
 
 Services.SoundManager = SoundManager("__skip_ptr__")
-Services.SoundManager.__ptr = Polycore.CoreServices_getSoundManager(Polycore.CoreServices_getInstance())
+Services.SoundManager.__ptr = Polycode.CoreServices_getSoundManager(Polycode.CoreServices_getInstance())
 
 Services.TweenManager = TweenManager()
 

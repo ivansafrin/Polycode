@@ -1,11 +1,6 @@
 class "SceneManager"
 
 
-
-
-
-
-
 function SceneManager:SceneManager(...)
 	local arg = {...}
 	for k,v in pairs(arg) do
@@ -16,46 +11,46 @@ function SceneManager:SceneManager(...)
 		end
 	end
 	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
-		self.__ptr = Polycore.SceneManager(unpack(arg))
+		self.__ptr = Polycode.SceneManager(unpack(arg))
 	end
 end
 
 function SceneManager:addScene(newScene)
-	local retVal = Polycore.SceneManager_addScene(self.__ptr, newScene.__ptr)
+	local retVal = Polycode.SceneManager_addScene(self.__ptr, newScene.__ptr)
 end
 
 function SceneManager:removeScene(scene)
-	local retVal = Polycore.SceneManager_removeScene(self.__ptr, scene.__ptr)
+	local retVal = Polycode.SceneManager_removeScene(self.__ptr, scene.__ptr)
 end
 
 function SceneManager:Update()
-	local retVal =  Polycore.SceneManager_Update(self.__ptr)
+	local retVal =  Polycode.SceneManager_Update(self.__ptr)
 end
 
 function SceneManager:fixedUpdate()
-	local retVal =  Polycore.SceneManager_fixedUpdate(self.__ptr)
+	local retVal =  Polycode.SceneManager_fixedUpdate(self.__ptr)
 end
 
 function SceneManager:Render(viewport)
-	local retVal = Polycore.SceneManager_Render(self.__ptr, viewport.__ptr)
+	local retVal = Polycode.SceneManager_Render(self.__ptr, viewport.__ptr)
 end
 
 function SceneManager:renderVirtual()
-	local retVal =  Polycore.SceneManager_renderVirtual(self.__ptr)
+	local retVal =  Polycode.SceneManager_renderVirtual(self.__ptr)
 end
 
-function SceneManager:registerRenderTexture(r_enderTexture)
-	local retVal = Polycore.SceneManager_registerRenderTexture(self.__ptr, r_enderTexture.__ptr)
+function SceneManager:registerRenderTexture(renderTexture)
+	local retVal = Polycode.SceneManager_registerRenderTexture(self.__ptr, renderTexture.__ptr)
 end
 
-function SceneManager:unregisterRenderTexture(r_enderTexture)
-	local retVal = Polycore.SceneManager_unregisterRenderTexture(self.__ptr, r_enderTexture.__ptr)
+function SceneManager:unregisterRenderTexture(renderTexture)
+	local retVal = Polycode.SceneManager_unregisterRenderTexture(self.__ptr, renderTexture.__ptr)
 end
 
-function SceneManager:setRenderer(r_enderer)
-	local retVal = Polycore.SceneManager_setRenderer(self.__ptr, r_enderer.__ptr)
+function SceneManager:setRenderer(renderer)
+	local retVal = Polycode.SceneManager_setRenderer(self.__ptr, renderer.__ptr)
 end
 
 function SceneManager:__delete()
-	if self then Polycore.delete_SceneManager(self.__ptr) end
+	if self then Polycode.delete_SceneManager(self.__ptr) end
 end

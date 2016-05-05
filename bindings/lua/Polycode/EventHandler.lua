@@ -1,11 +1,6 @@
 class "EventHandler"
 
 
-
-
-
-
-
 function EventHandler:EventHandler(...)
 	local arg = {...}
 	for k,v in pairs(arg) do
@@ -16,10 +11,10 @@ function EventHandler:EventHandler(...)
 		end
 	end
 	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
-		self.__ptr = Polycore.EventHandler(self)
+		self.__ptr = Polycode.EventHandler(self)
 	end
 end
 
 function EventHandler:__delete()
-	if self then Polycore.delete_EventHandler(self.__ptr) end
+	if self then Polycode.delete_EventHandler(self.__ptr) end
 end

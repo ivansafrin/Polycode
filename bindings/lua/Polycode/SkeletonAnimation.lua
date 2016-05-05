@@ -1,11 +1,6 @@
 class "SkeletonAnimation"
 
 
-
-
-
-
-
 function SkeletonAnimation:SkeletonAnimation(...)
 	local arg = {...}
 	for k,v in pairs(arg) do
@@ -16,56 +11,53 @@ function SkeletonAnimation:SkeletonAnimation(...)
 		end
 	end
 	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
-		self.__ptr = Polycore.SkeletonAnimation(unpack(arg))
+		self.__ptr = Polycode.SkeletonAnimation(unpack(arg))
 	end
 end
 
 function SkeletonAnimation:addBoneTrack(boneTrack)
-	local retVal = Polycore.SkeletonAnimation_addBoneTrack(self.__ptr, boneTrack.__ptr)
+	local retVal = Polycode.SkeletonAnimation_addBoneTrack(self.__ptr, boneTrack.__ptr)
 end
 
 function SkeletonAnimation:getName()
-	local retVal =  Polycore.SkeletonAnimation_getName(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["String"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
+	local retVal =  Polycode.SkeletonAnimation_getName(self.__ptr)
+	return retVal
 end
 
 function SkeletonAnimation:Play(once)
-	local retVal = Polycore.SkeletonAnimation_Play(self.__ptr, once)
+	local retVal = Polycode.SkeletonAnimation_Play(self.__ptr, once)
 end
 
 function SkeletonAnimation:Stop()
-	local retVal =  Polycore.SkeletonAnimation_Stop(self.__ptr)
+	local retVal =  Polycode.SkeletonAnimation_Stop(self.__ptr)
 end
 
 function SkeletonAnimation:Reset()
-	local retVal =  Polycore.SkeletonAnimation_Reset(self.__ptr)
+	local retVal =  Polycode.SkeletonAnimation_Reset(self.__ptr)
 end
 
 function SkeletonAnimation:Update()
-	local retVal =  Polycore.SkeletonAnimation_Update(self.__ptr)
+	local retVal =  Polycode.SkeletonAnimation_Update(self.__ptr)
 end
 
 function SkeletonAnimation:setSpeed(speed)
-	local retVal = Polycore.SkeletonAnimation_setSpeed(self.__ptr, speed)
+	local retVal = Polycode.SkeletonAnimation_setSpeed(self.__ptr, speed)
 end
 
 function SkeletonAnimation:setWeight(newWeight)
-	local retVal = Polycore.SkeletonAnimation_setWeight(self.__ptr, newWeight)
+	local retVal = Polycode.SkeletonAnimation_setWeight(self.__ptr, newWeight)
 end
 
 function SkeletonAnimation:getWeight()
-	local retVal =  Polycore.SkeletonAnimation_getWeight(self.__ptr)
+	local retVal =  Polycode.SkeletonAnimation_getWeight(self.__ptr)
 	return retVal
 end
 
 function SkeletonAnimation:isPlaying()
-	local retVal =  Polycore.SkeletonAnimation_isPlaying(self.__ptr)
+	local retVal =  Polycode.SkeletonAnimation_isPlaying(self.__ptr)
 	return retVal
 end
 
 function SkeletonAnimation:__delete()
-	if self then Polycore.delete_SkeletonAnimation(self.__ptr) end
+	if self then Polycode.delete_SkeletonAnimation(self.__ptr) end
 end

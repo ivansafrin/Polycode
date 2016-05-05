@@ -1,11 +1,6 @@
 class "QuaternionCurve"
 
 
-
-
-
-
-
 function QuaternionCurve:QuaternionCurve(...)
 	local arg = {...}
 	for k,v in pairs(arg) do
@@ -16,12 +11,12 @@ function QuaternionCurve:QuaternionCurve(...)
 		end
 	end
 	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
-		self.__ptr = Polycore.QuaternionCurve(unpack(arg))
+		self.__ptr = Polycode.QuaternionCurve(unpack(arg))
 	end
 end
 
 function QuaternionCurve:interpolate(t, useShortestPath)
-	local retVal = Polycore.QuaternionCurve_interpolate(self.__ptr, t, useShortestPath)
+	local retVal = Polycode.QuaternionCurve_interpolate(self.__ptr, t, useShortestPath)
 	if retVal == nil then return nil end
 	local __c = _G["Quaternion"]("__skip_ptr__")
 	__c.__ptr = retVal
@@ -29,9 +24,9 @@ function QuaternionCurve:interpolate(t, useShortestPath)
 end
 
 function QuaternionCurve:generatePointsFromCurves(wCurve, xCurve, yCurve, zCurve)
-	local retVal = Polycore.QuaternionCurve_generatePointsFromCurves(self.__ptr, wCurve.__ptr, xCurve.__ptr, yCurve.__ptr, zCurve.__ptr)
+	local retVal = Polycode.QuaternionCurve_generatePointsFromCurves(self.__ptr, wCurve.__ptr, xCurve.__ptr, yCurve.__ptr, zCurve.__ptr)
 end
 
 function QuaternionCurve:__delete()
-	if self then Polycore.delete_QuaternionCurve(self.__ptr) end
+	if self then Polycode.delete_QuaternionCurve(self.__ptr) end
 end

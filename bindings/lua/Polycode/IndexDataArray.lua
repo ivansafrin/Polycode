@@ -3,11 +3,6 @@ require "Polycode/RenderDataArray"
 class "IndexDataArray" (RenderDataArray)
 
 
-
-
-
-
-
 function IndexDataArray:IndexDataArray(...)
 	local arg = {...}
 	if type(arg[1]) == "table" and count(arg) == 1 then
@@ -24,12 +19,12 @@ function IndexDataArray:IndexDataArray(...)
 		end
 	end
 	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
-		self.__ptr = Polycore.IndexDataArray(unpack(arg))
+		self.__ptr = Polycode.IndexDataArray(unpack(arg))
 	end
 end
 
 function IndexDataArray:getArrayData()
-	local retVal =  Polycore.IndexDataArray_getArrayData(self.__ptr)
+	local retVal =  Polycode.IndexDataArray_getArrayData(self.__ptr)
 	if retVal == nil then return nil end
 	local __c = _G["void"]("__skip_ptr__")
 	__c.__ptr = retVal
@@ -37,10 +32,10 @@ function IndexDataArray:getArrayData()
 end
 
 function IndexDataArray:getDataSize()
-	local retVal =  Polycore.IndexDataArray_getDataSize(self.__ptr)
+	local retVal =  Polycode.IndexDataArray_getDataSize(self.__ptr)
 	return retVal
 end
 
 function IndexDataArray:__delete()
-	if self then Polycore.delete_IndexDataArray(self.__ptr) end
+	if self then Polycode.delete_IndexDataArray(self.__ptr) end
 end

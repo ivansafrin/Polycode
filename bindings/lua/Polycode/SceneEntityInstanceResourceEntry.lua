@@ -3,11 +3,6 @@ require "Polycode/Resource"
 class "SceneEntityInstanceResourceEntry" (Resource)
 
 
-
-
-
-
-
 function SceneEntityInstanceResourceEntry:SceneEntityInstanceResourceEntry(...)
 	local arg = {...}
 	if type(arg[1]) == "table" and count(arg) == 1 then
@@ -24,12 +19,12 @@ function SceneEntityInstanceResourceEntry:SceneEntityInstanceResourceEntry(...)
 		end
 	end
 	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
-		self.__ptr = Polycore.SceneEntityInstanceResourceEntry(unpack(arg))
+		self.__ptr = Polycode.SceneEntityInstanceResourceEntry(unpack(arg))
 	end
 end
 
 function SceneEntityInstanceResourceEntry:getInstance()
-	local retVal =  Polycore.SceneEntityInstanceResourceEntry_getInstance(self.__ptr)
+	local retVal =  Polycode.SceneEntityInstanceResourceEntry_getInstance(self.__ptr)
 	if retVal == nil then return nil end
 	local __c = _G["SceneEntityInstance"]("__skip_ptr__")
 	__c.__ptr = retVal
@@ -37,9 +32,9 @@ function SceneEntityInstanceResourceEntry:getInstance()
 end
 
 function SceneEntityInstanceResourceEntry:reloadResource()
-	local retVal =  Polycore.SceneEntityInstanceResourceEntry_reloadResource(self.__ptr)
+	local retVal =  Polycode.SceneEntityInstanceResourceEntry_reloadResource(self.__ptr)
 end
 
 function SceneEntityInstanceResourceEntry:__delete()
-	if self then Polycore.delete_SceneEntityInstanceResourceEntry(self.__ptr) end
+	if self then Polycode.delete_SceneEntityInstanceResourceEntry(self.__ptr) end
 end

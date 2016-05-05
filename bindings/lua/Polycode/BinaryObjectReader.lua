@@ -1,23 +1,19 @@
 class "BinaryObjectReader"
 
 
-
 function BinaryObjectReader:__getvar(name)
 	if name == "success" then
-		return Polycore.BinaryObjectReader_get_success(self.__ptr)
+		return Polycode.BinaryObjectReader_get_success(self.__ptr)
 	end
 end
 
-
 function BinaryObjectReader:__setvar(name,value)
 	if name == "success" then
-		Polycore.BinaryObjectReader_set_success(self.__ptr, value)
+		Polycode.BinaryObjectReader_set_success(self.__ptr, value)
 		return true
 	end
 	return false
 end
-
-
 function BinaryObjectReader:BinaryObjectReader(...)
 	local arg = {...}
 	for k,v in pairs(arg) do
@@ -28,10 +24,10 @@ function BinaryObjectReader:BinaryObjectReader(...)
 		end
 	end
 	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
-		self.__ptr = Polycore.BinaryObjectReader(unpack(arg))
+		self.__ptr = Polycode.BinaryObjectReader(unpack(arg))
 	end
 end
 
 function BinaryObjectReader:__delete()
-	if self then Polycore.delete_BinaryObjectReader(self.__ptr) end
+	if self then Polycode.delete_BinaryObjectReader(self.__ptr) end
 end

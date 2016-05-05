@@ -3,10 +3,9 @@ require "Polycode/Event"
 class "CoreMotionEvent" (Event)
 
 
-
 function CoreMotionEvent:__getvar(name)
 	if name == "amount" then
-		local retVal = Polycore.CoreMotionEvent_get_amount(self.__ptr)
+		local retVal = Polycode.CoreMotionEvent_get_amount(self.__ptr)
 		if retVal == nil then return nil end
 		local __c = _G["Vector3"]("__skip_ptr__")
 		__c.__ptr = retVal
@@ -17,10 +16,9 @@ function CoreMotionEvent:__getvar(name)
 	end
 end
 
-
 function CoreMotionEvent:__setvar(name,value)
 	if name == "amount" then
-		Polycore.CoreMotionEvent_set_amount(self.__ptr, value.__ptr)
+		Polycode.CoreMotionEvent_set_amount(self.__ptr, value.__ptr)
 		return true
 	end
 	if Event["__setvar"] ~= nil then
@@ -29,8 +27,6 @@ function CoreMotionEvent:__setvar(name,value)
 		return false
 	end
 end
-
-
 function CoreMotionEvent:__delete()
-	if self then Polycore.delete_CoreMotionEvent(self.__ptr) end
+	if self then Polycode.delete_CoreMotionEvent(self.__ptr) end
 end

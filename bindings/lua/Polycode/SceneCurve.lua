@@ -3,25 +3,23 @@ require "Polycode/SceneMesh"
 class "SceneCurve" (SceneMesh)
 
 
-
 function SceneCurve:__getvar(name)
 	if name == "renderCurve" then
-		return Polycore.SceneCurve_get_renderCurve(self.__ptr)
+		return Polycode.SceneCurve_get_renderCurve(self.__ptr)
 	elseif name == "curveResolution" then
-		return Polycore.SceneCurve_get_curveResolution(self.__ptr)
+		return Polycode.SceneCurve_get_curveResolution(self.__ptr)
 	end
 	if SceneMesh["__getvar"] ~= nil then
 		return SceneMesh.__getvar(self, name)
 	end
 end
 
-
 function SceneCurve:__setvar(name,value)
 	if name == "renderCurve" then
-		Polycore.SceneCurve_set_renderCurve(self.__ptr, value)
+		Polycode.SceneCurve_set_renderCurve(self.__ptr, value)
 		return true
 	elseif name == "curveResolution" then
-		Polycore.SceneCurve_set_curveResolution(self.__ptr, value)
+		Polycode.SceneCurve_set_curveResolution(self.__ptr, value)
 		return true
 	end
 	if SceneMesh["__setvar"] ~= nil then
@@ -30,8 +28,6 @@ function SceneCurve:__setvar(name,value)
 		return false
 	end
 end
-
-
 function SceneCurve:SceneCurve(...)
 	local arg = {...}
 	if type(arg[1]) == "table" and count(arg) == 1 then
@@ -48,12 +44,12 @@ function SceneCurve:SceneCurve(...)
 		end
 	end
 	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
-		self.__ptr = Polycore.SceneCurve(unpack(arg))
+		self.__ptr = Polycode.SceneCurve(unpack(arg))
 	end
 end
 
-function SceneCurve.SceneCurveWithCurve(curve)
-	local retVal = Polycore.SceneCurve_SceneCurveWithCurve(curve.__ptr)
+function SceneCurve:SceneCurveWithCurve(curve)
+	local retVal = Polycode.SceneCurve_SceneCurveWithCurve(self.__ptr, curve.__ptr)
 	if retVal == nil then return nil end
 	local __c = _G["SceneCurve"]("__skip_ptr__")
 	__c.__ptr = retVal
@@ -61,7 +57,7 @@ function SceneCurve.SceneCurveWithCurve(curve)
 end
 
 function SceneCurve:getWorldPointAt(t)
-	local retVal = Polycore.SceneCurve_getWorldPointAt(self.__ptr, t)
+	local retVal = Polycode.SceneCurve_getWorldPointAt(self.__ptr, t)
 	if retVal == nil then return nil end
 	local __c = _G["Vector3"]("__skip_ptr__")
 	__c.__ptr = retVal
@@ -69,11 +65,11 @@ function SceneCurve:getWorldPointAt(t)
 end
 
 function SceneCurve:Update()
-	local retVal =  Polycore.SceneCurve_Update(self.__ptr)
+	local retVal =  Polycode.SceneCurve_Update(self.__ptr)
 end
 
 function SceneCurve:Clone(deepClone, ignoreEditorOnly)
-	local retVal = Polycore.SceneCurve_Clone(self.__ptr, deepClone, ignoreEditorOnly)
+	local retVal = Polycode.SceneCurve_Clone(self.__ptr, deepClone, ignoreEditorOnly)
 	if retVal == nil then return nil end
 	local __c = _G["Entity"]("__skip_ptr__")
 	__c.__ptr = retVal
@@ -81,11 +77,11 @@ function SceneCurve:Clone(deepClone, ignoreEditorOnly)
 end
 
 function SceneCurve:applyClone(clone, deepClone, ignoreEditorOnly)
-	local retVal = Polycore.SceneCurve_applyClone(self.__ptr, clone.__ptr, deepClone, ignoreEditorOnly)
+	local retVal = Polycode.SceneCurve_applyClone(self.__ptr, clone.__ptr, deepClone, ignoreEditorOnly)
 end
 
 function SceneCurve:getCurve()
-	local retVal =  Polycore.SceneCurve_getCurve(self.__ptr)
+	local retVal =  Polycode.SceneCurve_getCurve(self.__ptr)
 	if retVal == nil then return nil end
 	local __c = _G["BezierCurve"]("__skip_ptr__")
 	__c.__ptr = retVal
@@ -93,5 +89,5 @@ function SceneCurve:getCurve()
 end
 
 function SceneCurve:__delete()
-	if self then Polycore.delete_SceneCurve(self.__ptr) end
+	if self then Polycode.delete_SceneCurve(self.__ptr) end
 end

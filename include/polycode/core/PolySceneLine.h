@@ -109,19 +109,19 @@ namespace Polycode {
 			* @param start Starting position.
 			* @param end Ending position.
 			*/			
-			SceneLine(Vector3 start, Vector3 end);
+			SceneLine(Vector3 startp, Vector3 endp);
 
 			/**
 			* Constructs the line with two taraget positions.
 			* @param start Starting position.
 			* @param end Ending position.
 			*/						
-			static SceneLine *SceneLineWithPositions(Vector3 start, Vector3 end);			
+			static SceneLine *SceneLineWithPositions(Vector3 startp, Vector3 endp);
 			
 			virtual ~SceneLine();
 			
-			void setStart(Vector3 start);
-			void setEnd(Vector3 end);
+			void setStart(Vector3 startp);
+			void setEnd(Vector3 endp);
 			
 			void Update();
 				

@@ -74,6 +74,7 @@ LuaScript::LuaScript(lua_State *state, const String &path) : Script(path) {
     errH = lua_gettop(state);
     
     luaL_loadfile(state, path.c_str());
+    
     lua_pcall(state,0,1,errH);
     tableRef = luaL_ref(state, LUA_REGISTRYINDEX);
     this->state = state;
@@ -81,13 +82,17 @@ LuaScript::LuaScript(lua_State *state, const String &path) : Script(path) {
 
 ScriptInstance *LuaScript::callInit(Entity *entity) {
     LuaScriptInstance *scriptInstance = new LuaScriptInstance();
+    scriptInstance->script = this;
+    
     if(tableRef != -1) {
         lua_rawgeti(state, LUA_REGISTRYINDEX, tableRef);
         
         // create a Lua entity wrapper
         lua_getglobal(state, "Entity");
         lua_pushstring(state, "__skip_ptr__");
-        lua_pcall(state, 1, 1, errH);
+        if(lua_pcall(state, 1, 1, errH) != 0) {
+            return scriptInstance;
+        }
         
         lua_pushstring(state, "__ptr");
 
@@ -96,12 +101,13 @@ ScriptInstance *LuaScript::callInit(Entity *entity) {
         
         lua_settable(state, -3);
         
-        lua_pcall(state, 1, 1, errH);
+        if(lua_pcall(state, 1, 1, errH) != 0) {
+            return scriptInstance;
+        }
         scriptInstance->tableRef = luaL_ref(state, LUA_REGISTRYINDEX);
     } else {
         scriptInstance->tableRef = -1;
     }
-        scriptInstance->script = this;
     return scriptInstance;
 }
 

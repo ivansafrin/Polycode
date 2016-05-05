@@ -3,11 +3,6 @@ require "Polycode/Entity"
 class "SceneSoundListener" (Entity)
 
 
-
-
-
-
-
 function SceneSoundListener:SceneSoundListener(...)
 	local arg = {...}
 	if type(arg[1]) == "table" and count(arg) == 1 then
@@ -24,14 +19,14 @@ function SceneSoundListener:SceneSoundListener(...)
 		end
 	end
 	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
-		self.__ptr = Polycore.SceneSoundListener(unpack(arg))
+		self.__ptr = Polycode.SceneSoundListener(unpack(arg))
 	end
 end
 
 function SceneSoundListener:Update()
-	local retVal =  Polycore.SceneSoundListener_Update(self.__ptr)
+	local retVal =  Polycode.SceneSoundListener_Update(self.__ptr)
 end
 
 function SceneSoundListener:__delete()
-	if self then Polycore.delete_SceneSoundListener(self.__ptr) end
+	if self then Polycode.delete_SceneSoundListener(self.__ptr) end
 end

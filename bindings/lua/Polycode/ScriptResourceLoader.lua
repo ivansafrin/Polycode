@@ -1,11 +1,6 @@
 class "ScriptResourceLoader"
 
 
-
-
-
-
-
 function ScriptResourceLoader:ScriptResourceLoader(...)
 	local arg = {...}
 	for k,v in pairs(arg) do
@@ -16,12 +11,12 @@ function ScriptResourceLoader:ScriptResourceLoader(...)
 		end
 	end
 	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
-		self.__ptr = Polycore.ScriptResourceLoader(unpack(arg))
+		self.__ptr = Polycode.ScriptResourceLoader(unpack(arg))
 	end
 end
 
 function ScriptResourceLoader:loadResource(path, targetPool)
-	local retVal = Polycore.ScriptResourceLoader_loadResource(self.__ptr, path, targetPool.__ptr)
+	local retVal = Polycode.ScriptResourceLoader_loadResource(self.__ptr, path, targetPool.__ptr)
 	if retVal == nil then return nil end
 	local __c = _G["Resource"]("__skip_ptr__")
 	__c.__ptr = retVal
@@ -29,5 +24,5 @@ function ScriptResourceLoader:loadResource(path, targetPool)
 end
 
 function ScriptResourceLoader:__delete()
-	if self then Polycore.delete_ScriptResourceLoader(self.__ptr) end
+	if self then Polycode.delete_ScriptResourceLoader(self.__ptr) end
 end

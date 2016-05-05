@@ -6,6 +6,6 @@ extern "C" {
 #include "lualib.h"
 #include "lauxlib.h"
 
-int _PolyExport luaopen_Polycode(lua_State *L);
+%BODY%
 
 }

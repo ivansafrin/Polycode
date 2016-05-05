@@ -1,7 +1,5 @@
 class "RenderThread"
 
-
-
 RenderThread.JOB_REQUEST_CONTEXT_CHANGE = 0
 RenderThread.JOB_CREATE_TEXTURE = 1
 RenderThread.JOB_PROCESS_DRAW_BUFFER = 2
@@ -22,9 +20,6 @@ RenderThread.JOB_DESTROY_SHADER_PARAM = 17
 RenderThread.JOB_CREATE_MESH = 18
 RenderThread.JOB_DESTROY_MESH = 19
 
-
-
-
 function RenderThread:RenderThread(...)
 	local arg = {...}
 	for k,v in pairs(arg) do
@@ -35,32 +30,32 @@ function RenderThread:RenderThread(...)
 		end
 	end
 	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
-		self.__ptr = Polycore.RenderThread(unpack(arg))
+		self.__ptr = Polycode.RenderThread(unpack(arg))
 	end
 end
 
 function RenderThread:setGraphicsInterface(core, graphicsInterface)
-	local retVal = Polycore.RenderThread_setGraphicsInterface(self.__ptr, core.__ptr, graphicsInterface.__ptr)
+	local retVal = Polycode.RenderThread_setGraphicsInterface(self.__ptr, core.__ptr, graphicsInterface.__ptr)
 end
 
 function RenderThread:runThread()
-	local retVal =  Polycore.RenderThread_runThread(self.__ptr)
+	local retVal =  Polycode.RenderThread_runThread(self.__ptr)
 end
 
 function RenderThread:enqueueFrame(frame)
-	local retVal = Polycore.RenderThread_enqueueFrame(self.__ptr, frame.__ptr)
+	local retVal = Polycode.RenderThread_enqueueFrame(self.__ptr, frame.__ptr)
 end
 
 function RenderThread:enqueueJob(jobType, data, data2)
-	local retVal = Polycore.RenderThread_enqueueJob(self.__ptr, jobType, data.__ptr, data2.__ptr)
+	local retVal = Polycode.RenderThread_enqueueJob(self.__ptr, jobType, data.__ptr, data2.__ptr)
 end
 
 function RenderThread:processJob(job)
-	local retVal = Polycore.RenderThread_processJob(self.__ptr, job.__ptr)
+	local retVal = Polycode.RenderThread_processJob(self.__ptr, job.__ptr)
 end
 
 function RenderThread:getShaderBinding()
-	local retVal =  Polycore.RenderThread_getShaderBinding(self.__ptr)
+	local retVal =  Polycode.RenderThread_getShaderBinding(self.__ptr)
 	if retVal == nil then return nil end
 	local __c = _G["ShaderBinding"]("__skip_ptr__")
 	__c.__ptr = retVal
@@ -68,11 +63,11 @@ function RenderThread:getShaderBinding()
 end
 
 function RenderThread:processDrawBuffer(buffer)
-	local retVal = Polycore.RenderThread_processDrawBuffer(self.__ptr, buffer.__ptr)
+	local retVal = Polycode.RenderThread_processDrawBuffer(self.__ptr, buffer.__ptr)
 end
 
 function RenderThread:getFrameInfo()
-	local retVal =  Polycore.RenderThread_getFrameInfo(self.__ptr)
+	local retVal =  Polycode.RenderThread_getFrameInfo(self.__ptr)
 	if retVal == nil then return nil end
 	local __c = _G["RenderThreadDebugInfo"]("__skip_ptr__")
 	__c.__ptr = retVal
@@ -80,21 +75,21 @@ function RenderThread:getFrameInfo()
 end
 
 function RenderThread:clearFrameQueue()
-	local retVal =  Polycore.RenderThread_clearFrameQueue(self.__ptr)
+	local retVal =  Polycode.RenderThread_clearFrameQueue(self.__ptr)
 end
 
 function RenderThread:initGlobals()
-	local retVal =  Polycore.RenderThread_initGlobals(self.__ptr)
+	local retVal =  Polycode.RenderThread_initGlobals(self.__ptr)
 end
 
 function RenderThread:lockRenderMutex()
-	local retVal =  Polycore.RenderThread_lockRenderMutex(self.__ptr)
+	local retVal =  Polycode.RenderThread_lockRenderMutex(self.__ptr)
 end
 
 function RenderThread:unlockRenderMutex()
-	local retVal =  Polycore.RenderThread_unlockRenderMutex(self.__ptr)
+	local retVal =  Polycode.RenderThread_unlockRenderMutex(self.__ptr)
 end
 
 function RenderThread:__delete()
-	if self then Polycore.delete_RenderThread(self.__ptr) end
+	if self then Polycode.delete_RenderThread(self.__ptr) end
 end

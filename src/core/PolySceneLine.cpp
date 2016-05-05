@@ -101,7 +101,7 @@ void SceneCurve::Update() {
     setLocalBoundingBox(bBox * 2.0);
 }
 
-SceneLine::SceneLine(Vector3 start, Vector3 end) : SceneMesh(Mesh::LINE_MESH) {
+SceneLine::SceneLine(Vector3 startp, Vector3 endp) : SceneMesh(Mesh::LINE_MESH) {
 	this->ent1 = NULL;
 	this->ent2 = NULL;
 	this->start = start;
@@ -123,18 +123,18 @@ void SceneLine::initLine() {
 	mesh->addVertexWithUV(0,0,0,1,0);
 }
 
-SceneLine *SceneLine::SceneLineWithPositions(Vector3 start, Vector3 end) {
-	return new SceneLine(start, end);
+SceneLine *SceneLine::SceneLineWithPositions(Vector3 startp, Vector3 endp) {
+	return new SceneLine(startp, endp);
 }
 
 SceneLine::~SceneLine() {
 }
 
-void SceneLine::setStart(Vector3 start) {
+void SceneLine::setStart(Vector3 startp) {
 	this->start = start;
 }
 
-void SceneLine::setEnd(Vector3 end) {
+void SceneLine::setEnd(Vector3 endp) {
 	this->end = end;
 }
 

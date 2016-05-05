@@ -2,8 +2,6 @@ require "Polycode/EventDispatcher"
 
 class "Resource" (EventDispatcher)
 
-
-
 Resource.RESOURCE_TEXTURE = 0
 Resource.RESOURCE_MATERIAL = 1
 Resource.RESOURCE_SHADER = 2
@@ -14,17 +12,18 @@ Resource.RESOURCE_SPRITE = 7
 Resource.RESOURCE_ENTITY_INSTANCE = 8
 Resource.RESOURCE_FONT = 9
 Resource.RESOURCE_SCRIPT = 10
+
 function Resource:__getvar(name)
 	if name == "reloadOnFileModify" then
-		return Polycore.Resource_get_reloadOnFileModify(self.__ptr)
+		return Polycode.Resource_get_reloadOnFileModify(self.__ptr)
 	elseif name == "resourceFileTime" then
-		local retVal = Polycore.Resource_get_resourceFileTime(self.__ptr)
+		local retVal = Polycode.Resource_get_resourceFileTime(self.__ptr)
 		if retVal == nil then return nil end
 		local __c = _G["time_t"]("__skip_ptr__")
 		__c.__ptr = retVal
 		return __c
 	elseif name == "platformData" then
-		local retVal = Polycore.Resource_get_platformData(self.__ptr)
+		local retVal = Polycode.Resource_get_platformData(self.__ptr)
 		if retVal == nil then return nil end
 		local __c = _G["void"]("__skip_ptr__")
 		__c.__ptr = retVal
@@ -35,13 +34,15 @@ function Resource:__getvar(name)
 	end
 end
 
-
 function Resource:__setvar(name,value)
 	if name == "reloadOnFileModify" then
-		Polycore.Resource_set_reloadOnFileModify(self.__ptr, value)
+		Polycode.Resource_set_reloadOnFileModify(self.__ptr, value)
 		return true
 	elseif name == "resourceFileTime" then
-		Polycore.Resource_set_resourceFileTime(self.__ptr, value.__ptr)
+		Polycode.Resource_set_resourceFileTime(self.__ptr, value.__ptr)
+		return true
+	elseif name == "platformData" then
+		Polycode.Resource_set_platformData(self.__ptr, value.__ptr)
 		return true
 	end
 	if EventDispatcher["__setvar"] ~= nil then
@@ -50,8 +51,6 @@ function Resource:__setvar(name,value)
 		return false
 	end
 end
-
-
 function Resource:Resource(...)
 	local arg = {...}
 	if type(arg[1]) == "table" and count(arg) == 1 then
@@ -68,43 +67,37 @@ function Resource:Resource(...)
 		end
 	end
 	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
-		self.__ptr = Polycore.Resource(unpack(arg))
+		self.__ptr = Polycode.Resource(unpack(arg))
 	end
 end
 
 function Resource:reloadResource()
-	local retVal =  Polycore.Resource_reloadResource(self.__ptr)
+	local retVal =  Polycode.Resource_reloadResource(self.__ptr)
 end
 
 function Resource:getResourceName()
-	local retVal =  Polycore.Resource_getResourceName(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["String"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
+	local retVal =  Polycode.Resource_getResourceName(self.__ptr)
+	return retVal
 end
 
 function Resource:getResourceType()
-	local retVal =  Polycore.Resource_getResourceType(self.__ptr)
+	local retVal =  Polycode.Resource_getResourceType(self.__ptr)
 	return retVal
 end
 
 function Resource:setResourceName(newName)
-	local retVal = Polycore.Resource_setResourceName(self.__ptr, newName)
+	local retVal = Polycode.Resource_setResourceName(self.__ptr, newName)
 end
 
 function Resource:setResourcePath(path)
-	local retVal = Polycore.Resource_setResourcePath(self.__ptr, path)
+	local retVal = Polycode.Resource_setResourcePath(self.__ptr, path)
 end
 
 function Resource:getResourcePath()
-	local retVal =  Polycore.Resource_getResourcePath(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["String"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
+	local retVal =  Polycode.Resource_getResourcePath(self.__ptr)
+	return retVal
 end
 
 function Resource:__delete()
-	if self then Polycore.delete_Resource(self.__ptr) end
+	if self then Polycode.delete_Resource(self.__ptr) end
 end

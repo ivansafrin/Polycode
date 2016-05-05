@@ -3,11 +3,6 @@ require "Polycode/SceneMesh"
 class "SceneLine" (SceneMesh)
 
 
-
-
-
-
-
 function SceneLine:SceneLine(...)
 	local arg = {...}
 	if type(arg[1]) == "table" and count(arg) == 1 then
@@ -24,30 +19,30 @@ function SceneLine:SceneLine(...)
 		end
 	end
 	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
-		self.__ptr = Polycore.SceneLine(unpack(arg))
+		self.__ptr = Polycode.SceneLine(unpack(arg))
 	end
 end
 
-function SceneLine.SceneLineWithPositions(start, _end)
-	local retVal = Polycore.SceneLine_SceneLineWithPositions(start.__ptr, _end.__ptr)
+function SceneLine:SceneLineWithPositions(startp, endp)
+	local retVal = Polycode.SceneLine_SceneLineWithPositions(self.__ptr, startp.__ptr, endp.__ptr)
 	if retVal == nil then return nil end
 	local __c = _G["SceneLine"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end
 
-function SceneLine:setStart(start)
-	local retVal = Polycore.SceneLine_setStart(self.__ptr, start.__ptr)
+function SceneLine:setStart(startp)
+	local retVal = Polycode.SceneLine_setStart(self.__ptr, startp.__ptr)
 end
 
-function SceneLine:setEnd(_end)
-	local retVal = Polycore.SceneLine_setEnd(self.__ptr, _end.__ptr)
+function SceneLine:setEnd(endp)
+	local retVal = Polycode.SceneLine_setEnd(self.__ptr, endp.__ptr)
 end
 
 function SceneLine:Update()
-	local retVal =  Polycore.SceneLine_Update(self.__ptr)
+	local retVal =  Polycode.SceneLine_Update(self.__ptr)
 end
 
 function SceneLine:__delete()
-	if self then Polycore.delete_SceneLine(self.__ptr) end
+	if self then Polycode.delete_SceneLine(self.__ptr) end
 end
