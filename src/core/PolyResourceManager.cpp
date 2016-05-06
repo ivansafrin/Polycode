@@ -34,6 +34,7 @@
 #include "polycode/core/PolyScript.h"
 #include "polycode/core/PolyCore.h"
 #include "polycode/bindings/lua/PolycodeLua.h"
+#include "polycode/bindings/javascript/PolycodeJS.h"
 #include "tinyxml.h"
 
 using std::vector;
@@ -370,13 +371,6 @@ Resource *ProgramResourceLoader::loadResource(const String &path, ResourcePool *
     return newProgram;
 }
 
-duk_ret_t entity_Roll(duk_context *context) {
-    Entity *entity = (Entity*)duk_to_pointer(context, 0);
-    Number amt = duk_to_number(context, 1);
-    entity->Roll(amt);
-    return 0;
-}
-
 static int customError(lua_State *L) {
     std::vector<DebugBackTraceEntry> backTrace;
     lua_Debug entry;
@@ -524,11 +518,57 @@ void ScriptResourceLoader::initLua() {
     lua_pcall(luaState, 1, 0, errH);
 }
 
+void loadJSFile(duk_context *context, String fileName) {
+
+    String defaultPath = "default/";
+    defaultPath = defaultPath + fileName;
+    
+    const char* fullPath = fileName.c_str();
+    Logger::log("Loading custom class: %s\n", fileName.c_str());
+    Polycode::CoreFile *inFile = Services()->getCore()->openFile(fileName, "r");
+    if(!inFile) {
+        inFile =  Services()->getCore()->openFile(defaultPath, "r");
+    }
+    
+    if(inFile) {
+        inFile->seek(0, SEEK_END);
+        long progsize = inFile->tell();
+        inFile->seek(0, SEEK_SET);
+        char *buffer = (char*)malloc(progsize+1);
+        memset(buffer, 0, progsize+1);
+        inFile->read(buffer, progsize, 1);
+        
+        if(duk_peval_string(context, (const char*)buffer) != 0) {
+            Logger::log("JAVASCRIPT ERROR: [%s]\n", duk_safe_to_string(context, -1));
+        }
+        
+        free(buffer);
+        Services()->getCore()->closeFile(inFile);
+    } else {
+        Logger::log("Javascript module not found: %s", fileName.c_str());
+    }
+    
+    
+}
+
+duk_ret_t customJSLoader(duk_context *context) {
+    String module = duk_to_string(context, 0);
+    module += ".js";
+    loadJSFile(context, module);
+    return 0;
+}
+
+
 void ScriptResourceLoader::initJavascript() {
     duktapeContext = duk_create_heap_default();
     
-    duk_push_c_function(duktapeContext, entity_Roll, 2);
-    duk_put_global_string(duktapeContext, "entity_Roll");
+    jsopen_Polycode(duktapeContext);
+    
+    duk_push_c_function(duktapeContext, customJSLoader, 1);
+    duk_put_global_string(duktapeContext, "require");
+
+    loadJSFile(duktapeContext, "Polycode.js");
+    
 }
 
 ScriptResourceLoader::ScriptResourceLoader() {

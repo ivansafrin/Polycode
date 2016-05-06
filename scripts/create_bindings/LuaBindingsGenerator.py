@@ -247,6 +247,7 @@ class LuaBindingsGenerator(object):
 		if c["name"] != "EventDispatcher":
 			fout = open("%s/%s/%s.lua" % (self.config.get('lua', 'LuaApiDirectory'), self.libName, c["name"]), "w")
 			fout.write(self.luaClassBindingOut)
+			fout.close()
 		self.luaClassBindingOut = ""
 
 	# ----------------------------------------------------

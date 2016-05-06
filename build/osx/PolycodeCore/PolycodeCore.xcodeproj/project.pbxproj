@@ -172,6 +172,9 @@
 		8A8653901B742DCD009F94DD /* PolyPhysFSFileProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A86538E1B742DCD009F94DD /* PolyPhysFSFileProvider.cpp */; };
 		8A8653921B7434D8009F94DD /* PolyCoreFileProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8653911B7434D8009F94DD /* PolyCoreFileProvider.cpp */; };
 		8A8653941B7434EB009F94DD /* PolyCoreFileProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8653931B7434EB009F94DD /* PolyCoreFileProvider.h */; };
+		8A9D122F1CDD503C00ACD484 /* PolycodeJS.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A9D122D1CDD503C00ACD484 /* PolycodeJS.h */; };
+		8A9D12301CDD503C00ACD484 /* PolycodeJSWrappers.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A9D122E1CDD503C00ACD484 /* PolycodeJSWrappers.h */; };
+		8A9D12321CDD504400ACD484 /* PolycodeJS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A9D12311CDD504400ACD484 /* PolycodeJS.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -341,6 +344,9 @@
 		8A86538E1B742DCD009F94DD /* PolyPhysFSFileProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyPhysFSFileProvider.cpp; path = ../../../src/core/PolyPhysFSFileProvider.cpp; sourceTree = "<group>"; };
 		8A8653911B7434D8009F94DD /* PolyCoreFileProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyCoreFileProvider.cpp; path = ../../../src/core/PolyCoreFileProvider.cpp; sourceTree = "<group>"; };
 		8A8653931B7434EB009F94DD /* PolyCoreFileProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyCoreFileProvider.h; path = ../../../include/polycode/core/PolyCoreFileProvider.h; sourceTree = "<group>"; };
+		8A9D122D1CDD503C00ACD484 /* PolycodeJS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeJS.h; path = ../../../include/polycode/bindings/javascript/PolycodeJS.h; sourceTree = "<group>"; };
+		8A9D122E1CDD503C00ACD484 /* PolycodeJSWrappers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeJSWrappers.h; path = ../../../include/polycode/bindings/javascript/PolycodeJSWrappers.h; sourceTree = "<group>"; };
+		8A9D12311CDD504400ACD484 /* PolycodeJS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolycodeJS.cpp; path = ../../../src/bindings/javascript/PolycodeJS.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -367,6 +373,7 @@
 			isa = PBXGroup;
 			children = (
 				6D904FD81CC4817C00D0E80A /* duktape.c */,
+				8A9D12311CDD504400ACD484 /* PolycodeJS.cpp */,
 				8A5EF4FB1CD90E4800F8466A /* PolycodeLua.cpp */,
 				8A825F241B829BC20039E823 /* PolyPAAudioInterface.cpp */,
 				8A8653911B7434D8009F94DD /* PolyCoreFileProvider.cpp */,
@@ -454,6 +461,8 @@
 		8A8651E71B72863F009F94DD /* include */ = {
 			isa = PBXGroup;
 			children = (
+				8A9D122D1CDD503C00ACD484 /* PolycodeJS.h */,
+				8A9D122E1CDD503C00ACD484 /* PolycodeJSWrappers.h */,
 				8A5EF4FD1CD90F0200F8466A /* PolycodeLua.h */,
 				8A5EF4FE1CD90F0200F8466A /* PolycodeLuaWrappers.h */,
 				8A825F221B829BA70039E823 /* PolyPAAudioInterface.h */,
@@ -605,12 +614,14 @@
 				8A8652851B72866C009F94DD /* Polycode.h in Headers */,
 				8A86527A1B72865C009F94DD /* PolyVector2.h in Headers */,
 				8A86523A1B72865C009F94DD /* PolyConfig.h in Headers */,
+				8A9D12301CDD503C00ACD484 /* PolycodeJSWrappers.h in Headers */,
 				8A86523B1B72865C009F94DD /* PolyCore.h in Headers */,
 				8A8652371B72865C009F94DD /* PolyCocoaCore.h in Headers */,
 				8A8652861B72866C009F94DD /* rgbe.h in Headers */,
 				8A8652781B72865C009F94DD /* PolyTween.h in Headers */,
 				8A8652611B72865C009F94DD /* PolySceneImage.h in Headers */,
 				8A8652491B72865C009F94DD /* PolyImage.h in Headers */,
+				8A9D122F1CDD503C00ACD484 /* PolycodeJS.h in Headers */,
 				8A86526E1B72865C009F94DD /* PolyShader.h in Headers */,
 				8A8652551B72865C009F94DD /* PolyPeer.h in Headers */,
 				8A5EF5001CD90F0200F8466A /* PolycodeLuaWrappers.h in Headers */,
@@ -710,6 +721,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8A8652DA1B72867F009F94DD /* PolyCocoaCore.mm in Sources */,
+				8A9D12321CDD504400ACD484 /* PolycodeJS.cpp in Sources */,
 				8A86531C1B72867F009F94DD /* tinystr.cpp in Sources */,
 				8A8653181B72867F009F94DD /* PolyVector2.cpp in Sources */,
 				8A8653091B72867F009F94DD /* PolySceneSound.cpp in Sources */,

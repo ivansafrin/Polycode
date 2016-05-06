@@ -4,6 +4,7 @@ import io
 import os
 import re
 from LuaBindingsGenerator import *
+from JSBindingsGenerator import *
 
 class BindingsGenerator(object):
 
@@ -17,7 +18,7 @@ class BindingsGenerator(object):
 		self.ignoreClasses = self.config.get('global', 'IgnoreClasses').replace(" ", "").split(",")
 		self.ignoreMethods = self.config.get('global', 'IgnoreMethods').replace(" ", "").split(",")
 
-		self.engines = {LuaBindingsGenerator(self.config)}
+		self.engines = {LuaBindingsGenerator(self.config), JSBindingsGenerator(self.config)}
 
 	# ----------------------------------------------------
 	# Utility methods

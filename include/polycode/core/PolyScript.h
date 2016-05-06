@@ -82,6 +82,7 @@ namespace Polycode {
         void callUpdate(ScriptInstance *instance, Entity *entity, Number elapsed);
         
     private:
+        void *mainObjectRef;
         duk_context *context;
     };
 

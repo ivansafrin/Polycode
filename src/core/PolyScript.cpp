@@ -32,24 +32,48 @@ Polycode::Script::Script(const String &path) : Resource(Resource::RESOURCE_SCRIP
 
 JSScript::JSScript(duk_context *context, const String &path) : Script(path) {
     this->context = context;
+    if(duk_peval_file(context, path.c_str()) != 0) {
+        Logger::log("JAVASCRIPT ERROR: [%s]\n", duk_safe_to_string(context, -1));
+    }
+    
+    if(duk_is_function(context, -1)) {
+        mainObjectRef = duk_get_heapptr(context, -1);
+    } else {
+        mainObjectRef = NULL;
+    }
+    
 }
 
 ScriptInstance *JSScript::callInit(Entity *entity) {
     JSScriptInstance *scriptInstance = new JSScriptInstance();
+    scriptInstance->script = this;
+    scriptInstance->objectRef = NULL;
     
-    if(duk_peval_file(context, getResourcePath().c_str()) != 0) {
-        Logger::log("JAVASCRIPT ERROR: [%s]\n", duk_safe_to_string(context, -1));
+    if(!mainObjectRef) {
+        return scriptInstance;
     }
     
+    duk_push_global_object(context);
+    duk_get_prop_string(context, -1, "Entity");
+    void *entityConstructor = duk_get_heapptr(context, -1);
+    duk_pop(context);
+    
+    
+    duk_push_heapptr(context, mainObjectRef);
     duk_new(context, 0);
     
     scriptInstance->objectRef = duk_get_heapptr(context, -1);
-    scriptInstance->script = this;
     
     duk_push_heapptr(context, scriptInstance->objectRef);
     duk_get_prop_string(context, -1, "init");
     duk_push_heapptr(context, scriptInstance->objectRef);
+    
+    //duk_push_pointer(context, entity);
+    duk_push_heapptr(context, entityConstructor);
+    duk_new(context, 0);
     duk_push_pointer(context, entity);
+    duk_put_prop_string(context, -2, "__ptr");
+    
     if(duk_pcall_method(context, 1) != 0) {
         Logger::log("JAVASCRIPT ERROR: [%s]\n", duk_safe_to_string(context, -1));
     }
@@ -58,6 +82,11 @@ ScriptInstance *JSScript::callInit(Entity *entity) {
 }
 
 void JSScript::callUpdate(ScriptInstance *instance, Entity *entity, Number elapsed) {
+    
+    if(!((JSScriptInstance*)instance)->objectRef) {
+        return;
+    }
+    
     duk_push_heapptr(context, ((JSScriptInstance*)instance)->objectRef);
     duk_get_prop_string(context, -1, "update");
     duk_push_heapptr(context, ((JSScriptInstance*)instance)->objectRef);

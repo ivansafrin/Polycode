@@ -6,19 +6,6 @@ using namespace Polycode;
 
 int luaopen_Polycode(lua_State *L) {
 	static const luaL_Reg PolycodeLib [] = {
-		{"BasicFile_get_file", Polycode_BasicFile_get_file},
-		{"BasicFile_set_file", Polycode_BasicFile_set_file},
-		{"BasicFile_read", Polycode_BasicFile_read},
-		{"BasicFile_write", Polycode_BasicFile_write},
-		{"BasicFile_seek", Polycode_BasicFile_seek},
-		{"BasicFile_tell", Polycode_BasicFile_tell},
-		{"delete_BasicFile", Polycode_delete_BasicFile},
-		{"BasicFileProvider", Polycode_BasicFileProvider},
-		{"BasicFileProvider_openFile", Polycode_BasicFileProvider_openFile},
-		{"BasicFileProvider_closeFile", Polycode_BasicFileProvider_closeFile},
-		{"BasicFileProvider_addSource", Polycode_BasicFileProvider_addSource},
-		{"BasicFileProvider_removeSource", Polycode_BasicFileProvider_removeSource},
-		{"delete_BasicFileProvider", Polycode_delete_BasicFileProvider},
 		{"BezierCurve_get_insertPoint", Polycode_BezierCurve_get_insertPoint},
 		{"BezierCurve_get_evaluationAccuracy", Polycode_BezierCurve_get_evaluationAccuracy},
 		{"BezierCurve_set_insertPoint", Polycode_BezierCurve_set_insertPoint},
@@ -418,11 +405,6 @@ int luaopen_Polycode(lua_State *L) {
 		{"CoreServices_getLogger", Polycode_CoreServices_getLogger},
 		{"CoreServices_getConfig", Polycode_CoreServices_getConfig},
 		{"delete_CoreServices", Polycode_delete_CoreServices},
-		{"Cubemap", Polycode_Cubemap},
-		{"Cubemap_getTexture", Polycode_Cubemap_getTexture},
-		{"Cubemap_setTexture", Polycode_Cubemap_setTexture},
-		{"Cubemap_recreateFromTextures", Polycode_Cubemap_recreateFromTextures},
-		{"delete_Cubemap", Polycode_delete_Cubemap},
 		{"Data", Polycode_Data},
 		{"Data_loadFromFile", Polycode_Data_loadFromFile},
 		{"Data_getAsString", Polycode_Data_getAsString},
@@ -1062,43 +1044,6 @@ int luaopen_Polycode(lua_State *L) {
 		{"BinaryObjectWriter_getKeyIndex", Polycode_BinaryObjectWriter_getKeyIndex},
 		{"BinaryObjectWriter_writeToFile", Polycode_BinaryObjectWriter_writeToFile},
 		{"delete_BinaryObjectWriter", Polycode_delete_BinaryObjectWriter},
-		{"OpenGLGraphicsInterface_get_lineSmooth", Polycode_OpenGLGraphicsInterface_get_lineSmooth},
-		{"OpenGLGraphicsInterface_set_lineSmooth", Polycode_OpenGLGraphicsInterface_set_lineSmooth},
-		{"OpenGLGraphicsInterface", Polycode_OpenGLGraphicsInterface},
-		{"OpenGLGraphicsInterface_createTexture", Polycode_OpenGLGraphicsInterface_createTexture},
-		{"OpenGLGraphicsInterface_destroyTexture", Polycode_OpenGLGraphicsInterface_destroyTexture},
-		{"OpenGLGraphicsInterface_setViewport", Polycode_OpenGLGraphicsInterface_setViewport},
-		{"OpenGLGraphicsInterface_clearBuffers", Polycode_OpenGLGraphicsInterface_clearBuffers},
-		{"OpenGLGraphicsInterface_setParamInShader", Polycode_OpenGLGraphicsInterface_setParamInShader},
-		{"OpenGLGraphicsInterface_setAttributeInShader", Polycode_OpenGLGraphicsInterface_setAttributeInShader},
-		{"OpenGLGraphicsInterface_disableAttribute", Polycode_OpenGLGraphicsInterface_disableAttribute},
-		{"OpenGLGraphicsInterface_useShader", Polycode_OpenGLGraphicsInterface_useShader},
-		{"OpenGLGraphicsInterface_createProgram", Polycode_OpenGLGraphicsInterface_createProgram},
-		{"OpenGLGraphicsInterface_destroyProgram", Polycode_OpenGLGraphicsInterface_destroyProgram},
-		{"OpenGLGraphicsInterface_createVBOForVertexArray", Polycode_OpenGLGraphicsInterface_createVBOForVertexArray},
-		{"OpenGLGraphicsInterface_createMesh", Polycode_OpenGLGraphicsInterface_createMesh},
-		{"OpenGLGraphicsInterface_destroyMesh", Polycode_OpenGLGraphicsInterface_destroyMesh},
-		{"OpenGLGraphicsInterface_createShader", Polycode_OpenGLGraphicsInterface_createShader},
-		{"OpenGLGraphicsInterface_destroyShader", Polycode_OpenGLGraphicsInterface_destroyShader},
-		{"OpenGLGraphicsInterface_beginDrawCall", Polycode_OpenGLGraphicsInterface_beginDrawCall},
-		{"OpenGLGraphicsInterface_endDrawCall", Polycode_OpenGLGraphicsInterface_endDrawCall},
-		{"OpenGLGraphicsInterface_setBlendingMode", Polycode_OpenGLGraphicsInterface_setBlendingMode},
-		{"OpenGLGraphicsInterface_createRenderBuffer", Polycode_OpenGLGraphicsInterface_createRenderBuffer},
-		{"OpenGLGraphicsInterface_destroyRenderBuffer", Polycode_OpenGLGraphicsInterface_destroyRenderBuffer},
-		{"OpenGLGraphicsInterface_bindRenderBuffer", Polycode_OpenGLGraphicsInterface_bindRenderBuffer},
-		{"OpenGLGraphicsInterface_createVertexBuffer", Polycode_OpenGLGraphicsInterface_createVertexBuffer},
-		{"OpenGLGraphicsInterface_createIndexBuffer", Polycode_OpenGLGraphicsInterface_createIndexBuffer},
-		{"OpenGLGraphicsInterface_destroyBuffer", Polycode_OpenGLGraphicsInterface_destroyBuffer},
-		{"OpenGLGraphicsInterface_drawIndices", Polycode_OpenGLGraphicsInterface_drawIndices},
-		{"OpenGLGraphicsInterface_drawArrays", Polycode_OpenGLGraphicsInterface_drawArrays},
-		{"OpenGLGraphicsInterface_enableDepthTest", Polycode_OpenGLGraphicsInterface_enableDepthTest},
-		{"OpenGLGraphicsInterface_enableDepthWrite", Polycode_OpenGLGraphicsInterface_enableDepthWrite},
-		{"OpenGLGraphicsInterface_enableBackfaceCulling", Polycode_OpenGLGraphicsInterface_enableBackfaceCulling},
-		{"OpenGLGraphicsInterface_setLineSize", Polycode_OpenGLGraphicsInterface_setLineSize},
-		{"OpenGLGraphicsInterface_setWireframeMode", Polycode_OpenGLGraphicsInterface_setWireframeMode},
-		{"OpenGLGraphicsInterface_enableScissor", Polycode_OpenGLGraphicsInterface_enableScissor},
-		{"OpenGLGraphicsInterface_setScissorBox", Polycode_OpenGLGraphicsInterface_setScissorBox},
-		{"delete_OpenGLGraphicsInterface", Polycode_delete_OpenGLGraphicsInterface},
 		{"SceneParticle_get_lifetime", Polycode_SceneParticle_get_lifetime},
 		{"SceneParticle_get_position", Polycode_SceneParticle_get_position},
 		{"SceneParticle_get_velocity", Polycode_SceneParticle_get_velocity},
@@ -1186,20 +1131,6 @@ int luaopen_Polycode(lua_State *L) {
 		{"Perlin_Get2D", Polycode_Perlin_Get2D},
 		{"Perlin_Get3D", Polycode_Perlin_Get3D},
 		{"delete_Perlin", Polycode_delete_Perlin},
-		{"PhysFSFile_get_physFSFile", Polycode_PhysFSFile_get_physFSFile},
-		{"PhysFSFile_set_physFSFile", Polycode_PhysFSFile_set_physFSFile},
-		{"PhysFSFile_read", Polycode_PhysFSFile_read},
-		{"PhysFSFile_write", Polycode_PhysFSFile_write},
-		{"PhysFSFile_seek", Polycode_PhysFSFile_seek},
-		{"PhysFSFile_tell", Polycode_PhysFSFile_tell},
-		{"delete_PhysFSFile", Polycode_delete_PhysFSFile},
-		{"PhysFSFileProvider", Polycode_PhysFSFileProvider},
-		{"PhysFSFileProvider_openFile", Polycode_PhysFSFileProvider_openFile},
-		{"PhysFSFileProvider_closeFile", Polycode_PhysFSFileProvider_closeFile},
-		{"PhysFSFileProvider_parseFolder", Polycode_PhysFSFileProvider_parseFolder},
-		{"PhysFSFileProvider_addSource", Polycode_PhysFSFileProvider_addSource},
-		{"PhysFSFileProvider_removeSource", Polycode_PhysFSFileProvider_removeSource},
-		{"delete_PhysFSFileProvider", Polycode_delete_PhysFSFileProvider},
 		{"Quaternion_get_x", Polycode_Quaternion_get_x},
 		{"Quaternion_get_y", Polycode_Quaternion_get_y},
 		{"Quaternion_get_z", Polycode_Quaternion_get_z},
@@ -2153,11 +2084,6 @@ int luaopen_Polycode(lua_State *L) {
 		{"Timer_getElapsedf", Polycode_Timer_getElapsedf},
 		{"Timer_setTimerInterval", Polycode_Timer_setTimerInterval},
 		{"delete_Timer", Polycode_delete_Timer},
-		{"TimerManager", Polycode_TimerManager},
-		{"TimerManager_removeTimer", Polycode_TimerManager_removeTimer},
-		{"TimerManager_addTimer", Polycode_TimerManager_addTimer},
-		{"TimerManager_Update", Polycode_TimerManager_Update},
-		{"delete_TimerManager", Polycode_delete_TimerManager},
 		{"Vector2_get_x", Polycode_Vector2_get_x},
 		{"Vector2_get_y", Polycode_Vector2_get_y},
 		{"Vector2_set_x", Polycode_Vector2_set_x},
@@ -2205,18 +2131,6 @@ int luaopen_Polycode(lua_State *L) {
 	lua_newtable(L);
 	luaL_setfuncs (L,PolycodeLib,0);
 	lua_setglobal(L,"Polycode");
-	luaL_newmetatable(L, "Polycode.BasicFile");
-	lua_pushstring(L, "__gc");
-	lua_pushcfunction(L, Polycode_delete_BasicFile);
-	lua_settable(L, -3);
-	lua_pop(L, 1);
-
-	luaL_newmetatable(L, "Polycode.BasicFileProvider");
-	lua_pushstring(L, "__gc");
-	lua_pushcfunction(L, Polycode_delete_BasicFileProvider);
-	lua_settable(L, -3);
-	lua_pop(L, 1);
-
 	luaL_newmetatable(L, "Polycode.BezierCurve");
 	lua_pushstring(L, "__gc");
 	lua_pushcfunction(L, Polycode_delete_BezierCurve);
@@ -2325,12 +2239,6 @@ int luaopen_Polycode(lua_State *L) {
 	luaL_newmetatable(L, "Polycode.CoreServices");
 	lua_pushstring(L, "__gc");
 	lua_pushcfunction(L, Polycode_delete_CoreServices);
-	lua_settable(L, -3);
-	lua_pop(L, 1);
-
-	luaL_newmetatable(L, "Polycode.Cubemap");
-	lua_pushstring(L, "__gc");
-	lua_pushcfunction(L, Polycode_delete_Cubemap);
 	lua_settable(L, -3);
 	lua_pop(L, 1);
 
@@ -2490,12 +2398,6 @@ int luaopen_Polycode(lua_State *L) {
 	lua_settable(L, -3);
 	lua_pop(L, 1);
 
-	luaL_newmetatable(L, "Polycode.OpenGLGraphicsInterface");
-	lua_pushstring(L, "__gc");
-	lua_pushcfunction(L, Polycode_delete_OpenGLGraphicsInterface);
-	lua_settable(L, -3);
-	lua_pop(L, 1);
-
 	luaL_newmetatable(L, "Polycode.SceneParticle");
 	lua_pushstring(L, "__gc");
 	lua_pushcfunction(L, Polycode_delete_SceneParticle);
@@ -2508,18 +2410,6 @@ int luaopen_Polycode(lua_State *L) {
 	luaL_newmetatable(L, "Polycode.Perlin");
 	lua_pushstring(L, "__gc");
 	lua_pushcfunction(L, Polycode_delete_Perlin);
-	lua_settable(L, -3);
-	lua_pop(L, 1);
-
-	luaL_newmetatable(L, "Polycode.PhysFSFile");
-	lua_pushstring(L, "__gc");
-	lua_pushcfunction(L, Polycode_delete_PhysFSFile);
-	lua_settable(L, -3);
-	lua_pop(L, 1);
-
-	luaL_newmetatable(L, "Polycode.PhysFSFileProvider");
-	lua_pushstring(L, "__gc");
-	lua_pushcfunction(L, Polycode_delete_PhysFSFileProvider);
 	lua_settable(L, -3);
 	lua_pop(L, 1);
 
@@ -2895,12 +2785,6 @@ int luaopen_Polycode(lua_State *L) {
 	luaL_newmetatable(L, "Polycode.Timer");
 	lua_pushstring(L, "__gc");
 	lua_pushcfunction(L, Polycode_delete_Timer);
-	lua_settable(L, -3);
-	lua_pop(L, 1);
-
-	luaL_newmetatable(L, "Polycode.TimerManager");
-	lua_pushstring(L, "__gc");
-	lua_pushcfunction(L, Polycode_delete_TimerManager);
 	lua_settable(L, -3);
 	lua_pop(L, 1);
 
