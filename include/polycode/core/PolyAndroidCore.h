@@ -124,8 +124,10 @@ namespace Polycode {
 		CoreMutex* getEGLMutex();
 		
 		bool recreateContext;
+		
+		PolyKEY mapKey(int keyCode);
+		
 	private:
-
 		PolycodeView* view;
 		
 		Number deviceWidth;
@@ -139,12 +141,14 @@ namespace Polycode {
 		EGLContext context;
 		
 		CoreMutex* eglMutex;
-
+		
 		std::vector<AndroidEvent> systemInputEvents;
 
 		double pcFreq;
 
 		OpenGLGraphicsInterface *graphicsInterface;
 
+		void initKeyMap();
+		PolyKEY keyMap[1024];
 	};
 }

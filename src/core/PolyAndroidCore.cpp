@@ -69,6 +69,8 @@ AndroidCore::AndroidCore(PolycodeView *view, int xRes, int yRes, bool fullScreen
 	
 	paused = true;
 	
+	initKeyMap();
+	
 	this->view = view;
 	core = this;
 }
@@ -377,3 +379,129 @@ Number AndroidCore::getBackingXRes() {
 Number AndroidCore::getBackingYRes() {
 	return deviceHeight;
 }
+
+void AndroidCore::initKeyMap() {
+	
+	for (int i=0; i<1024; ++i )
+		keyMap[i] = KEY_UNKNOWN;
+
+	keyMap[AKEYCODE_BACK] = KEY_BACKSPACE;
+	keyMap[AKEYCODE_TAB] = KEY_TAB;
+	keyMap[AKEYCODE_CLEAR] = KEY_CLEAR;
+	keyMap[AKEYCODE_ENTER] = KEY_RETURN;
+	keyMap[AKEYCODE_BREAK] = KEY_PAUSE;
+	keyMap[AKEYCODE_ESCAPE] = KEY_ESCAPE;
+	keyMap[AKEYCODE_SPACE] = KEY_SPACE;
+	keyMap[AKEYCODE_APOSTROPHE] = KEY_QUOTE;
+	keyMap[AKEYCODE_COMMA] = KEY_COMMA;
+	keyMap[AKEYCODE_MINUS] = KEY_MINUS;
+	keyMap[AKEYCODE_PERIOD] = KEY_PERIOD;
+	keyMap[AKEYCODE_SLASH] = KEY_SLASH;
+	keyMap[AKEYCODE_0] = KEY_0;
+	keyMap[AKEYCODE_1] = KEY_1;
+	keyMap[AKEYCODE_2] = KEY_2;
+	keyMap[AKEYCODE_3] = KEY_3;
+	keyMap[AKEYCODE_4] = KEY_4;
+	keyMap[AKEYCODE_5] = KEY_5;
+	keyMap[AKEYCODE_6] = KEY_6;
+	keyMap[AKEYCODE_7] = KEY_7;
+	keyMap[AKEYCODE_8] = KEY_8;
+	keyMap[AKEYCODE_9] = KEY_9;
+	keyMap[AKEYCODE_SEMICOLON] = KEY_SEMICOLON;
+	keyMap[AKEYCODE_EQUALS] = KEY_EQUALS;
+	keyMap[AKEYCODE_LEFT_BRACKET] = KEY_LEFTBRACKET;
+	keyMap[AKEYCODE_BACKSLASH] = KEY_BACKSLASH;
+// 	keyMap[AKEYCODE_OEM_102] = KEY_LESS;
+	keyMap[AKEYCODE_RIGHT_BRACKET] = KEY_RIGHTBRACKET;
+	keyMap[AKEYCODE_GRAVE] = KEY_BACKQUOTE;
+	//keyMap[AKEYCODE_BACKTICK] = KEY_BACKQUOTE;
+	keyMap[AKEYCODE_A] = KEY_a;
+	keyMap[AKEYCODE_B] = KEY_b;
+	keyMap[AKEYCODE_C] = KEY_c;
+	keyMap[AKEYCODE_D] = KEY_d;
+	keyMap[AKEYCODE_E] = KEY_e;
+	keyMap[AKEYCODE_F] = KEY_f;
+	keyMap[AKEYCODE_G] = KEY_g;
+	keyMap[AKEYCODE_H] = KEY_h;
+	keyMap[AKEYCODE_I] = KEY_i;
+	keyMap[AKEYCODE_J] = KEY_j;
+	keyMap[AKEYCODE_K] = KEY_k;
+	keyMap[AKEYCODE_L] = KEY_l;
+	keyMap[AKEYCODE_M] = KEY_m;
+	keyMap[AKEYCODE_N] = KEY_n;
+	keyMap[AKEYCODE_O] = KEY_o;
+	keyMap[AKEYCODE_P] = KEY_p;
+	keyMap[AKEYCODE_Q] = KEY_q;
+	keyMap[AKEYCODE_R] = KEY_r;
+	keyMap[AKEYCODE_S] = KEY_s;
+	keyMap[AKEYCODE_T] = KEY_t;
+	keyMap[AKEYCODE_U] = KEY_u;
+	keyMap[AKEYCODE_V] = KEY_v;
+	keyMap[AKEYCODE_W] = KEY_w;
+	keyMap[AKEYCODE_X] = KEY_x;
+	keyMap[AKEYCODE_Y] = KEY_y;
+	keyMap[AKEYCODE_Z] = KEY_z;
+	keyMap[AKEYCODE_DEL] = KEY_DELETE;
+
+	keyMap[AKEYCODE_NUMPAD_0] = KEY_KP0;
+	keyMap[AKEYCODE_NUMPAD_1] = KEY_KP1;
+	keyMap[AKEYCODE_NUMPAD_2] = KEY_KP2;
+	keyMap[AKEYCODE_NUMPAD_3] = KEY_KP3;
+	keyMap[AKEYCODE_NUMPAD_4] = KEY_KP4;
+	keyMap[AKEYCODE_NUMPAD_5] = KEY_KP5;
+	keyMap[AKEYCODE_NUMPAD_6] = KEY_KP6;
+	keyMap[AKEYCODE_NUMPAD_7] = KEY_KP7;
+	keyMap[AKEYCODE_NUMPAD_8] = KEY_KP8;
+	keyMap[AKEYCODE_NUMPAD_9] = KEY_KP9;
+	keyMap[AKEYCODE_NUMPAD_DOT] = KEY_KP_PERIOD;
+	keyMap[AKEYCODE_NUMPAD_DIVIDE] = KEY_KP_DIVIDE;
+	keyMap[AKEYCODE_NUMPAD_MULTIPLY] = KEY_KP_MULTIPLY;
+	keyMap[AKEYCODE_NUMPAD_SUBTRACT] = KEY_KP_MINUS;
+	keyMap[AKEYCODE_NUMPAD_ADD] = KEY_KP_PLUS;
+
+	keyMap[AKEYCODE_DPAD_UP] = KEY_UP;
+	keyMap[AKEYCODE_DPAD_DOWN] = KEY_DOWN;
+	keyMap[AKEYCODE_DPAD_RIGHT] = KEY_RIGHT;
+	keyMap[AKEYCODE_DPAD_LEFT] = KEY_LEFT;
+	keyMap[AKEYCODE_INSERT] = KEY_INSERT;
+	keyMap[AKEYCODE_MOVE_HOME] = KEY_HOME;
+	keyMap[AKEYCODE_MOVE_END] = KEY_END;
+	keyMap[AKEYCODE_PAGE_UP] = KEY_PAGEUP;
+	keyMap[AKEYCODE_PAGE_DOWN] = KEY_PAGEDOWN;
+
+	keyMap[AKEYCODE_F1] = KEY_F1;
+	keyMap[AKEYCODE_F2] = KEY_F2;
+	keyMap[AKEYCODE_F3] = KEY_F3;
+	keyMap[AKEYCODE_F4] = KEY_F4;
+	keyMap[AKEYCODE_F5] = KEY_F5;
+	keyMap[AKEYCODE_F6] = KEY_F6;
+	keyMap[AKEYCODE_F7] = KEY_F7;
+	keyMap[AKEYCODE_F8] = KEY_F8;
+	keyMap[AKEYCODE_F9] = KEY_F9;
+	keyMap[AKEYCODE_F10] = KEY_F10;
+	keyMap[AKEYCODE_F11] = KEY_F11;
+	keyMap[AKEYCODE_F12] = KEY_F12;
+
+	keyMap[AKEYCODE_NUM_LOCK] = KEY_NUMLOCK;
+	keyMap[AKEYCODE_CAPS_LOCK] = KEY_CAPSLOCK;
+	keyMap[AKEYCODE_SCROLL_LOCK] = KEY_SCROLLOCK;
+	keyMap[AKEYCODE_SHIFT_RIGHT] = KEY_RSHIFT;
+	keyMap[AKEYCODE_SHIFT_LEFT] = KEY_LSHIFT;
+	keyMap[AKEYCODE_CTRL_RIGHT] = KEY_RCTRL;
+	keyMap[AKEYCODE_CTRL_LEFT] = KEY_LCTRL;
+	keyMap[AKEYCODE_ALT_RIGHT] = KEY_RALT;
+	keyMap[AKEYCODE_ALT_LEFT] = KEY_LALT;
+	keyMap[AKEYCODE_META_RIGHT] = KEY_RSUPER;
+	keyMap[AKEYCODE_META_LEFT] = KEY_LSUPER;
+
+	keyMap[AKEYCODE_HELP] = KEY_HELP;
+ 	keyMap[AKEYCODE_SYSRQ] = KEY_PRINT;
+	keyMap[AKEYCODE_BREAK] = KEY_BREAK;
+	keyMap[AKEYCODE_MENU] = KEY_MENU;
+
+}
+
+PolyKEY AndroidCore::mapKey(int keyCode){
+	return keyMap[(unsigned int) keyCode];
+}
+

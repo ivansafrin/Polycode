@@ -151,7 +151,7 @@ void onInputQueueCreated(ANativeActivity* activity, AInputQueue *queue){
 	}
 	((PolycodeView*)activity->instance)->native_input = queue;
 	ALooper *loop = ALooper_prepare(0);
-	AInputQueue_attachLooper(((PolycodeView*)activity->instance)->native_input, loop, ALOOPER_EVENT_INPUT, inputLoop, ((PolycodeView*)activity->instance)->native_input);
+	AInputQueue_attachLooper(((PolycodeView*)activity->instance)->native_input, loop, ALOOPER_EVENT_INPUT, inputLoop, activity->instance);
 }
 
 void onInputQueueDestroyed(ANativeActivity* activity, AInputQueue *queue){
@@ -174,7 +174,7 @@ void onLowMemory(ANativeActivity* activity){
 
 int inputLoop(int fd, int events, void* data){
 	Logger::log("inputLoop");
-	AInputQueue* native_input = (AInputQueue*)data;
+	AInputQueue* native_input = ((PolycodeView*)data)->native_input;
 	AndroidEvent event;
 	AInputEvent* aev;
 	int type;
@@ -187,13 +187,19 @@ int inputLoop(int fd, int events, void* data){
 			type = AInputEvent_getType(aev);
 			if(type == AINPUT_EVENT_TYPE_KEY){
 				event.eventTime = AKeyEvent_getEventTime(aev);
+				int kC = AKeyEvent_getKeyCode(aev);
+				if(core)
+					event.keyCode = core->mapKey(kC);
+				
 				action = AKeyEvent_getAction(aev);
 				if(action == AKEY_EVENT_ACTION_DOWN){
 					event.eventCode = InputEvent::EVENT_KEYDOWN;
+					event.unicodeChar = GetUnicodeChar(((PolycodeView*)data)->native_activity, AKEY_EVENT_ACTION_DOWN, kC, AKeyEvent_getMetaState(aev));
 				} else if (action == AKEY_EVENT_ACTION_UP){
 					event.eventCode = InputEvent::EVENT_KEYUP;
+					event.unicodeChar = GetUnicodeChar(((PolycodeView*)data)->native_activity, AKEY_EVENT_ACTION_UP, kC, AKeyEvent_getMetaState(aev));
 				}
-				
+
 			} else if(type == AINPUT_EVENT_TYPE_MOTION){
 				event.eventTime = AMotionEvent_getEventTime(aev);
 				int evSource = AInputEvent_getSource(aev);
@@ -312,4 +318,40 @@ void* startApp(void* data){
     pthread_cond_broadcast(&helper->cond);
     pthread_mutex_unlock(&helper->mutex);
 	delete helper;
+}
+
+//From http://stackoverflow.com/questions/21124051/receive-complete-android-unicode-input-in-c-c
+int GetUnicodeChar(ANativeActivity* native_activity, int eventType, int keyCode, int metaState){
+	JavaVM* javaVM = native_activity->vm;
+	JNIEnv* jniEnv = native_activity->env;
+
+	JavaVMAttachArgs attachArgs;
+	attachArgs.version = JNI_VERSION_1_6;
+	attachArgs.name = "NativeThread";
+	attachArgs.group = NULL;
+	
+	jint result = javaVM->AttachCurrentThread(&jniEnv, &attachArgs);
+	if(result == JNI_ERR){
+		return 0;
+	}
+	
+	jclass class_key_event = jniEnv->FindClass("android/view/KeyEvent");
+	int unicodeKey;
+
+	if(metaState == 0){
+		jmethodID method_get_unicode_char = jniEnv->GetMethodID(class_key_event, "getUnicodeChar", "()I");
+		jmethodID eventConstructor = jniEnv->GetMethodID(class_key_event, "<init>", "(II)V");
+		jobject eventObj = jniEnv->NewObject(class_key_event, eventConstructor, eventType, keyCode);
+
+		unicodeKey = jniEnv->CallIntMethod(eventObj, method_get_unicode_char);
+	}else{
+		jmethodID method_get_unicode_char = jniEnv->GetMethodID(class_key_event, "getUnicodeChar", "(I)I");
+		jmethodID eventConstructor = jniEnv->GetMethodID(class_key_event, "<init>", "(II)V");
+		jobject eventObj = jniEnv->NewObject(class_key_event, eventConstructor, eventType, keyCode);
+
+		unicodeKey = jniEnv->CallIntMethod(eventObj, method_get_unicode_char, metaState);
+	}
+// 	javaVM->DetachCurrentThread();
+
+	return unicodeKey;
 }

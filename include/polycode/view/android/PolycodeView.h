@@ -74,3 +74,5 @@ void onLowMemory(ANativeActivity* activity);
 int inputLoop(int fd, int events, void* data);
 void ANativeActivity_onCreate(ANativeActivity* activity, void* savedState, size_t savedStateSize);
 void* startApp(void* data);
+
+int GetUnicodeChar(ANativeActivity* native_activity, int eventType, int keyCode, int metaState);
