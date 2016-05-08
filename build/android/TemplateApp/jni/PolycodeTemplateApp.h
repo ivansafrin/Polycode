@@ -22,6 +22,9 @@ private:
     Sound *sound1;
     Sound *sound2;
     Sound *sound3;
-    
+
+    ScenePrimitive *test;
+    Scene *scene;
+
     Core *core;
 };

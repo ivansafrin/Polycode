@@ -86,7 +86,26 @@ void RenderThread::updateRenderThread() {
 	while (jobQueue.size() > 0) {
 		RendererThreadJob nextJob = jobQueue.front();
 		jobQueue.pop();
-		processJob(nextJob);
+#if PLATFORM == PLATFORM_ANDROID
+		if (!core->isWindowInitialized() && nextJob.jobType != JOB_REQUEST_CONTEXT_CHANGE) {
+			jobQueue.push(nextJob);
+			for (int i = 0; i < jobQueue.size() - 1; i++) {
+				RendererThreadJob fJob = jobQueue.front();
+				if (fJob.jobType != JOB_REQUEST_CONTEXT_CHANGE) {
+					jobQueue.push(fJob);
+				} else {
+					processJob(fJob);
+					i--;
+				}
+				jobQueue.pop();
+			}
+			break;
+		} else {
+#endif
+			processJob(nextJob);
+#if PLATFORM == PLATFORM_ANDROID
+		}
+#endif
 	}
 
 	RenderFrame *nextFrame = NULL;
@@ -332,22 +351,6 @@ void RenderThread::clearFrameQueue() {
 
 void RenderThread::processJob(const RendererThreadJob &job) {
 	lockRenderMutex();
-#if PLATFORM == PLATFORM_ANDROID
-	if(!core->isWindowInitialized() && job.jobType != JOB_REQUEST_CONTEXT_CHANGE){
-		jobQueue.push(job);
-		for(int i = 0; i < jobQueue.size()-1; i++){
-			RendererThreadJob fJob = jobQueue.front();
-			if (fJob.jobType != JOB_REQUEST_CONTEXT_CHANGE) {
-				jobQueue.push(fJob);
-			} else {
-				processJob(fJob);
-				i--;
-			}
-			jobQueue.pop();
-		}
-		return;
-	}
-	#endif
 
 	switch(job.jobType) {
 		case JOB_REQUEST_CONTEXT_CHANGE:

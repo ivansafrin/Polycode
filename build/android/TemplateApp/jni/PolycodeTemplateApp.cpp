@@ -14,11 +14,11 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
 
 	// Write your code here!
     srand(time(NULL));
-    Scene *scene = new Scene(Scene::SCENE_2D);
+    scene = new Scene(Scene::SCENE_2D);
     scene->useClearColor = true;
     scene->clearColor.setColor(1.0f / (float)(rand() % 5),1.0f / (float)(rand()%5),1.0f / (float)(rand() % 5),1.0f);
 
-    ScenePrimitive *test = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.5, 0.5);
+    test = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.5, 0.5);
     scene->addChild(test);
     test->setPositionY(0.2);
     test->setMaterialByName("Unlit");
@@ -49,6 +49,7 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     Services()->getInput()->addEventListener(this, InputEvent::EVENT_TOUCHES_BEGAN);
     Services()->getInput()->addEventListener(this, InputEvent::EVENT_TOUCHES_ENDED);
     Services()->getInput()->addEventListener(this, InputEvent::EVENT_TOUCHES_MOVED);
+    
 }
 
 void PolycodeTemplateApp::handleEvent(Event *event) {
@@ -67,10 +68,16 @@ void PolycodeTemplateApp::handleEvent(Event *event) {
         }
     } else if (inputEvent->getEventCode() == InputEvent::EVENT_TOUCHES_BEGAN){
         Logger::log("Touch began: %f, %f", inputEvent->touch.position.x, inputEvent->touch.position.y);
+        Ray r = scene->projectRayFromCameraAndViewportCoordinate(scene->getActiveCamera(),inputEvent->touch.position);
+        test->setPosition(r.origin.x, r.origin.y);
     } else if(inputEvent->getEventCode() == InputEvent::EVENT_TOUCHES_ENDED){
         Logger::log("Touch ended: %f, %f", inputEvent->touch.position.x, inputEvent->touch.position.y);
+        Ray r = scene->projectRayFromCameraAndViewportCoordinate(scene->getActiveCamera(),inputEvent->touch.position);
+        test->setPosition(r.origin.x, r.origin.y);
     } else if(inputEvent->getEventCode() == InputEvent::EVENT_TOUCHES_MOVED){
         Logger::log("Touch moved: %f, %f", inputEvent->touch.position.x, inputEvent->touch.position.y);
+        Ray r = scene->projectRayFromCameraAndViewportCoordinate(scene->getActiveCamera(),inputEvent->touch.position);
+        test->setPosition(r.origin.x, r.origin.y);
     }
 }
 

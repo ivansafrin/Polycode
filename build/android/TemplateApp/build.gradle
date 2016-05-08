@@ -4,11 +4,10 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
-
+    buildToolsVersion '23.0.2'
     defaultConfig {
         applicationId "org.polycode.templateapp"
-        minSdkVersion 14
+        minSdkVersion 21
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -18,17 +17,15 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-        debug{
+        debug {
             jniDebuggable = true
         }
     }
-
     sourceSets.main {
         manifest.srcFile 'AndroidManifest.xml'
         jniLibs.srcDir 'libs' //set libs as .so's location instead of jniLibs
         jni.srcDirs = [] //disable automatic ndk-build call with auto-generated Android.mk
     }
-
     // call regular ndk-build(.cmd) script from app directory
     task ndkBuild(type: Exec) {
         if (Os.isFamily(Os.FAMILY_WINDOWS)) {
@@ -37,19 +34,16 @@ android {
             commandLine 'ndk-build'
         }
     }
-
     task copyAssets(type: Copy) {
         from '../../../assets/default/default'
         into 'src/main/assets/default'
     }
-
     tasks.withType(JavaCompile) {
         compileTask -> compileTask.dependsOn ndkBuild, copyAssets
+    }
+    productFlavors {
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.1.1'
 }

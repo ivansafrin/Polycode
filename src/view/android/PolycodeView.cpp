@@ -76,7 +76,7 @@ void onPause(ANativeActivity* activity){
 }
 
 void* onSaveInstanceState(ANativeActivity* activity, size_t *outSize){
-	
+	Logger::log("onSaveInstanceState");
 }
 
 void onStop(ANativeActivity* activity){
@@ -127,11 +127,11 @@ void onNativeWindowCreated(ANativeActivity* activity, ANativeWindow *window){
 }
 
 void onNativeWindowResized(ANativeActivity* activity, ANativeWindow *window){
-	
+	Logger::log("onNativeWindowResized");
 }
 
 void onNativeWindowRedrawNeeded(ANativeActivity* activity, ANativeWindow *window){
-	
+	Logger::log("onNativeWindowRedrawNeeded");
 }
 
 void onNativeWindowDestroyed(ANativeActivity* activity, ANativeWindow *window){
@@ -146,6 +146,9 @@ void onNativeWindowDestroyed(ANativeActivity* activity, ANativeWindow *window){
 
 void onInputQueueCreated(ANativeActivity* activity, AInputQueue *queue){
 	Logger::log("onInputQueueCreated");
+	if (((PolycodeView*)activity->instance)->native_input != NULL) {
+		AInputQueue_detachLooper(((PolycodeView*)activity->instance)->native_input);
+	}
 	((PolycodeView*)activity->instance)->native_input = queue;
 	ALooper *loop = ALooper_prepare(0);
 	AInputQueue_attachLooper(((PolycodeView*)activity->instance)->native_input, loop, ALOOPER_EVENT_INPUT, inputLoop, ((PolycodeView*)activity->instance)->native_input);
@@ -158,15 +161,15 @@ void onInputQueueDestroyed(ANativeActivity* activity, AInputQueue *queue){
 }
 
 void onContentRectChanged(ANativeActivity* activity, const ARect *rect){
-	
+	Logger::log("onContentRectChanged");
 }
 
 void onConfiguartionChanged(ANativeActivity* activity){
-	
+	Logger::log("onConfiguartionChanged");
 }
 
 void onLowMemory(ANativeActivity* activity){
-	
+	Logger::log("onLowMemory");
 }
 
 int inputLoop(int fd, int events, void* data){
@@ -180,10 +183,10 @@ int inputLoop(int fd, int events, void* data){
 	while(AInputQueue_hasEvents(native_input)>0){
 		if(AInputQueue_getEvent(native_input, &aev)>=0){
 			event = AndroidEvent();
-			event.eventTime = AKeyEvent_getEventTime(aev);
 			event.eventGroup = AndroidEvent::INPUT_EVENT;
 			type = AInputEvent_getType(aev);
 			if(type == AINPUT_EVENT_TYPE_KEY){
+				event.eventTime = AKeyEvent_getEventTime(aev);
 				action = AKeyEvent_getAction(aev);
 				if(action == AKEY_EVENT_ACTION_DOWN){
 					event.eventCode = InputEvent::EVENT_KEYDOWN;
@@ -192,51 +195,78 @@ int inputLoop(int fd, int events, void* data){
 				}
 				
 			} else if(type == AINPUT_EVENT_TYPE_MOTION){
+				event.eventTime = AMotionEvent_getEventTime(aev);
 				int evSource = AInputEvent_getSource(aev);
+				
 				if (evSource & AINPUT_SOURCE_CLASS_POINTER){
-					std::vector<TouchInfo> touches;
-					int count = AMotionEvent_getPointerCount(aev);
-					for (int i = 0; i <count; i++){
-						TouchInfo ti;
-						ti.position = Vector2(AMotionEvent_getX(aev,i), AMotionEvent_getY(aev,i));
-						if(evSource & AINPUT_SOURCE_TOUCHSCREEN){
-							ti.type = TouchInfo::TYPE_TOUCH;
-						} else {
-							ti.type = TouchInfo::TYPE_PEN;
-						}
-						ti.id = AMotionEvent_getPointerId(aev, i);
-						
-						touches.push_back(ti);
-					}
-					event.touches = touches;
-					
 					action = AMotionEvent_getAction(aev);
-					if (action == AMOTION_EVENT_ACTION_UP){
-						event.eventCode = InputEvent::EVENT_TOUCHES_ENDED;
-						event.touch = touches[0];
-						core->handleSystemEvent(event);
-					} else if (action == AMOTION_EVENT_ACTION_DOWN){
-						event.eventCode = InputEvent::EVENT_TOUCHES_BEGAN;
-						event.touch = touches[0];
-						core->handleSystemEvent(event);
-					} else if (action == AMOTION_EVENT_ACTION_MOVE){
-						event.eventCode = InputEvent::EVENT_TOUCHES_MOVED;
-						event.touch = touches[action | AMOTION_EVENT_ACTION_POINTER_INDEX_MASK];
-						core->handleSystemEvent(event);
-					} else if (action == AMOTION_EVENT_ACTION_POINTER_DOWN){
-						event.eventCode = InputEvent::EVENT_TOUCHES_BEGAN;
-						event.touch = touches[action | AMOTION_EVENT_ACTION_POINTER_INDEX_MASK];
-						core->handleSystemEvent(event);
-					} else if (action == AMOTION_EVENT_ACTION_POINTER_UP){
-						event.eventCode = InputEvent::EVENT_TOUCHES_ENDED;
-						event.touch = touches[action | AMOTION_EVENT_ACTION_POINTER_INDEX_MASK];
+					int count = AMotionEvent_getPointerCount(aev);
+					
+					if (action == AMOTION_EVENT_ACTION_MOVE){
+						AndroidEvent hEvent;
+						int history = AMotionEvent_getHistorySize(aev);
+						
+						for (int j = 0; j<history; j++){
+							hEvent = AndroidEvent();
+							hEvent.eventTime = AMotionEvent_getHistoricalEventTime(aev, j);
+							hEvent.eventGroup = AndroidEvent::INPUT_EVENT;
+							
+							std::vector<TouchInfo> touches;
+							
+							for (int i = 0; i <count; i++){
+								TouchInfo ti;
+								ti.position = Vector2(AMotionEvent_getHistoricalX(aev,i,j), AMotionEvent_getHistoricalY(aev,i,j));
+								if(evSource & AINPUT_SOURCE_TOUCHSCREEN){
+									ti.type = TouchInfo::TYPE_TOUCH;
+								} else {
+									ti.type = TouchInfo::TYPE_PEN;
+								}
+								ti.id = AMotionEvent_getPointerId(aev, i);
+								if(ti.id == (action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) || AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT){
+									hEvent.touch = ti;
+								}
+								touches.push_back(ti);
+							}
+							hEvent.eventCode = InputEvent::EVENT_TOUCHES_MOVED;
+							hEvent.touches = touches;
+							
+							core->handleSystemEvent(hEvent);
+						}
+					} else {
+						std::vector<TouchInfo> touches;
+						for (int i = 0; i <count; i++){
+							TouchInfo ti;
+							ti.position = Vector2(AMotionEvent_getX(aev,i), AMotionEvent_getY(aev,i));
+							if(evSource & AINPUT_SOURCE_TOUCHSCREEN){
+								ti.type = TouchInfo::TYPE_TOUCH;
+							} else {
+								ti.type = TouchInfo::TYPE_PEN;
+							}
+							ti.id = AMotionEvent_getPointerId(aev, i);
+							if(ti.id == (action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) || AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT){
+								event.touch = ti;
+							}
+							touches.push_back(ti);
+						}
+						
+						if (action == AMOTION_EVENT_ACTION_UP){
+							event.eventCode = InputEvent::EVENT_TOUCHES_ENDED;
+							event.touch = touches[0];
+						} else if (action == AMOTION_EVENT_ACTION_DOWN){
+							event.eventCode = InputEvent::EVENT_TOUCHES_BEGAN;
+							event.touch = touches[0];
+						} else if (action == AMOTION_EVENT_ACTION_POINTER_DOWN){
+							event.eventCode = InputEvent::EVENT_TOUCHES_BEGAN;
+						} else if (action == AMOTION_EVENT_ACTION_POINTER_UP){
+							event.eventCode = InputEvent::EVENT_TOUCHES_ENDED;
+						}
 						core->handleSystemEvent(event);
 					}
-					
 				} else if (evSource & AINPUT_SOURCE_CLASS_POSITION){
 					
 				}
 			}
+			AInputQueue_finishEvent(native_input, aev, 1);
 		}
 	}
 }

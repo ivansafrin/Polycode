@@ -5,8 +5,7 @@
         android:versionCode="1"
         android:versionName="1.0">
 
-    <!-- This is the platform API where NativeActivity was introduced. -->
-    <uses-sdk android:minSdkVersion="14" />
+    <uses-sdk android:minSdkVersion="21" />
 
     <!-- This .apk has no Java code itself, so set hasCode to false. -->
     <application android:label="Polycore" android:hasCode="false">

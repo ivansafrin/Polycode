@@ -71,7 +71,6 @@ AndroidCore::AndroidCore(PolycodeView *view, int xRes, int yRes, bool fullScreen
 	
 	this->view = view;
 	core = this;
-	
 }
 
 AndroidCore::~AndroidCore() {
