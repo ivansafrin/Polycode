@@ -1,26 +1,67 @@
 function Ray() {
+	Object.defineProperties(this, {
+		'origin': { enumerable: true, configurable: true, get: Ray.prototype.__get_origin, set: Ray.prototype.__set_origin},
+		'direction': { enumerable: true, configurable: true, get: Ray.prototype.__get_direction, set: Ray.prototype.__set_direction},
+		'inv_direction': { enumerable: true, configurable: true, get: Ray.prototype.__get_inv_direction, set: Ray.prototype.__set_inv_direction}
+	})
+}
+Ray.prototype.__get_origin = function() {
+	var retVal = new Vector3()
+	retVal.__ptr = 	Polycode.Ray__get_origin(this.__ptr)
+	return retVal
 }
 
+Ray.prototype.__set_origin = function(val) {
+	Polycode.Ray__set_origin(this.__ptr, val.__ptr)
+}
+
+Ray.prototype.__get_direction = function() {
+	var retVal = new Vector3()
+	retVal.__ptr = 	Polycode.Ray__get_direction(this.__ptr)
+	return retVal
+}
+
+Ray.prototype.__set_direction = function(val) {
+	Polycode.Ray__set_direction(this.__ptr, val.__ptr)
+}
+
+Ray.prototype.__get_inv_direction = function() {
+	var retVal = new Vector3()
+	retVal.__ptr = 	Polycode.Ray__get_inv_direction(this.__ptr)
+	return retVal
+}
+
+Ray.prototype.__set_inv_direction = function(val) {
+	Polycode.Ray__set_inv_direction(this.__ptr, val.__ptr)
+}
+
+
 Ray.prototype.boxIntersect = function(box,transformMatrix,near,far) {
-	Polycode.Ray_boxIntersect(this.__ptr, box,transformMatrix,near,far)
+	return Polycode.Ray_boxIntersect(this.__ptr, box,transformMatrix,near,far)
 }
 
 Ray.prototype.planeIntersectPoint = function(planeNormal,planeDistance) {
-	Polycode.Ray_planeIntersectPoint(this.__ptr, planeNormal,planeDistance)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.Ray_planeIntersectPoint(this.__ptr, planeNormal,planeDistance)
+	return retVal
 }
 
 Ray.prototype.tranformByMatrix = function(matrix) {
-	Polycode.Ray_tranformByMatrix(this.__ptr, matrix)
+	var retVal = new Ray()
+	retVal.__ptr = Polycode.Ray_tranformByMatrix(this.__ptr, matrix)
+	return retVal
 }
 
 Ray.prototype.closestPointOnRay = function(point) {
-	Polycode.Ray_closestPointOnRay(this.__ptr, point)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.Ray_closestPointOnRay(this.__ptr, point)
+	return retVal
 }
 
 Ray.prototype.closestPointsBetween = function(ray2,point1,point2) {
-	Polycode.Ray_closestPointsBetween(this.__ptr, ray2,point1,point2)
+	return Polycode.Ray_closestPointsBetween(this.__ptr, ray2,point1,point2)
 }
 
 Ray.prototype.polygonIntersect = function(v1,v2,v3) {
-	Polycode.Ray_polygonIntersect(this.__ptr, v1,v2,v3)
+	return Polycode.Ray_polygonIntersect(this.__ptr, v1,v2,v3)
 }

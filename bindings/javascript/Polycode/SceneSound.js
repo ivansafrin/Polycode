@@ -6,7 +6,9 @@ SceneSound.prototype.Update = function() {
 }
 
 SceneSound.prototype.Clone = function(deepClone,ignoreEditorOnly) {
-	Polycode.SceneSound_Clone(this.__ptr, deepClone,ignoreEditorOnly)
+	var retVal = new Entity()
+	retVal.__ptr = Polycode.SceneSound_Clone(this.__ptr, deepClone,ignoreEditorOnly)
+	return retVal
 }
 
 SceneSound.prototype.applyClone = function(clone,deepClone,ignoreEditorOnly) {
@@ -14,7 +16,7 @@ SceneSound.prototype.applyClone = function(clone,deepClone,ignoreEditorOnly) {
 }
 
 SceneSound.prototype.isDirectionalSound = function() {
-	Polycode.SceneSound_isDirectionalSound(this.__ptr)
+	return Polycode.SceneSound_isDirectionalSound(this.__ptr)
 }
 
 SceneSound.prototype.setDirectionalSound = function(val) {
@@ -22,7 +24,9 @@ SceneSound.prototype.setDirectionalSound = function(val) {
 }
 
 SceneSound.prototype.getSound = function() {
-	Polycode.SceneSound_getSound(this.__ptr)
+	var retVal = new Sound()
+	retVal.__ptr = Polycode.SceneSound_getSound(this.__ptr)
+	return retVal
 }
 
 SceneSound.prototype.setLoopOnLoad = function(val) {
@@ -30,5 +34,5 @@ SceneSound.prototype.setLoopOnLoad = function(val) {
 }
 
 SceneSound.prototype.getLoopOnLoad = function() {
-	Polycode.SceneSound_getLoopOnLoad(this.__ptr)
+	return Polycode.SceneSound_getLoopOnLoad(this.__ptr)
 }

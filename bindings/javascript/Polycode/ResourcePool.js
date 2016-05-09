@@ -1,5 +1,43 @@
 function ResourcePool() {
+	Object.defineProperties(this, {
+		'reloadResourcesOnModify': { enumerable: true, configurable: true, get: ResourcePool.prototype.__get_reloadResourcesOnModify, set: ResourcePool.prototype.__set_reloadResourcesOnModify},
+		'dispatchChangeEvents': { enumerable: true, configurable: true, get: ResourcePool.prototype.__get_dispatchChangeEvents, set: ResourcePool.prototype.__set_dispatchChangeEvents},
+		'resourceSubscribers': { enumerable: true, configurable: true, get: ResourcePool.prototype.__get_resourceSubscribers, set: ResourcePool.prototype.__set_resourceSubscribers},
+		'deleteOnUnsubscribe': { enumerable: true, configurable: true, get: ResourcePool.prototype.__get_deleteOnUnsubscribe, set: ResourcePool.prototype.__set_deleteOnUnsubscribe}
+	})
 }
+ResourcePool.prototype.__get_reloadResourcesOnModify = function() {
+	return Polycode.ResourcePool__get_reloadResourcesOnModify(this.__ptr)
+}
+
+ResourcePool.prototype.__set_reloadResourcesOnModify = function(val) {
+	Polycode.ResourcePool__set_reloadResourcesOnModify(this.__ptr, val)
+}
+
+ResourcePool.prototype.__get_dispatchChangeEvents = function() {
+	return Polycode.ResourcePool__get_dispatchChangeEvents(this.__ptr)
+}
+
+ResourcePool.prototype.__set_dispatchChangeEvents = function(val) {
+	Polycode.ResourcePool__set_dispatchChangeEvents(this.__ptr, val)
+}
+
+ResourcePool.prototype.__get_resourceSubscribers = function() {
+	return Polycode.ResourcePool__get_resourceSubscribers(this.__ptr)
+}
+
+ResourcePool.prototype.__set_resourceSubscribers = function(val) {
+	Polycode.ResourcePool__set_resourceSubscribers(this.__ptr, val)
+}
+
+ResourcePool.prototype.__get_deleteOnUnsubscribe = function() {
+	return Polycode.ResourcePool__get_deleteOnUnsubscribe(this.__ptr)
+}
+
+ResourcePool.prototype.__set_deleteOnUnsubscribe = function(val) {
+	Polycode.ResourcePool__set_deleteOnUnsubscribe(this.__ptr, val)
+}
+
 
 ResourcePool.prototype.setFallbackPool = function(pool) {
 	Polycode.ResourcePool_setFallbackPool(this.__ptr, pool)
@@ -14,7 +52,7 @@ ResourcePool.prototype.removeResource = function(resource) {
 }
 
 ResourcePool.prototype.hasResource = function(resource) {
-	Polycode.ResourcePool_hasResource(this.__ptr, resource)
+	return Polycode.ResourcePool_hasResource(this.__ptr, resource)
 }
 
 ResourcePool.prototype.loadResourcesFromFolder = function(folder,recursive) {
@@ -22,19 +60,25 @@ ResourcePool.prototype.loadResourcesFromFolder = function(folder,recursive) {
 }
 
 ResourcePool.prototype.loadResource = function(path) {
-	Polycode.ResourcePool_loadResource(this.__ptr, path)
+	var retVal = new Resource()
+	retVal.__ptr = Polycode.ResourcePool_loadResource(this.__ptr, path)
+	return retVal
 }
 
 ResourcePool.prototype.loadResourceWithName = function(path,name) {
-	Polycode.ResourcePool_loadResourceWithName(this.__ptr, path,name)
+	var retVal = new Resource()
+	retVal.__ptr = Polycode.ResourcePool_loadResourceWithName(this.__ptr, path,name)
+	return retVal
 }
 
 ResourcePool.prototype.getResource = function(resourceType,resourceName) {
-	Polycode.ResourcePool_getResource(this.__ptr, resourceType,resourceName)
+	var retVal = new Resource()
+	retVal.__ptr = Polycode.ResourcePool_getResource(this.__ptr, resourceType,resourceName)
+	return retVal
 }
 
 ResourcePool.prototype.getName = function() {
-	Polycode.ResourcePool_getName(this.__ptr)
+	return Polycode.ResourcePool_getName(this.__ptr)
 }
 
 ResourcePool.prototype.setName = function(name) {
@@ -42,7 +86,9 @@ ResourcePool.prototype.setName = function(name) {
 }
 
 ResourcePool.prototype.getResourceByPath = function(resourcePath) {
-	Polycode.ResourcePool_getResourceByPath(this.__ptr, resourcePath)
+	var retVal = new Resource()
+	retVal.__ptr = Polycode.ResourcePool_getResourceByPath(this.__ptr, resourcePath)
+	return retVal
 }
 
 ResourcePool.prototype.Update = function(elapsed) {

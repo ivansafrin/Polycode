@@ -2,7 +2,7 @@ function Sprite() {
 }
 
 Sprite.prototype.getName = function() {
-	Polycode.Sprite_getName(this.__ptr)
+	return Polycode.Sprite_getName(this.__ptr)
 }
 
 Sprite.prototype.setName = function(name) {
@@ -18,15 +18,19 @@ Sprite.prototype.removeSpriteState = function(state) {
 }
 
 Sprite.prototype.getNumStates = function() {
-	Polycode.Sprite_getNumStates(this.__ptr)
+	return Polycode.Sprite_getNumStates(this.__ptr)
 }
 
 Sprite.prototype.getState = function(index) {
-	Polycode.Sprite_getState(this.__ptr, index)
+	var retVal = new SpriteState()
+	retVal.__ptr = Polycode.Sprite_getState(this.__ptr, index)
+	return retVal
 }
 
 Sprite.prototype.getStateByName = function(name) {
-	Polycode.Sprite_getStateByName(this.__ptr, name)
+	var retVal = new SpriteState()
+	retVal.__ptr = Polycode.Sprite_getStateByName(this.__ptr, name)
+	return retVal
 }
 
 Sprite.prototype.setParentSpritSet = function(spriteSet) {
@@ -34,5 +38,7 @@ Sprite.prototype.setParentSpritSet = function(spriteSet) {
 }
 
 Sprite.prototype.getParentSpriteSet = function() {
-	Polycode.Sprite_getParentSpriteSet(this.__ptr)
+	var retVal = new SpriteSet()
+	retVal.__ptr = Polycode.Sprite_getParentSpriteSet(this.__ptr)
+	return retVal
 }

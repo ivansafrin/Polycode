@@ -10,13 +10,13 @@ BinaryObjectWriter.prototype.writeEntryToFile = function(entry) {
 }
 
 BinaryObjectWriter.prototype.addKey = function(key) {
-	Polycode.BinaryObjectWriter_addKey(this.__ptr, key)
+	return Polycode.BinaryObjectWriter_addKey(this.__ptr, key)
 }
 
 BinaryObjectWriter.prototype.getKeyIndex = function(key) {
-	Polycode.BinaryObjectWriter_getKeyIndex(this.__ptr, key)
+	return Polycode.BinaryObjectWriter_getKeyIndex(this.__ptr, key)
 }
 
 BinaryObjectWriter.prototype.writeToFile = function(fileName) {
-	Polycode.BinaryObjectWriter_writeToFile(this.__ptr, fileName)
+	return Polycode.BinaryObjectWriter_writeToFile(this.__ptr, fileName)
 }

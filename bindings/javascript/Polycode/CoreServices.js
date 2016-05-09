@@ -6,7 +6,9 @@ CoreServices.prototype.setRenderer = function(renderer) {
 }
 
 CoreServices.prototype.getRenderer = function() {
-	Polycode.CoreServices_getRenderer(this.__ptr)
+	var retVal = new Renderer()
+	retVal.__ptr = Polycode.CoreServices_getRenderer(this.__ptr)
+	return retVal
 }
 
 CoreServices.prototype.Update = function(elapsed) {
@@ -26,41 +28,61 @@ CoreServices.prototype.setCore = function(core) {
 }
 
 CoreServices.prototype.getCore = function() {
-	Polycode.CoreServices_getCore(this.__ptr)
+	var retVal = new Core()
+	retVal.__ptr = Polycode.CoreServices_getCore(this.__ptr)
+	return retVal
 }
 
 CoreServices.prototype.getInput = function() {
-	Polycode.CoreServices_getInput(this.__ptr)
+	var retVal = new CoreInput()
+	retVal.__ptr = Polycode.CoreServices_getInput(this.__ptr)
+	return retVal
 }
 
 CoreServices.prototype.getMaterialManager = function() {
-	Polycode.CoreServices_getMaterialManager(this.__ptr)
+	var retVal = new MaterialManager()
+	retVal.__ptr = Polycode.CoreServices_getMaterialManager(this.__ptr)
+	return retVal
 }
 
 CoreServices.prototype.getSceneManager = function() {
-	Polycode.CoreServices_getSceneManager(this.__ptr)
+	var retVal = new SceneManager()
+	retVal.__ptr = Polycode.CoreServices_getSceneManager(this.__ptr)
+	return retVal
 }
 
 CoreServices.prototype.getTimerManager = function() {
-	Polycode.CoreServices_getTimerManager(this.__ptr)
+	var retVal = new TimerManager()
+	retVal.__ptr = Polycode.CoreServices_getTimerManager(this.__ptr)
+	return retVal
 }
 
 CoreServices.prototype.getTweenManager = function() {
-	Polycode.CoreServices_getTweenManager(this.__ptr)
+	var retVal = new TweenManager()
+	retVal.__ptr = Polycode.CoreServices_getTweenManager(this.__ptr)
+	return retVal
 }
 
 CoreServices.prototype.getResourceManager = function() {
-	Polycode.CoreServices_getResourceManager(this.__ptr)
+	var retVal = new ResourceManager()
+	retVal.__ptr = Polycode.CoreServices_getResourceManager(this.__ptr)
+	return retVal
 }
 
 CoreServices.prototype.getSoundManager = function() {
-	Polycode.CoreServices_getSoundManager(this.__ptr)
+	var retVal = new SoundManager()
+	retVal.__ptr = Polycode.CoreServices_getSoundManager(this.__ptr)
+	return retVal
 }
 
 CoreServices.prototype.getLogger = function() {
-	Polycode.CoreServices_getLogger(this.__ptr)
+	var retVal = new Logger()
+	retVal.__ptr = Polycode.CoreServices_getLogger(this.__ptr)
+	return retVal
 }
 
 CoreServices.prototype.getConfig = function() {
-	Polycode.CoreServices_getConfig(this.__ptr)
+	var retVal = new Config()
+	retVal.__ptr = Polycode.CoreServices_getConfig(this.__ptr)
+	return retVal
 }

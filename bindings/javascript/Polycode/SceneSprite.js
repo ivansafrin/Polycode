@@ -2,7 +2,9 @@ function SceneSprite() {
 }
 
 SceneSprite.prototype.Clone = function(deepClone,ignoreEditorOnly) {
-	Polycode.SceneSprite_Clone(this.__ptr, deepClone,ignoreEditorOnly)
+	var retVal = new Entity()
+	retVal.__ptr = Polycode.SceneSprite_Clone(this.__ptr, deepClone,ignoreEditorOnly)
+	return retVal
 }
 
 SceneSprite.prototype.applyClone = function(clone,deepClone,ignoreEditorOnly) {
@@ -10,11 +12,15 @@ SceneSprite.prototype.applyClone = function(clone,deepClone,ignoreEditorOnly) {
 }
 
 SceneSprite.prototype.getSpriteSet = function() {
-	Polycode.SceneSprite_getSpriteSet(this.__ptr)
+	var retVal = new SpriteSet()
+	retVal.__ptr = Polycode.SceneSprite_getSpriteSet(this.__ptr)
+	return retVal
 }
 
 SceneSprite.prototype.getCurrentSprite = function() {
-	Polycode.SceneSprite_getCurrentSprite(this.__ptr)
+	var retVal = new Sprite()
+	retVal.__ptr = Polycode.SceneSprite_getCurrentSprite(this.__ptr)
+	return retVal
 }
 
 SceneSprite.prototype.setSpriteSet = function(spriteSet) {
@@ -30,7 +36,7 @@ SceneSprite.prototype.setCurrentFrame = function(frameIndex) {
 }
 
 SceneSprite.prototype.getCurrentFrame = function() {
-	Polycode.SceneSprite_getCurrentFrame(this.__ptr)
+	return Polycode.SceneSprite_getCurrentFrame(this.__ptr)
 }
 
 SceneSprite.prototype.Update = function() {
@@ -42,7 +48,9 @@ SceneSprite.prototype.Render = function(buffer) {
 }
 
 SceneSprite.prototype.getSpriteBoundingBox = function() {
-	Polycode.SceneSprite_getSpriteBoundingBox(this.__ptr)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.SceneSprite_getSpriteBoundingBox(this.__ptr)
+	return retVal
 }
 
 SceneSprite.prototype.setPaused = function(val) {
@@ -50,7 +58,7 @@ SceneSprite.prototype.setPaused = function(val) {
 }
 
 SceneSprite.prototype.isPaused = function() {
-	Polycode.SceneSprite_isPaused(this.__ptr)
+	return Polycode.SceneSprite_isPaused(this.__ptr)
 }
 
 SceneSprite.prototype.setSprite = function(spriteEntry) {
@@ -66,11 +74,13 @@ SceneSprite.prototype.setSpriteStateByName = function(name,startingFrame,playOnc
 }
 
 SceneSprite.prototype.getCurrentSpriteState = function() {
-	Polycode.SceneSprite_getCurrentSpriteState(this.__ptr)
+	var retVal = new SpriteState()
+	retVal.__ptr = Polycode.SceneSprite_getCurrentSpriteState(this.__ptr)
+	return retVal
 }
 
 SceneSprite.prototype.getStartOnRandomFrame = function() {
-	Polycode.SceneSprite_getStartOnRandomFrame(this.__ptr)
+	return Polycode.SceneSprite_getStartOnRandomFrame(this.__ptr)
 }
 
 SceneSprite.prototype.setStartOnRandomFrame = function(val) {

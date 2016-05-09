@@ -6,11 +6,11 @@ Timer.prototype.Pause = function(paused) {
 }
 
 Timer.prototype.isPaused = function() {
-	Polycode.Timer_isPaused(this.__ptr)
+	return Polycode.Timer_isPaused(this.__ptr)
 }
 
 Timer.prototype.getTicks = function() {
-	Polycode.Timer_getTicks(this.__ptr)
+	return Polycode.Timer_getTicks(this.__ptr)
 }
 
 Timer.prototype.Update = function(ticks) {
@@ -22,11 +22,11 @@ Timer.prototype.Reset = function() {
 }
 
 Timer.prototype.hasElapsed = function() {
-	Polycode.Timer_hasElapsed(this.__ptr)
+	return Polycode.Timer_hasElapsed(this.__ptr)
 }
 
 Timer.prototype.getElapsedf = function() {
-	Polycode.Timer_getElapsedf(this.__ptr)
+	return Polycode.Timer_getElapsedf(this.__ptr)
 }
 
 Timer.prototype.setTimerInterval = function(msecs) {

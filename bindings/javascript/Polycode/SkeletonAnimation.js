@@ -6,7 +6,7 @@ SkeletonAnimation.prototype.addBoneTrack = function(boneTrack) {
 }
 
 SkeletonAnimation.prototype.getName = function() {
-	Polycode.SkeletonAnimation_getName(this.__ptr)
+	return Polycode.SkeletonAnimation_getName(this.__ptr)
 }
 
 SkeletonAnimation.prototype.Play = function(once) {
@@ -34,9 +34,9 @@ SkeletonAnimation.prototype.setWeight = function(newWeight) {
 }
 
 SkeletonAnimation.prototype.getWeight = function() {
-	Polycode.SkeletonAnimation_getWeight(this.__ptr)
+	return Polycode.SkeletonAnimation_getWeight(this.__ptr)
 }
 
 SkeletonAnimation.prototype.isPlaying = function() {
-	Polycode.SkeletonAnimation_isPlaying(this.__ptr)
+	return Polycode.SkeletonAnimation_isPlaying(this.__ptr)
 }

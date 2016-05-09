@@ -1,12 +1,25 @@
 function Font() {
+	Object.defineProperties(this, {
+		'loaded': { enumerable: true, configurable: true, get: Font.prototype.__get_loaded, set: Font.prototype.__set_loaded}
+	})
+}
+Font.prototype.__get_loaded = function() {
+	return Polycode.Font__get_loaded(this.__ptr)
 }
 
+Font.prototype.__set_loaded = function(val) {
+	Polycode.Font__set_loaded(this.__ptr, val)
+}
+
+
 Font.prototype.getFace = function() {
-	Polycode.Font_getFace(this.__ptr)
+	var retVal = new FT_Face()
+	retVal.__ptr = Polycode.Font_getFace(this.__ptr)
+	return retVal
 }
 
 Font.prototype.isValid = function() {
-	Polycode.Font_isValid(this.__ptr)
+	return Polycode.Font_isValid(this.__ptr)
 }
 
 Font.prototype.setFontName = function(fontName) {
@@ -14,9 +27,9 @@ Font.prototype.setFontName = function(fontName) {
 }
 
 Font.prototype.getFontName = function() {
-	Polycode.Font_getFontName(this.__ptr)
+	return Polycode.Font_getFontName(this.__ptr)
 }
 
 Font.prototype.getFontPath = function() {
-	Polycode.Font_getFontPath(this.__ptr)
+	return Polycode.Font_getFontPath(this.__ptr)
 }

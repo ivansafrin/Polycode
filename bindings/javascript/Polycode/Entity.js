@@ -1,5 +1,204 @@
 function Entity() {
+	Object.defineProperties(this, {
+		'ownsChildren': { enumerable: true, configurable: true, get: Entity.prototype.__get_ownsChildren, set: Entity.prototype.__set_ownsChildren},
+		'billboardMode': { enumerable: true, configurable: true, get: Entity.prototype.__get_billboardMode, set: Entity.prototype.__set_billboardMode},
+		'color': { enumerable: true, configurable: true, get: Entity.prototype.__get_color, set: Entity.prototype.__set_color},
+		'enabled': { enumerable: true, configurable: true, get: Entity.prototype.__get_enabled, set: Entity.prototype.__set_enabled},
+		'visible': { enumerable: true, configurable: true, get: Entity.prototype.__get_visible, set: Entity.prototype.__set_visible},
+		'depthWrite': { enumerable: true, configurable: true, get: Entity.prototype.__get_depthWrite, set: Entity.prototype.__set_depthWrite},
+		'depthTest': { enumerable: true, configurable: true, get: Entity.prototype.__get_depthTest, set: Entity.prototype.__set_depthTest},
+		'colorAffectsChildren': { enumerable: true, configurable: true, get: Entity.prototype.__get_colorAffectsChildren, set: Entity.prototype.__set_colorAffectsChildren},
+		'visibilityAffectsChildren': { enumerable: true, configurable: true, get: Entity.prototype.__get_visibilityAffectsChildren, set: Entity.prototype.__set_visibilityAffectsChildren},
+		'ignoreParentMatrix': { enumerable: true, configurable: true, get: Entity.prototype.__get_ignoreParentMatrix, set: Entity.prototype.__set_ignoreParentMatrix},
+		'enableScissor': { enumerable: true, configurable: true, get: Entity.prototype.__get_enableScissor, set: Entity.prototype.__set_enableScissor},
+		'scissorBox': { enumerable: true, configurable: true, get: Entity.prototype.__get_scissorBox, set: Entity.prototype.__set_scissorBox},
+		'editorOnly': { enumerable: true, configurable: true, get: Entity.prototype.__get_editorOnly, set: Entity.prototype.__set_editorOnly},
+		'id': { enumerable: true, configurable: true, get: Entity.prototype.__get_id, set: Entity.prototype.__set_id},
+		'collisionShapeType': { enumerable: true, configurable: true, get: Entity.prototype.__get_collisionShapeType, set: Entity.prototype.__set_collisionShapeType},
+		'processInputEvents': { enumerable: true, configurable: true, get: Entity.prototype.__get_processInputEvents, set: Entity.prototype.__set_processInputEvents},
+		'blockMouseInput': { enumerable: true, configurable: true, get: Entity.prototype.__get_blockMouseInput, set: Entity.prototype.__set_blockMouseInput},
+		'snapToPixels': { enumerable: true, configurable: true, get: Entity.prototype.__get_snapToPixels, set: Entity.prototype.__set_snapToPixels},
+		'mouseOver': { enumerable: true, configurable: true, get: Entity.prototype.__get_mouseOver, set: Entity.prototype.__set_mouseOver},
+		'rendererVis': { enumerable: true, configurable: true, get: Entity.prototype.__get_rendererVis, set: Entity.prototype.__set_rendererVis},
+		'layerID': { enumerable: true, configurable: true, get: Entity.prototype.__get_layerID, set: Entity.prototype.__set_layerID}
+	})
 }
+Entity.prototype.__get_ownsChildren = function() {
+	return Polycode.Entity__get_ownsChildren(this.__ptr)
+}
+
+Entity.prototype.__set_ownsChildren = function(val) {
+	Polycode.Entity__set_ownsChildren(this.__ptr, val)
+}
+
+Entity.prototype.__get_billboardMode = function() {
+	return Polycode.Entity__get_billboardMode(this.__ptr)
+}
+
+Entity.prototype.__set_billboardMode = function(val) {
+	Polycode.Entity__set_billboardMode(this.__ptr, val)
+}
+
+Entity.prototype.__get_color = function() {
+	var retVal = new Color()
+	retVal.__ptr = 	Polycode.Entity__get_color(this.__ptr)
+	return retVal
+}
+
+Entity.prototype.__set_color = function(val) {
+	Polycode.Entity__set_color(this.__ptr, val.__ptr)
+}
+
+Entity.prototype.__get_enabled = function() {
+	return Polycode.Entity__get_enabled(this.__ptr)
+}
+
+Entity.prototype.__set_enabled = function(val) {
+	Polycode.Entity__set_enabled(this.__ptr, val)
+}
+
+Entity.prototype.__get_visible = function() {
+	return Polycode.Entity__get_visible(this.__ptr)
+}
+
+Entity.prototype.__set_visible = function(val) {
+	Polycode.Entity__set_visible(this.__ptr, val)
+}
+
+Entity.prototype.__get_depthWrite = function() {
+	return Polycode.Entity__get_depthWrite(this.__ptr)
+}
+
+Entity.prototype.__set_depthWrite = function(val) {
+	Polycode.Entity__set_depthWrite(this.__ptr, val)
+}
+
+Entity.prototype.__get_depthTest = function() {
+	return Polycode.Entity__get_depthTest(this.__ptr)
+}
+
+Entity.prototype.__set_depthTest = function(val) {
+	Polycode.Entity__set_depthTest(this.__ptr, val)
+}
+
+Entity.prototype.__get_colorAffectsChildren = function() {
+	return Polycode.Entity__get_colorAffectsChildren(this.__ptr)
+}
+
+Entity.prototype.__set_colorAffectsChildren = function(val) {
+	Polycode.Entity__set_colorAffectsChildren(this.__ptr, val)
+}
+
+Entity.prototype.__get_visibilityAffectsChildren = function() {
+	return Polycode.Entity__get_visibilityAffectsChildren(this.__ptr)
+}
+
+Entity.prototype.__set_visibilityAffectsChildren = function(val) {
+	Polycode.Entity__set_visibilityAffectsChildren(this.__ptr, val)
+}
+
+Entity.prototype.__get_ignoreParentMatrix = function() {
+	return Polycode.Entity__get_ignoreParentMatrix(this.__ptr)
+}
+
+Entity.prototype.__set_ignoreParentMatrix = function(val) {
+	Polycode.Entity__set_ignoreParentMatrix(this.__ptr, val)
+}
+
+Entity.prototype.__get_enableScissor = function() {
+	return Polycode.Entity__get_enableScissor(this.__ptr)
+}
+
+Entity.prototype.__set_enableScissor = function(val) {
+	Polycode.Entity__set_enableScissor(this.__ptr, val)
+}
+
+Entity.prototype.__get_scissorBox = function() {
+	var retVal = new Rectangle()
+	retVal.__ptr = 	Polycode.Entity__get_scissorBox(this.__ptr)
+	return retVal
+}
+
+Entity.prototype.__set_scissorBox = function(val) {
+	Polycode.Entity__set_scissorBox(this.__ptr, val.__ptr)
+}
+
+Entity.prototype.__get_editorOnly = function() {
+	return Polycode.Entity__get_editorOnly(this.__ptr)
+}
+
+Entity.prototype.__set_editorOnly = function(val) {
+	Polycode.Entity__set_editorOnly(this.__ptr, val)
+}
+
+Entity.prototype.__get_id = function() {
+	return Polycode.Entity__get_id(this.__ptr)
+}
+
+Entity.prototype.__set_id = function(val) {
+	Polycode.Entity__set_id(this.__ptr, val)
+}
+
+Entity.prototype.__get_collisionShapeType = function() {
+	var retVal = new char()
+	retVal.__ptr = 	Polycode.Entity__get_collisionShapeType(this.__ptr)
+	return retVal
+}
+
+Entity.prototype.__set_collisionShapeType = function(val) {
+	Polycode.Entity__set_collisionShapeType(this.__ptr, val.__ptr)
+}
+
+Entity.prototype.__get_processInputEvents = function() {
+	return Polycode.Entity__get_processInputEvents(this.__ptr)
+}
+
+Entity.prototype.__set_processInputEvents = function(val) {
+	Polycode.Entity__set_processInputEvents(this.__ptr, val)
+}
+
+Entity.prototype.__get_blockMouseInput = function() {
+	return Polycode.Entity__get_blockMouseInput(this.__ptr)
+}
+
+Entity.prototype.__set_blockMouseInput = function(val) {
+	Polycode.Entity__set_blockMouseInput(this.__ptr, val)
+}
+
+Entity.prototype.__get_snapToPixels = function() {
+	return Polycode.Entity__get_snapToPixels(this.__ptr)
+}
+
+Entity.prototype.__set_snapToPixels = function(val) {
+	Polycode.Entity__set_snapToPixels(this.__ptr, val)
+}
+
+Entity.prototype.__get_mouseOver = function() {
+	return Polycode.Entity__get_mouseOver(this.__ptr)
+}
+
+Entity.prototype.__set_mouseOver = function(val) {
+	Polycode.Entity__set_mouseOver(this.__ptr, val)
+}
+
+Entity.prototype.__get_rendererVis = function() {
+	return Polycode.Entity__get_rendererVis(this.__ptr)
+}
+
+Entity.prototype.__set_rendererVis = function(val) {
+	Polycode.Entity__set_rendererVis(this.__ptr, val)
+}
+
+Entity.prototype.__get_layerID = function() {
+	var retVal = new char()
+	retVal.__ptr = 	Polycode.Entity__get_layerID(this.__ptr)
+	return retVal
+}
+
+Entity.prototype.__set_layerID = function(val) {
+	Polycode.Entity__set_layerID(this.__ptr, val.__ptr)
+}
+
 
 Entity.prototype.initEntity = function() {
 	Polycode.Entity_initEntity(this.__ptr)
@@ -26,7 +225,9 @@ Entity.prototype.renderChildren = function(buffer,parentScissorBox) {
 }
 
 Entity.prototype.Clone = function(deepClone,ignoreEditorOnly) {
-	Polycode.Entity_Clone(this.__ptr, deepClone,ignoreEditorOnly)
+	var retVal = new Entity()
+	retVal.__ptr = Polycode.Entity_Clone(this.__ptr, deepClone,ignoreEditorOnly)
+	return retVal
 }
 
 Entity.prototype.applyClone = function(clone,deepClone,ignoreEditorOnly) {
@@ -46,23 +247,33 @@ Entity.prototype.updateEntityMatrix = function() {
 }
 
 Entity.prototype.getTransformMatrix = function() {
-	Polycode.Entity_getTransformMatrix(this.__ptr)
+	var retVal = new Matrix4()
+	retVal.__ptr = Polycode.Entity_getTransformMatrix(this.__ptr)
+	return retVal
 }
 
 Entity.prototype.getConcatenatedMatrix = function() {
-	Polycode.Entity_getConcatenatedMatrix(this.__ptr)
+	var retVal = new Matrix4()
+	retVal.__ptr = Polycode.Entity_getConcatenatedMatrix(this.__ptr)
+	return retVal
 }
 
 Entity.prototype.getConcatenatedMatrixRelativeTo = function(relativeEntity) {
-	Polycode.Entity_getConcatenatedMatrixRelativeTo(this.__ptr, relativeEntity)
+	var retVal = new Matrix4()
+	retVal.__ptr = Polycode.Entity_getConcatenatedMatrixRelativeTo(this.__ptr, relativeEntity)
+	return retVal
 }
 
 Entity.prototype.getAnchorAdjustedMatrix = function() {
-	Polycode.Entity_getAnchorAdjustedMatrix(this.__ptr)
+	var retVal = new Matrix4()
+	retVal.__ptr = Polycode.Entity_getAnchorAdjustedMatrix(this.__ptr)
+	return retVal
 }
 
 Entity.prototype.getConcatenatedRollMatrix = function() {
-	Polycode.Entity_getConcatenatedRollMatrix(this.__ptr)
+	var retVal = new Matrix4()
+	retVal.__ptr = Polycode.Entity_getConcatenatedRollMatrix(this.__ptr)
+	return retVal
 }
 
 Entity.prototype.setTransformByMatrixPure = function(matrix) {
@@ -70,7 +281,9 @@ Entity.prototype.setTransformByMatrixPure = function(matrix) {
 }
 
 Entity.prototype.getLookAtMatrix = function(loc,upVector) {
-	Polycode.Entity_getLookAtMatrix(this.__ptr, loc,upVector)
+	var retVal = new Matrix4()
+	retVal.__ptr = Polycode.Entity_getLookAtMatrix(this.__ptr, loc,upVector)
+	return retVal
 }
 
 Entity.prototype.addChild = function(newChild) {
@@ -102,15 +315,19 @@ Entity.prototype.setParentEntity = function(entity) {
 }
 
 Entity.prototype.getParentEntity = function() {
-	Polycode.Entity_getParentEntity(this.__ptr)
+	var retVal = new Entity()
+	retVal.__ptr = Polycode.Entity_getParentEntity(this.__ptr)
+	return retVal
 }
 
 Entity.prototype.getNumChildren = function() {
-	Polycode.Entity_getNumChildren(this.__ptr)
+	return Polycode.Entity_getNumChildren(this.__ptr)
 }
 
 Entity.prototype.getChildAtIndex = function(index) {
-	Polycode.Entity_getChildAtIndex(this.__ptr, index)
+	var retVal = new Entity()
+	retVal.__ptr = Polycode.Entity_getChildAtIndex(this.__ptr, index)
+	return retVal
 }
 
 Entity.prototype.setOwnsChildrenRecursive = function(val) {
@@ -118,15 +335,21 @@ Entity.prototype.setOwnsChildrenRecursive = function(val) {
 }
 
 Entity.prototype.getPosition = function() {
-	Polycode.Entity_getPosition(this.__ptr)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.Entity_getPosition(this.__ptr)
+	return retVal
 }
 
 Entity.prototype.getPosition2D = function() {
-	Polycode.Entity_getPosition2D(this.__ptr)
+	var retVal = new Vector2()
+	retVal.__ptr = Polycode.Entity_getPosition2D(this.__ptr)
+	return retVal
 }
 
 Entity.prototype.getCombinedPosition = function() {
-	Polycode.Entity_getCombinedPosition(this.__ptr)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.Entity_getCombinedPosition(this.__ptr)
+	return retVal
 }
 
 Entity.prototype.setPosition = function(x,y,z) {
@@ -170,27 +393,33 @@ Entity.prototype.setScale = function(x,y,z) {
 }
 
 Entity.prototype.getCompoundScale = function() {
-	Polycode.Entity_getCompoundScale(this.__ptr)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.Entity_getCompoundScale(this.__ptr)
+	return retVal
 }
 
 Entity.prototype.getScale = function() {
-	Polycode.Entity_getScale(this.__ptr)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.Entity_getScale(this.__ptr)
+	return retVal
 }
 
 Entity.prototype.getRotationEuler = function() {
-	Polycode.Entity_getRotationEuler(this.__ptr)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.Entity_getRotationEuler(this.__ptr)
+	return retVal
 }
 
 Entity.prototype.getCombinedPitch = function() {
-	Polycode.Entity_getCombinedPitch(this.__ptr)
+	return Polycode.Entity_getCombinedPitch(this.__ptr)
 }
 
 Entity.prototype.getCombinedYaw = function() {
-	Polycode.Entity_getCombinedYaw(this.__ptr)
+	return Polycode.Entity_getCombinedYaw(this.__ptr)
 }
 
 Entity.prototype.getCombinedRoll = function() {
-	Polycode.Entity_getCombinedRoll(this.__ptr)
+	return Polycode.Entity_getCombinedRoll(this.__ptr)
 }
 
 Entity.prototype.rebuildRotation = function() {
@@ -226,27 +455,27 @@ Entity.prototype.Pitch = function(pitch) {
 }
 
 Entity.prototype.getPitch = function() {
-	Polycode.Entity_getPitch(this.__ptr)
+	return Polycode.Entity_getPitch(this.__ptr)
 }
 
 Entity.prototype.getYaw = function() {
-	Polycode.Entity_getYaw(this.__ptr)
+	return Polycode.Entity_getYaw(this.__ptr)
 }
 
 Entity.prototype.getRoll = function() {
-	Polycode.Entity_getRoll(this.__ptr)
+	return Polycode.Entity_getRoll(this.__ptr)
 }
 
 Entity.prototype.getWidth = function() {
-	Polycode.Entity_getWidth(this.__ptr)
+	return Polycode.Entity_getWidth(this.__ptr)
 }
 
 Entity.prototype.getHeight = function() {
-	Polycode.Entity_getHeight(this.__ptr)
+	return Polycode.Entity_getHeight(this.__ptr)
 }
 
 Entity.prototype.getDepth = function() {
-	Polycode.Entity_getDepth(this.__ptr)
+	return Polycode.Entity_getDepth(this.__ptr)
 }
 
 Entity.prototype.setWidth = function(width) {
@@ -270,11 +499,15 @@ Entity.prototype.setRotationByQuaternion = function(quaternion) {
 }
 
 Entity.prototype.getRotationQuat = function() {
-	Polycode.Entity_getRotationQuat(this.__ptr)
+	var retVal = new Quaternion()
+	retVal.__ptr = Polycode.Entity_getRotationQuat(this.__ptr)
+	return retVal
 }
 
 Entity.prototype.getConcatenatedQuat = function() {
-	Polycode.Entity_getConcatenatedQuat(this.__ptr)
+	var retVal = new Quaternion()
+	retVal.__ptr = Polycode.Entity_getConcatenatedQuat(this.__ptr)
+	return retVal
 }
 
 Entity.prototype.lookAt = function(loc,upVector) {
@@ -286,7 +519,9 @@ Entity.prototype.lookAtEntity = function(entity,upVector) {
 }
 
 Entity.prototype.getCombinedColor = function() {
-	Polycode.Entity_getCombinedColor(this.__ptr)
+	var retVal = new Color()
+	retVal.__ptr = Polycode.Entity_getCombinedColor(this.__ptr)
+	return retVal
 }
 
 Entity.prototype.setColor = function(r,g,b,a) {
@@ -302,27 +537,39 @@ Entity.prototype.setAnchorPoint = function(anchorPoint) {
 }
 
 Entity.prototype.getAnchorPoint = function() {
-	Polycode.Entity_getAnchorPoint(this.__ptr)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.Entity_getAnchorPoint(this.__ptr)
+	return retVal
 }
 
 Entity.prototype.onMouseDown = function(ray,mouseButton,timestamp) {
-	Polycode.Entity_onMouseDown(this.__ptr, ray,mouseButton,timestamp)
+	var retVal = new MouseEventResult()
+	retVal.__ptr = Polycode.Entity_onMouseDown(this.__ptr, ray,mouseButton,timestamp)
+	return retVal
 }
 
 Entity.prototype.onMouseUp = function(ray,mouseButton,timestamp) {
-	Polycode.Entity_onMouseUp(this.__ptr, ray,mouseButton,timestamp)
+	var retVal = new MouseEventResult()
+	retVal.__ptr = Polycode.Entity_onMouseUp(this.__ptr, ray,mouseButton,timestamp)
+	return retVal
 }
 
 Entity.prototype.onMouseMove = function(ray,timestamp) {
-	Polycode.Entity_onMouseMove(this.__ptr, ray,timestamp)
+	var retVal = new MouseEventResult()
+	retVal.__ptr = Polycode.Entity_onMouseMove(this.__ptr, ray,timestamp)
+	return retVal
 }
 
 Entity.prototype.onMouseWheelUp = function(ray,timestamp) {
-	Polycode.Entity_onMouseWheelUp(this.__ptr, ray,timestamp)
+	var retVal = new MouseEventResult()
+	retVal.__ptr = Polycode.Entity_onMouseWheelUp(this.__ptr, ray,timestamp)
+	return retVal
 }
 
 Entity.prototype.onMouseWheelDown = function(ray,timestamp) {
-	Polycode.Entity_onMouseWheelDown(this.__ptr, ray,timestamp)
+	var retVal = new MouseEventResult()
+	retVal.__ptr = Polycode.Entity_onMouseWheelDown(this.__ptr, ray,timestamp)
+	return retVal
 }
 
 Entity.prototype.setDepthOnly = function(val) {
@@ -330,7 +577,7 @@ Entity.prototype.setDepthOnly = function(val) {
 }
 
 Entity.prototype.getDepthOnly = function() {
-	Polycode.Entity_getDepthOnly(this.__ptr)
+	return Polycode.Entity_getDepthOnly(this.__ptr)
 }
 
 Entity.prototype.setUserData = function(userData) {
@@ -346,11 +593,13 @@ Entity.prototype.setBlendingMode = function(newBlendingMode) {
 }
 
 Entity.prototype.getBlendingMode = function() {
-	Polycode.Entity_getBlendingMode(this.__ptr)
+	return Polycode.Entity_getBlendingMode(this.__ptr)
 }
 
 Entity.prototype.getEntityById = function(id,recursive) {
-	Polycode.Entity_getEntityById(this.__ptr, id,recursive)
+	var retVal = new Entity()
+	retVal.__ptr = Polycode.Entity_getEntityById(this.__ptr, id,recursive)
+	return retVal
 }
 
 Entity.prototype.getEntitiesByTag = function(tag,recursive) {
@@ -362,7 +611,7 @@ Entity.prototype.getEntitiesByLayerID = function(layerID,recursive) {
 }
 
 Entity.prototype.getEntityProp = function(propName) {
-	Polycode.Entity_getEntityProp(this.__ptr, propName)
+	return Polycode.Entity_getEntityProp(this.__ptr, propName)
 }
 
 Entity.prototype.setEntityProp = function(propName,propValue) {
@@ -374,7 +623,7 @@ Entity.prototype.setInverseY = function(val) {
 }
 
 Entity.prototype.getInverseY = function() {
-	Polycode.Entity_getInverseY(this.__ptr)
+	return Polycode.Entity_getInverseY(this.__ptr)
 }
 
 Entity.prototype.doUpdates = function() {
@@ -386,7 +635,9 @@ Entity.prototype.doFixedUpdates = function() {
 }
 
 Entity.prototype.buildPositionMatrix = function() {
-	Polycode.Entity_buildPositionMatrix(this.__ptr)
+	var retVal = new Matrix4()
+	retVal.__ptr = Polycode.Entity_buildPositionMatrix(this.__ptr)
+	return retVal
 }
 
 Entity.prototype.setRenderer = function(renderer) {
@@ -394,19 +645,19 @@ Entity.prototype.setRenderer = function(renderer) {
 }
 
 Entity.prototype.customHitDetection = function(ray) {
-	Polycode.Entity_customHitDetection(this.__ptr, ray)
+	return Polycode.Entity_customHitDetection(this.__ptr, ray)
 }
 
 Entity.prototype.getNumTags = function() {
-	Polycode.Entity_getNumTags(this.__ptr)
+	return Polycode.Entity_getNumTags(this.__ptr)
 }
 
 Entity.prototype.getTagAtIndex = function(index) {
-	Polycode.Entity_getTagAtIndex(this.__ptr, index)
+	return Polycode.Entity_getTagAtIndex(this.__ptr, index)
 }
 
 Entity.prototype.hasTag = function(tag) {
-	Polycode.Entity_hasTag(this.__ptr, tag)
+	return Polycode.Entity_hasTag(this.__ptr, tag)
 }
 
 Entity.prototype.clearTags = function() {
@@ -418,7 +669,9 @@ Entity.prototype.addTag = function(tag) {
 }
 
 Entity.prototype.getScreenPosition = function(projectionMatrix,cameraMatrix,viewport) {
-	Polycode.Entity_getScreenPosition(this.__ptr, projectionMatrix,cameraMatrix,viewport)
+	var retVal = new Vector2()
+	retVal.__ptr = Polycode.Entity_getScreenPosition(this.__ptr, projectionMatrix,cameraMatrix,viewport)
+	return retVal
 }
 
 Entity.prototype.recalculateAABBAllChildren = function() {
@@ -430,11 +683,15 @@ Entity.prototype.recalculateAABB = function() {
 }
 
 Entity.prototype.getWorldAABB = function() {
-	Polycode.Entity_getWorldAABB(this.__ptr)
+	var retVal = new AABB()
+	retVal.__ptr = Polycode.Entity_getWorldAABB(this.__ptr)
+	return retVal
 }
 
 Entity.prototype.getLocalBoundingBox = function() {
-	Polycode.Entity_getLocalBoundingBox(this.__ptr)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.Entity_getLocalBoundingBox(this.__ptr)
+	return retVal
 }
 
 Entity.prototype.setLocalBoundingBox = function(box) {
@@ -458,7 +715,9 @@ Entity.prototype.setContainerScene = function(scene) {
 }
 
 Entity.prototype.getContainerScene = function() {
-	Polycode.Entity_getContainerScene(this.__ptr)
+	var retVal = new Scene()
+	retVal.__ptr = Polycode.Entity_getContainerScene(this.__ptr)
+	return retVal
 }
 
 Entity.prototype.attachScript = function(script) {
@@ -470,9 +729,11 @@ Entity.prototype.detachScript = function(script) {
 }
 
 Entity.prototype.getNumScripts = function() {
-	Polycode.Entity_getNumScripts(this.__ptr)
+	return Polycode.Entity_getNumScripts(this.__ptr)
 }
 
 Entity.prototype.getScriptAtIndex = function(index) {
-	Polycode.Entity_getScriptAtIndex(this.__ptr, index)
+	var retVal = new ScriptInstance()
+	retVal.__ptr = Polycode.Entity_getScriptAtIndex(this.__ptr, index)
+	return retVal
 }

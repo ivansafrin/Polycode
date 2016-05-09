@@ -28,7 +28,7 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     
    // scene->setOverrideMaterial((Material*)globalPool->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
     
-    for(int i=0; i  < 3; i++) {
+    for(int i=0; i  < 10; i++) {
         test = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.5, 0.5);
         test->setMaterialByName("Unlit");
         test->attachScript(rotateScript);

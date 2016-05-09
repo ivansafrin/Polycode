@@ -1,12 +1,36 @@
 function BezierCurve() {
+	Object.defineProperties(this, {
+		'insertPoint': { enumerable: true, configurable: true, get: BezierCurve.prototype.__get_insertPoint, set: BezierCurve.prototype.__set_insertPoint},
+		'evaluationAccuracy': { enumerable: true, configurable: true, get: BezierCurve.prototype.__get_evaluationAccuracy, set: BezierCurve.prototype.__set_evaluationAccuracy}
+	})
+}
+BezierCurve.prototype.__get_insertPoint = function() {
+	var retVal = new BezierPoint()
+	retVal.__ptr = 	Polycode.BezierCurve__get_insertPoint(this.__ptr)
+	return retVal
 }
 
+BezierCurve.prototype.__set_insertPoint = function(val) {
+	Polycode.BezierCurve__set_insertPoint(this.__ptr, val.__ptr)
+}
+
+BezierCurve.prototype.__get_evaluationAccuracy = function() {
+	return Polycode.BezierCurve__get_evaluationAccuracy(this.__ptr)
+}
+
+BezierCurve.prototype.__set_evaluationAccuracy = function(val) {
+	Polycode.BezierCurve__set_evaluationAccuracy(this.__ptr, val)
+}
+
+
 BezierCurve.prototype.getControlPoint = function(index) {
-	Polycode.BezierCurve_getControlPoint(this.__ptr, index)
+	var retVal = new BezierPoint()
+	retVal.__ptr = Polycode.BezierCurve_getControlPoint(this.__ptr, index)
+	return retVal
 }
 
 BezierCurve.prototype.getNumControlPoints = function() {
-	Polycode.BezierCurve_getNumControlPoints(this.__ptr)
+	return Polycode.BezierCurve_getNumControlPoints(this.__ptr)
 }
 
 BezierCurve.prototype.addControlPoint = function(p1x,p1y,p1z,p2x,p2y,p2z,p3x,p3y,p3z) {
@@ -30,11 +54,15 @@ BezierCurve.prototype.addControlPoint2d = function(x,y) {
 }
 
 BezierCurve.prototype.getPointAt = function(a) {
-	Polycode.BezierCurve_getPointAt(this.__ptr, a)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.BezierCurve_getPointAt(this.__ptr, a)
+	return retVal
 }
 
 BezierCurve.prototype.getPointBetween = function(a,bp1,bp2) {
-	Polycode.BezierCurve_getPointBetween(this.__ptr, a,bp1,bp2)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.BezierCurve_getPointBetween(this.__ptr, a,bp1,bp2)
+	return retVal
 }
 
 BezierCurve.prototype.clearControlPoints = function() {
@@ -42,11 +70,11 @@ BezierCurve.prototype.clearControlPoints = function() {
 }
 
 BezierCurve.prototype.getYValueAtX = function(x) {
-	Polycode.BezierCurve_getYValueAtX(this.__ptr, x)
+	return Polycode.BezierCurve_getYValueAtX(this.__ptr, x)
 }
 
 BezierCurve.prototype.getTValueAtX = function(x) {
-	Polycode.BezierCurve_getTValueAtX(this.__ptr, x)
+	return Polycode.BezierCurve_getTValueAtX(this.__ptr, x)
 }
 
 BezierCurve.prototype.removePoint = function(point) {

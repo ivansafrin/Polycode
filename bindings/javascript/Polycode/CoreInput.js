@@ -1,40 +1,117 @@
 function CoreInput() {
+	Object.defineProperties(this, {
+		'simulateTouchWithMouse': { enumerable: true, configurable: true, get: CoreInput.prototype.__get_simulateTouchWithMouse, set: CoreInput.prototype.__set_simulateTouchWithMouse},
+		'simulateTouchAsPen': { enumerable: true, configurable: true, get: CoreInput.prototype.__get_simulateTouchAsPen, set: CoreInput.prototype.__set_simulateTouchAsPen},
+		'simulateMouseWithTouch': { enumerable: true, configurable: true, get: CoreInput.prototype.__get_simulateMouseWithTouch, set: CoreInput.prototype.__set_simulateMouseWithTouch},
+		'ignoreOffScreenTouch': { enumerable: true, configurable: true, get: CoreInput.prototype.__get_ignoreOffScreenTouch, set: CoreInput.prototype.__set_ignoreOffScreenTouch},
+		'keyRepeat': { enumerable: true, configurable: true, get: CoreInput.prototype.__get_keyRepeat, set: CoreInput.prototype.__set_keyRepeat},
+		'mousePosition': { enumerable: true, configurable: true, get: CoreInput.prototype.__get_mousePosition, set: CoreInput.prototype.__set_mousePosition},
+		'deltaMousePosition': { enumerable: true, configurable: true, get: CoreInput.prototype.__get_deltaMousePosition, set: CoreInput.prototype.__set_deltaMousePosition}
+	})
+}
+CoreInput.prototype.__get_simulateTouchWithMouse = function() {
+	return Polycode.CoreInput__get_simulateTouchWithMouse(this.__ptr)
 }
 
+CoreInput.prototype.__set_simulateTouchWithMouse = function(val) {
+	Polycode.CoreInput__set_simulateTouchWithMouse(this.__ptr, val)
+}
+
+CoreInput.prototype.__get_simulateTouchAsPen = function() {
+	return Polycode.CoreInput__get_simulateTouchAsPen(this.__ptr)
+}
+
+CoreInput.prototype.__set_simulateTouchAsPen = function(val) {
+	Polycode.CoreInput__set_simulateTouchAsPen(this.__ptr, val)
+}
+
+CoreInput.prototype.__get_simulateMouseWithTouch = function() {
+	return Polycode.CoreInput__get_simulateMouseWithTouch(this.__ptr)
+}
+
+CoreInput.prototype.__set_simulateMouseWithTouch = function(val) {
+	Polycode.CoreInput__set_simulateMouseWithTouch(this.__ptr, val)
+}
+
+CoreInput.prototype.__get_ignoreOffScreenTouch = function() {
+	return Polycode.CoreInput__get_ignoreOffScreenTouch(this.__ptr)
+}
+
+CoreInput.prototype.__set_ignoreOffScreenTouch = function(val) {
+	Polycode.CoreInput__set_ignoreOffScreenTouch(this.__ptr, val)
+}
+
+CoreInput.prototype.__get_keyRepeat = function() {
+	return Polycode.CoreInput__get_keyRepeat(this.__ptr)
+}
+
+CoreInput.prototype.__set_keyRepeat = function(val) {
+	Polycode.CoreInput__set_keyRepeat(this.__ptr, val)
+}
+
+CoreInput.prototype.__get_mousePosition = function() {
+	var retVal = new Vector2()
+	retVal.__ptr = 	Polycode.CoreInput__get_mousePosition(this.__ptr)
+	return retVal
+}
+
+CoreInput.prototype.__set_mousePosition = function(val) {
+	Polycode.CoreInput__set_mousePosition(this.__ptr, val.__ptr)
+}
+
+CoreInput.prototype.__get_deltaMousePosition = function() {
+	var retVal = new Vector2()
+	retVal.__ptr = 	Polycode.CoreInput__get_deltaMousePosition(this.__ptr)
+	return retVal
+}
+
+CoreInput.prototype.__set_deltaMousePosition = function(val) {
+	Polycode.CoreInput__set_deltaMousePosition(this.__ptr, val.__ptr)
+}
+
+
 CoreInput.prototype.getMousePosition = function() {
-	Polycode.CoreInput_getMousePosition(this.__ptr)
+	var retVal = new Vector2()
+	retVal.__ptr = Polycode.CoreInput_getMousePosition(this.__ptr)
+	return retVal
 }
 
 CoreInput.prototype.getKeyState = function(keyCode) {
-	Polycode.CoreInput_getKeyState(this.__ptr, keyCode)
+	return Polycode.CoreInput_getKeyState(this.__ptr, keyCode)
 }
 
 CoreInput.prototype.getJoystickButtonState = function(joystickIndex,button) {
-	Polycode.CoreInput_getJoystickButtonState(this.__ptr, joystickIndex,button)
+	return Polycode.CoreInput_getJoystickButtonState(this.__ptr, joystickIndex,button)
 }
 
 CoreInput.prototype.getJoystickAxisValue = function(joystickIndex,axis) {
-	Polycode.CoreInput_getJoystickAxisValue(this.__ptr, joystickIndex,axis)
+	return Polycode.CoreInput_getJoystickAxisValue(this.__ptr, joystickIndex,axis)
 }
 
 CoreInput.prototype.getMouseDelta = function() {
-	Polycode.CoreInput_getMouseDelta(this.__ptr)
+	var retVal = new Vector2()
+	retVal.__ptr = Polycode.CoreInput_getMouseDelta(this.__ptr)
+	return retVal
 }
 
 CoreInput.prototype.getMouseButtonState = function(mouseButton) {
-	Polycode.CoreInput_getMouseButtonState(this.__ptr, mouseButton)
+	return Polycode.CoreInput_getMouseButtonState(this.__ptr, mouseButton)
 }
 
 CoreInput.prototype.getNumJoysticks = function() {
-	Polycode.CoreInput_getNumJoysticks(this.__ptr)
+	return Polycode.CoreInput_getNumJoysticks(this.__ptr)
 }
 
 CoreInput.prototype.getJoystickInfoByIndex = function(index) {
-	Polycode.CoreInput_getJoystickInfoByIndex(this.__ptr, index)
+	var retVal = new JoystickInfo()
+	retVal.__ptr = Polycode.CoreInput_getJoystickInfoByIndex(this.__ptr, index)
+	return retVal
 }
 
 CoreInput.prototype.getJoystickInfoByID = function(deviceID) {
-	Polycode.CoreInput_getJoystickInfoByID(this.__ptr, deviceID)
+	var retVal = new JoystickInfo()
+	retVal.__ptr = Polycode.CoreInput_getJoystickInfoByID(this.__ptr, deviceID)
+	return retVal
 }
 
 CoreInput.prototype.addJoystick = function(deviceID) {

@@ -1,12 +1,98 @@
 function SceneParticleEmitter() {
+	Object.defineProperties(this, {
+		'useScaleCurve': { enumerable: true, configurable: true, get: SceneParticleEmitter.prototype.__get_useScaleCurve, set: SceneParticleEmitter.prototype.__set_useScaleCurve},
+		'scaleCurve': { enumerable: true, configurable: true, get: SceneParticleEmitter.prototype.__get_scaleCurve, set: SceneParticleEmitter.prototype.__set_scaleCurve},
+		'useColorCurves': { enumerable: true, configurable: true, get: SceneParticleEmitter.prototype.__get_useColorCurves, set: SceneParticleEmitter.prototype.__set_useColorCurves},
+		'colorCurveR': { enumerable: true, configurable: true, get: SceneParticleEmitter.prototype.__get_colorCurveR, set: SceneParticleEmitter.prototype.__set_colorCurveR},
+		'colorCurveG': { enumerable: true, configurable: true, get: SceneParticleEmitter.prototype.__get_colorCurveG, set: SceneParticleEmitter.prototype.__set_colorCurveG},
+		'colorCurveB': { enumerable: true, configurable: true, get: SceneParticleEmitter.prototype.__get_colorCurveB, set: SceneParticleEmitter.prototype.__set_colorCurveB},
+		'colorCurveA': { enumerable: true, configurable: true, get: SceneParticleEmitter.prototype.__get_colorCurveA, set: SceneParticleEmitter.prototype.__set_colorCurveA},
+		'colorDeviation': { enumerable: true, configurable: true, get: SceneParticleEmitter.prototype.__get_colorDeviation, set: SceneParticleEmitter.prototype.__set_colorDeviation}
+	})
 }
+SceneParticleEmitter.prototype.__get_useScaleCurve = function() {
+	return Polycode.SceneParticleEmitter__get_useScaleCurve(this.__ptr)
+}
+
+SceneParticleEmitter.prototype.__set_useScaleCurve = function(val) {
+	Polycode.SceneParticleEmitter__set_useScaleCurve(this.__ptr, val)
+}
+
+SceneParticleEmitter.prototype.__get_scaleCurve = function() {
+	var retVal = new BezierCurve()
+	retVal.__ptr = 	Polycode.SceneParticleEmitter__get_scaleCurve(this.__ptr)
+	return retVal
+}
+
+SceneParticleEmitter.prototype.__set_scaleCurve = function(val) {
+	Polycode.SceneParticleEmitter__set_scaleCurve(this.__ptr, val.__ptr)
+}
+
+SceneParticleEmitter.prototype.__get_useColorCurves = function() {
+	return Polycode.SceneParticleEmitter__get_useColorCurves(this.__ptr)
+}
+
+SceneParticleEmitter.prototype.__set_useColorCurves = function(val) {
+	Polycode.SceneParticleEmitter__set_useColorCurves(this.__ptr, val)
+}
+
+SceneParticleEmitter.prototype.__get_colorCurveR = function() {
+	var retVal = new BezierCurve()
+	retVal.__ptr = 	Polycode.SceneParticleEmitter__get_colorCurveR(this.__ptr)
+	return retVal
+}
+
+SceneParticleEmitter.prototype.__set_colorCurveR = function(val) {
+	Polycode.SceneParticleEmitter__set_colorCurveR(this.__ptr, val.__ptr)
+}
+
+SceneParticleEmitter.prototype.__get_colorCurveG = function() {
+	var retVal = new BezierCurve()
+	retVal.__ptr = 	Polycode.SceneParticleEmitter__get_colorCurveG(this.__ptr)
+	return retVal
+}
+
+SceneParticleEmitter.prototype.__set_colorCurveG = function(val) {
+	Polycode.SceneParticleEmitter__set_colorCurveG(this.__ptr, val.__ptr)
+}
+
+SceneParticleEmitter.prototype.__get_colorCurveB = function() {
+	var retVal = new BezierCurve()
+	retVal.__ptr = 	Polycode.SceneParticleEmitter__get_colorCurveB(this.__ptr)
+	return retVal
+}
+
+SceneParticleEmitter.prototype.__set_colorCurveB = function(val) {
+	Polycode.SceneParticleEmitter__set_colorCurveB(this.__ptr, val.__ptr)
+}
+
+SceneParticleEmitter.prototype.__get_colorCurveA = function() {
+	var retVal = new BezierCurve()
+	retVal.__ptr = 	Polycode.SceneParticleEmitter__get_colorCurveA(this.__ptr)
+	return retVal
+}
+
+SceneParticleEmitter.prototype.__set_colorCurveA = function(val) {
+	Polycode.SceneParticleEmitter__set_colorCurveA(this.__ptr, val.__ptr)
+}
+
+SceneParticleEmitter.prototype.__get_colorDeviation = function() {
+	var retVal = new Color()
+	retVal.__ptr = 	Polycode.SceneParticleEmitter__get_colorDeviation(this.__ptr)
+	return retVal
+}
+
+SceneParticleEmitter.prototype.__set_colorDeviation = function(val) {
+	Polycode.SceneParticleEmitter__set_colorDeviation(this.__ptr, val.__ptr)
+}
+
 
 SceneParticleEmitter.prototype.setParticleCount = function(newParticleCount) {
 	Polycode.SceneParticleEmitter_setParticleCount(this.__ptr, newParticleCount)
 }
 
 SceneParticleEmitter.prototype.getParticleCount = function() {
-	Polycode.SceneParticleEmitter_getParticleCount(this.__ptr)
+	return Polycode.SceneParticleEmitter_getParticleCount(this.__ptr)
 }
 
 SceneParticleEmitter.prototype.setParticleLifetime = function(lifetime) {
@@ -14,7 +100,7 @@ SceneParticleEmitter.prototype.setParticleLifetime = function(lifetime) {
 }
 
 SceneParticleEmitter.prototype.getParticleLifetime = function() {
-	Polycode.SceneParticleEmitter_getParticleLifetime(this.__ptr)
+	return Polycode.SceneParticleEmitter_getParticleLifetime(this.__ptr)
 }
 
 SceneParticleEmitter.prototype.setDirectionDeviation = function(newDeviation) {
@@ -22,7 +108,9 @@ SceneParticleEmitter.prototype.setDirectionDeviation = function(newDeviation) {
 }
 
 SceneParticleEmitter.prototype.getDirectionDeviation = function() {
-	Polycode.SceneParticleEmitter_getDirectionDeviation(this.__ptr)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.SceneParticleEmitter_getDirectionDeviation(this.__ptr)
+	return retVal
 }
 
 SceneParticleEmitter.prototype.setEmitterSize = function(newSize) {
@@ -30,7 +118,9 @@ SceneParticleEmitter.prototype.setEmitterSize = function(newSize) {
 }
 
 SceneParticleEmitter.prototype.getEmitterSize = function() {
-	Polycode.SceneParticleEmitter_getEmitterSize(this.__ptr)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.SceneParticleEmitter_getEmitterSize(this.__ptr)
+	return retVal
 }
 
 SceneParticleEmitter.prototype.setGravity = function(newGravity) {
@@ -38,7 +128,9 @@ SceneParticleEmitter.prototype.setGravity = function(newGravity) {
 }
 
 SceneParticleEmitter.prototype.getGravity = function() {
-	Polycode.SceneParticleEmitter_getGravity(this.__ptr)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.SceneParticleEmitter_getGravity(this.__ptr)
+	return retVal
 }
 
 SceneParticleEmitter.prototype.fixedUpdate = function() {
@@ -82,7 +174,7 @@ SceneParticleEmitter.prototype.setParticlesInWorldSpace = function(val) {
 }
 
 SceneParticleEmitter.prototype.getParticlesInWorldSpace = function() {
-	Polycode.SceneParticleEmitter_getParticlesInWorldSpace(this.__ptr)
+	return Polycode.SceneParticleEmitter_getParticlesInWorldSpace(this.__ptr)
 }
 
 SceneParticleEmitter.prototype.setPerlinEnabled = function(val) {
@@ -90,11 +182,11 @@ SceneParticleEmitter.prototype.setPerlinEnabled = function(val) {
 }
 
 SceneParticleEmitter.prototype.getPerlinEnabled = function() {
-	Polycode.SceneParticleEmitter_getPerlinEnabled(this.__ptr)
+	return Polycode.SceneParticleEmitter_getPerlinEnabled(this.__ptr)
 }
 
 SceneParticleEmitter.prototype.getParticleSpeed = function() {
-	Polycode.SceneParticleEmitter_getParticleSpeed(this.__ptr)
+	return Polycode.SceneParticleEmitter_getParticleSpeed(this.__ptr)
 }
 
 SceneParticleEmitter.prototype.setParticleSpeed = function(speed) {
@@ -106,7 +198,9 @@ SceneParticleEmitter.prototype.setPerlinValue = function(perlinValue) {
 }
 
 SceneParticleEmitter.prototype.getPerlinValue = function() {
-	Polycode.SceneParticleEmitter_getPerlinValue(this.__ptr)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.SceneParticleEmitter_getPerlinValue(this.__ptr)
+	return retVal
 }
 
 SceneParticleEmitter.prototype.setParticleType = function(particleType) {
@@ -114,7 +208,7 @@ SceneParticleEmitter.prototype.setParticleType = function(particleType) {
 }
 
 SceneParticleEmitter.prototype.getParticleType = function() {
-	Polycode.SceneParticleEmitter_getParticleType(this.__ptr)
+	return Polycode.SceneParticleEmitter_getParticleType(this.__ptr)
 }
 
 SceneParticleEmitter.prototype.setParticleSize = function(particleSize) {
@@ -122,7 +216,7 @@ SceneParticleEmitter.prototype.setParticleSize = function(particleSize) {
 }
 
 SceneParticleEmitter.prototype.getParticleSize = function() {
-	Polycode.SceneParticleEmitter_getParticleSize(this.__ptr)
+	return Polycode.SceneParticleEmitter_getParticleSize(this.__ptr)
 }
 
 SceneParticleEmitter.prototype.setParticleRotationSpeed = function(rotationSpeed) {
@@ -130,7 +224,9 @@ SceneParticleEmitter.prototype.setParticleRotationSpeed = function(rotationSpeed
 }
 
 SceneParticleEmitter.prototype.getParticleRotationSpeed = function() {
-	Polycode.SceneParticleEmitter_getParticleRotationSpeed(this.__ptr)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.SceneParticleEmitter_getParticleRotationSpeed(this.__ptr)
+	return retVal
 }
 
 SceneParticleEmitter.prototype.setParticleDirection = function(direction) {
@@ -138,7 +234,9 @@ SceneParticleEmitter.prototype.setParticleDirection = function(direction) {
 }
 
 SceneParticleEmitter.prototype.getParticleDirection = function() {
-	Polycode.SceneParticleEmitter_getParticleDirection(this.__ptr)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.SceneParticleEmitter_getParticleDirection(this.__ptr)
+	return retVal
 }
 
 SceneParticleEmitter.prototype.setLoopParticles = function(val) {
@@ -146,7 +244,7 @@ SceneParticleEmitter.prototype.setLoopParticles = function(val) {
 }
 
 SceneParticleEmitter.prototype.getLoopParticles = function() {
-	Polycode.SceneParticleEmitter_getLoopParticles(this.__ptr)
+	return Polycode.SceneParticleEmitter_getLoopParticles(this.__ptr)
 }
 
 SceneParticleEmitter.prototype.addSourceMesh = function(mesh) {
@@ -154,11 +252,13 @@ SceneParticleEmitter.prototype.addSourceMesh = function(mesh) {
 }
 
 SceneParticleEmitter.prototype.getNumSourceMeshes = function() {
-	Polycode.SceneParticleEmitter_getNumSourceMeshes(this.__ptr)
+	return Polycode.SceneParticleEmitter_getNumSourceMeshes(this.__ptr)
 }
 
 SceneParticleEmitter.prototype.getSourcesMeshAtIndex = function(index) {
-	Polycode.SceneParticleEmitter_getSourcesMeshAtIndex(this.__ptr, index)
+	var retVal = new Mesh()
+	retVal.__ptr = Polycode.SceneParticleEmitter_getSourcesMeshAtIndex(this.__ptr, index)
+	return retVal
 }
 
 SceneParticleEmitter.prototype.removeSourceMeshAtIndex = function(index) {
@@ -170,7 +270,9 @@ SceneParticleEmitter.prototype.positionParticle = function(index) {
 }
 
 SceneParticleEmitter.prototype.Clone = function(deepClone,ignoreEditorOnly) {
-	Polycode.SceneParticleEmitter_Clone(this.__ptr, deepClone,ignoreEditorOnly)
+	var retVal = new Entity()
+	retVal.__ptr = Polycode.SceneParticleEmitter_Clone(this.__ptr, deepClone,ignoreEditorOnly)
+	return retVal
 }
 
 SceneParticleEmitter.prototype.applyClone = function(clone,deepClone,ignoreEditorOnly) {

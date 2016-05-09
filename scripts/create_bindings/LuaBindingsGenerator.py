@@ -525,11 +525,13 @@ class LuaBindingsGenerator(object):
 		fout.close()
 
 		pattern = '*.lua'
+		curDir = os.path.dirname(os.path.realpath(__file__))
 		os.chdir(self.config.get('lua', 'LuaApiDirectory'))
 		with ZipFile("lua_%s.pak" % (self.libName), 'w') as myzip:
 			for root, dirs, files in os.walk("."):
 				for filename in fnmatch.filter(files, pattern):
 					myzip.write(os.path.join(root, filename))
+		os.chdir(curDir)
 
 	# ----------------------------------------------------
 	# Utility methods

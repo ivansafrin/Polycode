@@ -22,7 +22,9 @@ RenderThread.prototype.processJob = function(job) {
 }
 
 RenderThread.prototype.getShaderBinding = function() {
-	Polycode.RenderThread_getShaderBinding(this.__ptr)
+	var retVal = new ShaderBinding()
+	retVal.__ptr = Polycode.RenderThread_getShaderBinding(this.__ptr)
+	return retVal
 }
 
 RenderThread.prototype.processDrawBuffer = function(buffer) {
@@ -30,7 +32,9 @@ RenderThread.prototype.processDrawBuffer = function(buffer) {
 }
 
 RenderThread.prototype.getFrameInfo = function() {
-	Polycode.RenderThread_getFrameInfo(this.__ptr)
+	var retVal = new RenderThreadDebugInfo()
+	retVal.__ptr = Polycode.RenderThread_getFrameInfo(this.__ptr)
+	return retVal
 }
 
 RenderThread.prototype.clearFrameQueue = function() {

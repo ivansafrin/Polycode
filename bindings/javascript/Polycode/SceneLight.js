@@ -2,7 +2,7 @@ function SceneLight() {
 }
 
 SceneLight.prototype.getIntensity = function() {
-	Polycode.SceneLight_getIntensity(this.__ptr)
+	return Polycode.SceneLight_getIntensity(this.__ptr)
 }
 
 SceneLight.prototype.setIntensity = function(newIntensity) {
@@ -14,19 +14,19 @@ SceneLight.prototype.setAttenuation = function(constantAttenuation,linearAttenua
 }
 
 SceneLight.prototype.getConstantAttenuation = function() {
-	Polycode.SceneLight_getConstantAttenuation(this.__ptr)
+	return Polycode.SceneLight_getConstantAttenuation(this.__ptr)
 }
 
 SceneLight.prototype.getLinearAttenuation = function() {
-	Polycode.SceneLight_getLinearAttenuation(this.__ptr)
+	return Polycode.SceneLight_getLinearAttenuation(this.__ptr)
 }
 
 SceneLight.prototype.getQuadraticAttenuation = function() {
-	Polycode.SceneLight_getQuadraticAttenuation(this.__ptr)
+	return Polycode.SceneLight_getQuadraticAttenuation(this.__ptr)
 }
 
 SceneLight.prototype.getType = function() {
-	Polycode.SceneLight_getType(this.__ptr)
+	return Polycode.SceneLight_getType(this.__ptr)
 }
 
 SceneLight.prototype.renderDepthMap = function(scene) {
@@ -34,7 +34,9 @@ SceneLight.prototype.renderDepthMap = function(scene) {
 }
 
 SceneLight.prototype.getZBufferTexture = function() {
-	Polycode.SceneLight_getZBufferTexture(this.__ptr)
+	var retVal = new Texture()
+	retVal.__ptr = Polycode.SceneLight_getZBufferTexture(this.__ptr)
+	return retVal
 }
 
 SceneLight.prototype.setSpecularLightColor = function(r,g,b,a) {
@@ -54,11 +56,11 @@ SceneLight.prototype.setSpotlightProperties = function(spotlightCutoff,spotlight
 }
 
 SceneLight.prototype.getSpotlightCutoff = function() {
-	Polycode.SceneLight_getSpotlightCutoff(this.__ptr)
+	return Polycode.SceneLight_getSpotlightCutoff(this.__ptr)
 }
 
 SceneLight.prototype.getSpotlightExponent = function() {
-	Polycode.SceneLight_getSpotlightExponent(this.__ptr)
+	return Polycode.SceneLight_getSpotlightExponent(this.__ptr)
 }
 
 SceneLight.prototype.enableShadows = function(val,resolution) {
@@ -70,19 +72,19 @@ SceneLight.prototype.setShadowMapFOV = function(fov) {
 }
 
 SceneLight.prototype.getShadowMapFOV = function() {
-	Polycode.SceneLight_getShadowMapFOV(this.__ptr)
+	return Polycode.SceneLight_getShadowMapFOV(this.__ptr)
 }
 
 SceneLight.prototype.getShadowMapResolution = function() {
-	Polycode.SceneLight_getShadowMapResolution(this.__ptr)
+	return Polycode.SceneLight_getShadowMapResolution(this.__ptr)
 }
 
 SceneLight.prototype.areShadowsEnabled = function() {
-	Polycode.SceneLight_areShadowsEnabled(this.__ptr)
+	return Polycode.SceneLight_areShadowsEnabled(this.__ptr)
 }
 
 SceneLight.prototype.getLightType = function() {
-	Polycode.SceneLight_getLightType(this.__ptr)
+	return Polycode.SceneLight_getLightType(this.__ptr)
 }
 
 SceneLight.prototype.setLightImportance = function(newImportance) {
@@ -90,7 +92,7 @@ SceneLight.prototype.setLightImportance = function(newImportance) {
 }
 
 SceneLight.prototype.getLightImportance = function() {
-	Polycode.SceneLight_getLightImportance(this.__ptr)
+	return Polycode.SceneLight_getLightImportance(this.__ptr)
 }
 
 SceneLight.prototype.setLightType = function(lightType) {
@@ -98,7 +100,9 @@ SceneLight.prototype.setLightType = function(lightType) {
 }
 
 SceneLight.prototype.Clone = function(deepClone,ignoreEditorOnly) {
-	Polycode.SceneLight_Clone(this.__ptr, deepClone,ignoreEditorOnly)
+	var retVal = new Entity()
+	retVal.__ptr = Polycode.SceneLight_Clone(this.__ptr, deepClone,ignoreEditorOnly)
+	return retVal
 }
 
 SceneLight.prototype.applyClone = function(clone,deepClone,ignoreEditorOnly) {
@@ -106,7 +110,9 @@ SceneLight.prototype.applyClone = function(clone,deepClone,ignoreEditorOnly) {
 }
 
 SceneLight.prototype.getParentScene = function() {
-	Polycode.SceneLight_getParentScene(this.__ptr)
+	var retVal = new Scene()
+	retVal.__ptr = Polycode.SceneLight_getParentScene(this.__ptr)
+	return retVal
 }
 
 SceneLight.prototype.setParentScene = function(scene) {
@@ -114,9 +120,13 @@ SceneLight.prototype.setParentScene = function(scene) {
 }
 
 SceneLight.prototype.getSpotlightCamera = function() {
-	Polycode.SceneLight_getSpotlightCamera(this.__ptr)
+	var retVal = new Camera()
+	retVal.__ptr = Polycode.SceneLight_getSpotlightCamera(this.__ptr)
+	return retVal
 }
 
 SceneLight.prototype.getLightInfo = function() {
-	Polycode.SceneLight_getLightInfo(this.__ptr)
+	var retVal = new LightInfo()
+	retVal.__ptr = Polycode.SceneLight_getLightInfo(this.__ptr)
+	return retVal
 }

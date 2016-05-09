@@ -6,19 +6,21 @@ SpriteState.prototype.setName = function(name) {
 }
 
 SpriteState.prototype.getName = function() {
-	Polycode.SpriteState_getName(this.__ptr)
+	return Polycode.SpriteState_getName(this.__ptr)
 }
 
 SpriteState.prototype.getNumFrameIDs = function() {
-	Polycode.SpriteState_getNumFrameIDs(this.__ptr)
+	return Polycode.SpriteState_getNumFrameIDs(this.__ptr)
 }
 
 SpriteState.prototype.getFrameIDAtIndex = function(index) {
-	Polycode.SpriteState_getFrameIDAtIndex(this.__ptr, index)
+	return Polycode.SpriteState_getFrameIDAtIndex(this.__ptr, index)
 }
 
 SpriteState.prototype.getMeshForFrameIndex = function(index) {
-	Polycode.SpriteState_getMeshForFrameIndex(this.__ptr, index)
+	var retVal = new Mesh()
+	retVal.__ptr = Polycode.SpriteState_getMeshForFrameIndex(this.__ptr, index)
+	return retVal
 }
 
 SpriteState.prototype.insertFrame = function(index,frameID) {
@@ -38,7 +40,7 @@ SpriteState.prototype.setPixelsPerUnit = function(ppu) {
 }
 
 SpriteState.prototype.getPixelsPerUnit = function() {
-	Polycode.SpriteState_getPixelsPerUnit(this.__ptr)
+	return Polycode.SpriteState_getPixelsPerUnit(this.__ptr)
 }
 
 SpriteState.prototype.rebuildStateMeshes = function() {
@@ -50,11 +52,13 @@ SpriteState.prototype.setStateFPS = function(fps) {
 }
 
 SpriteState.prototype.getStateFPS = function() {
-	Polycode.SpriteState_getStateFPS(this.__ptr)
+	return Polycode.SpriteState_getStateFPS(this.__ptr)
 }
 
 SpriteState.prototype.getLargestFrameBoundingBox = function() {
-	Polycode.SpriteState_getLargestFrameBoundingBox(this.__ptr)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.SpriteState_getLargestFrameBoundingBox(this.__ptr)
+	return retVal
 }
 
 SpriteState.prototype.setBoundingBox = function(boundingBox) {
@@ -62,11 +66,15 @@ SpriteState.prototype.setBoundingBox = function(boundingBox) {
 }
 
 SpriteState.prototype.getBoundingBox = function() {
-	Polycode.SpriteState_getBoundingBox(this.__ptr)
+	var retVal = new Vector2()
+	retVal.__ptr = Polycode.SpriteState_getBoundingBox(this.__ptr)
+	return retVal
 }
 
 SpriteState.prototype.getSpriteOffset = function() {
-	Polycode.SpriteState_getSpriteOffset(this.__ptr)
+	var retVal = new Vector2()
+	retVal.__ptr = Polycode.SpriteState_getSpriteOffset(this.__ptr)
+	return retVal
 }
 
 SpriteState.prototype.setSpriteOffset = function(offset) {

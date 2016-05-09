@@ -6,5 +6,5 @@ IndexDataArray.prototype.getArrayData = function() {
 }
 
 IndexDataArray.prototype.getDataSize = function() {
-	Polycode.IndexDataArray_getDataSize(this.__ptr)
+	return Polycode.IndexDataArray_getDataSize(this.__ptr)
 }

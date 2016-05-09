@@ -6,19 +6,27 @@ Renderer.prototype.setGraphicsInterface = function(core,graphicsInterface) {
 }
 
 Renderer.prototype.getRenderThread = function() {
-	Polycode.Renderer_getRenderThread(this.__ptr)
+	var retVal = new RenderThread()
+	retVal.__ptr = Polycode.Renderer_getRenderThread(this.__ptr)
+	return retVal
 }
 
 Renderer.prototype.createCubemap = function(t0,t1,t2,t3,t4,t5) {
-	Polycode.Renderer_createCubemap(this.__ptr, t0,t1,t2,t3,t4,t5)
+	var retVal = new Cubemap()
+	retVal.__ptr = Polycode.Renderer_createCubemap(this.__ptr, t0,t1,t2,t3,t4,t5)
+	return retVal
 }
 
 Renderer.prototype.createTexture = function(width,height,textureData,clamp,createMipmaps,type,filteringMode,anisotropy,framebufferTexture) {
-	Polycode.Renderer_createTexture(this.__ptr, width,height,textureData,clamp,createMipmaps,type,filteringMode,anisotropy,framebufferTexture)
+	var retVal = new Texture()
+	retVal.__ptr = Polycode.Renderer_createTexture(this.__ptr, width,height,textureData,clamp,createMipmaps,type,filteringMode,anisotropy,framebufferTexture)
+	return retVal
 }
 
 Renderer.prototype.createRenderBuffer = function(width,height,attachDepthBuffer,floatingPoint) {
-	Polycode.Renderer_createRenderBuffer(this.__ptr, width,height,attachDepthBuffer,floatingPoint)
+	var retVal = new RenderBuffer()
+	retVal.__ptr = Polycode.Renderer_createRenderBuffer(this.__ptr, width,height,attachDepthBuffer,floatingPoint)
+	return retVal
 }
 
 Renderer.prototype.destroyRenderBuffer = function(buffer) {
@@ -38,19 +46,23 @@ Renderer.prototype.setBackingResolutionScale = function(xScale,yScale) {
 }
 
 Renderer.prototype.getBackingResolutionScaleX = function() {
-	Polycode.Renderer_getBackingResolutionScaleX(this.__ptr)
+	return Polycode.Renderer_getBackingResolutionScaleX(this.__ptr)
 }
 
 Renderer.prototype.getBackingResolutionScaleY = function() {
-	Polycode.Renderer_getBackingResolutionScaleY(this.__ptr)
+	return Polycode.Renderer_getBackingResolutionScaleY(this.__ptr)
 }
 
 Renderer.prototype.createProgram = function(fileName) {
-	Polycode.Renderer_createProgram(this.__ptr, fileName)
+	var retVal = new ShaderProgram()
+	retVal.__ptr = Polycode.Renderer_createProgram(this.__ptr, fileName)
+	return retVal
 }
 
 Renderer.prototype.createShader = function(vertexProgram,fragmentProgram) {
-	Polycode.Renderer_createShader(this.__ptr, vertexProgram,fragmentProgram)
+	var retVal = new Shader()
+	retVal.__ptr = Polycode.Renderer_createShader(this.__ptr, vertexProgram,fragmentProgram)
+	return retVal
 }
 
 Renderer.prototype.createVertexBuffers = function(mesh) {
@@ -90,11 +102,13 @@ Renderer.prototype.setAnisotropyAmount = function(amount) {
 }
 
 Renderer.prototype.getAnisotropyAmount = function() {
-	Polycode.Renderer_getAnisotropyAmount(this.__ptr)
+	return Polycode.Renderer_getAnisotropyAmount(this.__ptr)
 }
 
 Renderer.prototype.createMesh = function(fileName) {
-	Polycode.Renderer_createMesh(this.__ptr, fileName)
+	var retVal = new Mesh()
+	retVal.__ptr = Polycode.Renderer_createMesh(this.__ptr, fileName)
+	return retVal
 }
 
 Renderer.prototype.destroyMesh = function(mesh) {

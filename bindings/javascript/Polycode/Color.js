@@ -1,5 +1,43 @@
 function Color() {
+	Object.defineProperties(this, {
+		'r': { enumerable: true, configurable: true, get: Color.prototype.__get_r, set: Color.prototype.__set_r},
+		'g': { enumerable: true, configurable: true, get: Color.prototype.__get_g, set: Color.prototype.__set_g},
+		'b': { enumerable: true, configurable: true, get: Color.prototype.__get_b, set: Color.prototype.__set_b},
+		'a': { enumerable: true, configurable: true, get: Color.prototype.__get_a, set: Color.prototype.__set_a}
+	})
 }
+Color.prototype.__get_r = function() {
+	return Polycode.Color__get_r(this.__ptr)
+}
+
+Color.prototype.__set_r = function(val) {
+	Polycode.Color__set_r(this.__ptr, val)
+}
+
+Color.prototype.__get_g = function() {
+	return Polycode.Color__get_g(this.__ptr)
+}
+
+Color.prototype.__set_g = function(val) {
+	Polycode.Color__set_g(this.__ptr, val)
+}
+
+Color.prototype.__get_b = function() {
+	return Polycode.Color__get_b(this.__ptr)
+}
+
+Color.prototype.__set_b = function(val) {
+	Polycode.Color__set_b(this.__ptr, val)
+}
+
+Color.prototype.__get_a = function() {
+	return Polycode.Color__get_a(this.__ptr)
+}
+
+Color.prototype.__set_a = function(val) {
+	Polycode.Color__set_a(this.__ptr, val)
+}
+
 
 Color.prototype.setColorHex = function(hex) {
 	Polycode.Color_setColorHex(this.__ptr, hex)
@@ -34,7 +72,9 @@ Color.prototype.setColor = function(r,g,b,a) {
 }
 
 Color.prototype.blendColor = function(c2,mode,amount,c3) {
-	Polycode.Color_blendColor(this.__ptr, c2,mode,amount,c3)
+	var retVal = new Color()
+	retVal.__ptr = Polycode.Color_blendColor(this.__ptr, c2,mode,amount,c3)
+	return retVal
 }
 
 Color.prototype.Random = function() {
@@ -42,21 +82,21 @@ Color.prototype.Random = function() {
 }
 
 Color.prototype.getBrightness = function() {
-	Polycode.Color_getBrightness(this.__ptr)
+	return Polycode.Color_getBrightness(this.__ptr)
 }
 
 Color.prototype.getHue = function() {
-	Polycode.Color_getHue(this.__ptr)
+	return Polycode.Color_getHue(this.__ptr)
 }
 
 Color.prototype.getSaturation = function() {
-	Polycode.Color_getSaturation(this.__ptr)
+	return Polycode.Color_getSaturation(this.__ptr)
 }
 
 Color.prototype.getValue = function() {
-	Polycode.Color_getValue(this.__ptr)
+	return Polycode.Color_getValue(this.__ptr)
 }
 
 Color.prototype.getUint = function() {
-	Polycode.Color_getUint(this.__ptr)
+	return Polycode.Color_getUint(this.__ptr)
 }

@@ -1,5 +1,16 @@
 function Mesh() {
+	Object.defineProperties(this, {
+		'indexedMesh': { enumerable: true, configurable: true, get: Mesh.prototype.__get_indexedMesh, set: Mesh.prototype.__set_indexedMesh}
+	})
 }
+Mesh.prototype.__get_indexedMesh = function() {
+	return Polycode.Mesh__get_indexedMesh(this.__ptr)
+}
+
+Mesh.prototype.__set_indexedMesh = function(val) {
+	Polycode.Mesh__set_indexedMesh(this.__ptr, val)
+}
+
 
 Mesh.prototype.loadMesh = function(fileName) {
 	Polycode.Mesh_loadMesh(this.__ptr, fileName)
@@ -18,7 +29,7 @@ Mesh.prototype.loadFromFile = function(inFile) {
 }
 
 Mesh.prototype.getVertexCount = function() {
-	Polycode.Mesh_getVertexCount(this.__ptr)
+	return Polycode.Mesh_getVertexCount(this.__ptr)
 }
 
 Mesh.prototype.createPlane = function(w,h,tilingValue) {
@@ -66,7 +77,9 @@ Mesh.prototype.createCone = function(height,radius,numSegments,tilingValue) {
 }
 
 Mesh.prototype.recenterMesh = function() {
-	Polycode.Mesh_recenterMesh(this.__ptr)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.Mesh_recenterMesh(this.__ptr)
+	return retVal
 }
 
 Mesh.prototype.setVertexAtOffset = function(offset,x,y,z) {
@@ -110,27 +123,37 @@ Mesh.prototype.addColor = function(r,g,b,a) {
 }
 
 Mesh.prototype.getVertexPosition = function(vertexOffset) {
-	Polycode.Mesh_getVertexPosition(this.__ptr, vertexOffset)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.Mesh_getVertexPosition(this.__ptr, vertexOffset)
+	return retVal
 }
 
 Mesh.prototype.getVertexPositionAtIndex = function(index) {
-	Polycode.Mesh_getVertexPositionAtIndex(this.__ptr, index)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.Mesh_getVertexPositionAtIndex(this.__ptr, index)
+	return retVal
 }
 
 Mesh.prototype.getVertexTexCoord = function(vertexOffset) {
-	Polycode.Mesh_getVertexTexCoord(this.__ptr, vertexOffset)
+	var retVal = new Vector2()
+	retVal.__ptr = Polycode.Mesh_getVertexTexCoord(this.__ptr, vertexOffset)
+	return retVal
 }
 
 Mesh.prototype.getVertexTexCoordAtIndex = function(index) {
-	Polycode.Mesh_getVertexTexCoordAtIndex(this.__ptr, index)
+	var retVal = new Vector2()
+	retVal.__ptr = Polycode.Mesh_getVertexTexCoordAtIndex(this.__ptr, index)
+	return retVal
 }
 
 Mesh.prototype.Copy = function() {
-	Polycode.Mesh_Copy(this.__ptr)
+	var retVal = new Mesh()
+	retVal.__ptr = Polycode.Mesh_Copy(this.__ptr)
+	return retVal
 }
 
 Mesh.prototype.getRadius = function() {
-	Polycode.Mesh_getRadius(this.__ptr)
+	return Polycode.Mesh_getRadius(this.__ptr)
 }
 
 Mesh.prototype.calculateNormals = function() {
@@ -142,7 +165,7 @@ Mesh.prototype.calculateTangents = function() {
 }
 
 Mesh.prototype.getMeshType = function() {
-	Polycode.Mesh_getMeshType(this.__ptr)
+	return Polycode.Mesh_getMeshType(this.__ptr)
 }
 
 Mesh.prototype.setMeshType = function(newType) {
@@ -150,15 +173,17 @@ Mesh.prototype.setMeshType = function(newType) {
 }
 
 Mesh.prototype.getIndexGroupSize = function() {
-	Polycode.Mesh_getIndexGroupSize(this.__ptr)
+	return Polycode.Mesh_getIndexGroupSize(this.__ptr)
 }
 
 Mesh.prototype.calculateBBox = function() {
-	Polycode.Mesh_calculateBBox(this.__ptr)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.Mesh_calculateBBox(this.__ptr)
+	return retVal
 }
 
 Mesh.prototype.hasVertexBuffer = function() {
-	Polycode.Mesh_hasVertexBuffer(this.__ptr)
+	return Polycode.Mesh_hasVertexBuffer(this.__ptr)
 }
 
 Mesh.prototype.addIndexedFace = function(i1,i2) {
@@ -178,11 +203,11 @@ Mesh.prototype.removeFace = function(faceIndex) {
 }
 
 Mesh.prototype.removeUnusedVertices = function() {
-	Polycode.Mesh_removeUnusedVertices(this.__ptr)
+	return Polycode.Mesh_removeUnusedVertices(this.__ptr)
 }
 
 Mesh.prototype.getIndexCount = function() {
-	Polycode.Mesh_getIndexCount(this.__ptr)
+	return Polycode.Mesh_getIndexCount(this.__ptr)
 }
 
 Mesh.prototype.subdivideToRadius = function(radius,subdivisions) {

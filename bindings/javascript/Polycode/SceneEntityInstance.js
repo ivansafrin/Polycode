@@ -1,8 +1,30 @@
 function SceneEntityInstance() {
+	Object.defineProperties(this, {
+		'cloneUsingReload': { enumerable: true, configurable: true, get: SceneEntityInstance.prototype.__get_cloneUsingReload, set: SceneEntityInstance.prototype.__set_cloneUsingReload},
+		'fileName': { enumerable: true, configurable: true, get: SceneEntityInstance.prototype.__get_fileName, set: SceneEntityInstance.prototype.__set_fileName}
+	})
+}
+SceneEntityInstance.prototype.__get_cloneUsingReload = function() {
+	return Polycode.SceneEntityInstance__get_cloneUsingReload(this.__ptr)
 }
 
+SceneEntityInstance.prototype.__set_cloneUsingReload = function(val) {
+	Polycode.SceneEntityInstance__set_cloneUsingReload(this.__ptr, val)
+}
+
+SceneEntityInstance.prototype.__get_fileName = function() {
+	return Polycode.SceneEntityInstance__get_fileName(this.__ptr)
+}
+
+SceneEntityInstance.prototype.__set_fileName = function(val) {
+	Polycode.SceneEntityInstance__set_fileName(this.__ptr, val)
+}
+
+
 SceneEntityInstance.prototype.Clone = function(deepClone,ignoreEditorOnly) {
-	Polycode.SceneEntityInstance_Clone(this.__ptr, deepClone,ignoreEditorOnly)
+	var retVal = new Entity()
+	retVal.__ptr = Polycode.SceneEntityInstance_Clone(this.__ptr, deepClone,ignoreEditorOnly)
+	return retVal
 }
 
 SceneEntityInstance.prototype.applyClone = function(clone,deepClone,ignoreEditorOnly) {
@@ -22,11 +44,13 @@ SceneEntityInstance.prototype.parseObjectIntoCurve = function(entry,curve) {
 }
 
 SceneEntityInstance.prototype.loadObjectEntryIntoEntity = function(entry,targetEntity,entityFileVersion) {
-	Polycode.SceneEntityInstance_loadObjectEntryIntoEntity(this.__ptr, entry,targetEntity,entityFileVersion)
+	var retVal = new Entity()
+	retVal.__ptr = Polycode.SceneEntityInstance_loadObjectEntryIntoEntity(this.__ptr, entry,targetEntity,entityFileVersion)
+	return retVal
 }
 
 SceneEntityInstance.prototype.loadFromFile = function(fileName) {
-	Polycode.SceneEntityInstance_loadFromFile(this.__ptr, fileName)
+	return Polycode.SceneEntityInstance_loadFromFile(this.__ptr, fileName)
 }
 
 SceneEntityInstance.prototype.applySceneMesh = function(entry,sceneMesh) {
@@ -38,11 +62,13 @@ SceneEntityInstance.prototype.linkResourcePool = function(pool) {
 }
 
 SceneEntityInstance.prototype.getNumLinkedResourePools = function() {
-	Polycode.SceneEntityInstance_getNumLinkedResourePools(this.__ptr)
+	return Polycode.SceneEntityInstance_getNumLinkedResourePools(this.__ptr)
 }
 
 SceneEntityInstance.prototype.getLinkedResourcePoolAtIndex = function(index) {
-	Polycode.SceneEntityInstance_getLinkedResourcePoolAtIndex(this.__ptr, index)
+	var retVal = new ResourcePool()
+	retVal.__ptr = Polycode.SceneEntityInstance_getLinkedResourcePoolAtIndex(this.__ptr, index)
+	return retVal
 }
 
 SceneEntityInstance.prototype.unlinkResourcePool = function(pool) {
@@ -50,23 +76,29 @@ SceneEntityInstance.prototype.unlinkResourcePool = function(pool) {
 }
 
 SceneEntityInstance.prototype.getResourceEntry = function() {
-	Polycode.SceneEntityInstance_getResourceEntry(this.__ptr)
+	var retVal = new SceneEntityInstanceResourceEntry()
+	retVal.__ptr = Polycode.SceneEntityInstance_getResourceEntry(this.__ptr)
+	return retVal
 }
 
 SceneEntityInstance.prototype.getTopLevelResourcePool = function() {
-	Polycode.SceneEntityInstance_getTopLevelResourcePool(this.__ptr)
+	var retVal = new ResourcePool()
+	retVal.__ptr = Polycode.SceneEntityInstance_getTopLevelResourcePool(this.__ptr)
+	return retVal
 }
 
 SceneEntityInstance.prototype.hasLayerID = function(layerID) {
-	Polycode.SceneEntityInstance_hasLayerID(this.__ptr, layerID)
+	return Polycode.SceneEntityInstance_hasLayerID(this.__ptr, layerID)
 }
 
 SceneEntityInstance.prototype.getNumLayers = function() {
-	Polycode.SceneEntityInstance_getNumLayers(this.__ptr)
+	return Polycode.SceneEntityInstance_getNumLayers(this.__ptr)
 }
 
 SceneEntityInstance.prototype.getLayerAtIndex = function(index) {
-	Polycode.SceneEntityInstance_getLayerAtIndex(this.__ptr, index)
+	var retVal = new SceneEntityInstanceLayer()
+	retVal.__ptr = Polycode.SceneEntityInstance_getLayerAtIndex(this.__ptr, index)
+	return retVal
 }
 
 SceneEntityInstance.prototype.removeLayer = function(layer) {
@@ -74,9 +106,11 @@ SceneEntityInstance.prototype.removeLayer = function(layer) {
 }
 
 SceneEntityInstance.prototype.createNewLayer = function(name) {
-	Polycode.SceneEntityInstance_createNewLayer(this.__ptr, name)
+	var retVal = new SceneEntityInstanceLayer()
+	retVal.__ptr = Polycode.SceneEntityInstance_createNewLayer(this.__ptr, name)
+	return retVal
 }
 
 SceneEntityInstance.prototype.getFileName = function() {
-	Polycode.SceneEntityInstance_getFileName(this.__ptr)
+	return Polycode.SceneEntityInstance_getFileName(this.__ptr)
 }

@@ -6,23 +6,33 @@ Matrix4.prototype.identity = function() {
 }
 
 Matrix4.prototype.rotateVector = function(v2) {
-	Polycode.Matrix4_rotateVector(this.__ptr, v2)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.Matrix4_rotateVector(this.__ptr, v2)
+	return retVal
 }
 
 Matrix4.prototype.getPosition = function() {
-	Polycode.Matrix4_getPosition(this.__ptr)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.Matrix4_getPosition(this.__ptr)
+	return retVal
 }
 
 Matrix4.prototype.multiplyWithPerspective = function(v2) {
-	Polycode.Matrix4_multiplyWithPerspective(this.__ptr, v2)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.Matrix4_multiplyWithPerspective(this.__ptr, v2)
+	return retVal
 }
 
 Matrix4.prototype.multVector3 = function(v2) {
-	Polycode.Matrix4_multVector3(this.__ptr, v2)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.Matrix4_multVector3(this.__ptr, v2)
+	return retVal
 }
 
 Matrix4.prototype.multVector4 = function(v2) {
-	Polycode.Matrix4_multVector4(this.__ptr, v2)
+	var retVal = new Vector4()
+	retVal.__ptr = Polycode.Matrix4_multVector4(this.__ptr, v2)
+	return retVal
 }
 
 Matrix4.prototype.Translate = function(x,y,z) {
@@ -42,19 +52,25 @@ Matrix4.prototype.getEulerAngles = function(ax,ay,az) {
 }
 
 Matrix4.prototype.transpose = function() {
-	Polycode.Matrix4_transpose(this.__ptr)
+	var retVal = new Matrix4()
+	retVal.__ptr = Polycode.Matrix4_transpose(this.__ptr)
+	return retVal
 }
 
 Matrix4.prototype.Inverse = function() {
-	Polycode.Matrix4_Inverse(this.__ptr)
+	var retVal = new Matrix4()
+	retVal.__ptr = Polycode.Matrix4_Inverse(this.__ptr)
+	return retVal
 }
 
 Matrix4.prototype.inverseAffine = function() {
-	Polycode.Matrix4_inverseAffine(this.__ptr)
+	var retVal = new Matrix4()
+	retVal.__ptr = Polycode.Matrix4_inverseAffine(this.__ptr)
+	return retVal
 }
 
 Matrix4.prototype.determinant = function() {
-	Polycode.Matrix4_determinant(this.__ptr)
+	return Polycode.Matrix4_determinant(this.__ptr)
 }
 
 Matrix4.prototype.setOrthoProjection = function(left,right,bottom,top,zNear,zFar) {

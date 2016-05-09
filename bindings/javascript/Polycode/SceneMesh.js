@@ -1,16 +1,101 @@
 function SceneMesh() {
+	Object.defineProperties(this, {
+		'lineWidth': { enumerable: true, configurable: true, get: SceneMesh.prototype.__get_lineWidth, set: SceneMesh.prototype.__set_lineWidth},
+		'lineSmooth': { enumerable: true, configurable: true, get: SceneMesh.prototype.__get_lineSmooth, set: SceneMesh.prototype.__set_lineSmooth},
+		'pointSmooth': { enumerable: true, configurable: true, get: SceneMesh.prototype.__get_pointSmooth, set: SceneMesh.prototype.__set_pointSmooth},
+		'ownsMesh': { enumerable: true, configurable: true, get: SceneMesh.prototype.__get_ownsMesh, set: SceneMesh.prototype.__set_ownsMesh},
+		'ownsSkeleton': { enumerable: true, configurable: true, get: SceneMesh.prototype.__get_ownsSkeleton, set: SceneMesh.prototype.__set_ownsSkeleton},
+		'useGeometryHitDetection': { enumerable: true, configurable: true, get: SceneMesh.prototype.__get_useGeometryHitDetection, set: SceneMesh.prototype.__set_useGeometryHitDetection},
+		'alphaTest': { enumerable: true, configurable: true, get: SceneMesh.prototype.__get_alphaTest, set: SceneMesh.prototype.__set_alphaTest},
+		'backfaceCulled': { enumerable: true, configurable: true, get: SceneMesh.prototype.__get_backfaceCulled, set: SceneMesh.prototype.__set_backfaceCulled},
+		'sendBoneMatricesToMaterial': { enumerable: true, configurable: true, get: SceneMesh.prototype.__get_sendBoneMatricesToMaterial, set: SceneMesh.prototype.__set_sendBoneMatricesToMaterial}
+	})
 }
+SceneMesh.prototype.__get_lineWidth = function() {
+	return Polycode.SceneMesh__get_lineWidth(this.__ptr)
+}
+
+SceneMesh.prototype.__set_lineWidth = function(val) {
+	Polycode.SceneMesh__set_lineWidth(this.__ptr, val)
+}
+
+SceneMesh.prototype.__get_lineSmooth = function() {
+	return Polycode.SceneMesh__get_lineSmooth(this.__ptr)
+}
+
+SceneMesh.prototype.__set_lineSmooth = function(val) {
+	Polycode.SceneMesh__set_lineSmooth(this.__ptr, val)
+}
+
+SceneMesh.prototype.__get_pointSmooth = function() {
+	return Polycode.SceneMesh__get_pointSmooth(this.__ptr)
+}
+
+SceneMesh.prototype.__set_pointSmooth = function(val) {
+	Polycode.SceneMesh__set_pointSmooth(this.__ptr, val)
+}
+
+SceneMesh.prototype.__get_ownsMesh = function() {
+	return Polycode.SceneMesh__get_ownsMesh(this.__ptr)
+}
+
+SceneMesh.prototype.__set_ownsMesh = function(val) {
+	Polycode.SceneMesh__set_ownsMesh(this.__ptr, val)
+}
+
+SceneMesh.prototype.__get_ownsSkeleton = function() {
+	return Polycode.SceneMesh__get_ownsSkeleton(this.__ptr)
+}
+
+SceneMesh.prototype.__set_ownsSkeleton = function(val) {
+	Polycode.SceneMesh__set_ownsSkeleton(this.__ptr, val)
+}
+
+SceneMesh.prototype.__get_useGeometryHitDetection = function() {
+	return Polycode.SceneMesh__get_useGeometryHitDetection(this.__ptr)
+}
+
+SceneMesh.prototype.__set_useGeometryHitDetection = function(val) {
+	Polycode.SceneMesh__set_useGeometryHitDetection(this.__ptr, val)
+}
+
+SceneMesh.prototype.__get_alphaTest = function() {
+	return Polycode.SceneMesh__get_alphaTest(this.__ptr)
+}
+
+SceneMesh.prototype.__set_alphaTest = function(val) {
+	Polycode.SceneMesh__set_alphaTest(this.__ptr, val)
+}
+
+SceneMesh.prototype.__get_backfaceCulled = function() {
+	return Polycode.SceneMesh__get_backfaceCulled(this.__ptr)
+}
+
+SceneMesh.prototype.__set_backfaceCulled = function(val) {
+	Polycode.SceneMesh__set_backfaceCulled(this.__ptr, val)
+}
+
+SceneMesh.prototype.__get_sendBoneMatricesToMaterial = function() {
+	return Polycode.SceneMesh__get_sendBoneMatricesToMaterial(this.__ptr)
+}
+
+SceneMesh.prototype.__set_sendBoneMatricesToMaterial = function(val) {
+	Polycode.SceneMesh__set_sendBoneMatricesToMaterial(this.__ptr, val)
+}
+
 
 SceneMesh.prototype.Render = function(buffer) {
 	Polycode.SceneMesh_Render(this.__ptr, buffer)
 }
 
 SceneMesh.prototype.getShaderPass = function(index) {
-	Polycode.SceneMesh_getShaderPass(this.__ptr, index)
+	var retVal = new ShaderPass()
+	retVal.__ptr = Polycode.SceneMesh_getShaderPass(this.__ptr, index)
+	return retVal
 }
 
 SceneMesh.prototype.getNumShaderPasses = function() {
-	Polycode.SceneMesh_getNumShaderPasses(this.__ptr)
+	return Polycode.SceneMesh_getNumShaderPasses(this.__ptr)
 }
 
 SceneMesh.prototype.addShaderPass = function(pass) {
@@ -22,15 +107,21 @@ SceneMesh.prototype.removeShaderPass = function(shaderIndex) {
 }
 
 SceneMesh.prototype.getMesh = function() {
-	Polycode.SceneMesh_getMesh(this.__ptr)
+	var retVal = new Mesh()
+	retVal.__ptr = Polycode.SceneMesh_getMesh(this.__ptr)
+	return retVal
 }
 
 SceneMesh.prototype.getMaterial = function() {
-	Polycode.SceneMesh_getMaterial(this.__ptr)
+	var retVal = new Material()
+	retVal.__ptr = Polycode.SceneMesh_getMaterial(this.__ptr)
+	return retVal
 }
 
 SceneMesh.prototype.loadSkeleton = function(fileName) {
-	Polycode.SceneMesh_loadSkeleton(this.__ptr, fileName)
+	var retVal = new Skeleton()
+	retVal.__ptr = Polycode.SceneMesh_loadSkeleton(this.__ptr, fileName)
+	return retVal
 }
 
 SceneMesh.prototype.clearMaterial = function() {
@@ -58,7 +149,9 @@ SceneMesh.prototype.setSkeleton = function(skeleton) {
 }
 
 SceneMesh.prototype.getSkeleton = function() {
-	Polycode.SceneMesh_getSkeleton(this.__ptr)
+	var retVal = new Skeleton()
+	retVal.__ptr = Polycode.SceneMesh_getSkeleton(this.__ptr)
+	return retVal
 }
 
 SceneMesh.prototype.applySkeletonLocally = function() {
@@ -70,7 +163,7 @@ SceneMesh.prototype.setLineWidth = function(newWidth) {
 }
 
 SceneMesh.prototype.getFilename = function() {
-	Polycode.SceneMesh_getFilename(this.__ptr)
+	return Polycode.SceneMesh_getFilename(this.__ptr)
 }
 
 SceneMesh.prototype.setFilename = function(fileName) {
@@ -82,7 +175,7 @@ SceneMesh.prototype.loadFromFile = function(fileName) {
 }
 
 SceneMesh.prototype.customHitDetection = function(ray) {
-	Polycode.SceneMesh_customHitDetection(this.__ptr, ray)
+	return Polycode.SceneMesh_customHitDetection(this.__ptr, ray)
 }
 
 SceneMesh.prototype.setForceMaterial = function(forceMaterial) {
@@ -90,11 +183,13 @@ SceneMesh.prototype.setForceMaterial = function(forceMaterial) {
 }
 
 SceneMesh.prototype.getForceMaterial = function() {
-	Polycode.SceneMesh_getForceMaterial(this.__ptr)
+	return Polycode.SceneMesh_getForceMaterial(this.__ptr)
 }
 
 SceneMesh.prototype.Clone = function(deepClone,ignoreEditorOnly) {
-	Polycode.SceneMesh_Clone(this.__ptr, deepClone,ignoreEditorOnly)
+	var retVal = new Entity()
+	retVal.__ptr = Polycode.SceneMesh_Clone(this.__ptr, deepClone,ignoreEditorOnly)
+	return retVal
 }
 
 SceneMesh.prototype.applyClone = function(clone,deepClone,ignoreEditorOnly) {

@@ -2,11 +2,15 @@ function ResourceManager() {
 }
 
 ResourceManager.prototype.getGlobalPool = function() {
-	Polycode.ResourceManager_getGlobalPool(this.__ptr)
+	var retVal = new ResourcePool()
+	retVal.__ptr = Polycode.ResourceManager_getGlobalPool(this.__ptr)
+	return retVal
 }
 
 ResourceManager.prototype.getResourcePoolByName = function(name) {
-	Polycode.ResourceManager_getResourcePoolByName(this.__ptr, name)
+	var retVal = new ResourcePool()
+	retVal.__ptr = Polycode.ResourceManager_getResourcePoolByName(this.__ptr, name)
+	return retVal
 }
 
 ResourceManager.prototype.addResourceLoader = function(loader) {
@@ -14,7 +18,9 @@ ResourceManager.prototype.addResourceLoader = function(loader) {
 }
 
 ResourceManager.prototype.getResourceLoaderForExtension = function(extension) {
-	Polycode.ResourceManager_getResourceLoaderForExtension(this.__ptr, extension)
+	var retVal = new ResourceLoader()
+	retVal.__ptr = Polycode.ResourceManager_getResourceLoaderForExtension(this.__ptr, extension)
+	return retVal
 }
 
 ResourceManager.prototype.removeResourceLoader = function(loader) {
@@ -22,11 +28,13 @@ ResourceManager.prototype.removeResourceLoader = function(loader) {
 }
 
 ResourceManager.prototype.getNumResourceLoaders = function() {
-	Polycode.ResourceManager_getNumResourceLoaders(this.__ptr)
+	return Polycode.ResourceManager_getNumResourceLoaders(this.__ptr)
 }
 
 ResourceManager.prototype.getResourceLoaderAtIndex = function(index) {
-	Polycode.ResourceManager_getResourceLoaderAtIndex(this.__ptr, index)
+	var retVal = new ResourceLoader()
+	retVal.__ptr = Polycode.ResourceManager_getResourceLoaderAtIndex(this.__ptr, index)
+	return retVal
 }
 
 ResourceManager.prototype.addResourcePool = function(pool) {

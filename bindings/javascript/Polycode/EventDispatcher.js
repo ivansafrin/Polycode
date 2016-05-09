@@ -18,7 +18,7 @@ EventDispatcher.prototype.addEventListenerUnique = function(handler,eventCode) {
 }
 
 EventDispatcher.prototype.hasEventListener = function(handler,eventCode) {
-	Polycode.EventDispatcher_hasEventListener(this.__ptr, handler,eventCode)
+	return Polycode.EventDispatcher_hasEventListener(this.__ptr, handler,eventCode)
 }
 
 EventDispatcher.prototype.removeEventListener = function(handler,eventCode) {

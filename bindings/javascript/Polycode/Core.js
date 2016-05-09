@@ -1,8 +1,68 @@
 function Core() {
+	Object.defineProperties(this, {
+		'eventMutex': { enumerable: true, configurable: true, get: Core.prototype.__get_eventMutex, set: Core.prototype.__set_eventMutex},
+		'paused': { enumerable: true, configurable: true, get: Core.prototype.__get_paused, set: Core.prototype.__set_paused},
+		'pauseOnLoseFocus': { enumerable: true, configurable: true, get: Core.prototype.__get_pauseOnLoseFocus, set: Core.prototype.__set_pauseOnLoseFocus},
+		'defaultScreenWidth': { enumerable: true, configurable: true, get: Core.prototype.__get_defaultScreenWidth, set: Core.prototype.__set_defaultScreenWidth},
+		'defaultScreenHeight': { enumerable: true, configurable: true, get: Core.prototype.__get_defaultScreenHeight, set: Core.prototype.__set_defaultScreenHeight},
+		'deviceAttitude': { enumerable: true, configurable: true, get: Core.prototype.__get_deviceAttitude, set: Core.prototype.__set_deviceAttitude}
+	})
+}
+Core.prototype.__get_eventMutex = function() {
+	var retVal = new CoreMutex()
+	retVal.__ptr = 	Polycode.Core__get_eventMutex(this.__ptr)
+	return retVal
 }
 
+Core.prototype.__set_eventMutex = function(val) {
+	Polycode.Core__set_eventMutex(this.__ptr, val.__ptr)
+}
+
+Core.prototype.__get_paused = function() {
+	return Polycode.Core__get_paused(this.__ptr)
+}
+
+Core.prototype.__set_paused = function(val) {
+	Polycode.Core__set_paused(this.__ptr, val)
+}
+
+Core.prototype.__get_pauseOnLoseFocus = function() {
+	return Polycode.Core__get_pauseOnLoseFocus(this.__ptr)
+}
+
+Core.prototype.__set_pauseOnLoseFocus = function(val) {
+	Polycode.Core__set_pauseOnLoseFocus(this.__ptr, val)
+}
+
+Core.prototype.__get_defaultScreenWidth = function() {
+	return Polycode.Core__get_defaultScreenWidth(this.__ptr)
+}
+
+Core.prototype.__set_defaultScreenWidth = function(val) {
+	Polycode.Core__set_defaultScreenWidth(this.__ptr, val)
+}
+
+Core.prototype.__get_defaultScreenHeight = function() {
+	return Polycode.Core__get_defaultScreenHeight(this.__ptr)
+}
+
+Core.prototype.__set_defaultScreenHeight = function(val) {
+	Polycode.Core__set_defaultScreenHeight(this.__ptr, val)
+}
+
+Core.prototype.__get_deviceAttitude = function() {
+	var retVal = new Quaternion()
+	retVal.__ptr = 	Polycode.Core__get_deviceAttitude(this.__ptr)
+	return retVal
+}
+
+Core.prototype.__set_deviceAttitude = function(val) {
+	Polycode.Core__set_deviceAttitude(this.__ptr, val.__ptr)
+}
+
+
 Core.prototype.Update = function() {
-	Polycode.Core_Update(this.__ptr)
+	return Polycode.Core_Update(this.__ptr)
 }
 
 Core.prototype.Render = function() {
@@ -10,15 +70,15 @@ Core.prototype.Render = function() {
 }
 
 Core.prototype.fixedUpdate = function() {
-	Polycode.Core_fixedUpdate(this.__ptr)
+	return Polycode.Core_fixedUpdate(this.__ptr)
 }
 
 Core.prototype.systemUpdate = function() {
-	Polycode.Core_systemUpdate(this.__ptr)
+	return Polycode.Core_systemUpdate(this.__ptr)
 }
 
 Core.prototype.updateAndRender = function() {
-	Polycode.Core_updateAndRender(this.__ptr)
+	return Polycode.Core_updateAndRender(this.__ptr)
 }
 
 Core.prototype.enableMouse = function(newval) {
@@ -50,7 +110,9 @@ Core.prototype.unlockMutex = function(mutex) {
 }
 
 Core.prototype.createMutex = function() {
-	Polycode.Core_createMutex(this.__ptr)
+	var retVal = new CoreMutex()
+	retVal.__ptr = Polycode.Core_createMutex(this.__ptr)
+	return retVal
 }
 
 Core.prototype.copyStringToClipboard = function(str) {
@@ -58,15 +120,17 @@ Core.prototype.copyStringToClipboard = function(str) {
 }
 
 Core.prototype.getClipboardString = function() {
-	Polycode.Core_getClipboardString(this.__ptr)
+	return Polycode.Core_getClipboardString(this.__ptr)
 }
 
 Core.prototype.getServices = function() {
-	Polycode.Core_getServices(this.__ptr)
+	var retVal = new CoreServices()
+	retVal.__ptr = Polycode.Core_getServices(this.__ptr)
+	return retVal
 }
 
 Core.prototype.getFPS = function() {
-	Polycode.Core_getFPS(this.__ptr)
+	return Polycode.Core_getFPS(this.__ptr)
 }
 
 Core.prototype.Shutdown = function() {
@@ -74,39 +138,41 @@ Core.prototype.Shutdown = function() {
 }
 
 Core.prototype.isFullscreen = function() {
-	Polycode.Core_isFullscreen(this.__ptr)
+	return Polycode.Core_isFullscreen(this.__ptr)
 }
 
 Core.prototype.getAALevel = function() {
-	Polycode.Core_getAALevel(this.__ptr)
+	return Polycode.Core_getAALevel(this.__ptr)
 }
 
 Core.prototype.getInput = function() {
-	Polycode.Core_getInput(this.__ptr)
+	var retVal = new CoreInput()
+	retVal.__ptr = Polycode.Core_getInput(this.__ptr)
+	return retVal
 }
 
 Core.prototype.getXRes = function() {
-	Polycode.Core_getXRes(this.__ptr)
+	return Polycode.Core_getXRes(this.__ptr)
 }
 
 Core.prototype.getYRes = function() {
-	Polycode.Core_getYRes(this.__ptr)
+	return Polycode.Core_getYRes(this.__ptr)
 }
 
 Core.prototype.getBackingXRes = function() {
-	Polycode.Core_getBackingXRes(this.__ptr)
+	return Polycode.Core_getBackingXRes(this.__ptr)
 }
 
 Core.prototype.getBackingYRes = function() {
-	Polycode.Core_getBackingYRes(this.__ptr)
+	return Polycode.Core_getBackingYRes(this.__ptr)
 }
 
 Core.prototype.getScreenWidth = function() {
-	Polycode.Core_getScreenWidth(this.__ptr)
+	return Polycode.Core_getScreenWidth(this.__ptr)
 }
 
 Core.prototype.getScreenHeight = function() {
-	Polycode.Core_getScreenHeight(this.__ptr)
+	return Polycode.Core_getScreenHeight(this.__ptr)
 }
 
 Core.prototype.createFolder = function(folderPath) {
@@ -126,7 +192,7 @@ Core.prototype.removeDiskItem = function(itemPath) {
 }
 
 Core.prototype.openFolderPicker = function() {
-	Polycode.Core_openFolderPicker(this.__ptr)
+	return Polycode.Core_openFolderPicker(this.__ptr)
 }
 
 Core.prototype.setFramerate = function(frameRate,maxFixedCycles) {
@@ -138,7 +204,7 @@ Core.prototype.openFilePicker = function(extensions,allowMultiple) {
 }
 
 Core.prototype.saveFilePicker = function(extensions) {
-	Polycode.Core_saveFilePicker(this.__ptr, extensions)
+	return Polycode.Core_saveFilePicker(this.__ptr, extensions)
 }
 
 Core.prototype.handleVideoModeChange = function(modeInfo) {
@@ -154,7 +220,9 @@ Core.prototype.prepareRenderContext = function() {
 }
 
 Core.prototype.openFile = function(fileName,opts) {
-	Polycode.Core_openFile(this.__ptr, fileName,opts)
+	var retVal = new CoreFile()
+	retVal.__ptr = Polycode.Core_openFile(this.__ptr, fileName,opts)
+	return retVal
 }
 
 Core.prototype.closeFile = function(file) {
@@ -174,11 +242,11 @@ Core.prototype.parseFolder = function(pathString,showHidden) {
 }
 
 Core.prototype.systemParseFolder = function(pathString,showHidden,targetVector) {
-	Polycode.Core_systemParseFolder(this.__ptr, pathString,showHidden,targetVector)
+	return Polycode.Core_systemParseFolder(this.__ptr, pathString,showHidden,targetVector)
 }
 
 Core.prototype.getResourcePathForFile = function(fileName) {
-	Polycode.Core_getResourcePathForFile(this.__ptr, fileName)
+	return Polycode.Core_getResourcePathForFile(this.__ptr, fileName)
 }
 
 Core.prototype.setVideoMode = function(xRes,yRes,fullScreen,vSync,aaLevel,anisotropyLevel,retinaSupport) {
@@ -198,27 +266,27 @@ Core.prototype.openURL = function(url) {
 }
 
 Core.prototype.getElapsed = function() {
-	Polycode.Core_getElapsed(this.__ptr)
+	return Polycode.Core_getElapsed(this.__ptr)
 }
 
 Core.prototype.getTicks = function() {
-	Polycode.Core_getTicks(this.__ptr)
+	return Polycode.Core_getTicks(this.__ptr)
 }
 
 Core.prototype.getRefreshIntervalMs = function() {
-	Polycode.Core_getRefreshIntervalMs(this.__ptr)
+	return Polycode.Core_getRefreshIntervalMs(this.__ptr)
 }
 
 Core.prototype.getTimeSleptMs = function() {
-	Polycode.Core_getTimeSleptMs(this.__ptr)
+	return Polycode.Core_getTimeSleptMs(this.__ptr)
 }
 
 Core.prototype.getFixedTimestep = function() {
-	Polycode.Core_getFixedTimestep(this.__ptr)
+	return Polycode.Core_getFixedTimestep(this.__ptr)
 }
 
 Core.prototype.getTicksFloat = function() {
-	Polycode.Core_getTicksFloat(this.__ptr)
+	return Polycode.Core_getTicksFloat(this.__ptr)
 }
 
 Core.prototype.setUserPointer = function(ptr) {
@@ -230,15 +298,15 @@ Core.prototype.getUserPointer = function() {
 }
 
 Core.prototype.executeExternalCommand = function(command,args,inDirectory) {
-	Polycode.Core_executeExternalCommand(this.__ptr, command,args,inDirectory)
+	return Polycode.Core_executeExternalCommand(this.__ptr, command,args,inDirectory)
 }
 
 Core.prototype.getDefaultWorkingDirectory = function() {
-	Polycode.Core_getDefaultWorkingDirectory(this.__ptr)
+	return Polycode.Core_getDefaultWorkingDirectory(this.__ptr)
 }
 
 Core.prototype.getUserHomeDirectory = function() {
-	Polycode.Core_getUserHomeDirectory(this.__ptr)
+	return Polycode.Core_getUserHomeDirectory(this.__ptr)
 }
 
 Core.prototype.makeApplicationMain = function() {
@@ -246,7 +314,9 @@ Core.prototype.makeApplicationMain = function() {
 }
 
 Core.prototype.getEventMutex = function() {
-	Polycode.Core_getEventMutex(this.__ptr)
+	var retVal = new CoreMutex()
+	retVal.__ptr = Polycode.Core_getEventMutex(this.__ptr)
+	return retVal
 }
 
 Core.prototype.removeThread = function(thread) {

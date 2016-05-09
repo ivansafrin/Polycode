@@ -2,11 +2,11 @@ function Image() {
 }
 
 Image.prototype.loadImage = function(fileName) {
-	Polycode.Image_loadImage(this.__ptr, fileName)
+	return Polycode.Image_loadImage(this.__ptr, fileName)
 }
 
 Image.prototype.saveImage = function(fileName) {
-	Polycode.Image_saveImage(this.__ptr, fileName)
+	return Polycode.Image_saveImage(this.__ptr, fileName)
 }
 
 Image.prototype.pasteImage = function(image,x,y,blendingMode,blendAmount,blendColor) {
@@ -26,7 +26,9 @@ Image.prototype.setPixel = function(x,y,r,g,b,a) {
 }
 
 Image.prototype.getPixel = function(x,y) {
-	Polycode.Image_getPixel(this.__ptr, x,y)
+	var retVal = new Color()
+	retVal.__ptr = Polycode.Image_getPixel(this.__ptr, x,y)
+	return retVal
 }
 
 Image.prototype.swap = function(v1,v2) {
@@ -70,39 +72,45 @@ Image.prototype.fastBlurHor = function(blurSize) {
 }
 
 Image.prototype.getPixelsInRect = function(x,y,width,height) {
-	Polycode.Image_getPixelsInRect(this.__ptr, x,y,width,height)
+	var retVal = new char()
+	retVal.__ptr = Polycode.Image_getPixelsInRect(this.__ptr, x,y,width,height)
+	return retVal
 }
 
 Image.prototype.getImagePart = function(subRect) {
-	Polycode.Image_getImagePart(this.__ptr, subRect)
+	var retVal = new Image()
+	retVal.__ptr = Polycode.Image_getImagePart(this.__ptr, subRect)
+	return retVal
 }
 
 Image.prototype.getBrushX = function() {
-	Polycode.Image_getBrushX(this.__ptr)
+	return Polycode.Image_getBrushX(this.__ptr)
 }
 
 Image.prototype.getBrushY = function() {
-	Polycode.Image_getBrushY(this.__ptr)
+	return Polycode.Image_getBrushY(this.__ptr)
 }
 
 Image.prototype.isLoaded = function() {
-	Polycode.Image_isLoaded(this.__ptr)
+	return Polycode.Image_isLoaded(this.__ptr)
 }
 
 Image.prototype.getType = function() {
-	Polycode.Image_getType(this.__ptr)
+	return Polycode.Image_getType(this.__ptr)
 }
 
 Image.prototype.getWidth = function() {
-	Polycode.Image_getWidth(this.__ptr)
+	return Polycode.Image_getWidth(this.__ptr)
 }
 
 Image.prototype.getHeight = function() {
-	Polycode.Image_getHeight(this.__ptr)
+	return Polycode.Image_getHeight(this.__ptr)
 }
 
 Image.prototype.getPixels = function() {
-	Polycode.Image_getPixels(this.__ptr)
+	var retVal = new char()
+	retVal.__ptr = Polycode.Image_getPixels(this.__ptr)
+	return retVal
 }
 
 Image.prototype.premultiplyAlpha = function() {
@@ -110,5 +118,5 @@ Image.prototype.premultiplyAlpha = function() {
 }
 
 Image.prototype.savePNG = function(fileName) {
-	Polycode.Image_savePNG(this.__ptr, fileName)
+	return Polycode.Image_savePNG(this.__ptr, fileName)
 }

@@ -1,40 +1,76 @@
 function String() {
+	Object.defineProperties(this, {
+		'contents': { enumerable: true, configurable: true, get: String.prototype.__get_contents, set: String.prototype.__set_contents},
+		'w_contents': { enumerable: true, configurable: true, get: String.prototype.__get_w_contents, set: String.prototype.__set_w_contents}
+	})
+}
+String.prototype.__get_contents = function() {
+	var retVal = new string()
+	retVal.__ptr = 	Polycode.String__get_contents(this.__ptr)
+	return retVal
 }
 
+String.prototype.__set_contents = function(val) {
+	Polycode.String__set_contents(this.__ptr, val.__ptr)
+}
+
+String.prototype.__get_w_contents = function() {
+	var retVal = new wstring()
+	retVal.__ptr = 	Polycode.String__get_w_contents(this.__ptr)
+	return retVal
+}
+
+String.prototype.__set_w_contents = function(val) {
+	Polycode.String__set_w_contents(this.__ptr, val.__ptr)
+}
+
+
 String.prototype.size = function() {
-	Polycode.String_size(this.__ptr)
+	var retVal = new size_t()
+	retVal.__ptr = Polycode.String_size(this.__ptr)
+	return retVal
 }
 
 String.prototype.length = function() {
-	Polycode.String_length(this.__ptr)
+	var retVal = new size_t()
+	retVal.__ptr = Polycode.String_length(this.__ptr)
+	return retVal
 }
 
 String.prototype.substr = function(pos,n) {
-	Polycode.String_substr(this.__ptr, pos,n)
+	return Polycode.String_substr(this.__ptr, pos,n)
 }
 
 String.prototype.rfind = function(str,pos) {
-	Polycode.String_rfind(this.__ptr, str,pos)
+	var retVal = new size_t()
+	retVal.__ptr = Polycode.String_rfind(this.__ptr, str,pos)
+	return retVal
 }
 
 String.prototype.find = function(str,pos) {
-	Polycode.String_find(this.__ptr, str,pos)
+	var retVal = new size_t()
+	retVal.__ptr = Polycode.String_find(this.__ptr, str,pos)
+	return retVal
 }
 
 String.prototype.find_last_of = function(str,pos) {
-	Polycode.String_find_last_of(this.__ptr, str,pos)
+	var retVal = new size_t()
+	retVal.__ptr = Polycode.String_find_last_of(this.__ptr, str,pos)
+	return retVal
 }
 
 String.prototype.find_first_of = function(str,pos) {
-	Polycode.String_find_first_of(this.__ptr, str,pos)
+	var retVal = new size_t()
+	retVal.__ptr = Polycode.String_find_first_of(this.__ptr, str,pos)
+	return retVal
 }
 
 String.prototype.toLowerCase = function() {
-	Polycode.String_toLowerCase(this.__ptr)
+	return Polycode.String_toLowerCase(this.__ptr)
 }
 
 String.prototype.toUpperCase = function() {
-	Polycode.String_toUpperCase(this.__ptr)
+	return Polycode.String_toUpperCase(this.__ptr)
 }
 
 String.prototype.split = function(delim) {
@@ -42,27 +78,33 @@ String.prototype.split = function(delim) {
 }
 
 String.prototype.replace = function(what,withWhat) {
-	Polycode.String_replace(this.__ptr, what,withWhat)
+	return Polycode.String_replace(this.__ptr, what,withWhat)
 }
 
 String.prototype.toNumber = function() {
-	Polycode.String_toNumber(this.__ptr)
+	return Polycode.String_toNumber(this.__ptr)
 }
 
 String.prototype.toInteger = function() {
-	Polycode.String_toInteger(this.__ptr)
+	return Polycode.String_toInteger(this.__ptr)
 }
 
 String.prototype.c_str = function() {
-	Polycode.String_c_str(this.__ptr)
+	var retVal = new char()
+	retVal.__ptr = Polycode.String_c_str(this.__ptr)
+	return retVal
 }
 
 String.prototype.getDataWithEncoding = function(encoding) {
-	Polycode.String_getDataWithEncoding(this.__ptr, encoding)
+	var retVal = new char()
+	retVal.__ptr = Polycode.String_getDataWithEncoding(this.__ptr, encoding)
+	return retVal
 }
 
 String.prototype.getWDataWithEncoding = function(encoding) {
-	Polycode.String_getWDataWithEncoding(this.__ptr, encoding)
+	var retVal = new wchar_t()
+	retVal.__ptr = Polycode.String_getWDataWithEncoding(this.__ptr, encoding)
+	return retVal
 }
 
 String.prototype.append = function(c) {
@@ -70,7 +112,9 @@ String.prototype.append = function(c) {
 }
 
 String.prototype.getDataSizeWithEncoding = function(encoding) {
-	Polycode.String_getDataSizeWithEncoding(this.__ptr, encoding)
+	var retVal = new size_t()
+	retVal.__ptr = Polycode.String_getDataSizeWithEncoding(this.__ptr, encoding)
+	return retVal
 }
 
 String.prototype.setDataWithEncoding = function(data,encoding) {
@@ -78,5 +122,5 @@ String.prototype.setDataWithEncoding = function(data,encoding) {
 }
 
 String.prototype.isNumber = function() {
-	Polycode.String_isNumber(this.__ptr)
+	return Polycode.String_isNumber(this.__ptr)
 }

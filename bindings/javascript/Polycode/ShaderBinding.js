@@ -1,28 +1,69 @@
 function ShaderBinding() {
+	Object.defineProperties(this, {
+		'resetAttributes': { enumerable: true, configurable: true, get: ShaderBinding.prototype.__get_resetAttributes, set: ShaderBinding.prototype.__set_resetAttributes},
+		'targetShader': { enumerable: true, configurable: true, get: ShaderBinding.prototype.__get_targetShader, set: ShaderBinding.prototype.__set_targetShader},
+		'accessMutex': { enumerable: true, configurable: true, get: ShaderBinding.prototype.__get_accessMutex, set: ShaderBinding.prototype.__set_accessMutex}
+	})
 }
+ShaderBinding.prototype.__get_resetAttributes = function() {
+	return Polycode.ShaderBinding__get_resetAttributes(this.__ptr)
+}
+
+ShaderBinding.prototype.__set_resetAttributes = function(val) {
+	Polycode.ShaderBinding__set_resetAttributes(this.__ptr, val)
+}
+
+ShaderBinding.prototype.__get_targetShader = function() {
+	var retVal = new Shader()
+	retVal.__ptr = 	Polycode.ShaderBinding__get_targetShader(this.__ptr)
+	return retVal
+}
+
+ShaderBinding.prototype.__set_targetShader = function(val) {
+	Polycode.ShaderBinding__set_targetShader(this.__ptr, val.__ptr)
+}
+
+ShaderBinding.prototype.__get_accessMutex = function() {
+	var retVal = new CoreMutex()
+	retVal.__ptr = 	Polycode.ShaderBinding__get_accessMutex(this.__ptr)
+	return retVal
+}
+
+ShaderBinding.prototype.__set_accessMutex = function(val) {
+	Polycode.ShaderBinding__set_accessMutex(this.__ptr, val.__ptr)
+}
+
 
 ShaderBinding.prototype.copyTo = function(targetBinding) {
 	Polycode.ShaderBinding_copyTo(this.__ptr, targetBinding)
 }
 
 ShaderBinding.prototype.addParam = function(type,name) {
-	Polycode.ShaderBinding_addParam(this.__ptr, type,name)
+	var retVal = new LocalShaderParam()
+	retVal.__ptr = Polycode.ShaderBinding_addParam(this.__ptr, type,name)
+	return retVal
 }
 
 ShaderBinding.prototype.addParamPointer = function(type,name,ptr) {
-	Polycode.ShaderBinding_addParamPointer(this.__ptr, type,name,ptr)
+	var retVal = new LocalShaderParam()
+	retVal.__ptr = Polycode.ShaderBinding_addParamPointer(this.__ptr, type,name,ptr)
+	return retVal
 }
 
 ShaderBinding.prototype.getNumLocalParams = function() {
-	Polycode.ShaderBinding_getNumLocalParams(this.__ptr)
+	return Polycode.ShaderBinding_getNumLocalParams(this.__ptr)
 }
 
 ShaderBinding.prototype.getLocalParam = function(index) {
-	Polycode.ShaderBinding_getLocalParam(this.__ptr, index)
+	var retVal = new LocalShaderParam()
+	retVal.__ptr = Polycode.ShaderBinding_getLocalParam(this.__ptr, index)
+	return retVal
 }
 
 ShaderBinding.prototype.getLocalParamByName = function(name) {
-	Polycode.ShaderBinding_getLocalParamByName(this.__ptr, name)
+	var retVal = new LocalShaderParam()
+	retVal.__ptr = Polycode.ShaderBinding_getLocalParamByName(this.__ptr, name)
+	return retVal
 }
 
 ShaderBinding.prototype.removeParam = function(name) {
@@ -30,7 +71,9 @@ ShaderBinding.prototype.removeParam = function(name) {
 }
 
 ShaderBinding.prototype.loadTextureForParam = function(paramName,fileName) {
-	Polycode.ShaderBinding_loadTextureForParam(this.__ptr, paramName,fileName)
+	var retVal = new Texture()
+	retVal.__ptr = Polycode.ShaderBinding_loadTextureForParam(this.__ptr, paramName,fileName)
+	return retVal
 }
 
 ShaderBinding.prototype.setTextureForParam = function(paramName,texture) {
@@ -42,19 +85,25 @@ ShaderBinding.prototype.setCubemapForParam = function(paramName,cubemap) {
 }
 
 ShaderBinding.prototype.getNumAttributeBindings = function() {
-	Polycode.ShaderBinding_getNumAttributeBindings(this.__ptr)
+	return Polycode.ShaderBinding_getNumAttributeBindings(this.__ptr)
 }
 
 ShaderBinding.prototype.getAttributeBinding = function(index) {
-	Polycode.ShaderBinding_getAttributeBinding(this.__ptr, index)
+	var retVal = new AttributeBinding()
+	retVal.__ptr = Polycode.ShaderBinding_getAttributeBinding(this.__ptr, index)
+	return retVal
 }
 
 ShaderBinding.prototype.addAttributeBinding = function(name,dataArray) {
-	Polycode.ShaderBinding_addAttributeBinding(this.__ptr, name,dataArray)
+	var retVal = new AttributeBinding()
+	retVal.__ptr = Polycode.ShaderBinding_addAttributeBinding(this.__ptr, name,dataArray)
+	return retVal
 }
 
 ShaderBinding.prototype.getAttributeBindingByName = function(name) {
-	Polycode.ShaderBinding_getAttributeBindingByName(this.__ptr, name)
+	var retVal = new AttributeBinding()
+	retVal.__ptr = Polycode.ShaderBinding_getAttributeBindingByName(this.__ptr, name)
+	return retVal
 }
 
 ShaderBinding.prototype.addRenderTargetBinding = function(binding) {
@@ -66,41 +115,51 @@ ShaderBinding.prototype.removeRenderTargetBinding = function(binding) {
 }
 
 ShaderBinding.prototype.getNumRenderTargetBindings = function() {
-	Polycode.ShaderBinding_getNumRenderTargetBindings(this.__ptr)
+	return Polycode.ShaderBinding_getNumRenderTargetBindings(this.__ptr)
 }
 
 ShaderBinding.prototype.getRenderTargetBinding = function(index) {
-	Polycode.ShaderBinding_getRenderTargetBinding(this.__ptr, index)
+	var retVal = new RenderTargetBinding()
+	retVal.__ptr = Polycode.ShaderBinding_getRenderTargetBinding(this.__ptr, index)
+	return retVal
 }
 
 ShaderBinding.prototype.getNumInTargetBindings = function() {
-	Polycode.ShaderBinding_getNumInTargetBindings(this.__ptr)
+	return Polycode.ShaderBinding_getNumInTargetBindings(this.__ptr)
 }
 
 ShaderBinding.prototype.getInTargetBinding = function(index) {
-	Polycode.ShaderBinding_getInTargetBinding(this.__ptr, index)
+	var retVal = new RenderTargetBinding()
+	retVal.__ptr = Polycode.ShaderBinding_getInTargetBinding(this.__ptr, index)
+	return retVal
 }
 
 ShaderBinding.prototype.getNumColorTargetBindings = function() {
-	Polycode.ShaderBinding_getNumColorTargetBindings(this.__ptr)
+	return Polycode.ShaderBinding_getNumColorTargetBindings(this.__ptr)
 }
 
 ShaderBinding.prototype.getColorTargetBinding = function(index) {
-	Polycode.ShaderBinding_getColorTargetBinding(this.__ptr, index)
+	var retVal = new RenderTargetBinding()
+	retVal.__ptr = Polycode.ShaderBinding_getColorTargetBinding(this.__ptr, index)
+	return retVal
 }
 
 ShaderBinding.prototype.getNumDepthTargetBindings = function() {
-	Polycode.ShaderBinding_getNumDepthTargetBindings(this.__ptr)
+	return Polycode.ShaderBinding_getNumDepthTargetBindings(this.__ptr)
 }
 
 ShaderBinding.prototype.getDepthTargetBinding = function(index) {
-	Polycode.ShaderBinding_getDepthTargetBinding(this.__ptr, index)
+	var retVal = new RenderTargetBinding()
+	retVal.__ptr = Polycode.ShaderBinding_getDepthTargetBinding(this.__ptr, index)
+	return retVal
 }
 
 ShaderBinding.prototype.getNumOutTargetBindings = function() {
-	Polycode.ShaderBinding_getNumOutTargetBindings(this.__ptr)
+	return Polycode.ShaderBinding_getNumOutTargetBindings(this.__ptr)
 }
 
 ShaderBinding.prototype.getOutTargetBinding = function(index) {
-	Polycode.ShaderBinding_getOutTargetBinding(this.__ptr, index)
+	var retVal = new RenderTargetBinding()
+	retVal.__ptr = Polycode.ShaderBinding_getOutTargetBinding(this.__ptr, index)
+	return retVal
 }

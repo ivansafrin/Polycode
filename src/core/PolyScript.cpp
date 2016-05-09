@@ -42,9 +42,12 @@ JSScript::JSScript(duk_context *context, const String &path) : Script(path) {
         mainObjectRef = NULL;
     }
     
+    duk_pop(context);
+    
 }
 
 ScriptInstance *JSScript::callInit(Entity *entity) {
+    
     JSScriptInstance *scriptInstance = new JSScriptInstance();
     scriptInstance->script = this;
     scriptInstance->objectRef = NULL;
@@ -58,13 +61,19 @@ ScriptInstance *JSScript::callInit(Entity *entity) {
     void *entityConstructor = duk_get_heapptr(context, -1);
     duk_pop(context);
     
+    if(!entityConstructor) {
+        return scriptInstance;
+    }
     
+    duk_push_global_object(context);
     duk_push_heapptr(context, mainObjectRef);
     duk_new(context, 0);
-    
     scriptInstance->objectRef = duk_get_heapptr(context, -1);
+    String strVal = String::IntToString((long)scriptInstance);
+    duk_put_prop_string(context, -2, strVal.c_str());
     
     duk_push_heapptr(context, scriptInstance->objectRef);
+    
     duk_get_prop_string(context, -1, "init");
     duk_push_heapptr(context, scriptInstance->objectRef);
     
@@ -77,7 +86,7 @@ ScriptInstance *JSScript::callInit(Entity *entity) {
     if(duk_pcall_method(context, 1) != 0) {
         Logger::log("JAVASCRIPT ERROR: [%s]\n", duk_safe_to_string(context, -1));
     }
-    duk_pop_2(context);
+    duk_pop_n(context, 4);
     return scriptInstance;
 }
 
@@ -86,7 +95,7 @@ void JSScript::callUpdate(ScriptInstance *instance, Entity *entity, Number elaps
     if(!((JSScriptInstance*)instance)->objectRef) {
         return;
     }
-    
+
     duk_push_heapptr(context, ((JSScriptInstance*)instance)->objectRef);
     duk_get_prop_string(context, -1, "update");
     duk_push_heapptr(context, ((JSScriptInstance*)instance)->objectRef);
@@ -95,6 +104,7 @@ void JSScript::callUpdate(ScriptInstance *instance, Entity *entity, Number elaps
         Logger::log("JAVASCRIPT ERROR: [%s]\n", duk_safe_to_string(context, -1));
     }
     duk_pop_2(context);
+
 }
 
 LuaScript::LuaScript(lua_State *state, const String &path) : Script(path) {

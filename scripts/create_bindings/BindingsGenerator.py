@@ -93,6 +93,8 @@ class BindingsGenerator(object):
 				continue
 			if "::union" in pp["name"]:
 				continue
+			if pp["type"].replace("*", "") in self.ignoreClasses:
+				continue
 
 			if pp["type"].find("static ") != -1:
 				classPP["isStatic"] = True

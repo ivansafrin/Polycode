@@ -1,28 +1,98 @@
 function LocalShaderParam() {
+	Object.defineProperties(this, {
+		'name': { enumerable: true, configurable: true, get: LocalShaderParam.prototype.__get_name, set: LocalShaderParam.prototype.__set_name},
+		'data': { enumerable: true, configurable: true, get: LocalShaderParam.prototype.__get_data, set: LocalShaderParam.prototype.__set_data},
+		'type': { enumerable: true, configurable: true, get: LocalShaderParam.prototype.__get_type, set: LocalShaderParam.prototype.__set_type},
+		'ownsPointer': { enumerable: true, configurable: true, get: LocalShaderParam.prototype.__get_ownsPointer, set: LocalShaderParam.prototype.__set_ownsPointer},
+		'arraySize': { enumerable: true, configurable: true, get: LocalShaderParam.prototype.__get_arraySize, set: LocalShaderParam.prototype.__set_arraySize},
+		'param': { enumerable: true, configurable: true, get: LocalShaderParam.prototype.__get_param, set: LocalShaderParam.prototype.__set_param}
+	})
+}
+LocalShaderParam.prototype.__get_name = function() {
+	return Polycode.LocalShaderParam__get_name(this.__ptr)
 }
 
+LocalShaderParam.prototype.__set_name = function(val) {
+	Polycode.LocalShaderParam__set_name(this.__ptr, val)
+}
+
+LocalShaderParam.prototype.__get_data = function() {
+	var retVal = new void()
+	retVal.__ptr = 	Polycode.LocalShaderParam__get_data(this.__ptr)
+	return retVal
+}
+
+LocalShaderParam.prototype.__set_data = function(val) {
+	Polycode.LocalShaderParam__set_data(this.__ptr, val.__ptr)
+}
+
+LocalShaderParam.prototype.__get_type = function() {
+	return Polycode.LocalShaderParam__get_type(this.__ptr)
+}
+
+LocalShaderParam.prototype.__set_type = function(val) {
+	Polycode.LocalShaderParam__set_type(this.__ptr, val)
+}
+
+LocalShaderParam.prototype.__get_ownsPointer = function() {
+	return Polycode.LocalShaderParam__get_ownsPointer(this.__ptr)
+}
+
+LocalShaderParam.prototype.__set_ownsPointer = function(val) {
+	Polycode.LocalShaderParam__set_ownsPointer(this.__ptr, val)
+}
+
+LocalShaderParam.prototype.__get_arraySize = function() {
+	return Polycode.LocalShaderParam__get_arraySize(this.__ptr)
+}
+
+LocalShaderParam.prototype.__set_arraySize = function(val) {
+	Polycode.LocalShaderParam__set_arraySize(this.__ptr, val)
+}
+
+LocalShaderParam.prototype.__get_param = function() {
+	var retVal = new ProgramParam()
+	retVal.__ptr = 	Polycode.LocalShaderParam__get_param(this.__ptr)
+	return retVal
+}
+
+LocalShaderParam.prototype.__set_param = function(val) {
+	Polycode.LocalShaderParam__set_param(this.__ptr, val.__ptr)
+}
+
+
 LocalShaderParam.prototype.Copy = function() {
-	Polycode.LocalShaderParam_Copy(this.__ptr)
+	var retVal = new LocalShaderParam()
+	retVal.__ptr = Polycode.LocalShaderParam_Copy(this.__ptr)
+	return retVal
 }
 
 LocalShaderParam.prototype.getNumber = function() {
-	Polycode.LocalShaderParam_getNumber(this.__ptr)
+	return Polycode.LocalShaderParam_getNumber(this.__ptr)
 }
 
 LocalShaderParam.prototype.getVector2 = function() {
-	Polycode.LocalShaderParam_getVector2(this.__ptr)
+	var retVal = new Vector2()
+	retVal.__ptr = Polycode.LocalShaderParam_getVector2(this.__ptr)
+	return retVal
 }
 
 LocalShaderParam.prototype.getVector3 = function() {
-	Polycode.LocalShaderParam_getVector3(this.__ptr)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.LocalShaderParam_getVector3(this.__ptr)
+	return retVal
 }
 
 LocalShaderParam.prototype.getMatrix4 = function() {
-	Polycode.LocalShaderParam_getMatrix4(this.__ptr)
+	var retVal = new Matrix4()
+	retVal.__ptr = Polycode.LocalShaderParam_getMatrix4(this.__ptr)
+	return retVal
 }
 
 LocalShaderParam.prototype.getColor = function() {
-	Polycode.LocalShaderParam_getColor(this.__ptr)
+	var retVal = new Color()
+	retVal.__ptr = Polycode.LocalShaderParam_getColor(this.__ptr)
+	return retVal
 }
 
 LocalShaderParam.prototype.setNumber = function(x) {
@@ -50,7 +120,9 @@ LocalShaderParam.prototype.setTexture = function(texture) {
 }
 
 LocalShaderParam.prototype.getTexture = function() {
-	Polycode.LocalShaderParam_getTexture(this.__ptr)
+	var retVal = new Texture()
+	retVal.__ptr = Polycode.LocalShaderParam_getTexture(this.__ptr)
+	return retVal
 }
 
 LocalShaderParam.prototype.setCubemap = function(cubemap) {
@@ -58,7 +130,9 @@ LocalShaderParam.prototype.setCubemap = function(cubemap) {
 }
 
 LocalShaderParam.prototype.getCubemap = function() {
-	Polycode.LocalShaderParam_getCubemap(this.__ptr)
+	var retVal = new Cubemap()
+	retVal.__ptr = Polycode.LocalShaderParam_getCubemap(this.__ptr)
+	return retVal
 }
 
 LocalShaderParam.prototype.setParamValueFromString = function(type,pvalue) {

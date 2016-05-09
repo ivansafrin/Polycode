@@ -1,28 +1,70 @@
 function Quaternion() {
+	Object.defineProperties(this, {
+		'x': { enumerable: true, configurable: true, get: Quaternion.prototype.__get_x, set: Quaternion.prototype.__set_x},
+		'y': { enumerable: true, configurable: true, get: Quaternion.prototype.__get_y, set: Quaternion.prototype.__set_y},
+		'z': { enumerable: true, configurable: true, get: Quaternion.prototype.__get_z, set: Quaternion.prototype.__set_z},
+		'w': { enumerable: true, configurable: true, get: Quaternion.prototype.__get_w, set: Quaternion.prototype.__set_w}
+	})
 }
+Quaternion.prototype.__get_x = function() {
+	return Polycode.Quaternion__get_x(this.__ptr)
+}
+
+Quaternion.prototype.__set_x = function(val) {
+	Polycode.Quaternion__set_x(this.__ptr, val)
+}
+
+Quaternion.prototype.__get_y = function() {
+	return Polycode.Quaternion__get_y(this.__ptr)
+}
+
+Quaternion.prototype.__set_y = function(val) {
+	Polycode.Quaternion__set_y(this.__ptr, val)
+}
+
+Quaternion.prototype.__get_z = function() {
+	return Polycode.Quaternion__get_z(this.__ptr)
+}
+
+Quaternion.prototype.__set_z = function(val) {
+	Polycode.Quaternion__set_z(this.__ptr, val)
+}
+
+Quaternion.prototype.__get_w = function() {
+	return Polycode.Quaternion__get_w(this.__ptr)
+}
+
+Quaternion.prototype.__set_w = function(val) {
+	Polycode.Quaternion__set_w(this.__ptr, val)
+}
+
 
 Quaternion.prototype.setFromMatrix = function(_mat) {
 	Polycode.Quaternion_setFromMatrix(this.__ptr, _mat)
 }
 
 Quaternion.prototype.Dot = function(rkQ) {
-	Polycode.Quaternion_Dot(this.__ptr, rkQ)
+	return Polycode.Quaternion_Dot(this.__ptr, rkQ)
 }
 
 Quaternion.prototype.Log = function() {
-	Polycode.Quaternion_Log(this.__ptr)
+	var retVal = new Quaternion()
+	retVal.__ptr = Polycode.Quaternion_Log(this.__ptr)
+	return retVal
 }
 
 Quaternion.prototype.Exp = function() {
-	Polycode.Quaternion_Exp(this.__ptr)
+	var retVal = new Quaternion()
+	retVal.__ptr = Polycode.Quaternion_Exp(this.__ptr)
+	return retVal
 }
 
 Quaternion.prototype.Norm = function() {
-	Polycode.Quaternion_Norm(this.__ptr)
+	return Polycode.Quaternion_Norm(this.__ptr)
 }
 
 Quaternion.prototype.Normalize = function() {
-	Polycode.Quaternion_Normalize(this.__ptr)
+	return Polycode.Quaternion_Normalize(this.__ptr)
 }
 
 Quaternion.prototype.lookAt = function(D,upVector) {
@@ -34,7 +76,9 @@ Quaternion.prototype.createFromMatrix = function(matrix) {
 }
 
 Quaternion.prototype.Inverse = function() {
-	Polycode.Quaternion_Inverse(this.__ptr)
+	var retVal = new Quaternion()
+	retVal.__ptr = Polycode.Quaternion_Inverse(this.__ptr)
+	return retVal
 }
 
 Quaternion.prototype.set = function(w,x,y,z) {
@@ -42,7 +86,7 @@ Quaternion.prototype.set = function(w,x,y,z) {
 }
 
 Quaternion.prototype.InvSqrt = function(x) {
-	Polycode.Quaternion_InvSqrt(this.__ptr, x)
+	return Polycode.Quaternion_InvSqrt(this.__ptr, x)
 }
 
 Quaternion.prototype.fromAxes = function(az,ay,ax) {
@@ -54,7 +98,9 @@ Quaternion.prototype.fromAngleAxis = function(rfAngle,rkAxis) {
 }
 
 Quaternion.prototype.toEulerAngles = function() {
-	Polycode.Quaternion_toEulerAngles(this.__ptr)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.Quaternion_toEulerAngles(this.__ptr)
+	return retVal
 }
 
 Quaternion.prototype.toAngleAxis = function(rfAngle,rkAxis) {
@@ -66,9 +112,13 @@ Quaternion.prototype.createFromAxisAngle = function(x,y,z,degrees) {
 }
 
 Quaternion.prototype.createMatrix = function() {
-	Polycode.Quaternion_createMatrix(this.__ptr)
+	var retVal = new Matrix4()
+	retVal.__ptr = Polycode.Quaternion_createMatrix(this.__ptr)
+	return retVal
 }
 
 Quaternion.prototype.applyTo = function(v) {
-	Polycode.Quaternion_applyTo(this.__ptr, v)
+	var retVal = new Vector3()
+	retVal.__ptr = Polycode.Quaternion_applyTo(this.__ptr, v)
+	return retVal
 }

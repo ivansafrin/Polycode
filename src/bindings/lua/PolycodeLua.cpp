@@ -938,25 +938,7 @@ int luaopen_Polycode(lua_State *L) {
 		{"Matrix4_setProjection", Polycode_Matrix4_setProjection},
 		{"delete_Matrix4", Polycode_delete_Matrix4},
 		{"Mesh_get_indexedMesh", Polycode_Mesh_get_indexedMesh},
-		{"Mesh_get_vertexPositionArray", Polycode_Mesh_get_vertexPositionArray},
-		{"Mesh_get_vertexColorArray", Polycode_Mesh_get_vertexColorArray},
-		{"Mesh_get_vertexNormalArray", Polycode_Mesh_get_vertexNormalArray},
-		{"Mesh_get_vertexTexCoordArray", Polycode_Mesh_get_vertexTexCoordArray},
-		{"Mesh_get_vertexTexCoord2Array", Polycode_Mesh_get_vertexTexCoord2Array},
-		{"Mesh_get_vertexTangentArray", Polycode_Mesh_get_vertexTangentArray},
-		{"Mesh_get_vertexBoneWeightArray", Polycode_Mesh_get_vertexBoneWeightArray},
-		{"Mesh_get_vertexBoneIndexArray", Polycode_Mesh_get_vertexBoneIndexArray},
-		{"Mesh_get_indexArray", Polycode_Mesh_get_indexArray},
 		{"Mesh_set_indexedMesh", Polycode_Mesh_set_indexedMesh},
-		{"Mesh_set_vertexPositionArray", Polycode_Mesh_set_vertexPositionArray},
-		{"Mesh_set_vertexColorArray", Polycode_Mesh_set_vertexColorArray},
-		{"Mesh_set_vertexNormalArray", Polycode_Mesh_set_vertexNormalArray},
-		{"Mesh_set_vertexTexCoordArray", Polycode_Mesh_set_vertexTexCoordArray},
-		{"Mesh_set_vertexTexCoord2Array", Polycode_Mesh_set_vertexTexCoord2Array},
-		{"Mesh_set_vertexTangentArray", Polycode_Mesh_set_vertexTangentArray},
-		{"Mesh_set_vertexBoneWeightArray", Polycode_Mesh_set_vertexBoneWeightArray},
-		{"Mesh_set_vertexBoneIndexArray", Polycode_Mesh_set_vertexBoneIndexArray},
-		{"Mesh_set_indexArray", Polycode_Mesh_set_indexArray},
 		{"Mesh", Polycode_Mesh},
 		{"Mesh_MeshFromFileName", Polycode_Mesh_MeshFromFileName},
 		{"Mesh_loadMesh", Polycode_Mesh_loadMesh},
@@ -1216,17 +1198,6 @@ int luaopen_Polycode(lua_State *L) {
 		{"RenderDataArray_getArrayData", Polycode_RenderDataArray_getArrayData},
 		{"RenderDataArray_getDataSize", Polycode_RenderDataArray_getDataSize},
 		{"delete_RenderDataArray", Polycode_delete_RenderDataArray},
-		{"VertexDataArray_get_countPerVertex", Polycode_VertexDataArray_get_countPerVertex},
-		{"VertexDataArray_set_countPerVertex", Polycode_VertexDataArray_set_countPerVertex},
-		{"VertexDataArray", Polycode_VertexDataArray},
-		{"VertexDataArray_getCountPerVertex", Polycode_VertexDataArray_getCountPerVertex},
-		{"VertexDataArray_getArrayData", Polycode_VertexDataArray_getArrayData},
-		{"VertexDataArray_getDataSize", Polycode_VertexDataArray_getDataSize},
-		{"delete_VertexDataArray", Polycode_delete_VertexDataArray},
-		{"IndexDataArray", Polycode_IndexDataArray},
-		{"IndexDataArray_getArrayData", Polycode_IndexDataArray_getArrayData},
-		{"IndexDataArray_getDataSize", Polycode_IndexDataArray_getDataSize},
-		{"delete_IndexDataArray", Polycode_delete_IndexDataArray},
 		{"LightShadowInfoBinding_get_shadowMatrix", Polycode_LightShadowInfoBinding_get_shadowMatrix},
 		{"LightShadowInfoBinding_get_shadowBuffer", Polycode_LightShadowInfoBinding_get_shadowBuffer},
 		{"LightShadowInfoBinding_set_shadowMatrix", Polycode_LightShadowInfoBinding_set_shadowMatrix},
@@ -2446,18 +2417,6 @@ int luaopen_Polycode(lua_State *L) {
 	luaL_newmetatable(L, "Polycode.RenderDataArray");
 	lua_pushstring(L, "__gc");
 	lua_pushcfunction(L, Polycode_delete_RenderDataArray);
-	lua_settable(L, -3);
-	lua_pop(L, 1);
-
-	luaL_newmetatable(L, "Polycode.VertexDataArray");
-	lua_pushstring(L, "__gc");
-	lua_pushcfunction(L, Polycode_delete_VertexDataArray);
-	lua_settable(L, -3);
-	lua_pop(L, 1);
-
-	luaL_newmetatable(L, "Polycode.IndexDataArray");
-	lua_pushstring(L, "__gc");
-	lua_pushcfunction(L, Polycode_delete_IndexDataArray);
 	lua_settable(L, -3);
 	lua_pop(L, 1);
 

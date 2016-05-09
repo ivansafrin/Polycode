@@ -1,16 +1,33 @@
 function SceneRenderTexture() {
+	Object.defineProperties(this, {
+		'enabled': { enumerable: true, configurable: true, get: SceneRenderTexture.prototype.__get_enabled, set: SceneRenderTexture.prototype.__set_enabled}
+	})
+}
+SceneRenderTexture.prototype.__get_enabled = function() {
+	return Polycode.SceneRenderTexture__get_enabled(this.__ptr)
 }
 
+SceneRenderTexture.prototype.__set_enabled = function(val) {
+	Polycode.SceneRenderTexture__set_enabled(this.__ptr, val)
+}
+
+
 SceneRenderTexture.prototype.getTargetTexture = function() {
-	Polycode.SceneRenderTexture_getTargetTexture(this.__ptr)
+	var retVal = new Texture()
+	retVal.__ptr = Polycode.SceneRenderTexture_getTargetTexture(this.__ptr)
+	return retVal
 }
 
 SceneRenderTexture.prototype.getFilterColorBufferTexture = function() {
-	Polycode.SceneRenderTexture_getFilterColorBufferTexture(this.__ptr)
+	var retVal = new Texture()
+	retVal.__ptr = Polycode.SceneRenderTexture_getFilterColorBufferTexture(this.__ptr)
+	return retVal
 }
 
 SceneRenderTexture.prototype.getFilterZBufferTexture = function() {
-	Polycode.SceneRenderTexture_getFilterZBufferTexture(this.__ptr)
+	var retVal = new Texture()
+	retVal.__ptr = Polycode.SceneRenderTexture_getFilterZBufferTexture(this.__ptr)
+	return retVal
 }
 
 SceneRenderTexture.prototype.Render = function() {
@@ -18,7 +35,9 @@ SceneRenderTexture.prototype.Render = function() {
 }
 
 SceneRenderTexture.prototype.saveToImage = function() {
-	Polycode.SceneRenderTexture_saveToImage(this.__ptr)
+	var retVal = new Image()
+	retVal.__ptr = Polycode.SceneRenderTexture_saveToImage(this.__ptr)
+	return retVal
 }
 
 SceneRenderTexture.prototype.resizeRenderTexture = function(newWidth,newHeight) {
@@ -26,9 +45,13 @@ SceneRenderTexture.prototype.resizeRenderTexture = function(newWidth,newHeight) 
 }
 
 SceneRenderTexture.prototype.getTargetScene = function() {
-	Polycode.SceneRenderTexture_getTargetScene(this.__ptr)
+	var retVal = new Scene()
+	retVal.__ptr = Polycode.SceneRenderTexture_getTargetScene(this.__ptr)
+	return retVal
 }
 
 SceneRenderTexture.prototype.getTargetCamera = function() {
-	Polycode.SceneRenderTexture_getTargetCamera(this.__ptr)
+	var retVal = new Camera()
+	retVal.__ptr = Polycode.SceneRenderTexture_getTargetCamera(this.__ptr)
+	return retVal
 }

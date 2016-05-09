@@ -1,5 +1,45 @@
 function Material() {
+	Object.defineProperties(this, {
+		'fp16RenderTargets': { enumerable: true, configurable: true, get: Material.prototype.__get_fp16RenderTargets, set: Material.prototype.__set_fp16RenderTargets},
+		'shaderModule': { enumerable: true, configurable: true, get: Material.prototype.__get_shaderModule, set: Material.prototype.__set_shaderModule},
+		'blendingMode': { enumerable: true, configurable: true, get: Material.prototype.__get_blendingMode, set: Material.prototype.__set_blendingMode},
+		'screenMaterial': { enumerable: true, configurable: true, get: Material.prototype.__get_screenMaterial, set: Material.prototype.__set_screenMaterial}
+	})
 }
+Material.prototype.__get_fp16RenderTargets = function() {
+	return Polycode.Material__get_fp16RenderTargets(this.__ptr)
+}
+
+Material.prototype.__set_fp16RenderTargets = function(val) {
+	Polycode.Material__set_fp16RenderTargets(this.__ptr, val)
+}
+
+Material.prototype.__get_shaderModule = function() {
+	var retVal = new void()
+	retVal.__ptr = 	Polycode.Material__get_shaderModule(this.__ptr)
+	return retVal
+}
+
+Material.prototype.__set_shaderModule = function(val) {
+	Polycode.Material__set_shaderModule(this.__ptr, val.__ptr)
+}
+
+Material.prototype.__get_blendingMode = function() {
+	return Polycode.Material__get_blendingMode(this.__ptr)
+}
+
+Material.prototype.__set_blendingMode = function(val) {
+	Polycode.Material__set_blendingMode(this.__ptr, val)
+}
+
+Material.prototype.__get_screenMaterial = function() {
+	return Polycode.Material__get_screenMaterial(this.__ptr)
+}
+
+Material.prototype.__set_screenMaterial = function(val) {
+	Polycode.Material__set_screenMaterial(this.__ptr, val)
+}
+
 
 Material.prototype.addShaderPass = function(pass) {
 	Polycode.Material_addShaderPass(this.__ptr, pass)
@@ -18,7 +58,7 @@ Material.prototype.addShaderAtIndex = function(shader,shaderBinding,shaderIndex)
 }
 
 Material.prototype.getNumShaderPasses = function() {
-	Polycode.Material_getNumShaderPasses(this.__ptr)
+	return Polycode.Material_getNumShaderPasses(this.__ptr)
 }
 
 Material.prototype.removeShaderPass = function(shaderIndex) {
@@ -34,11 +74,13 @@ Material.prototype.addShaderRenderTarget = function(newTarget) {
 }
 
 Material.prototype.getNumShaderRenderTargets = function() {
-	Polycode.Material_getNumShaderRenderTargets(this.__ptr)
+	return Polycode.Material_getNumShaderRenderTargets(this.__ptr)
 }
 
 Material.prototype.getShaderRenderTarget = function(index) {
-	Polycode.Material_getShaderRenderTarget(this.__ptr, index)
+	var retVal = new ShaderRenderTarget()
+	retVal.__ptr = Polycode.Material_getShaderRenderTarget(this.__ptr, index)
+	return retVal
 }
 
 Material.prototype.removeShaderRenderTarget = function(index) {
@@ -54,19 +96,25 @@ Material.prototype.recreateRenderTargets = function() {
 }
 
 Material.prototype.getName = function() {
-	Polycode.Material_getName(this.__ptr)
+	return Polycode.Material_getName(this.__ptr)
 }
 
 Material.prototype.getShaderPass = function(index) {
-	Polycode.Material_getShaderPass(this.__ptr, index)
+	var retVal = new ShaderPass()
+	retVal.__ptr = Polycode.Material_getShaderPass(this.__ptr, index)
+	return retVal
 }
 
 Material.prototype.getShaderBinding = function(index) {
-	Polycode.Material_getShaderBinding(this.__ptr, index)
+	var retVal = new ShaderBinding()
+	retVal.__ptr = Polycode.Material_getShaderBinding(this.__ptr, index)
+	return retVal
 }
 
 Material.prototype.getShader = function(index) {
-	Polycode.Material_getShader(this.__ptr, index)
+	var retVal = new Shader()
+	retVal.__ptr = Polycode.Material_getShader(this.__ptr, index)
+	return retVal
 }
 
 Material.prototype.loadMaterial = function(fileName) {

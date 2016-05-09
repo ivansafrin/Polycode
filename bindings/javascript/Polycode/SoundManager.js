@@ -10,11 +10,13 @@ SoundManager.prototype.setListenerOrientation = function(orientation,upVector) {
 }
 
 SoundManager.prototype.recordSound = function(rate,sampleSize) {
-	Polycode.SoundManager_recordSound(this.__ptr, rate,sampleSize)
+	return Polycode.SoundManager_recordSound(this.__ptr, rate,sampleSize)
 }
 
 SoundManager.prototype.stopRecording = function(generateFloatBuffer) {
-	Polycode.SoundManager_stopRecording(this.__ptr, generateFloatBuffer)
+	var retVal = new Sound()
+	retVal.__ptr = Polycode.SoundManager_stopRecording(this.__ptr, generateFloatBuffer)
+	return retVal
 }
 
 SoundManager.prototype.setAudioInterface = function(audioInterface) {

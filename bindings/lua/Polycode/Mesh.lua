@@ -13,60 +13,6 @@ Mesh.LINE_LOOP_MESH = 7
 function Mesh:__getvar(name)
 	if name == "indexedMesh" then
 		return Polycode.Mesh_get_indexedMesh(self.__ptr)
-	elseif name == "vertexPositionArray" then
-		local retVal = Polycode.Mesh_get_vertexPositionArray(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["VertexDataArray"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
-	elseif name == "vertexColorArray" then
-		local retVal = Polycode.Mesh_get_vertexColorArray(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["VertexDataArray"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
-	elseif name == "vertexNormalArray" then
-		local retVal = Polycode.Mesh_get_vertexNormalArray(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["VertexDataArray"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
-	elseif name == "vertexTexCoordArray" then
-		local retVal = Polycode.Mesh_get_vertexTexCoordArray(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["VertexDataArray"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
-	elseif name == "vertexTexCoord2Array" then
-		local retVal = Polycode.Mesh_get_vertexTexCoord2Array(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["VertexDataArray"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
-	elseif name == "vertexTangentArray" then
-		local retVal = Polycode.Mesh_get_vertexTangentArray(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["VertexDataArray"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
-	elseif name == "vertexBoneWeightArray" then
-		local retVal = Polycode.Mesh_get_vertexBoneWeightArray(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["VertexDataArray"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
-	elseif name == "vertexBoneIndexArray" then
-		local retVal = Polycode.Mesh_get_vertexBoneIndexArray(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["VertexDataArray"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
-	elseif name == "indexArray" then
-		local retVal = Polycode.Mesh_get_indexArray(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["IndexDataArray"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
 	end
 	if Resource["__getvar"] ~= nil then
 		return Resource.__getvar(self, name)
@@ -76,33 +22,6 @@ end
 function Mesh:__setvar(name,value)
 	if name == "indexedMesh" then
 		Polycode.Mesh_set_indexedMesh(self.__ptr, value)
-		return true
-	elseif name == "vertexPositionArray" then
-		Polycode.Mesh_set_vertexPositionArray(self.__ptr, value.__ptr)
-		return true
-	elseif name == "vertexColorArray" then
-		Polycode.Mesh_set_vertexColorArray(self.__ptr, value.__ptr)
-		return true
-	elseif name == "vertexNormalArray" then
-		Polycode.Mesh_set_vertexNormalArray(self.__ptr, value.__ptr)
-		return true
-	elseif name == "vertexTexCoordArray" then
-		Polycode.Mesh_set_vertexTexCoordArray(self.__ptr, value.__ptr)
-		return true
-	elseif name == "vertexTexCoord2Array" then
-		Polycode.Mesh_set_vertexTexCoord2Array(self.__ptr, value.__ptr)
-		return true
-	elseif name == "vertexTangentArray" then
-		Polycode.Mesh_set_vertexTangentArray(self.__ptr, value.__ptr)
-		return true
-	elseif name == "vertexBoneWeightArray" then
-		Polycode.Mesh_set_vertexBoneWeightArray(self.__ptr, value.__ptr)
-		return true
-	elseif name == "vertexBoneIndexArray" then
-		Polycode.Mesh_set_vertexBoneIndexArray(self.__ptr, value.__ptr)
-		return true
-	elseif name == "indexArray" then
-		Polycode.Mesh_set_indexArray(self.__ptr, value.__ptr)
 		return true
 	end
 	if Resource["__setvar"] ~= nil then
