@@ -1,5 +1,11 @@
 function Data() {
 }
+Duktape.fin(Data.prototype, function (x) {
+	if (x === Data.prototype) {
+		return;
+	}
+	Polycode.Data__delete(x.__ptr)
+})
 
 Data.prototype.loadFromFile = function(fileName) {
 	return Polycode.Data_loadFromFile(this.__ptr, fileName)

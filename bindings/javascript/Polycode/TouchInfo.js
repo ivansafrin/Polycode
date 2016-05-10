@@ -31,3 +31,9 @@ TouchInfo.prototype.__set_type = function(val) {
 	Polycode.TouchInfo__set_type(this.__ptr, val)
 }
 
+Duktape.fin(TouchInfo.prototype, function (x) {
+	if (x === TouchInfo.prototype) {
+		return;
+	}
+	Polycode.TouchInfo__delete(x.__ptr)
+})

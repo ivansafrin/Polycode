@@ -1,5 +1,11 @@
 function EventDispatcher() {
 }
+Duktape.fin(EventDispatcher.prototype, function (x) {
+	if (x === EventDispatcher.prototype) {
+		return;
+	}
+	Polycode.EventDispatcher__delete(x.__ptr)
+})
 
 EventDispatcher.prototype.removeAllHandlers = function() {
 	Polycode.EventDispatcher_removeAllHandlers(this.__ptr)

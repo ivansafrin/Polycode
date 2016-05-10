@@ -38,6 +38,12 @@ ResourcePool.prototype.__set_deleteOnUnsubscribe = function(val) {
 	Polycode.ResourcePool__set_deleteOnUnsubscribe(this.__ptr, val)
 }
 
+Duktape.fin(ResourcePool.prototype, function (x) {
+	if (x === ResourcePool.prototype) {
+		return;
+	}
+	Polycode.ResourcePool__delete(x.__ptr)
+})
 
 ResourcePool.prototype.setFallbackPool = function(pool) {
 	Polycode.ResourcePool_setFallbackPool(this.__ptr, pool)

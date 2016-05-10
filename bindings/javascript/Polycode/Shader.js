@@ -60,6 +60,12 @@ Shader.prototype.__set_name = function(val) {
 	Polycode.Shader__set_name(this.__ptr, val)
 }
 
+Duktape.fin(Shader.prototype, function (x) {
+	if (x === Shader.prototype) {
+		return;
+	}
+	Polycode.Shader__delete(x.__ptr)
+})
 
 Shader.prototype.getType = function() {
 	return Polycode.Shader_getType(this.__ptr)

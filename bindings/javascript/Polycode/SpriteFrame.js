@@ -33,3 +33,9 @@ SpriteFrame.prototype.__set_frameID = function(val) {
 	Polycode.SpriteFrame__set_frameID(this.__ptr, val)
 }
 
+Duktape.fin(SpriteFrame.prototype, function (x) {
+	if (x === SpriteFrame.prototype) {
+		return;
+	}
+	Polycode.SpriteFrame__delete(x.__ptr)
+})

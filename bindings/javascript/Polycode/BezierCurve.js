@@ -22,6 +22,12 @@ BezierCurve.prototype.__set_evaluationAccuracy = function(val) {
 	Polycode.BezierCurve__set_evaluationAccuracy(this.__ptr, val)
 }
 
+Duktape.fin(BezierCurve.prototype, function (x) {
+	if (x === BezierCurve.prototype) {
+		return;
+	}
+	Polycode.BezierCurve__delete(x.__ptr)
+})
 
 BezierCurve.prototype.getControlPoint = function(index) {
 	var retVal = new BezierPoint()

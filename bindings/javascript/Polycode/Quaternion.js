@@ -38,6 +38,12 @@ Quaternion.prototype.__set_w = function(val) {
 	Polycode.Quaternion__set_w(this.__ptr, val)
 }
 
+Duktape.fin(Quaternion.prototype, function (x) {
+	if (x === Quaternion.prototype) {
+		return;
+	}
+	Polycode.Quaternion__delete(x.__ptr)
+})
 
 Quaternion.prototype.setFromMatrix = function(_mat) {
 	Polycode.Quaternion_setFromMatrix(this.__ptr, _mat)

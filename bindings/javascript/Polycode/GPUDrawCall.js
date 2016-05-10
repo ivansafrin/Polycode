@@ -46,3 +46,9 @@ GPUDrawCall.prototype.__set_material = function(val) {
 	Polycode.GPUDrawCall__set_material(this.__ptr, val.__ptr)
 }
 
+Duktape.fin(GPUDrawCall.prototype, function (x) {
+	if (x === GPUDrawCall.prototype) {
+		return;
+	}
+	Polycode.GPUDrawCall__delete(x.__ptr)
+})

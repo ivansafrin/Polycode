@@ -1,5 +1,11 @@
 function ProgramResourceLoader() {
 }
+Duktape.fin(ProgramResourceLoader.prototype, function (x) {
+	if (x === ProgramResourceLoader.prototype) {
+		return;
+	}
+	Polycode.ProgramResourceLoader__delete(x.__ptr)
+})
 
 ProgramResourceLoader.prototype.loadResource = function(path,targetPool) {
 	var retVal = new Resource()

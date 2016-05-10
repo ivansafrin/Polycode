@@ -165,6 +165,12 @@ BoneTrack.prototype.__set_weight = function(val) {
 	Polycode.BoneTrack__set_weight(this.__ptr, val)
 }
 
+Duktape.fin(BoneTrack.prototype, function (x) {
+	if (x === BoneTrack.prototype) {
+		return;
+	}
+	Polycode.BoneTrack__delete(x.__ptr)
+})
 
 BoneTrack.prototype.Play = function(once) {
 	Polycode.BoneTrack_Play(this.__ptr, once)

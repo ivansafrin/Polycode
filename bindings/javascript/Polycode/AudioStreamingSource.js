@@ -1,5 +1,11 @@
 function AudioStreamingSource() {
 }
+Duktape.fin(AudioStreamingSource.prototype, function (x) {
+	if (x === AudioStreamingSource.prototype) {
+		return;
+	}
+	Polycode.AudioStreamingSource__delete(x.__ptr)
+})
 
 AudioStreamingSource.prototype.getNumChannels = function() {
 	return Polycode.AudioStreamingSource_getNumChannels(this.__ptr)

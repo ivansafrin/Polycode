@@ -69,6 +69,12 @@ CoreInput.prototype.__set_deltaMousePosition = function(val) {
 	Polycode.CoreInput__set_deltaMousePosition(this.__ptr, val.__ptr)
 }
 
+Duktape.fin(CoreInput.prototype, function (x) {
+	if (x === CoreInput.prototype) {
+		return;
+	}
+	Polycode.CoreInput__delete(x.__ptr)
+})
 
 CoreInput.prototype.getMousePosition = function() {
 	var retVal = new Vector2()

@@ -11,3 +11,9 @@ BinaryObjectReader.prototype.__set_success = function(val) {
 	Polycode.BinaryObjectReader__set_success(this.__ptr, val)
 }
 
+Duktape.fin(BinaryObjectReader.prototype, function (x) {
+	if (x === BinaryObjectReader.prototype) {
+		return;
+	}
+	Polycode.BinaryObjectReader__delete(x.__ptr)
+})

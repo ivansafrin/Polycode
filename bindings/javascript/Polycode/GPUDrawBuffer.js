@@ -108,3 +108,9 @@ GPUDrawBuffer.prototype.__set_viewport = function(val) {
 	Polycode.GPUDrawBuffer__set_viewport(this.__ptr, val.__ptr)
 }
 
+Duktape.fin(GPUDrawBuffer.prototype, function (x) {
+	if (x === GPUDrawBuffer.prototype) {
+		return;
+	}
+	Polycode.GPUDrawBuffer__delete(x.__ptr)
+})

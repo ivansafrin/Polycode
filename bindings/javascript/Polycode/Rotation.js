@@ -29,3 +29,9 @@ Rotation.prototype.__set_roll = function(val) {
 	Polycode.Rotation__set_roll(this.__ptr, val)
 }
 
+Duktape.fin(Rotation.prototype, function (x) {
+	if (x === Rotation.prototype) {
+		return;
+	}
+	Polycode.Rotation__delete(x.__ptr)
+})

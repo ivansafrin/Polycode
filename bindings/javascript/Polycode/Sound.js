@@ -1,5 +1,11 @@
 function Sound() {
 }
+Duktape.fin(Sound.prototype, function (x) {
+	if (x === Sound.prototype) {
+		return;
+	}
+	Polycode.Sound__delete(x.__ptr)
+})
 
 Sound.prototype.getSampleAsNumber = function(offset,channel) {
 	return Polycode.Sound_getSampleAsNumber(this.__ptr, offset,channel)

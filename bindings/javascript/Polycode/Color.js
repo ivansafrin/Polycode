@@ -38,6 +38,12 @@ Color.prototype.__set_a = function(val) {
 	Polycode.Color__set_a(this.__ptr, val)
 }
 
+Duktape.fin(Color.prototype, function (x) {
+	if (x === Color.prototype) {
+		return;
+	}
+	Polycode.Color__delete(x.__ptr)
+})
 
 Color.prototype.setColorHex = function(hex) {
 	Polycode.Color_setColorHex(this.__ptr, hex)

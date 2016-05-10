@@ -1,5 +1,11 @@
 function SceneManager() {
 }
+Duktape.fin(SceneManager.prototype, function (x) {
+	if (x === SceneManager.prototype) {
+		return;
+	}
+	Polycode.SceneManager__delete(x.__ptr)
+})
 
 SceneManager.prototype.addScene = function(newScene) {
 	Polycode.SceneManager_addScene(this.__ptr, newScene)

@@ -38,6 +38,12 @@ Rectangle.prototype.__set_h = function(val) {
 	Polycode.Rectangle__set_h(this.__ptr, val)
 }
 
+Duktape.fin(Rectangle.prototype, function (x) {
+	if (x === Rectangle.prototype) {
+		return;
+	}
+	Polycode.Rectangle__delete(x.__ptr)
+})
 
 Rectangle.prototype.setRect = function(x,y,w,h) {
 	Polycode.Rectangle_setRect(this.__ptr, x,y,w,h)

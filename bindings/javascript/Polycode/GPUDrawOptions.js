@@ -105,3 +105,9 @@ GPUDrawOptions.prototype.__set_drawColor = function(val) {
 	Polycode.GPUDrawOptions__set_drawColor(this.__ptr, val.__ptr)
 }
 
+Duktape.fin(GPUDrawOptions.prototype, function (x) {
+	if (x === GPUDrawOptions.prototype) {
+		return;
+	}
+	Polycode.GPUDrawOptions__delete(x.__ptr)
+})

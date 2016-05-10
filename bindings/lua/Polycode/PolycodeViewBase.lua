@@ -2,22 +2,13 @@ class "PolycodeViewBase"
 
 
 function PolycodeViewBase:__getvar(name)
-	if name == "windowData" then
-		local retVal = Polycode.PolycodeViewBase_get_windowData(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["void"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
-	elseif name == "resizable" then
+	if name == "resizable" then
 		return Polycode.PolycodeViewBase_get_resizable(self.__ptr)
 	end
 end
 
 function PolycodeViewBase:__setvar(name,value)
-	if name == "windowData" then
-		Polycode.PolycodeViewBase_set_windowData(self.__ptr, value.__ptr)
-		return true
-	elseif name == "resizable" then
+	if name == "resizable" then
 		Polycode.PolycodeViewBase_set_resizable(self.__ptr, value)
 		return true
 	end

@@ -125,6 +125,12 @@ InputEvent.prototype.__set_hitDistance = function(val) {
 	Polycode.InputEvent__set_hitDistance(this.__ptr, val)
 }
 
+Duktape.fin(InputEvent.prototype, function (x) {
+	if (x === InputEvent.prototype) {
+		return;
+	}
+	Polycode.InputEvent__delete(x.__ptr)
+})
 
 InputEvent.prototype.getMousePosition = function() {
 	var retVal = new Vector2()

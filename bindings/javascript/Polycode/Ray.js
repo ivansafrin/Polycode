@@ -35,6 +35,12 @@ Ray.prototype.__set_inv_direction = function(val) {
 	Polycode.Ray__set_inv_direction(this.__ptr, val.__ptr)
 }
 
+Duktape.fin(Ray.prototype, function (x) {
+	if (x === Ray.prototype) {
+		return;
+	}
+	Polycode.Ray__delete(x.__ptr)
+})
 
 Ray.prototype.boxIntersect = function(box,transformMatrix,near,far) {
 	return Polycode.Ray_boxIntersect(this.__ptr, box,transformMatrix,near,far)

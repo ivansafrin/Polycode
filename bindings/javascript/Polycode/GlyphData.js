@@ -44,6 +44,12 @@ GlyphData.prototype.__set_trailingAdvance = function(val) {
 	Polycode.GlyphData__set_trailingAdvance(this.__ptr, val)
 }
 
+Duktape.fin(GlyphData.prototype, function (x) {
+	if (x === GlyphData.prototype) {
+		return;
+	}
+	Polycode.GlyphData__delete(x.__ptr)
+})
 
 GlyphData.prototype.clearData = function() {
 	Polycode.GlyphData_clearData(this.__ptr)

@@ -11,6 +11,12 @@ CoreMutex.prototype.__set_mutexID = function(val) {
 	Polycode.CoreMutex__set_mutexID(this.__ptr, val)
 }
 
+Duktape.fin(CoreMutex.prototype, function (x) {
+	if (x === CoreMutex.prototype) {
+		return;
+	}
+	Polycode.CoreMutex__delete(x.__ptr)
+})
 
 CoreMutex.prototype.lock = function() {
 	Polycode.CoreMutex_lock(this.__ptr)

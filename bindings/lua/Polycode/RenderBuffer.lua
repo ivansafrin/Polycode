@@ -14,18 +14,6 @@ function RenderBuffer:__getvar(name)
 		local __c = _G["Texture"]("__skip_ptr__")
 		__c.__ptr = retVal
 		return __c
-	elseif name == "platformData" then
-		local retVal = Polycode.RenderBuffer_get_platformData(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["void"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
-	elseif name == "depthBufferPlatformData" then
-		local retVal = Polycode.RenderBuffer_get_depthBufferPlatformData(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["void"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
 	end
 end
 
@@ -35,12 +23,6 @@ function RenderBuffer:__setvar(name,value)
 		return true
 	elseif name == "depthTexture" then
 		Polycode.RenderBuffer_set_depthTexture(self.__ptr, value.__ptr)
-		return true
-	elseif name == "platformData" then
-		Polycode.RenderBuffer_set_platformData(self.__ptr, value.__ptr)
-		return true
-	elseif name == "depthBufferPlatformData" then
-		Polycode.RenderBuffer_set_depthBufferPlatformData(self.__ptr, value.__ptr)
 		return true
 	end
 	return false

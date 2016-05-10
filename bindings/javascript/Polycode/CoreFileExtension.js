@@ -20,3 +20,9 @@ CoreFileExtension.prototype.__set_description = function(val) {
 	Polycode.CoreFileExtension__set_description(this.__ptr, val)
 }
 
+Duktape.fin(CoreFileExtension.prototype, function (x) {
+	if (x === CoreFileExtension.prototype) {
+		return;
+	}
+	Polycode.CoreFileExtension__delete(x.__ptr)
+})

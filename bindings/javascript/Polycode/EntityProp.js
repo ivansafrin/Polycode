@@ -20,3 +20,9 @@ EntityProp.prototype.__set_propValue = function(val) {
 	Polycode.EntityProp__set_propValue(this.__ptr, val)
 }
 
+Duktape.fin(EntityProp.prototype, function (x) {
+	if (x === EntityProp.prototype) {
+		return;
+	}
+	Polycode.EntityProp__delete(x.__ptr)
+})

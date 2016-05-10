@@ -1,5 +1,11 @@
 function BinaryObjectWriter() {
 }
+Duktape.fin(BinaryObjectWriter.prototype, function (x) {
+	if (x === BinaryObjectWriter.prototype) {
+		return;
+	}
+	Polycode.BinaryObjectWriter__delete(x.__ptr)
+})
 
 BinaryObjectWriter.prototype.parseKeysFromObjectEntry = function(entry) {
 	Polycode.BinaryObjectWriter_parseKeysFromObjectEntry(this.__ptr, entry)

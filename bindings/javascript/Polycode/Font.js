@@ -11,6 +11,12 @@ Font.prototype.__set_loaded = function(val) {
 	Polycode.Font__set_loaded(this.__ptr, val)
 }
 
+Duktape.fin(Font.prototype, function (x) {
+	if (x === Font.prototype) {
+		return;
+	}
+	Polycode.Font__delete(x.__ptr)
+})
 
 Font.prototype.getFace = function() {
 	var retVal = new FT_Face()

@@ -24,7 +24,7 @@ class LuaBindingsGenerator(object):
 		self.luaClassBindingOut = ""
 		self.cppLoaderOut = ""
 		self.luaIndexOut = ""
-		self.disableGC = self.config.get('lua', 'DisableGarbageCollection').replace(" ", "").split(",")
+		self.disableGC = self.config.get('global', 'DisableGarbageCollection').replace(" ", "").split(",")
 		self.inheritInModule = self.config.get('lua', 'InheritInModule').replace(" ", "").split(",")
 		self.libName = self.config.get('global', 'LibraryName')
 

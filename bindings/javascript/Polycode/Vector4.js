@@ -38,6 +38,12 @@ Vector4.prototype.__set_w = function(val) {
 	Polycode.Vector4__set_w(this.__ptr, val)
 }
 
+Duktape.fin(Vector4.prototype, function (x) {
+	if (x === Vector4.prototype) {
+		return;
+	}
+	Polycode.Vector4__delete(x.__ptr)
+})
 
 Vector4.prototype.set = function(x,y,z,w) {
 	Polycode.Vector4_set(this.__ptr, x,y,z,w)

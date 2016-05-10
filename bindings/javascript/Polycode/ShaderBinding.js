@@ -33,6 +33,12 @@ ShaderBinding.prototype.__set_accessMutex = function(val) {
 	Polycode.ShaderBinding__set_accessMutex(this.__ptr, val.__ptr)
 }
 
+Duktape.fin(ShaderBinding.prototype, function (x) {
+	if (x === ShaderBinding.prototype) {
+		return;
+	}
+	Polycode.ShaderBinding__delete(x.__ptr)
+})
 
 ShaderBinding.prototype.copyTo = function(targetBinding) {
 	Polycode.ShaderBinding_copyTo(this.__ptr, targetBinding)

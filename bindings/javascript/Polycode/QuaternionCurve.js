@@ -1,5 +1,11 @@
 function QuaternionCurve() {
 }
+Duktape.fin(QuaternionCurve.prototype, function (x) {
+	if (x === QuaternionCurve.prototype) {
+		return;
+	}
+	Polycode.QuaternionCurve__delete(x.__ptr)
+})
 
 QuaternionCurve.prototype.interpolate = function(t,useShortestPath) {
 	var retVal = new Quaternion()

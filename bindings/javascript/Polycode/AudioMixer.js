@@ -22,6 +22,12 @@ AudioMixer.prototype.__set_mixerMutex = function(val) {
 	Polycode.AudioMixer__set_mixerMutex(this.__ptr, val.__ptr)
 }
 
+Duktape.fin(AudioMixer.prototype, function (x) {
+	if (x === AudioMixer.prototype) {
+		return;
+	}
+	Polycode.AudioMixer__delete(x.__ptr)
+})
 
 AudioMixer.prototype.mixIntoBuffer = function(buffer,numSamples) {
 	Polycode.AudioMixer_mixIntoBuffer(this.__ptr, buffer,numSamples)

@@ -20,6 +20,12 @@ Vector2.prototype.__set_y = function(val) {
 	Polycode.Vector2__set_y(this.__ptr, val)
 }
 
+Duktape.fin(Vector2.prototype, function (x) {
+	if (x === Vector2.prototype) {
+		return;
+	}
+	Polycode.Vector2__delete(x.__ptr)
+})
 
 Vector2.prototype.set = function(x,y) {
 	Polycode.Vector2_set(this.__ptr, x,y)

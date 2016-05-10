@@ -11,3 +11,9 @@ LuaScriptInstance.prototype.__set_tableRef = function(val) {
 	Polycode.LuaScriptInstance__set_tableRef(this.__ptr, val)
 }
 
+Duktape.fin(LuaScriptInstance.prototype, function (x) {
+	if (x === LuaScriptInstance.prototype) {
+		return;
+	}
+	Polycode.LuaScriptInstance__delete(x.__ptr)
+})

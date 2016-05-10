@@ -29,3 +29,9 @@ RenderThreadDebugInfo.prototype.__set_timeTaken = function(val) {
 	Polycode.RenderThreadDebugInfo__set_timeTaken(this.__ptr, val)
 }
 
+Duktape.fin(RenderThreadDebugInfo.prototype, function (x) {
+	if (x === RenderThreadDebugInfo.prototype) {
+		return;
+	}
+	Polycode.RenderThreadDebugInfo__delete(x.__ptr)
+})

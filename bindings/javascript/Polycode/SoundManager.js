@@ -1,5 +1,11 @@
 function SoundManager() {
 }
+Duktape.fin(SoundManager.prototype, function (x) {
+	if (x === SoundManager.prototype) {
+		return;
+	}
+	Polycode.SoundManager__delete(x.__ptr)
+})
 
 SoundManager.prototype.setListenerPosition = function(position) {
 	Polycode.SoundManager_setListenerPosition(this.__ptr, position)

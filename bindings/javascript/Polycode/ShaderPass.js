@@ -53,6 +53,12 @@ ShaderPass.prototype.__set_materialShaderBinding = function(val) {
 	Polycode.ShaderPass__set_materialShaderBinding(this.__ptr, val.__ptr)
 }
 
+Duktape.fin(ShaderPass.prototype, function (x) {
+	if (x === ShaderPass.prototype) {
+		return;
+	}
+	Polycode.ShaderPass__delete(x.__ptr)
+})
 
 ShaderPass.prototype.setAttributeArraysFromMesh = function(mesh) {
 	Polycode.ShaderPass_setAttributeArraysFromMesh(this.__ptr, mesh)

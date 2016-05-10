@@ -1,7 +1,6 @@
 function Material() {
 	Object.defineProperties(this, {
 		'fp16RenderTargets': { enumerable: true, configurable: true, get: Material.prototype.__get_fp16RenderTargets, set: Material.prototype.__set_fp16RenderTargets},
-		'shaderModule': { enumerable: true, configurable: true, get: Material.prototype.__get_shaderModule, set: Material.prototype.__set_shaderModule},
 		'blendingMode': { enumerable: true, configurable: true, get: Material.prototype.__get_blendingMode, set: Material.prototype.__set_blendingMode},
 		'screenMaterial': { enumerable: true, configurable: true, get: Material.prototype.__get_screenMaterial, set: Material.prototype.__set_screenMaterial}
 	})
@@ -12,16 +11,6 @@ Material.prototype.__get_fp16RenderTargets = function() {
 
 Material.prototype.__set_fp16RenderTargets = function(val) {
 	Polycode.Material__set_fp16RenderTargets(this.__ptr, val)
-}
-
-Material.prototype.__get_shaderModule = function() {
-	var retVal = new void()
-	retVal.__ptr = 	Polycode.Material__get_shaderModule(this.__ptr)
-	return retVal
-}
-
-Material.prototype.__set_shaderModule = function(val) {
-	Polycode.Material__set_shaderModule(this.__ptr, val.__ptr)
 }
 
 Material.prototype.__get_blendingMode = function() {

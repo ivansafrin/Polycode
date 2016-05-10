@@ -1,5 +1,11 @@
 function ResourceManager() {
 }
+Duktape.fin(ResourceManager.prototype, function (x) {
+	if (x === ResourceManager.prototype) {
+		return;
+	}
+	Polycode.ResourceManager__delete(x.__ptr)
+})
 
 ResourceManager.prototype.getGlobalPool = function() {
 	var retVal = new ResourcePool()

@@ -93,3 +93,9 @@ SceneParticle.prototype.__set_varianceIndex = function(val) {
 	Polycode.SceneParticle__set_varianceIndex(this.__ptr, val)
 }
 
+Duktape.fin(SceneParticle.prototype, function (x) {
+	if (x === SceneParticle.prototype) {
+		return;
+	}
+	Polycode.SceneParticle__delete(x.__ptr)
+})

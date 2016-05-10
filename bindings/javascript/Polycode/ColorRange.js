@@ -31,3 +31,9 @@ ColorRange.prototype.__set_rangeEnd = function(val) {
 	Polycode.ColorRange__set_rangeEnd(this.__ptr, val)
 }
 
+Duktape.fin(ColorRange.prototype, function (x) {
+	if (x === ColorRange.prototype) {
+		return;
+	}
+	Polycode.ColorRange__delete(x.__ptr)
+})

@@ -56,6 +56,12 @@ OSFileEntry.prototype.__set_type = function(val) {
 	Polycode.OSFileEntry__set_type(this.__ptr, val)
 }
 
+Duktape.fin(OSFileEntry.prototype, function (x) {
+	if (x === OSFileEntry.prototype) {
+		return;
+	}
+	Polycode.OSFileEntry__delete(x.__ptr)
+})
 
 OSFileEntry.prototype.init = function(path,name,type) {
 	Polycode.OSFileEntry_init(this.__ptr, path,name,type)

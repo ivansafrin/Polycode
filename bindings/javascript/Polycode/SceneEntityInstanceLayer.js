@@ -42,6 +42,12 @@ SceneEntityInstanceLayer.prototype.__set_instance = function(val) {
 	Polycode.SceneEntityInstanceLayer__set_instance(this.__ptr, val.__ptr)
 }
 
+Duktape.fin(SceneEntityInstanceLayer.prototype, function (x) {
+	if (x === SceneEntityInstanceLayer.prototype) {
+		return;
+	}
+	Polycode.SceneEntityInstanceLayer__delete(x.__ptr)
+})
 
 SceneEntityInstanceLayer.prototype.setLayerVisibility = function(val) {
 	Polycode.SceneEntityInstanceLayer_setLayerVisibility(this.__ptr, val)

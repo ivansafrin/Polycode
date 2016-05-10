@@ -20,3 +20,9 @@ MouseEventResult.prototype.__set_blocked = function(val) {
 	Polycode.MouseEventResult__set_blocked(this.__ptr, val)
 }
 
+Duktape.fin(MouseEventResult.prototype, function (x) {
+	if (x === MouseEventResult.prototype) {
+		return;
+	}
+	Polycode.MouseEventResult__delete(x.__ptr)
+})

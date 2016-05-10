@@ -11,6 +11,12 @@ ShaderProgram.prototype.__set_type = function(val) {
 	Polycode.ShaderProgram__set_type(this.__ptr, val)
 }
 
+Duktape.fin(ShaderProgram.prototype, function (x) {
+	if (x === ShaderProgram.prototype) {
+		return;
+	}
+	Polycode.ShaderProgram__delete(x.__ptr)
+})
 
 ShaderProgram.prototype.reloadProgram = function() {
 	Polycode.ShaderProgram_reloadProgram(this.__ptr)

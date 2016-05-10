@@ -67,3 +67,9 @@ ShaderRenderTarget.prototype.__set_normalizedHeight = function(val) {
 	Polycode.ShaderRenderTarget__set_normalizedHeight(this.__ptr, val)
 }
 
+Duktape.fin(ShaderRenderTarget.prototype, function (x) {
+	if (x === ShaderRenderTarget.prototype) {
+		return;
+	}
+	Polycode.ShaderRenderTarget__delete(x.__ptr)
+})

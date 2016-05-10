@@ -65,6 +65,12 @@ ObjectEntry.prototype.__set_length = function(val) {
 	Polycode.ObjectEntry__set_length(this.__ptr, val)
 }
 
+Duktape.fin(ObjectEntry.prototype, function (x) {
+	if (x === ObjectEntry.prototype) {
+		return;
+	}
+	Polycode.ObjectEntry__delete(x.__ptr)
+})
 
 ObjectEntry.prototype.readNumber = function(key,out) {
 	return Polycode.ObjectEntry_readNumber(this.__ptr, key,out)

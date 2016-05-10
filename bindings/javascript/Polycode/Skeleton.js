@@ -1,5 +1,11 @@
 function Skeleton() {
 }
+Duktape.fin(Skeleton.prototype, function (x) {
+	if (x === Skeleton.prototype) {
+		return;
+	}
+	Polycode.Skeleton__delete(x.__ptr)
+})
 
 Skeleton.prototype.loadSkeleton = function(fileName) {
 	Polycode.Skeleton_loadSkeleton(this.__ptr, fileName)

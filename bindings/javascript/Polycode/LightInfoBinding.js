@@ -112,3 +112,9 @@ LightInfoBinding.prototype.__set_shadowEnabled = function(val) {
 	Polycode.LightInfoBinding__set_shadowEnabled(this.__ptr, val.__ptr)
 }
 
+Duktape.fin(LightInfoBinding.prototype, function (x) {
+	if (x === LightInfoBinding.prototype) {
+		return;
+	}
+	Polycode.LightInfoBinding__delete(x.__ptr)
+})

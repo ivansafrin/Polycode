@@ -24,6 +24,12 @@ String.prototype.__set_w_contents = function(val) {
 	Polycode.String__set_w_contents(this.__ptr, val.__ptr)
 }
 
+Duktape.fin(String.prototype, function (x) {
+	if (x === String.prototype) {
+		return;
+	}
+	Polycode.String__delete(x.__ptr)
+})
 
 String.prototype.size = function() {
 	var retVal = new size_t()

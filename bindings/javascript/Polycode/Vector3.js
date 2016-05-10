@@ -29,6 +29,12 @@ Vector3.prototype.__set_z = function(val) {
 	Polycode.Vector3__set_z(this.__ptr, val)
 }
 
+Duktape.fin(Vector3.prototype, function (x) {
+	if (x === Vector3.prototype) {
+		return;
+	}
+	Polycode.Vector3__delete(x.__ptr)
+})
 
 Vector3.prototype.set = function(x,y,z) {
 	Polycode.Vector3_set(this.__ptr, x,y,z)

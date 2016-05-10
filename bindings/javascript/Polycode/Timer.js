@@ -1,5 +1,11 @@
 function Timer() {
 }
+Duktape.fin(Timer.prototype, function (x) {
+	if (x === Timer.prototype) {
+		return;
+	}
+	Polycode.Timer__delete(x.__ptr)
+})
 
 Timer.prototype.Pause = function(paused) {
 	Polycode.Timer_Pause(this.__ptr, paused)

@@ -60,6 +60,12 @@ Core.prototype.__set_deviceAttitude = function(val) {
 	Polycode.Core__set_deviceAttitude(this.__ptr, val.__ptr)
 }
 
+Duktape.fin(Core.prototype, function (x) {
+	if (x === Core.prototype) {
+		return;
+	}
+	Polycode.Core__delete(x.__ptr)
+})
 
 Core.prototype.Update = function() {
 	return Polycode.Core_Update(this.__ptr)

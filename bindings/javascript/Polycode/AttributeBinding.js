@@ -42,3 +42,9 @@ AttributeBinding.prototype.__set_enabled = function(val) {
 	Polycode.AttributeBinding__set_enabled(this.__ptr, val)
 }
 
+Duktape.fin(AttributeBinding.prototype, function (x) {
+	if (x === AttributeBinding.prototype) {
+		return;
+	}
+	Polycode.AttributeBinding__delete(x.__ptr)
+})

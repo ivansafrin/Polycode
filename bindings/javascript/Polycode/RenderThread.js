@@ -1,5 +1,11 @@
 function RenderThread() {
 }
+Duktape.fin(RenderThread.prototype, function (x) {
+	if (x === RenderThread.prototype) {
+		return;
+	}
+	Polycode.RenderThread__delete(x.__ptr)
+})
 
 RenderThread.prototype.setGraphicsInterface = function(core,graphicsInterface) {
 	Polycode.RenderThread_setGraphicsInterface(this.__ptr, core,graphicsInterface)

@@ -4,12 +4,6 @@ class "LocalShaderParam"
 function LocalShaderParam:__getvar(name)
 	if name == "name" then
 		return Polycode.LocalShaderParam_get_name(self.__ptr)
-	elseif name == "data" then
-		local retVal = Polycode.LocalShaderParam_get_data(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["void"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
 	elseif name == "type" then
 		return Polycode.LocalShaderParam_get_type(self.__ptr)
 	elseif name == "ownsPointer" then
@@ -28,9 +22,6 @@ end
 function LocalShaderParam:__setvar(name,value)
 	if name == "name" then
 		Polycode.LocalShaderParam_set_name(self.__ptr, value)
-		return true
-	elseif name == "data" then
-		Polycode.LocalShaderParam_set_data(self.__ptr, value.__ptr)
 		return true
 	elseif name == "type" then
 		Polycode.LocalShaderParam_set_type(self.__ptr, value)

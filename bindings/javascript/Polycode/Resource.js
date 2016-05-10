@@ -1,8 +1,7 @@
 function Resource() {
 	Object.defineProperties(this, {
 		'reloadOnFileModify': { enumerable: true, configurable: true, get: Resource.prototype.__get_reloadOnFileModify, set: Resource.prototype.__set_reloadOnFileModify},
-		'resourceFileTime': { enumerable: true, configurable: true, get: Resource.prototype.__get_resourceFileTime, set: Resource.prototype.__set_resourceFileTime},
-		'platformData': { enumerable: true, configurable: true, get: Resource.prototype.__get_platformData, set: Resource.prototype.__set_platformData}
+		'resourceFileTime': { enumerable: true, configurable: true, get: Resource.prototype.__get_resourceFileTime, set: Resource.prototype.__set_resourceFileTime}
 	})
 }
 Resource.prototype.__get_reloadOnFileModify = function() {
@@ -23,16 +22,12 @@ Resource.prototype.__set_resourceFileTime = function(val) {
 	Polycode.Resource__set_resourceFileTime(this.__ptr, val.__ptr)
 }
 
-Resource.prototype.__get_platformData = function() {
-	var retVal = new void()
-	retVal.__ptr = 	Polycode.Resource__get_platformData(this.__ptr)
-	return retVal
-}
-
-Resource.prototype.__set_platformData = function(val) {
-	Polycode.Resource__set_platformData(this.__ptr, val.__ptr)
-}
-
+Duktape.fin(Resource.prototype, function (x) {
+	if (x === Resource.prototype) {
+		return;
+	}
+	Polycode.Resource__delete(x.__ptr)
+})
 
 Resource.prototype.reloadResource = function() {
 	Polycode.Resource_reloadResource(this.__ptr)

@@ -44,3 +44,9 @@ QuatTriple.prototype.__set_time = function(val) {
 	Polycode.QuatTriple__set_time(this.__ptr, val)
 }
 
+Duktape.fin(QuatTriple.prototype, function (x) {
+	if (x === QuatTriple.prototype) {
+		return;
+	}
+	Polycode.QuatTriple__delete(x.__ptr)
+})

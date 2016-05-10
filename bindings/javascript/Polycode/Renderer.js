@@ -1,5 +1,11 @@
 function Renderer() {
 }
+Duktape.fin(Renderer.prototype, function (x) {
+	if (x === Renderer.prototype) {
+		return;
+	}
+	Polycode.Renderer__delete(x.__ptr)
+})
 
 Renderer.prototype.setGraphicsInterface = function(core,graphicsInterface) {
 	Polycode.Renderer_setGraphicsInterface(this.__ptr, core,graphicsInterface)

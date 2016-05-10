@@ -24,3 +24,9 @@ AABB.prototype.__set_max = function(val) {
 	Polycode.AABB__set_max(this.__ptr, val.__ptr)
 }
 
+Duktape.fin(AABB.prototype, function (x) {
+	if (x === AABB.prototype) {
+		return;
+	}
+	Polycode.AABB__delete(x.__ptr)
+})

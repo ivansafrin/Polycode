@@ -1,5 +1,11 @@
 function SpriteState() {
 }
+Duktape.fin(SpriteState.prototype, function (x) {
+	if (x === SpriteState.prototype) {
+		return;
+	}
+	Polycode.SpriteState__delete(x.__ptr)
+})
 
 SpriteState.prototype.setName = function(name) {
 	Polycode.SpriteState_setName(this.__ptr, name)

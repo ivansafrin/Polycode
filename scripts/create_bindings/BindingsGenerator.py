@@ -93,6 +93,10 @@ class BindingsGenerator(object):
 				continue
 			if "::union" in pp["name"]:
 				continue
+			if "void" in pp["type"]:
+				continue
+			if "<" in pp["type"]:
+				continue
 			if pp["type"].replace("*", "") in self.ignoreClasses:
 				continue
 

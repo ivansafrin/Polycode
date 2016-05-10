@@ -1,5 +1,11 @@
 function DummyCore() {
 }
+Duktape.fin(DummyCore.prototype, function (x) {
+	if (x === DummyCore.prototype) {
+		return;
+	}
+	Polycode.DummyCore__delete(x.__ptr)
+})
 
 DummyCore.prototype.Render = function() {
 	Polycode.DummyCore_Render(this.__ptr)

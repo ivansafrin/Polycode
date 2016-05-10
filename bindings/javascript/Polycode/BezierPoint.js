@@ -35,3 +35,9 @@ BezierPoint.prototype.__set_p3 = function(val) {
 	Polycode.BezierPoint__set_p3(this.__ptr, val.__ptr)
 }
 
+Duktape.fin(BezierPoint.prototype, function (x) {
+	if (x === BezierPoint.prototype) {
+		return;
+	}
+	Polycode.BezierPoint__delete(x.__ptr)
+})

@@ -38,6 +38,12 @@ MaterialManager.prototype.__set_keepTextureData = function(val) {
 	Polycode.MaterialManager__set_keepTextureData(this.__ptr, val)
 }
 
+Duktape.fin(MaterialManager.prototype, function (x) {
+	if (x === MaterialManager.prototype) {
+		return;
+	}
+	Polycode.MaterialManager__delete(x.__ptr)
+})
 
 MaterialManager.prototype.Update = function(elapsed) {
 	Polycode.MaterialManager_Update(this.__ptr, elapsed)

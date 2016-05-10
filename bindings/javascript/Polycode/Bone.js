@@ -97,6 +97,12 @@ Bone.prototype.__set_disableAnimation = function(val) {
 	Polycode.Bone__set_disableAnimation(this.__ptr, val)
 }
 
+Duktape.fin(Bone.prototype, function (x) {
+	if (x === Bone.prototype) {
+		return;
+	}
+	Polycode.Bone__delete(x.__ptr)
+})
 
 Bone.prototype.getName = function() {
 	return Polycode.Bone_getName(this.__ptr)

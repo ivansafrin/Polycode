@@ -1,7 +1,6 @@
 function LocalShaderParam() {
 	Object.defineProperties(this, {
 		'name': { enumerable: true, configurable: true, get: LocalShaderParam.prototype.__get_name, set: LocalShaderParam.prototype.__set_name},
-		'data': { enumerable: true, configurable: true, get: LocalShaderParam.prototype.__get_data, set: LocalShaderParam.prototype.__set_data},
 		'type': { enumerable: true, configurable: true, get: LocalShaderParam.prototype.__get_type, set: LocalShaderParam.prototype.__set_type},
 		'ownsPointer': { enumerable: true, configurable: true, get: LocalShaderParam.prototype.__get_ownsPointer, set: LocalShaderParam.prototype.__set_ownsPointer},
 		'arraySize': { enumerable: true, configurable: true, get: LocalShaderParam.prototype.__get_arraySize, set: LocalShaderParam.prototype.__set_arraySize},
@@ -14,16 +13,6 @@ LocalShaderParam.prototype.__get_name = function() {
 
 LocalShaderParam.prototype.__set_name = function(val) {
 	Polycode.LocalShaderParam__set_name(this.__ptr, val)
-}
-
-LocalShaderParam.prototype.__get_data = function() {
-	var retVal = new void()
-	retVal.__ptr = 	Polycode.LocalShaderParam__get_data(this.__ptr)
-	return retVal
-}
-
-LocalShaderParam.prototype.__set_data = function(val) {
-	Polycode.LocalShaderParam__set_data(this.__ptr, val.__ptr)
 }
 
 LocalShaderParam.prototype.__get_type = function() {
@@ -60,6 +49,12 @@ LocalShaderParam.prototype.__set_param = function(val) {
 	Polycode.LocalShaderParam__set_param(this.__ptr, val.__ptr)
 }
 
+Duktape.fin(LocalShaderParam.prototype, function (x) {
+	if (x === LocalShaderParam.prototype) {
+		return;
+	}
+	Polycode.LocalShaderParam__delete(x.__ptr)
+})
 
 LocalShaderParam.prototype.Copy = function() {
 	var retVal = new LocalShaderParam()

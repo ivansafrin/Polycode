@@ -74,3 +74,9 @@ TimeInfo.prototype.__set_yearDay = function(val) {
 	Polycode.TimeInfo__set_yearDay(this.__ptr, val)
 }
 
+Duktape.fin(TimeInfo.prototype, function (x) {
+	if (x === TimeInfo.prototype) {
+		return;
+	}
+	Polycode.TimeInfo__delete(x.__ptr)
+})

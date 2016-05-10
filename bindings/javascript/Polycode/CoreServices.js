@@ -1,5 +1,11 @@
 function CoreServices() {
 }
+Duktape.fin(CoreServices.prototype, function (x) {
+	if (x === CoreServices.prototype) {
+		return;
+	}
+	Polycode.CoreServices__delete(x.__ptr)
+})
 
 CoreServices.prototype.setRenderer = function(renderer) {
 	Polycode.CoreServices_setRenderer(this.__ptr, renderer)

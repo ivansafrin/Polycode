@@ -24,3 +24,9 @@ LightShadowInfoBinding.prototype.__set_shadowBuffer = function(val) {
 	Polycode.LightShadowInfoBinding__set_shadowBuffer(this.__ptr, val.__ptr)
 }
 
+Duktape.fin(LightShadowInfoBinding.prototype, function (x) {
+	if (x === LightShadowInfoBinding.prototype) {
+		return;
+	}
+	Polycode.LightShadowInfoBinding__delete(x.__ptr)
+})

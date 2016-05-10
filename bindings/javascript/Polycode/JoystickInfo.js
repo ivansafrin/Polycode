@@ -20,3 +20,9 @@ JoystickInfo.prototype.__set_deviceIndex = function(val) {
 	Polycode.JoystickInfo__set_deviceIndex(this.__ptr, val)
 }
 
+Duktape.fin(JoystickInfo.prototype, function (x) {
+	if (x === JoystickInfo.prototype) {
+		return;
+	}
+	Polycode.JoystickInfo__delete(x.__ptr)
+})

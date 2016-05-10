@@ -20,6 +20,12 @@ SceneCurve.prototype.__set_curveResolution = function(val) {
 	Polycode.SceneCurve__set_curveResolution(this.__ptr, val)
 }
 
+Duktape.fin(SceneCurve.prototype, function (x) {
+	if (x === SceneCurve.prototype) {
+		return;
+	}
+	Polycode.SceneCurve__delete(x.__ptr)
+})
 
 SceneCurve.prototype.getWorldPointAt = function(t) {
 	var retVal = new Vector3()

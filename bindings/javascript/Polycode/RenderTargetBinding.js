@@ -40,3 +40,9 @@ RenderTargetBinding.prototype.__set_buffer = function(val) {
 	Polycode.RenderTargetBinding__set_buffer(this.__ptr, val.__ptr)
 }
 
+Duktape.fin(RenderTargetBinding.prototype, function (x) {
+	if (x === RenderTargetBinding.prototype) {
+		return;
+	}
+	Polycode.RenderTargetBinding__delete(x.__ptr)
+})

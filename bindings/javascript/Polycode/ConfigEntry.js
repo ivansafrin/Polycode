@@ -47,3 +47,9 @@ ConfigEntry.prototype.__set_isString = function(val) {
 	Polycode.ConfigEntry__set_isString(this.__ptr, val)
 }
 
+Duktape.fin(ConfigEntry.prototype, function (x) {
+	if (x === ConfigEntry.prototype) {
+		return;
+	}
+	Polycode.ConfigEntry__delete(x.__ptr)
+})

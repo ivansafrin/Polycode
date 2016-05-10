@@ -13,3 +13,9 @@ CoreMotionEvent.prototype.__set_amount = function(val) {
 	Polycode.CoreMotionEvent__set_amount(this.__ptr, val.__ptr)
 }
 
+Duktape.fin(CoreMotionEvent.prototype, function (x) {
+	if (x === CoreMotionEvent.prototype) {
+		return;
+	}
+	Polycode.CoreMotionEvent__delete(x.__ptr)
+})

@@ -17,12 +17,6 @@ function RenderDataArray:__getvar(name)
 		return Polycode.RenderDataArray_get_customArrayName(self.__ptr)
 	elseif name == "hasVBO" then
 		return Polycode.RenderDataArray_get_hasVBO(self.__ptr)
-	elseif name == "platformData" then
-		local retVal = Polycode.RenderDataArray_get_platformData(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["void"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
 	end
 end
 
@@ -35,9 +29,6 @@ function RenderDataArray:__setvar(name,value)
 		return true
 	elseif name == "hasVBO" then
 		Polycode.RenderDataArray_set_hasVBO(self.__ptr, value)
-		return true
-	elseif name == "platformData" then
-		Polycode.RenderDataArray_set_platformData(self.__ptr, value.__ptr)
 		return true
 	end
 	return false

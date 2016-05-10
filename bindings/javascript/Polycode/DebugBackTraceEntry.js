@@ -20,3 +20,9 @@ DebugBackTraceEntry.prototype.__set_lineNumber = function(val) {
 	Polycode.DebugBackTraceEntry__set_lineNumber(this.__ptr, val)
 }
 
+Duktape.fin(DebugBackTraceEntry.prototype, function (x) {
+	if (x === DebugBackTraceEntry.prototype) {
+		return;
+	}
+	Polycode.DebugBackTraceEntry__delete(x.__ptr)
+})

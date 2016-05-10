@@ -149,3 +149,9 @@ LightInfo.prototype.__set_lightViewMatrix = function(val) {
 	Polycode.LightInfo__set_lightViewMatrix(this.__ptr, val.__ptr)
 }
 
+Duktape.fin(LightInfo.prototype, function (x) {
+	if (x === LightInfo.prototype) {
+		return;
+	}
+	Polycode.LightInfo__delete(x.__ptr)
+})

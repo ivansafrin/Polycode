@@ -1,5 +1,11 @@
 function SceneEntityInstanceResourceEntry() {
 }
+Duktape.fin(SceneEntityInstanceResourceEntry.prototype, function (x) {
+	if (x === SceneEntityInstanceResourceEntry.prototype) {
+		return;
+	}
+	Polycode.SceneEntityInstanceResourceEntry__delete(x.__ptr)
+})
 
 SceneEntityInstanceResourceEntry.prototype.getInstance = function() {
 	var retVal = new SceneEntityInstance()

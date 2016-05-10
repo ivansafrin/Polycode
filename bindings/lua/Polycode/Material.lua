@@ -6,12 +6,6 @@ class "Material" (Resource)
 function Material:__getvar(name)
 	if name == "fp16RenderTargets" then
 		return Polycode.Material_get_fp16RenderTargets(self.__ptr)
-	elseif name == "shaderModule" then
-		local retVal = Polycode.Material_get_shaderModule(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["void"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
 	elseif name == "blendingMode" then
 		return Polycode.Material_get_blendingMode(self.__ptr)
 	elseif name == "screenMaterial" then
@@ -25,9 +19,6 @@ end
 function Material:__setvar(name,value)
 	if name == "fp16RenderTargets" then
 		Polycode.Material_set_fp16RenderTargets(self.__ptr, value)
-		return true
-	elseif name == "shaderModule" then
-		Polycode.Material_set_shaderModule(self.__ptr, value.__ptr)
 		return true
 	elseif name == "blendingMode" then
 		Polycode.Material_set_blendingMode(self.__ptr, value)

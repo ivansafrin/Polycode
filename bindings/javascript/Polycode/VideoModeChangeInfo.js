@@ -65,3 +65,9 @@ VideoModeChangeInfo.prototype.__set_retinaSupport = function(val) {
 	Polycode.VideoModeChangeInfo__set_retinaSupport(this.__ptr, val)
 }
 
+Duktape.fin(VideoModeChangeInfo.prototype, function (x) {
+	if (x === VideoModeChangeInfo.prototype) {
+		return;
+	}
+	Polycode.VideoModeChangeInfo__delete(x.__ptr)
+})

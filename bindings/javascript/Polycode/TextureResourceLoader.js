@@ -1,5 +1,11 @@
 function TextureResourceLoader() {
 }
+Duktape.fin(TextureResourceLoader.prototype, function (x) {
+	if (x === TextureResourceLoader.prototype) {
+		return;
+	}
+	Polycode.TextureResourceLoader__delete(x.__ptr)
+})
 
 TextureResourceLoader.prototype.loadResource = function(path,targetPool) {
 	var retVal = new Resource()

@@ -1,5 +1,11 @@
 function Config() {
 }
+Duktape.fin(Config.prototype, function (x) {
+	if (x === Config.prototype) {
+		return;
+	}
+	Polycode.Config__delete(x.__ptr)
+})
 
 Config.prototype.loadConfig = function(configNamespace,fileName) {
 	Polycode.Config_loadConfig(this.__ptr, configNamespace,fileName)

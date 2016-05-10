@@ -1,8 +1,7 @@
 function ProgramAttribute() {
 	Object.defineProperties(this, {
 		'size': { enumerable: true, configurable: true, get: ProgramAttribute.prototype.__get_size, set: ProgramAttribute.prototype.__set_size},
-		'name': { enumerable: true, configurable: true, get: ProgramAttribute.prototype.__get_name, set: ProgramAttribute.prototype.__set_name},
-		'platformData': { enumerable: true, configurable: true, get: ProgramAttribute.prototype.__get_platformData, set: ProgramAttribute.prototype.__set_platformData}
+		'name': { enumerable: true, configurable: true, get: ProgramAttribute.prototype.__get_name, set: ProgramAttribute.prototype.__set_name}
 	})
 }
 ProgramAttribute.prototype.__get_size = function() {
@@ -21,13 +20,9 @@ ProgramAttribute.prototype.__set_name = function(val) {
 	Polycode.ProgramAttribute__set_name(this.__ptr, val)
 }
 
-ProgramAttribute.prototype.__get_platformData = function() {
-	var retVal = new void()
-	retVal.__ptr = 	Polycode.ProgramAttribute__get_platformData(this.__ptr)
-	return retVal
-}
-
-ProgramAttribute.prototype.__set_platformData = function(val) {
-	Polycode.ProgramAttribute__set_platformData(this.__ptr, val.__ptr)
-}
-
+Duktape.fin(ProgramAttribute.prototype, function (x) {
+	if (x === ProgramAttribute.prototype) {
+		return;
+	}
+	Polycode.ProgramAttribute__delete(x.__ptr)
+})

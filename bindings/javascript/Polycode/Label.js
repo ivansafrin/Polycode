@@ -1,5 +1,11 @@
 function Label() {
 }
+Duktape.fin(Label.prototype, function (x) {
+	if (x === Label.prototype) {
+		return;
+	}
+	Polycode.Label__delete(x.__ptr)
+})
 
 Label.prototype.setText = function(text) {
 	Polycode.Label_setText(this.__ptr, text)

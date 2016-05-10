@@ -24,6 +24,7 @@ class JSBindingsGenerator(object):
 		self.wrappersHeaderList = ""
 		self.wrappersHeaderBody = ""
 		self.cppRegisterOut = ""
+		self.disableGC = self.config.get('global', 'DisableGarbageCollection').replace(" ", "").split(",")
 		self.cppRegisterOut += "int jsopen_%s(duk_context *ctx) {\n" % (self.libName)
 		self.cppRegisterOut += "\tconst duk_function_list_entry %s_funcs[] = {\n" % (self.libName)
 		mkdir_p("%s/%s" % (self.config.get('js', 'JSApiDirectory'), self.libName))
@@ -36,6 +37,22 @@ class JSBindingsGenerator(object):
 		self.makeJSProperties(c)
 		self.jsClassOut += "}\n"
 		self.makeJSPropAccessors(c)
+
+		if c["name"] not in self.disableGC:
+			self.jsClassOut += "Duktape.fin(%s.prototype, function (x) {\n" % (c["name"])
+			self.jsClassOut += "\tif (x === %s.prototype) {\n" % (c["name"])
+			self.jsClassOut += "\t\treturn;\n"
+			self.jsClassOut += "\t}\n"
+			self.jsClassOut += "\t%s.%s__delete(x.__ptr)\n" % (self.libName, c["name"])
+			self.jsClassOut += "})\n"
+
+		self.cppRegisterOut += "\t\t\t{\"%s__delete\", %s_%s__delete, 1},\n" % (c["name"], self.libName, c["name"])
+
+		self.wrappersHeaderBody += "\tduk_ret_t %s_%s__delete(duk_context *context) {\n" % (self.libName, c["name"])
+		self.wrappersHeaderBody += "\t\t%s *inst = (%s*)duk_to_pointer(context, 0);\n" % (c["name"], c["name"])
+		self.wrappersHeaderBody += "\t\tdelete inst;\n"
+		self.wrappersHeaderBody += "\t\treturn 0;\n"
+		self.wrappersHeaderBody += "\t}\n\n"
 
 		self.makeJSMethods(c)
 		self.writeClass(c)

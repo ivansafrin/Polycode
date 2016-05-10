@@ -1,9 +1,4 @@
 
-Vector3.prototype.__x__ = function() {
-    return 3.0
-}
-
-
 function Rotator() {
 }
 

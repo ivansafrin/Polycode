@@ -11,6 +11,12 @@ SceneRenderTexture.prototype.__set_enabled = function(val) {
 	Polycode.SceneRenderTexture__set_enabled(this.__ptr, val)
 }
 
+Duktape.fin(SceneRenderTexture.prototype, function (x) {
+	if (x === SceneRenderTexture.prototype) {
+		return;
+	}
+	Polycode.SceneRenderTexture__delete(x.__ptr)
+})
 
 SceneRenderTexture.prototype.getTargetTexture = function() {
 	var retVal = new Texture()

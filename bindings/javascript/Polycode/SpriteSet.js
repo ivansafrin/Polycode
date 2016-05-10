@@ -1,5 +1,11 @@
 function SpriteSet() {
 }
+Duktape.fin(SpriteSet.prototype, function (x) {
+	if (x === SpriteSet.prototype) {
+		return;
+	}
+	Polycode.SpriteSet__delete(x.__ptr)
+})
 
 SpriteSet.prototype.setTexture = function(texture) {
 	Polycode.SpriteSet_setTexture(this.__ptr, texture)

@@ -1,5 +1,11 @@
 function Sprite() {
 }
+Duktape.fin(Sprite.prototype, function (x) {
+	if (x === Sprite.prototype) {
+		return;
+	}
+	Polycode.Sprite__delete(x.__ptr)
+})
 
 Sprite.prototype.getName = function() {
 	return Polycode.Sprite_getName(this.__ptr)

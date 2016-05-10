@@ -20,6 +20,12 @@ Event.prototype.__set_cancelEventFlag = function(val) {
 	Polycode.Event__set_cancelEventFlag(this.__ptr, val)
 }
 
+Duktape.fin(Event.prototype, function (x) {
+	if (x === Event.prototype) {
+		return;
+	}
+	Polycode.Event__delete(x.__ptr)
+})
 
 Event.prototype.getEventCode = function() {
 	return Polycode.Event_getEventCode(this.__ptr)

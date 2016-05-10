@@ -1,5 +1,11 @@
 function MaterialResourceLoader() {
 }
+Duktape.fin(MaterialResourceLoader.prototype, function (x) {
+	if (x === MaterialResourceLoader.prototype) {
+		return;
+	}
+	Polycode.MaterialResourceLoader__delete(x.__ptr)
+})
 
 MaterialResourceLoader.prototype.loadResource = function(path,targetPool) {
 	var retVal = new Resource()
