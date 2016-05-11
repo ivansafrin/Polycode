@@ -27,4 +27,7 @@ private:
     Scene *scene;
 
     Core *core;
+    Vector3 rot;
+    Number running;
+    SceneLabel* fps;
 };

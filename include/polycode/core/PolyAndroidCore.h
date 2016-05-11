@@ -121,6 +121,9 @@ namespace Polycode {
 		Number getBackingXRes();
 		Number getBackingYRes();
 		
+		void _setAcceleration(const Vector3& acceleration);
+		void _setGyroRotation(const Vector3& rotation);
+		
 		CoreMutex* getEGLMutex();
 		
 		bool recreateContext;

@@ -118,6 +118,11 @@ void RenderThread::updateRenderThread() {
 
 	if (nextFrame) {
 		while (nextFrame->jobQueue.size() > 0) {
+			#if PLATFORM == PLATFORM_ANDROID
+				if(!core->isWindowInitialized()){
+					break;
+				}
+			#endif
 			RendererThreadJob frameJob = nextFrame->jobQueue.front();
 			nextFrame->jobQueue.pop();
 			processJob(frameJob);

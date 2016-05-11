@@ -38,7 +38,7 @@ using namespace Polycode;
 extern AndroidCore *core;
 
 void AndroidCoreMutex::lock() {
-    pthread_mutex_lock(&pMutex);    
+    pthread_mutex_lock(&pMutex);
 }
 
 void AndroidCoreMutex::unlock() {
@@ -59,14 +59,26 @@ AndroidCore::AndroidCore(PolycodeView *view, int xRes, int yRes, bool fullScreen
 	graphicsInterface = new OpenGLGraphicsInterface();
 	renderer->setGraphicsInterface(this, graphicsInterface);
 	services->setRenderer(renderer);
-	
+
 	context = NULL;
 	surface = NULL;
 	recreateContext = true;
-	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
-
-	//services->getSoundManager()->setAudioInterface(new OpenSLAudioInterface());
 	
+	//scale needs to be set now so that labels are scaled correctly	
+	if(retinaSupport){
+		float scale = 1.0;
+		int dens = AConfiguration_getDensity(view->native_config);
+		if(dens >=ACONFIGURATION_DENSITY_LOW && dens <= ACONFIGURATION_DENSITY_XXXHIGH){
+			scale = dens / ACONFIGURATION_DENSITY_MEDIUM;
+		}
+		renderer->setBackingResolutionScale(scale, scale);
+	}
+	
+	//DP are the Density Independent Pixels - this is afaik what should be the size this should work with enabled retinaSupport
+	setVideoMode(AConfiguration_getScreenWidthDp(view->native_config), AConfiguration_getScreenHeightDp(view->native_config), fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
+	
+
+// 	services->getSoundManager()->setAudioInterface(new OpenSLAudioInterface());
 	paused = true;
 	
 	initKeyMap();
@@ -81,7 +93,7 @@ AndroidCore::~AndroidCore() {
 
 void AndroidCore::Render() {
 	renderer->beginFrame();
-	services->Render(Polycode::Rectangle(0, 0, xRes, yRes));
+	services->Render(Polycode::Rectangle(0, 0, getBackingXRes(), getBackingYRes()));
 	renderer->endFrame();
 }
 
@@ -155,11 +167,13 @@ bool AndroidCore::systemUpdate() {
 	if (!running) {
 		return false;
 	}
+	
 	doSleep();
-
+	
 	updateCore();
 	checkEvents();
-
+	ALooper_pollAll(0, NULL, NULL, NULL);
+	
 	return running;
 }
 
@@ -240,7 +254,16 @@ void AndroidCore::handleVideoModeChange(VideoModeChangeInfo *modeInfo) {
 	this->aaLevel = modeInfo->aaLevel;
 	this->vSync = modeInfo->vSync;
 	this->anisotropyLevel = modeInfo->anisotropyLevel;
-
+	
+	float scale = 1.0;
+	if(modeInfo->retinaSupport){
+		int dens = AConfiguration_getDensity(view->native_config);
+		if(dens >=ACONFIGURATION_DENSITY_LOW && dens <= ACONFIGURATION_DENSITY_XXXHIGH){
+			scale = dens / ACONFIGURATION_DENSITY_MEDIUM;
+		}
+	}
+	renderer->setBackingResolutionScale(scale, scale);
+	
 	if(!view->native_window){
 		return;
 	}
@@ -291,6 +314,7 @@ void AndroidCore::handleVideoModeChange(VideoModeChangeInfo *modeInfo) {
 		// connect the context to the surface
 		result = eglMakeCurrent(display, surface, surface, context);
 		assert(EGL_FALSE != result);
+		
 		Logger::log("EGL Init finished");
 		
 		recreateContext = false;
@@ -304,10 +328,9 @@ void AndroidCore::flushRenderContext() {
 }
 
 bool AndroidCore::isWindowInitialized(){
-// 	Logger::log("isWindowInitialized");
 	eglMutex->lock();
 // 	Logger::log("locked");
-	if (eglGetCurrentContext() == EGL_NO_CONTEXT || recreateContext){
+	if (eglGetCurrentContext() == EGL_NO_CONTEXT || recreateContext || !view->isInteractable()){
 		eglMutex->unlock();
 		return false;
 	} else {
@@ -326,8 +349,8 @@ void AndroidCore::openURL(String url) {
 
 unsigned int AndroidCore::getTicks() {
 	struct timespec now;
-	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &now);
-	return now.tv_sec * 1000000L + now.tv_nsec/1000;
+	clock_gettime(CLOCK_MONOTONIC, &now);
+	return now.tv_sec * 1000 + now.tv_nsec/1000000;
 }
 
 String AndroidCore::executeExternalCommand(String command, String args, String inDirectory) {
@@ -368,8 +391,6 @@ void Core::getScreenInfo(int *width, int *height, int *hz) {
 void AndroidCore::setDeviceSize(Number x, Number y) {
 	deviceWidth = x;
 	deviceHeight = y;
-
-	renderer->setBackingResolutionScale(xRes/deviceWidth, yRes/deviceHeight);
 }
 
 Number AndroidCore::getBackingXRes() {
@@ -378,6 +399,18 @@ Number AndroidCore::getBackingXRes() {
 
 Number AndroidCore::getBackingYRes() {
 	return deviceHeight;
+}
+
+void AndroidCore::_setAcceleration(const Vector3 &acceleration) {
+    CoreMotionEvent *event = new CoreMotionEvent();
+    event->amount = acceleration;
+    dispatchEvent(event, Core::EVENT_ACCELEROMETER_MOTION);
+}
+
+void AndroidCore::_setGyroRotation(const Vector3 &rotation) {
+    CoreMotionEvent *event = new CoreMotionEvent();
+    event->amount = rotation;
+    dispatchEvent(event, Core::EVENT_GYRO_ROTATION);
 }
 
 void AndroidCore::initKeyMap() {

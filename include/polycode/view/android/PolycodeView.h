@@ -24,12 +24,40 @@
 
 #include "polycode/core/PolyAndroidCore.h"
 #include <android/native_activity.h>
+#include <android/sensor.h>
 #include <android/log.h>
+#include <android/configuration.h>
+
+//Sensor types the NDK supports but are not in the enum of sensor types
+#define ASENSOR_TYPE_ORIENTATION 3
+#define ASENSOR_TYPE_GRAVITY 9
+#define ASENSOR_TYPE_LINEAR_ACCELERATION 10
+#define ASENSOR_TYPE_ROTATION_VECTOR 11
+#define ASENSOR_TYPE_MAGNETIC_FIELD_UNCALIBRATED 14
+#define ASENSOR_TYPE_GAME_ROTATION_VECTOR 15
+#define ASENSOR_TYPE_GYROSCOPE_UNCALIBRATED 16
+#define ASENSOR_TYPE_SIGNIFICANT_MOTION 17
+#define ASESNOR_TYPE_STEP_DETECTOR 18
+#define ASESNOR_TYPE_STEP_COUNTER 19
+#define ASENSOR_TYPE_GEOMAGNETIC_ROTATION_VECTOR 20
 
 #define LOGI(text) ((void)__android_log_write(ANDROID_LOG_INFO, "TemplateApp", text))
 #define LOGE(text) ((void)__android_log_write(ANDROID_LOG_ERROR, "TemplateApp", text))
 
 namespace Polycode {
+	
+	enum{
+		// Android lifecycle status flags.  Not app-specific
+		// Set between onResume and onPause
+		APP_STATUS_ACTIVE           = 0x00000001,
+		// Set between onWindowFocusChanged(true) and (false)
+		APP_STATUS_FOCUSED          = 0x00000002,
+		// Set when the app's SurfaceHolder points to a 
+		// valid, nonzero-sized surface
+		APP_STATUS_HAS_REAL_SURFACE  = 0x00000004,
+		// Mask of all app lifecycle status flags
+		APP_STATUS_INTERACTABLE     = 0x00000007
+	};
 	
     class PolycodeView : public PolycodeViewBase {
         public:
@@ -41,9 +69,15 @@ namespace Polycode {
 			ANativeActivity* native_activity;
 			ANativeWindow* native_window;
 			AInputQueue* native_input;
+			AConfiguration* native_config;
 			
-// 			pthread_mutex_t* windowMutex;
-// 			pthread_cond_t* windowCond;
+			ASensorManager* sensorManager;
+			ASensorEventQueue* sensorQueue;
+			
+			int64_t gyroTimestamp;
+			
+			unsigned int lifecycleFlags;
+			bool isInteractable();
     };
 }
 
@@ -71,7 +105,8 @@ void onInputQueueDestroyed(ANativeActivity* activity, AInputQueue *queue);
 void onContentRectChanged(ANativeActivity* activity, const ARect *rect);
 void onConfiguartionChanged(ANativeActivity* activity);
 void onLowMemory(ANativeActivity* activity);
-int inputLoop(int fd, int events, void* data);
+static int inputLoop(int fd, int events, void* data);
+static int sensorLoop(int fd, int events, void* data);
 void ANativeActivity_onCreate(ANativeActivity* activity, void* savedState, size_t savedStateSize);
 void* startApp(void* data);
 

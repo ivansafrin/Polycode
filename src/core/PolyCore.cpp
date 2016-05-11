@@ -402,6 +402,10 @@ namespace Polycode {
 		mutex->unlock();
 	}
 	
+	CoreMotionEvent::CoreMotionEvent(){
+		eventType = "CoreMotionEvent";
+	}	
+
 	DummyCore::DummyCore(): Core(0, 0, false, false, 0, 0, 0, 0) {
 		fileProviders.push_back(new BasicFileProvider());
 	}

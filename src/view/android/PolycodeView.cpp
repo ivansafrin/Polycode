@@ -51,28 +51,66 @@ PolycodeView::PolycodeView(ANativeActivity* native, String title){
 	native_activity->callbacks->onWindowFocusChanged 	= onWindowFocusChanged;
 	native_activity->callbacks->onInputQueueCreated		= onInputQueueCreated;
 	native_activity->callbacks->onInputQueueDestroyed	= onInputQueueDestroyed;
+	
+	native_config = AConfiguration_new();
+	AConfiguration_fromAssetManager(native_config, native_activity->assetManager);
+// 	AConfiguration* myConfig = AConfiguration_new();
+// 	AConfiguration_copy(myConfig, native_config);
+// 	AConfiguration_setNavHidden(myConfig,ACONFIGURATION_NAVHIDDEN_YES);
+// 	AConfiguration_setKeysHidden(native_config, ACONFIGURATION_KEYSHIDDEN_YES);
+	
+	sensorManager = ASensorManager_getInstance();		
+	
+	const ASensor* accelerometer = ASensorManager_getDefaultSensor(sensorManager, ASENSOR_TYPE_ACCELEROMETER);
+	const ASensor* gyroscope = ASensorManager_getDefaultSensor(sensorManager, ASENSOR_TYPE_GYROSCOPE);
+	const ASensor* orientation = ASensorManager_getDefaultSensor(sensorManager, ASENSOR_TYPE_GAME_ROTATION_VECTOR);
+	
+	ALooper* looper = ALooper_forThread();
+    if(looper == NULL){
+		looper = ALooper_prepare(0);
+	}
+	
+	sensorQueue = ASensorManager_createEventQueue(sensorManager, looper, ALOOPER_POLL_CALLBACK, sensorLoop, this);
+	
+	if(accelerometer){
+// 		Logger::log("Accelerometer found. Name: %s, Vendor: %s", ASensor_getName(accelerometer), ASensor_getVendor(accelerometer));
+		ASensorEventQueue_enableSensor(sensorQueue, accelerometer);
+	}
+	
+	if(gyroscope){
+// 		Logger::log("Gyroscope found. Name: %s, Vendor: %s", ASensor_getName(gyroscope), ASensor_getVendor(gyroscope));
+		ASensorEventQueue_enableSensor(sensorQueue, gyroscope);
+	}
+	
+	if(orientation){
+// 		Logger::log("Orientation found. Name: %s, Vendor: %s", ASensor_getName(orientation), ASensor_getVendor(orientation));
+ 		ASensorEventQueue_enableSensor(sensorQueue, orientation);
+	}
+	gyroTimestamp = 0;
+	
 }
 
-PolycodeView::~PolycodeView(){
-	
+PolycodeView::~PolycodeView(){}
+
+bool PolycodeView::isInteractable(){
+	//Logger::log("isInteractable: %s", ((lifecycleFlags & APP_STATUS_INTERACTABLE) == APP_STATUS_INTERACTABLE) ? "true" : "false");
+	return ((lifecycleFlags & APP_STATUS_INTERACTABLE) == APP_STATUS_INTERACTABLE);
 }
 
 void onStart(ANativeActivity* activity){
 	Logger::log("onStart");
-	if(core)
-	core->paused = false;
 }
 
 void onResume(ANativeActivity* activity){
 	Logger::log("onResume");
 	if(core)
-	core->paused = false;
+		core->paused = false;
+	((PolycodeView*)activity->instance)->lifecycleFlags |= APP_STATUS_ACTIVE;
 }
 
 void onPause(ANativeActivity* activity){
 	Logger::log("onPause");
-	if(core)
-	core->paused = true;
+	((PolycodeView*)activity->instance)->lifecycleFlags &= ~APP_STATUS_ACTIVE;
 }
 
 void* onSaveInstanceState(ANativeActivity* activity, size_t *outSize){
@@ -81,8 +119,6 @@ void* onSaveInstanceState(ANativeActivity* activity, size_t *outSize){
 
 void onStop(ANativeActivity* activity){
 	Logger::log("onStop");
-	if(core)
-	core->paused = true;
 }
 
 void onDestroy(ANativeActivity* activity){
@@ -99,12 +135,14 @@ void onWindowFocusChanged(ANativeActivity* activity, int hasFocus){
 		event.eventCode = Core::EVENT_GAINED_FOCUS;
 		if(core)
 			core->handleSystemEvent(event);
+		((PolycodeView*)activity->instance)->lifecycleFlags|=APP_STATUS_FOCUSED;
 	}else{
 		AndroidEvent event = AndroidEvent();
 		event.eventGroup = AndroidEvent::SYSTEM_FOCUS_EVENT;
 		event.eventCode = Core::EVENT_LOST_FOCUS;
 		if(core)
 			core->handleSystemEvent(event);		
+		((PolycodeView*)activity->instance)->lifecycleFlags&=~APP_STATUS_FOCUSED;
 	}
 }
 
@@ -113,16 +151,13 @@ void onNativeWindowCreated(ANativeActivity* activity, ANativeWindow *window){
 	((PolycodeView*)activity->instance)->native_window = window;
 	int width = ANativeWindow_getWidth(window);
 	int height = ANativeWindow_getHeight(window);
-	if (width < 0)
-		width = 100;
-	if (height < 0)
-		height = 100;
-	if(core){
-		core->recreateContext = true;
- 		core->setDeviceSize(width, height);
-		//Logger::log("Width: %d, Height; %d", width, height);
-		core->getEGLMutex()->unlock();
-		core->setVideoMode(width, height, true, false, core->getAALevel(), 0, false);
+	if (width > 0 && height > 0){
+		((PolycodeView*)activity->instance)->lifecycleFlags|=APP_STATUS_HAS_REAL_SURFACE;
+		if(core){
+			core->recreateContext = true;
+			core->setDeviceSize(width, height);
+			core->setVideoMode(core->getXRes(), core->getYRes(), true, false, core->getAALevel(), 0, true);
+		}
 	}
 }
 
@@ -138,10 +173,9 @@ void onNativeWindowDestroyed(ANativeActivity* activity, ANativeWindow *window){
 	Logger::log("onNativeWindowDestroyed");
 	((PolycodeView*)activity->instance)->native_window = NULL;
 	if (core){
-		core->getEGLMutex()->lock();
 		core->recreateContext = true;
-		Services()->getRenderer()->getRenderThread()->getFrameInfo();
 	}
+	((PolycodeView*)activity->instance)->lifecycleFlags&=~APP_STATUS_HAS_REAL_SURFACE;
 }
 
 void onInputQueueCreated(ANativeActivity* activity, AInputQueue *queue){
@@ -156,8 +190,8 @@ void onInputQueueCreated(ANativeActivity* activity, AInputQueue *queue){
 
 void onInputQueueDestroyed(ANativeActivity* activity, AInputQueue *queue){
 	Logger::log("onInputQueueDestroyed");
-	((PolycodeView*)activity->instance)->native_input = NULL;
 	AInputQueue_detachLooper(((PolycodeView*)activity->instance)->native_input);
+	((PolycodeView*)activity->instance)->native_input = NULL;
 }
 
 void onContentRectChanged(ANativeActivity* activity, const ARect *rect){
@@ -166,13 +200,14 @@ void onContentRectChanged(ANativeActivity* activity, const ARect *rect){
 
 void onConfiguartionChanged(ANativeActivity* activity){
 	Logger::log("onConfiguartionChanged");
+// 	activity->assetManager
 }
 
 void onLowMemory(ANativeActivity* activity){
 	Logger::log("onLowMemory");
 }
 
-int inputLoop(int fd, int events, void* data){
+static int inputLoop(int fd, int events, void* data){
 	Logger::log("inputLoop");
 	AInputQueue* native_input = ((PolycodeView*)data)->native_input;
 	AndroidEvent event;
@@ -221,7 +256,7 @@ int inputLoop(int fd, int events, void* data){
 							
 							for (int i = 0; i <count; i++){
 								TouchInfo ti;
-								ti.position = Vector2(AMotionEvent_getHistoricalX(aev,i,j), AMotionEvent_getHistoricalY(aev,i,j));
+								ti.position = Vector2(AMotionEvent_getHistoricalX(aev,i,j)/Services()->getRenderer()->getBackingResolutionScaleX(), AMotionEvent_getHistoricalY(aev,i,j)/Services()->getRenderer()->getBackingResolutionScaleY());
 								if(evSource & AINPUT_SOURCE_TOUCHSCREEN){
 									ti.type = TouchInfo::TYPE_TOUCH;
 								} else {
@@ -242,7 +277,8 @@ int inputLoop(int fd, int events, void* data){
 						std::vector<TouchInfo> touches;
 						for (int i = 0; i <count; i++){
 							TouchInfo ti;
-							ti.position = Vector2(AMotionEvent_getX(aev,i), AMotionEvent_getY(aev,i));
+							//TODO: slight offset since retina implementation
+							ti.position = Vector2(AMotionEvent_getX(aev,i)/(core->getBackingXRes()/core->getXRes()), AMotionEvent_getY(aev,i)/(core->getBackingYRes()/core->getYRes()));
 							if(evSource & AINPUT_SOURCE_TOUCHSCREEN){
 								ti.type = TouchInfo::TYPE_TOUCH;
 							} else {
@@ -275,6 +311,44 @@ int inputLoop(int fd, int events, void* data){
 			AInputQueue_finishEvent(native_input, aev, 1);
 		}
 	}
+	return 1;
+}
+
+static int sensorLoop(int fd, int events, void* data){
+// 	Logger::log("sensorLoop");
+	ASensorEventQueue* queue = ((PolycodeView*)data)->sensorQueue;
+	
+	ASensorEvent event;
+	while(ASensorEventQueue_getEvents(queue, &event, 1) > 0){
+// 		Logger::log("event.type: %d", event.type);
+		float dT;
+		switch(event.type){
+			case ASENSOR_TYPE_ACCELEROMETER:
+ 				core->_setAcceleration(Vector3(event.acceleration.x,event.acceleration.y,event.acceleration.z));
+				//Logger::log("event.type: %d", event.type);
+				break;
+			case ASENSOR_TYPE_GYROSCOPE:
+				if(((PolycodeView*)data)->gyroTimestamp!=0){
+					dT = (event.timestamp-((PolycodeView*)data)->gyroTimestamp)/1000000000.0f;
+					core->_setGyroRotation(Vector3(event.vector.x*dT*TODEGREES, event.vector.y*dT*TODEGREES, event.vector.z*dT*TODEGREES));
+					//core->_setGyroRotation(Vector3(TODEGREES*(event.uncalibrated_gyro.x_uncalib - event.uncalibrated_gyro.x_bias), TODEGREES*(event.uncalibrated_gyro.y_uncalib - event.uncalibrated_gyro.y_bias), TODEGREES*(event.uncalibrated_gyro.z_uncalib - event.uncalibrated_gyro.z_bias)));
+					//Logger::log("event.type: %d", event.type);
+				}
+				((PolycodeView*)data)->gyroTimestamp = event.timestamp;
+				break;
+			case ASENSOR_TYPE_GAME_ROTATION_VECTOR:
+				
+//  				Logger::log("event: %f, %f, %f, %f", event.data[3],event.data[0],event.data[1],event.data[2]);
+				//q.fromAngleAxis(acos(event.data[3])*2, Vector3(event.data[0], event.data[1], event.data[2]));
+				Quaternion q=Quaternion(event.data[3],event.data[0],event.data[1],event.data[2]);
+				Vector3 vec = q.toEulerAngles();
+// 				Logger::log("event: %f, %f, %f", vec.x, vec.y, vec.z);
+//  				core->deviceAttitude = q;
+				break;
+		}
+	}
+	
+	return 1;
 }
 
 void ANativeActivity_onCreate(ANativeActivity* activity, void *savedState, size_t savedStateSize) {
