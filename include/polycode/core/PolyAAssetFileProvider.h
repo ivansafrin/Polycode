@@ -27,16 +27,16 @@
 
 namespace Polycode {
     
-    class _PolyExport AAssetFile : public CoreFile {
-    public:
-        
-        long read( void * ptr, size_t size, size_t count);
-        long write( const void * ptr, size_t size, size_t count);
-        int seek(long int offset, int origin);
-        long tell();
-        
-        AAsset *file;
-    };
+	class _PolyExport AAssetFile : public CoreFile {
+	public:
+		
+		long read( void * ptr, size_t size, size_t count);
+		long write( const void * ptr, size_t size, size_t count);
+		int seek(long int offset, int origin);
+		long tell();
+		
+		AAsset *file;
+	};
     
 	class _PolyExport AAssetDirClass : public PolyBase {
 	public:
@@ -44,21 +44,21 @@ namespace Polycode {
 		String name;
 	};
 	
-    class _PolyExport AAssetFileProvider : public CoreFileProvider {
-        public:
-            AAssetFileProvider(AAssetManager *manager);
-            
+	class _PolyExport AAssetFileProvider : public CoreFileProvider {
+		public:
+			AAssetFileProvider(AAssetManager *manager);
+			
 			Polycode::CoreFile *openFile(const String &fileName, const String &opts);
-            void closeFile(Polycode::CoreFile *file);
-            
+			void closeFile(Polycode::CoreFile *file);
+			
 			bool parseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector);
 			
 			void addSource(const String &source);
-            void removeSource(const String &source);
-      
-            std::vector<AAssetDirClass> sourceFolders;
+			void removeSource(const String &source);
+		
+			std::vector<AAssetDirClass> sourceFolders;
 			
 			AAssetManager* manager;
-    };
-    
+	};
+
 }

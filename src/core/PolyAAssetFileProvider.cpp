@@ -25,8 +25,8 @@
 
 using namespace Polycode;
 
-AAssetFileProvider::AAssetFileProvider(AAssetManager* manager) {
-    type = "android";
+AAssetFileProvider::AAssetFileProvider(AAssetManager* manager) : CoreFileProvider() {
+	type = "aasset";
 	this->manager = manager;
 	canListFiles = true;
 }
@@ -36,45 +36,43 @@ void AAssetFileProvider::addSource(const String &source) {
 	dir.name = source;
 	dir.system = AAssetManager_openDir(manager, source.c_str());
 	sourceFolders.push_back(dir);
-// 	Logger::log("addSource");
 }
 
 void AAssetFileProvider::removeSource(const String &source) {
-    for(int i=0; i < sourceFolders.size(); i++) {
-        if(sourceFolders[i].name == source) {
+	for(int i=0; i < sourceFolders.size(); i++) {
+		if(sourceFolders[i].name == source) {
 			AAssetDir_close(sourceFolders[i].system);
-            sourceFolders.erase(sourceFolders.begin()+i);
-            return;
-        }
-    }
+			sourceFolders.erase(sourceFolders.begin()+i);
+			return;
+		}
+	}
 }
 
 Polycode::CoreFile *AAssetFileProvider::openFile(const String &fileName, const String &opts) {
-    Logger::log("openFile %s", fileName.c_str());
-    AAsset *file = NULL;
-    for(int i=0; i < sourceFolders.size(); i++) {
-        file = AAssetManager_open(manager, (sourceFolders[i].name+"/"+fileName).c_str(), AASSET_MODE_BUFFER);
-        if(file) {
-            break;
-        }
-    }
-    
-    if(!file) {
-        file = AAssetManager_open(manager, fileName.c_str(), AASSET_MODE_BUFFER);
-    }
-    
-    if(file) {
-        AAssetFile *retFile = NULL;
-        retFile = new AAssetFile();
-        retFile->file = file;
-        return retFile;
-    }
-    
-    return NULL;
+	Logger::log("openFile %s", fileName.c_str());
+	AAsset *file = NULL;
+	for(int i=0; i < sourceFolders.size(); i++) {
+		file = AAssetManager_open(manager, (sourceFolders[i].name+"/"+fileName).c_str(), AASSET_MODE_BUFFER);
+		if(file) {
+			break;
+		}
+	}
+	
+	if(!file) {
+		file = AAssetManager_open(manager, fileName.c_str(), AASSET_MODE_BUFFER);
+	}
+	
+	if(file) {
+		AAssetFile *retFile = NULL;
+		retFile = new AAssetFile();
+		retFile->file = file;
+		return retFile;
+	}
+	
+	return NULL;
 }
 
 bool AAssetFileProvider::parseFolder(const String& pathString, bool showHidden, std::vector< OSFileEntry >& targetVector){
-// 	Logger::log("Parse AAsset [%s]", pathString.c_str());
 	String path = pathString;
 	if(pathString.substr(pathString.length(),1)!="/")
 		path = pathString + "/";
@@ -87,7 +85,6 @@ bool AAssetFileProvider::parseFolder(const String& pathString, bool showHidden, 
 		String name = AAssetDir_getNextFileName(dir);
 		if(name == "")
 			break;
-// 		Logger::log("Parse AAsset Found File: %s", (path+name).c_str());
 		OSFileEntry entry = OSFileEntry(path + name, OSFileEntry::TYPE_FILE);
 		targetVector.push_back(entry);
 	}
@@ -96,23 +93,23 @@ bool AAssetFileProvider::parseFolder(const String& pathString, bool showHidden, 
 
 
 void AAssetFileProvider::closeFile(Polycode::CoreFile *file) {
-    AAssetFile *aassetFile = (AAssetFile*) file;
-    AAsset_close(aassetFile->file);
-    delete aassetFile;
+	AAssetFile *aassetFile = (AAssetFile*) file;
+	AAsset_close(aassetFile->file);
+	delete aassetFile;
 }
 
 long AAssetFile::read( void * ptr, size_t size, size_t count) {
-    return AAsset_read(file, ptr, count*size) / size;
+	return AAsset_read(file, ptr, count*size) / size;
 }
 
 long AAssetFile::write( const void * ptr, size_t size, size_t count) {
-    return 0;
+	return 0;
 }
 
 int AAssetFile::seek(long int offset, int origin) {
-    return AAsset_seek(file, offset, origin);
+	return AAsset_seek(file, offset, origin);
 }
 
 long AAssetFile::tell() {
-    return AAsset_getLength(file);
+	return AAsset_getLength(file);
 }

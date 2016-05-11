@@ -23,6 +23,8 @@
 #include "polycode/core/PolyAndroidCore.h"
 #include "polycode/core/PolyOpenGLGraphicsInterface.h"
 #include "polycode/core/PolyAAssetFileProvider.h"
+#include "polycode/core/PolyBasicFileProvider.h"
+#include "polycode/core/PolyPhysFSFileProvider.h"
 #include "polycode/core/PolyLogger.h"
 #include "polycode/core/PolyResourceManager.h"
 #include "polycode/core/PolyOpenSLAudioInterface.h"
@@ -50,6 +52,8 @@ AndroidCore::AndroidCore(PolycodeView *view, int xRes, int yRes, bool fullScreen
 	: Core(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
 	
 	fileProviders.push_back(new AAssetFileProvider(view->native_activity->assetManager));
+	fileProviders.push_back(new BasicFileProvider());
+	fileProviders.push_back(new PhysFSFileProvider());
 	
 	eventMutex = createMutex();
 	eglMutex = createMutex();
@@ -77,7 +81,9 @@ AndroidCore::AndroidCore(PolycodeView *view, int xRes, int yRes, bool fullScreen
 	//DP are the Density Independent Pixels - this is afaik what should be the size this should work with enabled retinaSupport
 	setVideoMode(AConfiguration_getScreenWidthDp(view->native_config), AConfiguration_getScreenHeightDp(view->native_config), fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
 	
-
+	defaultWorkingDirectory = view->native_activity->internalDataPath;
+	userHomeDirectory = view->native_activity->internalDataPath;
+	
 // 	services->getSoundManager()->setAudioInterface(new OpenSLAudioInterface());
 	paused = true;
 	
@@ -305,8 +311,10 @@ void AndroidCore::handleVideoModeChange(VideoModeChangeInfo *modeInfo) {
 			assert(context!=EGL_NO_CONTEXT);
 		}
 		
-		if(surface)
-			eglDestroySurface(display, surface);
+		// this works on my Fairphone but not in the Emulator.. and it did work in the Emulator for quite some while.. but now it says: "E/Surface﹕ getSlotFromBufferLocked: unknown buffer:"
+		// everything is running without this as well...
+// 		if(surface)
+// 			eglDestroySurface(display, surface);
 		
 		surface = eglCreateWindowSurface( display, config, view->native_window, NULL );
 		assert(surface != EGL_NO_SURFACE);
