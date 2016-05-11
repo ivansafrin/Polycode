@@ -15,7 +15,6 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
 	// Write your code here!
     srand(time(NULL));
     scene = new Scene(Scene::SCENE_2D);
-    //scene->getActiveCamera()->setOrthoSize(1920, 1080);
     scene->useClearColor = true;
     scene->clearColor.setColor(1.0f / (float)(rand() % 5),1.0f / (float)(rand()%5),1.0f / (float)(rand() % 5),1.0f);
 
@@ -23,7 +22,6 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     test->setPositionY(0.2);
     test->setMaterialByName("Unlit");
     test->getShaderPass(0).shaderBinding->loadTextureForParam("diffuse", "main_icon.png");
-    //test->setColor(1.0,0.0,0.0,1.0);
 
     SceneLabel *testLabel = new SceneLabel("Hello Polycode!", 32, "sans", Label::ANTIALIAS_FULL, 0.2);
 	testLabel->setPositionY(-0.2);
@@ -53,12 +51,22 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
 //     sound3 = new Sound("curve_02_c.wav");
 
     //sound2->Play(true);
+
     running = 0;
     rot = Vector3();
     fps = new SceneLabel("0", 32, "sans", Label::ANTIALIAS_FULL, 0.1);
     fps->setPosition(-0.6,0.3);
     scene->addChild(fps);
     scene->addChild(test);
+
+    /*game = new Scene(Scene::SCENE_3D);
+    game->useClearColor = true;
+    game->getActiveCamera()->setPosition(0, 0, 10);
+
+    box = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 2, 2, 2);
+    box->setMaterialByName("UnlitUntextured");
+    box->setColor(0.1, 1.0, 1.0, 1.0);
+    game->addChild(box);*/
 
     Services()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
     Services()->getInput()->addEventListener(this, InputEvent::EVENT_TOUCHES_BEGAN);
@@ -84,27 +92,19 @@ void PolycodeTemplateApp::handleEvent(Event *event) {
             break;
             }
         } else if (inputEvent->getEventCode() == InputEvent::EVENT_TOUCHES_BEGAN){
-            //Logger::log("Touch began: %f, %f", inputEvent->touch.position.x, inputEvent->touch.position.y);
             Ray r = scene->projectRayFromCameraAndViewportCoordinate(scene->getActiveCamera(),inputEvent->touch.position);
             test->setPosition(r.origin.x, r.origin.y);
         } else if(inputEvent->getEventCode() == InputEvent::EVENT_TOUCHES_ENDED){
-            //Logger::log("Touch ended: %f, %f", inputEvent->touch.position.x, inputEvent->touch.position.y);
             Ray r = scene->projectRayFromCameraAndViewportCoordinate(scene->getActiveCamera(),inputEvent->touch.position);
             test->setPosition(r.origin.x, r.origin.y);
         } else if(inputEvent->getEventCode() == InputEvent::EVENT_TOUCHES_MOVED){
-            Logger::log("Touch moved: %f, %f", inputEvent->touch.position.x, inputEvent->touch.position.y);
             Ray r = scene->projectRayFromCameraAndViewportCoordinate(scene->getActiveCamera(),inputEvent->touch.position);
-            Logger::log("Origin: %f, %f", r.origin.x, r.origin.y);
             test->setPosition(r.origin.x, r.origin.y);
         }
     } else if(event->getEventType() == "CoreMotionEvent"){
         CoreMotionEvent* motionEvent = (CoreMotionEvent*)event;
         if(motionEvent->getEventCode() == Core::EVENT_ACCELEROMETER_MOTION){
-            //Logger::log("Acceleration: %f, %f, %f", motionEvent->amount.x, motionEvent->amount.y, motionEvent->amount.z);
-            //rot += motionEvent->amount;
-            //test->Translate(motionEvent->amount.y*0.01, motionEvent->amount.x*0.01);
         } else if (motionEvent->getEventCode() == Core::EVENT_GYRO_ROTATION){
-            //Logger::log("Rotation: %f, %f, %f", motionEvent->amount.x, motionEvent->amount.y, motionEvent->amount.z);
             test->Translate(motionEvent->amount.x*0.01, motionEvent->amount.y*0.01);
         }
     }
@@ -116,13 +116,9 @@ PolycodeTemplateApp::~PolycodeTemplateApp() {
 
 bool PolycodeTemplateApp::Update() {
     if (!core->paused) {
-        //Logger::log("update");
         running += core->getElapsed();
         if(running >= 1){
-            //core->deviceAttitude.
-            //Logger::log("Orientation: %f, %f, %f", , rot.y, rot.z);
             fps->setText(String::NumberToString(core->getFPS(),0));
-            //Logger::log("Backing: %f", Services()->getRenderer()->getBackingResolutionScaleX());
             running = 0;
         }
         return core->updateAndRender();

@@ -30,4 +30,7 @@ private:
     Vector3 rot;
     Number running;
     SceneLabel* fps;
+
+    Scene* game;
+    ScenePrimitive* box;
 };

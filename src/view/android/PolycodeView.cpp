@@ -51,13 +51,10 @@ PolycodeView::PolycodeView(ANativeActivity* native, String title){
 	native_activity->callbacks->onWindowFocusChanged 	= onWindowFocusChanged;
 	native_activity->callbacks->onInputQueueCreated		= onInputQueueCreated;
 	native_activity->callbacks->onInputQueueDestroyed	= onInputQueueDestroyed;
+	native_activity->callbacks->onSaveInstanceState		= onSaveInstanceState;
 	
 	native_config = AConfiguration_new();
 	AConfiguration_fromAssetManager(native_config, native_activity->assetManager);
-// 	AConfiguration* myConfig = AConfiguration_new();
-// 	AConfiguration_copy(myConfig, native_config);
-// 	AConfiguration_setNavHidden(myConfig,ACONFIGURATION_NAVHIDDEN_YES);
-// 	AConfiguration_setKeysHidden(native_config, ACONFIGURATION_KEYSHIDDEN_YES);
 	
 	sensorManager = ASensorManager_getInstance();		
 	
@@ -73,20 +70,18 @@ PolycodeView::PolycodeView(ANativeActivity* native, String title){
 	sensorQueue = ASensorManager_createEventQueue(sensorManager, looper, ALOOPER_POLL_CALLBACK, sensorLoop, this);
 	
 	if(accelerometer){
-// 		Logger::log("Accelerometer found. Name: %s, Vendor: %s", ASensor_getName(accelerometer), ASensor_getVendor(accelerometer));
 		ASensorEventQueue_enableSensor(sensorQueue, accelerometer);
 	}
 	
 	if(gyroscope){
-// 		Logger::log("Gyroscope found. Name: %s, Vendor: %s", ASensor_getName(gyroscope), ASensor_getVendor(gyroscope));
 		ASensorEventQueue_enableSensor(sensorQueue, gyroscope);
 	}
 	
 	if(orientation){
-// 		Logger::log("Orientation found. Name: %s, Vendor: %s", ASensor_getName(orientation), ASensor_getVendor(orientation));
  		ASensorEventQueue_enableSensor(sensorQueue, orientation);
 	}
 	gyroTimestamp = 0;
+	WakeLock = NULL;
 	
 }
 
@@ -103,6 +98,7 @@ void onStart(ANativeActivity* activity){
 
 void onResume(ANativeActivity* activity){
 	Logger::log("onResume");
+	JNIWakeLock(activity, true);
 	if(core)
 		core->paused = false;
 	((PolycodeView*)activity->instance)->lifecycleFlags |= APP_STATUS_ACTIVE;
@@ -110,6 +106,7 @@ void onResume(ANativeActivity* activity){
 
 void onPause(ANativeActivity* activity){
 	Logger::log("onPause");
+	JNIWakeLock(activity, false);
 	((PolycodeView*)activity->instance)->lifecycleFlags &= ~APP_STATUS_ACTIVE;
 }
 
@@ -123,6 +120,28 @@ void onStop(ANativeActivity* activity){
 
 void onDestroy(ANativeActivity* activity){
 	Logger::log("onDestroy");
+	JavaVM* javaVM = activity->vm;
+	JNIEnv* jniEnv;
+	bool attached = false;
+	
+	if(javaVM->GetEnv((void**)&jniEnv, JNI_VERSION_1_6) ==JNI_EDETACHED){
+		JavaVMAttachArgs attachArgs;
+		attachArgs.version = JNI_VERSION_1_6;
+		attachArgs.name = "NativeThread";
+		attachArgs.group = NULL;
+		
+		jint result = javaVM->AttachCurrentThread(&jniEnv, &attachArgs);
+		if(result == JNI_ERR){
+			if(core)
+				core->Shutdown();
+		}
+		attached = true;
+	}
+	jniEnv->DeleteGlobalRef(((PolycodeView*)activity->instance)->WakeLock);
+	
+	if(attached)
+		javaVM->DetachCurrentThread();
+	
 	if(core)
 		core->Shutdown();
 }
@@ -135,6 +154,7 @@ void onWindowFocusChanged(ANativeActivity* activity, int hasFocus){
 		event.eventCode = Core::EVENT_GAINED_FOCUS;
 		if(core)
 			core->handleSystemEvent(event);
+		JNIAutoHideNavBar(activity);
 		((PolycodeView*)activity->instance)->lifecycleFlags|=APP_STATUS_FOCUSED;
 	}else{
 		AndroidEvent event = AndroidEvent();
@@ -229,10 +249,10 @@ static int inputLoop(int fd, int events, void* data){
 				action = AKeyEvent_getAction(aev);
 				if(action == AKEY_EVENT_ACTION_DOWN){
 					event.eventCode = InputEvent::EVENT_KEYDOWN;
-					event.unicodeChar = GetUnicodeChar(((PolycodeView*)data)->native_activity, AKEY_EVENT_ACTION_DOWN, kC, AKeyEvent_getMetaState(aev));
+					event.unicodeChar = JNIGetUnicodeChar(((PolycodeView*)data)->native_activity, AKEY_EVENT_ACTION_DOWN, kC, AKeyEvent_getMetaState(aev));
 				} else if (action == AKEY_EVENT_ACTION_UP){
 					event.eventCode = InputEvent::EVENT_KEYUP;
-					event.unicodeChar = GetUnicodeChar(((PolycodeView*)data)->native_activity, AKEY_EVENT_ACTION_UP, kC, AKeyEvent_getMetaState(aev));
+					event.unicodeChar = JNIGetUnicodeChar(((PolycodeView*)data)->native_activity, AKEY_EVENT_ACTION_UP, kC, AKeyEvent_getMetaState(aev));
 				}
 
 			} else if(type == AINPUT_EVENT_TYPE_MOTION){
@@ -315,35 +335,26 @@ static int inputLoop(int fd, int events, void* data){
 }
 
 static int sensorLoop(int fd, int events, void* data){
-// 	Logger::log("sensorLoop");
 	ASensorEventQueue* queue = ((PolycodeView*)data)->sensorQueue;
 	
 	ASensorEvent event;
 	while(ASensorEventQueue_getEvents(queue, &event, 1) > 0){
-// 		Logger::log("event.type: %d", event.type);
 		float dT;
 		switch(event.type){
 			case ASENSOR_TYPE_ACCELEROMETER:
  				core->_setAcceleration(Vector3(event.acceleration.x,event.acceleration.y,event.acceleration.z));
-				//Logger::log("event.type: %d", event.type);
 				break;
 			case ASENSOR_TYPE_GYROSCOPE:
 				if(((PolycodeView*)data)->gyroTimestamp!=0){
 					dT = (event.timestamp-((PolycodeView*)data)->gyroTimestamp)/1000000000.0f;
 					core->_setGyroRotation(Vector3(event.vector.x*dT*TODEGREES, event.vector.y*dT*TODEGREES, event.vector.z*dT*TODEGREES));
-					//core->_setGyroRotation(Vector3(TODEGREES*(event.uncalibrated_gyro.x_uncalib - event.uncalibrated_gyro.x_bias), TODEGREES*(event.uncalibrated_gyro.y_uncalib - event.uncalibrated_gyro.y_bias), TODEGREES*(event.uncalibrated_gyro.z_uncalib - event.uncalibrated_gyro.z_bias)));
-					//Logger::log("event.type: %d", event.type);
 				}
 				((PolycodeView*)data)->gyroTimestamp = event.timestamp;
 				break;
 			case ASENSOR_TYPE_GAME_ROTATION_VECTOR:
-				
-//  				Logger::log("event: %f, %f, %f, %f", event.data[3],event.data[0],event.data[1],event.data[2]);
-				//q.fromAngleAxis(acos(event.data[3])*2, Vector3(event.data[0], event.data[1], event.data[2]));
 				Quaternion q=Quaternion(event.data[3],event.data[0],event.data[1],event.data[2]);
 				Vector3 vec = q.toEulerAngles();
-// 				Logger::log("event: %f, %f, %f", vec.x, vec.y, vec.z);
-//  				core->deviceAttitude = q;
+ 				core->deviceAttitude = q;
 				break;
 		}
 	}
@@ -377,13 +388,8 @@ void* startApp(void* data){
 	Logger::log("startApp");
 	startHelper* helper = (startHelper*)data;
 	
-// 	pthread_mutex_lock(&helper->mutex);
-//     helper->running = 1;
-//     pthread_cond_broadcast(&helper->cond);
-//     pthread_mutex_unlock(&helper->mutex);
-	
 	android_main(helper);
-	Logger::log("startApp4");
+	
     pthread_mutex_lock(&helper->mutex);
     if (((PolycodeView*)helper->activity->instance)->native_input != NULL) {
         AInputQueue_detachLooper(((PolycodeView*)helper->activity->instance)->native_input);
@@ -395,18 +401,22 @@ void* startApp(void* data){
 }
 
 //From http://stackoverflow.com/questions/21124051/receive-complete-android-unicode-input-in-c-c
-int GetUnicodeChar(ANativeActivity* native_activity, int eventType, int keyCode, int metaState){
+int JNIGetUnicodeChar(ANativeActivity* native_activity, int eventType, int keyCode, int metaState){
 	JavaVM* javaVM = native_activity->vm;
-	JNIEnv* jniEnv = native_activity->env;
-
-	JavaVMAttachArgs attachArgs;
-	attachArgs.version = JNI_VERSION_1_6;
-	attachArgs.name = "NativeThread";
-	attachArgs.group = NULL;
+	JNIEnv* jniEnv;
+	bool attached = false;
 	
-	jint result = javaVM->AttachCurrentThread(&jniEnv, &attachArgs);
-	if(result == JNI_ERR){
-		return 0;
+	if(javaVM->GetEnv((void**)&jniEnv, JNI_VERSION_1_6) ==JNI_EDETACHED){
+		JavaVMAttachArgs attachArgs;
+		attachArgs.version = JNI_VERSION_1_6;
+		attachArgs.name = "NativeThread";
+		attachArgs.group = NULL;
+		
+		jint result = javaVM->AttachCurrentThread(&jniEnv, &attachArgs);
+		if(result == JNI_ERR){
+			return 0;
+		}
+		attached = true;
 	}
 	
 	jclass class_key_event = jniEnv->FindClass("android/view/KeyEvent");
@@ -425,7 +435,116 @@ int GetUnicodeChar(ANativeActivity* native_activity, int eventType, int keyCode,
 
 		unicodeKey = jniEnv->CallIntMethod(eventObj, method_get_unicode_char, metaState);
 	}
-// 	javaVM->DetachCurrentThread();
+	
+	if(attached)
+		javaVM->DetachCurrentThread();
 
 	return unicodeKey;
 }
+
+//From: http://www.gamedev.net/topic/674511-auto-hide-nav-bar-on-android-app-ndk/#entry5270901
+void JNIAutoHideNavBar(ANativeActivity* native_activity){
+	JavaVM* javaVM = native_activity->vm;
+	JNIEnv* jniEnv;
+	bool attached = false;
+	
+	if(javaVM->GetEnv((void**)&jniEnv, JNI_VERSION_1_6) ==JNI_EDETACHED){
+		JavaVMAttachArgs attachArgs;
+		attachArgs.version = JNI_VERSION_1_6;
+		attachArgs.name = "NativeThread";
+		attachArgs.group = NULL;
+		
+		jint result = javaVM->AttachCurrentThread(&jniEnv, &attachArgs);
+		if(result == JNI_ERR){
+			return;
+		}
+		attached = true;
+	}
+
+	jclass activityClass = jniEnv->FindClass("android/app/NativeActivity");
+	jmethodID getWindow = jniEnv->GetMethodID(activityClass, "getWindow", "()Landroid/view/Window;");
+
+	jclass windowClass = jniEnv->FindClass("android/view/Window");
+	jmethodID getDecorView = jniEnv->GetMethodID(windowClass, "getDecorView", "()Landroid/view/View;");
+
+	jclass viewClass = jniEnv->FindClass("android/view/View");
+	jmethodID setSystemUiVisibility = jniEnv->GetMethodID(viewClass, "setSystemUiVisibility", "(I)V");
+
+	jobject window = jniEnv->CallObjectMethod(native_activity->clazz, getWindow);
+
+	jobject decorView = jniEnv->CallObjectMethod(window, getDecorView);
+
+	jfieldID flagFullscreenID = jniEnv->GetStaticFieldID(viewClass, "SYSTEM_UI_FLAG_FULLSCREEN", "I");
+	jfieldID flagHideNavigationID = jniEnv->GetStaticFieldID(viewClass, "SYSTEM_UI_FLAG_HIDE_NAVIGATION", "I");
+	jfieldID flagImmersiveStickyID = jniEnv->GetStaticFieldID(viewClass, "SYSTEM_UI_FLAG_IMMERSIVE_STICKY", "I");
+
+	int flagFullscreen = jniEnv->GetStaticIntField(viewClass, flagFullscreenID);
+	int flagHideNavigation = jniEnv->GetStaticIntField(viewClass, flagHideNavigationID);
+	int flagImmersiveSticky = jniEnv->GetStaticIntField(viewClass, flagImmersiveStickyID);
+
+	int flag = flagFullscreen | flagHideNavigation | flagImmersiveSticky;
+
+	jniEnv->CallVoidMethod(decorView, setSystemUiVisibility, flag);
+
+	if(attached)
+		javaVM->DetachCurrentThread();
+}
+
+void JNIWakeLock(ANativeActivity* native_activity, bool acquire){
+	JavaVM* javaVM = native_activity->vm;
+	JNIEnv* jniEnv;
+	bool attached = false;
+	
+	if(javaVM->GetEnv((void**)&jniEnv, JNI_VERSION_1_6) ==JNI_EDETACHED){
+		JavaVMAttachArgs attachArgs;
+		attachArgs.version = JNI_VERSION_1_6;
+		attachArgs.name = "NativeThread";
+		attachArgs.group = NULL;
+		
+		jint result = javaVM->AttachCurrentThread(&jniEnv, &attachArgs);
+		if(result == JNI_ERR){
+			return;
+		}
+		attached = true;
+	}
+
+	jobject WakeLock = ((PolycodeView*)native_activity->instance)->WakeLock;
+	
+	if(!WakeLock){
+		jclass classNativeActivity = jniEnv->FindClass("android/app/NativeActivity");
+		jclass classPowerManager = jniEnv->FindClass("android/os/PowerManager");
+		
+		jmethodID getSystemServiceID = jniEnv->GetMethodID(classNativeActivity, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;");
+		jstring POWER_SERVICE = jniEnv->NewStringUTF("power");
+		jobject PowerManager = jniEnv->CallObjectMethod(native_activity->clazz, getSystemServiceID, POWER_SERVICE);
+		
+		jmethodID newWakeLockID = jniEnv->GetMethodID(classPowerManager, "newWakeLock", "(ILjava/lang/String;)Landroid/os/PowerManager$WakeLock;");
+		int SCREEN_BRIGHT_WAKE_LOCK = 0x0000000a;
+		long int ON_AFTER_RELEASE = 0x20000000;
+		jstring jWakeLockTag = jniEnv->NewStringUTF("Polycode");
+
+		WakeLock = jniEnv->CallObjectMethod(PowerManager, newWakeLockID, SCREEN_BRIGHT_WAKE_LOCK | ON_AFTER_RELEASE, jWakeLockTag);
+		
+		jniEnv->DeleteLocalRef(jWakeLockTag);
+		jniEnv->DeleteLocalRef(POWER_SERVICE);
+		
+		((PolycodeView*)native_activity->instance)->WakeLock = jniEnv->NewGlobalRef(WakeLock);
+	}
+	
+	jclass wakeLock = jniEnv->FindClass("android/os/PowerManager$WakeLock");
+
+	if (acquire){
+		jmethodID acquireWakeLockID = jniEnv->GetMethodID(wakeLock, "acquire", "()V");
+		jniEnv->CallVoidMethod(WakeLock, acquireWakeLockID);
+	} else {
+		jmethodID isHeldWakeLockID = jniEnv->GetMethodID(wakeLock, "isHeld", "()Z");
+		if(jniEnv->CallBooleanMethod(WakeLock, isHeldWakeLockID)){
+			jmethodID releaseWakeLockID = jniEnv->GetMethodID(wakeLock, "release", "()V");
+			jniEnv->CallVoidMethod(WakeLock, releaseWakeLockID);
+		}
+	}
+	
+	if(attached)
+		javaVM->DetachCurrentThread();
+}
+

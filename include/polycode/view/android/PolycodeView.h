@@ -78,6 +78,8 @@ namespace Polycode {
 			
 			unsigned int lifecycleFlags;
 			bool isInteractable();
+			
+			jobject WakeLock;
     };
 }
 
@@ -110,4 +112,6 @@ static int sensorLoop(int fd, int events, void* data);
 void ANativeActivity_onCreate(ANativeActivity* activity, void* savedState, size_t savedStateSize);
 void* startApp(void* data);
 
-int GetUnicodeChar(ANativeActivity* native_activity, int eventType, int keyCode, int metaState);
+int JNIGetUnicodeChar(ANativeActivity* native_activity, int eventType, int keyCode, int metaState);
+void JNIAutoHideNavBar(ANativeActivity* native_activity);
+void JNIWakeLock(ANativeActivity* native_activity, bool acquire);

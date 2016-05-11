@@ -1,17 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.native_activity"
-    android:versionCode="1"
-    android:versionName="1.0">
+    package="org.polycode.templateapp">
 
-    <uses-sdk android:minSdkVersion="21" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application android:label="TemplateApp">
-
-
-        <android:uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-        <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
-        <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
         <activity
             android:name="org.polycode.templateapp.PolycodeActivity"
             android:configChanges="keyboardHidden"
