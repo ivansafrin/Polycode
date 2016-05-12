@@ -26,59 +26,33 @@
 #include "polycode/core/PolySoundManager.h"
 #include "polycode/core/PolyThreaded.h"
 
-// #if PLATFORM == PLATFORM_ANDROID
 #include <SLES/OpenSLES_Android.h>
-// #else
-// #include <SLES/OpenSLES.h>
-// #endif
 
 namespace Polycode {
-	
-	class OpenSLStream : public Threaded {
-	public:
-		OpenSLStream();
-		virtual ~OpenSLStream();
-		
-		void runThread();
-		void setMixer(AudioMixer* newMixer);
-		
-		static void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void* context);
-		
-	private:
-		AudioMixer* mixer;
-		int16_t *playBuffer;
-		int16_t *backBuffer;
-		
-		// engine interfaces
-		SLObjectItf engineObject;
-		SLEngineItf engineEngine;
 
-		// output mix interfaces
-		SLObjectItf outputMixObject;
-
-		// buffer queue player interfaces
-		SLObjectItf bqPlayerObject;
-		SLPlayItf bqPlayerPlay;
-		SLAndroidSimpleBufferQueueItf bqPlayerBufferQueue;
-		SLEffectSendItf bqPlayerEffectSend;
-		
- 		void swapBuffers();
-		bool swappedBuffers;
-		
-		void initOpenSL();
-		void terminateOpenSL();
-		CoreMutex* streamMutex;
-	};
-	
     class OpenSLAudioInterface : public AudioInterface {
 	public:
 		OpenSLAudioInterface();
 		~OpenSLAudioInterface();
-			
+		
 		void setMixer(AudioMixer* newMixer);
-			
+		
+		void initOpenSL();
+		void terminateOpenSL();
+		
+		static void queueCallback(SLAndroidSimpleBufferQueueItf caller, void *pContext);
 	private:
-		OpenSLStream* stream;
+
+		SLObjectItf mEngineObj;
+		SLEngineItf mEngine;
+		SLObjectItf mOutputMixObj;
+		
+		SLObjectItf mPlayerObj; 
+		SLPlayItf mPlayer;
+		SLAndroidSimpleBufferQueueItf mPlayerQueue;
+		SLVolumeItf mVolume;
+		
+		int16_t buffer[44100];
     };
 }
 

@@ -51,9 +51,9 @@ void AndroidCoreMutex::unlock() {
 AndroidCore::AndroidCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex, bool retinaSupport) 
 	: Core(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
 	
-	fileProviders.push_back(new AAssetFileProvider(view->native_activity->assetManager));
 	fileProviders.push_back(new BasicFileProvider());
 	fileProviders.push_back(new PhysFSFileProvider());
+	fileProviders.push_back(new AAssetFileProvider(view->native_activity->assetManager));
 	
 	eventMutex = createMutex();
 	eglMutex = createMutex();
@@ -84,7 +84,7 @@ AndroidCore::AndroidCore(PolycodeView *view, int xRes, int yRes, bool fullScreen
 	defaultWorkingDirectory = view->native_activity->internalDataPath;
 	userHomeDirectory = view->native_activity->externalDataPath;
 	
-// 	services->getSoundManager()->setAudioInterface(new OpenSLAudioInterface());
+	services->getSoundManager()->setAudioInterface(new OpenSLAudioInterface());
 	paused = true;
 	
 	initKeyMap();

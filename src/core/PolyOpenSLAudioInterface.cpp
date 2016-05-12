@@ -29,160 +29,116 @@ using namespace Polycode;
 
 OpenSLAudioInterface::OpenSLAudioInterface(){
 	Logger::log("OpenSL Interface");
-	stream = new OpenSLStream();
+// 	stream = new OpenSLStream();
 }
 
-OpenSLAudioInterface::~OpenSLAudioInterface(){ }
+OpenSLAudioInterface::~OpenSLAudioInterface(){
+	terminateOpenSL();
+}
 
 void OpenSLAudioInterface::setMixer(AudioMixer* newMixer){
 	Logger::log("OpenSL setMixer");
 	mixer = newMixer;
-	stream->setMixer(mixer);
 	Logger::log("OpenSL setMixer2");
-	Services()->getCore()->createThread(stream);
+// 	Services()->getCore()->createThread(stream);
+	
+	initOpenSL();
 	Logger::log("OpenSL setMixer3");
 }
 
-OpenSLStream::OpenSLStream(){
-	streamMutex = NULL;
+void OpenSLAudioInterface::initOpenSL(){
+	SLresult lRes;
+	
+	const SLInterfaceID lEngineMixIIDs[]={SL_IID_ENGINE};
+	const SLboolean lEngineMixReqs[]={SL_BOOLEAN_TRUE};
+	const SLuint32 lOutputMixIIDCount=0;
+	const SLInterfaceID lOutputMixIIDs[]={};
+	const SLboolean lOutputMixReqs[]={};
+ 
+	lRes = slCreateEngine(&mEngineObj, 0, NULL, 1, lEngineMixIIDs, lEngineMixReqs);
+	Logger::log("engine: %d", lRes);
+	lRes = (*mEngineObj)->Realize(mEngineObj,SL_BOOLEAN_FALSE);
+	Logger::log("engine real: %d", lRes);
+	lRes = (*mEngineObj)->GetInterface(mEngineObj, SL_IID_ENGINE, &mEngine);
+	Logger::log("engine int: %d", lRes);
+	
+	lRes=(*mEngine)->CreateOutputMix(mEngine, &mOutputMixObj,lOutputMixIIDCount,lOutputMixIIDs, lOutputMixReqs);
+	lRes=(*mOutputMixObj)->Realize(mOutputMixObj, SL_BOOLEAN_FALSE);
+	
+	SLDataLocator_AndroidSimpleBufferQueue lDataLocatorIn;
+	lDataLocatorIn.locatorType = SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE;
+	lDataLocatorIn.numBuffers = 1;
+	
+	SLDataFormat_PCM lDataFormat;
+	lDataFormat.formatType = SL_DATAFORMAT_PCM;
+	lDataFormat.numChannels = 1; // Mono sound.
+	lDataFormat.samplesPerSec = SL_SAMPLINGRATE_8;
+	lDataFormat.bitsPerSample = SL_PCMSAMPLEFORMAT_FIXED_16;
+	lDataFormat.containerSize = SL_PCMSAMPLEFORMAT_FIXED_16;
+	lDataFormat.channelMask = SL_SPEAKER_FRONT_CENTER;
+	lDataFormat.endianness = SL_BYTEORDER_LITTLEENDIAN;
+	
+	SLDataSource lDataSource;
+	lDataSource.pLocator = &lDataLocatorIn;
+	lDataSource.pFormat = &lDataFormat;
+	
+	SLDataLocator_OutputMix lDataLocatorOut;
+	lDataLocatorOut.locatorType = SL_DATALOCATOR_OUTPUTMIX;
+	lDataLocatorOut.outputMix = mOutputMixObj;
+	
+	SLDataSink lDataSink;
+	lDataSink.pLocator = &lDataLocatorOut;
+	lDataSink.pFormat = NULL;
+	
+	const SLuint32 lSoundPlayerIIDCount = 2;
+	const SLInterfaceID lSoundPlayerIIDs[3] = { SL_IID_PLAY, SL_IID_ANDROIDSIMPLEBUFFERQUEUE, SL_IID_VOLUME };
+	const SLboolean lSoundPlayerReqs[3] = { SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE };
+	
+	Logger::log("before player");
+	lRes = (*mEngine)->CreateAudioPlayer(mEngine, &mPlayerObj, &lDataSource, &lDataSink, lSoundPlayerIIDCount, lSoundPlayerIIDs, lSoundPlayerReqs);
+	Logger::log("player: %d", lRes);
+	lRes = (*mPlayerObj)->Realize(mPlayerObj, SL_BOOLEAN_FALSE);
+	Logger::log("player real: %d", lRes);
+	
+	lRes = (*mPlayerObj)->GetInterface(mPlayerObj, SL_IID_PLAY, &mPlayer);
+	Logger::log("player getI: %d", lRes);
+	lRes = (*mPlayerObj)->GetInterface(mPlayerObj, SL_IID_ANDROIDSIMPLEBUFFERQUEUE, &mPlayerQueue);
+	Logger::log("player getBuffer: %d", lRes);
+	
+	lRes = (*mPlayerQueue)->RegisterCallback(mPlayerQueue, OpenSLAudioInterface::queueCallback, this);
+	Logger::log("queue call: %d", lRes);
+	
+// 	lRes = (*mPlayerObj)->GetInterface(mPlayerObj, SL_IID_VOLUME, &mVolume);
+// 	Logger::log("player itf: %d", lRes);
+	
+	lRes = (*mPlayer)->SetPlayState(mPlayer, SL_PLAYSTATE_PLAYING);
+	Logger::log("play: %d", lRes);
+	
+// 	int16_t *out = (int16_t*)buffer;
+// 	mixer->mixIntoBuffer(out, 44100);
+// 	(*(mPlayerQueue))->Enqueue(mPlayerQueue, out, 44100);
 }
 
-OpenSLStream::~OpenSLStream(){
-
-}
-
-void OpenSLStream::initOpenSL(){
-	SLresult result;
-	//create Engine
-	Logger::log("OpenSL init");
-	slCreateEngine(&engineObject, 0, NULL, 0, NULL, NULL);
-	(*engineObject)->Realize(engineObject, SL_BOOLEAN_FALSE);
-	(*engineObject)->GetInterface(engineObject, SL_IID_ENGINE, &engineEngine);
-	
-	//init output
-	const SLInterfaceID ids[] = {SL_IID_VOLUME};
-	const SLboolean req[] = {SL_BOOLEAN_FALSE};
-	Logger::log("OpenSL before outputMixObject %d", result);
-	result = (*engineEngine)->CreateOutputMix(engineEngine, &outputMixObject, 0, NULL, NULL);
-	Logger::log("OpenSL create outputMixObject %d", result);
-	result = (*outputMixObject)->Realize(outputMixObject, SL_BOOLEAN_FALSE);
-	Logger::log("OpenSL realize outputMixObject %d", result);
-	//some options
-	SLDataLocator_AndroidSimpleBufferQueue loc_bufq = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, 2};
-	
-	int speakers;
-    if(POLY_NUM_CHANNELS > 1) 
-		speakers = SL_SPEAKER_FRONT_LEFT | SL_SPEAKER_FRONT_RIGHT;
-    else
-		speakers = SL_SPEAKER_FRONT_CENTER;
-	
-	SLDataFormat_PCM format_pcm = {SL_DATAFORMAT_PCM,POLY_NUM_CHANNELS,POLY_AUDIO_FREQ*1000,
-               SL_PCMSAMPLEFORMAT_FIXED_16, SL_PCMSAMPLEFORMAT_FIXED_16,
-               speakers, SL_BYTEORDER_LITTLEENDIAN};
-
-	SLDataSource audioSrc = {&loc_bufq, &format_pcm};
-		
-	SLDataLocator_OutputMix loc_outmix = {SL_DATALOCATOR_OUTPUTMIX,outputMixObject};
-	SLDataSink audioSnk = {&loc_outmix, NULL};
-	
-	const SLInterfaceID ids1[] = {SL_IID_ANDROIDSIMPLEBUFFERQUEUE};
-	const SLboolean req1[] = {SL_BOOLEAN_TRUE};
-	
-	//init audio player
-	Logger::log("OpenSL before AudioPlayer");
-	result = (*engineEngine)->CreateAudioPlayer(engineEngine, &bqPlayerObject, &audioSrc, &audioSnk, 1, ids1, req1);
-	if(result != SL_RESULT_SUCCESS){
-		Logger::log("OpenSL create failed %d", result);
-			return;
-	}
-	Logger::log("OpenSL create AudioPlayer");
-	(*bqPlayerObject)->Realize(bqPlayerObject, SL_BOOLEAN_FALSE);
-	if (result != SL_RESULT_SUCCESS){
-		Logger::log("OpenSL realize failed %d", result);
-		return;
-	}
-	Logger::log("OpenSL realize AudioPlayer");
-	
-	Logger::log("OpenSL before PLAY");
-	(*bqPlayerObject)->GetInterface(bqPlayerObject, SL_IID_PLAY, &bqPlayerPlay);
-	Logger::log("OpenSL before buffer");
-	(*bqPlayerObject)->GetInterface(bqPlayerObject, SL_IID_ANDROIDSIMPLEBUFFERQUEUE, &bqPlayerBufferQueue);
-	Logger::log("OpenSL before callback");
-	(*bqPlayerBufferQueue)->RegisterCallback(bqPlayerBufferQueue,bqPlayerCallback, this);
-	Logger::log("OpenSL after callback");
-	
-	Logger::log("OpenSL Play");
-	result = (*bqPlayerPlay)->SetPlayState(bqPlayerPlay, SL_PLAYSTATE_PLAYING);
-	Logger::log("OpenSL init finished %d", result);
-}
-
-void OpenSLStream::terminateOpenSL(){
-	if (bqPlayerObject != NULL) {
-		(*bqPlayerObject)->Destroy(bqPlayerObject);
-	}
-
-	if (outputMixObject != NULL) {
-		(*outputMixObject)->Destroy(outputMixObject);
-	}
-
-	if (engineObject != NULL) {
-		(*engineObject)->Destroy(engineObject);
-	}
-}
-
-
-void OpenSLStream::setMixer(AudioMixer* newMixer){
-	Logger::log("OpenSL StreamMixer");
-	if(!streamMutex){
-		streamMutex = Services()->getCore()->createMutex();
-		Logger::log("OpenSL mutexcreated");
-	}
-		
-	streamMutex->lock();
-	mixer = newMixer;
-	streamMutex->unlock();
-	Logger::log("OpenSL StreamMixer2");
-}
-
-void OpenSLStream::runThread(){
-	Logger::log("OpenSL runThread");
-	
-// 	while(!core->isWindowInitialized()){
-// 		usleep(1000000);
+void OpenSLAudioInterface::terminateOpenSL(){
+// 	if (mPlayerQueue != NULL) {
+// 		(*mPlayerQueue)->Destroy(mPlayerQueue);
 // 	}
-	
-	initOpenSL();
-	playBuffer = (int16_t*)calloc(POLY_FRAMES_PER_BUFFER * POLY_NUM_CHANNELS, sizeof(int16_t));
-	backBuffer = (int16_t*)calloc(POLY_FRAMES_PER_BUFFER * POLY_NUM_CHANNELS, sizeof(int16_t));
-	Logger::log("OpenSL before While");
-	while(threadRunning){
-		Logger::log("OpenSL while");
-		streamMutex->lock();
-		if(swappedBuffers){
-			mixer->mixIntoBuffer(backBuffer, POLY_FRAMES_PER_BUFFER);
-			swappedBuffers = false;
-		}
-		streamMutex->unlock();
+
+	if (mOutputMixObj != NULL) {
+		(*mOutputMixObj)->Destroy(mOutputMixObj);
 	}
-	Logger::log("OpenSL after While");
-	terminateOpenSL();
-	free(playBuffer);
-	free(backBuffer);
+ 
+	if (mEngineObj != NULL) {
+		(*mEngineObj)->Destroy(mEngineObj);
+	}
 }
 
-void OpenSLStream::bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void* context){
-	OpenSLStream *ctx = (OpenSLStream *) context;
-	int bytes = POLY_FRAMES_PER_BUFFER*POLY_NUM_CHANNELS*sizeof(int16_t);
- 	ctx->swapBuffers();
-	(*ctx->bqPlayerBufferQueue)->Enqueue(ctx->bqPlayerBufferQueue,ctx->playBuffer,bytes);
-}
-
-void OpenSLStream::swapBuffers(){
-	streamMutex->lock();
-	int16_t *tmpBuf;
-	tmpBuf = playBuffer;
-	playBuffer = backBuffer;
-	backBuffer = tmpBuf;
-	swappedBuffers = true;
-	streamMutex->unlock();
+void OpenSLAudioInterface::queueCallback(SLAndroidSimpleBufferQueueItf caller, void* pContext){
+// 	OpenSLAudioInterface *audioInterface = (OpenSLAudioInterface*) pContext;
+// 	if(audioInterface->buffer && audioInterface->getMixer()) {
+// 		int16_t *out = (int16_t*)audioInterface->buffer;
+// 		audioInterface->getMixer()->mixIntoBuffer(out, 44100);
+// 		(*(audioInterface->mPlayerQueue))->Enqueue(audioInterface->mPlayerQueue, out, 44100);
+// 		Logger::log("callback");
+// 	}
 }
