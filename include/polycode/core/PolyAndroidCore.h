@@ -93,6 +93,8 @@ namespace Polycode {
 		void copyStringToClipboard(const String& str);
 		String getClipboardString();
 		
+		void addFileSource(const String &type, const String &source);
+		
 		void createFolder(const String& folderPath);
 		void copyDiskItem(const String& itemPath, const String& destItemPath);
 		void moveDiskItem(const String& itemPath, const String& destItemPath);
@@ -129,7 +131,7 @@ namespace Polycode {
 		bool recreateContext;
 		
 		PolyKEY mapKey(int keyCode);
-		
+		void extractResources();
 	private:
 		PolycodeView* view;
 		

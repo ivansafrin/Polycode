@@ -82,7 +82,7 @@ AndroidCore::AndroidCore(PolycodeView *view, int xRes, int yRes, bool fullScreen
 	setVideoMode(AConfiguration_getScreenWidthDp(view->native_config), AConfiguration_getScreenHeightDp(view->native_config), fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
 	
 	defaultWorkingDirectory = view->native_activity->internalDataPath;
-	userHomeDirectory = view->native_activity->internalDataPath;
+	userHomeDirectory = view->native_activity->externalDataPath;
 	
 // 	services->getSoundManager()->setAudioInterface(new OpenSLAudioInterface());
 	paused = true;
@@ -91,6 +91,8 @@ AndroidCore::AndroidCore(PolycodeView *view, int xRes, int yRes, bool fullScreen
 	
 	this->view = view;
 	core = this;
+	
+	extractResources();
 }
 
 AndroidCore::~AndroidCore() {
@@ -218,6 +220,55 @@ void AndroidCore::copyStringToClipboard(const String& str) {
 
 String AndroidCore::getClipboardString() {
 	return "";
+}
+
+void AndroidCore::extractResources(){
+	std::vector<OSFileEntry> entries;
+	CoreFileProvider *afileProvider;
+	CoreFileProvider *bfileProvider;
+	
+	for (int i = 0; i < fileProviders.size(); i++){
+		if(fileProviders[i]->type == "aasset"){
+			afileProvider = fileProviders[i];
+		} else if(fileProviders[i]->type == "folder"){
+			bfileProvider = fileProviders[i];
+		}
+	}
+	
+	afileProvider->parseFolder("extract", true, entries);
+	
+	struct stat st = {0};
+	if(stat(defaultWorkingDirectory.c_str(), &st)==-1)
+		mkdir(defaultWorkingDirectory.c_str(), 0700);
+	
+	CoreFile* source;
+	CoreFile* dest;
+	char* buffer = (char*)malloc(1*sizeof(char));
+	
+	for(int i = 0; i < entries.size(); i++){
+		source = afileProvider->openFile(entries[i].fullPath,"r");
+		dest = bfileProvider->openFile(defaultWorkingDirectory+"/"+entries[i].name, "wb");
+		
+		if(source->tell() != dest->tell()){
+			while(source->read(buffer, sizeof(char), 1) > 0){
+				dest->write(buffer,sizeof(char), 1);
+			}
+		}
+		
+		afileProvider->closeFile(source);
+		bfileProvider->closeFile(dest);
+	}
+	
+	free(buffer);
+}
+
+void AndroidCore::addFileSource(const String &type, const String &source) {
+	for(int i=0; i < fileProviders.size(); i++) {
+		if(fileProviders[i]->type == type) {
+			fileProviders[i]->addSource(defaultWorkingDirectory+"/"+source);
+			return;
+		}
+	}
 }
 
 void AndroidCore::createFolder(const String& folderPath) {

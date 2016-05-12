@@ -56,7 +56,7 @@ PolycodeView::PolycodeView(ANativeActivity* native, String title){
 	native_config = AConfiguration_new();
 	AConfiguration_fromAssetManager(native_config, native_activity->assetManager);
 	
-	sensorManager = ASensorManager_getInstance();		
+	sensorManager = ASensorManager_getInstance();
 	
 	const ASensor* accelerometer = ASensorManager_getDefaultSensor(sensorManager, ASENSOR_TYPE_ACCELEROMETER);
 	const ASensor* gyroscope = ASensorManager_getDefaultSensor(sensorManager, ASENSOR_TYPE_GYROSCOPE);
@@ -220,7 +220,11 @@ void onContentRectChanged(ANativeActivity* activity, const ARect *rect){
 
 void onConfiguartionChanged(ANativeActivity* activity){
 	Logger::log("onConfiguartionChanged");
-// 	activity->assetManager
+	core->getEGLMutex()->lock();
+	AConfiguration_delete(((PolycodeView*)activity->instance)->native_config);
+	((PolycodeView*)activity->instance)->native_config = AConfiguration_new();
+	AConfiguration_fromAssetManager(((PolycodeView*)activity->instance)->native_config, activity->assetManager);
+	core->getEGLMutex()->unlock();
 }
 
 void onLowMemory(ANativeActivity* activity){

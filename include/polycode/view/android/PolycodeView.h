@@ -73,13 +73,12 @@ namespace Polycode {
 			
 			ASensorManager* sensorManager;
 			ASensorEventQueue* sensorQueue;
-			
 			int64_t gyroTimestamp;
+			
+			jobject WakeLock;
 			
 			unsigned int lifecycleFlags;
 			bool isInteractable();
-			
-			jobject WakeLock;
     };
 }
 

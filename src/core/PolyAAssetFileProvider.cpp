@@ -74,12 +74,16 @@ Polycode::CoreFile *AAssetFileProvider::openFile(const String &fileName, const S
 
 bool AAssetFileProvider::parseFolder(const String& pathString, bool showHidden, std::vector< OSFileEntry >& targetVector){
 	String path = pathString;
-	if(pathString.substr(pathString.length(),1)!="/")
+	
+	if(pathString.substr(pathString.length()-1,1)!="/")
 		path = pathString + "/";
 	
 	AAssetDir* dir = AAssetManager_openDir(manager, pathString.c_str());
-	if(!dir)
+	
+	if(AAssetDir_getNextFileName(dir) == NULL)
 		return false;
+	
+	AAssetDir_rewind(dir);
 	
 	while(true){
 		String name = AAssetDir_getNextFileName(dir);
@@ -111,5 +115,5 @@ int AAssetFile::seek(long int offset, int origin) {
 }
 
 long AAssetFile::tell() {
-	return AAsset_getLength(file);
+	return AAsset_getLength64(file);
 }

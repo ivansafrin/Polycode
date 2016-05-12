@@ -312,7 +312,7 @@ namespace Polycode {
 		CoreFile *openFile(const Polycode::String& fileName, const Polycode::String& opts);
 		void closeFile(CoreFile *file);
 		
-		void addFileSource(const String &type, const String &source);
+		virtual void addFileSource(const String &type, const String &source);
 		void removeFileSource(const String &type, const String &source);
 		
 		std::vector<OSFileEntry> parseFolder(const Polycode::String& pathString, bool showHidden);

@@ -18,7 +18,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
-            jniDebuggable = true
+            debuggable true
+            jniDebuggable false
         }
     }
     sourceSets.main {
@@ -35,8 +36,8 @@ android {
         }
     }
     task copyAssets(type: Copy) {
-        from '../../../assets/default/default'
-        into 'src/main/assets/default'
+        from '../../../assets/default_mobile/default.pak'
+        into 'src/main/assets/extract/'
     }
     tasks.withType(JavaCompile) {
         compileTask -> compileTask.dependsOn ndkBuild, copyAssets

@@ -4,7 +4,7 @@
 
 using namespace Polycode;
 
-PhysFSFileProvider::PhysFSFileProvider() {
+PhysFSFileProvider::PhysFSFileProvider() : CoreFileProvider() {
 	canListFiles = true;
 	type = "archive";
 	PHYSFS_init(NULL);
