@@ -29,6 +29,23 @@
 #include <SLES/OpenSLES_Android.h>
 
 namespace Polycode {
+	
+	class OpenSLAudioInterface;
+	
+// 	class OpenSLStream : public Threaded {
+// 	public:
+// 		OpenSLStream();
+// 		
+// 		void runThread();
+// 		void updateThread(int16_t *buf);
+// 		void setInterface(OpenSLAudioInterface *itf);
+// 		
+// 		static void queueCallback(SLAndroidSimpleBufferQueueItf caller, void *pContext);
+// 	private:
+// 		OpenSLAudioInterface* itf;
+// 		int currentBufferCount;
+// 		CoreMutex* queueMutex;
+// 	};
 
     class OpenSLAudioInterface : public AudioInterface {
 	public:
@@ -41,18 +58,20 @@ namespace Polycode {
 		void terminateOpenSL();
 		
 		static void queueCallback(SLAndroidSimpleBufferQueueItf caller, void *pContext);
+		
+		SLAndroidSimpleBufferQueueItf mPlayerQueue;
 	private:
+// 		OpenSLStream* stream;
 
+		int16_t* buffer;
+		
 		SLObjectItf mEngineObj;
 		SLEngineItf mEngine;
 		SLObjectItf mOutputMixObj;
 		
 		SLObjectItf mPlayerObj; 
 		SLPlayItf mPlayer;
-		SLAndroidSimpleBufferQueueItf mPlayerQueue;
 		SLVolumeItf mVolume;
-		
-		int16_t buffer[44100];
     };
 }
 

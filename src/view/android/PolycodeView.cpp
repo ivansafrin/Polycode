@@ -23,7 +23,10 @@
 #include "polycode/view/android/PolycodeView.h"
 #include "polycode/core/PolyLogger.h"
 #include "polycode/core/PolyRenderer.h"
+#include "polycode/core/PolySoundManager.h"
+#include "polycode/core/PolyOpenSLAudioInterface.h"
 #include <android/looper.h>
+#include <stdlib.h>
 
 using namespace Polycode;
 
@@ -83,12 +86,14 @@ PolycodeView::PolycodeView(ANativeActivity* native, String title){
 	gyroTimestamp = 0;
 	WakeLock = NULL;
 	
+	firstWindowCreate = true;
+	
+	GetAudioInfo(native);
 }
 
 PolycodeView::~PolycodeView(){}
 
 bool PolycodeView::isInteractable(){
-	//Logger::log("isInteractable: %s", ((lifecycleFlags & APP_STATUS_INTERACTABLE) == APP_STATUS_INTERACTABLE) ? "true" : "false");
 	return ((lifecycleFlags & APP_STATUS_INTERACTABLE) == APP_STATUS_INTERACTABLE);
 }
 
@@ -161,7 +166,7 @@ void onWindowFocusChanged(ANativeActivity* activity, int hasFocus){
 		event.eventGroup = AndroidEvent::SYSTEM_FOCUS_EVENT;
 		event.eventCode = Core::EVENT_LOST_FOCUS;
 		if(core)
-			core->handleSystemEvent(event);		
+			core->handleSystemEvent(event);
 		((PolycodeView*)activity->instance)->lifecycleFlags&=~APP_STATUS_FOCUSED;
 	}
 }
@@ -174,6 +179,10 @@ void onNativeWindowCreated(ANativeActivity* activity, ANativeWindow *window){
 	if (width > 0 && height > 0){
 		((PolycodeView*)activity->instance)->lifecycleFlags|=APP_STATUS_HAS_REAL_SURFACE;
 		if(core){
+			if(((PolycodeView*)activity->instance)->firstWindowCreate){
+				Services()->getSoundManager()->setAudioInterface(new OpenSLAudioInterface());
+				((PolycodeView*)activity->instance)->firstWindowCreate = false;
+			}
 			core->recreateContext = true;
 			core->setDeviceSize(width, height);
 			core->setVideoMode(core->getXRes(), core->getYRes(), true, false, core->getAALevel(), 0, true);
@@ -552,3 +561,54 @@ void JNIWakeLock(ANativeActivity* native_activity, bool acquire){
 		javaVM->DetachCurrentThread();
 }
 
+void GetAudioInfo(ANativeActivity* native_activity){
+	JavaVM* javaVM = native_activity->vm;
+	JNIEnv* jniEnv;
+	bool attached = false;
+	
+	if(javaVM->GetEnv((void**)&jniEnv, JNI_VERSION_1_6) ==JNI_EDETACHED){
+		JavaVMAttachArgs attachArgs;
+		attachArgs.version = JNI_VERSION_1_6;
+		attachArgs.name = "NativeThread";
+		attachArgs.group = NULL;
+		
+		jint result = javaVM->AttachCurrentThread(&jniEnv, &attachArgs);
+		if(result == JNI_ERR){
+			return;
+		}
+		attached = true;
+	}
+
+	jclass classNativeActivity = jniEnv->FindClass("android/app/NativeActivity");
+	jclass classAudioManager = jniEnv->FindClass("android/os/AudioManager");
+	
+	jmethodID getSystemServiceID = jniEnv->GetMethodID(classNativeActivity, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;");
+	jstring AUDIO_SERVICE = jniEnv->NewStringUTF("audio");
+	jobject AudioManager = jniEnv->CallObjectMethod(native_activity->clazz, getSystemServiceID, AUDIO_SERVICE);
+	
+	jmethodID getProperty = jniEnv->GetMethodID(classAudioManager, "getProperty", "(Ljava/lang/String;)Landroid/os/AudioManager;");
+	
+	jobject fpBID = jniEnv->GetStaticObjectField(classAudioManager, "PROPERTY_OUTPUT_FRAMES_PER_BUFFER", "Ljava/lang/String;");
+	jobject srID = jniEnv->GetStaticObjectField(classAudioManager, "PROPERTY_OUTPUT_SAMPLE_RATE", "Ljava/lang/String;");
+	
+	jobject fpBO = jniEnv->CallObjectMethod(AudioManager, getProperty, fpBID);
+	jobject srO = jniEnv->CallObjectMethod(AudioManager, getProperty, fpBID);
+	
+	const char *nativeString = (*jniEnv)->GetStringUTFChars(jniEnv, fpBO, 0);
+	int fpB = atoi(nativeString);
+	(*jniEnv)->ReleaseStringUTFChars(jniEnv, fpBO, nativeString);
+	
+	nativeString = (*jniEnv)->GetStringUTFChars(jniEnv, srO, 0);
+	int sr = atoi(nativeString);
+	(*jniEnv)->ReleaseStringUTFChars(jniEnv, srO, nativeString);
+	
+	Logger::log("fpB: %d, sr: %d", fpB, sr);
+	
+// 	jniEnv->DeleteLocalRef(jWakeLockTag);
+// 	jniEnv->DeleteLocalRef(POWER_SERVICE);
+	
+// 	((PolycodeView*)native_activity->instance)->WakeLock = jniEnv->NewGlobalRef(WakeLock);
+
+	if(attached)
+		javaVM->DetachCurrentThread();
+}

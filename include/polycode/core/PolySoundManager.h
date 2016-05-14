@@ -26,10 +26,14 @@
 #include "polycode/core/PolyQuaternion.h"
 #include "polycode/core/PolySound.h"
 
-#define POLY_FRAMES_PER_BUFFER 2048
+#define POLY_FRAMES_PER_BUFFER 512
 #define POLY_AUDIO_FREQ 44100
 #define POLY_CIRCULAR_BUFFER_SIZE 32
+#if PLATFORM == PLATFORM_ANDROID
+#define POLY_NUM_CHANNELS 1
+#else
 #define POLY_NUM_CHANNELS 2
+#endif
 #define POLY_MIX_BUFFER_SIZE (POLY_FRAMES_PER_BUFFER*POLY_CIRCULAR_BUFFER_SIZE)
 
 namespace Polycode {
@@ -84,6 +88,7 @@ namespace Polycode {
 		
 		void registerSound(Sound *sound);
 		void unregisterSound(Sound *sound);
+		
 		
 	protected:
 		

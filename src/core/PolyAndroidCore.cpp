@@ -84,7 +84,8 @@ AndroidCore::AndroidCore(PolycodeView *view, int xRes, int yRes, bool fullScreen
 	defaultWorkingDirectory = view->native_activity->internalDataPath;
 	userHomeDirectory = view->native_activity->externalDataPath;
 	
-	services->getSoundManager()->setAudioInterface(new OpenSLAudioInterface());
+	services->getSoundManager()->setAudioInterface(new AudioInterface());
+	
 	paused = true;
 	
 	initKeyMap();
@@ -92,6 +93,7 @@ AndroidCore::AndroidCore(PolycodeView *view, int xRes, int yRes, bool fullScreen
 	this->view = view;
 	core = this;
 	
+// 	services->getSoundManager()->setAudioInterface(new OpenSLAudioInterface());
 	extractResources();
 }
 
@@ -247,16 +249,26 @@ void AndroidCore::extractResources(){
 	
 	for(int i = 0; i < entries.size(); i++){
 		source = afileProvider->openFile(entries[i].fullPath,"r");
-		dest = bfileProvider->openFile(defaultWorkingDirectory+"/"+entries[i].name, "wb");
+		dest = bfileProvider->openFile(defaultWorkingDirectory+"/"+entries[i].name, "rb");
 		
-		if(source->tell() != dest->tell()){
+		if(dest){
+			dest->seek(0, SEEK_END);
+			if(source->tell() != dest->tell()){
+				bfileProvider->closeFile(dest);
+				dest = bfileProvider->openFile(defaultWorkingDirectory+"/"+entries[i].name, "wb");
+				while(source->read(buffer, sizeof(char), 1) > 0){
+					dest->write(buffer,sizeof(char), 1);
+				}
+			}
+			bfileProvider->closeFile(dest);
+		} else {
+			dest = bfileProvider->openFile(defaultWorkingDirectory+"/"+entries[i].name, "wb");
 			while(source->read(buffer, sizeof(char), 1) > 0){
 				dest->write(buffer,sizeof(char), 1);
 			}
 		}
 		
 		afileProvider->closeFile(source);
-		bfileProvider->closeFile(dest);
 	}
 	
 	free(buffer);
@@ -265,7 +277,11 @@ void AndroidCore::extractResources(){
 void AndroidCore::addFileSource(const String &type, const String &source) {
 	for(int i=0; i < fileProviders.size(); i++) {
 		if(fileProviders[i]->type == type) {
-			fileProviders[i]->addSource(defaultWorkingDirectory+"/"+source);
+			if(source.substr(0,1) == "/"){
+				fileProviders[i]->addSource(source);
+			}else{
+				fileProviders[i]->addSource(defaultWorkingDirectory+"/"+source);
+			}
 			return;
 		}
 	}

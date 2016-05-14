@@ -10,6 +10,7 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     core = new POLYCODE_CORE(view, 800,480,false,false, 0,0,60, -1, true);
 
     core->addFileSource("archive", "default.pak");
+    Logger::log("defaultWD: %s", core->getDefaultWorkingDirectory().c_str());
     core->addFileSource("folder", core->getDefaultWorkingDirectory());
     ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
     globalPool->loadResourcesFromFolder("default", true);
@@ -39,16 +40,17 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
         scene->addChild(box);
     }*/
 
-    bgSound = new Sound("FightBG.OGG");
+    Logger::log("before sound");
+//    bgSound = new Sound("FightBG.wav");
 //    bgSound->Play();
-//    bgSound->setPitch(10.0);
 
 
-    //sound1 = new Sound("hit.wav");
+
+//    sound1 = new Sound("hit.wav");
     //Logger::log("before Play");
     //sound1->Play(true);
     //Logger::log("after Play");
-//    sound1->setPitch(2.3);
+    //sound1->setPitch(10);
 
 //    sound2 = new Sound("test.wav");
 //     sound3 = new Sound("curve_02_c.wav");
