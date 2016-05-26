@@ -9,14 +9,17 @@ RenderDataArray.BONE_WEIGHT_DATA_ARRAY = 5
 RenderDataArray.BONE_INDEX_DATA_ARRAY = 6
 RenderDataArray.INDEX_DATA_ARRAY = 7
 RenderDataArray.TEXCOORD2_DATA_ARRAY = 8
+RenderDataArray.CUSTOM_DATA_ARRAY1 = 9
+RenderDataArray.CUSTOM_DATA_ARRAY2 = 10
+RenderDataArray.CUSTOM_DATA_ARRAY3 = 11
+RenderDataArray.CUSTOM_DATA_ARRAY4 = 12
+RenderDataArray.UNKNOWN_DATA_ARRAY = 13
 
 function RenderDataArray:__getvar(name)
 	if name == "type" then
 		return Polycode.RenderDataArray_get_type(self.__ptr)
 	elseif name == "customArrayName" then
 		return Polycode.RenderDataArray_get_customArrayName(self.__ptr)
-	elseif name == "hasVBO" then
-		return Polycode.RenderDataArray_get_hasVBO(self.__ptr)
 	end
 end
 
@@ -26,9 +29,6 @@ function RenderDataArray:__setvar(name,value)
 		return true
 	elseif name == "customArrayName" then
 		Polycode.RenderDataArray_set_customArrayName(self.__ptr, value)
-		return true
-	elseif name == "hasVBO" then
-		Polycode.RenderDataArray_set_hasVBO(self.__ptr, value)
 		return true
 	end
 	return false

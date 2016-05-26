@@ -28,13 +28,13 @@ using namespace Polycode;
 using std::min;
 using std::max;
 
-SceneCurve::SceneCurve() : SceneMesh(Mesh::LINE_STRIP_MESH) {
+SceneCurve::SceneCurve() : SceneMesh() {
     curveResolution = 256;
     renderCurve = true;
     curve = new BezierCurve();
 }
 
-SceneCurve::SceneCurve(BezierCurve *curve) : SceneMesh(Mesh::LINE_STRIP_MESH) {
+SceneCurve::SceneCurve(BezierCurve *curve) : SceneMesh() {
     curveResolution = 256;
     renderCurve = true;
     this->curve = curve;
@@ -83,13 +83,14 @@ void SceneCurve::Update() {
     mesh->clearMesh();
     Vector3 bBox;
     
+    MeshGeometry geometry;
+    geometry.meshType = MeshGeometry::LINE_STRIP_MESH;
     if(renderCurve) {
-
         Number step = (1.0 / ((Number)curveResolution));
         
         for(Number offset=0.0; offset <= 1.0; offset += step) {
             Vector3 pt = curve->getPointAt(offset);
-            mesh->addVertexWithUV(pt.x, pt.y, pt.z, offset, 0.0);
+            geometry.addVertexWithUV(pt.x, pt.y, pt.z, offset, 0.0);
             
             bBox.x = max(bBox.x,(Number)fabs(pt.x));
             bBox.y = max(bBox.y,(Number)fabs(pt.y));
@@ -98,10 +99,12 @@ void SceneCurve::Update() {
         }
     }
     
+    mesh->addSubmesh(geometry);
+    
     setLocalBoundingBox(bBox * 2.0);
 }
 
-SceneLine::SceneLine(Vector3 startp, Vector3 endp) : SceneMesh(Mesh::LINE_MESH) {
+SceneLine::SceneLine(Vector3 startp, Vector3 endp) : SceneMesh() {
 	this->ent1 = NULL;
 	this->ent2 = NULL;
 	this->start = start;
@@ -110,7 +113,7 @@ SceneLine::SceneLine(Vector3 startp, Vector3 endp) : SceneMesh(Mesh::LINE_MESH) 
 	ignoreParentMatrix = false;
 }
 
-SceneLine::SceneLine(Entity *ent1, Entity *ent2) : SceneMesh(Mesh::LINE_MESH) {
+SceneLine::SceneLine(Entity *ent1, Entity *ent2) : SceneMesh() {
 	this->ent1 = ent1;
 	this->ent2 = ent2;	
 	initLine();
@@ -119,8 +122,12 @@ SceneLine::SceneLine(Entity *ent1, Entity *ent2) : SceneMesh(Mesh::LINE_MESH) {
 }
 
 void SceneLine::initLine() {
-	mesh->addVertexWithUV(0,0,0,0,0);
-	mesh->addVertexWithUV(0,0,0,1,0);
+    mesh->clearMesh();
+    MeshGeometry geometry;
+    geometry.meshType = MeshGeometry::LINE_MESH;
+	geometry.addVertexWithUV(0,0,0,0,0);
+	geometry.addVertexWithUV(0,0,0,1,0);
+    mesh->addSubmesh(geometry);
 }
 
 SceneLine *SceneLine::SceneLineWithPositions(Vector3 startp, Vector3 endp) {
@@ -143,19 +150,22 @@ void SceneLine::Update(){
 	Vector3 v1;
 	Vector3 v2;
 
-    mesh->vertexPositionArray.data.clear();
-	
+    mesh->clearMesh();
+    MeshGeometry geometry;
+	geometry.meshType = MeshGeometry::LINE_MESH;
+    
 	if(ent1 != NULL && ent2 != NULL) {
 		v1 = ent1->getConcatenatedMatrix().getPosition();
 		v2 = ent2->getConcatenatedMatrix().getPosition();
         
-        mesh->addVertex(v1.x,v1.y,v1.z);
-        mesh->addVertex(v2.x,v2.y,v2.z);
+        geometry.addVertex(v1.x,v1.y,v1.z);
+        geometry.addVertex(v2.x,v2.y,v2.z);
 	} else {
 		v1 = start;
 		v2 = end;
-        mesh->addVertex(v1.x,v1.y*yAdjust,v1.z);
-        mesh->addVertex(v2.x,v2.y*yAdjust,v2.z);
+        geometry.addVertex(v1.x,v1.y*yAdjust,v1.z);
+        geometry.addVertex(v2.x,v2.y*yAdjust,v2.z);
 
 	}
+    mesh->addSubmesh(geometry);
 }

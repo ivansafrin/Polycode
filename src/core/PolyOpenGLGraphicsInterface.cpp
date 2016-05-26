@@ -191,7 +191,33 @@ void OpenGLGraphicsInterface::setParamInShader(Shader *shader, ProgramParam *par
     }
 }
 
-void OpenGLGraphicsInterface::createVBOForVertexArray(VertexDataArray *array) {
+void OpenGLGraphicsInterface::destroyBuffer(RenderDataArray *array) {
+    if(array->platformData) {
+        GLuint vboID = *((GLuint*)array->platformData);
+        glDeleteBuffers(1, &vboID);
+        delete ((GLuint*)array->platformData);
+        array->platformData = NULL;
+    }
+}
+
+void OpenGLGraphicsInterface::createIndexBuffer(IndexDataArray *dataArray) {
+    destroyBuffer(dataArray);
+    
+    if(dataArray->getDataSize() == 0) {
+        return;
+    }
+    
+    GLuint bufferID;
+    glGenBuffers(1, &bufferID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferID);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, dataArray->getDataSize() * sizeof(PolyRendererIndexType), dataArray->getArrayData(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    dataArray->platformData = (void*)(new GLuint);
+    *((GLuint*)dataArray->platformData) = bufferID;
+}
+
+void OpenGLGraphicsInterface::createVertexBuffer(VertexDataArray *array) {
+    destroyBuffer(array);
     if(array->getDataSize() == 0) {
         return;
     }
@@ -199,25 +225,107 @@ void OpenGLGraphicsInterface::createVBOForVertexArray(VertexDataArray *array) {
     glGenBuffers(1, &bufferID);
     glBindBuffer(GL_ARRAY_BUFFER, bufferID);
     glBufferData(GL_ARRAY_BUFFER, array->getDataSize() * sizeof(PolyRendererVertexType), array->getArrayData(), GL_STATIC_DRAW);
-    array->hasVBO = true;
-    array->platformData = (void*) malloc(sizeof(GLuint));
+    array->platformData = (void*)(new GLuint);
     *((GLuint*)array->platformData) = bufferID;
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void OpenGLGraphicsInterface::createMesh(Mesh *mesh) {
-    createVBOForVertexArray(&mesh->vertexPositionArray);
-    createVBOForVertexArray(&mesh->vertexTexCoordArray);
-    createVBOForVertexArray(&mesh->vertexNormalArray);
-    createVBOForVertexArray(&mesh->vertexColorArray);
-    createVBOForVertexArray(&mesh->vertexTangentArray);
-    createVBOForVertexArray(&mesh->vertexBoneIndexArray);
-    createVBOForVertexArray(&mesh->vertexBoneWeightArray);
-    createVBOForVertexArray(&mesh->vertexTexCoord2Array);
-    createVBOForVertexArray(&mesh->vertexBoneIndexArray);
+void OpenGLGraphicsInterface::createSubmeshBuffers(MeshGeometry *submesh) {
+    createVertexBuffer(&submesh->vertexPositionArray);
+    createVertexBuffer(&submesh->vertexTexCoordArray);
+    createVertexBuffer(&submesh->vertexNormalArray);
+    createVertexBuffer(&submesh->vertexColorArray);
+    createVertexBuffer(&submesh->vertexTangentArray);
+    createVertexBuffer(&submesh->vertexBoneIndexArray);
+    createVertexBuffer(&submesh->vertexBoneWeightArray);
+    createVertexBuffer(&submesh->vertexTexCoord2Array);
+    createVertexBuffer(&submesh->vertexBoneIndexArray);
+    createVertexBuffer(&submesh->customVertexArray1);
+    createVertexBuffer(&submesh->customVertexArray2);
+    createVertexBuffer(&submesh->customVertexArray3);
+    createVertexBuffer(&submesh->customVertexArray4);
+    createIndexBuffer(&submesh->indexArray);
 }
 
-void OpenGLGraphicsInterface::destroyMesh(Mesh *mesh) {
+void OpenGLGraphicsInterface::destroySubmeshBufferData(void *platformData) {
+    GLuint vboID = *((GLuint*)platformData);
+    glDeleteBuffers(1, &vboID);
+    delete ((GLuint*)platformData);
+}
+
+void OpenGLGraphicsInterface::drawSubmeshBuffers(MeshGeometry *submesh, Shader *shader) {
     
+    static std::vector<int> enabledAttributes;
+    enabledAttributes.reserve(16);
+    
+    for(int i=0; i < shader->expectedAttributes.size(); i++) {
+        VertexDataArray *targetArray = NULL;
+        switch(shader->expectedAttributes[i].arrayType) {
+            case RenderDataArray::VERTEX_DATA_ARRAY:
+                targetArray = &submesh->vertexPositionArray;
+            break;
+            case RenderDataArray::NORMAL_DATA_ARRAY:
+                targetArray = &submesh->vertexNormalArray;
+            break;
+            case RenderDataArray::TEXCOORD_DATA_ARRAY:
+                targetArray = &submesh->vertexTexCoordArray;
+            break;
+            case RenderDataArray::TEXCOORD2_DATA_ARRAY:
+                targetArray = &submesh->vertexTexCoord2Array;
+            break;
+            case RenderDataArray::BONE_INDEX_DATA_ARRAY:
+                targetArray = &submesh->vertexBoneIndexArray;
+            break;
+            case RenderDataArray::BONE_WEIGHT_DATA_ARRAY:
+                targetArray = &submesh->vertexBoneWeightArray;
+            break;
+            case RenderDataArray::TANGENT_DATA_ARRAY:
+                targetArray = &submesh->vertexTangentArray;
+            break;
+            case RenderDataArray::COLOR_DATA_ARRAY:
+                targetArray = &submesh->vertexColorArray;
+            break;
+            case RenderDataArray::CUSTOM_DATA_ARRAY1:
+                targetArray = &submesh->customVertexArray1;
+            break;
+            case RenderDataArray::CUSTOM_DATA_ARRAY2:
+                targetArray = &submesh->customVertexArray2;
+            break;
+            case RenderDataArray::CUSTOM_DATA_ARRAY3:
+                targetArray = &submesh->customVertexArray3;
+               break;
+            case RenderDataArray::CUSTOM_DATA_ARRAY4:
+                targetArray = &submesh->customVertexArray4;
+            break;
+        }
+        
+        if(targetArray) {
+            if(targetArray->platformData) {
+                int bufferIndex = *((GLuint*)targetArray->platformData);
+                int attributeLocation = *((GLuint*)shader->expectedAttributes[i].platformData);
+                glBindBuffer(GL_ARRAY_BUFFER, bufferIndex);
+                glVertexAttribPointer(attributeLocation, targetArray->getCountPerVertex(), GL_FLOAT, GL_FALSE, 0, NULL);
+                glEnableVertexAttribArray(attributeLocation);
+                enabledAttributes.push_back(attributeLocation);
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+            }
+        }
+    }
+    
+    if(submesh->indexedMesh) {
+        if(submesh->indexArray.platformData) {
+           glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, *((GLuint*)submesh->indexArray.platformData));
+           glDrawElements(getGLDrawMode(submesh->meshType), submesh->indexArray.getDataSize(), GL_UNSIGNED_INT, NULL);
+           glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0);
+        }
+    } else {
+        glDrawArrays(getGLDrawMode(submesh->meshType), 0, submesh->getVertexCount());
+    }
+    
+    for(int i=0; i < enabledAttributes.size(); i++) {
+        glDisableVertexAttribArray(enabledAttributes[i]);
+    }
+    enabledAttributes.clear();
 }
 
 void OpenGLGraphicsInterface::setBlendingMode(unsigned int blendingMode) {
@@ -277,7 +385,7 @@ void OpenGLGraphicsInterface::useShader(Shader *shader) {
 void OpenGLGraphicsInterface::setAttributeInShader(Shader *shader, ProgramAttribute *attribute, AttributeBinding *attributeBinding) {
     GLuint attribLocation = *((GLuint*) attribute->platformData);
     
-    if(attributeBinding->vertexData->hasVBO) {
+    if(attributeBinding->vertexData->platformData) {
         GLuint bufferID = *((GLuint*) attributeBinding->vertexData->platformData);
         glBindBuffer(GL_ARRAY_BUFFER, bufferID);
         glVertexAttribPointer(attribLocation, attributeBinding->vertexData->countPerVertex, GL_FLOAT, false, 0, NULL);
@@ -319,45 +427,30 @@ void OpenGLGraphicsInterface::setWireframeMode(bool val) {
 
 GLenum OpenGLGraphicsInterface::getGLDrawMode(int polycodeMode) {
     switch(polycodeMode) {
-        case Mesh::POINT_MESH:
+        case MeshGeometry::POINT_MESH:
             return GL_POINTS;
         break;
-        case Mesh::LINE_STRIP_MESH:
+        case MeshGeometry::LINE_STRIP_MESH:
             return GL_LINE_STRIP;
         break;
-        case Mesh::LINE_LOOP_MESH:
+        case MeshGeometry::LINE_LOOP_MESH:
             return GL_LINE_LOOP;
         break;
-        case Mesh::LINE_MESH:
+        case MeshGeometry::LINE_MESH:
             return GL_LINES;
         break;
-        case Mesh::TRISTRIP_MESH:
+        case MeshGeometry::TRISTRIP_MESH:
             return GL_TRIANGLE_STRIP;
         break;
-        case Mesh::TRIFAN_MESH:
+        case MeshGeometry::TRIFAN_MESH:
             return GL_TRIANGLE_FAN;
         break;
-        case Mesh::TRI_MESH:
+        case MeshGeometry::TRI_MESH:
             return GL_TRIANGLES;
         break;
     }
     
     return GL_TRIANGLES;
-}
-
-void OpenGLGraphicsInterface::drawIndices(int type, IndexDataArray *indexArray) {
-    if(indexArray->hasVBO) {
-        GLuint bufferID = *((GLuint*) indexArray->platformData);
-        glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufferID);
-        glDrawElements(getGLDrawMode(type), indexArray->data.size(), GL_UNSIGNED_INT, NULL);
-        glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0);
-    } else {
-     glDrawElements(getGLDrawMode(type), indexArray->data.size(), GL_UNSIGNED_INT, indexArray->data.data());
-    }
-}
-
-void OpenGLGraphicsInterface::drawArrays(int type, unsigned int vertexCount) {
-    glDrawArrays(getGLDrawMode(type), 0, vertexCount);
 }
 
 void OpenGLGraphicsInterface::createRenderBuffer(RenderBuffer *renderBuffer) {
@@ -620,48 +713,6 @@ void OpenGLGraphicsInterface::createProgram(ShaderProgram *program) {
     *((GLuint*)program->platformData) = programID;
 }
 
-void OpenGLGraphicsInterface::destroyBuffer(RenderDataArray *array) {
-    if(array->hasVBO) {
-        GLuint vboID = *((GLuint*)array->platformData);
-        glDeleteBuffers(1, &vboID);
-        delete (GLuint*)array->platformData;
-    }
-}
-
-void OpenGLGraphicsInterface::createVertexBuffer(VertexDataArray *dataArray) {
-    if(dataArray->hasVBO) {
-        GLuint vboID = *((GLuint*)dataArray->platformData);
-        glDeleteBuffers(1, &vboID);
-    } else {
-        dataArray->platformData = (new GLuint);
-    }
-    
-    GLuint bufferID;
-    glGenBuffers(1, &bufferID);
-    glBindBuffer(GL_ARRAY_BUFFER, bufferID);
-    glBufferData(GL_ARRAY_BUFFER, dataArray->getDataSize() * sizeof(PolyRendererVertexType), dataArray->getArrayData(), GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    dataArray->hasVBO = true;
-    *((GLuint*)dataArray->platformData) = bufferID;
-}
-
-void OpenGLGraphicsInterface::createIndexBuffer(IndexDataArray *dataArray) {
-
-    if(dataArray->hasVBO) {
-        // delete vbo
-    } else {
-        dataArray->platformData = (new GLuint);
-    }
-    
-    GLuint bufferID;
-    glGenBuffers(1, &bufferID);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferID);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, dataArray->getDataSize() * sizeof(PolyRendererIndexType), dataArray->getArrayData(), GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    dataArray->hasVBO = true;
-    *((GLuint*)dataArray->platformData) = bufferID;
-}
-
 void OpenGLGraphicsInterface::destroyShader(Shader *shader) {
     if(shader->platformData) {
         GLuint shaderID = *((GLuint*)shader->platformData);
@@ -744,12 +795,45 @@ void OpenGLGraphicsInterface::createShader(Shader *shader) {
         attribute.platformData = (void*) new GLuint;
         *((GLuint*)attribute.platformData) = attribLocation;
         attribute.size = getAttributeSize(type);
+        attribute.arrayType = mapNameToArrayType(attribute.name);
+        
+        attribute.platformData = (void*) new GLuint;
+        *((GLuint*)attribute.platformData) = glGetAttribLocation(shaderID, attribute.name.c_str());
+        
+        
         shader->expectedAttributes.push_back(attribute);
     }
     
-    
      *((GLuint*)shader->platformData) = shaderID;
-    
+}
+
+int OpenGLGraphicsInterface::mapNameToArrayType(const String &name) {
+    if(name == "position") {
+        return RenderDataArray::VERTEX_DATA_ARRAY;
+    } else if(name == "normal") {
+        return RenderDataArray::NORMAL_DATA_ARRAY;
+    } else if(name == "texCoord") {
+        return RenderDataArray::TEXCOORD_DATA_ARRAY;
+    } else if(name == "color") {
+        return RenderDataArray::COLOR_DATA_ARRAY;
+    } else if(name == "tangent") {
+        return RenderDataArray::TANGENT_DATA_ARRAY;
+    } else if(name == "texCoord2") {
+        return RenderDataArray::TEXCOORD2_DATA_ARRAY;
+    } else if(name == "boneWeights") {
+        return RenderDataArray::BONE_WEIGHT_DATA_ARRAY;
+    } else if(name == "boneIndices") {
+        return RenderDataArray::BONE_INDEX_DATA_ARRAY;
+    } else if(name == "customData1") {
+        return RenderDataArray::CUSTOM_DATA_ARRAY1;
+    } else if(name == "customData2") {
+        return RenderDataArray::CUSTOM_DATA_ARRAY2;
+    } else if(name == "customData3") {
+        return RenderDataArray::CUSTOM_DATA_ARRAY3;
+    } else if(name == "customData4") {
+        return RenderDataArray::CUSTOM_DATA_ARRAY4;
+    }
+    return RenderDataArray::UNKNOWN_DATA_ARRAY;
 }
 
 void OpenGLGraphicsInterface::enableBackfaceCulling(bool val) {

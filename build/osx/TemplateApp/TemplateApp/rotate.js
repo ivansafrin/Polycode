@@ -8,7 +8,7 @@ Rotator.prototype.init = function(entity) {
 
 Rotator.prototype.update = function(elapsed) {
     this.entity.Roll(elapsed * 30.0)
-    print(this.entity.getPosition().x)
+   // print(this.entity.getPosition().x)
 }
 
 Rotator

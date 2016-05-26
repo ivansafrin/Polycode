@@ -25,7 +25,7 @@
 
 using namespace Polycode;
 
-ScenePrimitive::ScenePrimitive(int type, Number v1, Number v2, Number v3,Number v4,Number v5) : SceneMesh(Mesh::TRI_MESH) {
+ScenePrimitive::ScenePrimitive(int type, Number v1, Number v2, Number v3,Number v4,Number v5) : SceneMesh() {
 
 	this->type = type;
 	this->v1 = v1;
@@ -63,56 +63,61 @@ Number ScenePrimitive::getPrimitiveParameter5() const {
 
 void ScenePrimitive::recreatePrimitive() {
 	mesh->clearMesh();
+    MeshGeometry geometry;
+
 	switch(type) {
 		case TYPE_PLANE:
-			mesh->createPlane(v1, v2, v3);
+			geometry.createPlane(v1, v2, v3);
             setLocalBoundingBox(v1, 0.001, v2);
 		break;
 		case TYPE_VPLANE:
-			mesh->createVPlane(v1, v2, v3);
+			geometry.createVPlane(v1, v2, v3);
             setLocalBoundingBox(v1, v2, 0.001);
 		break;
 		case TYPE_BOX:
-			mesh->createBox(v1, v2, v3, v4);
+			geometry.createBox(v1, v2, v3, v4);
             setLocalBoundingBox(v1, v2, v3);
 		break;
 		case TYPE_SPHERE:
-			mesh->createSphere(v1, v2, v3, v4);
+			geometry.createSphere(v1, v2, v3, v4);
             setLocalBoundingBox(v1*2, v1*2, v1*2);
 		break;
 		case TYPE_CYLINDER:
-			mesh->createCylinder(v1, v2, v3, true, v4);
+			geometry.createCylinder(v1, v2, v3, true, v4);
             setLocalBoundingBox(v2*2, v1, v2*2);
 		break;
 		case TYPE_UNCAPPED_CYLINDER:
-			mesh->createCylinder(v1, v2, v3, false, v5);
+			geometry.createCylinder(v1, v2, v3, false, v5);
             setLocalBoundingBox(v2*2, v1, v2*2);
 		break;
 		case TYPE_CONE:
-			mesh->createCone(v1, v2, v3, v4);
+			geometry.createCone(v1, v2, v3, v4);
             setLocalBoundingBox(v2*2, v1, v2*2);
 		break;
 		case TYPE_TORUS:
-			mesh->createTorus(v1, v2, v3, v4, v5);
+			geometry.createTorus(v1, v2, v3, v4, v5);
             setLocalBoundingBox((v1*2) + (v2*2), v2 * 2, (v1*2) + (v2*2));
 		break;
 		case TYPE_CIRCLE:
-			mesh->createCircle(v1, v2, v3, v4);
+			geometry.createCircle(v1, v2, v3, v4);
             setLocalBoundingBox(v1, v2, 0.001);
 		break;
 		case TYPE_LINE_CIRCLE:
-			mesh->createLineCircle(v1, v2, v3, v4);
+			geometry.createLineCircle(v1, v2, v3, v4);
+            geometry.meshType = MeshGeometry::LINE_LOOP_MESH;
             setLocalBoundingBox(v1, v2, 0.001);
         break;
 		case TYPE_ICOSPHERE:
-			mesh->createIcosphere(v1, v2);
+			geometry.createIcosphere(v1, v2);
             setLocalBoundingBox(v1*2, v1*2, v1*2);
         break;
 		case TYPE_OCTOSPHERE:
-			mesh->createOctosphere(v1, v2);
+			geometry.createOctosphere(v1, v2);
             setLocalBoundingBox(v1*2, v1*2, v1*2);
         break;
 	}
+    
+    mesh->addSubmesh(geometry);
 }
 
 Entity *ScenePrimitive::Clone(bool deepClone, bool ignoreEditorOnly) const {

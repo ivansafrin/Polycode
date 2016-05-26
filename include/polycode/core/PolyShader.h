@@ -68,6 +68,7 @@ namespace Polycode {
         
             int size;
             String name;
+            int arrayType;
             void *platformData;
     };
     

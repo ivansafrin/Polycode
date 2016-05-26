@@ -2060,36 +2060,6 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_CoreMutex__get_mutexID(duk_context *context) {
-		CoreMutex *inst = (CoreMutex*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->mutexID);
-		return 1;
-	}
-
-	duk_ret_t Polycode_CoreMutex__set_mutexID(duk_context *context) {
-		CoreMutex *inst = (CoreMutex*)duk_to_pointer(context, 0);
-		inst->mutexID = duk_to_int(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_CoreMutex__delete(duk_context *context) {
-		CoreMutex *inst = (CoreMutex*)duk_to_pointer(context, 0);
-		delete inst;
-		return 0;
-	}
-
-	duk_ret_t Polycode_CoreMutex_lock(duk_context *context) {
-		CoreMutex *inst = (CoreMutex*)duk_to_pointer(context, 0);
-		inst->lock();
-		return 0;
-	}
-
-	duk_ret_t Polycode_CoreMutex_unlock(duk_context *context) {
-		CoreMutex *inst = (CoreMutex*)duk_to_pointer(context, 0);
-		inst->unlock();
-		return 0;
-	}
-
 	duk_ret_t Polycode_CoreMotionEvent__get_amount(duk_context *context) {
 		CoreMotionEvent *inst = (CoreMotionEvent*)duk_to_pointer(context, 0);
 		Vector3 *retInst = new Vector3();
@@ -4379,19 +4349,6 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_GPUDrawCall__get_mesh(duk_context *context) {
-		GPUDrawCall *inst = (GPUDrawCall*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->mesh;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_GPUDrawCall__set_mesh(duk_context *context) {
-		GPUDrawCall *inst = (GPUDrawCall*)duk_to_pointer(context, 0);
-		inst->mesh = (Mesh*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_GPUDrawCall__get_options(duk_context *context) {
 		GPUDrawCall *inst = (GPUDrawCall*)duk_to_pointer(context, 0);
 		GPUDrawOptions *retInst = new GPUDrawOptions();
@@ -5730,19 +5687,6 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_ShaderPass_setAttributeArraysFromMesh(duk_context *context) {
-		ShaderPass *inst = (ShaderPass*)duk_to_pointer(context, 0);
-		Mesh* mesh = (Mesh*)duk_to_pointer(context, 1);
-		inst->setAttributeArraysFromMesh(mesh);
-		return 0;
-	}
-
-	duk_ret_t Polycode_ShaderPass_setExpectedAttributes(duk_context *context) {
-		ShaderPass *inst = (ShaderPass*)duk_to_pointer(context, 0);
-		inst->setExpectedAttributes();
-		return 0;
-	}
-
 	duk_ret_t Polycode_MaterialManager__get_premultiplyAlphaOnLoad(duk_context *context) {
 		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
 		duk_push_boolean(context, inst->premultiplyAlphaOnLoad);
@@ -6179,34 +6123,23 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh__get_indexedMesh(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->indexedMesh);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Mesh__set_indexedMesh(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
-		inst->indexedMesh = duk_to_boolean(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_Mesh__delete(duk_context *context) {
 		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
+	duk_ret_t Polycode_Mesh_Copy(duk_context *context) {
+		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+		PolyBase *ptrRetVal = (PolyBase*)inst->Copy();
+		duk_push_pointer(context, (void*)ptrRetVal);
+		return 1;
+	}
+
 	duk_ret_t Polycode_Mesh_loadMesh(duk_context *context) {
 		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
 		String fileName = duk_to_string(context, 1);
 		inst->loadMesh(fileName);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Mesh_clearMesh(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
-		inst->clearMesh();
 		return 0;
 	}
 
@@ -6230,14 +6163,120 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_getVertexCount(duk_context *context) {
+	duk_ret_t Polycode_Mesh_addSubmesh(duk_context *context) {
 		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+		MeshGeometry newSubmesh = *(MeshGeometry*)duk_to_pointer(context, 1);
+		inst->addSubmesh(newSubmesh);
+		return 0;
+	}
+
+	duk_ret_t Polycode_Mesh_removeSubmeshAtIndex(duk_context *context) {
+		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+		int index = duk_to_int(context, 1);
+		inst->removeSubmeshAtIndex(index);
+		return 0;
+	}
+
+	duk_ret_t Polycode_Mesh_getNumSubmeshes(duk_context *context) {
+		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+		duk_push_int(context, inst->getNumSubmeshes());
+		return 1;
+	}
+
+	duk_ret_t Polycode_Mesh_getSubmeshAtIndex(duk_context *context) {
+		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+		int index = duk_to_int(context, 1);
+		MeshGeometry *retInst = new MeshGeometry();
+		*retInst = inst->getSubmeshAtIndex(index);
+		duk_push_pointer(context, (void*)retInst);
+		return 1;
+	}
+
+	duk_ret_t Polycode_Mesh_getSubmeshPointer(duk_context *context) {
+		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+		int index = duk_to_int(context, 1);
+		shared_ptr<MeshGeometry> *retInst = new shared_ptr<MeshGeometry>();
+		*retInst = inst->getSubmeshPointer(index);
+		duk_push_pointer(context, (void*)retInst);
+		return 1;
+	}
+
+	duk_ret_t Polycode_Mesh_clearMesh(duk_context *context) {
+		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+		inst->clearMesh();
+		return 0;
+	}
+
+	duk_ret_t Polycode_Mesh_calculateBBox(duk_context *context) {
+		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+		Vector3 *retInst = new Vector3();
+		*retInst = inst->calculateBBox();
+		duk_push_pointer(context, (void*)retInst);
+		return 1;
+	}
+
+	duk_ret_t Polycode_Mesh_getRadius(duk_context *context) {
+		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+		duk_push_number(context, inst->getRadius());
+		return 1;
+	}
+
+	duk_ret_t Polycode_MeshGeometry__get_meshType(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		duk_push_int(context, inst->meshType);
+		return 1;
+	}
+
+	duk_ret_t Polycode_MeshGeometry__set_meshType(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		inst->meshType = duk_to_int(context, 1);
+		return 0;
+	}
+
+	duk_ret_t Polycode_MeshGeometry__get_dataChanged(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, inst->dataChanged);
+		return 1;
+	}
+
+	duk_ret_t Polycode_MeshGeometry__set_dataChanged(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		inst->dataChanged = duk_to_boolean(context, 1);
+		return 0;
+	}
+
+	duk_ret_t Polycode_MeshGeometry__get_indexedMesh(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, inst->indexedMesh);
+		return 1;
+	}
+
+	duk_ret_t Polycode_MeshGeometry__set_indexedMesh(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		inst->indexedMesh = duk_to_boolean(context, 1);
+		return 0;
+	}
+
+	duk_ret_t Polycode_MeshGeometry__delete(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		delete inst;
+		return 0;
+	}
+
+	duk_ret_t Polycode_MeshGeometry_clearMesh(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		inst->clearMesh();
+		return 0;
+	}
+
+	duk_ret_t Polycode_MeshGeometry_getVertexCount(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		duk_push_int(context, inst->getVertexCount());
 		return 1;
 	}
 
-	duk_ret_t Polycode_Mesh_createPlane(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_createPlane(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		Number w = duk_to_number(context, 1);
 		Number h = duk_to_number(context, 2);
 		Number tilingValue = duk_to_number(context, 3);
@@ -6245,8 +6284,8 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_createVPlane(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_createVPlane(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		Number w = duk_to_number(context, 1);
 		Number h = duk_to_number(context, 2);
 		Number tilingValue = duk_to_number(context, 3);
@@ -6254,8 +6293,8 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_createCircle(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_createCircle(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		Number w = duk_to_number(context, 1);
 		Number h = duk_to_number(context, 2);
 		int numSegments = duk_to_int(context, 3);
@@ -6264,8 +6303,8 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_createLineCircle(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_createLineCircle(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		Number w = duk_to_number(context, 1);
 		Number h = duk_to_number(context, 2);
 		int numSegments = duk_to_int(context, 3);
@@ -6274,8 +6313,8 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_createTorus(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_createTorus(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		Number radius = duk_to_number(context, 1);
 		Number tubeRadius = duk_to_number(context, 2);
 		int segmentsW = duk_to_int(context, 3);
@@ -6285,8 +6324,8 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_createBox(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_createBox(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		Number w = duk_to_number(context, 1);
 		Number d = duk_to_number(context, 2);
 		Number h = duk_to_number(context, 3);
@@ -6295,8 +6334,8 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_createSphere(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_createSphere(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		Number radius = duk_to_number(context, 1);
 		int numRings = duk_to_int(context, 2);
 		int numSegments = duk_to_int(context, 3);
@@ -6305,24 +6344,24 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_createIcosphere(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_createIcosphere(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		Number radius = duk_to_number(context, 1);
 		int subdivisions = duk_to_int(context, 2);
 		inst->createIcosphere(radius,subdivisions);
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_createOctosphere(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_createOctosphere(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		Number radius = duk_to_number(context, 1);
 		int subdivisions = duk_to_int(context, 2);
 		inst->createOctosphere(radius,subdivisions);
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_createCylinder(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_createCylinder(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		Number height = duk_to_number(context, 1);
 		Number radius = duk_to_number(context, 2);
 		int numSegments = duk_to_int(context, 3);
@@ -6332,8 +6371,8 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_createCone(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_createCone(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		Number height = duk_to_number(context, 1);
 		Number radius = duk_to_number(context, 2);
 		int numSegments = duk_to_int(context, 3);
@@ -6342,16 +6381,16 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_recenterMesh(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_recenterMesh(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		Vector3 *retInst = new Vector3();
 		*retInst = inst->recenterMesh();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
-	duk_ret_t Polycode_Mesh_setVertexAtOffset(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_setVertexAtOffset(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		int offset = duk_to_int(context, 1);
 		Number x = duk_to_number(context, 2);
 		Number y = duk_to_number(context, 3);
@@ -6360,8 +6399,8 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_addVertexWithUVAndNormal(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_addVertexWithUVAndNormal(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
 		Number z = duk_to_number(context, 3);
@@ -6374,24 +6413,24 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_addTexCoord(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_addTexCoord(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		Number u = duk_to_number(context, 1);
 		Number v = duk_to_number(context, 2);
 		inst->addTexCoord(u,v);
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_addTexCoord2(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_addTexCoord2(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		Number u = duk_to_number(context, 1);
 		Number v = duk_to_number(context, 2);
 		inst->addTexCoord2(u,v);
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_addTangent(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_addTangent(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
 		Number z = duk_to_number(context, 3);
@@ -6399,8 +6438,8 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_addVertexWithUV(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_addVertexWithUV(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
 		Number z = duk_to_number(context, 3);
@@ -6410,8 +6449,8 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_addVertex(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_addVertex(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
 		Number z = duk_to_number(context, 3);
@@ -6419,8 +6458,8 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_addNormal(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_addNormal(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		Number nx = duk_to_number(context, 1);
 		Number ny = duk_to_number(context, 2);
 		Number nz = duk_to_number(context, 3);
@@ -6428,8 +6467,8 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_addBoneAssignments(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_addBoneAssignments(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		Number b1Weight = duk_to_number(context, 1);
 		int b1Index = duk_to_int(context, 2);
 		Number b2Weight = duk_to_number(context, 3);
@@ -6442,8 +6481,8 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_addColor(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_addColor(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		Number r = duk_to_number(context, 1);
 		Number g = duk_to_number(context, 2);
 		Number b = duk_to_number(context, 3);
@@ -6452,8 +6491,8 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_getVertexPosition(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_getVertexPosition(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		int vertexOffset = duk_to_int(context, 1);
 		Vector3 *retInst = new Vector3();
 		*retInst = inst->getVertexPosition(vertexOffset);
@@ -6461,8 +6500,8 @@ namespace Polycode {
 		return 1;
 	}
 
-	duk_ret_t Polycode_Mesh_getVertexPositionAtIndex(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_getVertexPositionAtIndex(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
 		Vector3 *retInst = new Vector3();
 		*retInst = inst->getVertexPositionAtIndex(index);
@@ -6470,8 +6509,8 @@ namespace Polycode {
 		return 1;
 	}
 
-	duk_ret_t Polycode_Mesh_getVertexTexCoord(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_getVertexTexCoord(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		int vertexOffset = duk_to_int(context, 1);
 		Vector2 *retInst = new Vector2();
 		*retInst = inst->getVertexTexCoord(vertexOffset);
@@ -6479,8 +6518,8 @@ namespace Polycode {
 		return 1;
 	}
 
-	duk_ret_t Polycode_Mesh_getVertexTexCoordAtIndex(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_getVertexTexCoordAtIndex(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
 		Vector2 *retInst = new Vector2();
 		*retInst = inst->getVertexTexCoordAtIndex(index);
@@ -6488,123 +6527,117 @@ namespace Polycode {
 		return 1;
 	}
 
-	duk_ret_t Polycode_Mesh_Copy(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_Copy(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		PolyBase *ptrRetVal = (PolyBase*)inst->Copy();
 		duk_push_pointer(context, (void*)ptrRetVal);
 		return 1;
 	}
 
-	duk_ret_t Polycode_Mesh_getRadius(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_getRadius(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		duk_push_number(context, inst->getRadius());
 		return 1;
 	}
 
-	duk_ret_t Polycode_Mesh_calculateNormals(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_calculateNormals(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		inst->calculateNormals();
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_calculateTangents(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_calculateTangents(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		inst->calculateTangents();
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_getMeshType(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_getMeshType(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		duk_push_int(context, inst->getMeshType());
 		return 1;
 	}
 
-	duk_ret_t Polycode_Mesh_setMeshType(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_setMeshType(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		int newType = duk_to_int(context, 1);
 		inst->setMeshType(newType);
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_getIndexGroupSize(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_getIndexGroupSize(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		duk_push_int(context, inst->getIndexGroupSize());
 		return 1;
 	}
 
-	duk_ret_t Polycode_Mesh_calculateBBox(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_calculateBBox(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		Vector3 *retInst = new Vector3();
 		*retInst = inst->calculateBBox();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
-	duk_ret_t Polycode_Mesh_hasVertexBuffer(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->hasVertexBuffer());
-		return 1;
-	}
-
-	duk_ret_t Polycode_Mesh_addIndexedFace(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_addIndexedFace(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		int i1 = duk_to_int(context, 1);
 		int i2 = duk_to_int(context, 2);
 		inst->addIndexedFace(i1,i2);
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_addIndex(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_addIndex(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
 		inst->addIndex(index);
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_removeVertexRange(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_removeVertexRange(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		int beginRemoveVertex = duk_to_int(context, 1);
 		int vertexRemovalCount = duk_to_int(context, 2);
 		inst->removeVertexRange(beginRemoveVertex,vertexRemovalCount);
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_removeFace(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_removeFace(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		int faceIndex = duk_to_int(context, 1);
 		inst->removeFace(faceIndex);
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_removeUnusedVertices(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_removeUnusedVertices(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		duk_push_int(context, inst->removeUnusedVertices());
 		return 1;
 	}
 
-	duk_ret_t Polycode_Mesh_getIndexCount(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_getIndexCount(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		duk_push_int(context, inst->getIndexCount());
 		return 1;
 	}
 
-	duk_ret_t Polycode_Mesh_subdivideToRadius(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_subdivideToRadius(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		Number radius = duk_to_number(context, 1);
 		int subdivisions = duk_to_int(context, 2);
 		inst->subdivideToRadius(radius,subdivisions);
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_saveAsOBJ(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_saveAsOBJ(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		String fileName = duk_to_string(context, 1);
 		inst->saveAsOBJ(fileName);
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_normalizeBoneWeights(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+	duk_ret_t Polycode_MeshGeometry_normalizeBoneWeights(duk_context *context) {
+		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		inst->normalizeBoneWeights();
 		return 0;
 	}
@@ -7902,18 +7935,6 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_RenderDataArray__get_hasVBO(duk_context *context) {
-		RenderDataArray *inst = (RenderDataArray*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->hasVBO);
-		return 1;
-	}
-
-	duk_ret_t Polycode_RenderDataArray__set_hasVBO(duk_context *context) {
-		RenderDataArray *inst = (RenderDataArray*)duk_to_pointer(context, 0);
-		inst->hasVBO = duk_to_boolean(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_RenderDataArray__delete(duk_context *context) {
 		RenderDataArray *inst = (RenderDataArray*)duk_to_pointer(context, 0);
 		delete inst;
@@ -8174,6 +8195,13 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_RenderThread_processDrawBufferLights(duk_context *context) {
+		RenderThread *inst = (RenderThread*)duk_to_pointer(context, 0);
+		GPUDrawBuffer* buffer = (GPUDrawBuffer*)duk_to_pointer(context, 1);
+		inst->processDrawBufferLights(buffer);
+		return 0;
+	}
+
 	duk_ret_t Polycode_RenderThread_processDrawBuffer(duk_context *context) {
 		RenderThread *inst = (RenderThread*)duk_to_pointer(context, 0);
 		GPUDrawBuffer* buffer = (GPUDrawBuffer*)duk_to_pointer(context, 1);
@@ -8374,13 +8402,6 @@ namespace Polycode {
 		return 1;
 	}
 
-	duk_ret_t Polycode_Renderer_createVertexBuffers(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		Mesh* mesh = (Mesh*)duk_to_pointer(context, 1);
-		inst->createVertexBuffers(mesh);
-		return 0;
-	}
-
 	duk_ret_t Polycode_Renderer_enqueueFrameJob(duk_context *context) {
 		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
 		int jobType = duk_to_int(context, 1);
@@ -8403,10 +8424,10 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_Renderer_destroyBuffer(duk_context *context) {
+	duk_ret_t Polycode_Renderer_destroySubmeshPlatformData(duk_context *context) {
 		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		RenderDataArray* array = (RenderDataArray*)duk_to_pointer(context, 1);
-		inst->destroyBuffer(array);
+		void* platformData = (void*)duk_to_pointer(context, 1);
+		inst->destroySubmeshPlatformData(platformData);
 		return 0;
 	}
 
@@ -8443,21 +8464,6 @@ namespace Polycode {
 		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
 		duk_push_number(context, inst->getAnisotropyAmount());
 		return 1;
-	}
-
-	duk_ret_t Polycode_Renderer_createMesh(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		String fileName = duk_to_string(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->createMesh(fileName);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Renderer_destroyMesh(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		Mesh* mesh = (Mesh*)duk_to_pointer(context, 1);
-		inst->destroyMesh(mesh);
-		return 0;
 	}
 
 	duk_ret_t Polycode_Renderer_beginFrame(duk_context *context) {
@@ -10210,12 +10216,6 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_SceneMesh_rebuildAttributes(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		inst->rebuildAttributes();
-		return 0;
-	}
-
 	duk_ret_t Polycode_SceneMesh_setMaterialByName(duk_context *context) {
 		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
 		String materialName = duk_to_string(context, 1);
@@ -11180,6 +11180,18 @@ namespace Polycode {
 	duk_ret_t Polycode_ProgramAttribute__set_name(duk_context *context) {
 		ProgramAttribute *inst = (ProgramAttribute*)duk_to_pointer(context, 0);
 		inst->name = duk_to_string(context, 1);
+		return 0;
+	}
+
+	duk_ret_t Polycode_ProgramAttribute__get_arrayType(duk_context *context) {
+		ProgramAttribute *inst = (ProgramAttribute*)duk_to_pointer(context, 0);
+		duk_push_int(context, inst->arrayType);
+		return 1;
+	}
+
+	duk_ret_t Polycode_ProgramAttribute__set_arrayType(duk_context *context) {
+		ProgramAttribute *inst = (ProgramAttribute*)duk_to_pointer(context, 0);
+		inst->arrayType = duk_to_int(context, 1);
 		return 0;
 	}
 

@@ -140,7 +140,7 @@
 		<material name="UnlitWireframe">
 			<shader name="UnlitWireframe" wireframe="true">
 				<params>
-					<param name="entityColor" value="1.0 1.0 1.0 1.0" />
+					<param name="wireframeColor" value="1.0 1.0 1.0 1.0" />
 				</params>					
 			</shader>
 		</material>				

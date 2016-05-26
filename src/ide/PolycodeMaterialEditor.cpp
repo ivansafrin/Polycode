@@ -593,8 +593,7 @@ PostPreviewBox::PostPreviewBox() : UIElement() {
 	previewPrimitive->setColorInt(0, 255, 0, 255);
 	previewPrimitive->setPosition(-0.8, 1.0, 0.8);
 
-	previewPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 2,  2, 2);
-	previewPrimitive->getMesh()->calculateNormals();	
+	previewPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 2,  2, 2);	
 	previewScene->addChild(previewPrimitive);
 	previewPrimitive->setMaterialByName("DefaultHDR");
 	previewPrimitive->setColorInt(0, 0, 255, 255);
@@ -727,25 +726,21 @@ MaterialPreviewBox::MaterialPreviewBox() : UIElement() {
 	previewPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_TORUS, 3.0, 1.2, 26, 16);
 	previewScene->addChild(previewPrimitive);
 	shapePrimitives.push_back(previewPrimitive);
-	previewPrimitive->getMesh()->calculateTangents();	
+    
 
 	previewPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_SPHERE, 3.0, 16, 16);
 	previewScene->addChild(previewPrimitive);
 	shapePrimitives.push_back(previewPrimitive);
-	previewPrimitive->getMesh()->calculateTangents();	
 
 	previewPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 4.0, 4.0, 4.0);
 	previewPrimitive->Yaw(45.0);
-	previewPrimitive->getMesh()->calculateNormals();
-	previewPrimitive->getMesh()->calculateTangents();
 	previewScene->addChild(previewPrimitive);
 	shapePrimitives.push_back(previewPrimitive);
 
 	previewPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 6.0, 6.0);
 	previewPrimitive->billboardMode = true;
 	previewScene->addChild(previewPrimitive);
-	shapePrimitives.push_back(previewPrimitive);
-	previewPrimitive->getMesh()->calculateTangents();	
+	shapePrimitives.push_back(previewPrimitive);	
 
 	
 	mainLight = new SceneLight(SceneLight::POINT_LIGHT, previewScene, 290.0);

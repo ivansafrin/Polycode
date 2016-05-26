@@ -28,6 +28,7 @@
 #include "polycode/core/PolyMaterial.h"
 #include "polycode/core/PolyColor.h"
 #include "polycode/core/PolyVector3.h"
+#include <memory>
 
 namespace Polycode {
     
@@ -70,7 +71,7 @@ namespace Polycode {
     
     class _PolyExport GPUDrawCall {
     public:
-        Mesh *mesh;
+        std::shared_ptr<MeshGeometry> submesh;
         GPUDrawOptions options;
         Matrix4 modelMatrix;
         Material *material;

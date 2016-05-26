@@ -88,10 +88,6 @@ function Renderer:createShader(vertexProgram, fragmentProgram)
 	return __c
 end
 
-function Renderer:createVertexBuffers(mesh)
-	local retVal = Polycode.Renderer_createVertexBuffers(self.__ptr, mesh.__ptr)
-end
-
 function Renderer:enqueueFrameJob(jobType, data)
 	local retVal = Polycode.Renderer_enqueueFrameJob(self.__ptr, jobType, data.__ptr)
 end
@@ -104,8 +100,8 @@ function Renderer:destroyShader(shader)
 	local retVal = Polycode.Renderer_destroyShader(self.__ptr, shader.__ptr)
 end
 
-function Renderer:destroyBuffer(array)
-	local retVal = Polycode.Renderer_destroyBuffer(self.__ptr, array.__ptr)
+function Renderer:destroySubmeshPlatformData(platformData)
+	local retVal = Polycode.Renderer_destroySubmeshPlatformData(self.__ptr, platformData.__ptr)
 end
 
 function Renderer:destroyShaderBinding(binding)
@@ -127,18 +123,6 @@ end
 function Renderer:getAnisotropyAmount()
 	local retVal =  Polycode.Renderer_getAnisotropyAmount(self.__ptr)
 	return retVal
-end
-
-function Renderer:createMesh(fileName)
-	local retVal = Polycode.Renderer_createMesh(self.__ptr, fileName)
-	if retVal == nil then return nil end
-	local __c = _G["Mesh"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function Renderer:destroyMesh(mesh)
-	local retVal = Polycode.Renderer_destroyMesh(self.__ptr, mesh.__ptr)
 end
 
 function Renderer:unProject(position, modelMatrix, projectionMatrix, viewport)

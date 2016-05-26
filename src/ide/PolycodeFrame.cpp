@@ -217,11 +217,13 @@ EditCurve::EditCurve(BezierCurve *targetCurve, Color curveColor) : UIElement() {
 	
 	this->targetCurve = targetCurve;
 	
-	visMesh = new SceneMesh(Mesh::LINE_STRIP_MESH);
+	visMesh = new SceneMesh();
 	
+    MeshGeometry geometry;
 	for(int i=0; i < CURVE_SIZE; i++) {		
-		visMesh->getMesh()->addVertex(0.0, 0.0, 0.0);
+		geometry.addVertex(0.0, 0.0, 0.0);
 	}
+    visMesh->getMesh()->addSubmesh(geometry);
 	
 	visMesh->lineSmooth = true;
 	visMesh->lineWidth = 2.0;
@@ -320,12 +322,14 @@ void EditCurve::updateCurve() {
 	interval += interval/CURVE_SIZE;
 	normInterval += normInterval/CURVE_SIZE;
 
-    visMesh->getMesh()->vertexPositionArray.data.clear();
+    visMesh->getMesh()->clearMesh();
+    MeshGeometry geometry;
     
 	for(int i=0; i < CURVE_SIZE; i++) {        
-        visMesh->getMesh()->addVertex(targetCurve->getPointAt(normInterval * i).x * 300, targetCurve->getPointAt(normInterval * i).y * 100.0, 0.0);
+        geometry.addVertex(targetCurve->getPointAt(normInterval * i).x * 300, targetCurve->getPointAt(normInterval * i).y * 100.0, 0.0);
 	}
-	
+    visMesh->getMesh()->addSubmesh(geometry);
+    
     visMesh->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 }
 
@@ -1380,7 +1384,7 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 	
 	modalBlocker = new UIRect(10,10);
     modalBlocker->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
-	modalBlocker->setColor(0,0,0,0.4);
+	modalBlocker->setColor(0,0,0,0.1);
 	modalBlocker->setAnchorPoint(-1.0, -1.0, 0.0);
 	modalBlocker->enabled = false;	
 	modalBlocker->blockMouseInput = true;

@@ -33,6 +33,10 @@ RenderThread.prototype.getShaderBinding = function() {
 	return retVal
 }
 
+RenderThread.prototype.processDrawBufferLights = function(buffer) {
+	Polycode.RenderThread_processDrawBufferLights(this.__ptr, buffer)
+}
+
 RenderThread.prototype.processDrawBuffer = function(buffer) {
 	Polycode.RenderThread_processDrawBuffer(this.__ptr, buffer)
 }

@@ -131,10 +131,13 @@ btCollisionShape *CollisionEntity::createCollisionShape(Entity *entity, int type
 			if(sceneMesh != NULL) {
 				btConvexHullShape *hullShape = new btConvexHullShape();
                 Mesh *mesh = sceneMesh->getMesh();
+                // TODO: fix to work with new mesh system
+                /*
 				for(int i=0; i < mesh->vertexPositionArray.data.size()-2; i += 3) {
                     
                     hullShape->addPoint(btVector3((btScalar)mesh->vertexPositionArray.data[i], (btScalar)mesh->vertexPositionArray.data[i+1],mesh->vertexPositionArray.data[i+2]));
-				}				
+				}
+                 */
 				collisionShape = hullShape;
 				
 			} else {

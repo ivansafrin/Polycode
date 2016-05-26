@@ -95,29 +95,27 @@ CurveDisplay::CurveDisplay(Scene *parentScene, SceneCurve *curve) : DummyTargetE
     propertyEntity = curve;
     colorAffectsChildren = false;
     
-    controlPointLines = new SceneMesh(Mesh::LINE_MESH);
+    controlPointLines = new SceneMesh();
     controlPointLines->setColor(1.0, 1.0, 0.4, 1.0);
     addChild(controlPointLines);
     controlPointLines->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     controlPointLines->setForceMaterial(true);
    
-    mainPoints = new SceneMesh(Mesh::POINT_MESH);
+    mainPoints = new SceneMesh();
     mainPoints->setColor(0.0, 0.5, 1.0, 1.0);
     addChild(mainPoints);
     mainPoints->pointSmooth = true;
     mainPoints->setForceMaterial(true);
     mainPoints->setMaterialByName("UnlitPointUntextured");
     mainPoints->getShaderPass(0).shaderBinding->addParam(ProgramParam::PARAM_NUMBER, "pointSize")->setNumber(10.0);
-    mainPoints->getMesh()->indexedMesh = false;
     
-    controlPoints = new SceneMesh(Mesh::POINT_MESH);
+    controlPoints = new SceneMesh();
     controlPoints->setColor(1.0, 0.7, 0.0, 1.0);
     addChild(controlPoints);
     controlPoints->pointSmooth = true;
     controlPoints->setForceMaterial(true);
     controlPoints->setMaterialByName("UnlitPointUntextured");
     controlPoints->getShaderPass(0).shaderBinding->addParam(ProgramParam::PARAM_NUMBER, "pointSize")->setNumber(8.0);
-    controlPoints->getMesh()->indexedMesh = false;
     
     renderControlPoints = false;
     
@@ -256,26 +254,38 @@ void CurveDisplay::Update() {
     controlPoints->getMesh()->clearMesh();
     controlPointLines->getMesh()->clearMesh();
     
+    MeshGeometry mainPointsGeometry;
+    mainPointsGeometry.meshType = MeshGeometry::POINT_MESH;
+    
+    MeshGeometry controlPointsGeometry;
+    controlPointsGeometry.meshType = MeshGeometry::POINT_MESH;
+    
+    MeshGeometry controlPointLinesGeometry;
+    controlPointLinesGeometry.meshType = MeshGeometry::LINE_MESH;
+    
     for(int i=0; i < curve->getCurve()->getNumControlPoints(); i++) {
         
         Vector3 pt2 = curve->getCurve()->getControlPoint(i)->p2;
-        mainPoints->getMesh()->addVertex(pt2.x, pt2.y, pt2.z);
+        mainPointsGeometry.addVertex(pt2.x, pt2.y, pt2.z);
         
         if(renderControlPoints) {
             Vector3 pt1 = curve->getCurve()->getControlPoint(i)->p1;
-            controlPoints->getMesh()->addVertex(pt1.x, pt1.y, pt1.z);
+            controlPointsGeometry.addVertex(pt1.x, pt1.y, pt1.z);
             
             Vector3 pt3 = curve->getCurve()->getControlPoint(i)->p3;
-            controlPoints->getMesh()->addVertex(pt3.x, pt3.y, pt3.z);
+            controlPointsGeometry.addVertex(pt3.x, pt3.y, pt3.z);
             
+            controlPointLinesGeometry.addVertex(pt1.x, pt1.y, pt1.z);
+            controlPointLinesGeometry.addVertex(pt2.x, pt2.y, pt2.z);
             
-            controlPointLines->getMesh()->addVertex(pt1.x, pt1.y, pt1.z);
-            controlPointLines->getMesh()->addVertex(pt2.x, pt2.y, pt2.z);
-            
-            controlPointLines->getMesh()->addVertex(pt2.x, pt2.y, pt2.z);
-            controlPointLines->getMesh()->addVertex(pt3.x, pt3.y, pt3.z);
+            controlPointLinesGeometry.addVertex(pt2.x, pt2.y, pt2.z);
+            controlPointLinesGeometry.addVertex(pt3.x, pt3.y, pt3.z);
         }
     }
+    
+    mainPoints->getMesh()->addSubmesh(mainPointsGeometry);
+    controlPoints->getMesh()->addSubmesh(controlPointsGeometry);
+    controlPointLines->getMesh()->addSubmesh(controlPointLinesGeometry);
     
     mainPoints->setLocalBoundingBox(mainPoints->getMesh()->calculateBBox());
     controlPoints->setLocalBoundingBox(controlPoints->getMesh()->calculateBBox());
@@ -287,35 +297,36 @@ LightDisplay::LightDisplay(SceneLight *light) : Entity() {
     editorOnly = true;
     this->light = light;
     spotSpot = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 1.0, 1.0, 32);
-	spotSpot->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
     addChild(spotSpot);
     spotSpot->setColor(1.0, 0.8, 0.0, 1.0);
     spotSpot->enabled = false;
     spotSpot->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     spotSpot->setForceMaterial(true);
     
-    fovSceneMesh = new SceneMesh(Mesh::LINE_MESH);
+    fovSceneMesh = new SceneMesh();
     fovSceneMesh->setColor(1.0, 0.8, 0.0, 1.0);
     fovMesh = fovSceneMesh->getMesh();
-    fovMesh->indexedMesh = true;
     addChild(fovSceneMesh);
     fovSceneMesh->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     fovSceneMesh->setForceMaterial(true);
     
-    fovMesh->addVertex(0.0, 0.0, 0.0);
+    MeshGeometry fovMeshGeometry;
+    fovMeshGeometry.setMeshType(MeshGeometry::LINE_MESH);
     
-    fovMesh->addVertex(-1.0, 1.0, -1.0);
-    fovMesh->addVertex(1.0, 1.0, -1.0);
-    fovMesh->addVertex(1.0, -1.0, -1.0);
-    fovMesh->addVertex(-1.0, -1.0, -1.0);
+    fovMeshGeometry.addVertex(0.0, 0.0, 0.0);
     
-    fovMesh->addIndexedFace(0, 1);
-    fovMesh->addIndexedFace(0, 2);
-    fovMesh->addIndexedFace(0, 3);
-    fovMesh->addIndexedFace(0, 4);
+    fovMeshGeometry.addVertex(-1.0, 1.0, -1.0);
+    fovMeshGeometry.addVertex(1.0, 1.0, -1.0);
+    fovMeshGeometry.addVertex(1.0, -1.0, -1.0);
+    fovMeshGeometry.addVertex(-1.0, -1.0, -1.0);
     
+    fovMeshGeometry.addIndexedFace(0, 1);
+    fovMeshGeometry.addIndexedFace(0, 2);
+    fovMeshGeometry.addIndexedFace(0, 3);
+    fovMeshGeometry.addIndexedFace(0, 4);
+    
+    fovSceneMesh->getMesh()->addSubmesh(fovMeshGeometry);
     fovSceneMesh->setLocalBoundingBox(fovMesh->calculateBBox());
-    
     light->addChild(this);
 }
 
@@ -333,13 +344,17 @@ void LightDisplay::Update() {
         
         spotSpot->setPosition(0.0, 0.0, -distance);
         spotSpot->setPrimitiveOptions(ScenePrimitive::TYPE_LINE_CIRCLE, spotLightSize, spotLightSize, 32);
-       	spotSpot->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
         
+        MeshGeometry geom = fovMesh->getSubmeshAtIndex(0);
         spotLightSize *= 0.5;
-        fovMesh->setVertexAtOffset(1, sin(PI/2.0)*spotLightSize, cos(PI/2.0)*spotLightSize, -distance);
-        fovMesh->setVertexAtOffset(2, sin(PI)*spotLightSize, cos(PI)*spotLightSize, -distance);
-        fovMesh->setVertexAtOffset(3, sin(PI + (PI/2.0))*spotLightSize, cos(PI + (PI/2.0))*spotLightSize, -distance);
-        fovMesh->setVertexAtOffset(4, sin(PI*2.0)*spotLightSize, cos(PI*2.0)*spotLightSize, -distance);
+        geom.setVertexAtOffset(1, sin(PI/2.0)*spotLightSize, cos(PI/2.0)*spotLightSize, -distance);
+        geom.setVertexAtOffset(2, sin(PI)*spotLightSize, cos(PI)*spotLightSize, -distance);
+        geom.setVertexAtOffset(3, sin(PI + (PI/2.0))*spotLightSize, cos(PI + (PI/2.0))*spotLightSize, -distance);
+        geom.setVertexAtOffset(4, sin(PI*2.0)*spotLightSize, cos(PI*2.0)*spotLightSize, -distance);
+        
+        fovMesh->clearMesh();
+        fovMesh->addSubmesh(geom);
+        
         fovSceneMesh->setLocalBoundingBox(fovMesh->calculateBBox());
     } else {
         spotSpot->enabled = false;
@@ -352,29 +367,34 @@ CameraDisplay::CameraDisplay(Camera *camera) : Entity() {
     
     editorOnly = true;
     
-    fovSceneMesh = new SceneMesh(Mesh::LINE_MESH);
+    fovSceneMesh = new SceneMesh();
     fovSceneMesh->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     fovSceneMesh->setColor(1.0, 0.0, 1.0, 1.0);
     fovMesh = fovSceneMesh->getMesh();
-    fovMesh->indexedMesh = true;
     fovSceneMesh->setForceMaterial(true);
     
-    fovMesh->addVertex(0.0, 0.0, 0.0);
+    MeshGeometry geometry;
+    geometry.setMeshType(MeshGeometry::LINE_MESH);
     
-    fovMesh->addVertex(-1.0, 1.0, -1.0);
-    fovMesh->addVertex(1.0, 1.0, -1.0);
-    fovMesh->addVertex(1.0, -1.0, -1.0);
-    fovMesh->addVertex(-1.0, -1.0, -1.0);
+    geometry.indexedMesh = true;
     
-    fovMesh->addIndexedFace(0, 1);
-    fovMesh->addIndexedFace(0, 2);
-    fovMesh->addIndexedFace(0, 3);
-    fovMesh->addIndexedFace(0, 4);
+    geometry.addVertex(0.0, 0.0, 0.0);
+    geometry.addVertex(-1.0, 1.0, -1.0);
+    geometry.addVertex(1.0, 1.0, -1.0);
+    geometry.addVertex(1.0, -1.0, -1.0);
+    geometry.addVertex(-1.0, -1.0, -1.0);
     
-    fovMesh->addIndexedFace(1, 2);
-    fovMesh->addIndexedFace(2, 3);
-    fovMesh->addIndexedFace(3, 4);
-    fovMesh->addIndexedFace(4, 1);
+    geometry.addIndexedFace(0, 1);
+    geometry.addIndexedFace(0, 2);
+    geometry.addIndexedFace(0, 3);
+    geometry.addIndexedFace(0, 4);
+    
+    geometry.addIndexedFace(1, 2);
+    geometry.addIndexedFace(2, 3);
+    geometry.addIndexedFace(3, 4);
+    geometry.addIndexedFace(4, 1);
+    
+    fovMesh->addSubmesh(geometry);
     
     fovSceneMesh->setLocalBoundingBox(fovMesh->calculateBBox());
     
@@ -409,11 +429,13 @@ void CameraDisplay::Update() {
                 yPos = camera->getViewport().h * 0.5;
             break;
         }
-        
-        fovMesh->setVertexAtOffset(1, -xPos, yPos, zPos);
-        fovMesh->setVertexAtOffset(2, xPos, yPos, zPos);
-        fovMesh->setVertexAtOffset(3, xPos, -yPos, zPos);
-        fovMesh->setVertexAtOffset(4, -xPos, -yPos, zPos);
+        MeshGeometry geom = fovMesh->getSubmeshAtIndex(0);
+        geom.setVertexAtOffset(1, -xPos, yPos, zPos);
+        geom.setVertexAtOffset(2, xPos, yPos, zPos);
+        geom.setVertexAtOffset(3, xPos, -yPos, zPos);
+        geom.setVertexAtOffset(4, -xPos, -yPos, zPos);
+        fovMesh->clearMesh();
+        fovMesh->addSubmesh(geom);
     } else {
         Number fovRad = (90+camera->getFOV()/2.0) * TORADIANS;
         Number displayScale = 3.0;
@@ -421,10 +443,13 @@ void CameraDisplay::Update() {
         Number yPos = xPos * 0.5625;
         Number zPos = -sin(fovRad) * displayScale * 0.5;
         
-        fovMesh->setVertexAtOffset(1, -xPos, yPos, zPos);
-        fovMesh->setVertexAtOffset(2, xPos, yPos, zPos);
-        fovMesh->setVertexAtOffset(3, xPos, -yPos, zPos);
-        fovMesh->setVertexAtOffset(4, -xPos, -yPos, zPos);
+        MeshGeometry geom = fovMesh->getSubmeshAtIndex(0);
+        geom.setVertexAtOffset(1, -xPos, yPos, zPos);
+        geom.setVertexAtOffset(2, xPos, yPos, zPos);
+        geom.setVertexAtOffset(3, xPos, -yPos, zPos);
+        geom.setVertexAtOffset(4, -xPos, -yPos, zPos);
+        fovMesh->clearMesh();
+        fovMesh->addSubmesh(geom);
     }
 }
 
@@ -1571,7 +1596,6 @@ void EntityEditorMainView::handleEvent(Event *event) {
             {
                 Material *wireframeMaterial = (Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitWireframe");
                 
-                
                 if(!wireframeMaterial->getShaderPass(0).shaderBinding->getLocalParamByName("wireframeColor")) {
                     wireframeMaterial->getShaderPass(0).shaderBinding->addParam(ProgramParam::PARAM_COLOR, "wireframeColor")->setColor(Color(1.0, 1.0, 1.0, 1.0));
                 }
@@ -1796,7 +1820,6 @@ void EntityEditorMainView::setOverlayWireframeRecursive(Entity *targetEntity, bo
                 wireframePass.shaderBinding = new ShaderBinding();
                 wireframePass.shaderBinding->targetShader = wireframePass.shader;
                 wireframePass.blendingMode = Renderer::BLEND_MODE_NORMAL;
-                wireframePass.setAttributeArraysFromMesh(sceneMesh->getMesh());
                 wireframePass.shaderBinding->resetAttributes = true;
                 wireframePass.shaderBinding->addParam(ProgramParam::PARAM_COLOR, "wireframeColor")->setColor(Color(0.5, 0.6, 1.0, 0.75));
                 

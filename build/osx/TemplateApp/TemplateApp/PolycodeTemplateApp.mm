@@ -22,16 +22,21 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     
 	// Write your code here!
     
-    Scene *scene = new Scene(Scene::SCENE_2D);
+    scene = new Scene(Scene::SCENE_2D);
     scene->useClearColor = true;
     scene->clearColor.setColor(0.2, 0.2, 0.2, 1.0);
     
    // scene->setOverrideMaterial((Material*)globalPool->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
     
-    for(int i=0; i  < 10; i++) {
-        test = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.5, 0.5);
+    for(int i=0; i  < 3000; i++) {
+        
+        MeshGeometry geom;
+        geom.createVPlane(0.5, 0.5);
+        SceneMesh *test = new SceneMesh();
         test->setMaterialByName("Unlit");
-        test->attachScript(rotateScript);
+        test->getMesh()->addSubmesh(geom);
+        
+        //test->attachScript(rotateScript);
         /*
          ScriptInstance *scriptInstance = test->attachScript(rotateScript);
          scriptInstance->setPropNumber("speed", 1.0);
@@ -63,6 +68,30 @@ PolycodeTemplateApp::~PolycodeTemplateApp() {
 bool PolycodeTemplateApp::Update() {
     Number elapsed = core->getElapsed();
     
+    for(int i=0; i < tests.size(); i++) {
+        tests[i]->Roll(elapsed * 30.0);
+    }
+    
+    if(tests.size() > 0) {
+        SceneMesh *removing = tests[0];
+        tests.erase(tests.begin());
+        scene->removeEntity(removing);
+        delete removing;
+        
+        MeshGeometry geom;
+        geom.createVPlane(0.5, 0.5);
+        SceneMesh *test = new SceneMesh();
+        test->setMaterialByName("Unlit");
+        test->getMesh()->addSubmesh(geom);
+        test->getShaderPass(0).shaderBinding->loadTextureForParam("diffuse", "main_icon.png");
+        test->setPosition(RANDOM_NUMBER * 0.5, RANDOM_NUMBER * 0.4);
+        test->setBlendingMode(Renderer::BLEND_MODE_NONE);
+        test->setScale(0.1, 0.1);
+        scene->addChild(test);
+        tests.push_back(test);
+        
+        
+    }
     
     ++numFrames;
     counter += elapsed;

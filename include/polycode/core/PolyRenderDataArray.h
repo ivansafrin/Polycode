@@ -31,12 +31,14 @@ namespace Polycode {
     public:
         
         RenderDataArray(unsigned int type);
+        RenderDataArray(const RenderDataArray &other);
+        virtual RenderDataArray &operator=(const RenderDataArray &other);
+        
         unsigned int type;
-        virtual void *getArrayData();
-        virtual unsigned int getDataSize();
+        virtual void *getArrayData() const;
+        virtual unsigned int getDataSize() const;
         
         String customArrayName;
-        bool hasVBO;
         void *platformData;
         
         /**
@@ -84,29 +86,58 @@ namespace Polycode {
          */
         static const int TEXCOORD2_DATA_ARRAY = 8;
         
+        /**
+         * Custom data array.
+         */
+        static const int CUSTOM_DATA_ARRAY1 = 9;
         
+        /**
+         * Custom data array.
+         */
+        static const int CUSTOM_DATA_ARRAY2 = 10;
+
+        /**
+         * Custom data array.
+         */
+        static const int CUSTOM_DATA_ARRAY3 = 11;
+
+        /**
+         * Custom data array.
+         */
+        static const int CUSTOM_DATA_ARRAY4 = 12;        
+        
+        /**
+         * Unknown data array.
+         */
+        static const int UNKNOWN_DATA_ARRAY = 13;
     };
 
     class VertexDataArray : public RenderDataArray {
     public:
         VertexDataArray(unsigned char countPerVertex, unsigned int type) : RenderDataArray(type), countPerVertex(countPerVertex) {
         }
+        VertexDataArray(const VertexDataArray &other);
+        VertexDataArray &operator=(const VertexDataArray &other);
+
         
-        unsigned char getCountPerVertex();
+        unsigned char getCountPerVertex() const;
         unsigned char countPerVertex;
         std::vector<PolyRendererVertexType> data;
-        virtual void *getArrayData();
-        virtual unsigned int getDataSize();
+        virtual void *getArrayData() const;
+        virtual unsigned int getDataSize() const;
     };
 
     class IndexDataArray : public RenderDataArray {
     public:
         IndexDataArray(unsigned int type) : RenderDataArray(type) {
         }
+        IndexDataArray(const IndexDataArray &other);
+        IndexDataArray &operator=(const IndexDataArray &other);
+
         
         std::vector<PolyRendererIndexType> data;
-        virtual void *getArrayData();
-        virtual unsigned int getDataSize();
+        virtual void *getArrayData() const;
+        virtual unsigned int getDataSize() const;
     };
 
 }

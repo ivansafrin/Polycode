@@ -40,6 +40,7 @@ namespace Polycode {
           
 	class _PolyExport CoreMutex : public PolyBase {
 	public:
+        virtual ~CoreMutex(){}
 
 		virtual void lock() = 0;
 		virtual void unlock() = 0;

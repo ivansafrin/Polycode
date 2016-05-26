@@ -337,15 +337,18 @@ void Camera::setPostFilter(Material *material) {
     }
     
     if(!screenQuadMesh) {
-        screenQuadMesh = new Mesh(Mesh::TRI_MESH);
+        screenQuadMesh = new Mesh();
         
-        screenQuadMesh->addVertexWithUV(1.0, 1.0, 0.0, 1.0, 1.0);
-        screenQuadMesh->addVertexWithUV(1.0, -1.0, 0.0, 1.0, 0.0);
-        screenQuadMesh->addVertexWithUV(-1.0, -1.0, 0.0, 0.0, 0.0);
+        MeshGeometry geometry;
+        geometry.addVertexWithUV(1.0, 1.0, 0.0, 1.0, 1.0);
+        geometry.addVertexWithUV(1.0, -1.0, 0.0, 1.0, 0.0);
+        geometry.addVertexWithUV(-1.0, -1.0, 0.0, 0.0, 0.0);
         
-        screenQuadMesh->addVertexWithUV(-1.0, -1.0, 0.0, 0.0, 0.0);
-        screenQuadMesh->addVertexWithUV(-1.0, 1.0, 0.0, 0.0, 1.0);
-        screenQuadMesh->addVertexWithUV(1.0, 1.0, 0.0, 1.0, 1.0);
+        geometry.addVertexWithUV(-1.0, -1.0, 0.0, 0.0, 0.0);
+        geometry.addVertexWithUV(-1.0, 1.0, 0.0, 0.0, 1.0);
+        geometry.addVertexWithUV(1.0, 1.0, 0.0, 1.0, 1.0);
+        
+        screenQuadMesh->addSubmesh(geometry);
         
     }
     
@@ -362,7 +365,6 @@ void Camera::setPostFilter(Material *material) {
         shaderPass.materialShaderBinding = shaderPass.shaderBinding;
         shaderPass.shaderBinding = new ShaderBinding();
         shaderPass.shaderBinding->targetShader = shaderPass.shader;
-        shaderPass.setAttributeArraysFromMesh(screenQuadMesh);
         shaderPass.shaderBinding->resetAttributes = true;
         
         for(int j=0; j < materialBinding->getNumColorTargetBindings(); j++) {
@@ -415,7 +417,7 @@ void Camera::renderFullScreenQuad(GPUDrawBuffer *drawBuffer, int shaderPass) {
     drawCall.options.backfaceCull = false;
     drawCall.options.depthTest = false;
     drawCall.options.depthWrite = false;
-    drawCall.mesh = screenQuadMesh;
+    drawCall.submesh = screenQuadMesh->getSubmeshPointer(0);
     drawCall.material = filterShaderMaterial;
     drawCall.shaderPasses.push_back(shaderPasses[shaderPass]);
     drawBuffer->drawCalls.push_back(drawCall);

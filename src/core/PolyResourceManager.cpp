@@ -619,7 +619,7 @@ MeshResourceLoader::MeshResourceLoader() {
 }
 
 Resource *MeshResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
-    Mesh *mesh = Services()->getRenderer()->createMesh(path);
+    Mesh *mesh = new Mesh(path);
     return mesh;
 }
 

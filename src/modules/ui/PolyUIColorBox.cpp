@@ -33,8 +33,7 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	closeOnEscape = true;
 	
 	continuous = true;
-		
-//	topPadding
+
 	Config *conf = CoreServices::getInstance()->getConfig();	
     Number uiScale = conf->getNumericValue("Polycode", "uiScale");
 		
@@ -59,25 +58,25 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	addChild(alphaSlider);
 	alphaSlider->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
-	mainColorRect = new SceneMesh(Mesh::TRI_MESH);
+	mainColorRect = new SceneMesh();
     mainColorRect->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	mainColorRect->setWidth(mainFrame->getWidth());
 	mainColorRect->setHeight(mainFrame->getWidth());
 	mainColorRect->setDepth(0.001);
-		
-	mainColorRect->getMesh()->addVertexWithUV(-mainFrame->getWidth()/2,mainFrame->getHeight()/2.0,0,0,0);
-	mainColorRect->getMesh()->addVertexWithUV(mainFrame->getWidth()/2,mainFrame->getHeight()/2.0,0, 1, 0);
-	mainColorRect->getMesh()->addVertexWithUV(mainFrame->getWidth()/2,-mainFrame->getHeight()/2.0,0, 1, 1);
-	mainColorRect->getMesh()->addVertexWithUV(-mainFrame->getWidth()/2,-mainFrame->getHeight()/2.0,0,0,1);
     
-    mainColorRect->getMesh()->indexedMesh = true;
     
-//    mainColorRect->getMesh()->addIndexedFace(0, 1, 2);
-//    mainColorRect->getMesh()->addIndexedFace(0, 2, 3);
+    MeshGeometry geometry;
     
-    mainColorRect->getMesh()->addIndexedFace(3, 0, 1);
-    mainColorRect->getMesh()->addIndexedFace(3, 1, 2);
+	geometry.addVertexWithUV(-mainFrame->getWidth()/2,mainFrame->getHeight()/2.0,0,0,0);
+	geometry.addVertexWithUV(mainFrame->getWidth()/2,mainFrame->getHeight()/2.0,0, 1, 0);
+	geometry.addVertexWithUV(mainFrame->getWidth()/2,-mainFrame->getHeight()/2.0,0, 1, 1);
+	geometry.addVertexWithUV(-mainFrame->getWidth()/2,-mainFrame->getHeight()/2.0,0,0,1);
+    geometry.indexedMesh = true;
+        
+    geometry.addIndexedFace(3, 0, 1);
+    geometry.addIndexedFace(3, 1, 2);
     
+    mainColorRect->getMesh()->addSubmesh(geometry);
     
 	mainColorRect->backfaceCulled = false;	
 
@@ -275,13 +274,14 @@ void UIColorPicker::updateSelectedColor(bool updateTextFields, bool updateHue, b
 	hueCol.setColorHSV(currentH, 1.0, 1.0);
 	hueCol.a = colorAlpha;
 
+    mainColorRect->getMesh()->clearMesh();
     
-    mainColorRect->getMesh()->vertexColorArray.data.clear();
-    
-    mainColorRect->getMesh()->addColor(Color((Number)1,(Number)1,(Number)1,colorAlpha));
-    mainColorRect->getMesh()->addColor(hueCol);
-    mainColorRect->getMesh()->addColor(Color((Number)0,(Number)0,(Number)0,colorAlpha));
-    mainColorRect->getMesh()->addColor(Color((Number)0,(Number)0,(Number)0,colorAlpha));
+    MeshGeometry geometry;
+    geometry.addColor(Color((Number)1,(Number)1,(Number)1,colorAlpha));
+    geometry.addColor(hueCol);
+    geometry.addColor(Color((Number)0,(Number)0,(Number)0,colorAlpha));
+    geometry.addColor(Color((Number)0,(Number)0,(Number)0,colorAlpha));
+    mainColorRect->getMesh()->addSubmesh(geometry);    
     
 	if(updateHue) {
 		hueSelector->setPositionY(hueFrame->getPosition().y + hueFrame->getHeight() - ((currentH/360.0) * hueFrame->getHeight()));

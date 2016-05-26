@@ -99,7 +99,7 @@ EditorGrid::EditorGrid() : Entity() {
 	grid = NULL;
     gridMode = GRID_MODE_3D;
     
-    Mesh *gridMesh = new Mesh(Mesh::LINE_MESH);
+    Mesh *gridMesh = new Mesh();
     
     grid = new SceneMesh(gridMesh);
     grid->setForceMaterial(true);
@@ -190,16 +190,19 @@ void EditorGrid::rebuildGrid() {
     }
     
     grid->getMesh()->clearMesh();
+    MeshGeometry geometry;
+    geometry.meshType = MeshGeometry::LINE_MESH;
 
     for(int x=0; x < gridLen+1; x++) {
-        grid->getMesh()->addVertex((-gridSize * gridLen * 0.5) + (x * gridSize), (-gridSize * gridLen * 0.5), 0);
-        grid->getMesh()->addVertex((-gridSize * gridLen * 0.5) + (x * gridSize) , (-gridSize * gridLen * 0.5) + (gridSize * gridLen), 0);
+        geometry.addVertex((-gridSize * gridLen * 0.5) + (x * gridSize), (-gridSize * gridLen * 0.5), 0);
+        geometry.addVertex((-gridSize * gridLen * 0.5) + (x * gridSize) , (-gridSize * gridLen * 0.5) + (gridSize * gridLen), 0);
     }
     
     for(int y=0; y < gridLen+1; y++) {
-        grid->getMesh()->addVertex((-gridSize * gridLen * 0.5), (-gridSize * gridLen * 0.5) + (y * gridSize), 0);
-        grid->getMesh()->addVertex((-gridSize * gridLen * 0.5) + (gridSize * gridLen), (-gridSize * gridLen * 0.5) + (y * gridSize), 0);
+        geometry.addVertex((-gridSize * gridLen * 0.5), (-gridSize * gridLen * 0.5) + (y * gridSize), 0);
+        geometry.addVertex((-gridSize * gridLen * 0.5) + (gridSize * gridLen), (-gridSize * gridLen * 0.5) + (y * gridSize), 0);
     }
+    grid->getMesh()->addSubmesh(geometry);
     
     yLine->setStart(Vector3(0.0, gridSize * gridLen * 0.5, 0.0));
     yLine->setEnd(Vector3(0.0, gridSize * gridLen * -0.5, 0.0));
@@ -210,10 +213,7 @@ void EditorGrid::rebuildGrid() {
     zLine->setStart(Vector3(0.0, 0.0, gridSize * gridLen * 0.5));
     zLine->setEnd(Vector3(0.0, 0.0, gridSize * gridLen * -0.5));
     
-    grid->setLocalBoundingBox(grid->getMesh()->calculateBBox());
-    
-    // RENDERER_TODO
-//    grid->cacheToVertexBuffer(true);
+    grid->setLocalBoundingBox(grid->getMesh()->calculateBBox());    
 }
 
 void EditorGrid::setGridMode(int mode) {

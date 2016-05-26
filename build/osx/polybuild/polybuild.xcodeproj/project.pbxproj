@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8A1DD6B31CF7840400008E9C /* liblua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A1DD6B21CF7840400008E9C /* liblua.a */; };
 		8AC7B36C1CB8623A00624970 /* polybuild.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8AC7B36B1CB8623A00624970 /* polybuild.cpp */; };
 		8AC7B3781CB866CC00624970 /* libarchive.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B36E1CB866CC00624970 /* libarchive.a */; };
 		8AC7B3791CB866CC00624970 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B36F1CB866CC00624970 /* libfreetype.a */; };
 		8AC7B37A1CB866CC00624970 /* liblibogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B3701CB866CC00624970 /* liblibogg.a */; };
 		8AC7B37B1CB866CC00624970 /* liblibvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B3711CB866CC00624970 /* liblibvorbis.a */; };
 		8AC7B37C1CB866CC00624970 /* liblibvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B3721CB866CC00624970 /* liblibvorbisfile.a */; };
-		8AC7B37D1CB866CC00624970 /* liblua5.1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B3731CB866CC00624970 /* liblua5.1.a */; };
 		8AC7B37E1CB866CC00624970 /* libphysfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B3741CB866CC00624970 /* libphysfs.a */; };
 		8AC7B37F1CB866CC00624970 /* libPolycore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B3751CB866CC00624970 /* libPolycore.a */; };
 		8AC7B3801CB866CC00624970 /* libportaudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AC7B3761CB866CC00624970 /* libportaudio.a */; };
@@ -39,6 +39,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8A1DD6B21CF7840400008E9C /* liblua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua.a; path = ../../../lib/osx/liblua.a; sourceTree = "<group>"; };
 		8AC7B35F1CB861F200624970 /* polybuild */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = polybuild; sourceTree = BUILT_PRODUCTS_DIR; };
 		8AC7B36B1CB8623A00624970 /* polybuild.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = polybuild.cpp; path = ../../../../src/tools/polybuild.cpp; sourceTree = "<group>"; };
 		8AC7B36D1CB8626300624970 /* polybuild.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = polybuild.h; path = ../../../../include/polycode/tools/polybuild.h; sourceTree = "<group>"; };
@@ -47,7 +48,6 @@
 		8AC7B3701CB866CC00624970 /* liblibogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibogg.a; path = ../../../lib/osx/liblibogg.a; sourceTree = "<group>"; };
 		8AC7B3711CB866CC00624970 /* liblibvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibvorbis.a; path = ../../../lib/osx/liblibvorbis.a; sourceTree = "<group>"; };
 		8AC7B3721CB866CC00624970 /* liblibvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibvorbisfile.a; path = ../../../lib/osx/liblibvorbisfile.a; sourceTree = "<group>"; };
-		8AC7B3731CB866CC00624970 /* liblua5.1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua5.1.a; path = ../../../lib/osx/liblua5.1.a; sourceTree = "<group>"; };
 		8AC7B3741CB866CC00624970 /* libphysfs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libphysfs.a; path = ../../../lib/osx/libphysfs.a; sourceTree = "<group>"; };
 		8AC7B3751CB866CC00624970 /* libPolycore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycore.a; path = ../../../lib/osx/libPolycore.a; sourceTree = "<group>"; };
 		8AC7B3761CB866CC00624970 /* libportaudio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libportaudio.a; path = ../../../lib/osx/libportaudio.a; sourceTree = "<group>"; };
@@ -65,6 +65,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A1DD6B31CF7840400008E9C /* liblua.a in Frameworks */,
 				8AC7B38D1CB8671500624970 /* Cocoa.framework in Frameworks */,
 				8AC7B38B1CB8670E00624970 /* OpenGL.framework in Frameworks */,
 				8AC7B3891CB8670800624970 /* IOKit.framework in Frameworks */,
@@ -75,7 +76,6 @@
 				8AC7B3801CB866CC00624970 /* libportaudio.a in Frameworks */,
 				8AC7B37F1CB866CC00624970 /* libPolycore.a in Frameworks */,
 				8AC7B37B1CB866CC00624970 /* liblibvorbis.a in Frameworks */,
-				8AC7B37D1CB866CC00624970 /* liblua5.1.a in Frameworks */,
 				8AC7B3781CB866CC00624970 /* libarchive.a in Frameworks */,
 				8AC7B3791CB866CC00624970 /* libfreetype.a in Frameworks */,
 				8AC7B37C1CB866CC00624970 /* liblibvorbisfile.a in Frameworks */,
@@ -99,9 +99,9 @@
 				8AC7B36E1CB866CC00624970 /* libarchive.a */,
 				8AC7B36F1CB866CC00624970 /* libfreetype.a */,
 				8AC7B3701CB866CC00624970 /* liblibogg.a */,
+				8A1DD6B21CF7840400008E9C /* liblua.a */,
 				8AC7B3711CB866CC00624970 /* liblibvorbis.a */,
 				8AC7B3721CB866CC00624970 /* liblibvorbisfile.a */,
-				8AC7B3731CB866CC00624970 /* liblua5.1.a */,
 				8AC7B3741CB866CC00624970 /* libphysfs.a */,
 				8AC7B3751CB866CC00624970 /* libPolycore.a */,
 				8AC7B3761CB866CC00624970 /* libportaudio.a */,
@@ -332,6 +332,7 @@
 				8AC7B3681CB861F200624970 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
