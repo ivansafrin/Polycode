@@ -25,6 +25,7 @@
 #include "PolyGlobals.h"
 #include "PolyCore.h"
 #include <vector>
+#include <SDL2/SDL.h>
 
 #define POLYCODE_CORE SDLCore
 
@@ -80,6 +81,7 @@ namespace Polycode {
 
 		uint32_t flags;
 		bool resizableWindow;
-		
+		SDL_GLContext sdlContext;
+		SDL_Window* sdlWindow;
 	};
 }

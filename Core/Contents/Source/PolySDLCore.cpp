@@ -31,8 +31,6 @@
 #include "PolyGLSLShaderModule.h"
 #include "PolyRectangle.h"
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_syswm.h>
 #include <stdio.h>
 #include <limits.h>
 
@@ -73,11 +71,13 @@ long getThreadID() {
 }
 
 void Core::getScreenInfo(int *width, int *height, int *hz) {
-	SDL_Init(SDL_INIT_VIDEO); // Or GetVideoInfo will not work
-	const SDL_VideoInfo *video = SDL_GetVideoInfo();
-	if (width) *width = video->current_w;
-	if (height) *height = video->current_h;
-	if (hz) *hz = 0;
+	SDL_DisplayMode current;
+
+	SDL_GetCurrentDisplayMode(0, &current);
+
+	if (width) *width = current.w;
+	if (height) *height = current.h;
+	if (hz) *hz = current.refresh_rate;
 }
 
 SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex, bool retinaSupport) : Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
@@ -94,13 +94,8 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 
 	String *windowTitle = (String*)view->windowData;
 
-	if(resizableWindow) {
-		unsetenv("SDL_VIDEO_CENTERED");
-	} else {
-		setenv("SDL_VIDEO_CENTERED", "1", 1);
-	}
-
 	if(SDL_Init(SDL_INIT_VIDEO|SDL_INIT_JOYSTICK) < 0) {
+		// Should something be done if it can't initialize?
 	}
 	
 	eventMutex = createMutex();
@@ -108,10 +103,7 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 	services->setRenderer(renderer);
 
 	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel);
-	SDL_WM_SetCaption(windowTitle->c_str(), windowTitle->c_str());
-	
-	SDL_EnableUNICODE(1);
-	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
+	SDL_SetWindowTitle(sdlWindow, windowTitle->c_str());
 	
 	SDL_JoystickEventState(SDL_ENABLE);
 	
@@ -121,6 +113,8 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 		SDL_JoystickOpen(i);
 		input->addJoystick(i);
 	}
+
+
 
 #ifdef USE_X11
 	// Start listening to clipboard events.
@@ -139,41 +133,49 @@ void SDLCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int 
 	this->fullScreen = fullScreen;
 	this->aaLevel = aaLevel;
 
-	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24);	
-	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1);			
-	SDL_GL_SetAttribute( SDL_GL_RED_SIZE,   8);
-	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8);
-	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE,  8);
-	SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   8);
+	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  8);
+	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
 	
 	if(aaLevel > 0) {
-		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1);
-		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, aaLevel); //0, 2, 4	
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, aaLevel); //0, 2, 4
 	} else {
-		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 0);
-		SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, 0);
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
 	}
 	
-	flags = SDL_OPENGL;
+	flags = SDL_WINDOW_OPENGL;
 
 	if(fullScreen) {
-		flags |= SDL_FULLSCREEN;
+		flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 	}
 
 	if(resizableWindow) {
-		flags |= SDL_RESIZABLE;
+		flags |= SDL_WINDOW_RESIZABLE;
 	}
-/*
+
+	if(retinaSupport) {
+		flags |= SDL_WINDOW_ALLOW_HIGHDPI;
+	}
+
 	if(vSync) {
-		flags |= SDL_DOUBLEBUF;
-		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-		SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
+		if(SDL_GL_SetSwapInterval(-1) == -1){
+			SDL_GL_SetSwapInterval(1);
+		}
 	} else {
-		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
-		SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 0);
+		SDL_GL_SetSwapInterval(0);
 	}
-*/
-	SDL_SetVideoMode(xRes, yRes, 0, flags);
+
+	if(!sdlWindow) {
+		sdlWindow = SDL_CreateWindow("Polycode", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, xRes, yRes, flags);
+		sdlContext = SDL_GL_CreateContext(sdlWindow);
+	} else {
+		SDL_SetWindowSize(sdlWindow, xRes, yRes);
+	}
 	
 	renderer->Resize(xRes, yRes);
 	//CoreServices::getInstance()->getMaterialManager()->reloadProgramsAndTextures();
@@ -183,12 +185,12 @@ void SDLCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int 
 vector<Polycode::Rectangle> SDLCore::getVideoModes() {
 	vector<Polycode::Rectangle> retVector;
 	
-	SDL_Rect **modes;
-	modes=SDL_ListModes(NULL, SDL_FULLSCREEN);
-	for(int i=0;modes[i];++i) {
+	SDL_DisplayMode modes;
+	for(int i=0;i<SDL_GetNumDisplayModes(0);++i) {
+		SDL_GetDisplayMode(0, i, &modes);
 		Rectangle res;
-		res.w = modes[i]->w;
-		res.h = modes[i]->h;
+		res.w = modes.w;
+		res.h = modes.h;
 		retVector.push_back(res);
 	}	
 	
@@ -199,6 +201,8 @@ SDLCore::~SDLCore() {
 #ifdef USE_X11
 	free_cursors();
 #endif // USE_X11
+	SDL_GL_DeleteContext(sdlContext);
+	SDL_DestroyWindow(sdlWindow);
 	SDL_Quit();
 }
 
@@ -244,7 +248,7 @@ int SDLThreadFunc(void *data) {
 }
 
 void SDLCore::createThread(Threaded *target) {
-	SDL_CreateThread(SDLThreadFunc, (void*)target);
+	SDL_CreateThread(SDLThreadFunc, "PolycodeThread", (void*)target);
 }
 
 unsigned int SDLCore::getTicks() {
@@ -253,20 +257,20 @@ unsigned int SDLCore::getTicks() {
 
 void SDLCore::enableMouse(bool newval) {
 	if(newval) {
-		SDL_ShowCursor(1);
-		SDL_WM_GrabInput(SDL_GRAB_OFF);
+		SDL_SetRelativeMouseMode(SDL_FALSE);
 	} else {
-		SDL_ShowCursor(0);
-		SDL_WM_GrabInput(SDL_GRAB_ON);
+		SDL_SetRelativeMouseMode(SDL_TRUE);
 	}
 	Core::enableMouse(newval);
 }
 
 void SDLCore::captureMouse(bool newval) {
 	if(newval) {
-		SDL_WM_GrabInput(SDL_GRAB_ON);
+		//SDL_CaptureMouse(SDL_TRUE); SDL 2.0.4
+		SDL_SetWindowGrab(sdlWindow, SDL_TRUE);
 	} else {
-		SDL_WM_GrabInput(SDL_GRAB_OFF);
+		//SDL_CaptureMouse(SDL_FALSE);  SDL 2.0.4
+		SDL_SetWindowGrab(sdlWindow, SDL_TRUE);
 	}
 	Core::captureMouse(newval);
 }
@@ -310,7 +314,7 @@ void SDLCore::Render() {
 	renderer->BeginRender();
 	services->Render();
 	renderer->EndRender();
-	SDL_GL_SwapBuffers();
+	SDL_GL_SwapWindow(sdlWindow);
 }
 
 bool SDLCore::systemUpdate() {
@@ -326,26 +330,23 @@ bool SDLCore::systemUpdate() {
 				case SDL_QUIT:
 					running = false;
 				break;
-				case SDL_VIDEORESIZE:
-	if(resizableWindow) {
-		unsetenv("SDL_VIDEO_CENTERED");
-	} else {
-		setenv("SDL_VIDEO_CENTERED", "1", 1);
-	}
-					this->xRes = event.resize.w;
-					this->yRes = event.resize.h;
-					SDL_SetVideoMode(xRes, yRes, 0, flags);
+				case SDL_WINDOWEVENT_RESIZED:
+					if(resizableWindow) {
+						unsetenv("SDL_VIDEO_CENTERED");
+					} else {
+						setenv("SDL_VIDEO_CENTERED", "1", 1);
+					}
+					this->xRes = event.window.data1;
+					this->yRes = event.window.data2;
+					SDL_SetWindowSize(sdlWindow, xRes, yRes);
 					renderer->Resize(xRes, yRes);	
 					dispatchEvent(new Event(), EVENT_CORE_RESIZE);	
 				break;
-				case SDL_ACTIVEEVENT:
-					if(event.active.state == SDL_APPINPUTFOCUS) {
-						if(event.active.gain == 1) {
+				case SDL_WINDOWEVENT_FOCUS_GAINED:
 							gainFocus();
-						} else {
+				break;
+				case SDL_WINDOWEVENT_FOCUS_LOST:
 							loseFocus();
-						}
-					}
 				break;
 				case SDL_JOYAXISMOTION:
 					input->joystickAxisMoved(event.jaxis.axis, ((Number)event.jaxis.value)/32767.0, event.jaxis.which);
@@ -358,45 +359,43 @@ bool SDLCore::systemUpdate() {
 				break;
 				case SDL_KEYDOWN:
 					if(!checkSpecialKeyEvents((PolyKEY)(event.key.keysym.sym))) {
-						input->setKeyState((PolyKEY)(event.key.keysym.sym), (char)event.key.keysym.unicode, true, getTicks());
+						input->setKeyState((PolyKEY)(event.key.keysym.sym), (char)event.key.keysym.sym, true, getTicks());
 					}
 				break;
 				case SDL_KEYUP:
-					input->setKeyState((PolyKEY)(event.key.keysym.sym), (char)event.key.keysym.unicode, false, getTicks());
+					input->setKeyState((PolyKEY)(event.key.keysym.sym), (char)event.key.keysym.sym, false, getTicks());
+				break;
+				case SDL_MOUSEWHEEL:
+					if(event.wheel.y > 0) {
+						input->mouseWheelUp(getTicks());
+					} else if(event.wheel.y < 0) {
+						input->mouseWheelDown(getTicks());
+					}
 				break;
 				case SDL_MOUSEBUTTONDOWN:
-					if(event.button.button == SDL_BUTTON_WHEELUP) {
-						input->mouseWheelUp(getTicks());
-					} else if(event.button.button == SDL_BUTTON_WHEELDOWN) {
-						input->mouseWheelDown(getTicks());
-					} else {
-						switch(event.button.button) {
-							case SDL_BUTTON_LEFT:
-								input->setMouseButtonState(CoreInput::MOUSE_BUTTON1, true, getTicks());
-							break;
-							case SDL_BUTTON_RIGHT:
-								input->setMouseButtonState(CoreInput::MOUSE_BUTTON2, true, getTicks());
-							break;
-							case SDL_BUTTON_MIDDLE:
-								input->setMouseButtonState(CoreInput::MOUSE_BUTTON3, true, getTicks());
-							break;
-						}
+					switch(event.button.button) {
+						case SDL_BUTTON_LEFT:
+							input->setMouseButtonState(CoreInput::MOUSE_BUTTON1, true, getTicks());
+						break;
+						case SDL_BUTTON_RIGHT:
+							input->setMouseButtonState(CoreInput::MOUSE_BUTTON2, true, getTicks());
+						break;
+						case SDL_BUTTON_MIDDLE:
+							input->setMouseButtonState(CoreInput::MOUSE_BUTTON3, true, getTicks());
+						break;
 					}
 				break;
 				case SDL_MOUSEBUTTONUP:
-					if(event.button.button == SDL_BUTTON_WHEELUP || event.button.button == SDL_BUTTON_WHEELDOWN) {						
-					} else {
-						switch(event.button.button) {
-							case SDL_BUTTON_LEFT:
-								input->setMouseButtonState(CoreInput::MOUSE_BUTTON1, false, getTicks());
-							break;
-							case SDL_BUTTON_RIGHT:
-								input->setMouseButtonState(CoreInput::MOUSE_BUTTON2, false, getTicks());
-							break;
-							case SDL_BUTTON_MIDDLE:
-								input->setMouseButtonState(CoreInput::MOUSE_BUTTON3, false, getTicks());
-							break;
-						}
+					switch(event.button.button) {
+						case SDL_BUTTON_LEFT:
+							input->setMouseButtonState(CoreInput::MOUSE_BUTTON1, false, getTicks());
+						break;
+						case SDL_BUTTON_RIGHT:
+							input->setMouseButtonState(CoreInput::MOUSE_BUTTON2, false, getTicks());
+						break;
+						case SDL_BUTTON_MIDDLE:
+							input->setMouseButtonState(CoreInput::MOUSE_BUTTON3, false, getTicks());
+						break;
 					}
 				break;
 				case SDL_MOUSEMOTION:
@@ -417,7 +416,7 @@ void SDLCore::setCursor(int cursorType) {
 }
 
 void SDLCore::warpCursor(int x, int y) {
-	SDL_WarpMouse(x, y);
+	SDL_WarpMouseInWindow(sdlWindow, x, y);
 }
 
 void SDLCore::lockMutex(CoreMutex *mutex) {
@@ -507,444 +506,3 @@ String SDLCore::saveFilePicker(std::vector<CoreFileExtension> extensions) {
 void SDLCore::resizeTo(int xRes, int yRes) {
 	renderer->Resize(xRes, yRes);
 }
-
-
-#ifdef USE_X11
-// SDL_scrap.c
-// Credits to Sam Lantinga for making this
-// Changes include:
-// - All non-X11 stuff was removed
-// - Uses the X11 CLIPBOARD atom in addition to PRIMARY
-// =======================================
-
-
-/* Handle clipboard text and data in arbitrary formats */
-
-/* Miscellaneous defines */
-#define PUBLIC
-#define PRIVATE	static
-
-#define X11_SCRAP
-
-typedef Atom scrap_type;
-
-static Display *SDL_Display;
-static Window SDL_Window;
-static void (*Lock_Display)(void);
-static void (*Unlock_Display)(void);
-
-#define FORMAT_PREFIX	"SDL_scrap_0x"
-
-PRIVATE scrap_type
-convert_format(int type)
-{
-  switch (type)
-    {
-
-    case T('T', 'E', 'X', 'T'):
-      return XA_STRING;
-
-    default:
-      {
-        char format[sizeof(FORMAT_PREFIX)+8+1];
-
-        sprintf(format, "%s%08lx", FORMAT_PREFIX, (unsigned long)type);
-
-        return XInternAtom(SDL_Display, format, False);
-      }
-    }
-}
-
-/* Convert internal data to scrap format */
-PRIVATE int
-convert_data(int type, char *dst, const char *src, int srclen)
-{
-  int dstlen;
-
-  dstlen = 0;
-  switch (type)
-    {
-    case T('T', 'E', 'X', 'T'):
-      if ( dst )
-        {
-          while ( --srclen >= 0 )
-            {
-              if ( *src == '\r' )
-                {
-                  *dst++ = '\n';
-                  ++dstlen;
-                }
-              else
-                {
-                  *dst++ = *src;
-                  ++dstlen;
-                }
-              ++src;
-            }
-            *dst = '\0';
-            ++dstlen;
-        }
-      else
-        {
-          while ( --srclen >= 0 )
-            {
-              if ( *src == '\r' )
-                {
-                  ++dstlen;
-                }
-              else
-                {
-                  ++dstlen;
-                }
-              ++src;
-            }
-            ++dstlen;
-        }
-      break;
-
-    default:
-      if ( dst )
-        {
-          *(int *)dst = srclen;
-          dst += sizeof(int);
-          memcpy(dst, src, srclen);
-        }
-      dstlen = sizeof(int)+srclen;
-      break;
-    }
-    return(dstlen);
-}
-
-/* Convert scrap data to internal format */
-PRIVATE int
-convert_scrap(int type, char *dst, char *src, int srclen)
-{
-  int dstlen;
-
-  dstlen = 0;
-  switch (type)
-    {
-    case T('T', 'E', 'X', 'T'):
-      {
-        if ( srclen == 0 )
-          srclen = strlen(src);
-        if ( dst )
-          {
-            while ( --srclen >= 0 )
-              {
-                if ( *src == '\n' )
-                  {
-                    *dst++ = '\r';
-                    ++dstlen;
-                  }
-                else
-                  {
-                    *dst++ = *src;
-                    ++dstlen;
-                  }
-                ++src;
-              }
-              *dst = '\0';
-              ++dstlen;
-          }
-        else
-          {
-            while ( --srclen >= 0 )
-              {
-                ++dstlen;
-                ++src;
-              }
-              ++dstlen;
-          }
-        }
-      break;
-
-    default:
-      dstlen = *(int *)src;
-      if ( dst )
-        {
-          if ( srclen == 0 )
-            memcpy(dst, src+sizeof(int), dstlen);
-          else
-            memcpy(dst, src+sizeof(int), srclen-sizeof(int));
-        }
-      break;
-    }
-  return dstlen;
-}
-
-/* The system message filter function -- handle clipboard messages */
-PRIVATE int clipboard_filter(const SDL_Event *event);
-
-PUBLIC int
-init_scrap(void)
-{
-  SDL_SysWMinfo info;
-  int retval;
-
-  /* Grab the window manager specific information */
-  retval = -1;
-  SDL_SetError("SDL is not running on known window manager");
-
-  SDL_VERSION(&info.version);
-  if ( SDL_GetWMInfo(&info) )
-    {
-      /* Save the information for later use */
-/* * */
-      if ( info.subsystem == SDL_SYSWM_X11 )
-        {
-          SDL_Display = info.info.x11.display;
-          SDL_Window = info.info.x11.window;
-          Lock_Display = info.info.x11.lock_func;
-          Unlock_Display = info.info.x11.unlock_func;
-
-          /* Enable the special window hook events */
-          SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
-          SDL_SetEventFilter(clipboard_filter);
-
-          retval = 0;
-        }
-      else
-        {
-          SDL_SetError("SDL is not running on X11");
-        }
-    }
-  return(retval);
-}
-
-PUBLIC int
-lost_scrap(void)
-{
-  int retval;
-
-/* * */
-  Lock_Display();
-  retval = ( XGetSelectionOwner(SDL_Display, XA_PRIMARY) != SDL_Window );
-  Unlock_Display();
-
-  return(retval);
-}
-
-PUBLIC void
-put_scrap(int type, int srclen, const char *src)
-{
-  scrap_type format;
-  int dstlen;
-  char *dst;
-
-  format = convert_format(type);
-  dstlen = convert_data(type, NULL, src, srclen);
-
-/* * */
-  dst = (char *)malloc(dstlen);
-  if ( dst != NULL )
-    {
-      Lock_Display();
-      convert_data(type, dst, src, srclen);
-      XChangeProperty(SDL_Display, DefaultRootWindow(SDL_Display),
-        XA_CUT_BUFFER0, format, 8, PropModeReplace, (unsigned char*) dst, dstlen);
-      free(dst);
-      Atom XA_CLIPBOARD = XInternAtom(SDL_Display, "CLIPBOARD", 0);
-      if ( lost_scrap() ) {
-        XSetSelectionOwner(SDL_Display, XA_PRIMARY, SDL_Window, CurrentTime);
-        XSetSelectionOwner(SDL_Display, XA_CLIPBOARD, SDL_Window, CurrentTime);
-      }
-      Unlock_Display();
-    }
-
-}
-
-PUBLIC void
-get_scrap(int type, int *dstlen, char **dst)
-{
-  scrap_type format;
-
-  *dstlen = 0;
-  format = convert_format(type);
-
-/* * */
-  {
-    Window owner;
-    Atom selection;
-    Atom seln_type;
-    int seln_format;
-    unsigned long nbytes;
-    unsigned long overflow;
-    char *src;
-
-    Lock_Display();
-    Atom XA_CLIPBOARD = XInternAtom(SDL_Display, "CLIPBOARD", 0);
-    owner = XGetSelectionOwner(SDL_Display, XA_PRIMARY);
-    Unlock_Display();
-    if ( (owner == None) || (owner == SDL_Window) )
-      {
-        owner = DefaultRootWindow(SDL_Display);
-        selection = XA_CUT_BUFFER0;
-      }
-    else
-      {
-        int selection_response = 0;
-        SDL_Event event;
-
-        owner = SDL_Window;
-        Lock_Display();
-        selection = XInternAtom(SDL_Display, "SDL_SELECTION", False);
-        XConvertSelection(SDL_Display, XA_PRIMARY, format,
-                                        selection, owner, CurrentTime);
-        XConvertSelection(SDL_Display, XA_CLIPBOARD, format,
-                                        selection, owner, CurrentTime);
-        Unlock_Display();
-        while ( ! selection_response )
-          {
-            SDL_WaitEvent(&event);
-            if ( event.type == SDL_SYSWMEVENT )
-              {
-                XEvent xevent = event.syswm.msg->event.xevent;
-
-                if ( (xevent.type == SelectionNotify) &&
-                     (xevent.xselection.requestor == owner) )
-                    selection_response = 1;
-              }
-          }
-      }
-    Lock_Display();
-    if ( XGetWindowProperty(SDL_Display, owner, selection, 0, INT_MAX/4,
-                            False, format, &seln_type, &seln_format,
-                       &nbytes, &overflow, (unsigned char **)&src) == Success )
-      {
-        if ( seln_type == format )
-          {
-            *dstlen = convert_scrap(type, NULL, src, nbytes);
-            *dst = (char *)malloc(*dstlen);
-            if ( *dst == NULL )
-              *dstlen = 0;
-            else
-              convert_scrap(type, *dst, src, nbytes);
-          }
-        XFree(src);
-      }
-    }
-    Unlock_Display();
-}
-
-PRIVATE int clipboard_filter(const SDL_Event *event)
-{
-  /* Post all non-window manager specific events */
-  if ( event->type != SDL_SYSWMEVENT ) {
-    return(1);
-  }
-
-  /* Handle window-manager specific clipboard events */
-  switch (event->syswm.msg->event.xevent.type) {
-    /* Copy the selection from XA_CUT_BUFFER0 to the requested property */
-    case SelectionRequest: {
-      XSelectionRequestEvent *req;
-      XEvent sevent;
-      int seln_format;
-      unsigned long nbytes;
-      unsigned long overflow;
-      unsigned char *seln_data;
-
-      req = &event->syswm.msg->event.xevent.xselectionrequest;
-      sevent.xselection.type = SelectionNotify;
-      sevent.xselection.display = req->display;
-      sevent.xselection.selection = req->selection;
-      sevent.xselection.target = None;
-      sevent.xselection.property = None;
-      sevent.xselection.requestor = req->requestor;
-      sevent.xselection.time = req->time;
-      if ( XGetWindowProperty(SDL_Display, DefaultRootWindow(SDL_Display),
-                              XA_CUT_BUFFER0, 0, INT_MAX/4, False, req->target,
-                              &sevent.xselection.target, &seln_format,
-                              &nbytes, &overflow, &seln_data) == Success )
-        {
-          if ( sevent.xselection.target == req->target )
-            {
-              if ( sevent.xselection.target == XA_STRING )
-                {
-                  if ( seln_data[nbytes-1] == '\0' )
-                    --nbytes;
-                }
-              XChangeProperty(SDL_Display, req->requestor, req->property,
-                sevent.xselection.target, seln_format, PropModeReplace,
-                                                      seln_data, nbytes);
-              sevent.xselection.property = req->property;
-            }
-          XFree(seln_data);
-        }
-      XSendEvent(SDL_Display,req->requestor,False,0,&sevent);
-      XSync(SDL_Display, False);
-    }
-    break;
-  }
-
-  /* Post the event for X11 clipboard reading above */
-  return(1);
-}
-
-// X11 cursor
-
-namespace {
-
-// WARNING: These functions rely on the SDL_Display and SDL_Window previously initialized by init_scrap
-
-const int CURSOR_COUNT = 7;
-Cursor defined_cursors[CURSOR_COUNT] = {0};
-
-void set_cursor(int cursorType) {
-	Cursor cursor = 0;
-	
-	if(cursorType >= 0 && cursorType < CURSOR_COUNT) {
-		cursor = defined_cursors[cursorType];
-		if(!cursor) {
-			switch(cursorType) {
-				case Polycode::Core::CURSOR_TEXT:
-					cursor = XCreateFontCursor (SDL_Display, XC_xterm);
-				break;
-				case Polycode::Core::CURSOR_POINTER:
-					cursor = XCreateFontCursor (SDL_Display, XC_hand1);
-				break;
-				case Polycode::Core::CURSOR_CROSSHAIR:
-					cursor = XCreateFontCursor (SDL_Display, XC_crosshair);
-				break;
-				case Polycode::Core::CURSOR_RESIZE_LEFT_RIGHT:
-					cursor = XCreateFontCursor (SDL_Display, XC_sb_h_double_arrow);
-				break;
-				case Polycode::Core::CURSOR_RESIZE_UP_DOWN:
-					cursor = XCreateFontCursor (SDL_Display, XC_sb_v_double_arrow);
-				break;
-				case Polycode::Core::CURSOR_OPEN_HAND:
-					cursor = XCreateFontCursor (SDL_Display, XC_fleur);
-				break;
-				case Polycode::Core::CURSOR_ARROW:
-					cursor = 0;
-				break;
-			}
-
-			defined_cursors[cursorType] = cursor;
-		}
-	}
-
-	if(!cursor) {
-		// Restore the normal cursor.
-		XUndefineCursor(SDL_Display, SDL_Window);
-	} else {
-		XDefineCursor(SDL_Display, SDL_Window, cursor);
-	}
-	
-	XFlush(SDL_Display);
-}
-
-void free_cursors() {
-	XUndefineCursor(SDL_Display, SDL_Window);
-	for(int i = 0; i < CURSOR_COUNT; i++) {
-		if(defined_cursors[i]) {
-			XFreeCursor(SDL_Display, defined_cursors[i]);
-			defined_cursors[i] = 0;
-		}
-	}
-}
-} // namespace
-// end X11 cursor
-
-#endif // USE_X11
