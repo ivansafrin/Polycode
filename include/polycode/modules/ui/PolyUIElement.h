@@ -112,6 +112,8 @@ namespace Polycode {
             std::vector<ShaderPass> shaderPasses;
 			
 			Mesh *rectMesh;
+            MeshGeometry rectMeshGeometry;
+
 			Texture *texture;
 			
 	};

@@ -60,19 +60,6 @@ function ShaderPass:ShaderPass(...)
 	end
 end
 
-function ShaderPass:setAttributeArraysFromMesh(mesh)
-	local retVal = Polycode.ShaderPass_setAttributeArraysFromMesh(self.__ptr, mesh.__ptr)
-end
-
-function ShaderPass:setExpectedAttributes()
-	local retVal =  Polycode.ShaderPass_setExpectedAttributes(self.__ptr)
-end
-
-function ShaderPass:arrayToAttributeName(array)
-	local retVal = Polycode.ShaderPass_arrayToAttributeName(self.__ptr, array.__ptr)
-	return retVal
-end
-
 function ShaderPass:__delete()
 	if self then Polycode.delete_ShaderPass(self.__ptr) end
 end

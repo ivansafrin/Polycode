@@ -132,10 +132,6 @@ SceneMesh.prototype.setMaterial = function(material) {
 	Polycode.SceneMesh_setMaterial(this.__ptr, material)
 }
 
-SceneMesh.prototype.rebuildAttributes = function() {
-	Polycode.SceneMesh_rebuildAttributes(this.__ptr)
-}
-
 SceneMesh.prototype.setMaterialByName = function(materialName,resourcePool) {
 	Polycode.SceneMesh_setMaterialByName(this.__ptr, materialName,resourcePool)
 }

@@ -1256,7 +1256,7 @@ MaterialProp::MaterialProp(const String &caption) : PropProp(caption, "Material"
     
 	previewPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_SPHERE, 3.0, 16, 16);
 	previewScene->addChild(previewPrimitive);
-	previewPrimitive->getMesh()->calculateTangents();
+
   	
 	mainLight = new SceneLight(SceneLight::POINT_LIGHT, previewScene, 290.0);
 	mainLight->setPosition(-10,10,10);

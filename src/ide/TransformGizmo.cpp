@@ -254,7 +254,6 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	this->targetCamera = targetCamera;
 	
 	ScenePrimitive *centerCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 0.3, 0.3, 16);
-	centerCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
 	centerCircle->setColor(0.7, 0.7, 0.7, 1.0);
 	centerCircle->depthTest = false;
 	centerCircle->billboardMode = true;
@@ -274,9 +273,14 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	rotateDectorators = new Entity();
 	addChild(rotateDectorators);
     
-	yLine = new SceneMesh(Mesh::LINE_MESH);
-	yLine->getMesh()->addVertex(0.0, 0.0, 0.0);
-	yLine->getMesh()->addVertex(0.0, 0.75, 0.0);
+	yLine = new SceneMesh();
+    
+    MeshGeometry yLineGeometry;
+    yLineGeometry.meshType = MeshGeometry::LINE_MESH;
+	yLineGeometry.addVertex(0.0, 0.0, 0.0);
+	yLineGeometry.addVertex(0.0, 0.75, 0.0);
+    yLine->getMesh()->addSubmesh(yLineGeometry);
+    
 	yLine->depthTest = false;
 	yLine->color.setColorHexFromString(TRANSGIZMO_Y_COLOR);
     yLine->setLocalBoundingBox(yLine->getMesh()->calculateBBox());
@@ -285,9 +289,13 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
     yLine->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     yLine->setForceMaterial(true);
     
-	xLine = new SceneMesh(Mesh::LINE_MESH);
-	xLine->getMesh()->addVertex(0.0, 0.0, 0.0);
-	xLine->getMesh()->addVertex(0.75, 0.0, 0.0);
+	xLine = new SceneMesh();
+    MeshGeometry xLineGeometry;
+    xLineGeometry.meshType = MeshGeometry::LINE_MESH;
+    xLineGeometry.addVertex(0.0, 0.0, 0.0);
+    xLineGeometry.addVertex(0.75, 0.0, 0.0);
+    xLine->getMesh()->addSubmesh(xLineGeometry);
+    
 	xLine->depthTest = false;
 	xLine->color.setColorHexFromString(TRANSGIZMO_X_COLOR);
     xLine->setLocalBoundingBox(xLine->getMesh()->calculateBBox());
@@ -296,9 +304,13 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
     xLine->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     xLine->setForceMaterial(true);
     
-	zLine = new SceneMesh(Mesh::LINE_MESH);
-	zLine->getMesh()->addVertex(0.0, 0.0, 0.0);
-	zLine->getMesh()->addVertex(0.0, 0.0, 0.75);
+	zLine = new SceneMesh();
+    MeshGeometry zLineGeometry;
+    zLineGeometry.meshType = MeshGeometry::LINE_MESH;
+    zLineGeometry.addVertex(0.0, 0.0, 0.0);
+    zLineGeometry.addVertex(0.00, 0.0, 0.75);
+    zLine->getMesh()->addSubmesh(zLineGeometry);
+    
 	zLine->depthTest = false;
 	zLine->color.setColorHexFromString(TRANSGIZMO_Z_COLOR);
     zLine->setLocalBoundingBox(zLine->getMesh()->calculateBBox());
@@ -360,7 +372,6 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	// ROTATE
 
 	bgCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 2.6, 2.6, 32);
-	bgCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
 	bgCircle->setColor(0.0, 0.0, 0.0, 1.0);
 	bgCircle->depthTest = false;
 //	bgCircle->billboardMode = true;
@@ -370,7 +381,6 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
     bgCircle->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     
 	outerCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 3.0, 3.0, 32);
-	outerCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
 	outerCircle->setColor(1.0, 1.0, 1.0, 1.0);
 	outerCircle->depthTest = false;
 	outerCircle->billboardMode = true;
@@ -380,7 +390,6 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
     outerCircle->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     
 	pitchCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 1.55, 1.55, 64);
-	pitchCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
 	pitchCircle->color.setColorHexFromString(TRANSGIZMO_X_COLOR);
 	pitchCircle->depthTest = false;
 	pitchCircle->Yaw(90);	
@@ -391,7 +400,6 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
     pitchCircle->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     
 	yawCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 1.65, 1.65, 64);
-	yawCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
 	yawCircle->color.setColorHexFromString(TRANSGIZMO_Y_COLOR);
 	yawCircle->depthTest = false;
 	yawCircle->Pitch(90);
@@ -402,7 +410,6 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
     yawCircle->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
     
 	rollCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 1.6, 1.6, 64);
-	rollCircle->getMesh()->setMeshType(Mesh::LINE_LOOP_MESH);
 	rollCircle->color.setColorHexFromString(TRANSGIZMO_Z_COLOR);
 	rollCircle->depthTest = false;
 	rotateDectorators->addChild(rollCircle);

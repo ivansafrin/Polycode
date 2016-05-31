@@ -49,27 +49,17 @@ namespace Polycode {
 			explicit SceneMesh(const String& fileName);
 			
 			/**
-			* Construct an empty scene mesh with the specified type.
-			* @param meshType Mesh type to create. See Mesh for possible values.
-			*/			
-			explicit SceneMesh(int meshType);
-			
-			/**
 			* Construct scene mesh from an existing Mesh instance.
 			*/
 			explicit SceneMesh(Mesh *mesh);
+        
+            SceneMesh();
 			
 			/**
 			* Construct scene mesh from an existing Mesh instance.
 			*/			
 			static SceneMesh *SceneMeshFromMesh(Mesh *mesh);
 			
-			/**
-			* Construct an empty scene mesh with the specified type.
-			* @param meshType Mesh type to create. See Mesh for possible values.
-			*/						
-			static SceneMesh *SceneMeshWithType(int meshType);
-						
 			virtual ~SceneMesh();
 			
 			void Render(GPUDrawBuffer *buffer);
@@ -107,8 +97,6 @@ namespace Polycode {
 			*/												
 			void setMaterial(Material *material);
 			
-            void rebuildAttributes();
-        
 			/**
 			* Set material by name. You can create materials in material files and name them there, then use this to set a material by name to a scene mesh.
 			* @param materialName Name of material to apply.

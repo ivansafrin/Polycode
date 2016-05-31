@@ -54,9 +54,6 @@ namespace Polycode {
             virtual void createTexture(Texture *texture) = 0;
             virtual void destroyTexture(Texture *texture) = 0;
         
-            virtual void createMesh(Mesh *mesh) = 0;
-            virtual void destroyMesh(Mesh *mesh) = 0;
-        
             virtual void setViewport(unsigned int x,unsigned  int y,unsigned  int width, unsigned height) = 0;
             virtual void clearBuffers(const Color &clearColor, bool colorBuffer, bool depthBuffer, bool stencilBuffer) = 0;
             virtual void createProgram(ShaderProgram *program) = 0;
@@ -65,13 +62,10 @@ namespace Polycode {
             virtual void destroyShader(Shader *shader) = 0;
             virtual void createShader(Shader *shader) = 0;
             virtual void useShader(Shader *shader) = 0;
-        
-            virtual void createVertexBuffer(VertexDataArray *dataArray) = 0;
-            virtual void createIndexBuffer(IndexDataArray *dataArray) = 0;
-            virtual void destroyBuffer(RenderDataArray *array) = 0;
-        
-            virtual void drawIndices(int type, IndexDataArray *indexArray) = 0;
-            virtual void drawArrays(int type, unsigned int vertexCount) = 0;
+
+            virtual void createSubmeshBuffers(MeshGeometry *submesh) = 0;
+            virtual void destroySubmeshBufferData(void *platformData) = 0;
+            virtual void drawSubmeshBuffers(MeshGeometry *submesh, Shader *shader) = 0;
         
             virtual void enableDepthTest(bool val) = 0;
             virtual void enableDepthWrite(bool val) = 0;
@@ -144,6 +138,7 @@ namespace Polycode {
         
             ShaderBinding *getShaderBinding();
         
+            void processDrawBufferLights(GPUDrawBuffer *buffer);
             void processDrawBuffer(GPUDrawBuffer *buffer);
             RenderThreadDebugInfo getFrameInfo();
         
@@ -161,18 +156,15 @@ namespace Polycode {
             static const int JOB_CREATE_PROGRAM = 4;
             static const int JOB_CREATE_SHADER = 5;
             static const int JOB_BEGIN_FRAME = 6;
-            static const int JOB_CREATE_VERTEX_BUFFERS = 7;
             static const int JOB_DESTROY_TEXTURE = 8;
             static const int JOB_DESTROY_SHADER = 9;
             static const int JOB_DESTROY_PROGRAM = 10;
-            static const int JOB_DESTROY_BUFFER = 11;
+            static const int JOB_DESTROY_SUBMESH_BUFFER = 11;
             static const int JOB_CREATE_RENDER_BUFFER = 12;
             static const int JOB_DESTROY_RENDER_BUFFER = 13;
             static const int JOB_SET_TEXTURE_PARAM = 14;
             static const int JOB_DESTROY_SHADER_BINDING = 16;
             static const int JOB_DESTROY_SHADER_PARAM = 17;
-            static const int JOB_CREATE_MESH = 18;
-            static const int JOB_DESTROY_MESH = 19;
         
         protected:
         
@@ -221,13 +213,12 @@ namespace Polycode {
         Number getBackingResolutionScaleY();
         ShaderProgram *createProgram(const String &fileName);
         Shader *createShader(ShaderProgram *vertexProgram, ShaderProgram *fragmentProgram);
-        void createVertexBuffers(Mesh *mesh);
         
         void enqueueFrameJob(int jobType, void *data);
         
         void destroyProgram(ShaderProgram *program);
         void destroyShader(Shader *shader);
-        void destroyBuffer(RenderDataArray *array);
+        void destroySubmeshPlatformData(void *platformData);
         
         void destroyShaderBinding(ShaderBinding *binding);
         void destroyShaderParam(LocalShaderParam *param);
@@ -236,9 +227,6 @@ namespace Polycode {
         
         void setAnisotropyAmount(Number amount);
         Number getAnisotropyAmount();
-        
-        Mesh *createMesh(const String &fileName);
-        void destroyMesh(Mesh *mesh);
         
         static Vector3 unProject(const Vector3 &position, const Matrix4 &modelMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport);
         static Vector3 project(const Vector3 &position, const Matrix4 &modelMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport);

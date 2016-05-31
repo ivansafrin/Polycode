@@ -71,10 +71,6 @@ Renderer.prototype.createShader = function(vertexProgram,fragmentProgram) {
 	return retVal
 }
 
-Renderer.prototype.createVertexBuffers = function(mesh) {
-	Polycode.Renderer_createVertexBuffers(this.__ptr, mesh)
-}
-
 Renderer.prototype.enqueueFrameJob = function(jobType,data) {
 	Polycode.Renderer_enqueueFrameJob(this.__ptr, jobType,data)
 }
@@ -87,8 +83,8 @@ Renderer.prototype.destroyShader = function(shader) {
 	Polycode.Renderer_destroyShader(this.__ptr, shader)
 }
 
-Renderer.prototype.destroyBuffer = function(array) {
-	Polycode.Renderer_destroyBuffer(this.__ptr, array)
+Renderer.prototype.destroySubmeshPlatformData = function(platformData) {
+	Polycode.Renderer_destroySubmeshPlatformData(this.__ptr, platformData)
 }
 
 Renderer.prototype.destroyShaderBinding = function(binding) {
@@ -109,16 +105,6 @@ Renderer.prototype.setAnisotropyAmount = function(amount) {
 
 Renderer.prototype.getAnisotropyAmount = function() {
 	return Polycode.Renderer_getAnisotropyAmount(this.__ptr)
-}
-
-Renderer.prototype.createMesh = function(fileName) {
-	var retVal = new Mesh()
-	retVal.__ptr = Polycode.Renderer_createMesh(this.__ptr, fileName)
-	return retVal
-}
-
-Renderer.prototype.destroyMesh = function(mesh) {
-	Polycode.Renderer_destroyMesh(this.__ptr, mesh)
 }
 
 Renderer.prototype.beginFrame = function() {

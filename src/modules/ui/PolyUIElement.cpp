@@ -220,22 +220,26 @@ void UIRect::setImageCoordinates(Number x, Number y, Number width, Number height
 	Number hFloat = height * pixelSizeY * imageScale;
 
     rectMesh->clearMesh();
-    rectMesh->indexedMesh = true;
     
-	rectMesh->addVertex(-whalf,-hhalf,0);
-	rectMesh->addTexCoord(xFloat, (1.0-yFloat) - hFloat);
+    rectMeshGeometry.vertexPositionArray.data.clear();
+    rectMeshGeometry.vertexTexCoordArray.data.clear();
+    
+	rectMeshGeometry.addVertex(-whalf,-hhalf,0);
+	rectMeshGeometry.addTexCoord(xFloat, (1.0-yFloat) - hFloat);
 
-	rectMesh->addVertex(-whalf+width,-hhalf,0);
-	rectMesh->addTexCoord(xFloat + wFloat, (1.0-yFloat) - hFloat);
+	rectMeshGeometry.addVertex(-whalf+width,-hhalf,0);
+	rectMeshGeometry.addTexCoord(xFloat + wFloat, (1.0-yFloat) - hFloat);
 
-	rectMesh->addVertex(-whalf+width,-hhalf+height,0);
-	rectMesh->addTexCoord(xFloat + wFloat, 1.0-yFloat);
+	rectMeshGeometry.addVertex(-whalf+width,-hhalf+height,0);
+	rectMeshGeometry.addTexCoord(xFloat + wFloat, 1.0-yFloat);
 
-	rectMesh->addVertex(-whalf,-hhalf+height,0);
-	rectMesh->addTexCoord(xFloat, 1.0-yFloat);
+	rectMeshGeometry.addVertex(-whalf,-hhalf+height,0);
+	rectMeshGeometry.addTexCoord(xFloat, 1.0-yFloat);
 
-    rectMesh->addIndexedFace(0, 1, 2);
-    rectMesh->addIndexedFace(0, 2, 3);
+    rectMeshGeometry.addIndexedFace(0, 1, 2);
+    rectMeshGeometry.addIndexedFace(0, 2, 3);
+    
+    rectMesh->addSubmesh(rectMeshGeometry);
     
     
 	rebuildTransformMatrix();
@@ -251,7 +255,7 @@ Number UIRect::getImageHeight() const {
 }
 
 void UIRect::initRect(Number width, Number height) {
-	rectMesh = new Mesh(Mesh::TRI_MESH);
+	rectMesh = new Mesh();
 	processInputEvents = true;
 
 	setAnchorPoint(-1.0, -1.0, 0.0);
@@ -260,15 +264,17 @@ void UIRect::initRect(Number width, Number height) {
 	
 	Number whalf = width/2.0f;
 	Number hhalf = height/2.0f;
-				
-	rectMesh->addVertexWithUV(-whalf,-hhalf,0,0,0);
-	rectMesh->addVertexWithUV(-whalf+width,-hhalf,0, 1, 0);
-	rectMesh->addVertexWithUV(-whalf+width,-hhalf+height,0, 1, 1);
-	rectMesh->addVertexWithUV(-whalf,-hhalf+height,0,0,1);
+	
+	rectMeshGeometry.addVertexWithUV(-whalf,-hhalf,0,0,0);
+	rectMeshGeometry.addVertexWithUV(-whalf+width,-hhalf,0, 1, 0);
+	rectMeshGeometry.addVertexWithUV(-whalf+width,-hhalf+height,0, 1, 1);
+	rectMeshGeometry.addVertexWithUV(-whalf,-hhalf+height,0,0,1);
     
-    rectMesh->indexedMesh = true;
-    rectMesh->addIndexedFace(0, 1, 2);
-    rectMesh->addIndexedFace(0, 2, 3);
+    rectMeshGeometry.indexedMesh = true;
+    rectMeshGeometry.addIndexedFace(0, 1, 2);
+    rectMeshGeometry.addIndexedFace(0, 2, 3);
+    
+    rectMesh->addSubmesh(rectMeshGeometry);
     
     setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured"));
     
@@ -331,7 +337,6 @@ void UIRect::setMaterial(Material *material) {
     shaderPasses.push_back(pass);
     
     shaderPasses[0].shaderBinding->addParamPointer(ProgramParam::PARAM_COLOR, "entityColor", &color);
-    shaderPasses[0].setAttributeArraysFromMesh(rectMesh);
     shaderPasses[0].shaderBinding->resetAttributes = true;
 }
 
@@ -344,7 +349,10 @@ void UIRect::Render(GPUDrawBuffer *buffer) {
     drawCall.options.depthTest = depthTest;
     drawCall.options.depthWrite = depthWrite;
     
-    drawCall.mesh = rectMesh;
+    if(rectMesh->getNumSubmeshes() == 0) {
+        assert(false);
+    }
+    drawCall.submesh = rectMesh->getSubmeshPointer(0);
     drawCall.material = material;
     drawCall.shaderPasses = shaderPasses;
     
@@ -359,18 +367,18 @@ void UIRect::Resize(Number width, Number height) {
 	Number whalf = width/2.0f;
 	Number hhalf = height/2.0f;
 
-    rectMesh->vertexPositionArray.data.clear();
-    rectMesh->indexArray.data.clear();
-    rectMesh->indexedMesh = true;
-
-    rectMesh->addVertex(-whalf,-hhalf,0);
-    rectMesh->addVertex(-whalf+width,-hhalf,0);
-    rectMesh->addVertex(-whalf+width,-hhalf+height,0);
-    rectMesh->addVertex(-whalf,-hhalf+height,0);
+    rectMesh->clearMesh();
     
-    rectMesh->addIndexedFace(0, 1, 2);
-    rectMesh->addIndexedFace(0, 2, 3);
+    rectMeshGeometry.vertexPositionArray.data.clear();
+    rectMeshGeometry.addVertex(-whalf,-hhalf,0);
+    rectMeshGeometry.addVertex(-whalf+width,-hhalf,0);
+    rectMeshGeometry.addVertex(-whalf+width,-hhalf+height,0);
+    rectMeshGeometry.addVertex(-whalf,-hhalf+height,0);
     
+    rectMeshGeometry.addIndexedFace(0, 1, 2);
+    rectMeshGeometry.addIndexedFace(0, 2, 3);
+    
+    rectMesh->addSubmesh(rectMeshGeometry);
 }
 
 UIImage::UIImage(String imagePath, int width, int height) : UIRect(imagePath, width, height) {

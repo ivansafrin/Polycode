@@ -24,11 +24,12 @@ THE SOFTWARE.
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyRenderDataArray.h"
 #include "polycode/core/PolyColor.h"
+#include "polycode/core/PolyCore.h"
 #include "polycode/core/PolyVector3.h"
 #include "polycode/core/PolyVector2.h"
-#include "polycode/core/PolyCore.h"
 #include "polycode/core/PolyResource.h"
 #include <vector>
+#include <memory>
 
 class CoreFile;
 
@@ -54,57 +55,32 @@ namespace Polycode {
 		float x;
 		float y;
 	} Vector2_struct;
+
 	
 	/**
 	*  A mesh comprised of vertices. When data in the mesh changes, arrayDirtyMap must be set to true for the appropriate array types (color, position, normal, etc). Available types are defined in RenderDataArray.
 	*/
-	class _PolyExport Mesh : public Resource {
+	class _PolyExport MeshGeometry {
 		public:
-		
 			
+        
+            MeshGeometry();
 			/**
 			* Construct with an empty mesh of specified type.
 			* @param meshType Type of mesh. Possible values are: Mesh::TRISTRIP_MESH, Mesh::TRI_MESH, Mesh::TRIFAN_MESH, Mesh::TRISTRIP_MESH, Mesh::LINE_MESH, Mesh::POINT_MESH.
 			*/			
-			explicit Mesh(int meshType);
-					
-			/**
-			* Construct from a mesh loaded from a file.
-			* @param fileName Path to mesh file.
-			*/
-			explicit Mesh(const String& fileName);
-
-			/**
-			* Construct from a mesh loaded from a file.
-			* @param fileName Path to mesh file.
-			*/			
-			static Mesh *MeshFromFileName(String& fileName);
-
-			virtual ~Mesh();
-			
-			/**
-			* Loads a mesh from a file.
-			* @param fileName Path to mesh file.
-			*/			
-			void loadMesh(const String& fileName);
-			
+			explicit MeshGeometry(int meshType);
+			virtual ~MeshGeometry();
+        
+            MeshGeometry(const MeshGeometry &geom);
+            MeshGeometry &operator=(const MeshGeometry &geom);
+        
 			/**
 			* Clears mesh data.
 			*/
 			
 			void clearMesh();
 
-			/**
-			* Saves mesh to a file.
-			* @param fileName Path to file to save to.
-			*/			
-			void saveToFile(const String& fileName, bool writeNormals = true, bool writeTangents = true, bool writeColors = true, bool writeBoneWeights = true, bool writeUVs = true, bool writeSecondaryUVs = false);
-
-			void loadFromFile(CoreFile *inFile);
-
-        
-			void saveToFile(CoreFile *outFile, bool writeNormals = true, bool writeTangents = true, bool writeColors = true, bool writeBoneWeights = true, bool writeUVs = true, bool writeSecondaryUVs = false);
-			
 			
 			/**
 			* Returns the total vertex count in the mesh.
@@ -235,7 +211,7 @@ namespace Polycode {
         
             Vector2 getVertexTexCoordAtIndex(unsigned int index);
         
-            Mesh *Copy() const;
+            MeshGeometry *Copy() const;
 			
 			/**
 			* Returns the radius of the mesh (furthest vertex away from origin).
@@ -278,12 +254,6 @@ namespace Polycode {
 			* Calculates the mesh bounding box.
 			*/
 			Vector3 calculateBBox();
-
-			/**
-			* Checks if the mesh has a vertex buffer.
-			* @param True if the mesh has a vertex buffer, false if not.
-			*/		
-			bool hasVertexBuffer() { return meshHasVertexBuffer; }
 	
 			/**
 			* Quad based mesh.
@@ -321,8 +291,7 @@ namespace Polycode {
 			static const int LINE_LOOP_MESH = 7;
         
         
-            bool indexedMesh;
-
+        
             void addIndexedFace(unsigned int i1, unsigned int i2);
             void addIndexedFace(unsigned int i1, unsigned int i2, unsigned int i3);
             void addIndexedFace(unsigned int i1, unsigned int i2, unsigned int i3, unsigned int i4);
@@ -362,18 +331,88 @@ namespace Polycode {
             VertexDataArray vertexBoneWeightArray;
             VertexDataArray vertexBoneIndexArray;
         
+            VertexDataArray customVertexArray1;
+            VertexDataArray customVertexArray2;
+            VertexDataArray customVertexArray3;
+            VertexDataArray customVertexArray4;
+        
             IndexDataArray indexArray;
         
-        protected:
+            int meshType;
+            bool dataChanged;
+            bool indexedMesh;
+	};
+    
+    class _PolyExport Mesh : public Resource {
+        public:
+        
+        
+            Mesh();
+            /**
+             * Construct from a mesh loaded from a file.
+             * @param fileName Path to mesh file.
+             */
+            explicit Mesh(const String& fileName);
+        
+            ~Mesh();
+        
+            /**
+             * Construct from a mesh loaded from a file.
+             * @param fileName Path to mesh file.
+             */
+            static Mesh *MeshFromFileName(String& fileName);
+        
+        
+            Mesh *Copy() const;
+        
+            /**
+             * Loads a mesh from a file.
+             * @param fileName Path to mesh file.
+             */
+            void loadMesh(const String& fileName);
+            /**
+             * Saves mesh to a file.
+             * @param fileName Path to file to save to.
+             */
+            void saveToFile(const String& fileName, bool writeNormals = true, bool writeTangents = true, bool writeColors = true, bool writeBoneWeights = true, bool writeUVs = true, bool writeSecondaryUVs = false);
+            
+            void loadFromFile(CoreFile *inFile);
+        
+            void saveToFile(CoreFile *outFile, bool writeNormals = true, bool writeTangents = true, bool writeColors = true, bool writeBoneWeights = true, bool writeUVs = true, bool writeSecondaryUVs = false) const;
+        
+            void addSubmesh(const MeshGeometry &newSubmesh);
+            void removeSubmeshAtIndex(unsigned int index);
+        
+            unsigned int getNumSubmeshes() const;
+            MeshGeometry getSubmeshAtIndex(unsigned int index) const;
+        
+            /**
+             * Returns an unsafe pointer to submesh.
+             @param index Index of submesh to return pointer to.
+             **/
+            std::shared_ptr<MeshGeometry> getSubmeshPointer(unsigned int index);
+        
+            void clearMesh();
+        
+            /**
+             * Calculates the mesh bounding box.
+             */
+            Vector3 calculateBBox();
+        
+            /**
+             * Returns the radius of the mesh (furthest vertex away from origin).
+             * @return Mesh radius.
+             */
+            Number getRadius();
+        
+        private:
+        
+            std::vector<std::shared_ptr<MeshGeometry>> submeshes;
         
             void loadFromFileV2(Polycode::CoreFile *inFile);
             void loadFromFileLegacyV1(Polycode::CoreFile *inFile);
-
-            void writeVertexBlock(VertexDataArray *array, Polycode::CoreFile *outFile);
-            void writeIndexBlock(IndexDataArray *array, Polycode::CoreFile *outFile);
-
-            bool meshHasVertexBuffer;
-            int meshType;
-
-	};
+            
+            void writeVertexBlock(const VertexDataArray &array, Polycode::CoreFile *outFile) const ;
+            void writeIndexBlock(const IndexDataArray &array, Polycode::CoreFile *outFile) const ;
+    };
 }

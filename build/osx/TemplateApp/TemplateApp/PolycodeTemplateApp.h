@@ -17,10 +17,10 @@ public:
     bool Update();
     
 private:
-    ScenePrimitive *test ;
     Core *core;
-    std::vector<ScenePrimitive*> tests;
+    std::vector<SceneMesh*> tests;
     SceneLabel *fpsLabel;
+    Scene *scene;
     Number counter;
     Entity *sourceEntity;
     Number positionValue;

@@ -28,7 +28,7 @@
 
 using namespace Polycode;
 
-SceneParticleEmitter::SceneParticleEmitter(unsigned int particleCount, Number lifetime, Number speed) : SceneMesh(Mesh::POINT_MESH), particleCount(particleCount), particleSpeed(speed), lifetime(lifetime), directionVector(0.0, 1.0, 0.0), useFloorPlane(false), floorPlaneOffset(-1.0), floorDamping(0.5), particlesInWorldSpace(false), perlinEnabled(false), perlinValue(1.0,1.0,1.0), particleType(SceneParticleEmitter::PARTICLE_TYPE_QUAD), particleSize(0.1), particleRotationSpeed(0.0, 0.0, 0.0), useColorCurves(false), useScaleCurve(false), loopParticles(true){
+SceneParticleEmitter::SceneParticleEmitter(unsigned int particleCount, Number lifetime, Number speed) : particleCount(particleCount), particleSpeed(speed), lifetime(lifetime), directionVector(0.0, 1.0, 0.0), useFloorPlane(false), floorPlaneOffset(-1.0), floorDamping(0.5), particlesInWorldSpace(false), perlinEnabled(false), perlinValue(1.0,1.0,1.0), particleType(SceneParticleEmitter::PARTICLE_TYPE_QUAD), particleSize(0.1), particleRotationSpeed(0.0, 0.0, 0.0), useColorCurves(false), useScaleCurve(false), loopParticles(true){
     
     core = CoreServices::getInstance()->getCore();
     motionPerlin = new Perlin(3,5,1.0,RANDOM_NUMBER);
@@ -202,13 +202,13 @@ void SceneParticleEmitter::enableParticleSystem(bool val) {
 }
 
 void SceneParticleEmitter::rebuildParticles(GPUDrawBuffer *buffer) {
-    mesh->clearMesh();
     Matrix4 inverseMatrix = systemTrasnformMatrix.Inverse();
     
+    MeshGeometry geometry;
     switch(particleType) {
         case PARTICLE_TYPE_POINT:
         {
-            mesh->setMeshType(Mesh::POINT_MESH);
+            geometry.setMeshType(MeshGeometry::POINT_MESH);
             for(int i=0; i < particles.size(); i++) {
                 if(particles[i].lifetime > lifetime || particles[i].lifetime < 0.0) {
                     continue;
@@ -217,9 +217,9 @@ void SceneParticleEmitter::rebuildParticles(GPUDrawBuffer *buffer) {
                 if(particlesInWorldSpace) {
                     vertexPosition = inverseMatrix * vertexPosition;
                 }
-                mesh->addVertexWithUV(vertexPosition.x, vertexPosition.y, vertexPosition.z, 0.5, 0.5);
-                mesh->addColor(particles[i].color);
-                mesh->indexedMesh = false;
+                geometry.addVertexWithUV(vertexPosition.x, vertexPosition.y, vertexPosition.z, 0.5, 0.5);
+                geometry.addColor(particles[i].color);
+                geometry.indexedMesh = false;
             }
         }
         break;
@@ -244,74 +244,74 @@ void SceneParticleEmitter::rebuildParticles(GPUDrawBuffer *buffer) {
                 }
                 
                 if(particleType == PARTICLE_TYPE_MESH) {
-                    mesh->setMeshType(Mesh::TRI_MESH);
+                    geometry.setMeshType(MeshGeometry::TRI_MESH);
                     
                     int indexOffset = 0;
 
-					mesh->indexedMesh = true;
+					geometry.indexedMesh = true;
                     
                     int meshIndex = particles[i].varianceIndex;
                     if(meshIndex < sourceMeshes.size()) {
                         
-						indexOffset = mesh->vertexPositionArray.data.size()/3;
-                        
-						Mesh *sourceMesh = sourceMeshes[meshIndex];
+						indexOffset = geometry.vertexPositionArray.data.size()/3;
+                        if(sourceMeshes[meshIndex]->getNumSubmeshes() > 0) {
+                            std::shared_ptr<MeshGeometry> sourceMesh = sourceMeshes[meshIndex]->getSubmeshPointer(0);
+                            geometry.setMeshType(sourceMesh->getMeshType());
 
-						mesh->setMeshType(sourceMesh->getMeshType());
-
-                        for(int v=0; v <  sourceMesh->getVertexCount(); v++) {
-                           
-							Vector3 vpos = Vector3(sourceMesh->vertexPositionArray.data[(v * 3)], sourceMesh->vertexPositionArray.data[(v * 3)+1], sourceMesh->vertexPositionArray.data[(v * 3)+2]) * finalParticleSize;
-                            vpos = q.applyTo(vpos);
+                            for(int v=0; v < sourceMesh->getVertexCount(); v++) {
+                               
+                                Vector3 vpos = Vector3(sourceMesh->vertexPositionArray.data[(v * 3)], sourceMesh->vertexPositionArray.data[(v * 3)+1], sourceMesh->vertexPositionArray.data[(v * 3)+2]) * finalParticleSize;
+                                vpos = q.applyTo(vpos);
+                                
+                                vpos += particlePosition;
+                                geometry.addVertex(vpos.x, vpos.y, vpos.z);
+                                geometry.addTexCoord(sourceMesh->vertexTexCoordArray.data[(v * 2)], sourceMesh->vertexTexCoordArray.data[(v * 2) + 1]);
+                                geometry.addColor(vertexColor);
+                                Vector3 svNormal = Vector3(sourceMesh->vertexNormalArray.data[(v * 3)], sourceMesh->vertexNormalArray.data[(v * 3) + 1], sourceMesh->vertexNormalArray.data[(v * 3) + 2]);
+                                svNormal = q.applyTo(svNormal);
+                                geometry.addNormal(svNormal.x, svNormal.y, svNormal.z);
+                            }
                             
-                            vpos += particlePosition;
-							mesh->addVertex(vpos.x, vpos.y, vpos.z);
-							mesh->addTexCoord(sourceMesh->vertexTexCoordArray.data[(v * 2)], sourceMesh->vertexTexCoordArray.data[(v * 2) + 1]);
-							mesh->addColor(vertexColor);
-							Vector3 svNormal = Vector3(sourceMesh->vertexNormalArray.data[(v * 3)], sourceMesh->vertexNormalArray.data[(v * 3) + 1], sourceMesh->vertexNormalArray.data[(v * 3) + 2]);
-							svNormal = q.applyTo(svNormal);
-							mesh->addNormal(svNormal.x, svNormal.y, svNormal.z);
+                            for (int v = 0; v < sourceMesh->indexArray.data.size(); v++) {
+                                geometry.addIndex(indexOffset + sourceMesh->indexArray.data[v]);
+                            }
                         }
                         
-						for (int v = 0; v < sourceMesh->indexArray.data.size(); v++) {
-							mesh->addIndex(indexOffset + sourceMesh->indexArray.data[v]);
-                        }
-                         
                     }
                     
                 } else {
-                    mesh->setMeshType(Mesh::TRI_MESH);
-                    mesh->indexedMesh = true;
+                    geometry.setMeshType(MeshGeometry::TRI_MESH);
+                    geometry.indexedMesh = true;
                     
-                    int vertexCount = mesh->getVertexCount();
+                    int vertexCount = geometry.getVertexCount();
                     
                     Vector3 vertexPosition = Vector3(-finalParticleSize, -finalParticleSize, 0.0);
                     vertexPosition = q.applyTo(vertexPosition);
                     vertexPosition = buffer->cameraMatrix.rotateVector(vertexPosition);
-                    mesh->addVertexWithUV(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 0.0, 0.0);
-                    mesh->addColor(vertexColor);
+                    geometry.addVertexWithUV(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 0.0, 0.0);
+                    geometry.addColor(vertexColor);
                     
                     vertexPosition = Vector3(finalParticleSize, -finalParticleSize, 0.0);
                     vertexPosition = q.applyTo(vertexPosition);
                     vertexPosition = buffer->cameraMatrix.rotateVector(vertexPosition);
-                    mesh->addVertexWithUV(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 1.0, 0.0);
-                    mesh->addColor(vertexColor);
+                    geometry.addVertexWithUV(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 1.0, 0.0);
+                    geometry.addColor(vertexColor);
 
                     vertexPosition = Vector3(finalParticleSize, finalParticleSize, 0.0);
                     vertexPosition = q.applyTo(vertexPosition);
                     vertexPosition = buffer->cameraMatrix.rotateVector(vertexPosition);
-                    mesh->addVertexWithUV(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 1.0, 1.0);
-                    mesh->addColor(vertexColor);
+                    geometry.addVertexWithUV(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 1.0, 1.0);
+                    geometry.addColor(vertexColor);
 
                     vertexPosition = Vector3(-finalParticleSize, finalParticleSize, 0.0);
                     vertexPosition = q.applyTo(vertexPosition);
                     vertexPosition = buffer->cameraMatrix.rotateVector(vertexPosition);
-                    mesh->addVertexWithUV(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 0.0, 1.0);
-                    mesh->addColor(vertexColor);
+                    geometry.addVertexWithUV(particlePosition.x+vertexPosition.x, particlePosition.y+vertexPosition.y, particlePosition.z+vertexPosition.z, 0.0, 1.0);
+                    geometry.addColor(vertexColor);
                     
 
-                    mesh->addIndexedFace(vertexCount, vertexCount+1, vertexCount+2);
-                    mesh->addIndexedFace(vertexCount, vertexCount+2, vertexCount+3);
+                    geometry.addIndexedFace(vertexCount, vertexCount+1, vertexCount+2);
+                    geometry.addIndexedFace(vertexCount, vertexCount+2, vertexCount+3);
                 }
 
             }
@@ -319,6 +319,8 @@ void SceneParticleEmitter::rebuildParticles(GPUDrawBuffer *buffer) {
             break;
             
     }
+    mesh->clearMesh();    
+    mesh->addSubmesh(geometry);
 }
 
 unsigned int SceneParticleEmitter::getParticleCount() const {

@@ -33,8 +33,7 @@ GraphicsInterface::GraphicsInterface() {
 }
 
 RenderThread::RenderThread() : graphicsInterface(NULL) {
-    
-    
+        
     jobQueueMutex = Services()->getCore()->createMutex();
     renderMutex = Services()->getCore()->createMutex();
 }
@@ -71,11 +70,11 @@ void RenderThread::initGlobals() {
 
 void RenderThread::runThread() {
     
-        initGlobals();
+    initGlobals();
     
-       while(threadRunning) {
+    while(threadRunning) {
         
-        Services()->getCore()->lockMutex(jobQueueMutex);
+        jobQueueMutex->lock();
         
         while(jobQueue.size() > 0) {
             RendererThreadJob nextJob = jobQueue.front();
@@ -89,7 +88,7 @@ void RenderThread::runThread() {
             frameQueue.pop();
         }
 
-        Services()->getCore()->unlockMutex(jobQueueMutex);
+        jobQueueMutex->unlock();
 
         if(nextFrame) {
             while(nextFrame->jobQueue.size() > 0) {
@@ -106,21 +105,7 @@ ShaderBinding *RenderThread::getShaderBinding() {
     return rendererShaderBinding;
 }
 
-void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
-    
-    ++currentDebugFrameInfo.buffersProcessed;
-    
-    if(buffer->targetFramebuffer) {
-        graphicsInterface->bindRenderBuffer(buffer->targetFramebuffer);
-    }
-    
-    graphicsInterface->setViewport(buffer->viewport.x, buffer->viewport.y, buffer->viewport.w, buffer->viewport.h);
-    graphicsInterface->clearBuffers(buffer->clearColor, buffer->clearColorBuffer, buffer->clearDepthBuffer, true);
-    
-    projectionMatrixParam->setMatrix4(buffer->projectionMatrix);
-    viewMatrixParam->setMatrix4(buffer->viewMatrix);
-
-    
+void RenderThread::processDrawBufferLights(GPUDrawBuffer *buffer) {
     int lightShadowIndex = 0;
     
     for(int i=0; i <RENDERER_MAX_LIGHTS; i++) {
@@ -162,11 +147,32 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
             lights[i].constantAttenuation->setNumber(1.0);
             lights[i].linearAttenuation->setNumber(1.0);
             lights[i].quadraticAttenuation->setNumber(1.0);
-
+            
         }
     }
+}
+
+void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
+    
+    ++currentDebugFrameInfo.buffersProcessed;
+    
+    if(buffer->targetFramebuffer) {
+        graphicsInterface->bindRenderBuffer(buffer->targetFramebuffer);
+    }
+    
+    graphicsInterface->setViewport(buffer->viewport.x, buffer->viewport.y, buffer->viewport.w, buffer->viewport.h);
+    graphicsInterface->clearBuffers(buffer->clearColor, buffer->clearColorBuffer, buffer->clearDepthBuffer, true);
+    
+    projectionMatrixParam->setMatrix4(buffer->projectionMatrix);
+    viewMatrixParam->setMatrix4(buffer->viewMatrix);
+
+    processDrawBufferLights(buffer);
     
     for(int i=0; i < buffer->drawCalls.size(); i++) {
+        
+        if(!buffer->drawCalls[i].submesh) {
+            continue;
+        }
         
         if(buffer->drawCalls[i].options.enableScissor) {
             graphicsInterface->enableScissor(true);
@@ -211,20 +217,18 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                 ShaderPass shaderPass;
 
                 shaderPass = buffer->drawCalls[i].shaderPasses[s];
-                //graphicsInterface->setBlendingMode(shaderPass.blendingMode);
                 
                 ShaderBinding *localShaderBinding = buffer->drawCalls[i].shaderPasses[s].shaderBinding;
                 ShaderBinding *materialShaderBinding = shaderPass.materialShaderBinding;
                 
                 
-                if(buffer->globalMaterial) {
+                if(buffer->globalMaterial && !buffer->drawCalls[i].options.forceMaterial) {
                     if(s < buffer->globalMaterial->getNumShaderPasses()) {
                         shaderPass = buffer->globalMaterial->getShaderPass(s);
                         localShaderBinding = shaderPass.shaderBinding;
                     }
                 }
                 
-
                 if(!shaderPass.shader || !localShaderBinding) {
                     continue;
                 }
@@ -260,24 +264,11 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                     materialShaderBinding->accessMutex->unlock();
                 }
                 
-                bool rebindAttributes = false;
-                
-                // TODO: this is a slow solution
-                
-                if(buffer->globalMaterial) {
-                    rebindAttributes = true;
-                }
-                
-                if(buffer->drawCalls[i].shaderPasses[s].shaderBinding->targetShader != shaderPass.shader) {
-                    buffer->drawCalls[i].shaderPasses[s].shaderBinding->targetShader = shaderPass.shader;
-                    rebindAttributes = true;
-                }
-                
                 localShaderBinding->accessMutex->lock();
                 for(int p=0; p < localShaderBinding->getNumLocalParams(); p++) {
                     LocalShaderParam *localParam = localShaderBinding->getLocalParam(p);
                     if(localParam) {
-                        if(!localParam->param || rebindAttributes) {
+                        if(!localParam->param) {
                             localParam->param = shaderPass.shader->getParamPointer(localParam->name);
                         }
                         if(localParam->param) {
@@ -286,52 +277,12 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
                     }
                 }
                 localShaderBinding->accessMutex->unlock();
-
-                if(rebindAttributes || localShaderBinding->resetAttributes ) {
-                    buffer->drawCalls[i].shaderPasses[s].setExpectedAttributes();
-                    localShaderBinding->resetAttributes = false;
-                }
-
-                for(int a=0; a < buffer->drawCalls[i].shaderPasses[s].shaderBinding->getNumAttributeBindings(); a++) {
-
-                    AttributeBinding *attributeBinding = buffer->drawCalls[i].shaderPasses[s].shaderBinding->getAttributeBinding(a);
-                    
-                    if(attributeBinding) {
-                        if(attributeBinding->enabled  || rebindAttributes) {
-                            
-                            if(rebindAttributes) {
-                                attributeBinding->attribute = NULL;
-                                attributeBinding->enabled = true;
-                            }
-                            
-                            if(!attributeBinding->attribute) {
-                                attributeBinding->attribute = shaderPass.shader->getAttribPointer(attributeBinding->name);
-                            }
-                            
-                            if(attributeBinding->attribute) {
-                                attributeBinding->enabled = true;
-                                if(attributeBinding->vertexData->data.size() / attributeBinding->vertexData->countPerVertex >= buffer->drawCalls[i].mesh->getVertexCount()) {
-                                    
-                                    graphicsInterface->setAttributeInShader(shaderPass.shader, attributeBinding->attribute, attributeBinding);
-                                }
-                            } else {
-                                attributeBinding->enabled = false;
-                            }
-                        }
-                    }
-                }
                 
-                if(buffer->drawCalls[i].mesh->indexedMesh) {
-                    graphicsInterface->drawIndices(buffer->drawCalls[i].mesh->getMeshType(), &buffer->drawCalls[i].mesh->indexArray);
-                } else {
-                    graphicsInterface->drawArrays(buffer->drawCalls[i].mesh->getMeshType(), buffer->drawCalls[i].mesh->getVertexCount());
+                if(buffer->drawCalls[i].submesh->dataChanged) {
+                    graphicsInterface->createSubmeshBuffers(&*buffer->drawCalls[i].submesh);
+                    buffer->drawCalls[i].submesh->dataChanged = false;
                 }
-
-                for(int a=0; a < shaderPass.shader->expectedAttributes.size(); a++) {
-                    ProgramAttribute attribute = shaderPass.shader->expectedAttributes[a];
-                    graphicsInterface->disableAttribute(shaderPass.shader, attribute);
-                }
-                
+                graphicsInterface->drawSubmeshBuffers(&*buffer->drawCalls[i].submesh, shaderPass.shader);
                 graphicsInterface->endDrawCall();
             }
         }
@@ -463,27 +414,9 @@ void RenderThread::processJob(const RendererThreadJob &job) {
             shader->reloadResource();
         }
         break;
-        case JOB_CREATE_VERTEX_BUFFERS:
+        case JOB_DESTROY_SUBMESH_BUFFER:
         {
-            Mesh *mesh = (Mesh*) job.data;
-            
-            graphicsInterface->createVertexBuffer(&mesh->vertexPositionArray);
-            graphicsInterface->createVertexBuffer(&mesh->vertexTexCoordArray);
-            if(mesh->indexedMesh) {
-                graphicsInterface->createIndexBuffer(&mesh->indexArray);
-            }
-        }
-        break;
-        case JOB_CREATE_MESH:
-        {
-            Mesh *mesh = (Mesh*) job.data;
-            graphicsInterface->createMesh(mesh);
-        }
-        break;
-        case JOB_DESTROY_MESH:
-        {
-            Mesh *mesh = (Mesh*) job.data;
-            graphicsInterface->destroyMesh(mesh);
+            graphicsInterface->destroySubmeshBufferData(job.data);
         }
         break;
             
@@ -637,10 +570,6 @@ ShaderProgram *Renderer::createProgram(const String &fileName) {
     return program;
 }
 
-void Renderer::createVertexBuffers(Mesh *mesh) {
-    renderThread->enqueueJob(RenderThread::JOB_CREATE_VERTEX_BUFFERS, (void*) mesh);
-}
-
 void Renderer::destroyTexture(Texture *texture) {
     renderThread->enqueueJob(RenderThread::JOB_DESTROY_TEXTURE, (void*)texture);
 }
@@ -665,8 +594,8 @@ void Renderer::destroyShader(Shader *shader) {
     renderThread->enqueueJob(RenderThread::JOB_DESTROY_SHADER, (void*)shader);
 }
 
-void Renderer::destroyBuffer(RenderDataArray *array) {
-     renderThread->enqueueJob(RenderThread::JOB_DESTROY_BUFFER, (void*)array);
+void Renderer::destroySubmeshPlatformData(void *platformData) {
+     renderThread->enqueueJob(RenderThread::JOB_DESTROY_SUBMESH_BUFFER, platformData);
 }
 
 Vector3 Renderer::project(const Vector3 &position, const Matrix4 &modelMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport) {
@@ -689,16 +618,6 @@ Vector3 Renderer::project(const Vector3 &position, const Matrix4 &modelMatrix, c
     in.y = in.y * (viewport.h) + viewport.y;
     
     return Vector3(in.x, in.y, in.z);
-}
-
-Mesh *Renderer::createMesh(const String &fileName) {
-    Mesh *mesh = new Mesh(fileName);
-    renderThread->enqueueJob(RenderThread::JOB_CREATE_MESH, (void*)mesh);
-    return mesh;
-}
-
-void Renderer::destroyMesh(Mesh *mesh) {
-    renderThread->enqueueJob(RenderThread::JOB_DESTROY_MESH, (void*)mesh);
 }
 
 Vector3 Renderer::unProject(const Vector3 &position, const Matrix4 &modelMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport) {

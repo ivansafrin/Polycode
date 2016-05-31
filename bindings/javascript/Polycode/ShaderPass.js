@@ -59,11 +59,3 @@ Duktape.fin(ShaderPass.prototype, function (x) {
 	}
 	Polycode.ShaderPass__delete(x.__ptr)
 })
-
-ShaderPass.prototype.setAttributeArraysFromMesh = function(mesh) {
-	Polycode.ShaderPass_setAttributeArraysFromMesh(this.__ptr, mesh)
-}
-
-ShaderPass.prototype.setExpectedAttributes = function() {
-	Polycode.ShaderPass_setExpectedAttributes(this.__ptr)
-}

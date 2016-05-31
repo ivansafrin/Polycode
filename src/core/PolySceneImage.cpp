@@ -109,29 +109,28 @@ void SceneImage::setImageCoordinates(Number x, Number y, Number width, Number he
 	Number wFloat = width * pixelSizeX;
 	Number hFloat = height * pixelSizeY;
 
-	mesh->vertexPositionArray.data.clear();
-	mesh->vertexTexCoordArray.data.clear();
-    mesh->indexArray.data.clear();
+    mesh->clearMesh();
+    MeshGeometry geometry;
     
-    mesh->indexedMesh = true;
+    geometry.indexedMesh = true;
 
-	mesh->setMeshType(Mesh::TRI_MESH);
+	geometry.setMeshType(MeshGeometry::TRI_MESH);
+	geometry.addVertex(0 - whalf, 0 - hhalf, 0);
+	geometry.addTexCoord(xFloat, (1.0 - yFloat) - hFloat);
 
-	mesh->addVertex(0 - whalf, 0 - hhalf, 0);
-	mesh->addTexCoord(xFloat, (1.0 - yFloat) - hFloat);
+	geometry.addVertex(realWidth - whalf, 0 - hhalf, 0);
+	geometry.addTexCoord(xFloat + wFloat, (1.0 - yFloat) - hFloat);
 
-	mesh->addVertex(realWidth - whalf, 0 - hhalf, 0);
-	mesh->addTexCoord(xFloat + wFloat, (1.0 - yFloat) - hFloat);
+	geometry.addVertex(realWidth - whalf, realHeight - hhalf, 0);
+	geometry.addTexCoord(xFloat + wFloat, 1.0 - yFloat);
 
-	mesh->addVertex(realWidth - whalf, realHeight - hhalf, 0);
-	mesh->addTexCoord(xFloat + wFloat, 1.0 - yFloat);
-
-	mesh->addVertex(0 - whalf, realHeight - hhalf, 0);
-	mesh->addTexCoord(xFloat, 1.0 - yFloat);
-
+	geometry.addVertex(0 - whalf, realHeight - hhalf, 0);
+	geometry.addTexCoord(xFloat, 1.0 - yFloat);
     
-    mesh->addIndexedFace(0, 1, 2);
-    mesh->addIndexedFace(0, 2, 3);
+    geometry.addIndexedFace(0, 1, 2);
+    geometry.addIndexedFace(0, 2, 3);
+    
+    mesh->addSubmesh(geometry);
     
 	rebuildTransformMatrix();
 	matrixDirty = true;

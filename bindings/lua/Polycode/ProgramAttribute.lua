@@ -6,6 +6,8 @@ function ProgramAttribute:__getvar(name)
 		return Polycode.ProgramAttribute_get_size(self.__ptr)
 	elseif name == "name" then
 		return Polycode.ProgramAttribute_get_name(self.__ptr)
+	elseif name == "arrayType" then
+		return Polycode.ProgramAttribute_get_arrayType(self.__ptr)
 	end
 end
 
@@ -15,6 +17,9 @@ function ProgramAttribute:__setvar(name,value)
 		return true
 	elseif name == "name" then
 		Polycode.ProgramAttribute_set_name(self.__ptr, value)
+		return true
+	elseif name == "arrayType" then
+		Polycode.ProgramAttribute_set_arrayType(self.__ptr, value)
 		return true
 	end
 	return false

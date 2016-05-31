@@ -24,34 +24,65 @@
 
 using namespace Polycode;
 
-RenderDataArray::RenderDataArray(unsigned int type) : type(type), hasVBO(false), platformData(NULL) {
+RenderDataArray::RenderDataArray(unsigned int type) : type(type), platformData(NULL) {
 }
 
-void *RenderDataArray::getArrayData() {
+RenderDataArray::RenderDataArray(const RenderDataArray &other) : platformData(NULL) {
+    type = other.type;
+    customArrayName = other.customArrayName;
+}
+
+RenderDataArray &RenderDataArray::operator=(const RenderDataArray &other) {
+    type = other.type;
+    return *this;
+}
+
+void *RenderDataArray::getArrayData()  const{
     return NULL;
 }
 
-unsigned int RenderDataArray::getDataSize() {
+unsigned int RenderDataArray::getDataSize() const {
     return 0;
 }
 
-void *VertexDataArray::getArrayData() {
+VertexDataArray::VertexDataArray(const VertexDataArray &other) : RenderDataArray(other) {
+    countPerVertex = other.countPerVertex;
+    data = other.data;
+}
+
+VertexDataArray &VertexDataArray::operator=(const VertexDataArray &other) {
+    data = other.data;
+    countPerVertex = other.countPerVertex;
+    RenderDataArray::operator=(other);
+    return *this;
+}
+
+void *VertexDataArray::getArrayData() const {
     return (void*) data.data();
 }
 
-unsigned int VertexDataArray::getDataSize() {
+unsigned int VertexDataArray::getDataSize()  const{
     return data.size();
 }
 
+IndexDataArray &IndexDataArray::operator=(const IndexDataArray &other) {
+    data = other.data;
+    RenderDataArray::operator=(other);
+    return *this;
+}
 
-void *IndexDataArray::getArrayData() {
+IndexDataArray::IndexDataArray(const IndexDataArray &other) : RenderDataArray(other) {
+    data = other.data;
+}
+
+void *IndexDataArray::getArrayData() const {
     return (void*) data.data();
 }
 
-unsigned int IndexDataArray::getDataSize() {
+unsigned int IndexDataArray::getDataSize()  const {
     return data.size();
 }
 
-unsigned char VertexDataArray::getCountPerVertex() {
+unsigned char VertexDataArray::getCountPerVertex() const {
     return countPerVertex;
 }

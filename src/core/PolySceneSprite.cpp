@@ -31,7 +31,7 @@ using std::vector;
 using namespace Polycode;
 
 
-SceneSprite::SceneSprite(SpriteSet *spriteSet) : SceneMesh(Mesh::TRI_MESH) {
+SceneSprite::SceneSprite(SpriteSet *spriteSet) : SceneMesh() {
     setMaterialByName("Unlit");    
     currentSprite = NULL;
     currentSpriteState = NULL;
@@ -377,10 +377,11 @@ void SpriteState::rebuildStateMeshes() {
     largestFrameBoundingBox = Vector3();
     
     for(int i=0; i < frameIDs.size(); i++) {
-        Mesh *frameMesh = new Mesh(Mesh::TRI_MESH);
+        Mesh *frameMesh = new Mesh();
         SpriteFrame frame = spriteSet->getSpriteFrameByID(frameIDs[i]);
         
-        frameMesh->indexedMesh = true;
+        MeshGeometry geometry;
+        geometry.indexedMesh = true;
         
         Number aspectRatio = frame.coordinates.w / frame.coordinates.h;
         Number textureAspectRatio = ((Number)spriteSet->getTexture()->getWidth()) / ((Number)spriteSet->getTexture()->getHeight());
@@ -399,15 +400,15 @@ void SpriteState::rebuildStateMeshes() {
         meshOffset.x -= frameWidth * frame.anchorPoint.x;
         meshOffset.y += frameHeight * frame.anchorPoint.y;
         
-        frameMesh->addVertexWithUVAndNormal(meshOffset.x+-frameWidth*0.5, meshOffset.y+frameHeight*0.5, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y, 0.0, 0.0, 1.0);
-        frameMesh->addVertexWithUVAndNormal(meshOffset.x+-frameWidth*0.5, meshOffset.y+frameHeight*0.5-frameHeight, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y  - frame.coordinates.h, 0.0, 0.0, 1.0);
-        frameMesh->addVertexWithUVAndNormal(meshOffset.x+-frameWidth*0.5+frameWidth, meshOffset.y+frameHeight*0.5-frameHeight, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0- frame.coordinates.y  - frame.coordinates.h, 0.0, 0.0, 1.0);
-        frameMesh->addVertexWithUVAndNormal(meshOffset.x+-frameWidth*0.5+frameWidth, meshOffset.y+frameHeight*0.5, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0-frame.coordinates.y, 0.0, 0.0, 1.0);
+        geometry.addVertexWithUVAndNormal(meshOffset.x+-frameWidth*0.5, meshOffset.y+frameHeight*0.5, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y, 0.0, 0.0, 1.0);
+        geometry.addVertexWithUVAndNormal(meshOffset.x+-frameWidth*0.5, meshOffset.y+frameHeight*0.5-frameHeight, 0.0, frame.coordinates.x, 1.0-frame.coordinates.y  - frame.coordinates.h, 0.0, 0.0, 1.0);
+        geometry.addVertexWithUVAndNormal(meshOffset.x+-frameWidth*0.5+frameWidth, meshOffset.y+frameHeight*0.5-frameHeight, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0- frame.coordinates.y  - frame.coordinates.h, 0.0, 0.0, 1.0);
+        geometry.addVertexWithUVAndNormal(meshOffset.x+-frameWidth*0.5+frameWidth, meshOffset.y+frameHeight*0.5, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0-frame.coordinates.y, 0.0, 0.0, 1.0);
         
         
         for(int j=0; j < 4; j++) {
 
-            Vector3 vertex(frameMesh->vertexPositionArray.data[j], frameMesh->vertexPositionArray.data[j+1], frameMesh->vertexPositionArray.data[j+2]);
+            Vector3 vertex(geometry.vertexPositionArray.data[j], geometry.vertexPositionArray.data[j+1], geometry.vertexPositionArray.data[j+2]);
             
             Number val = fabs(vertex.x);
             if(val > largestFrameBoundingBox.x) {
@@ -423,8 +424,10 @@ void SpriteState::rebuildStateMeshes() {
             }
         }
         
-        frameMesh->addIndexedFace(0, 1, 2);
-        frameMesh->addIndexedFace(0, 2, 3);
+        geometry.addIndexedFace(0, 1, 2);
+        geometry.addIndexedFace(0, 2, 3);
+        
+        frameMesh->addSubmesh(geometry);
         
         frameMeshes.push_back(frameMesh);
     }

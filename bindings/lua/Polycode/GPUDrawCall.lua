@@ -2,13 +2,7 @@ class "GPUDrawCall"
 
 
 function GPUDrawCall:__getvar(name)
-	if name == "mesh" then
-		local retVal = Polycode.GPUDrawCall_get_mesh(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["Mesh"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
-	elseif name == "options" then
+	if name == "options" then
 		local retVal = Polycode.GPUDrawCall_get_options(self.__ptr)
 		if retVal == nil then return nil end
 		local __c = _G["GPUDrawOptions"]("__skip_ptr__")
@@ -30,10 +24,7 @@ function GPUDrawCall:__getvar(name)
 end
 
 function GPUDrawCall:__setvar(name,value)
-	if name == "mesh" then
-		Polycode.GPUDrawCall_set_mesh(self.__ptr, value.__ptr)
-		return true
-	elseif name == "options" then
+	if name == "options" then
 		Polycode.GPUDrawCall_set_options(self.__ptr, value.__ptr)
 		return true
 	elseif name == "modelMatrix" then

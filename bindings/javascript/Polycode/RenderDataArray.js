@@ -1,8 +1,7 @@
 function RenderDataArray() {
 	Object.defineProperties(this, {
 		'type': { enumerable: true, configurable: true, get: RenderDataArray.prototype.__get_type, set: RenderDataArray.prototype.__set_type},
-		'customArrayName': { enumerable: true, configurable: true, get: RenderDataArray.prototype.__get_customArrayName, set: RenderDataArray.prototype.__set_customArrayName},
-		'hasVBO': { enumerable: true, configurable: true, get: RenderDataArray.prototype.__get_hasVBO, set: RenderDataArray.prototype.__set_hasVBO}
+		'customArrayName': { enumerable: true, configurable: true, get: RenderDataArray.prototype.__get_customArrayName, set: RenderDataArray.prototype.__set_customArrayName}
 	})
 }
 RenderDataArray.prototype.__get_type = function() {
@@ -19,14 +18,6 @@ RenderDataArray.prototype.__get_customArrayName = function() {
 
 RenderDataArray.prototype.__set_customArrayName = function(val) {
 	Polycode.RenderDataArray__set_customArrayName(this.__ptr, val)
-}
-
-RenderDataArray.prototype.__get_hasVBO = function() {
-	return Polycode.RenderDataArray__get_hasVBO(this.__ptr)
-}
-
-RenderDataArray.prototype.__set_hasVBO = function(val) {
-	Polycode.RenderDataArray__set_hasVBO(this.__ptr, val)
 }
 
 Duktape.fin(RenderDataArray.prototype, function (x) {

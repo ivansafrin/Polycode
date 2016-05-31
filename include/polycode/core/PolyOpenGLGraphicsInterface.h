@@ -90,11 +90,6 @@ namespace Polycode {
         void createProgram(ShaderProgram *program);
         void destroyProgram(ShaderProgram *program);
         
-        void createVBOForVertexArray(VertexDataArray *array);
-        
-        void createMesh(Mesh *mesh);
-        void destroyMesh(Mesh *mesh);
-        
         void createShader(Shader *shader);
         void destroyShader(Shader *shader);
         
@@ -106,9 +101,9 @@ namespace Polycode {
         void destroyRenderBuffer(RenderBuffer *renderBuffer);
         void bindRenderBuffer(RenderBuffer *renderBuffer);
         
-        void createVertexBuffer(VertexDataArray *dataArray);
-        void createIndexBuffer(IndexDataArray *dataArray);
-        void destroyBuffer(RenderDataArray *array);
+        void createSubmeshBuffers(MeshGeometry *submesh);
+        void destroySubmeshBufferData(void *platformData);
+        void drawSubmeshBuffers(MeshGeometry *submesh, Shader *shader);
         
         void drawIndices(int type, IndexDataArray *indexArray);
         void drawArrays(int type, unsigned int vertexCount);
@@ -129,11 +124,15 @@ namespace Polycode {
 		
         GLuint currentShaderID;
         int textureIndex;
+        
+        static int mapNameToArrayType(const String &name);
         static GLenum getGLDrawMode(int polycodeMode);
         static int getPolycodeParamType(int glType);
         static int getAttributeSize(int glType);
         void setUniformMatrix(GLint paramLocation, const Polycode::Matrix4& matrix);
-        
+        void createVertexBuffer(VertexDataArray *array);
+        void createIndexBuffer(IndexDataArray *array);
+        void destroyBuffer(RenderDataArray *array);
 	};
 }
 

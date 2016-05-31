@@ -39,11 +39,23 @@ SceneMesh *SceneMesh::SceneMeshFromMesh(Mesh *mesh) {
 	return new SceneMesh(mesh);
 }
 
-SceneMesh *SceneMesh::SceneMeshWithType(int meshType) {
-	return new SceneMesh(meshType);
+SceneMesh::SceneMesh() : material(NULL), skeleton(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) { 
+    mesh = new Mesh();
+    setLocalBoundingBox(mesh->calculateBBox());
+    useVertexBuffer = false;
+    lineSmooth = false;
+    ownsMesh = true;
+    ownsSkeleton = true;
+    lineWidth = 1.0;
+    useGeometryHitDetection = false;
+    backfaceCulled = true;
+    alphaTest = false;
+    sendBoneMatricesToMaterial = false;
+    setMaterialByName("UnlitUntextured");
 }
 
-SceneMesh::SceneMesh(const String& fileName) : Entity(), material(NULL), skeleton(NULL), mesh(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
+
+SceneMesh::SceneMesh(const String& fileName) : material(NULL), skeleton(NULL), mesh(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
     loadFromFile(fileName);
 	useVertexBuffer = false;
 	lineSmooth = false;
@@ -57,7 +69,7 @@ SceneMesh::SceneMesh(const String& fileName) : Entity(), material(NULL), skeleto
     setMaterialByName("UnlitUntextured");
 }
 
-SceneMesh::SceneMesh(Mesh *mesh) : Entity(), material(NULL), skeleton(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
+SceneMesh::SceneMesh(Mesh *mesh) : material(NULL), skeleton(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
 	this->mesh = mesh;
 	setLocalBoundingBox(mesh->calculateBBox());
 	useVertexBuffer = false;
@@ -73,49 +85,18 @@ SceneMesh::SceneMesh(Mesh *mesh) : Entity(), material(NULL), skeleton(NULL), ske
     setMaterialByName("UnlitUntextured");
 }
 
-SceneMesh::SceneMesh(int meshType) : material(NULL), skeleton(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
-	mesh = new Mesh(meshType);
-	setLocalBoundingBox(mesh->calculateBBox());
-	useVertexBuffer = false;	
-	lineSmooth = false;
-	ownsMesh = true;
-	ownsSkeleton = true;	
-	lineWidth = 1.0;
-	useGeometryHitDetection = false;
-    backfaceCulled = true;
-	alphaTest = false;
-    sendBoneMatricesToMaterial = false;
-    setMaterialByName("UnlitUntextured");
-}
-
 void SceneMesh::setMesh(Mesh *mesh) {
-    if(this->mesh == mesh) {
-        return;
-    }
-    
 	this->mesh = mesh;
 	setLocalBoundingBox(mesh->calculateBBox());
 	useVertexBuffer = false;
-
-    rebuildAttributes();
-}
-
-void SceneMesh::rebuildAttributes() {
-    for(int i=0; i < shaderPasses.size(); i++) {
-        shaderPasses[i].setAttributeArraysFromMesh(mesh);
-        if(skeleton) {
-          //  shaderPasses[i].attributeArrays.push_back(&skeletalVertexPositions);
-          //  shaderPasses[i].attributeArrays.push_back(&skeletalVertexNormals);
-        }
-        shaderPasses[i].shaderBinding->resetAttributes = true;
-    }
 }
 
 SceneMesh::~SceneMesh() {
 	if(ownsSkeleton)
 		delete skeleton;
-	if(ownsMesh)
-		delete mesh;
+    if(ownsMesh) {
+        delete mesh;
+    }
     
     for(int i=0; i < shaderPasses.size(); i++)  {
         Services()->getRenderer()->destroyShaderBinding(shaderPasses[i].shaderBinding);
@@ -123,7 +104,7 @@ SceneMesh::~SceneMesh() {
 }
 
 Entity *SceneMesh::Clone(bool deepClone, bool ignoreEditorOnly) const {
-    SceneMesh *newEntity = new SceneMesh(mesh->getMeshType());
+    SceneMesh *newEntity = new SceneMesh();
     applyClone(newEntity, deepClone, ignoreEditorOnly);
     return newEntity;
 }
@@ -213,10 +194,9 @@ void SceneMesh::setMaterial(Material *material) {
         shaderPass.shaderBinding->targetShader = shaderPass.shader;
         shaderPass.shaderBinding->addParamPointer(ProgramParam::PARAM_COLOR, "entityColor", &color);
         shaderPass.shaderBinding->resetAttributes = true;
-        shaderPass.setAttributeArraysFromMesh(mesh);
         if(skeleton) {
-            shaderPass.attributeArrays.push_back(&skeletalVertexPositions);
-            shaderPass.attributeArrays.push_back(&skeletalVertexNormals);
+         //   shaderPass.attributeArrays.push_back(&skeletalVertexPositions);
+         //   shaderPass.attributeArrays.push_back(&skeletalVertexNormals);
         }
         shaderPasses.push_back(shaderPass);
     }    
@@ -258,7 +238,6 @@ Skeleton *SceneMesh::loadSkeleton(const String& fileName) {
 
 void SceneMesh::setSkeleton(Skeleton *skeleton) {
 	this->skeleton = skeleton;
-    rebuildAttributes();
 }
 
 void SceneMesh::setLineWidth(Number newWidth) {
@@ -283,25 +262,31 @@ bool SceneMesh::customHitDetection(const Ray &ray) {
 	transformedRay.origin = adjustedMatrix * ray.origin;
 	transformedRay.direction = adjustedMatrix.rotateVector(ray.direction);
 	
-    if(mesh->indexedMesh) {
-        for(int i=0; i < mesh->getIndexCount(); i+=3) {
-            if(i+2 < mesh->getIndexCount()) {
-                if(transformedRay.polygonIntersect(mesh->getVertexPositionAtIndex(i), mesh->getVertexPositionAtIndex(i+1), mesh->getVertexPositionAtIndex(i+2))) {
-                    return true;
+    if(mesh->getNumSubmeshes() == 0) {
+        return false;
+    }
+    
+    for(int m=0; m < mesh->getNumSubmeshes(); m++) {
+        std::shared_ptr<MeshGeometry> subMesh = mesh->getSubmeshPointer(m);
+        if(subMesh->indexedMesh) {
+            for(int i=0; i < subMesh->getIndexCount(); i+=3) {
+                if(i+2 < subMesh->getIndexCount()) {
+                    if(transformedRay.polygonIntersect(subMesh->getVertexPositionAtIndex(i), subMesh->getVertexPositionAtIndex(i+1), subMesh->getVertexPositionAtIndex(i+2))) {
+                        return true;
+                    }
                 }
             }
-        }
-        
-    } else {
-        for(int i=0; i < mesh->getVertexCount(); i+=3) {
-            if(i+2 < mesh->getVertexCount()) {
-               if(transformedRay.polygonIntersect(mesh->getVertexPosition(i), mesh->getVertexPosition(i+1), mesh->getVertexPosition(i+2))) {
-                    return true;
+            
+        } else {
+            for(int i=0; i < subMesh->getVertexCount(); i+=3) {
+                if(i+2 < subMesh->getVertexCount()) {
+                   if(transformedRay.polygonIntersect(subMesh->getVertexPosition(i), subMesh->getVertexPosition(i+1), subMesh->getVertexPosition(i+2))) {
+                        return true;
+                    }
                 }
             }
         }
     }
-
 	return false;
 }
 
@@ -317,6 +302,8 @@ void SceneMesh::applySkeletonLocally() {
     skeletalVertexPositions.data.clear();
     skeletalVertexNormals.data.clear();
     
+    // REDNERER_TODO: appply to submeshes
+    /*
     for(int i=0; i < mesh->vertexPositionArray.data.size()/3; i++) {
         
         Vector3 norm;
@@ -348,25 +335,30 @@ void SceneMesh::applySkeletonLocally() {
         skeletalVertexNormals.data.push_back(norm.y);
         skeletalVertexNormals.data.push_back(norm.z);
     }
+     */
 }
 
 void SceneMesh::Render(GPUDrawBuffer *buffer) {
-    
-    drawCall.options.alphaTest = alphaTest;
-    drawCall.options.linePointSize = lineWidth;
-    drawCall.options.backfaceCull = backfaceCulled;
-    drawCall.options.depthTest = depthTest;
-    drawCall.options.depthWrite = depthWrite;
-    
-    drawCall.mesh = mesh;
-    drawCall.material = material;
-    drawCall.shaderPasses = shaderPasses;
-    
-    if(skeleton) {
-        applySkeletonLocally();
+
+    if(!mesh) {
+        return;
     }
     
-    buffer->drawCalls.push_back(drawCall);
+    for(int i=0; i < mesh->getNumSubmeshes(); i++) {
+        drawCall.options.alphaTest = alphaTest;
+        drawCall.options.linePointSize = lineWidth;
+        drawCall.options.backfaceCull = backfaceCulled;
+        drawCall.options.depthTest = depthTest;
+        drawCall.options.depthWrite = depthWrite;
+        drawCall.submesh = mesh->getSubmeshPointer(i);        
+        drawCall.material = material;
+        drawCall.shaderPasses = shaderPasses;
+        if(skeleton) {
+            applySkeletonLocally();
+        }
+        
+        buffer->drawCalls.push_back(drawCall);
+    }
     
     // RENDERERTODO: FIX GPU SKINNING
     /*

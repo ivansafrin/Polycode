@@ -71,12 +71,9 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
 	// draw all meshes assigned to this node
 
 	for (; n < nd->mNumMeshes; ++n) {
-	
-		if(!addSubmeshes) {
-			tmesh = new Polycode::Mesh(Mesh::TRI_MESH);
-            tmesh->indexedMesh = true;
-		}
-	
+
+        MeshGeometry geometry;
+        
 		const struct aiMesh* mesh = scene->mMeshes[nd->mMeshes[n]];
         
         Vector3 bBox;
@@ -108,7 +105,7 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
 		//apply_material(sc->mMaterials[mesh->mMaterialIndex]);
         
         
-        int baseVertexCount = tmesh->getVertexCount();
+        int baseVertexCount = 0;
         
 		for (t = 0; t < mesh->mNumVertices; ++t) {
 
@@ -116,33 +113,33 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
             
             int index = t;
             if(mesh->mColors[0] != NULL) {
-                tmesh->addColor(mesh->mColors[0][index].r, mesh->mColors[0][index].g, mesh->mColors[0][index].b, mesh->mColors[0][index].a);
+                geometry.addColor(mesh->mColors[0][index].r, mesh->mColors[0][index].g, mesh->mColors[0][index].b, mesh->mColors[0][index].a);
             }
 
             if(mesh->mTangents != NULL)  {
                 if(swapZY) {
-                    tmesh->addTangent(mesh->mTangents[index].x, mesh->mTangents[index].z, -mesh->mTangents[index].y);
+                    geometry.addTangent(mesh->mTangents[index].x, mesh->mTangents[index].z, -mesh->mTangents[index].y);
                 } else {
-                    tmesh->addTangent(mesh->mTangents[index].x, mesh->mTangents[index].y, mesh->mTangents[index].z);
+                    geometry.addTangent(mesh->mTangents[index].x, mesh->mTangents[index].y, mesh->mTangents[index].z);
                 }
             }
 
             if(mesh->mNormals != NULL)  {
                 if(swapZY) {
-                    tmesh->addNormal(mesh->mNormals[index].x, mesh->mNormals[index].z, -mesh->mNormals[index].y);
+                    geometry.addNormal(mesh->mNormals[index].x, mesh->mNormals[index].z, -mesh->mNormals[index].y);
                 } else {
-                    tmesh->addNormal(mesh->mNormals[index].x, mesh->mNormals[index].y, mesh->mNormals[index].z);
+                    geometry.addNormal(mesh->mNormals[index].x, mesh->mNormals[index].y, mesh->mNormals[index].z);
                 }
             }
 
             if(mesh->HasTextureCoords(0))
             {
-                tmesh->addTexCoord(mesh->mTextureCoords[0][index].x, mesh->mTextureCoords[0][index].y);
+                geometry.addTexCoord(mesh->mTextureCoords[0][index].x, mesh->mTextureCoords[0][index].y);
             }
 
             if(mesh->HasTextureCoords(1))
             {
-                tmesh->addTexCoord2(mesh->mTextureCoords[1][index].x, mesh->mTextureCoords[1][index].y);
+                geometry.addTexCoord2(mesh->mTextureCoords[1][index].x, mesh->mTextureCoords[1][index].y);
             }
 
             int numAssignments = 0;
@@ -167,7 +164,7 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
             }
             
             
-            tmesh->addBoneAssignments(weights[0], boneIds[0], weights[1], boneIds[1], weights[2], boneIds[2], weights[3], boneIds[3]);
+            geometry.addBoneAssignments(weights[0], boneIds[0], weights[1], boneIds[1], weights[2], boneIds[2], weights[3], boneIds[3]);
 
             if(swapZY) {
 					vPosition.set(mesh->mVertices[index].x, mesh->mVertices[index].z, -mesh->mVertices[index].y);
@@ -185,7 +182,7 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
                 bBox.z = fabs(vPosition.z);
             }
             
-            tmesh->addVertex(vPosition.x, vPosition.y, vPosition.z);
+            geometry.addVertex(vPosition.x, vPosition.y, vPosition.z);
 		}
         
 
@@ -198,14 +195,17 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
 
              for(i = 0; i < face->mNumIndices; i++) {
                  int index = face->mIndices[i];
-                 tmesh->addIndex(baseVertexCount+index);
+                 geometry.addIndex(baseVertexCount+index);
              }
          }
 		
 		if(!addSubmeshes && !listOnly) {
 			String fileNameMesh = prefix+meshFileName+".mesh";
-			tmesh->saveToFile(fileNameMesh, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs);
-			delete tmesh;
+            
+            Mesh *nmesh = new Polycode::Mesh();
+            nmesh->addSubmesh(geometry);
+			nmesh->saveToFile(fileNameMesh, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs);
+			delete nmesh;
             
             ObjectEntry *meshEntry = parentSceneObject->addChild("child");
             meshEntry->addChild("id", String(nd->mName.data));
@@ -386,8 +386,7 @@ int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly, b
     ObjectEntry *children = parentEntry->addChild("children");
 
 		
-	Polycode::Mesh *mesh = new Polycode::Mesh(Mesh::TRI_MESH);
-    mesh->indexedMesh = true;
+	Polycode::Mesh *mesh = new Polycode::Mesh();
 	addToMesh(prefix, mesh, scene, scene->mRootNode, swapZY, addSubmeshes, listOnly, children, overrideMaterial, materialsParent, assetPrefixPath, baseFileName);
     
 	

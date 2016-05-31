@@ -91,14 +91,6 @@ function SceneMesh:SceneMeshFromMesh(mesh)
 	return __c
 end
 
-function SceneMesh:SceneMeshWithType(meshType)
-	local retVal = Polycode.SceneMesh_SceneMeshWithType(self.__ptr, meshType)
-	if retVal == nil then return nil end
-	local __c = _G["SceneMesh"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function SceneMesh:Render(buffer)
 	local retVal = Polycode.SceneMesh_Render(self.__ptr, buffer.__ptr)
 end
@@ -154,10 +146,6 @@ end
 
 function SceneMesh:setMaterial(material)
 	local retVal = Polycode.SceneMesh_setMaterial(self.__ptr, material.__ptr)
-end
-
-function SceneMesh:rebuildAttributes()
-	local retVal =  Polycode.SceneMesh_rebuildAttributes(self.__ptr)
 end
 
 function SceneMesh:setMaterialByName(materialName, resourcePool)

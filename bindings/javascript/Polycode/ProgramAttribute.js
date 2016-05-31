@@ -1,7 +1,8 @@
 function ProgramAttribute() {
 	Object.defineProperties(this, {
 		'size': { enumerable: true, configurable: true, get: ProgramAttribute.prototype.__get_size, set: ProgramAttribute.prototype.__set_size},
-		'name': { enumerable: true, configurable: true, get: ProgramAttribute.prototype.__get_name, set: ProgramAttribute.prototype.__set_name}
+		'name': { enumerable: true, configurable: true, get: ProgramAttribute.prototype.__get_name, set: ProgramAttribute.prototype.__set_name},
+		'arrayType': { enumerable: true, configurable: true, get: ProgramAttribute.prototype.__get_arrayType, set: ProgramAttribute.prototype.__set_arrayType}
 	})
 }
 ProgramAttribute.prototype.__get_size = function() {
@@ -18,6 +19,14 @@ ProgramAttribute.prototype.__get_name = function() {
 
 ProgramAttribute.prototype.__set_name = function(val) {
 	Polycode.ProgramAttribute__set_name(this.__ptr, val)
+}
+
+ProgramAttribute.prototype.__get_arrayType = function() {
+	return Polycode.ProgramAttribute__get_arrayType(this.__ptr)
+}
+
+ProgramAttribute.prototype.__set_arrayType = function(val) {
+	Polycode.ProgramAttribute__set_arrayType(this.__ptr, val)
 }
 
 Duktape.fin(ProgramAttribute.prototype, function (x) {

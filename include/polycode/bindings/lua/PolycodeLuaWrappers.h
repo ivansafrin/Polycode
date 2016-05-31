@@ -2735,41 +2735,6 @@ static int Polycode_TimeInfo_set_yearDay(lua_State *L) {
 		return 0;
 	}
 
-static int Polycode_CoreMutex_get_mutexID(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	CoreMutex *inst = (CoreMutex*) *((PolyBase**)lua_touserdata(L, 1));
-	lua_pushinteger(L, inst->mutexID);
-	return 1;
-}
-
-static int Polycode_CoreMutex_set_mutexID(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	CoreMutex *inst = (CoreMutex*) *((PolyBase**)lua_touserdata(L, 1));
-	int param = lua_tointeger(L, 2);
-	inst->mutexID = param;
-	return 0;
-}
-
-	static int Polycode_CoreMutex_lock(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		CoreMutex *inst = (CoreMutex*) *((PolyBase**)lua_touserdata(L, 1));
-		inst->lock();
-		return 0;
-	}
-	static int Polycode_CoreMutex_unlock(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		CoreMutex *inst = (CoreMutex*) *((PolyBase**)lua_touserdata(L, 1));
-		inst->unlock();
-		return 0;
-	}
-	static int Polycode_delete_CoreMutex(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		PolyBase **inst = (PolyBase**)lua_touserdata(L, 1);
-		delete ((CoreMutex*) *inst);
-		*inst = NULL;
-		return 0;
-	}
-
 static int Polycode_CoreMotionEvent_get_amount(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	CoreMotionEvent *inst = (CoreMotionEvent*) *((PolyBase**)lua_touserdata(L, 1));
@@ -5838,18 +5803,6 @@ static int Polycode_LightInfo_set_lightViewMatrix(lua_State *L) {
 		return 0;
 	}
 
-static int Polycode_GPUDrawCall_get_mesh(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	GPUDrawCall *inst = (GPUDrawCall*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->mesh) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->mesh;
-	}
-	return 1;
-}
-
 static int Polycode_GPUDrawCall_get_options(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	GPUDrawCall *inst = (GPUDrawCall*) *((PolyBase**)lua_touserdata(L, 1));
@@ -5876,15 +5829,6 @@ static int Polycode_GPUDrawCall_get_material(lua_State *L) {
 		*userdataPtr = (PolyBase*)inst->material;
 	}
 	return 1;
-}
-
-static int Polycode_GPUDrawCall_set_mesh(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	GPUDrawCall *inst = (GPUDrawCall*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	Mesh* *argInst = (Mesh**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->mesh = *argInst;
-	return 0;
 }
 
 static int Polycode_GPUDrawCall_set_options(lua_State *L) {
@@ -7683,26 +7627,6 @@ static int Polycode_ShaderPass_set_materialShaderBinding(lua_State *L) {
 		lua_setmetatable(L, -2);
 		return 1;
 	}
-	static int Polycode_ShaderPass_setAttributeArraysFromMesh(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		ShaderPass *inst = (ShaderPass*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Mesh* mesh = (Mesh*) *((PolyBase**)lua_touserdata(L, 2));
-		inst->setAttributeArraysFromMesh(mesh);
-		return 0;
-	}
-	static int Polycode_ShaderPass_setExpectedAttributes(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		ShaderPass *inst = (ShaderPass*) *((PolyBase**)lua_touserdata(L, 1));
-		inst->setExpectedAttributes();
-		return 0;
-	}
-	static int Polycode_ShaderPass_arrayToAttributeName(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		VertexDataArray* array = (VertexDataArray*) *((PolyBase**)lua_touserdata(L, 1));
-		lua_pushstring(L, ShaderPass::arrayToAttributeName(array).c_str());
-		return 1;
-	}
 	static int Polycode_delete_ShaderPass(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		PolyBase **inst = (PolyBase**)lua_touserdata(L, 1);
@@ -8421,25 +8345,8 @@ static int Polycode_MaterialManager_set_keepTextureData(lua_State *L) {
 		return 0;
 	}
 
-static int Polycode_Mesh_get_indexedMesh(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
-	lua_pushboolean(L, inst->indexedMesh);
-	return 1;
-}
-
-static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
-	bool param = lua_toboolean(L, 2) != 0;
-	inst->indexedMesh = param;
-	return 0;
-}
-
 	static int Polycode_Mesh(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TNUMBER);
-		int meshType = lua_tointeger(L, 1);
-		Mesh *inst = new Mesh(meshType);
+		Mesh *inst = new Mesh();
 		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
 		*userdataPtr = (PolyBase*)inst;
 		luaL_getmetatable(L, "Polycode.Mesh");
@@ -8458,18 +8365,24 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		}
 		return 1;
 	}
+	static int Polycode_Mesh_Copy(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		PolyBase *ptrRetVal = (PolyBase*)inst->Copy();
+		if(ptrRetVal == NULL) {
+			lua_pushnil(L);
+		} else {
+			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+			*userdataPtr = ptrRetVal;
+		}
+		return 1;
+	}
 	static int Polycode_Mesh_loadMesh(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TSTRING);
 		String fileName = String(lua_tostring(L, 2));
 		inst->loadMesh(fileName);
-		return 0;
-	}
-	static int Polycode_Mesh_clearMesh(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
-		inst->clearMesh();
 		return 0;
 	}
 	static int Polycode_Mesh_saveToFile(lua_State *L) {
@@ -8524,15 +8437,153 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->loadFromFile(inFile);
 		return 0;
 	}
-	static int Polycode_Mesh_getVertexCount(lua_State *L) {
+	static int Polycode_Mesh_addSubmesh(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		luaL_checktype(L, 2, LUA_TUSERDATA);
+		MeshGeometry newSubmesh = *(MeshGeometry*) *((PolyBase**)lua_touserdata(L, 2));
+		inst->addSubmesh(newSubmesh);
+		return 0;
+	}
+	static int Polycode_Mesh_removeSubmeshAtIndex(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		luaL_checktype(L, 2, LUA_TNUMBER);
+		int index = lua_tointeger(L, 2);
+		inst->removeSubmeshAtIndex(index);
+		return 0;
+	}
+	static int Polycode_Mesh_getNumSubmeshes(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		lua_pushinteger(L, inst->getNumSubmeshes());
+		return 1;
+	}
+	static int Polycode_Mesh_getSubmeshAtIndex(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		luaL_checktype(L, 2, LUA_TNUMBER);
+		int index = lua_tointeger(L, 2);
+		MeshGeometry *retInst = new MeshGeometry();
+		*retInst = inst->getSubmeshAtIndex(index);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.MeshGeometry");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
+		return 1;
+	}
+	static int Polycode_Mesh_getSubmeshPointer(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		luaL_checktype(L, 2, LUA_TNUMBER);
+		int index = lua_tointeger(L, 2);
+		shared_ptr<MeshGeometry> *retInst = new shared_ptr<MeshGeometry>();
+		*retInst = inst->getSubmeshPointer(index);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<MeshGeometry>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
+		return 1;
+	}
+	static int Polycode_Mesh_clearMesh(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		inst->clearMesh();
+		return 0;
+	}
+	static int Polycode_Mesh_calculateBBox(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		Vector3 *retInst = new Vector3();
+		*retInst = inst->calculateBBox();
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.Vector3");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
+		return 1;
+	}
+	static int Polycode_Mesh_getRadius(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		lua_pushnumber(L, inst->getRadius());
+		return 1;
+	}
+	static int Polycode_delete_Mesh(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		PolyBase **inst = (PolyBase**)lua_touserdata(L, 1);
+		delete ((Mesh*) *inst);
+		*inst = NULL;
+		return 0;
+	}
+
+static int Polycode_MeshGeometry_get_meshType(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
+	lua_pushinteger(L, inst->meshType);
+	return 1;
+}
+
+static int Polycode_MeshGeometry_get_dataChanged(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
+	lua_pushboolean(L, inst->dataChanged);
+	return 1;
+}
+
+static int Polycode_MeshGeometry_get_indexedMesh(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
+	lua_pushboolean(L, inst->indexedMesh);
+	return 1;
+}
+
+static int Polycode_MeshGeometry_set_meshType(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
+	int param = lua_tointeger(L, 2);
+	inst->meshType = param;
+	return 0;
+}
+
+static int Polycode_MeshGeometry_set_dataChanged(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
+	bool param = lua_toboolean(L, 2) != 0;
+	inst->dataChanged = param;
+	return 0;
+}
+
+static int Polycode_MeshGeometry_set_indexedMesh(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
+	bool param = lua_toboolean(L, 2) != 0;
+	inst->indexedMesh = param;
+	return 0;
+}
+
+	static int Polycode_MeshGeometry(lua_State *L) {
+		MeshGeometry *inst = new MeshGeometry();
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		*userdataPtr = (PolyBase*)inst;
+		luaL_getmetatable(L, "Polycode.MeshGeometry");
+		lua_setmetatable(L, -2);
+		return 1;
+	}
+	static int Polycode_MeshGeometry_clearMesh(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
+		inst->clearMesh();
+		return 0;
+	}
+	static int Polycode_MeshGeometry_getVertexCount(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		lua_pushinteger(L, inst->getVertexCount());
 		return 1;
 	}
-	static int Polycode_Mesh_createPlane(lua_State *L) {
+	static int Polycode_MeshGeometry_createPlane(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		Number w = lua_tonumber(L, 2);
 		luaL_checktype(L, 3, LUA_TNUMBER);
@@ -8546,9 +8597,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->createPlane(w, h, tilingValue);
 		return 0;
 	}
-	static int Polycode_Mesh_createVPlane(lua_State *L) {
+	static int Polycode_MeshGeometry_createVPlane(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		Number w = lua_tonumber(L, 2);
 		luaL_checktype(L, 3, LUA_TNUMBER);
@@ -8562,9 +8613,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->createVPlane(w, h, tilingValue);
 		return 0;
 	}
-	static int Polycode_Mesh_createCircle(lua_State *L) {
+	static int Polycode_MeshGeometry_createCircle(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		Number w = lua_tonumber(L, 2);
 		luaL_checktype(L, 3, LUA_TNUMBER);
@@ -8580,9 +8631,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->createCircle(w, h, numSegments, tilingValue);
 		return 0;
 	}
-	static int Polycode_Mesh_createLineCircle(lua_State *L) {
+	static int Polycode_MeshGeometry_createLineCircle(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		Number w = lua_tonumber(L, 2);
 		luaL_checktype(L, 3, LUA_TNUMBER);
@@ -8598,9 +8649,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->createLineCircle(w, h, numSegments, tilingValue);
 		return 0;
 	}
-	static int Polycode_Mesh_createTorus(lua_State *L) {
+	static int Polycode_MeshGeometry_createTorus(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		Number radius = lua_tonumber(L, 2);
 		luaL_checktype(L, 3, LUA_TNUMBER);
@@ -8618,9 +8669,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->createTorus(radius, tubeRadius, segmentsW, segmentsH, tilingValue);
 		return 0;
 	}
-	static int Polycode_Mesh_createBox(lua_State *L) {
+	static int Polycode_MeshGeometry_createBox(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		Number w = lua_tonumber(L, 2);
 		luaL_checktype(L, 3, LUA_TNUMBER);
@@ -8636,9 +8687,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->createBox(w, d, h, tilingValue);
 		return 0;
 	}
-	static int Polycode_Mesh_createSphere(lua_State *L) {
+	static int Polycode_MeshGeometry_createSphere(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		Number radius = lua_tonumber(L, 2);
 		luaL_checktype(L, 3, LUA_TNUMBER);
@@ -8654,9 +8705,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->createSphere(radius, numRings, numSegments, tilingValue);
 		return 0;
 	}
-	static int Polycode_Mesh_createIcosphere(lua_State *L) {
+	static int Polycode_MeshGeometry_createIcosphere(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		Number radius = lua_tonumber(L, 2);
 		luaL_checktype(L, 3, LUA_TNUMBER);
@@ -8664,9 +8715,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->createIcosphere(radius, subdivisions);
 		return 0;
 	}
-	static int Polycode_Mesh_createOctosphere(lua_State *L) {
+	static int Polycode_MeshGeometry_createOctosphere(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		Number radius = lua_tonumber(L, 2);
 		luaL_checktype(L, 3, LUA_TNUMBER);
@@ -8674,9 +8725,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->createOctosphere(radius, subdivisions);
 		return 0;
 	}
-	static int Polycode_Mesh_createCylinder(lua_State *L) {
+	static int Polycode_MeshGeometry_createCylinder(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		Number height = lua_tonumber(L, 2);
 		luaL_checktype(L, 3, LUA_TNUMBER);
@@ -8698,9 +8749,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->createCylinder(height, radius, numSegments, capped, tilingValue);
 		return 0;
 	}
-	static int Polycode_Mesh_createCone(lua_State *L) {
+	static int Polycode_MeshGeometry_createCone(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		Number height = lua_tonumber(L, 2);
 		luaL_checktype(L, 3, LUA_TNUMBER);
@@ -8716,9 +8767,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->createCone(height, radius, numSegments, tilingValue);
 		return 0;
 	}
-	static int Polycode_Mesh_recenterMesh(lua_State *L) {
+	static int Polycode_MeshGeometry_recenterMesh(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		Vector3 *retInst = new Vector3();
 		*retInst = inst->recenterMesh();
 		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
@@ -8727,9 +8778,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
-	static int Polycode_Mesh_setVertexAtOffset(lua_State *L) {
+	static int Polycode_MeshGeometry_setVertexAtOffset(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		int offset = lua_tointeger(L, 2);
 		luaL_checktype(L, 3, LUA_TNUMBER);
@@ -8741,9 +8792,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->setVertexAtOffset(offset, x, y, z);
 		return 0;
 	}
-	static int Polycode_Mesh_addVertexWithUVAndNormal(lua_State *L) {
+	static int Polycode_MeshGeometry_addVertexWithUVAndNormal(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		Number x = lua_tonumber(L, 2);
 		luaL_checktype(L, 3, LUA_TNUMBER);
@@ -8763,9 +8814,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->addVertexWithUVAndNormal(x, y, z, u, v, nx, ny, nz);
 		return 0;
 	}
-	static int Polycode_Mesh_addTexCoord(lua_State *L) {
+	static int Polycode_MeshGeometry_addTexCoord(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		Number u = lua_tonumber(L, 2);
 		luaL_checktype(L, 3, LUA_TNUMBER);
@@ -8773,9 +8824,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->addTexCoord(u, v);
 		return 0;
 	}
-	static int Polycode_Mesh_addTexCoord2(lua_State *L) {
+	static int Polycode_MeshGeometry_addTexCoord2(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		Number u = lua_tonumber(L, 2);
 		luaL_checktype(L, 3, LUA_TNUMBER);
@@ -8783,9 +8834,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->addTexCoord2(u, v);
 		return 0;
 	}
-	static int Polycode_Mesh_addTangent(lua_State *L) {
+	static int Polycode_MeshGeometry_addTangent(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		Number x = lua_tonumber(L, 2);
 		luaL_checktype(L, 3, LUA_TNUMBER);
@@ -8795,9 +8846,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->addTangent(x, y, z);
 		return 0;
 	}
-	static int Polycode_Mesh_addVertexWithUV(lua_State *L) {
+	static int Polycode_MeshGeometry_addVertexWithUV(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		Number x = lua_tonumber(L, 2);
 		luaL_checktype(L, 3, LUA_TNUMBER);
@@ -8811,9 +8862,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->addVertexWithUV(x, y, z, u, v);
 		return 0;
 	}
-	static int Polycode_Mesh_addVertex(lua_State *L) {
+	static int Polycode_MeshGeometry_addVertex(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		Number x = lua_tonumber(L, 2);
 		luaL_checktype(L, 3, LUA_TNUMBER);
@@ -8823,9 +8874,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->addVertex(x, y, z);
 		return 0;
 	}
-	static int Polycode_Mesh_addNormal(lua_State *L) {
+	static int Polycode_MeshGeometry_addNormal(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		Number nx = lua_tonumber(L, 2);
 		luaL_checktype(L, 3, LUA_TNUMBER);
@@ -8835,9 +8886,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->addNormal(nx, ny, nz);
 		return 0;
 	}
-	static int Polycode_Mesh_addBoneAssignments(lua_State *L) {
+	static int Polycode_MeshGeometry_addBoneAssignments(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		Number b1Weight = lua_tonumber(L, 2);
 		luaL_checktype(L, 3, LUA_TNUMBER);
@@ -8857,9 +8908,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->addBoneAssignments(b1Weight, b1Index, b2Weight, b2Index, b3Weight, b3Index, b4Weight, b4Index);
 		return 0;
 	}
-	static int Polycode_Mesh_addColor(lua_State *L) {
+	static int Polycode_MeshGeometry_addColor(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		Number r = lua_tonumber(L, 2);
 		luaL_checktype(L, 3, LUA_TNUMBER);
@@ -8871,9 +8922,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->addColor(r, g, b, a);
 		return 0;
 	}
-	static int Polycode_Mesh_getVertexPosition(lua_State *L) {
+	static int Polycode_MeshGeometry_getVertexPosition(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		int vertexOffset = lua_tointeger(L, 2);
 		Vector3 *retInst = new Vector3();
@@ -8884,9 +8935,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
-	static int Polycode_Mesh_getVertexPositionAtIndex(lua_State *L) {
+	static int Polycode_MeshGeometry_getVertexPositionAtIndex(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		int index = lua_tointeger(L, 2);
 		Vector3 *retInst = new Vector3();
@@ -8897,9 +8948,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
-	static int Polycode_Mesh_getVertexTexCoord(lua_State *L) {
+	static int Polycode_MeshGeometry_getVertexTexCoord(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		int vertexOffset = lua_tointeger(L, 2);
 		Vector2 *retInst = new Vector2();
@@ -8910,9 +8961,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
-	static int Polycode_Mesh_getVertexTexCoordAtIndex(lua_State *L) {
+	static int Polycode_MeshGeometry_getVertexTexCoordAtIndex(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		int index = lua_tointeger(L, 2);
 		Vector2 *retInst = new Vector2();
@@ -8923,9 +8974,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
-	static int Polycode_Mesh_Copy(lua_State *L) {
+	static int Polycode_MeshGeometry_Copy(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		PolyBase *ptrRetVal = (PolyBase*)inst->Copy();
 		if(ptrRetVal == NULL) {
 			lua_pushnil(L);
@@ -8935,47 +8986,47 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		}
 		return 1;
 	}
-	static int Polycode_Mesh_getRadius(lua_State *L) {
+	static int Polycode_MeshGeometry_getRadius(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		lua_pushnumber(L, inst->getRadius());
 		return 1;
 	}
-	static int Polycode_Mesh_calculateNormals(lua_State *L) {
+	static int Polycode_MeshGeometry_calculateNormals(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		inst->calculateNormals();
 		return 0;
 	}
-	static int Polycode_Mesh_calculateTangents(lua_State *L) {
+	static int Polycode_MeshGeometry_calculateTangents(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		inst->calculateTangents();
 		return 0;
 	}
-	static int Polycode_Mesh_getMeshType(lua_State *L) {
+	static int Polycode_MeshGeometry_getMeshType(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		lua_pushinteger(L, inst->getMeshType());
 		return 1;
 	}
-	static int Polycode_Mesh_setMeshType(lua_State *L) {
+	static int Polycode_MeshGeometry_setMeshType(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		int newType = lua_tointeger(L, 2);
 		inst->setMeshType(newType);
 		return 0;
 	}
-	static int Polycode_Mesh_getIndexGroupSize(lua_State *L) {
+	static int Polycode_MeshGeometry_getIndexGroupSize(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		lua_pushinteger(L, inst->getIndexGroupSize());
 		return 1;
 	}
-	static int Polycode_Mesh_calculateBBox(lua_State *L) {
+	static int Polycode_MeshGeometry_calculateBBox(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		Vector3 *retInst = new Vector3();
 		*retInst = inst->calculateBBox();
 		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
@@ -8984,15 +9035,9 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
-	static int Polycode_Mesh_hasVertexBuffer(lua_State *L) {
+	static int Polycode_MeshGeometry_addIndexedFace(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
-		lua_pushboolean(L, inst->hasVertexBuffer());
-		return 1;
-	}
-	static int Polycode_Mesh_addIndexedFace(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		int i1 = lua_tointeger(L, 2);
 		luaL_checktype(L, 3, LUA_TNUMBER);
@@ -9000,17 +9045,17 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->addIndexedFace(i1, i2);
 		return 0;
 	}
-	static int Polycode_Mesh_addIndex(lua_State *L) {
+	static int Polycode_MeshGeometry_addIndex(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		int index = lua_tointeger(L, 2);
 		inst->addIndex(index);
 		return 0;
 	}
-	static int Polycode_Mesh_removeVertexRange(lua_State *L) {
+	static int Polycode_MeshGeometry_removeVertexRange(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		int beginRemoveVertex = lua_tointeger(L, 2);
 		int vertexRemovalCount;
@@ -9022,29 +9067,29 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->removeVertexRange(beginRemoveVertex, vertexRemovalCount);
 		return 0;
 	}
-	static int Polycode_Mesh_removeFace(lua_State *L) {
+	static int Polycode_MeshGeometry_removeFace(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		int faceIndex = lua_tointeger(L, 2);
 		inst->removeFace(faceIndex);
 		return 0;
 	}
-	static int Polycode_Mesh_removeUnusedVertices(lua_State *L) {
+	static int Polycode_MeshGeometry_removeUnusedVertices(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		lua_pushinteger(L, inst->removeUnusedVertices());
 		return 1;
 	}
-	static int Polycode_Mesh_getIndexCount(lua_State *L) {
+	static int Polycode_MeshGeometry_getIndexCount(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		lua_pushinteger(L, inst->getIndexCount());
 		return 1;
 	}
-	static int Polycode_Mesh_subdivideToRadius(lua_State *L) {
+	static int Polycode_MeshGeometry_subdivideToRadius(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		Number radius = lua_tonumber(L, 2);
 		luaL_checktype(L, 3, LUA_TNUMBER);
@@ -9052,7 +9097,7 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		inst->subdivideToRadius(radius, subdivisions);
 		return 0;
 	}
-	static int Polycode_Mesh_calculateFaceTangent(lua_State *L) {
+	static int Polycode_MeshGeometry_calculateFaceTangent(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Vector3 v1 = *(Vector3*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
@@ -9066,31 +9111,31 @@ static int Polycode_Mesh_set_indexedMesh(lua_State *L) {
 		luaL_checktype(L, 6, LUA_TUSERDATA);
 		Vector2 texCoord3 = *(Vector2*) *((PolyBase**)lua_touserdata(L, 6));
 		Vector3 *retInst = new Vector3();
-		*retInst = Mesh::calculateFaceTangent(v1, v2, v3, texCoord1, texCoord2, texCoord3);
+		*retInst = MeshGeometry::calculateFaceTangent(v1, v2, v3, texCoord1, texCoord2, texCoord3);
 		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
 		luaL_getmetatable(L, "Polycode.Vector3");
 		lua_setmetatable(L, -2);
 		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
-	static int Polycode_Mesh_saveAsOBJ(lua_State *L) {
+	static int Polycode_MeshGeometry_saveAsOBJ(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TSTRING);
 		String fileName = String(lua_tostring(L, 2));
 		inst->saveAsOBJ(fileName);
 		return 0;
 	}
-	static int Polycode_Mesh_normalizeBoneWeights(lua_State *L) {
+	static int Polycode_MeshGeometry_normalizeBoneWeights(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh *inst = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		MeshGeometry *inst = (MeshGeometry*) *((PolyBase**)lua_touserdata(L, 1));
 		inst->normalizeBoneWeights();
 		return 0;
 	}
-	static int Polycode_delete_Mesh(lua_State *L) {
+	static int Polycode_delete_MeshGeometry(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		PolyBase **inst = (PolyBase**)lua_touserdata(L, 1);
-		delete ((Mesh*) *inst);
+		delete ((MeshGeometry*) *inst);
 		*inst = NULL;
 		return 0;
 	}
@@ -10844,13 +10889,6 @@ static int Polycode_RenderDataArray_get_customArrayName(lua_State *L) {
 	return 1;
 }
 
-static int Polycode_RenderDataArray_get_hasVBO(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	RenderDataArray *inst = (RenderDataArray*) *((PolyBase**)lua_touserdata(L, 1));
-	lua_pushboolean(L, inst->hasVBO);
-	return 1;
-}
-
 static int Polycode_RenderDataArray_set_type(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	RenderDataArray *inst = (RenderDataArray*) *((PolyBase**)lua_touserdata(L, 1));
@@ -10864,14 +10902,6 @@ static int Polycode_RenderDataArray_set_customArrayName(lua_State *L) {
 	RenderDataArray *inst = (RenderDataArray*) *((PolyBase**)lua_touserdata(L, 1));
 	String param = lua_tostring(L, 2);
 	inst->customArrayName = param;
-	return 0;
-}
-
-static int Polycode_RenderDataArray_set_hasVBO(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	RenderDataArray *inst = (RenderDataArray*) *((PolyBase**)lua_touserdata(L, 1));
-	bool param = lua_toboolean(L, 2) != 0;
-	inst->hasVBO = param;
 	return 0;
 }
 
@@ -11278,6 +11308,14 @@ static int Polycode_RendererThreadJob_set_jobType(lua_State *L) {
 		}
 		return 1;
 	}
+	static int Polycode_RenderThread_processDrawBufferLights(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		RenderThread *inst = (RenderThread*) *((PolyBase**)lua_touserdata(L, 1));
+		luaL_checktype(L, 2, LUA_TUSERDATA);
+		GPUDrawBuffer* buffer = (GPUDrawBuffer*) *((PolyBase**)lua_touserdata(L, 2));
+		inst->processDrawBufferLights(buffer);
+		return 0;
+	}
 	static int Polycode_RenderThread_processDrawBuffer(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		RenderThread *inst = (RenderThread*) *((PolyBase**)lua_touserdata(L, 1));
@@ -11554,14 +11592,6 @@ static int Polycode_RenderThreadDebugInfo_set_timeTaken(lua_State *L) {
 		}
 		return 1;
 	}
-	static int Polycode_Renderer_createVertexBuffers(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Renderer *inst = (Renderer*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Mesh* mesh = (Mesh*) *((PolyBase**)lua_touserdata(L, 2));
-		inst->createVertexBuffers(mesh);
-		return 0;
-	}
 	static int Polycode_Renderer_enqueueFrameJob(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Renderer *inst = (Renderer*) *((PolyBase**)lua_touserdata(L, 1));
@@ -11588,12 +11618,12 @@ static int Polycode_RenderThreadDebugInfo_set_timeTaken(lua_State *L) {
 		inst->destroyShader(shader);
 		return 0;
 	}
-	static int Polycode_Renderer_destroyBuffer(lua_State *L) {
+	static int Polycode_Renderer_destroySubmeshPlatformData(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Renderer *inst = (Renderer*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		RenderDataArray* array = (RenderDataArray*) *((PolyBase**)lua_touserdata(L, 2));
-		inst->destroyBuffer(array);
+		void* platformData = (void*) *((PolyBase**)lua_touserdata(L, 2));
+		inst->destroySubmeshPlatformData(platformData);
 		return 0;
 	}
 	static int Polycode_Renderer_destroyShaderBinding(lua_State *L) {
@@ -11635,28 +11665,6 @@ static int Polycode_RenderThreadDebugInfo_set_timeTaken(lua_State *L) {
 		Renderer *inst = (Renderer*) *((PolyBase**)lua_touserdata(L, 1));
 		lua_pushnumber(L, inst->getAnisotropyAmount());
 		return 1;
-	}
-	static int Polycode_Renderer_createMesh(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Renderer *inst = (Renderer*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TSTRING);
-		String fileName = String(lua_tostring(L, 2));
-		PolyBase *ptrRetVal = (PolyBase*)inst->createMesh(fileName);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_Renderer_destroyMesh(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Renderer *inst = (Renderer*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Mesh* mesh = (Mesh*) *((PolyBase**)lua_touserdata(L, 2));
-		inst->destroyMesh(mesh);
-		return 0;
 	}
 	static int Polycode_Renderer_unProject(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
@@ -14222,18 +14230,6 @@ static int Polycode_SceneMesh_set_sendBoneMatricesToMaterial(lua_State *L) {
 		}
 		return 1;
 	}
-	static int Polycode_SceneMesh_SceneMeshWithType(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TNUMBER);
-		int meshType = lua_tointeger(L, 1);
-		PolyBase *ptrRetVal = (PolyBase*)SceneMesh::SceneMeshWithType(meshType);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
 	static int Polycode_SceneMesh_Render(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		SceneMesh *inst = (SceneMesh*) *((PolyBase**)lua_touserdata(L, 1));
@@ -14327,12 +14323,6 @@ static int Polycode_SceneMesh_set_sendBoneMatricesToMaterial(lua_State *L) {
 		luaL_checktype(L, 2, LUA_TUSERDATA);
 		Material* material = (Material*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->setMaterial(material);
-		return 0;
-	}
-	static int Polycode_SceneMesh_rebuildAttributes(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		SceneMesh *inst = (SceneMesh*) *((PolyBase**)lua_touserdata(L, 1));
-		inst->rebuildAttributes();
 		return 0;
 	}
 	static int Polycode_SceneMesh_setMaterialByName(lua_State *L) {
@@ -15760,6 +15750,13 @@ static int Polycode_ProgramAttribute_get_name(lua_State *L) {
 	return 1;
 }
 
+static int Polycode_ProgramAttribute_get_arrayType(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	ProgramAttribute *inst = (ProgramAttribute*) *((PolyBase**)lua_touserdata(L, 1));
+	lua_pushinteger(L, inst->arrayType);
+	return 1;
+}
+
 static int Polycode_ProgramAttribute_set_size(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	ProgramAttribute *inst = (ProgramAttribute*) *((PolyBase**)lua_touserdata(L, 1));
@@ -15773,6 +15770,14 @@ static int Polycode_ProgramAttribute_set_name(lua_State *L) {
 	ProgramAttribute *inst = (ProgramAttribute*) *((PolyBase**)lua_touserdata(L, 1));
 	String param = lua_tostring(L, 2);
 	inst->name = param;
+	return 0;
+}
+
+static int Polycode_ProgramAttribute_set_arrayType(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	ProgramAttribute *inst = (ProgramAttribute*) *((PolyBase**)lua_touserdata(L, 1));
+	int param = lua_tointeger(L, 2);
+	inst->arrayType = param;
 	return 0;
 }
 

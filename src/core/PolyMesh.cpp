@@ -25,6 +25,7 @@ THE SOFTWARE.
 #include "polycode/core/PolyMesh.h"
 #include "polycode/core/PolyLogger.h"
 #include "polycode/core/PolyCore.h"
+#include "polycode/core/PolyRenderer.h"
 #include "polycode/core/PolyCoreFileProvider.h"
 
 using std::min;
@@ -33,7 +34,7 @@ using std::vector;
 
 using namespace Polycode;
 
-Mesh::Mesh(const String& fileName) : Resource(Resource::RESOURCE_MESH),
+MeshGeometry::MeshGeometry() :
 vertexPositionArray(3, RenderDataArray::VERTEX_DATA_ARRAY),
 vertexColorArray(4, RenderDataArray::COLOR_DATA_ARRAY),
 vertexNormalArray(3, RenderDataArray::NORMAL_DATA_ARRAY),
@@ -42,17 +43,19 @@ vertexTexCoord2Array(2, RenderDataArray::TEXCOORD2_DATA_ARRAY),
 vertexTangentArray(3, RenderDataArray::TANGENT_DATA_ARRAY),
 vertexBoneWeightArray(4, RenderDataArray::BONE_WEIGHT_DATA_ARRAY),
 vertexBoneIndexArray(4, RenderDataArray::BONE_INDEX_DATA_ARRAY),
+customVertexArray1(0, RenderDataArray::CUSTOM_DATA_ARRAY1),
+customVertexArray2(0, RenderDataArray::CUSTOM_DATA_ARRAY2),
+customVertexArray3(0, RenderDataArray::CUSTOM_DATA_ARRAY3),
+customVertexArray4(0, RenderDataArray::CUSTOM_DATA_ARRAY4),
 indexArray(RenderDataArray::INDEX_DATA_ARRAY)
 {
-
+    
+    this->meshType = MeshGeometry::TRI_MESH;
     indexedMesh = false;
-    meshType = TRI_MESH;
-    meshHasVertexBuffer = false;
-    loadMesh(fileName);
-    setResourcePath(fileName);
+    dataChanged = false;
 }
 
-Mesh::Mesh(int meshType) : Resource(Resource::RESOURCE_MESH),
+MeshGeometry::MeshGeometry(int meshType) :
 vertexPositionArray(3, RenderDataArray::VERTEX_DATA_ARRAY),
 vertexColorArray(4, RenderDataArray::COLOR_DATA_ARRAY),
 vertexNormalArray(3, RenderDataArray::NORMAL_DATA_ARRAY),
@@ -61,24 +64,62 @@ vertexTexCoord2Array(2, RenderDataArray::TEXCOORD2_DATA_ARRAY),
 vertexTangentArray(3, RenderDataArray::TANGENT_DATA_ARRAY),
 vertexBoneWeightArray(4, RenderDataArray::BONE_WEIGHT_DATA_ARRAY),
 vertexBoneIndexArray(4, RenderDataArray::BONE_INDEX_DATA_ARRAY),
+customVertexArray1(0, RenderDataArray::CUSTOM_DATA_ARRAY1),
+customVertexArray2(0, RenderDataArray::CUSTOM_DATA_ARRAY2),
+customVertexArray3(0, RenderDataArray::CUSTOM_DATA_ARRAY3),
+customVertexArray4(0, RenderDataArray::CUSTOM_DATA_ARRAY4),
 indexArray(RenderDataArray::INDEX_DATA_ARRAY)
 {
 
     this->meshType = meshType;
-    meshHasVertexBuffer = false;
     indexedMesh = false;
+    dataChanged = false;
 }
 
-Mesh *Mesh::MeshFromFileName(String& fileName) {
-    return new Mesh(fileName);
-}
-
-Mesh::~Mesh() {
-    clearMesh();
-}
-
-void Mesh::clearMesh() {
+MeshGeometry::~MeshGeometry() {
+    if(vertexPositionArray.platformData) {
+        Services()->getRenderer()->destroySubmeshPlatformData(vertexPositionArray.platformData);
+    }
+    if(vertexColorArray.platformData) {
+        Services()->getRenderer()->destroySubmeshPlatformData(vertexColorArray.platformData);
+    }
+    if(vertexNormalArray.platformData) {
+        Services()->getRenderer()->destroySubmeshPlatformData(vertexNormalArray.platformData);
+    }
+    if(vertexTexCoordArray.platformData) {
+        Services()->getRenderer()->destroySubmeshPlatformData(vertexTexCoordArray.platformData);
+    }
+    if(vertexTexCoord2Array.platformData) {
+        Services()->getRenderer()->destroySubmeshPlatformData(vertexTexCoord2Array.platformData);
+    }
+    if(vertexTangentArray.platformData) {
+        Services()->getRenderer()->destroySubmeshPlatformData(vertexTangentArray.platformData);
+    }
+    if(indexArray.platformData) {
+        Services()->getRenderer()->destroySubmeshPlatformData(indexArray.platformData);
+    }
+    if(vertexBoneWeightArray.platformData) {
+        Services()->getRenderer()->destroySubmeshPlatformData(vertexBoneWeightArray.platformData);
+    }
+    if(vertexBoneIndexArray.platformData) {
+        Services()->getRenderer()->destroySubmeshPlatformData(vertexBoneIndexArray.platformData);
+    }
+    if(customVertexArray1.platformData) {
+        Services()->getRenderer()->destroySubmeshPlatformData(customVertexArray1.platformData);
+    }
+    if(customVertexArray2.platformData) {
+        Services()->getRenderer()->destroySubmeshPlatformData(customVertexArray2.platformData);
+    }
+    if(customVertexArray3.platformData) {
+        Services()->getRenderer()->destroySubmeshPlatformData(customVertexArray3.platformData);
+    }
+    if(customVertexArray4.platformData) {
+        Services()->getRenderer()->destroySubmeshPlatformData(customVertexArray4.platformData);
+    }
     
+}
+
+void MeshGeometry::clearMesh() {
     vertexPositionArray.data.clear();
     vertexColorArray.data.clear();
     vertexNormalArray.data.clear();
@@ -88,11 +129,13 @@ void Mesh::clearMesh() {
     indexArray.data.clear();
     vertexBoneWeightArray.data.clear();
     vertexBoneIndexArray.data.clear();
-    
-    meshHasVertexBuffer = false;
+    customVertexArray1.data.clear();
+    customVertexArray2.data.clear();
+    customVertexArray3.data.clear();
+    customVertexArray4.data.clear();
 }
 
-Number Mesh::getRadius() {
+Number MeshGeometry::getRadius() {
     Number hRad = 0;
     Number len;
     for(int i=0; i < getVertexCount(); i ++) {
@@ -105,152 +148,8 @@ Number Mesh::getRadius() {
     return hRad;
 }
 
-void Mesh::writeVertexBlock(VertexDataArray *array, Polycode::CoreFile *outFile) {
-    
-    if(array->getDataSize() == 0) {
-        return;
-    }
-    
-    unsigned char blockType = array->type;
-    unsigned int blockCount = array->getDataSize();
 
-    outFile->write(&blockType, sizeof(unsigned char), 1);
-    outFile->write(&blockCount, sizeof(unsigned int), 1);
-    
-    outFile->write(array->getArrayData(), sizeof(PolyRendererVertexType), array->getDataSize());
-}
-
-void Mesh::writeIndexBlock(IndexDataArray *array, Polycode::CoreFile *outFile) {
-    
-    if(array->getDataSize() == 0) {
-        return;
-    }
-    
-    unsigned char blockType = array->type;
-    unsigned int blockCount = array->getDataSize();
-    
-    outFile->write(&blockType, sizeof(unsigned char), 1);
-    outFile->write(&blockCount, sizeof(unsigned int), 1);
-    
-    outFile->write(array->getArrayData(), sizeof(PolyRendererIndexType), array->getDataSize());
-}
-
-void Mesh::saveToFile(Polycode::CoreFile *outFile, bool writeNormals, bool writeTangents, bool writeColors, bool writeBoneWeights, bool writeUVs, bool writeSecondaryUVs) {
-
-    // new mesh format
-    // IMPORTANT: PolyRendererVertexType type defines mesh format internal type. Consider making floats always. Don't want to cast for now.
-    
-    const char headerTag[] = "MSH2";
-    outFile->write(headerTag, 1, 4);
-    
-    unsigned char meshFlags = 0;
-    
-    if(indexedMesh) {
-        meshFlags |= 1 << 0;
-    }
-    
-    outFile->write(&meshFlags, sizeof(unsigned char), 1);
-    
-    writeVertexBlock(&vertexPositionArray, outFile);
-    
-    if(indexedMesh) {
-        writeIndexBlock(&indexArray, outFile);
-    }
-    
-    if(writeColors) {
-        writeVertexBlock(&vertexColorArray, outFile);
-    }
-
-    if(writeNormals) {
-        writeVertexBlock(&vertexNormalArray, outFile);
-    }
-    
-    if(writeUVs) {
-        writeVertexBlock(&vertexTexCoordArray, outFile);
-    }
-
-    if(writeSecondaryUVs) {
-        writeVertexBlock(&vertexTexCoord2Array, outFile);
-    }
-    
-    if(writeTangents) {
-        writeVertexBlock(&vertexTangentArray, outFile);
-    }
-    
-    if(writeBoneWeights) {
-        writeVertexBlock(&vertexBoneWeightArray, outFile);
-        writeVertexBlock(&vertexBoneIndexArray, outFile);
-    }
-}
-
-void Mesh::loadFromFile(Polycode::CoreFile *inFile) {
-    clearMesh();
-    
-    char tag[4];
-    inFile->read(tag, 1, 4);
-    
-    if(tag[0] == 'M' && tag[1] == 'S' && tag[2] == 'H' && tag[3] == '2') {
-        loadFromFileV2(inFile);
-    } else {
-        inFile->seek(0, SEEK_SET);
-        loadFromFileLegacyV1(inFile);
-    }
-}
-
-void Mesh::loadFromFileV2(Polycode::CoreFile *inFile) {
-    
-    unsigned char meshFlags;
-    inFile->read(&meshFlags, sizeof(unsigned char), 1);
-    
-    indexedMesh = meshFlags & (1 << 0);
-    
-    char blockType;
-    unsigned int blockSize;
-    while(inFile->read(&blockType, sizeof(unsigned char), 1)) {
-        inFile->read(&blockSize, sizeof(unsigned int), 1);
-        
-        switch(blockType) {
-            case RenderDataArray::VERTEX_DATA_ARRAY:
-                vertexPositionArray.data.resize(blockSize);
-                inFile->read(&vertexPositionArray.data[0], sizeof(PolyRendererVertexType), blockSize);
-            break;
-            case RenderDataArray::TEXCOORD_DATA_ARRAY:
-                vertexTexCoordArray.data.resize(blockSize);
-                inFile->read(&vertexTexCoordArray.data[0], sizeof(PolyRendererVertexType), blockSize);
-            break;
-            case RenderDataArray::NORMAL_DATA_ARRAY:
-                vertexNormalArray.data.resize(blockSize);
-                inFile->read(&vertexNormalArray.data[0], sizeof(PolyRendererVertexType), blockSize);
-            break;
-            case RenderDataArray::COLOR_DATA_ARRAY:
-                vertexColorArray.data.resize(blockSize);
-                inFile->read(&vertexColorArray.data[0], sizeof(PolyRendererVertexType), blockSize);
-            break;
-            case RenderDataArray::TANGENT_DATA_ARRAY:
-                vertexTangentArray.data.resize(blockSize);
-                inFile->read(&vertexTangentArray.data[0], sizeof(PolyRendererVertexType), blockSize);
-            break;
-            case RenderDataArray::BONE_WEIGHT_DATA_ARRAY:
-                vertexBoneWeightArray.data.resize(blockSize);
-                inFile->read(&vertexBoneWeightArray.data[0], sizeof(PolyRendererVertexType), blockSize);
-            break;
-            case RenderDataArray::INDEX_DATA_ARRAY:
-                indexArray.data.resize(blockSize);
-                inFile->read(&indexArray.data[0], sizeof(PolyRendererIndexType), blockSize);
-            break;
-            case RenderDataArray::BONE_INDEX_DATA_ARRAY:
-                vertexBoneIndexArray.data.resize(blockSize);
-                inFile->read(&vertexBoneIndexArray.data[0], sizeof(PolyRendererVertexType), blockSize);
-            break;
-        }
-    }
-    
-    if(vertexBoneIndexArray.getDataSize() > 0) {
-        normalizeBoneWeights();
-    }
-}
-
-void Mesh::normalizeBoneWeights() {
+void MeshGeometry::normalizeBoneWeights() {
     
     for(int i=0; i < vertexBoneWeightArray.getDataSize()-3; i += 4) {
         Number totalWeight = vertexBoneWeightArray.data[i] + vertexBoneWeightArray.data[i+1] + vertexBoneWeightArray.data[i+2] + vertexBoneWeightArray.data[i+3];
@@ -264,180 +163,63 @@ void Mesh::normalizeBoneWeights() {
     }
 }
 
-void Mesh::loadFromFileLegacyV1(Polycode::CoreFile *inFile) {
-    
-    unsigned char meshFlags;
-    inFile->read(&meshFlags, sizeof(unsigned char), 1);
-    
-    indexedMesh = meshFlags & (1 << 0);
-    bool hasNormals = meshFlags & (1 << 1);
-    bool hasTangents = meshFlags & (1 << 2);
-    bool hasColors = meshFlags & (1 << 3);
-    bool hasUV = meshFlags & (1 << 4);
-    bool hasSecondaryUVs = meshFlags & (1 << 5);
-    bool hasBoneWeights = meshFlags & (1 << 6);
-    
-    unsigned int meshType;		
-    inFile->read(&meshType, sizeof(unsigned int), 1);
-    setMeshType(meshType);
-    
-    unsigned int numVertices;
-    inFile->read(&numVertices, sizeof(unsigned int), 1);
-    
-    Vector3_struct pos;
-    Vector3_struct nor;
-    Vector3_struct tan;
-    Vector4_struct col;			
-    Vector2_struct tex;
-    
-    for(int i=0; i < numVertices; i++) {
-        inFile->read(&pos, sizeof(Vector3_struct), 1);
-
-        vertexPositionArray.data.push_back(pos.x);
-        vertexPositionArray.data.push_back(pos.y);
-        vertexPositionArray.data.push_back(pos.z);
-        
-        if(hasNormals) {
-            inFile->read(&nor, sizeof(Vector3_struct), 1);
-
-            vertexNormalArray.data.push_back(nor.x);
-            vertexNormalArray.data.push_back(nor.y);
-            vertexNormalArray.data.push_back(nor.z);
-            
-            
-        }
-        if(hasTangents) {
-            inFile->read(&tan, sizeof(Vector3_struct), 1);
-            
-            vertexTangentArray.data.push_back(tan.x);
-            vertexTangentArray.data.push_back(tan.y);
-            vertexTangentArray.data.push_back(tan.z);
-            
-        }
-        
-        if(hasColors) {
-            inFile->read(&col, sizeof(Vector4_struct), 1);
-            
-            vertexColorArray.data.push_back(col.x);
-            vertexColorArray.data.push_back(col.y);
-            vertexColorArray.data.push_back(col.z);
-            vertexColorArray.data.push_back(col.w);
-        }
-        
-        if(hasUV) {
-            inFile->read(&tex, sizeof(Vector2_struct), 1);
-            vertexTexCoordArray.data.push_back(tex.x);
-            vertexTexCoordArray.data.push_back(tex.y);
-        }
-        
-        if(hasSecondaryUVs) {
-            inFile->read(&tex, sizeof(Vector2_struct), 1);
-            vertexTexCoord2Array.data.push_back(tex.x);
-            vertexTexCoord2Array.data.push_back(tex.x);
-        }
-        
-        if(hasBoneWeights) {
-            unsigned int numBoneWeights;
-            inFile->read(&numBoneWeights, sizeof(unsigned int), 1);
-            
-            Number totalWeight = 0;
-            int numPushed = 0;
-            
-            for(int b=0; b < numBoneWeights; b++) {
-                float weight;
-                unsigned int boneID;
-                inFile->read(&boneID, sizeof(unsigned int), 1);
-                inFile->read(&weight, sizeof(float), 1);
-                
-                if(b < 4) {
-                    vertexBoneWeightArray.data.push_back(weight);
-                    vertexBoneIndexArray.data.push_back(boneID);
-                    numPushed++;
-                }
-                totalWeight += weight;
-            }
-            
-            if(numPushed < 4) {
-                for(int b=numPushed; b < 4; b++) {
-                    vertexBoneWeightArray.data.push_back(0.0);
-                    vertexBoneIndexArray.data.push_back(0.0);
-                }
-            }
-            
-            for(int m=0; m < 4; m++) {
-                vertexBoneWeightArray.data[vertexBoneWeightArray.data.size()-1-m] = vertexBoneWeightArray.data[vertexBoneWeightArray.data.size()-1-m] / totalWeight;
-            }				
-        }
-    }
-    
-    if(indexedMesh) {
-        unsigned int numIndices;
-        inFile->read(&numIndices, sizeof(unsigned int), 1);
-        unsigned int val;
-        for(int i=0; i < numIndices; i++) {
-            inFile->read(&val, sizeof(unsigned int), 1);
-            indexArray.data.push_back(val);
-        }
-    }
-}
-
-Vector2 Mesh::getVertexTexCoord(unsigned int vertexOffset) {
+Vector2 MeshGeometry::getVertexTexCoord(unsigned int vertexOffset) {
     return Vector2(vertexTexCoordArray.data[(vertexOffset*2)], vertexTexCoordArray.data[(vertexOffset*2)+1]);
 }
 
-Vector2 Mesh::getVertexTexCoordAtIndex(unsigned int index) {
+Vector2 MeshGeometry::getVertexTexCoordAtIndex(unsigned int index) {
     unsigned int vertexOffset = indexArray.data[index]*2;
     return Vector2(vertexTexCoordArray.data[vertexOffset], vertexTexCoordArray.data[vertexOffset+1]);
 }
 
 
-Vector3 Mesh::getVertexPosition(unsigned int vertexOffset) {
+Vector3 MeshGeometry::getVertexPosition(unsigned int vertexOffset) {
     return Vector3(vertexPositionArray.data[(vertexOffset*3)], vertexPositionArray.data[(vertexOffset*3)+1], vertexPositionArray.data[(vertexOffset*3)+2]);
 }
 
-Vector3 Mesh::getVertexPositionAtIndex(unsigned int index) {
+Vector3 MeshGeometry::getVertexPositionAtIndex(unsigned int index) {
     unsigned int vertexOffset = indexArray.data[index]*3;
     return Vector3(vertexPositionArray.data[vertexOffset], vertexPositionArray.data[vertexOffset+1], vertexPositionArray.data[vertexOffset+2]);
 }
 
 
-void Mesh::addColor(const Color &color) {
+void MeshGeometry::addColor(const Color &color) {
     vertexColorArray.data.push_back(color.r);
     vertexColorArray.data.push_back(color.g);
     vertexColorArray.data.push_back(color.b);
     vertexColorArray.data.push_back(color.a);
 }
 
-void Mesh::addColor(Number r, Number g, Number b, Number a) {
+void MeshGeometry::addColor(Number r, Number g, Number b, Number a) {
     vertexColorArray.data.push_back(r);
     vertexColorArray.data.push_back(g);
     vertexColorArray.data.push_back(b);
     vertexColorArray.data.push_back(a);
 }
 
-void Mesh::addVertex(Number x, Number y, Number z) {
+void MeshGeometry::addVertex(Number x, Number y, Number z) {
     vertexPositionArray.data.push_back(x);
     vertexPositionArray.data.push_back(y);
     vertexPositionArray.data.push_back(z);
 }
 
-void Mesh::addTangent(Number x, Number y, Number z) {
+void MeshGeometry::addTangent(Number x, Number y, Number z) {
     vertexTangentArray.data.push_back(x);
     vertexTangentArray.data.push_back(y);
     vertexTangentArray.data.push_back(z);
 }
 
-void Mesh::addTexCoord(Number u, Number v) {
+void MeshGeometry::addTexCoord(Number u, Number v) {
     vertexTexCoordArray.data.push_back(u);
     vertexTexCoordArray.data.push_back(v);
 }
 
-void Mesh::addTexCoord2(Number u, Number v) {
+void MeshGeometry::addTexCoord2(Number u, Number v) {
     vertexTexCoord2Array.data.push_back(u);
     vertexTexCoord2Array.data.push_back(v);
 }
 
-void Mesh::addBoneAssignments(Number b1Weight, unsigned int b1Index, Number b2Weight, unsigned int b2Index, Number b3Weight, unsigned int b3Index, Number b4Weight, unsigned int b4Index) {
+void MeshGeometry::addBoneAssignments(Number b1Weight, unsigned int b1Index, Number b2Weight, unsigned int b2Index, Number b3Weight, unsigned int b3Index, Number b4Weight, unsigned int b4Index) {
  
     vertexBoneWeightArray.data.push_back(b1Weight);
     vertexBoneWeightArray.data.push_back(b2Weight);
@@ -450,7 +232,7 @@ void Mesh::addBoneAssignments(Number b1Weight, unsigned int b1Index, Number b2We
     vertexBoneIndexArray.data.push_back(b4Index);
 }
 
-void Mesh::setVertexAtOffset(unsigned int offset, Number x, Number y, Number z) {
+void MeshGeometry::setVertexAtOffset(unsigned int offset, Number x, Number y, Number z) {
     if((offset*3)+2 < vertexPositionArray.data.size()) {
         vertexPositionArray.data[(offset*3)] = x;
         vertexPositionArray.data[(offset*3)+1] = y;
@@ -458,51 +240,31 @@ void Mesh::setVertexAtOffset(unsigned int offset, Number x, Number y, Number z) 
     }
 }
 
-void Mesh::addVertexWithUV(Number x, Number y, Number z, Number u, Number v) {
+void MeshGeometry::addVertexWithUV(Number x, Number y, Number z, Number u, Number v) {
     addVertex(x,y,z);
     addTexCoord(u,v);
 }
 
-void Mesh::addVertexWithUVAndNormal(Number x, Number y, Number z, Number u, Number v, Number nx, Number ny, Number nz) {
+void MeshGeometry::addVertexWithUVAndNormal(Number x, Number y, Number z, Number u, Number v, Number nx, Number ny, Number nz) {
     addVertexWithUV(x,y,z, u, v);
     addNormal(nx, ny, nz);
 }
 
-void Mesh::addNormal(Number nx, Number ny, Number nz) {
+void MeshGeometry::addNormal(Number nx, Number ny, Number nz) {
     vertexNormalArray.data.push_back(nx);
     vertexNormalArray.data.push_back(ny);
     vertexNormalArray.data.push_back(nz);
 }
 
-void Mesh::addNormal(const Vector3 &n) {
+void MeshGeometry::addNormal(const Vector3 &n) {
     vertexNormalArray.data.push_back(n.x);
     vertexNormalArray.data.push_back(n.y);
     vertexNormalArray.data.push_back(n.z);
 }
 
-void Mesh::saveToFile(const String& fileName, bool writeNormals, bool writeTangents, bool writeColors, bool writeBoneWeights, bool writeUVs, bool writeSecondaryUVs) {
-    CoreFile *outFile = Services()->getCore()->openFile(fileName, "wb");
-    if(!outFile) {
-        Logger::log("Error opening mesh file for saving: %s\n", fileName.c_str());
-        return;
-    }
-    saveToFile(outFile, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs);
-    Services()->getCore()->closeFile(outFile);
 
-}
-
-void Mesh::loadMesh(const String& fileName) {
-    CoreFile *inFile = Services()->getCore()->openFile(fileName, "rb");
-    if(!inFile) {
-        Logger::log("Error opening mesh file %s\n", fileName.c_str());
-        return;
-    }
-    loadFromFile(inFile);
-    Services()->getCore()->closeFile(inFile);
-}
-
-void Mesh::createCircle(Number w, Number h, unsigned int numSegments, Number tilingValue) {
-    setMeshType(Mesh::TRI_MESH);
+void MeshGeometry::createCircle(Number w, Number h, unsigned int numSegments, Number tilingValue) {
+    setMeshType(MeshGeometry::TRI_MESH);
     indexedMesh = false;
 
     Number lastx = 0;
@@ -526,15 +288,67 @@ void Mesh::createCircle(Number w, Number h, unsigned int numSegments, Number til
     }
 }
 
-Mesh *Mesh::Copy() const {
-    Mesh *newMesh = new Mesh(meshType);
+MeshGeometry::MeshGeometry(const MeshGeometry &geom) :
+vertexPositionArray(3, RenderDataArray::VERTEX_DATA_ARRAY),
+vertexColorArray(4, RenderDataArray::COLOR_DATA_ARRAY),
+vertexNormalArray(3, RenderDataArray::NORMAL_DATA_ARRAY),
+vertexTexCoordArray(2, RenderDataArray::TEXCOORD_DATA_ARRAY),
+vertexTexCoord2Array(2, RenderDataArray::TEXCOORD2_DATA_ARRAY),
+vertexTangentArray(3, RenderDataArray::TANGENT_DATA_ARRAY),
+vertexBoneWeightArray(4, RenderDataArray::BONE_WEIGHT_DATA_ARRAY),
+vertexBoneIndexArray(4, RenderDataArray::BONE_INDEX_DATA_ARRAY),
+customVertexArray1(0, RenderDataArray::CUSTOM_DATA_ARRAY1),
+customVertexArray2(0, RenderDataArray::CUSTOM_DATA_ARRAY2),
+customVertexArray3(0, RenderDataArray::CUSTOM_DATA_ARRAY3),
+customVertexArray4(0, RenderDataArray::CUSTOM_DATA_ARRAY4),
+indexArray(RenderDataArray::INDEX_DATA_ARRAY) {
+    vertexPositionArray = geom.vertexPositionArray;
+    vertexColorArray = geom.vertexColorArray;
+    vertexNormalArray = geom.vertexNormalArray;
+    vertexTexCoordArray = geom.vertexTexCoordArray;
+    vertexTexCoord2Array = geom.vertexTexCoord2Array;
+    vertexTangentArray = geom.vertexTangentArray;
+    vertexBoneWeightArray = geom.vertexBoneWeightArray;
+    vertexBoneIndexArray = geom.vertexBoneIndexArray;
+    customVertexArray1 = geom.customVertexArray1;
+    customVertexArray2 = geom.customVertexArray2;
+    customVertexArray3 = geom.customVertexArray3;
+    customVertexArray4 = geom.customVertexArray4;
+    indexArray = geom.indexArray;
+    indexedMesh = geom.indexedMesh;
+    meshType = geom.meshType;
+    dataChanged = true;
+}
+
+MeshGeometry &MeshGeometry::operator=(const MeshGeometry &geom) {
+    vertexPositionArray = geom.vertexPositionArray;
+    vertexColorArray = geom.vertexColorArray;
+    vertexNormalArray = geom.vertexNormalArray;
+    vertexTexCoordArray = geom.vertexTexCoordArray;
+    vertexTexCoord2Array = geom.vertexTexCoord2Array;
+    vertexTangentArray = geom.vertexTangentArray;
+    vertexBoneWeightArray = geom.vertexBoneWeightArray;
+    vertexBoneIndexArray = geom.vertexBoneIndexArray;
+    customVertexArray1 = geom.customVertexArray1;
+    customVertexArray2 = geom.customVertexArray2;
+    customVertexArray3 = geom.customVertexArray3;
+    customVertexArray4 = geom.customVertexArray4;
+    indexArray = geom.indexArray;
+    indexedMesh = geom.indexedMesh;
+    meshType = geom.meshType;
+    dataChanged = true;
+    return *this;
+}
+
+MeshGeometry *MeshGeometry::Copy() const {
+    MeshGeometry *newMesh = new MeshGeometry(meshType);
     newMesh->indexedMesh = indexedMesh;
     (*newMesh) = (*this);
     return newMesh;
 }
 
-void Mesh::createLineCircle(Number w, Number h, unsigned int numSegments, Number tilingValue) {
-    setMeshType(Mesh::TRIFAN_MESH);
+void MeshGeometry::createLineCircle(Number w, Number h, unsigned int numSegments, Number tilingValue) {
+    setMeshType(MeshGeometry::TRIFAN_MESH);
     indexedMesh = false;
     
     int step;
@@ -561,8 +375,8 @@ void Mesh::createLineCircle(Number w, Number h, unsigned int numSegments, Number
     }
 }
 
-void Mesh::createVPlane(Number w, Number h, Number tilingValue) {
-    setMeshType(Mesh::TRI_MESH);
+void MeshGeometry::createVPlane(Number w, Number h, Number tilingValue) {
+    setMeshType(MeshGeometry::TRI_MESH);
     indexedMesh = false;
     
     addVertexWithUVAndNormal(0 - (w/2.0f),0 - (h/2.0f), 0,0,0, 0.0, 0.0, 1.0);
@@ -577,8 +391,8 @@ void Mesh::createVPlane(Number w, Number h, Number tilingValue) {
     calculateTangents();
 }	
 
-void Mesh::createPlane(Number w, Number h, Number tilingValue) {
-    setMeshType(Mesh::TRI_MESH);
+void MeshGeometry::createPlane(Number w, Number h, Number tilingValue) {
+    setMeshType(MeshGeometry::TRI_MESH);
     indexedMesh = false;
     
 	addVertexWithUV(0 - (w / 2.0f), 0, h - (h / 2.0f), 0, 0);
@@ -593,7 +407,7 @@ void Mesh::createPlane(Number w, Number h, Number tilingValue) {
     calculateTangents();
 }
 
-Vector3 Mesh::recenterMesh() {
+Vector3 MeshGeometry::recenterMesh() {
     
     // TODO: implement
     
@@ -630,7 +444,7 @@ Vector3 Mesh::recenterMesh() {
     return finalOffset;		
 }	
 
-Vector3 Mesh::calculateBBox() {
+Vector3 MeshGeometry::calculateBBox() {
     Vector3 retVec;
     
     if(vertexPositionArray.data.size() == 0) {
@@ -656,12 +470,12 @@ Vector3 Mesh::calculateBBox() {
     return retVec*2;
 }
 
-void Mesh::createSphere(Number radius, int segmentsH, int segmentsW, Number tilingValue) {
+void MeshGeometry::createSphere(Number radius, int segmentsH, int segmentsW, Number tilingValue) {
 
     segmentsH++;
     segmentsW++;
     
-    setMeshType(Mesh::TRI_MESH);
+    setMeshType(MeshGeometry::TRI_MESH);
     indexedMesh = true;
 
     Number tdelta = 360.f/(segmentsW-1);
@@ -696,7 +510,7 @@ void Mesh::createSphere(Number radius, int segmentsH, int segmentsW, Number tili
     calculateTangents();
 }
 
-void Mesh::subdivideToRadius(Number radius, int subdivisions)
+void MeshGeometry::subdivideToRadius(Number radius, int subdivisions)
 {
 	typedef std::map<std::pair<int,int>, int> EdgeSet;
 	for (int s = 0; s < subdivisions; s++) {
@@ -773,9 +587,9 @@ void Mesh::subdivideToRadius(Number radius, int subdivisions)
 	}
 }
 
-void Mesh::createOctosphere(Number radius, int subdivisions) {
+void MeshGeometry::createOctosphere(Number radius, int subdivisions) {
 
-    setMeshType(Mesh::TRI_MESH);
+    setMeshType(MeshGeometry::TRI_MESH);
     
 	indexedMesh = true;
 
@@ -811,9 +625,9 @@ void Mesh::createOctosphere(Number radius, int subdivisions) {
 	calculateTangents();
 }
 
-void Mesh::createIcosphere(Number radius, int subdivisions) {
+void MeshGeometry::createIcosphere(Number radius, int subdivisions) {
 
-    setMeshType(Mesh::TRI_MESH);
+    setMeshType(MeshGeometry::TRI_MESH);
     
 	const float a = 0.5257311121191336;
 	const float b = 0.85065080835204;
@@ -870,21 +684,21 @@ void Mesh::createIcosphere(Number radius, int subdivisions) {
 	calculateTangents();
 }
 
-unsigned int Mesh::getVertexCount() {
+unsigned int MeshGeometry::getVertexCount() {
     return vertexPositionArray.data.size()/3;
 }
 
-unsigned int Mesh::getIndexCount() {
+unsigned int MeshGeometry::getIndexCount() {
     return indexArray.data.size();
 }
 
 
-void Mesh::createTorus(Number radius, Number tubeRadius, int segmentsW, int segmentsH, Number tilingValue) {
+void MeshGeometry::createTorus(Number radius, Number tubeRadius, int segmentsW, int segmentsH, Number tilingValue) {
 
     segmentsH++;
     segmentsW++;
     
-    setMeshType(Mesh::TRI_MESH);
+    setMeshType(MeshGeometry::TRI_MESH);
     indexedMesh = true;
     
     Number tdelta = 360.f/(segmentsW-1);
@@ -920,9 +734,9 @@ void Mesh::createTorus(Number radius, Number tubeRadius, int segmentsW, int segm
     calculateTangents();
 }
 
-void Mesh::createCylinder(Number height, Number radius, int numSegments, bool capped, Number tilingValue) {
+void MeshGeometry::createCylinder(Number height, Number radius, int numSegments, bool capped, Number tilingValue) {
 
-    setMeshType(Mesh::TRI_MESH);
+    setMeshType(MeshGeometry::TRI_MESH);
     indexedMesh = true;
     
     Number lastx = 0;
@@ -979,9 +793,9 @@ void Mesh::createCylinder(Number height, Number radius, int numSegments, bool ca
     calculateTangents();
 }
 
-void Mesh::createCone(Number height, Number radius, int numSegments, Number tilingValue) {
+void MeshGeometry::createCone(Number height, Number radius, int numSegments, Number tilingValue) {
     
-    setMeshType(Mesh::TRI_MESH);
+    setMeshType(MeshGeometry::TRI_MESH);
     indexedMesh = true;
     
     Number lastx = 0;
@@ -1025,29 +839,29 @@ void Mesh::createCone(Number height, Number radius, int numSegments, Number tili
     calculateTangents();
 }
 
-void Mesh::addIndex(unsigned int index) {
+void MeshGeometry::addIndex(unsigned int index) {
     indexArray.data.push_back(index);
 }
 
-void Mesh::addIndexedFace(unsigned int i1, unsigned int i2, unsigned int i3) {
+void MeshGeometry::addIndexedFace(unsigned int i1, unsigned int i2, unsigned int i3) {
     indexArray.data.push_back(i1);
     indexArray.data.push_back(i2);
     indexArray.data.push_back(i3);
 }
 
-void Mesh::addIndexedFace(unsigned int i1, unsigned int i2) {
+void MeshGeometry::addIndexedFace(unsigned int i1, unsigned int i2) {
     indexArray.data.push_back(i1);
     indexArray.data.push_back(i2);
 }
 
-void Mesh::addIndexedFace(unsigned int i1, unsigned int i2, unsigned int i3, unsigned int i4) {
+void MeshGeometry::addIndexedFace(unsigned int i1, unsigned int i2, unsigned int i3, unsigned int i4) {
     indexArray.data.push_back(i1);
     indexArray.data.push_back(i2);
     indexArray.data.push_back(i3);
     indexArray.data.push_back(i4);
 }
 
-void Mesh::removeFace(unsigned int faceIndex) {
+void MeshGeometry::removeFace(unsigned int faceIndex) {
 	unsigned int groupSize = getIndexGroupSize();
 	unsigned int startOffset = faceIndex * groupSize;
 	if (indexedMesh) {
@@ -1059,7 +873,7 @@ void Mesh::removeFace(unsigned int faceIndex) {
 	}
 }
 
-void Mesh::removeVertexRange(unsigned int beginRemoveVertex, int vertexRemovalCount) {
+void MeshGeometry::removeVertexRange(unsigned int beginRemoveVertex, int vertexRemovalCount) {
     // TODO: fix
     /*
 	if (!vertices.size()) return;
@@ -1087,7 +901,7 @@ void Mesh::removeVertexRange(unsigned int beginRemoveVertex, int vertexRemovalCo
      */
 }
 
-int Mesh::removeUnusedVertices() {
+int MeshGeometry::removeUnusedVertices() {
 	int removals = 0;
         // TODO: fix
     /*
@@ -1117,8 +931,8 @@ int Mesh::removeUnusedVertices() {
 	return removals;
 }
 
-void Mesh::createBox(Number w, Number d, Number h, Number tilingValue) {
-    setMeshType(Mesh::TRI_MESH);
+void MeshGeometry::createBox(Number w, Number d, Number h, Number tilingValue) {
+    setMeshType(MeshGeometry::TRI_MESH);
     indexedMesh = false;
     
     addVertexWithUV(w,0,h, tilingValue, tilingValue);
@@ -1179,7 +993,7 @@ void Mesh::createBox(Number w, Number d, Number h, Number tilingValue) {
     calculateTangents();
 }
 
-Vector3 Mesh::calculateFaceTangent(const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector2 &texCoord1, const Vector2 &texCoord2, const Vector2 &texCoord3) {
+Vector3 MeshGeometry::calculateFaceTangent(const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector2 &texCoord1, const Vector2 &texCoord2, const Vector2 &texCoord3) {
     Vector3 tangent;
     Vector3 side0 = v1 - v2;
     Vector3 side1 = v3 - v1;
@@ -1205,7 +1019,7 @@ Vector3 Mesh::calculateFaceTangent(const Vector3 &v1, const Vector3 &v2, const V
 }
 
 
-void Mesh::calculateTangents() {
+void MeshGeometry::calculateTangents() {
 
     vertexTangentArray.data.clear();
     
@@ -1250,7 +1064,7 @@ void Mesh::calculateTangents() {
 
 }
 
-void Mesh::calculateNormals() {
+void MeshGeometry::calculateNormals() {
 
     int polySize = 3;
     
@@ -1297,7 +1111,7 @@ void Mesh::calculateNormals() {
     }
 }
 
-void Mesh::saveAsOBJ(const String fileName) {
+void MeshGeometry::saveAsOBJ(const String fileName) {
 	FILE *f = fopen(fileName.c_str(), "w");
     
 	if (!f) {
@@ -1337,10 +1151,391 @@ void Mesh::saveAsOBJ(const String fileName) {
 	fclose(f);
 }
 
-int Mesh::getMeshType() {
+
+int MeshGeometry::getMeshType() {
     return meshType;
 }
 
-void Mesh::setMeshType(int newType) {
+void MeshGeometry::setMeshType(int newType) {
     meshType = newType;
+}
+
+Mesh::Mesh() : Resource(Resource::RESOURCE_MESH) {
+}
+
+Mesh::Mesh(const String& fileName) : Resource(Resource::RESOURCE_MESH) {
+    loadMesh(fileName);
+    setResourcePath(fileName);
+}
+
+Mesh::~Mesh() {
+    clearMesh();
+}
+
+Mesh *Mesh::MeshFromFileName(String& fileName) {
+    return new Mesh(fileName);
+}
+
+unsigned int Mesh::getNumSubmeshes() const {
+    return submeshes.size();
+}
+
+void Mesh::writeVertexBlock(const VertexDataArray &array, Polycode::CoreFile *outFile) const  {
+    
+    if(array.getDataSize() == 0) {
+        return;
+    }
+    
+    unsigned char blockType = array.type;
+    unsigned int blockCount = array.getDataSize();
+    
+    outFile->write(&blockType, sizeof(unsigned char), 1);
+    outFile->write(&blockCount, sizeof(unsigned int), 1);
+    
+    outFile->write(array.getArrayData(), sizeof(PolyRendererVertexType), array.getDataSize());
+}
+
+void Mesh::writeIndexBlock(const IndexDataArray &array, Polycode::CoreFile *outFile) const  {
+    
+    if(array.getDataSize() == 0) {
+        return;
+    }
+    
+    unsigned char blockType = array.type;
+    unsigned int blockCount = array.getDataSize();
+    
+    outFile->write(&blockType, sizeof(unsigned char), 1);
+    outFile->write(&blockCount, sizeof(unsigned int), 1);
+    
+    outFile->write(array.getArrayData(), sizeof(PolyRendererIndexType), array.getDataSize());
+}
+
+Vector3 Mesh::calculateBBox() {
+    Vector3 retBox;
+    for(int i = 0; i < submeshes.size(); i++) {
+        Vector3 bBox = submeshes[i]->calculateBBox();
+        if(bBox.length() > retBox.length()) {
+            retBox = bBox;
+        }
+    }
+    return retBox;
+}
+
+Mesh *Mesh::Copy() const {
+    Mesh *newMesh = new Mesh();
+    for(int i=0; i  < submeshes.size(); i++) {
+        newMesh->addSubmesh(*submeshes[i]);
+    }
+    newMesh->setResourceName(getResourceName());
+    newMesh->setResourcePath(getResourcePath());
+    return newMesh;
+}
+
+void Mesh::saveToFile(Polycode::CoreFile *outFile, bool writeNormals, bool writeTangents, bool writeColors, bool writeBoneWeights, bool writeUVs, bool writeSecondaryUVs) const {
+    
+    if(submeshes.size() == 0) {
+        return;
+    }
+    
+    // new mesh format
+    // IMPORTANT: PolyRendererVertexType type defines mesh format internal type. Consider making floats always. Don't want to cast for now.
+    
+    const char headerTag[] = "MSH2";
+    outFile->write(headerTag, 1, 4);
+    
+    unsigned char meshFlags = 0;
+    
+    if(submeshes[0]->indexedMesh) {
+        meshFlags |= 1 << 0;
+    }
+    
+    outFile->write(&meshFlags, sizeof(unsigned char), 1);
+    
+    writeVertexBlock(submeshes[0]->vertexPositionArray, outFile);
+    
+    if(submeshes[0]->indexedMesh) {
+        writeIndexBlock(submeshes[0]->indexArray, outFile);
+    }
+    
+    if(writeColors) {
+        writeVertexBlock(submeshes[0]->vertexColorArray, outFile);
+    }
+    
+    if(writeNormals) {
+        writeVertexBlock(submeshes[0]->vertexNormalArray, outFile);
+    }
+    
+    if(writeUVs) {
+        writeVertexBlock(submeshes[0]->vertexTexCoordArray, outFile);
+    }
+    
+    if(writeSecondaryUVs) {
+        writeVertexBlock(submeshes[0]->vertexTexCoord2Array, outFile);
+    }
+    
+    if(writeTangents) {
+        writeVertexBlock(submeshes[0]->vertexTangentArray, outFile);
+    }
+    
+    if(writeBoneWeights) {
+        writeVertexBlock(submeshes[0]->vertexBoneWeightArray, outFile);
+        writeVertexBlock(submeshes[0]->vertexBoneIndexArray, outFile);
+    }
+}
+
+void Mesh::loadFromFile(Polycode::CoreFile *inFile) {
+    clearMesh();
+    
+    char tag[4];
+    inFile->read(tag, 1, 4);
+    
+    if(tag[0] == 'M' && tag[1] == 'S' && tag[2] == 'H' && tag[3] == '2') {
+        loadFromFileV2(inFile);
+    } else {
+        inFile->seek(0, SEEK_SET);
+        loadFromFileLegacyV1(inFile);
+    }
+}
+
+void Mesh::saveToFile(const String& fileName, bool writeNormals, bool writeTangents, bool writeColors, bool writeBoneWeights, bool writeUVs, bool writeSecondaryUVs) {
+    CoreFile *outFile = Services()->getCore()->openFile(fileName, "wb");
+    if(!outFile) {
+        Logger::log("Error opening mesh file for saving: %s\n", fileName.c_str());
+        return;
+    }
+    saveToFile(outFile, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs);
+    Services()->getCore()->closeFile(outFile);
+    
+}
+
+void Mesh::loadMesh(const String& fileName) {
+    CoreFile *inFile = Services()->getCore()->openFile(fileName, "rb");
+    if(!inFile) {
+        Logger::log("Error opening mesh file %s\n", fileName.c_str());
+        return;
+    }
+    loadFromFile(inFile);
+    Services()->getCore()->closeFile(inFile);
+}
+
+void Mesh::addSubmesh(const MeshGeometry &newSubmesh) {
+    std::shared_ptr<MeshGeometry> _newSubMesh  = std::make_shared<MeshGeometry>();
+    (*_newSubMesh) = newSubmesh;
+    submeshes.push_back(_newSubMesh);
+    submeshes[submeshes.size()-1]->dataChanged = true;
+}
+
+void Mesh::removeSubmeshAtIndex(unsigned int index) {
+    if(index < submeshes.size()) {
+        submeshes.erase(submeshes.begin()+index);
+    }
+}
+
+void Mesh::clearMesh() {
+    submeshes.clear();
+}
+
+std::shared_ptr<MeshGeometry> Mesh::getSubmeshPointer(unsigned int index) {
+    if(index < submeshes.size()) {
+        return submeshes[index];
+    } else {
+        return NULL;
+    }
+}
+
+MeshGeometry Mesh::getSubmeshAtIndex(unsigned int index) const {
+    MeshGeometry retGeom;
+    if(index < submeshes.size()) {
+        retGeom = *(submeshes[index]);
+    }
+    return retGeom;
+}
+
+Number Mesh::getRadius() {
+    Number radius = 0.0;
+    for(int i = 0; i < submeshes.size(); i++) {
+        Number newRadius = submeshes[i]->getRadius();
+        if(newRadius > radius) {
+            radius = newRadius;
+        }
+    }
+    return radius;
+}
+
+void Mesh::loadFromFileV2(Polycode::CoreFile *inFile) {
+    
+    MeshGeometry newSubmesh;
+    
+    unsigned char meshFlags;
+    inFile->read(&meshFlags, sizeof(unsigned char), 1);
+    
+    newSubmesh.indexedMesh = meshFlags & (1 << 0);
+    
+    char blockType;
+    unsigned int blockSize;
+    while(inFile->read(&blockType, sizeof(unsigned char), 1)) {
+        inFile->read(&blockSize, sizeof(unsigned int), 1);
+        
+        switch(blockType) {
+            case RenderDataArray::VERTEX_DATA_ARRAY:
+                newSubmesh.vertexPositionArray.data.resize(blockSize);
+                inFile->read(&newSubmesh.vertexPositionArray.data[0], sizeof(PolyRendererVertexType), blockSize);
+                break;
+            case RenderDataArray::TEXCOORD_DATA_ARRAY:
+                newSubmesh.vertexTexCoordArray.data.resize(blockSize);
+                inFile->read(&newSubmesh.vertexTexCoordArray.data[0], sizeof(PolyRendererVertexType), blockSize);
+                break;
+            case RenderDataArray::NORMAL_DATA_ARRAY:
+                newSubmesh.vertexNormalArray.data.resize(blockSize);
+                inFile->read(&newSubmesh.vertexNormalArray.data[0], sizeof(PolyRendererVertexType), blockSize);
+                break;
+            case RenderDataArray::COLOR_DATA_ARRAY:
+                newSubmesh.vertexColorArray.data.resize(blockSize);
+                inFile->read(&newSubmesh.vertexColorArray.data[0], sizeof(PolyRendererVertexType), blockSize);
+                break;
+            case RenderDataArray::TANGENT_DATA_ARRAY:
+                newSubmesh.vertexTangentArray.data.resize(blockSize);
+                inFile->read(&newSubmesh.vertexTangentArray.data[0], sizeof(PolyRendererVertexType), blockSize);
+                break;
+            case RenderDataArray::BONE_WEIGHT_DATA_ARRAY:
+                newSubmesh.vertexBoneWeightArray.data.resize(blockSize);
+                inFile->read(&newSubmesh.vertexBoneWeightArray.data[0], sizeof(PolyRendererVertexType), blockSize);
+                break;
+            case RenderDataArray::INDEX_DATA_ARRAY:
+                newSubmesh.indexArray.data.resize(blockSize);
+                inFile->read(&newSubmesh.indexArray.data[0], sizeof(PolyRendererIndexType), blockSize);
+                break;
+            case RenderDataArray::BONE_INDEX_DATA_ARRAY:
+                newSubmesh.vertexBoneIndexArray.data.resize(blockSize);
+                inFile->read(&newSubmesh.vertexBoneIndexArray.data[0], sizeof(PolyRendererVertexType), blockSize);
+                break;
+        }
+    }
+    
+    if(newSubmesh.vertexBoneIndexArray.getDataSize() > 0) {
+        newSubmesh.normalizeBoneWeights();
+    }
+    
+    addSubmesh(newSubmesh);
+}
+
+void Mesh::loadFromFileLegacyV1(Polycode::CoreFile *inFile) {
+    
+    MeshGeometry newSubmesh;
+    
+    unsigned char meshFlags;
+    inFile->read(&meshFlags, sizeof(unsigned char), 1);
+    
+    newSubmesh.indexedMesh = meshFlags & (1 << 0);
+    bool hasNormals = meshFlags & (1 << 1);
+    bool hasTangents = meshFlags & (1 << 2);
+    bool hasColors = meshFlags & (1 << 3);
+    bool hasUV = meshFlags & (1 << 4);
+    bool hasSecondaryUVs = meshFlags & (1 << 5);
+    bool hasBoneWeights = meshFlags & (1 << 6);
+    
+    unsigned int meshType;
+    inFile->read(&meshType, sizeof(unsigned int), 1);
+    newSubmesh.setMeshType(meshType);
+    
+    unsigned int numVertices;
+    inFile->read(&numVertices, sizeof(unsigned int), 1);
+    
+    Vector3_struct pos;
+    Vector3_struct nor;
+    Vector3_struct tan;
+    Vector4_struct col;
+    Vector2_struct tex;
+    
+    for(int i=0; i < numVertices; i++) {
+        inFile->read(&pos, sizeof(Vector3_struct), 1);
+        
+        newSubmesh.vertexPositionArray.data.push_back(pos.x);
+        newSubmesh.vertexPositionArray.data.push_back(pos.y);
+        newSubmesh.vertexPositionArray.data.push_back(pos.z);
+        
+        if(hasNormals) {
+            inFile->read(&nor, sizeof(Vector3_struct), 1);
+            
+            newSubmesh.vertexNormalArray.data.push_back(nor.x);
+            newSubmesh.vertexNormalArray.data.push_back(nor.y);
+            newSubmesh.vertexNormalArray.data.push_back(nor.z);
+            
+            
+        }
+        if(hasTangents) {
+            inFile->read(&tan, sizeof(Vector3_struct), 1);
+            
+            newSubmesh.vertexTangentArray.data.push_back(tan.x);
+            newSubmesh.vertexTangentArray.data.push_back(tan.y);
+            newSubmesh.vertexTangentArray.data.push_back(tan.z);
+            
+        }
+        
+        if(hasColors) {
+            inFile->read(&col, sizeof(Vector4_struct), 1);
+            
+            newSubmesh.vertexColorArray.data.push_back(col.x);
+            newSubmesh.vertexColorArray.data.push_back(col.y);
+            newSubmesh.vertexColorArray.data.push_back(col.z);
+            newSubmesh.vertexColorArray.data.push_back(col.w);
+        }
+        
+        if(hasUV) {
+            inFile->read(&tex, sizeof(Vector2_struct), 1);
+            newSubmesh.vertexTexCoordArray.data.push_back(tex.x);
+            newSubmesh.vertexTexCoordArray.data.push_back(tex.y);
+        }
+        
+        if(hasSecondaryUVs) {
+            inFile->read(&tex, sizeof(Vector2_struct), 1);
+            newSubmesh.vertexTexCoord2Array.data.push_back(tex.x);
+            newSubmesh.vertexTexCoord2Array.data.push_back(tex.x);
+        }
+        
+        if(hasBoneWeights) {
+            unsigned int numBoneWeights;
+            inFile->read(&numBoneWeights, sizeof(unsigned int), 1);
+            
+            Number totalWeight = 0;
+            int numPushed = 0;
+            
+            for(int b=0; b < numBoneWeights; b++) {
+                float weight;
+                unsigned int boneID;
+                inFile->read(&boneID, sizeof(unsigned int), 1);
+                inFile->read(&weight, sizeof(float), 1);
+                
+                if(b < 4) {
+                    newSubmesh.vertexBoneWeightArray.data.push_back(weight);
+                    newSubmesh.vertexBoneIndexArray.data.push_back(boneID);
+                    numPushed++;
+                }
+                totalWeight += weight;
+            }
+            
+            if(numPushed < 4) {
+                for(int b=numPushed; b < 4; b++) {
+                    newSubmesh.vertexBoneWeightArray.data.push_back(0.0);
+                    newSubmesh.vertexBoneIndexArray.data.push_back(0.0);
+                }
+            }
+            
+            for(int m=0; m < 4; m++) {
+                newSubmesh.vertexBoneWeightArray.data[newSubmesh.vertexBoneWeightArray.data.size()-1-m] = newSubmesh.vertexBoneWeightArray.data[newSubmesh.vertexBoneWeightArray.data.size()-1-m] / totalWeight;
+            }
+        }
+    }
+    
+    if(newSubmesh.indexedMesh) {
+        unsigned int numIndices;
+        inFile->read(&numIndices, sizeof(unsigned int), 1);
+        unsigned int val;
+        for(int i=0; i < numIndices; i++) {
+            inFile->read(&val, sizeof(unsigned int), 1);
+            newSubmesh.indexArray.data.push_back(val);
+        }
+    }
+    
+    addSubmesh(newSubmesh);
 }
