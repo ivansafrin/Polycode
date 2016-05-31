@@ -15,8 +15,8 @@ function Sound:Sound(...)
 	end
 end
 
-function Sound:getSampleAsNumber(offset, channel, listener, orientation)
-	local retVal = Polycode.Sound_getSampleAsNumber(self.__ptr, offset, channel, listener.__ptr, orientation.__ptr)
+function Sound:getSampleAsNumber(offset, channel, position, orientation)
+	local retVal = Polycode.Sound_getSampleAsNumber(self.__ptr, offset, channel, position.__ptr, orientation.__ptr)
 	return retVal
 end
 

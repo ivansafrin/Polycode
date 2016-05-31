@@ -17624,10 +17624,10 @@ static int Polycode_BoneTrack_set_weight(lua_State *L) {
 		luaL_checktype(L, 3, LUA_TNUMBER);
 		int channel = lua_tointeger(L, 3);
 		luaL_checktype(L, 4, LUA_TUSERDATA);
-		Vector3 listener = *(Vector3*) *((PolyBase**)lua_touserdata(L, 4));
+		Vector3 position = *(Vector3*) *((PolyBase**)lua_touserdata(L, 4));
 		luaL_checktype(L, 5, LUA_TUSERDATA);
 		Quaternion orientation = *(Quaternion*) *((PolyBase**)lua_touserdata(L, 5));
-		lua_pushnumber(L, inst->getSampleAsNumber(offset, channel, listener, orientation));
+		lua_pushnumber(L, inst->getSampleAsNumber(offset, channel, position, orientation));
 		return 1;
 	}
 	static int Polycode_Sound_loadFile(lua_State *L) {

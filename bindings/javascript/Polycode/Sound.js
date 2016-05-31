@@ -7,8 +7,8 @@ Duktape.fin(Sound.prototype, function (x) {
 	Polycode.Sound__delete(x.__ptr)
 })
 
-Sound.prototype.getSampleAsNumber = function(offset,channel,listener,orientation) {
-	return Polycode.Sound_getSampleAsNumber(this.__ptr, offset,channel,listener,orientation)
+Sound.prototype.getSampleAsNumber = function(offset,channel,position,orientation) {
+	return Polycode.Sound_getSampleAsNumber(this.__ptr, offset,channel,position,orientation)
 }
 
 Sound.prototype.loadFile = function(fileName) {

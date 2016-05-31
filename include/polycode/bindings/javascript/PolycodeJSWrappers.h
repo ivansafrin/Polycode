@@ -12459,9 +12459,9 @@ namespace Polycode {
 		Sound *inst = (Sound*)duk_to_pointer(context, 0);
 		int offset = duk_to_int(context, 1);
 		int channel = duk_to_int(context, 2);
-		Vector3 listener = *(Vector3*)duk_to_pointer(context, 3);
+		Vector3 position = *(Vector3*)duk_to_pointer(context, 3);
 		Quaternion orientation = *(Quaternion*)duk_to_pointer(context, 4);
-		duk_push_number(context, inst->getSampleAsNumber(offset,channel,listener,orientation));
+		duk_push_number(context, inst->getSampleAsNumber(offset,channel,position,orientation));
 		return 1;
 	}
 
