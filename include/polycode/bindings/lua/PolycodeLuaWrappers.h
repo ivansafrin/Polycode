@@ -17618,7 +17618,11 @@ static int Polycode_BoneTrack_set_weight(lua_State *L) {
 		int offset = lua_tointeger(L, 2);
 		luaL_checktype(L, 3, LUA_TNUMBER);
 		int channel = lua_tointeger(L, 3);
-		lua_pushnumber(L, inst->getSampleAsNumber(offset, channel));
+		luaL_checktype(L, 4, LUA_TUSERDATA);
+		Vector3 listener = *(Vector3*) *((PolyBase**)lua_touserdata(L, 4));
+		luaL_checktype(L, 5, LUA_TUSERDATA);
+		Quaternion orientation = *(Quaternion*) *((PolyBase**)lua_touserdata(L, 5));
+		lua_pushnumber(L, inst->getSampleAsNumber(offset, channel, listener, orientation));
 		return 1;
 	}
 	static int Polycode_Sound_loadFile(lua_State *L) {
@@ -17912,6 +17916,22 @@ static int Polycode_AudioMixer_get_globalVolume(lua_State *L) {
 	return 1;
 }
 
+static int Polycode_AudioMixer_get_listenerPosition(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	AudioMixer *inst = (AudioMixer*) *((PolyBase**)lua_touserdata(L, 1));
+	PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+	*userdataPtr = (PolyBase*)&inst->listenerPosition;
+	return 1;
+}
+
+static int Polycode_AudioMixer_get_listenerOrientation(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	AudioMixer *inst = (AudioMixer*) *((PolyBase**)lua_touserdata(L, 1));
+	PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+	*userdataPtr = (PolyBase*)&inst->listenerOrientation;
+	return 1;
+}
+
 static int Polycode_AudioMixer_get_mixerMutex(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	AudioMixer *inst = (AudioMixer*) *((PolyBase**)lua_touserdata(L, 1));
@@ -17929,6 +17949,24 @@ static int Polycode_AudioMixer_set_globalVolume(lua_State *L) {
 	AudioMixer *inst = (AudioMixer*) *((PolyBase**)lua_touserdata(L, 1));
 	Number param = lua_tonumber(L, 2);
 	inst->globalVolume = param;
+	return 0;
+}
+
+static int Polycode_AudioMixer_set_listenerPosition(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	AudioMixer *inst = (AudioMixer*) *((PolyBase**)lua_touserdata(L, 1));
+	luaL_checktype(L, 2, LUA_TUSERDATA);
+	Vector3 *argInst = (Vector3*) *((PolyBase**)lua_touserdata(L, 2));
+	inst->listenerPosition = *argInst;
+	return 0;
+}
+
+static int Polycode_AudioMixer_set_listenerOrientation(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	AudioMixer *inst = (AudioMixer*) *((PolyBase**)lua_touserdata(L, 1));
+	luaL_checktype(L, 2, LUA_TUSERDATA);
+	Quaternion *argInst = (Quaternion*) *((PolyBase**)lua_touserdata(L, 2));
+	inst->listenerOrientation = *argInst;
 	return 0;
 }
 
@@ -17987,10 +18025,8 @@ static int Polycode_AudioMixer_set_mixerMutex(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		SoundManager *inst = (SoundManager*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Vector3 orientation = *(Vector3*) *((PolyBase**)lua_touserdata(L, 2));
-		luaL_checktype(L, 3, LUA_TUSERDATA);
-		Vector3 upVector = *(Vector3*) *((PolyBase**)lua_touserdata(L, 3));
-		inst->setListenerOrientation(orientation, upVector);
+		Quaternion orientation = *(Quaternion*) *((PolyBase**)lua_touserdata(L, 2));
+		inst->setListenerOrientation(orientation);
 		return 0;
 	}
 	static int Polycode_SoundManager_recordSound(lua_State *L) {

@@ -10,6 +10,7 @@
 		6D6FD3E11BF122A2005AA8E9 /* PolycodeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6D6FD3E01BF122A2005AA8E9 /* PolycodeView.mm */; };
 		6D904FD31CC2AEB400D0E80A /* rotate.lua in Resources */ = {isa = PBXBuildFile; fileRef = 6D904FD21CC2AEB400D0E80A /* rotate.lua */; };
 		6D90506B1CCC057C00D0E80A /* liblua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D90506A1CCC057C00D0E80A /* liblua.a */; };
+		6DB4EE6D1CFB4F3B00D39AA7 /* test.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6DB4EE6C1CFB4F3B00D39AA7 /* test.wav */; };
 		6DCDD7251C724726007E90E1 /* main_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DCDD7241C724726007E90E1 /* main_icon.png */; };
 		6DD2D0B61BEEDC150026D85C /* libportaudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DD2D0B51BEEDC150026D85C /* libportaudio.a */; };
 		8A4ABF0A1CDBC69E007433DE /* lua_Polycode.pak in Resources */ = {isa = PBXBuildFile; fileRef = 8A4ABF091CDBC69E007433DE /* lua_Polycode.pak */; };
@@ -41,6 +42,7 @@
 		6D6FD3E01BF122A2005AA8E9 /* PolycodeView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PolycodeView.mm; path = ../../../../src/view/osx/PolycodeView.mm; sourceTree = "<group>"; };
 		6D904FD21CC2AEB400D0E80A /* rotate.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = rotate.lua; sourceTree = "<group>"; };
 		6D90506A1CCC057C00D0E80A /* liblua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua.a; path = ../../../../lib/osx/liblua.a; sourceTree = "<group>"; };
+		6DB4EE6C1CFB4F3B00D39AA7 /* test.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = test.wav; path = ../../../../assets/examples/test.wav; sourceTree = "<group>"; };
 		6DCDD7241C724726007E90E1 /* main_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = main_icon.png; path = ../../../../assets/icons/main_icon.png; sourceTree = "<group>"; };
 		6DD2D0B51BEEDC150026D85C /* libportaudio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libportaudio.a; path = ../../../../lib/osx/libportaudio.a; sourceTree = "<group>"; };
 		8A4ABF091CDBC69E007433DE /* lua_Polycode.pak */ = {isa = PBXFileReference; lastKnownFileType = file; name = lua_Polycode.pak; path = ../../../../bindings/lua/lua_Polycode.pak; sourceTree = "<group>"; };
@@ -127,6 +129,7 @@
 				8A9D122B1CDD29EB00ACD484 /* js_Polycode.pak */,
 				6DCDD7241C724726007E90E1 /* main_icon.png */,
 				8A8653351B72931C009F94DD /* AppDelegate.h */,
+				6DB4EE6C1CFB4F3B00D39AA7 /* test.wav */,
 				8A8653361B72931C009F94DD /* AppDelegate.m */,
 				6D6FD3E01BF122A2005AA8E9 /* PolycodeView.mm */,
 				8A7E202E1CD7D11A00EFC3CB /* rotate.js */,
@@ -220,6 +223,7 @@
 			files = (
 				8A86533B1B72931C009F94DD /* Images.xcassets in Resources */,
 				8A4ABF0A1CDBC69E007433DE /* lua_Polycode.pak in Resources */,
+				6DB4EE6D1CFB4F3B00D39AA7 /* test.wav in Resources */,
 				8A8653961B752DBE009F94DD /* main_icon.png in Resources */,
 				8ADFECFA1C8E0852007B57A2 /* default.pak in Resources */,
 				8A9D122C1CDD29EB00ACD484 /* js_Polycode.pak in Resources */,

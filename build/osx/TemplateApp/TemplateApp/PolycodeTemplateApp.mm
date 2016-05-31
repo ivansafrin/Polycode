@@ -18,36 +18,23 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     core->addFileSource("archive", "hdr.pak");
     globalPool->loadResourcesFromFolder("hdr", true);
     
-    Polycode:Script *rotateScript = (Script*) globalPool->loadResource("rotate.js");
     
-	// Write your code here!
-    
-    Scene *scene = new Scene(Scene::SCENE_2D);
+    Scene *scene = new Scene(Scene::SCENE_3D);
     scene->useClearColor = true;
-    scene->clearColor.setColor(0.2, 0.2, 0.2, 1.0);
+    sourceEntity = new Entity();
     
-   // scene->setOverrideMaterial((Material*)globalPool->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
+    SceneSound *testSound = new SceneSound("test.wav", 20, 50);
+    testSound->getSound()->Play(true);
+    sourceEntity->addChild(testSound);
     
-    for(int i=0; i  < 10; i++) {
-        test = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.5, 0.5);
-        test->setMaterialByName("Unlit");
-        test->attachScript(rotateScript);
-        /*
-         ScriptInstance *scriptInstance = test->attachScript(rotateScript);
-         scriptInstance->setPropNumber("speed", 1.0);
-         */
-        test->getShaderPass(0).shaderBinding->loadTextureForParam("diffuse", "main_icon.png");
-        test->setPosition(RANDOM_NUMBER * 0.5, RANDOM_NUMBER * 0.4);
-        test->setBlendingMode(Renderer::BLEND_MODE_NONE);
-        test->setScale(0.3, 0.3);
-        scene->addChild(test);
-        tests.push_back(test);
-    }
-    Camera *camera = scene->getDefaultCamera();
-
-    fpsLabel = new SceneLabel("FPS:", 32, "mono", Label::ANTIALIAS_FULL, 0.1);
-    scene->addChild(fpsLabel);
-    fpsLabel->setPositionY(-0.4);
+    ScenePrimitive *soundShape = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 1,1,1);
+    sourceEntity->addChild(soundShape);
+    scene->addEntity(sourceEntity);
+    
+    SceneSoundListener *soundListener = new SceneSoundListener();
+    scene->addEntity(soundListener);
+    
+    positionValue = 0;
     
     Services()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 }
@@ -63,14 +50,10 @@ PolycodeTemplateApp::~PolycodeTemplateApp() {
 bool PolycodeTemplateApp::Update() {
     Number elapsed = core->getElapsed();
     
-    
-    ++numFrames;
-    counter += elapsed;
-    if(counter >= 1.0) {
-        counter = 0.0;
-        fpsLabel->setText("FPS:"+String::IntToString(numFrames)+" FRAME MS:"+String::IntToString(Services()->getRenderer()->getRenderThread()->getFrameInfo().timeTaken));
-        numFrames = 0;
-    }
+    positionValue += elapsed;
+    sourceEntity->setPosition((sin(positionValue) * 20), 0, cos(positionValue) * 50);
+    sourceEntity->Roll(core->getElapsed() * 120);
+    sourceEntity->Pitch(core->getElapsed()* 120);
     
     return core->updateAndRender();
 }

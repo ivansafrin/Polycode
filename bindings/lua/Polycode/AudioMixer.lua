@@ -4,6 +4,18 @@ class "AudioMixer"
 function AudioMixer:__getvar(name)
 	if name == "globalVolume" then
 		return Polycode.AudioMixer_get_globalVolume(self.__ptr)
+	elseif name == "listenerPosition" then
+		local retVal = Polycode.AudioMixer_get_listenerPosition(self.__ptr)
+		if retVal == nil then return nil end
+		local __c = _G["Vector3"]("__skip_ptr__")
+		__c.__ptr = retVal
+		return __c
+	elseif name == "listenerOrientation" then
+		local retVal = Polycode.AudioMixer_get_listenerOrientation(self.__ptr)
+		if retVal == nil then return nil end
+		local __c = _G["Quaternion"]("__skip_ptr__")
+		__c.__ptr = retVal
+		return __c
 	elseif name == "mixerMutex" then
 		local retVal = Polycode.AudioMixer_get_mixerMutex(self.__ptr)
 		if retVal == nil then return nil end
@@ -16,6 +28,12 @@ end
 function AudioMixer:__setvar(name,value)
 	if name == "globalVolume" then
 		Polycode.AudioMixer_set_globalVolume(self.__ptr, value)
+		return true
+	elseif name == "listenerPosition" then
+		Polycode.AudioMixer_set_listenerPosition(self.__ptr, value.__ptr)
+		return true
+	elseif name == "listenerOrientation" then
+		Polycode.AudioMixer_set_listenerOrientation(self.__ptr, value.__ptr)
 		return true
 	elseif name == "mixerMutex" then
 		Polycode.AudioMixer_set_mixerMutex(self.__ptr, value.__ptr)

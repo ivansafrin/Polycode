@@ -34,6 +34,8 @@ namespace Polycode {
     enum SoundFormat {SoundFormatUnsupported, SoundFormat8, SoundFormat16, SoundFormat32};
     
 	class String;
+    class Vector3;
+    class Quaternion;
     
     class  AudioStreamingSource {
         public:
@@ -64,7 +66,7 @@ namespace Polycode {
 		Sound(int size, const char *data, int channels, unsigned int freq, SoundFormat format);
         Sound(AudioStreamingSource *streamingSource);
         
-        Number getSampleAsNumber(unsigned int offset, unsigned int channel);
+        Number getSampleAsNumber(unsigned int offset, unsigned int channel, const Vector3 &position, const Quaternion &orientation);
         
 		virtual ~Sound();
 		
@@ -107,9 +109,9 @@ namespace Polycode {
         
 		void setIsPositional(bool isPositional);
 		
-		void setSoundPosition(Vector3 position);
-		void setSoundVelocity(Vector3 velocity);
-		void setSoundDirection(Vector3 direction);
+		void setSoundPosition(const Vector3 &position);
+		void setSoundVelocity(const Vector3 &velocity);
+		void setSoundDirection(const Vector3 &direction);
 		
 		/**
 		* Sets the current sample offset of this sound.
@@ -158,7 +160,13 @@ namespace Polycode {
         void updateStream(unsigned int streamCount);
 
 	protected:
-	
+        
+        Number modulateSampleForListener(Number sample, unsigned int channel, const Vector3 &position, const Quaternion &orientation);
+        
+        Vector3 position;
+        Vector3 velocity;
+        Vector3 direction;
+        
 		Number referenceDistance;
 		Number maxDistance;
         

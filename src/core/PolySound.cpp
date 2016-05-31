@@ -218,31 +218,16 @@ void Sound::setPitch(Number newPitch) {
 	this->pitch = newPitch;
 }
 
-void Sound::setSoundPosition(Vector3 position) {
-    /*
-	if(isPositional)
-		alSource3f(soundSource,AL_POSITION, position.x, position.y, position.z);
-	checkALError("Set sound position");
-     */
-        //NOAL_TODO
+void Sound::setSoundPosition(const Vector3 &position) {
+    this->position = position;
 }
 
-void Sound::setSoundVelocity(Vector3 velocity) {
-    /*
-	if(isPositional)
-		alSource3f(soundSource,AL_VELOCITY, velocity.x, velocity.y, velocity.z);
-	checkALError("Set sound velocity");
-     */
-        //NOAL_TODO
+void Sound::setSoundVelocity(const Vector3 &velocity) {
+    this->velocity = velocity;
 }
 
-void Sound::setSoundDirection(Vector3 direction) {
-    /*
-	if(isPositional)
-		alSource3f(soundSource,AL_DIRECTION, direction.x, direction.y, direction.z);
-	checkALError("Set sound direction");
-     */
-        //NOAL_TODO
+void Sound::setSoundDirection(const Vector3 &direction) {
+    this->direction = direction;
 }
 
 
@@ -318,16 +303,10 @@ void Sound::setPositionalProperties(Number referenceDistance, Number maxDistance
 
 void Sound::setReferenceDistance(Number referenceDistance) {
 	this->referenceDistance = referenceDistance;
-	//alSourcef(soundSource, AL_REFERENCE_DISTANCE, referenceDistance);
-	//checkALError("Set reference distance");
-            //NOAL_TODO
 }
 
 void Sound::setMaxDistance(Number maxDistance) {
 	this->maxDistance = maxDistance;
-	//alSourcef(soundSource,AL_MAX_DISTANCE, maxDistance);
-//	checkALError("Set max distance");
-            //NOAL_TODO
 }
 		
 Number Sound::getReferenceDistance() {
@@ -339,19 +318,7 @@ Number Sound::getMaxDistance() {
 }
 
 void Sound::setIsPositional(bool isPositional) {
-    /*
 	this->isPositional = isPositional;
-	if(isPositional) {
-		alSourcei(soundSource, AL_SOURCE_RELATIVE, AL_FALSE);
-	} else {
-		alSourcei(soundSource, AL_SOURCE_RELATIVE, AL_TRUE);	
-		alSource3f(soundSource,AL_POSITION, 0,0,0);
-		alSource3f(soundSource,AL_VELOCITY, 0,0,0);
-		alSource3f(soundSource,AL_DIRECTION, 0,0,0);				
-	}
-	checkALError("Set is-positional");
-     */
-            //NOAL_TODO
 }
 
 void Sound::Stop() {
@@ -359,12 +326,46 @@ void Sound::Stop() {
 }
 
 
-Number Sound::getSampleAsNumber(unsigned int offset, unsigned int channel) {
+Number Sound::getSampleAsNumber(unsigned int offset, unsigned int channel, const Vector3 &position, const Quaternion &orientation) {
     Number adjustedOffset = ((Number)offset) * pitch * frequencyAdjust;
-    Number ret = (((Number)(soundBuffer[((((unsigned int )adjustedOffset)%numSamples)*numChannels)+(channel % numChannels)])/((Number)INT16_MAX))) * volume;
+    Number ret;
+    if(isPositional) {
+        ret = (((Number)(soundBuffer[((((unsigned int )adjustedOffset)%numSamples)*numChannels)])/((Number)INT16_MAX))) * volume;
+        ret = modulateSampleForListener(ret, channel, position, orientation);
+    } else {
+        ret = (((Number)(soundBuffer[((((unsigned int )adjustedOffset)%numSamples)*numChannels)+(channel % numChannels)])/((Number)INT16_MAX))) * volume;
+    }
     return ret;
 }
 
+Number Sound::modulateSampleForListener(Number sample, unsigned int channel, const Vector3 &position, const Quaternion &orientation) {
+    
+    // setup different channel configurations here
+    // if(STEREO) {
+    Vector3 earDirection;
+    if(channel) {
+        earDirection = Vector3(-1.0, 0.0, 0.0);
+    } else {
+        earDirection = Vector3(1.0, 0.0, 0.0);
+    }
+    earDirection = orientation.applyTo(earDirection);
+    
+    Vector3 dir = position - this->position;
+    dir.Normalize();
+    Number muliplier = earDirection.dot(dir);
+    if(muliplier < 0.0) {
+        muliplier = 0.0;
+    }
+    
+    Number ret = sample * (0.1 + (muliplier * 0.9)); // bleed 0.1 into the other ear
+    Number distance = position.distance(this->position);
+    Number attenuate = 0.5 * pow(referenceDistance/distance, 2.0);
+    
+    attenuate = min(attenuate, 1.0);
+    attenuate = max(attenuate, 0.0);
+    ret *= attenuate;
+    return ret;
+}
 
 bool Sound::loadBytes(const char *data, int size, int channels, unsigned int freq, SoundFormat format) {
     

@@ -23,6 +23,7 @@
 #pragma once
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyVector3.h"
+#include "polycode/core/PolyQuaternion.h"
 #include "polycode/core/PolySound.h"
 
 #define POLY_FRAMES_PER_BUFFER 2048
@@ -42,7 +43,8 @@ namespace Polycode {
             void mixIntoBuffer(int16_t *buffer, unsigned int numSamples);
             std::vector<Sound*> sounds;
             Number globalVolume;
-
+            Vector3 listenerPosition;
+            Quaternion listenerOrientation;
 			CoreMutex *mixerMutex;
     };
 	
@@ -66,8 +68,8 @@ namespace Polycode {
 		SoundManager();
 		~SoundManager();
 		 
-		void setListenerPosition(Vector3 position);
-		void setListenerOrientation(Vector3 orientation, Vector3 upVector);	
+		void setListenerPosition(const Vector3 &position);
+		void setListenerOrientation(const Quaternion &orientation);
         
         bool recordSound(unsigned int rate, unsigned int sampleSize);
         Sound *stopRecording(bool generateFloatBuffer = false);

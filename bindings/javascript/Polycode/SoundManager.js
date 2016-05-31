@@ -11,8 +11,8 @@ SoundManager.prototype.setListenerPosition = function(position) {
 	Polycode.SoundManager_setListenerPosition(this.__ptr, position)
 }
 
-SoundManager.prototype.setListenerOrientation = function(orientation,upVector) {
-	Polycode.SoundManager_setListenerOrientation(this.__ptr, orientation,upVector)
+SoundManager.prototype.setListenerOrientation = function(orientation) {
+	Polycode.SoundManager_setListenerOrientation(this.__ptr, orientation)
 }
 
 SoundManager.prototype.recordSound = function(rate,sampleSize) {

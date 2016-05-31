@@ -22,5 +22,7 @@ private:
     std::vector<ScenePrimitive*> tests;
     SceneLabel *fpsLabel;
     Number counter;
+    Entity *sourceEntity;
+    Number positionValue;
     int numFrames;
 };

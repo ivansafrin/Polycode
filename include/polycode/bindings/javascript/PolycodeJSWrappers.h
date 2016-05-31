@@ -813,7 +813,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_Camera_setViewport(duk_context *context) {
 		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 1);
+		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 1);
 		inst->setViewport(viewport);
 		return 0;
 	}
@@ -847,7 +847,7 @@ namespace Polycode {
 	duk_ret_t Polycode_Camera_projectRayFrom2DCoordinate(duk_context *context) {
 		Camera *inst = (Camera*)duk_to_pointer(context, 0);
 		Vector2 coordinate = *(Vector2*)duk_to_pointer(context, 1);
-		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 2);
+		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 2);
 		Vector3 *retInst = new Vector3();
 		*retInst = inst->projectRayFrom2DCoordinate(coordinate,viewport);
 		duk_push_pointer(context, (void*)retInst);
@@ -2576,7 +2576,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_CoreServices_Render(duk_context *context) {
 		CoreServices *inst = (CoreServices*)duk_to_pointer(context, 0);
-		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 1);
+		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 1);
 		inst->Render(viewport);
 		return 0;
 	}
@@ -3130,7 +3130,7 @@ namespace Polycode {
 	duk_ret_t Polycode_Entity_transformAndRender(duk_context *context) {
 		Entity *inst = (Entity*)duk_to_pointer(context, 0);
 		GPUDrawBuffer* drawBuffer = (GPUDrawBuffer*)duk_to_pointer(context, 1);
-		Polycode::Rectangle* parentScissorBox = (Polycode::Rectangle*)duk_to_pointer(context, 2);
+		Rectangle* parentScissorBox = (Rectangle*)duk_to_pointer(context, 2);
 		inst->transformAndRender(drawBuffer,parentScissorBox);
 		return 0;
 	}
@@ -3138,7 +3138,7 @@ namespace Polycode {
 	duk_ret_t Polycode_Entity_renderChildren(duk_context *context) {
 		Entity *inst = (Entity*)duk_to_pointer(context, 0);
 		GPUDrawBuffer* buffer = (GPUDrawBuffer*)duk_to_pointer(context, 1);
-		Polycode::Rectangle* parentScissorBox = (Polycode::Rectangle*)duk_to_pointer(context, 2);
+		Rectangle* parentScissorBox = (Rectangle*)duk_to_pointer(context, 2);
 		inst->renderChildren(buffer,parentScissorBox);
 		return 0;
 	}
@@ -3876,7 +3876,7 @@ namespace Polycode {
 		Entity *inst = (Entity*)duk_to_pointer(context, 0);
 		Matrix4 projectionMatrix = *(Matrix4*)duk_to_pointer(context, 1);
 		Matrix4 cameraMatrix = *(Matrix4*)duk_to_pointer(context, 2);
-		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 3);
+		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 3);
 		Vector2 *retInst = new Vector2();
 		*retInst = inst->getScreenPosition(projectionMatrix,cameraMatrix,viewport);
 		duk_push_pointer(context, (void*)retInst);
@@ -4888,7 +4888,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_Image_getImagePart(duk_context *context) {
 		Image *inst = (Image*)duk_to_pointer(context, 0);
-		Polycode::Rectangle subRect = *(Polycode::Rectangle*)duk_to_pointer(context, 1);
+		Rectangle subRect = *(Rectangle*)duk_to_pointer(context, 1);
 		PolyBase *ptrRetVal = (PolyBase*)inst->getImagePart(subRect);
 		duk_push_pointer(context, (void*)ptrRetVal);
 		return 1;
@@ -7847,7 +7847,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_Rectangle_Clipped(duk_context *context) {
 		Rectangle *inst = (Rectangle*)duk_to_pointer(context, 0);
-		Polycode::Rectangle rect = *(Polycode::Rectangle*)duk_to_pointer(context, 1);
+		Rectangle rect = *(Rectangle*)duk_to_pointer(context, 1);
 		Polycode::Rectangle *retInst = new Polycode::Rectangle();
 		*retInst = inst->Clipped(rect);
 		duk_push_pointer(context, (void*)retInst);
@@ -9993,7 +9993,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_SceneManager_Render(duk_context *context) {
 		SceneManager *inst = (SceneManager*)duk_to_pointer(context, 0);
-		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 1);
+		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 1);
 		inst->Render(viewport);
 		return 0;
 	}
@@ -12447,7 +12447,9 @@ namespace Polycode {
 		Sound *inst = (Sound*)duk_to_pointer(context, 0);
 		int offset = duk_to_int(context, 1);
 		int channel = duk_to_int(context, 2);
-		duk_push_number(context, inst->getSampleAsNumber(offset,channel));
+		Vector3 listener = *(Vector3*)duk_to_pointer(context, 3);
+		Quaternion orientation = *(Quaternion*)duk_to_pointer(context, 4);
+		duk_push_number(context, inst->getSampleAsNumber(offset,channel,listener,orientation));
 		return 1;
 	}
 
@@ -12692,6 +12694,34 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_AudioMixer__get_listenerPosition(duk_context *context) {
+		AudioMixer *inst = (AudioMixer*)duk_to_pointer(context, 0);
+		Vector3 *retInst = new Vector3();
+		*retInst = inst->listenerPosition;
+		duk_push_pointer(context, (void*)retInst);
+		return 1;
+	}
+
+	duk_ret_t Polycode_AudioMixer__set_listenerPosition(duk_context *context) {
+		AudioMixer *inst = (AudioMixer*)duk_to_pointer(context, 0);
+		inst->listenerPosition = *(Vector3*)duk_to_pointer(context, 1);
+		return 0;
+	}
+
+	duk_ret_t Polycode_AudioMixer__get_listenerOrientation(duk_context *context) {
+		AudioMixer *inst = (AudioMixer*)duk_to_pointer(context, 0);
+		Quaternion *retInst = new Quaternion();
+		*retInst = inst->listenerOrientation;
+		duk_push_pointer(context, (void*)retInst);
+		return 1;
+	}
+
+	duk_ret_t Polycode_AudioMixer__set_listenerOrientation(duk_context *context) {
+		AudioMixer *inst = (AudioMixer*)duk_to_pointer(context, 0);
+		inst->listenerOrientation = *(Quaternion*)duk_to_pointer(context, 1);
+		return 0;
+	}
+
 	duk_ret_t Polycode_AudioMixer__get_mixerMutex(duk_context *context) {
 		AudioMixer *inst = (AudioMixer*)duk_to_pointer(context, 0);
 		PolyBase *ptrRetVal = (PolyBase*)inst->mixerMutex;
@@ -12734,9 +12764,8 @@ namespace Polycode {
 
 	duk_ret_t Polycode_SoundManager_setListenerOrientation(duk_context *context) {
 		SoundManager *inst = (SoundManager*)duk_to_pointer(context, 0);
-		Vector3 orientation = *(Vector3*)duk_to_pointer(context, 1);
-		Vector3 upVector = *(Vector3*)duk_to_pointer(context, 2);
-		inst->setListenerOrientation(orientation,upVector);
+		Quaternion orientation = *(Quaternion*)duk_to_pointer(context, 1);
+		inst->setListenerOrientation(orientation);
 		return 0;
 	}
 

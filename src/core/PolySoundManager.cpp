@@ -44,24 +44,16 @@ void SoundManager::setGlobalVolume(Number globalVolume) {
     mixer->globalVolume = globalVolume;
 }
 
-void SoundManager::setListenerPosition(Vector3 position) {
-    // NOAL_TODO
-//	alListener3f(AL_POSITION, position.x, position.y, position.z);
+void SoundManager::setListenerPosition(const Vector3 &position) {
+    if(mixer) {
+        mixer->listenerPosition = position;
+    }
 }
 
-void SoundManager::setListenerOrientation(Vector3 orientation, Vector3 upVector) {
-    /*
-	ALfloat ori[6];
-	ori[0] = orientation.x;
-	ori[1] = orientation.y;
-	ori[2] = orientation.z;
-	
-	ori[3] = upVector.x;
-	ori[4] = upVector.y;
-	ori[5] = upVector.z;	
-	alListenerfv(AL_ORIENTATION,ori);
-     */
-    // NOAL_TODO
+void SoundManager::setListenerOrientation(const Quaternion &orientation) {
+    if(mixer) {
+        mixer->listenerOrientation = orientation;
+    }
 }
 
 bool SoundManager::recordSound(unsigned int rate, unsigned int sampleSize) {
@@ -192,7 +184,7 @@ void AudioMixer::mixIntoBuffer(int16_t *buffer, unsigned int numSamples) {
 
                 for(int c=0; c < POLY_NUM_CHANNELS; c++) {
                     Number sampleA = mixResults[c];
-                    Number sampleB = sounds[i]->getSampleAsNumber(sounds[i]->getOffset(), c);
+                    Number sampleB = sounds[i]->getSampleAsNumber(sounds[i]->getOffset(), c, listenerPosition, listenerOrientation);
                     
                     if(mixNum == 0) {
                         mixResults[c] = sampleB;

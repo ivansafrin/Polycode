@@ -37,10 +37,9 @@ SceneSoundListener::~SceneSoundListener() {
 void SceneSoundListener::Update() {
 	Matrix4 finalMatrix = getConcatenatedMatrix();
 	CoreServices::getInstance()->getSoundManager()->setListenerPosition(finalMatrix.getPosition());
-
-	Vector3 upVector = Vector3(finalMatrix.ml[4], finalMatrix.ml[5], finalMatrix.ml[6]);
-	Vector3 direction = Vector3( -finalMatrix.ml[8], -finalMatrix.ml[9], -finalMatrix.ml[10]);
-	CoreServices::getInstance()->getSoundManager()->setListenerOrientation(direction, upVector);
+    Quaternion orientation;
+    orientation.setFromMatrix(finalMatrix);
+	CoreServices::getInstance()->getSoundManager()->setListenerOrientation(orientation);
 }
 
 void SceneSound::setLoopOnLoad(bool val) {

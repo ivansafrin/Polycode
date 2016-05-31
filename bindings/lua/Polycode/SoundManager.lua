@@ -19,8 +19,8 @@ function SoundManager:setListenerPosition(position)
 	local retVal = Polycode.SoundManager_setListenerPosition(self.__ptr, position.__ptr)
 end
 
-function SoundManager:setListenerOrientation(orientation, upVector)
-	local retVal = Polycode.SoundManager_setListenerOrientation(self.__ptr, orientation.__ptr, upVector.__ptr)
+function SoundManager:setListenerOrientation(orientation)
+	local retVal = Polycode.SoundManager_setListenerOrientation(self.__ptr, orientation.__ptr)
 end
 
 function SoundManager:recordSound(rate, sampleSize)
