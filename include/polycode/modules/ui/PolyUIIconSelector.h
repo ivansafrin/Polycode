@@ -34,28 +34,28 @@ using namespace Polycode;
 
 
 class UIIconSelector : public UIElement {
-    public:
-        UIIconSelector(Number height = 0.0);
-        ~UIIconSelector();
-    
-        void handleEvent(Event *event);
-        void addIcon(String fileName);
-    
-        void selectIndex(unsigned int index);
-        unsigned int getSelectedIndex();
-    
-        void resetSize();
-    
-    protected:
-    
-        std::vector<UIImageButton*> icons;
-    
-        UIBox *bgRect;
-        UIBox *selectorRect;
-        int selectedIndex;
-    
-        Number selectorSize;
-        Number paddingX;
-        Number paddingY;
+	public:
+		UIIconSelector(Number height = 0.0);
+		~UIIconSelector();
+	
+		void handleEvent(Event *event);
+		void addIcon(String fileName);
+	
+		void selectIndex(unsigned int index);
+		unsigned int getSelectedIndex();
+	
+		void resetSize();
+	
+	protected:
+	
+		std::vector<UIImageButton*> icons;
+	
+		UIBox *bgRect;
+		UIBox *selectorRect;
+		int selectedIndex;
+	
+		Number selectorSize;
+		Number paddingX;
+		Number paddingY;
 };
 

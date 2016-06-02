@@ -23,24 +23,24 @@
 #include "polycode/ide/EntityEditorSettingsView.h"
 
 EntityEditorSettingsView::EntityEditorSettingsView() : UIElement() {
-    entityProps = new PropList("ENTITY SETTINGS");
-    addChild(entityProps);
-    
-    materialsSheet = new LinkedMaterialsSheet();
-    entityProps->addPropSheet(materialsSheet);
-    materialsSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
+	entityProps = new PropList("ENTITY SETTINGS");
+	addChild(entityProps);
+	
+	materialsSheet = new LinkedMaterialsSheet();
+	entityProps->addPropSheet(materialsSheet);
+	materialsSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 
 }
 
 EntityEditorSettingsView::~EntityEditorSettingsView() {
-    
+	
 }
 
 void EntityEditorSettingsView::setEntityInstance(SceneEntityInstance *instance) {
-    materialsSheet->setEntityInstance(instance);
+	materialsSheet->setEntityInstance(instance);
 }
 
 void EntityEditorSettingsView::Resize(Number width, Number height) {
-    entityProps->Resize(width, height);
-    UIElement::Resize(width, height);
+	entityProps->Resize(width, height);
+	UIElement::Resize(width, height);
 }

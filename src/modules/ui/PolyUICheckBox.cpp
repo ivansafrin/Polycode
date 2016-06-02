@@ -33,9 +33,9 @@ UICheckBox::UICheckBox(String caption, bool checked) : UIElement() {
 
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	Number uiScale = conf->getNumericValue("Polycode", "uiScale");
-    
+	
 	String fontName = conf->getStringValue("Polycode", "uiCheckBoxFont");
-	int fontSize = conf->getNumericValue("Polycode", "uiCheckBoxFontSize");	
+	int fontSize = conf->getNumericValue("Polycode", "uiCheckBoxFontSize"); 
 	String checkImage = conf->getStringValue("Polycode", "uiCheckBoxCheckedImage");
 	String uncheckImage = conf->getStringValue("Polycode", "uiCheckBoxUncheckedImage");
 	Number checkboxTextOffsetX = conf->getNumericValue("Polycode", "uiCheckBoxLabelOffsetX");
@@ -44,19 +44,19 @@ UICheckBox::UICheckBox(String caption, bool checked) : UIElement() {
 	this->checked = checked;
 	
 	buttonImageChecked = new UIImage(checkImage);
-    buttonImageChecked->Resize(buttonImageChecked->getWidth() / uiScale, buttonImageChecked->getHeight() / uiScale);
+	buttonImageChecked->Resize(buttonImageChecked->getWidth() / uiScale, buttonImageChecked->getHeight() / uiScale);
 	buttonImageChecked->visible = checked;
 
 	buttonImageUnchecked = new UIImage(uncheckImage);
 	buttonImageUnchecked->visible = !checked;
-    buttonImageUnchecked->Resize(buttonImageUnchecked->getWidth() / uiScale, buttonImageUnchecked->getHeight() / uiScale);
+	buttonImageUnchecked->Resize(buttonImageUnchecked->getWidth() / uiScale, buttonImageUnchecked->getHeight() / uiScale);
 	
 	captionLabel = new UILabel(caption, fontSize, fontName, Label::ANTIALIAS_FULL);
-	captionLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);    
+	captionLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);	   
 	addChild(captionLabel);
 	captionLabel->setPosition(buttonImageChecked->getWidth() + checkboxTextOffsetX, checkboxTextOffsetY);
 	
-	addChild(buttonImageUnchecked);	
+	addChild(buttonImageUnchecked); 
 	addChild(buttonImageChecked);
 	
 	captionLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiDefaultFontColor"));
@@ -110,5 +110,5 @@ void UICheckBox::handleEvent(Event *event) {
 			break;
 		}
 	}
-    UIElement::handleEvent(event);    
+	UIElement::handleEvent(event);	  
 }

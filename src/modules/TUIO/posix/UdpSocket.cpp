@@ -60,8 +60,8 @@ typedef ssize_t socklen_t;
 
 static void SockaddrFromIpEndpointName( struct sockaddr_in& sockAddr, const IpEndpointName& endpoint )
 {
-    memset( (char *)&sockAddr, 0, sizeof(sockAddr ) );
-    sockAddr.sin_family = AF_INET;
+	memset( (char *)&sockAddr, 0, sizeof(sockAddr ) );
+	sockAddr.sin_family = AF_INET;
 
 	sockAddr.sin_addr.s_addr = 
 		(endpoint.address == IpEndpointName::ANY_ADDRESS)
@@ -104,13 +104,13 @@ public:
 		, socket_( -1 )
 	{
 		if( (socket_ = socket( AF_INET, SOCK_DGRAM, 0 )) == -1 ){
-            throw std::runtime_error("unable to create udp socket\n");
-        }
+			throw std::runtime_error("unable to create udp socket\n");
+		}
 
 		int on=1;
 		setsockopt(socket_, SOL_SOCKET, SO_BROADCAST, (char*)&on, sizeof(on));
 		memset( &sendToAddr_, 0, sizeof(sendToAddr_) );
-        sendToAddr_.sin_family = AF_INET;
+		sendToAddr_.sin_family = AF_INET;
 	}
 
 	~Implementation()
@@ -123,23 +123,23 @@ public:
 		assert( isBound_ );
 
 		// first connect the socket to the remote server
-        
-        struct sockaddr_in connectSockAddr;
+		
+		struct sockaddr_in connectSockAddr;
 		SockaddrFromIpEndpointName( connectSockAddr, remoteEndpoint );
-       
-        if (connect(socket_, (struct sockaddr *)&connectSockAddr, sizeof(connectSockAddr)) < 0) {
-            throw std::runtime_error("unable to connect udp socket\n");
-        }
+	   
+		if (connect(socket_, (struct sockaddr *)&connectSockAddr, sizeof(connectSockAddr)) < 0) {
+			throw std::runtime_error("unable to connect udp socket\n");
+		}
 
-        // get the address
+		// get the address
 
-        struct sockaddr_in sockAddr;
-        memset( (char *)&sockAddr, 0, sizeof(sockAddr ) );
-        socklen_t length = sizeof(sockAddr);
-        if (getsockname(socket_, (struct sockaddr *)&sockAddr, &length) < 0) {
-            throw std::runtime_error("unable to getsockname\n");
-        }
-        
+		struct sockaddr_in sockAddr;
+		memset( (char *)&sockAddr, 0, sizeof(sockAddr ) );
+		socklen_t length = sizeof(sockAddr);
+		if (getsockname(socket_, (struct sockaddr *)&sockAddr, &length) < 0) {
+			throw std::runtime_error("unable to getsockname\n");
+		}
+		
 		if( isConnected_ ){
 			// reconnect to the connected address
 			
@@ -166,10 +166,10 @@ public:
 	void Connect( const IpEndpointName& remoteEndpoint )
 	{
 		SockaddrFromIpEndpointName( connectedAddr_, remoteEndpoint );
-       
-        if (connect(socket_, (struct sockaddr *)&connectedAddr_, sizeof(connectedAddr_)) < 0) {
-            throw std::runtime_error("unable to connect udp socket\n");
-        }
+	   
+		if (connect(socket_, (struct sockaddr *)&connectedAddr_, sizeof(connectedAddr_)) < 0) {
+			throw std::runtime_error("unable to connect udp socket\n");
+		}
 
 		isConnected_ = true;
 	}
@@ -178,15 +178,15 @@ public:
 	{
 		assert( isConnected_ );
 
-        send( socket_, data, size, 0 );
+		send( socket_, data, size, 0 );
 	}
 
-    void SendTo( const IpEndpointName& remoteEndpoint, const char *data, int size )
+	void SendTo( const IpEndpointName& remoteEndpoint, const char *data, int size )
 	{
 		sendToAddr_.sin_addr.s_addr = htonl( remoteEndpoint.address );
-        sendToAddr_.sin_port = htons( remoteEndpoint.port );
+		sendToAddr_.sin_port = htons( remoteEndpoint.port );
 
-        sendto( socket_, data, size, 0, (sockaddr*)&sendToAddr_, sizeof(sendToAddr_) );
+		sendto( socket_, data, size, 0, (sockaddr*)&sendToAddr_, sizeof(sendToAddr_) );
 	}
 
 	void Bind( const IpEndpointName& localEndpoint )
@@ -194,24 +194,24 @@ public:
 		struct sockaddr_in bindSockAddr;
 		SockaddrFromIpEndpointName( bindSockAddr, localEndpoint );
 
-        if (bind(socket_, (struct sockaddr *)&bindSockAddr, sizeof(bindSockAddr)) < 0) {
-            throw std::runtime_error("unable to bind udp socket\n");
-        }
+		if (bind(socket_, (struct sockaddr *)&bindSockAddr, sizeof(bindSockAddr)) < 0) {
+			throw std::runtime_error("unable to bind udp socket\n");
+		}
 
 		isBound_ = true;
 	}
 
 	bool IsBound() const { return isBound_; }
 
-    int ReceiveFrom( IpEndpointName& remoteEndpoint, char *data, int size )
+	int ReceiveFrom( IpEndpointName& remoteEndpoint, char *data, int size )
 	{
 		assert( isBound_ );
 
 		struct sockaddr_in fromAddr;
-        socklen_t fromAddrLen = sizeof(fromAddr);
-             	 
-        int result = recvfrom(socket_, data, size, 0,
-                    (struct sockaddr *) &fromAddr, (socklen_t*)&fromAddrLen);
+		socklen_t fromAddrLen = sizeof(fromAddr);
+				 
+		int result = recvfrom(socket_, data, size, 0,
+					(struct sockaddr *) &fromAddr, (socklen_t*)&fromAddrLen);
 		if( result < 0 )
 			return 0;
 
@@ -315,26 +315,26 @@ class SocketReceiveMultiplexer::Implementation{
 	}
 
 public:
-    Implementation()
+	Implementation()
 	{
 		if( pipe(breakPipe_) != 0 )
 			throw std::runtime_error( "creation of asynchronous break pipes failed\n" );
 	}
 
-    ~Implementation()
+	~Implementation()
 	{
 		close( breakPipe_[0] );
 		close( breakPipe_[1] );
 	}
 
-    void AttachSocketListener( UdpSocket *socket, PacketListener *listener )
+	void AttachSocketListener( UdpSocket *socket, PacketListener *listener )
 	{
 		assert( std::find( socketListeners_.begin(), socketListeners_.end(), std::make_pair(listener, socket) ) == socketListeners_.end() );
 		// we don't check that the same socket has been added multiple times, even though this is an error
 		socketListeners_.push_back( std::make_pair( listener, socket ) );
 	}
 
-    void DetachSocketListener( UdpSocket *socket, PacketListener *listener )
+	void DetachSocketListener( UdpSocket *socket, PacketListener *listener )
 	{
 		std::vector< std::pair< PacketListener*, UdpSocket* > >::iterator i = 
 				std::find( socketListeners_.begin(), socketListeners_.end(), std::make_pair(listener, socket) );
@@ -343,7 +343,7 @@ public:
 		socketListeners_.erase( i );
 	}
 
-    void AttachPeriodicTimerListener( int periodMilliseconds, TimerListener *listener )
+	void AttachPeriodicTimerListener( int periodMilliseconds, TimerListener *listener )
 	{
 		timerListeners_.push_back( AttachedTimerListener( periodMilliseconds, periodMilliseconds, listener ) );
 	}
@@ -353,7 +353,7 @@ public:
 		timerListeners_.push_back( AttachedTimerListener( initialDelayMilliseconds, periodMilliseconds, listener ) );
 	}
 
-    void DetachPeriodicTimerListener( TimerListener *listener )
+	void DetachPeriodicTimerListener( TimerListener *listener )
 	{
 		std::vector< AttachedTimerListener >::iterator i = timerListeners_.begin();
 		while( i != timerListeners_.end() ){
@@ -367,7 +367,7 @@ public:
 		timerListeners_.erase( i );
 	}
 
-    void Run()
+	void Run()
 	{
 		break_ = false;
 
@@ -424,7 +424,7 @@ public:
 			}
 
 			if( select( fdmax + 1, &tempfds, 0, 0, timeoutPtr ) < 0 && errno != EINTR ){
-   				if (!break_) throw std::runtime_error("select failed\n");
+				if (!break_) throw std::runtime_error("select failed\n");
 				else break;
 			}
 
@@ -472,12 +472,12 @@ public:
 		delete [] data;
 	}
 
-    void Break()
+	void Break()
 	{
 		break_ = true;
 	}
 
-    void AsynchronousBreak()
+	void AsynchronousBreak()
 	{
 		break_ = true;
 

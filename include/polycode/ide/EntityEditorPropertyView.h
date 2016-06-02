@@ -30,37 +30,37 @@ using namespace Polycode;
 
 
 class EntityEditorPropertyView : public UIElement {
-    public:
-    
-        EntityEditorPropertyView();
-        ~EntityEditorPropertyView();
-    
-        void setEntityInstance(SceneEntityInstance *instance);
-        void setEntity(Entity *entity, bool rootEntityMode = false);
-        void handleEvent(Event *event);
-        void updateShaderOptions();
-    
-        PropList *getEntityProps();
-        void Resize(Number width, Number height);
-    
-    protected:
-    
-        Entity *targetEntity;
-        PropList *entityProps;
-    
-        TransformSheet *transformSheet;    
-        EntitySheet *entitySheet;
-        MaterialPropSheet *materialSheet;
-        ScenePrimitiveSheet *primitiveSheet;
-        SceneLightSheet *lightSheet;
-        ParticleEmitterSheet *particleSheet;
-        SceneLabelSheet *labelSheet;
-        SceneSpriteSheet *spriteSheet;
-        SoundSheet *soundSheet;
-        SceneCurveSheet *curveSheet;
-        CameraSheet *cameraSheet;
-        EntityPropSheet *propSheet;
-        SceneMeshSheet *sceneMeshSheet;    
-        ShaderOptionsSheet *shaderOptionsSheet;
+	public:
+	
+		EntityEditorPropertyView();
+		~EntityEditorPropertyView();
+	
+		void setEntityInstance(SceneEntityInstance *instance);
+		void setEntity(Entity *entity, bool rootEntityMode = false);
+		void handleEvent(Event *event);
+		void updateShaderOptions();
+	
+		PropList *getEntityProps();
+		void Resize(Number width, Number height);
+	
+	protected:
+	
+		Entity *targetEntity;
+		PropList *entityProps;
+	
+		TransformSheet *transformSheet;	   
+		EntitySheet *entitySheet;
+		MaterialPropSheet *materialSheet;
+		ScenePrimitiveSheet *primitiveSheet;
+		SceneLightSheet *lightSheet;
+		ParticleEmitterSheet *particleSheet;
+		SceneLabelSheet *labelSheet;
+		SceneSpriteSheet *spriteSheet;
+		SoundSheet *soundSheet;
+		SceneCurveSheet *curveSheet;
+		CameraSheet *cameraSheet;
+		EntityPropSheet *propSheet;
+		SceneMeshSheet *sceneMeshSheet;	   
+		ShaderOptionsSheet *shaderOptionsSheet;
 };
 

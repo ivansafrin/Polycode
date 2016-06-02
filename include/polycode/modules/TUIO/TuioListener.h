@@ -53,49 +53,49 @@ namespace TUIO {
 		virtual ~TuioListener(){};
 		
 		/**
-		 * This callback method is invoked by the TuioClient when a new TuioObject is added to the session.   
+		 * This callback method is invoked by the TuioClient when a new TuioObject is added to the session.	  
 		 *
-		 * @param  tobj  the TuioObject reference associated to the addTuioObject event
+		 * @param  tobj	 the TuioObject reference associated to the addTuioObject event
 		 */
 		virtual void addTuioObject(TuioObject *tobj)=0;
 
 		/**
-		 * This callback method is invoked by the TuioClient when an existing TuioObject is updated during the session.   
+		 * This callback method is invoked by the TuioClient when an existing TuioObject is updated during the session.	  
 		 *
-		 * @param  tobj  the TuioObject reference associated to the updateTuioObject event
+		 * @param  tobj	 the TuioObject reference associated to the updateTuioObject event
 		 */
 		virtual void updateTuioObject(TuioObject *tobj)=0;
 		
 		/**
-		 * This callback method is invoked by the TuioClient when an existing TuioObject is removed from the session.   
+		 * This callback method is invoked by the TuioClient when an existing TuioObject is removed from the session.	
 		 *
-		 * @param  tobj  the TuioObject reference associated to the removeTuioObject event
+		 * @param  tobj	 the TuioObject reference associated to the removeTuioObject event
 		 */
 		virtual void removeTuioObject(TuioObject *tobj)=0;
 		
 		/**
-		 * This callback method is invoked by the TuioClient when a new TuioCursor is added to the session.   
+		 * This callback method is invoked by the TuioClient when a new TuioCursor is added to the session.	  
 		 *
-		 * @param  tcur  the TuioCursor reference associated to the addTuioCursor event
+		 * @param  tcur	 the TuioCursor reference associated to the addTuioCursor event
 		 */
 		virtual void addTuioCursor(TuioCursor *tcur)=0;
 
 		/**
-		 * This callback method is invoked by the TuioClient when an existing TuioCursor is updated during the session.   
+		 * This callback method is invoked by the TuioClient when an existing TuioCursor is updated during the session.	  
 		 *
-		 * @param  tcur  the TuioCursor reference associated to the updateTuioCursor event
+		 * @param  tcur	 the TuioCursor reference associated to the updateTuioCursor event
 		 */
 		virtual void updateTuioCursor(TuioCursor *tcur)=0;
 
 		/**
-		 * This callback method is invoked by the TuioClient when an existing TuioCursor is removed from the session.   
+		 * This callback method is invoked by the TuioClient when an existing TuioCursor is removed from the session.	
 		 *
-		 * @param  tcur  the TuioCursor reference associated to the removeTuioCursor event
+		 * @param  tcur	 the TuioCursor reference associated to the removeTuioCursor event
 		 */
 		virtual void removeTuioCursor(TuioCursor *tcur)=0;
 		
 		/**
-		 * This callback method is invoked by the TuioClient to mark the end of a received TUIO message bundle.   
+		 * This callback method is invoked by the TuioClient to mark the end of a received TUIO message bundle.	  
 		 *
 		 * @param  ftime  the TuioTime associated to the current TUIO message bundle
 		 */

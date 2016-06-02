@@ -45,50 +45,50 @@ Dest[i] = (char)Source[i];
 #endif
 
 void addFileToZip(struct archive *a, String filePath, String pathInZip, bool silent)  {
-    struct archive_entry *entry;
-    struct stat st;
-    int len;
-    FILE *fd;
-    char buff[8192];
-    
-    stat(filePath.c_str(), &st);
-    
-    entry = archive_entry_new();
-    archive_entry_set_pathname(entry, pathInZip.c_str());
-    archive_entry_set_size(entry, st.st_size);
-    archive_entry_set_filetype(entry, AE_IFREG);
-    archive_entry_set_perm(entry, 0644);
-    archive_write_header(a, entry);
-    
-    fd = fopen(filePath.c_str(), "rb");
-    if(fd) {
-        len = fread(buff, 1, sizeof(buff), fd);
-        while ( len > 0 ) {
-            archive_write_data(a, buff, len);
-            len = fread(buff, 1, sizeof(buff), fd);
-        }
-        fclose(fd);
-    }
-    archive_entry_free(entry);
-    
+	struct archive_entry *entry;
+	struct stat st;
+	int len;
+	FILE *fd;
+	char buff[8192];
+	
+	stat(filePath.c_str(), &st);
+	
+	entry = archive_entry_new();
+	archive_entry_set_pathname(entry, pathInZip.c_str());
+	archive_entry_set_size(entry, st.st_size);
+	archive_entry_set_filetype(entry, AE_IFREG);
+	archive_entry_set_perm(entry, 0644);
+	archive_write_header(a, entry);
+	
+	fd = fopen(filePath.c_str(), "rb");
+	if(fd) {
+		len = fread(buff, 1, sizeof(buff), fd);
+		while ( len > 0 ) {
+			archive_write_data(a, buff, len);
+			len = fread(buff, 1, sizeof(buff), fd);
+		}
+		fclose(fd);
+	}
+	archive_entry_free(entry);
+	
 }
 
 void addFolderToZip(Core *core, struct archive *a, String folderPath, String parentFolder, bool silent) {
-    
-    std::vector<OSFileEntry> files = core->parseFolder(folderPath, false);
-    
+	
+	std::vector<OSFileEntry> files = core->parseFolder(folderPath, false);
+	
 	for(int i=0; i < files.size(); i++) {
 		if(files[i].type == OSFileEntry::TYPE_FILE) {
-            
+			
 			String pathInZip;
 			if(parentFolder == "") {
 				pathInZip = files[i].name;
 			} else {
 				pathInZip = parentFolder + "/" + files[i].name;
 			}
-            
+			
 			addFileToZip(a, files[i].fullPath, pathInZip, silent);
-            
+			
 		} else {
 			if(parentFolder == "") {
 				addFolderToZip(core, a, files[i].fullPath.c_str(), files[i].name, silent);
@@ -101,13 +101,13 @@ void addFolderToZip(Core *core, struct archive *a, String folderPath, String par
 
 
 int main(int argc, char **argv) {
-    
-    Core *core = new DummyCore();
-    
+	
+	Core *core = new DummyCore();
+	
 	PHYSFS_init(argv[0]);
 
 #if defined(__APPLE__) && defined(__MACH__)
-    uint32_t bufsize = 2048;
+	uint32_t bufsize = 2048;
 	char path[bufsize];
 	_NSGetExecutablePath(path, &bufsize);
 
@@ -292,12 +292,12 @@ int main(int argc, char **argv) {
 		}
 	}
 
-    struct archive *a;
-    
-    a = archive_write_new();
-    archive_write_set_format_zip(a);
-    archive_write_open_filename(a, getArg("--out").c_str());
-    
+	struct archive *a;
+	
+	a = archive_write_new();
+	archive_write_set_format_zip(a);
+	archive_write_open_filename(a, getArg("--out").c_str());
+	
 	//zipFile z = zipOpen(getArg("--out").c_str(), 0);
 	
 
@@ -382,8 +382,8 @@ int main(int argc, char **argv) {
 	runInfo.saveToXML("runinfo_tmp_zzzz.polyrun");
 	addFileToZip(a, "runinfo_tmp_zzzz.polyrun", "runinfo.polyrun", true);
 	
-    archive_write_close(a);
-    archive_write_free(a);
+	archive_write_close(a);
+	archive_write_free(a);
 
 #ifdef _WINDOWS
 	char *buffer = _getcwd(NULL, 0);
@@ -391,7 +391,7 @@ int main(int argc, char **argv) {
 	free(buffer);
 	OSBasics::removeItem(workingDir+"/runinfo_tmp_zzzz.polyrun");
 #else
-    core->removeDiskItem("runinfo_tmp_zzzz.polyrun");
+	core->removeDiskItem("runinfo_tmp_zzzz.polyrun");
 #endif
 	return 0;
 }

@@ -41,7 +41,7 @@ ExampleBrowserWindow::ExampleBrowserWindow() : UIWindow(L"Example Browser", 320,
 	
 	
 	addChild(templateContainer);		
-	templateContainer->setPosition(padding,topPadding+padding);	
+	templateContainer->setPosition(padding,topPadding+padding); 
 	templateContainer->getRootNode()->toggleCollapsed();
 	
 	templateContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
@@ -92,13 +92,13 @@ void ExampleBrowserWindow::handleEvent(Event *event) {
 	if(event->getEventType() == "UIEvent") {
 		if(event->getEventCode() == UIEvent::CLICK_EVENT) {
 			UITree *node = templateContainer->getRootNode()->getSelectedNode();
-            if(node) {
-                ExampleTemplateUserData *data = (ExampleTemplateUserData*)node->getUserData();
-                if(event->getDispatcher() == okButton && data->type == 1) {
-                    dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
-                }
+			if(node) {
+				ExampleTemplateUserData *data = (ExampleTemplateUserData*)node->getUserData();
+				if(event->getDispatcher() == okButton && data->type == 1) {
+					dispatchEvent(new UIEvent(), UIEvent::OK_EVENT);
+				}
 			}
-            
+			
 			if(event->getDispatcher() == cancelButton) {
 				dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);				
 			}									

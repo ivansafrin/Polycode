@@ -49,7 +49,7 @@ void Data::setFromString(const String& str, int encoding) {
 
 bool Data::saveToFile(const String& fileName) const {
 	
-    Polycode::CoreFile *file = Services()->getCore()->openFile(fileName, "wb");
+	Polycode::CoreFile *file = Services()->getCore()->openFile(fileName, "wb");
 	
 	if(!file) {
 		Services()->getCore()->closeFile(file);

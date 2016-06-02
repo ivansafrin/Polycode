@@ -46,7 +46,7 @@ namespace Polycode {
 			
 			/**
 			* Default constructor.
-			*/ 			
+			*/			
 			Quaternion();
 			~Quaternion();
 			
@@ -95,7 +95,7 @@ namespace Polycode {
 			Quaternion Log () const;
 			Quaternion Exp () const;	
 			Number Norm () const;
-			Number Normalize();	
+			Number Normalize(); 
 			Quaternion operator+ (const Quaternion& rkQ) const;
 			Quaternion operator* (const Quaternion& rkQ) const;
 			Quaternion operator* (Number fScalar) const;
@@ -118,8 +118,8 @@ namespace Polycode {
 			}
 			
 			void createFromMatrix(const Matrix4& matrix) {
-				Number  tr, s, q[4];
-				int    i, j, k;
+				Number	tr, s, q[4];
+				int	   i, j, k;
 				
 				static const int nxt[3] = {1, 2, 0};			
 				
@@ -240,14 +240,14 @@ namespace Polycode {
 			}
 
 			Vector3 toEulerAngles () const {
-                return Vector3(atan2( 2 * ( w * x + y * z), 1 - 2 * (x * x + y * y)), asin(2 * ( w * y - z * x)), atan2( 2 * ( w * z + x * y), 1 - 2 * (y * y + z * z) ));
+				return Vector3(atan2( 2 * ( w * x + y * z), 1 - 2 * (x * x + y * y)), asin(2 * ( w * y - z * x)), atan2( 2 * ( w * z + x * y), 1 - 2 * (y * y + z * z) ));
 			}
 
 			//-----------------------------------------------------------------------
 			void toAngleAxis (Number& rfAngle, Vector3& rkAxis) 
 			{
 				// The quaternion representing the rotation is
-				//   q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k)
+				//	 q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k)
 
 				Number fSqrLength = x*x+y*y+z*z;
 				if ( fSqrLength > 0.0 )

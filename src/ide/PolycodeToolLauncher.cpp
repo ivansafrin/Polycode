@@ -49,7 +49,7 @@ void PolycodeRunner::runThread() {
 	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
 
 #if defined(__APPLE__) && defined(__MACH__)
-	String command = "../MacOS/PolycodePlayer";	
+	String command = "../MacOS/PolycodePlayer"; 
 	String inFolder = polycodeBasePath+"/Standalone/Player/PolycodePlayer.app/Contents/Resources";
 	String args = "\""+polyappPath+"\"";
 #elif defined _WINDOWS
@@ -134,40 +134,40 @@ String PolycodeToolLauncher::importAssets(String sourceFile, String inFolder, bo
 	if(generateTangents) {
 		args = "-t "+args;
 	}
-    if(writeNormals) {
+	if(writeNormals) {
 		args = "-n "+args;
-    }
-    if(writeTangents) {
+	}
+	if(writeTangents) {
 		args = "-g "+args;
-    }
-    if(writeColors) {
+	}
+	if(writeColors) {
 		args = "-c "+args;
-    }
-    if(writeBoneWeights) {
+	}
+	if(writeBoneWeights) {
 		args = "-w "+args;
-    }
-    if(writeUVs) {
+	}
+	if(writeUVs) {
 		args = "-u "+args;
-    }
-    if(writeSecondaryUVs) {
+	}
+	if(writeSecondaryUVs) {
 		args = "-v "+args;
-    }
-    if(exportScene) {
+	}
+	if(exportScene) {
 		args = "-e "+args;
-    }
-    if(generateMaterialFile) {
+	}
+	if(generateMaterialFile) {
 		args = "-f "+args;
-    }
-    if(overrideMaterials) {
+	}
+	if(overrideMaterials) {
 		args = "-o \""+materialOverrideName+"\" "+args;
-    }
-    if(specifyBaseAssetPath) {
-		args = "-x \""+baseAssetPath+"\" "+args;        
-    }
+	}
+	if(specifyBaseAssetPath) {
+		args = "-x \""+baseAssetPath+"\" "+args;		
+	}
 	if(prefix != "") {
 		args = "-p \""+prefix+"\" "+args;
 	}
-    
+	
 
 	
 #ifdef _WINDOWS

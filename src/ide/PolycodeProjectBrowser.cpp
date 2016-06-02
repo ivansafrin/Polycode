@@ -48,7 +48,7 @@ PolycodeProjectBrowser::PolycodeProjectBrowser(PolycodeProject *project) : UIEle
 	BrowserUserData *data = new BrowserUserData();
 	data->type = 0;
 	data->parentProject = project;
-	treeContainer->getRootNode()->setUserData((void*) data)	;
+	treeContainer->getRootNode()->setUserData((void*) data) ;
 
 	addChild(treeContainer);		
 	selectedData = NULL;
@@ -110,7 +110,7 @@ void PolycodeProjectBrowser::handleEvent(Event *event) {
 	if(event->getDispatcher() == treeContainer->getRootNode()) {
 		if(event->getEventCode() == UITreeEvent::SELECTED_EVENT){ 
 			BrowserUserData *data = (BrowserUserData *)treeContainer->getRootNode()->getSelectedNode()->getUserData();
-			selectedData =  data;
+			selectedData =	data;
 			dispatchEvent(new Event(), Event::CHANGE_EVENT);
 		}
 	}
@@ -142,7 +142,7 @@ void parseOpenNodesIntoEntry(ObjectEntry *entry, UITree *node, bool addNewNode) 
 	bool hasOpenNodes = false;
 	for(int i=0; i < node->getNumTreeChildren(); i++) {
 		UITree *child = node->getTreeChild(i);	
-		if(!child->isCollapsed()) {	
+		if(!child->isCollapsed()) { 
 			hasOpenNodes = true;
 		}
 	}
@@ -170,7 +170,7 @@ ObjectEntry *PolycodeProjectBrowser::getBrowserConfig() {
 	ObjectEntry *configEntry = new ObjectEntry();	
 	configEntry->name = "project_browser";
 	
-	configEntry->addChild("width", getWidth());	
+	configEntry->addChild("width", getWidth()); 
 	ObjectEntry *openNodes = configEntry->addChild("open_nodes");
 	parseOpenNodesIntoEntry(openNodes, treeContainer->getRootNode(), false);
 	
@@ -206,31 +206,31 @@ void PolycodeProjectBrowser::applyBrowserConfig(ObjectEntry *entry) {
 }
 
 String PolycodeProjectBrowser::getIconForExtension(String extension) {
-    if(extension == "mesh") {
-        return "treeIcons/mesh.png";
-    } else if(extension == "png" || extension == "hdr" || extension == "jpg" || extension == "tga" || extension == "psd") {
-        return "treeIcons/image.png";
-    } else if(extension == "frag" || extension == "vert") {
-        return "treeIcons/shader.png";
-    } else if(extension == "otf" || extension == "ttf") {
-        return "treeIcons/font.png";
-    } else if(extension == "skeleton") {
-        return "treeIcons/skeleton.png";
-    } else if(extension == "anim") {
-        return "treeIcons/animation.png";
-    } else if(extension == "ogg" || extension == "wav") {
-        return "treeIcons/sound.png";
-    } else if(extension == "entity") {
-        return "treeIcons/entity.png";
-    } else if(extension == "mat") {
-        return "treeIcons/materials.png";
-    } else if(extension == "sprite" || extension == "sprites") {
-        return "treeIcons/sprites.png";
-    } else if(extension == "polyproject") {
-        return "treeIcons/project.png";
-    } else {
-        return "file.png";
-    }
+	if(extension == "mesh") {
+		return "treeIcons/mesh.png";
+	} else if(extension == "png" || extension == "hdr" || extension == "jpg" || extension == "tga" || extension == "psd") {
+		return "treeIcons/image.png";
+	} else if(extension == "frag" || extension == "vert") {
+		return "treeIcons/shader.png";
+	} else if(extension == "otf" || extension == "ttf") {
+		return "treeIcons/font.png";
+	} else if(extension == "skeleton") {
+		return "treeIcons/skeleton.png";
+	} else if(extension == "anim") {
+		return "treeIcons/animation.png";
+	} else if(extension == "ogg" || extension == "wav") {
+		return "treeIcons/sound.png";
+	} else if(extension == "entity") {
+		return "treeIcons/entity.png";
+	} else if(extension == "mat") {
+		return "treeIcons/materials.png";
+	} else if(extension == "sprite" || extension == "sprites") {
+		return "treeIcons/sprites.png";
+	} else if(extension == "polyproject") {
+		return "treeIcons/project.png";
+	} else {
+		return "file.png";
+	}
 }
 
 void PolycodeProjectBrowser::parseFolderIntoNode(UITree *node, String spath) {
@@ -252,7 +252,7 @@ void PolycodeProjectBrowser::parseFolderIntoNode(UITree *node, String spath) {
 				BrowserUserData *data = new BrowserUserData();
 				data->fileEntry = entry;
 				UITree *newChild = node->addTreeChild("folder.png", entry.name, (void*) data);
-				data->type = 2;	
+				data->type = 2; 
 				data->parentProject = project;
 				parseFolderIntoNode(newChild, entry.fullPath);				
 			} else {

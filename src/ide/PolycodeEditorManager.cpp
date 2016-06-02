@@ -23,7 +23,7 @@
 #include "polycode/ide/PolycodeEditorManager.h"
 
 
-PolycodeEditorManager::PolycodeEditorManager()  : EventDispatcher() {
+PolycodeEditorManager::PolycodeEditorManager()	: EventDispatcher() {
 	currentEditor = NULL;
 }
 
@@ -71,8 +71,8 @@ void PolycodeEditorManager::destroyEditor(PolycodeEditor* editor) {
 
 PolycodeEditor *PolycodeEditorManager::openFile(OSFileEntry file) {
 
-    // NOCMAKE_TODO:
-    /*
+	// NOCMAKE_TODO:
+	/*
 	if(!Services()->getCore()->fileExists(file.fullPath)) {
 		return NULL;
 	}

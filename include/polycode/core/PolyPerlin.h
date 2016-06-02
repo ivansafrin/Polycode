@@ -52,7 +52,7 @@ public:
 	/**
 	* Returns noise value at the specified coordinate.
 	* @param x Horizontal coordinate.
-	* @param y Vertical coordinate.	
+	* @param y Vertical coordinate. 
 	*/ 
 
 	Number Get(Number x,Number y) {
@@ -76,27 +76,27 @@ public:
 
 
 protected:
-  void init_perlin(int n,Number p);
-  Number perlin_noise_2D(Number vec[2]);
-  Number perlin_noise_3D(Number vec[2]);
+	void init_perlin(int n,Number p);
+	Number perlin_noise_2D(Number vec[2]);
+	Number perlin_noise_3D(Number vec[2]);
   
-  Number noise1(Number arg);
-  Number noise2(Number vec[2]);
-  Number noise3(Number vec[3]);
-  void normalize2(Number v[2]);
-  void normalize3(Number v[3]);
-  void init(void);
+	Number noise1(Number arg);
+	Number noise2(Number vec[2]);
+	Number noise3(Number vec[3]);
+	void normalize2(Number v[2]);
+	void normalize3(Number v[3]);
+	void init(void);
 
-  int   mOctaves;
-  Number mFrequency;
-  Number mAmplitude;
-  int   mSeed;
+	int	mOctaves;
+	Number mFrequency;
+	Number mAmplitude;
+	int	mSeed;
 
-  int p[SAMPLE_SIZE + SAMPLE_SIZE + 2];
-  Number g3[SAMPLE_SIZE + SAMPLE_SIZE + 2][3];
-  Number g2[SAMPLE_SIZE + SAMPLE_SIZE + 2][2];
-  Number g1[SAMPLE_SIZE + SAMPLE_SIZE + 2];
-  bool  mStart;
+	int p[SAMPLE_SIZE + SAMPLE_SIZE + 2];
+	Number g3[SAMPLE_SIZE + SAMPLE_SIZE + 2][3];
+	Number g2[SAMPLE_SIZE + SAMPLE_SIZE + 2][2];
+	Number g1[SAMPLE_SIZE + SAMPLE_SIZE + 2];
+	bool	mStart;
 
 };
 

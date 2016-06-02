@@ -36,5 +36,5 @@ class PolycodeWindowsPlayer : public PolycodePlayer {
 	
 	protected:
 
-		PolycodeView *view;	
+		PolycodeView *view; 
 };

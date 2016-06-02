@@ -40,7 +40,7 @@ ExportProjectWindow::ExportProjectWindow() : UIWindow(L"Publish Project", 400, 3
 
 	
 	locationSelectButton = new UIButton(L"Choose...", 100);
-	locationSelectButton->addEventListener(this, UIEvent::CLICK_EVENT);	
+	locationSelectButton->addEventListener(this, UIEvent::CLICK_EVENT); 
 	addChild(locationSelectButton);
 	locationSelectButton->setPosition(padding, projectLocationInput->getPosition().y+projectLocationInput->getHeight()+5);
 
@@ -95,7 +95,7 @@ void ExportProjectWindow::resetForm() {
 	projectLocationInput->setText(CoreServices::getInstance()->getCore()->getUserHomeDirectory()+"/Documents/Polycode");
 	macCheckBox->setChecked(false);
 	winCheckBox->setChecked(false);
-	linCheckBox->setChecked(false);	
+	linCheckBox->setChecked(false); 
 */
 }
 

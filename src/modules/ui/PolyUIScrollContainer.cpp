@@ -120,24 +120,24 @@ UIVScrollBar *UIScrollContainer::getVScrollBar() { return vScrollBar; }
 UIHScrollBar *UIScrollContainer::getHScrollBar() { return hScrollBar; }
 
 void UIScrollContainer::setContentSize(Number newContentWidth, Number newContentHeight) {
-    
-    if(newContentWidth < 1.0)
-        newContentWidth = 1.0;
-    if(newContentHeight < 1.0)
-        newContentHeight = 1.0;
+	
+	if(newContentWidth < 1.0)
+		newContentWidth = 1.0;
+	if(newContentHeight < 1.0)
+		newContentHeight = 1.0;
 
 
 	contentHeight = newContentHeight;
 	contentWidth = newContentWidth;
 	
-	vScrollBar->setHandleRatio(getHeight() / newContentHeight);	
+	vScrollBar->setHandleRatio(getHeight() / newContentHeight); 
 	hScrollBar->setHandleRatio(getWidth() / newContentWidth);	
 	
 	if(hasVScroll) {
 		if((getHeight() / newContentHeight) >= 1) {
 			vScrollBar->enabled = false;
 			vScrollBar->scrollTo(0);
-            scrollChild->setPositionY(0.0);
+			scrollChild->setPositionY(0.0);
 		} else {
 			vScrollBar->enabled = true;		
 		}
@@ -147,7 +147,7 @@ void UIScrollContainer::setContentSize(Number newContentWidth, Number newContent
 		if((getWidth() / newContentWidth) >= 1) {
 			hScrollBar->enabled = false;
 			hScrollBar->scrollTo(0);
-            scrollChild->setPositionX(0.0);
+			scrollChild->setPositionX(0.0);
 		} else {
 			hScrollBar->enabled = true;		
 		}
@@ -168,9 +168,9 @@ void UIScrollContainer::setScrollValue(Number xScroll, Number yScroll) {
 		
 	hScrollBar->scrollTo(xScroll);
 	vScrollBar->scrollTo(yScroll);
-    
-    vScrollBar->dispatchEvent(new Event(), Event::CHANGE_EVENT);
-    hScrollBar->dispatchEvent(new Event(), Event::CHANGE_EVENT);
+	
+	vScrollBar->dispatchEvent(new Event(), Event::CHANGE_EVENT);
+	hScrollBar->dispatchEvent(new Event(), Event::CHANGE_EVENT);
 }
 
 void UIScrollContainer::scrollVertical(Number amount) {
@@ -200,20 +200,20 @@ void UIScrollContainer::handleEvent(Event *event) {
 	if(event->getDispatcher() == vScrollBar) {
 		if(event->getEventCode() == Event::CHANGE_EVENT) {
 			scrollChild->setPositionY(floor(((-contentHeight+getHeight()) )*vScrollBar->getScrollValue()));
-            if(scrollChild->getPosition().y > 0) {
+			if(scrollChild->getPosition().y > 0) {
 				scrollChild->setPositionY(0);
-            }
-            dispatchEvent(new Event(), Event::CHANGE_EVENT);
+			}
+			dispatchEvent(new Event(), Event::CHANGE_EVENT);
 		}
 	}
 	
 	if(event->getDispatcher() == hScrollBar) {
 		if(event->getEventCode() == Event::CHANGE_EVENT) {
 			scrollChild->setPositionX(floor(((-contentWidth+getWidth()) )*hScrollBar->getScrollValue()));
-            if(scrollChild->getPosition().x > 0) {
+			if(scrollChild->getPosition().x > 0) {
 				scrollChild->setPositionX(0);
-            }
-            dispatchEvent(new Event(), Event::CHANGE_EVENT);
+			}
+			dispatchEvent(new Event(), Event::CHANGE_EVENT);
 		}
 	}
 	

@@ -88,7 +88,7 @@ Image::Image(Image *copyImage) {
 }
 
 Image::Image(char *data, int width, int height, int type) {
-	setPixelType(type);	
+	setPixelType(type); 
 	imageData = (char*)malloc(width*height*pixelSize);
 	memcpy(imageData, data, width*height*pixelSize);
 	this->width = width;
@@ -184,7 +184,7 @@ void Image::perlinNoise(int seed, bool alpha) {
 	Number noiseVal;
 	
 	for(int i=0; i < width*height;i++) {
-			noiseVal = fabs(1.0f/perlin.Get( 0.1+(0.9f/((Number)width)) * (i%width), (1.0f/((Number)height)) *   (i - (i%width))));
+			noiseVal = fabs(1.0f/perlin.Get( 0.1+(0.9f/((Number)width)) * (i%width), (1.0f/((Number)height)) *	 (i - (i%width))));
 			if(alpha)
 				pixelColor.setColor(noiseVal, noiseVal, noiseVal, noiseVal);
 			else
@@ -408,28 +408,28 @@ void Image::fill(const Color &color) {
 }
 
 bool Image::saveImage(const String &fileName) {
-    return savePNG(fileName);
+	return savePNG(fileName);
 }
 
 bool Image::savePNG(const String &fileName) {
-    unsigned char *png = NULL;
-    size_t pngsize;
-    
-    unsigned error = lodepng_encode32(&png, &pngsize, (const unsigned char*) imageData, width, height);
-    if(!error) {
-        CoreFile *file = Services()->getCore()->openFile(fileName, "wb");
-        if(file) {
-            file->write(png, pngsize, 1);
-            free(png);
-            return true;
-        } else {
-            free(png);
-            return false;
-        }
-    } else {
-        free(png);
-        return false;
-    }
+	unsigned char *png = NULL;
+	size_t pngsize;
+	
+	unsigned error = lodepng_encode32(&png, &pngsize, (const unsigned char*) imageData, width, height);
+	if(!error) {
+		CoreFile *file = Services()->getCore()->openFile(fileName, "wb");
+		if(file) {
+			file->write(png, pngsize, 1);
+			free(png);
+			return true;
+		} else {
+			free(png);
+			return false;
+		}
+	} else {
+		free(png);
+		return false;
+	}
 }
 
 void Image::premultiplyAlpha() {
@@ -448,7 +448,7 @@ void Image::premultiplyAlpha() {
 			Number r = ((Number)tr)/255.0f;
 			Number g = ((Number)tg)/255.0f;
 			Number b = ((Number)tb)/255.0f;
-			Number a = ((Number)ta)/255.0f;	
+			Number a = ((Number)ta)/255.0f; 
 
 			r *= a;
 			g *= a;
@@ -467,7 +467,7 @@ void Image::premultiplyAlpha() {
 }
 
 bool Image::loadImage(const String& fileName) {
-    
+	
 	String extension;
 	size_t found;
 	found=fileName.rfind(".");
@@ -477,62 +477,62 @@ bool Image::loadImage(const String& fileName) {
 		extension = "";
 	}
 
-    if(extension == "hdr") {
-        return loadHDR(fileName);
-    } else if(extension == "png" || extension == "jpg" || extension == "tga" || extension == "psd") {
-        return loadSTB(fileName);
-    } else {
-        Logger::log("Error: Invalid image format.\n");
-        return false;
-    }
+	if(extension == "hdr") {
+		return loadHDR(fileName);
+	} else if(extension == "png" || extension == "jpg" || extension == "tga" || extension == "psd") {
+		return loadSTB(fileName);
+	} else {
+		Logger::log("Error: Invalid image format.\n");
+		return false;
+	}
 }
 
 inline hfloat Image::convertFloatToHFloat(float f) {
-    float _f = f;
-    uint32_t x = *(uint32_t *)(&_f);
-    uint32_t sign = (uint32_t)(x >> 31);
-    uint32_t mantissa;
-    uint32_t exp;
-    hfloat          hf;
-    
-    // get mantissa
-    mantissa = x & ((1 << 23) - 1);
-    // get exponent bits
-    exp = x & FLOAT_MAX_BIASED_EXP;
-    if (exp >= HALF_FLOAT_MAX_BIASED_EXP_AS_SINGLE_FP_EXP)
-    {
-        // check if the original single precision float number is a NaN
-        if (mantissa && (exp == FLOAT_MAX_BIASED_EXP))
-        {
-            // we have a single precision NaN
-            mantissa = (1 << 23) - 1;
-        }
-        else
-        {
-            // 16-bit half-float representation stores number as Inf
-            mantissa = 0;
-        }
-        hf = (((hfloat)sign) << 15) | (hfloat)(HALF_FLOAT_MAX_BIASED_EXP) |
-        (hfloat)(mantissa >> 13);
-    }
-    // check if exponent is <= -15
-    else if (exp <= HALF_FLOAT_MIN_BIASED_EXP_AS_SINGLE_FP_EXP)
-    {
-        
-        // store a denorm half-float value or zero
-        exp = (HALF_FLOAT_MIN_BIASED_EXP_AS_SINGLE_FP_EXP - exp) >> 23;
-        mantissa >>= (14 + exp);
-        
-        hf = (((hfloat)sign) << 15) | (hfloat)(mantissa);
-    }
-    else
-    {
-        hf = (((hfloat)sign) << 15) |
-        (hfloat)((exp - HALF_FLOAT_MIN_BIASED_EXP_AS_SINGLE_FP_EXP) >> 13) |
-        (hfloat)(mantissa >> 13);
-    }
-    
-    return hf;
+	float _f = f;
+	uint32_t x = *(uint32_t *)(&_f);
+	uint32_t sign = (uint32_t)(x >> 31);
+	uint32_t mantissa;
+	uint32_t exp;
+	hfloat			hf;
+	
+	// get mantissa
+	mantissa = x & ((1 << 23) - 1);
+	// get exponent bits
+	exp = x & FLOAT_MAX_BIASED_EXP;
+	if (exp >= HALF_FLOAT_MAX_BIASED_EXP_AS_SINGLE_FP_EXP)
+	{
+		// check if the original single precision float number is a NaN
+		if (mantissa && (exp == FLOAT_MAX_BIASED_EXP))
+		{
+			// we have a single precision NaN
+			mantissa = (1 << 23) - 1;
+		}
+		else
+		{
+			// 16-bit half-float representation stores number as Inf
+			mantissa = 0;
+		}
+		hf = (((hfloat)sign) << 15) | (hfloat)(HALF_FLOAT_MAX_BIASED_EXP) |
+		(hfloat)(mantissa >> 13);
+	}
+	// check if exponent is <= -15
+	else if (exp <= HALF_FLOAT_MIN_BIASED_EXP_AS_SINGLE_FP_EXP)
+	{
+		
+		// store a denorm half-float value or zero
+		exp = (HALF_FLOAT_MIN_BIASED_EXP_AS_SINGLE_FP_EXP - exp) >> 23;
+		mantissa >>= (14 + exp);
+		
+		hf = (((hfloat)sign) << 15) | (hfloat)(mantissa);
+	}
+	else
+	{
+		hf = (((hfloat)sign) << 15) |
+		(hfloat)((exp - HALF_FLOAT_MIN_BIASED_EXP_AS_SINGLE_FP_EXP) >> 13) |
+		(hfloat)(mantissa >> 13);
+	}
+	
+	return hf;
 }
 
 TokenArray Image::readTokens(char *line, const char *tokenString) {
@@ -547,7 +547,7 @@ TokenArray Image::readTokens(char *line, const char *tokenString) {
 		memcpy(tokens[numTokens-1], pch, strlen(pch)+1);
 		pch = strtok (NULL, tokenString);
 	}
-    
+	
 	TokenArray ta;
 	ta.size = numTokens;
 	ta.tokens = tokens;
@@ -563,80 +563,80 @@ void Image::freeTokens(TokenArray tokens) {
 }
 
 bool Image::loadSTB(const String &fileName) {
-    
-    CoreFile *infile = Services()->getCore()->openFile(fileName.c_str(), "rb");
-    
-    if(!infile) {
-        Logger::log("Error opening image file: %s\n", fileName.c_str());
-        return false;
-    }
-    
-    infile->seek(0, SEEK_END);
-    long bufferLen = infile->tell();
-    infile->seek(0, SEEK_SET);
-    
-    char *buffer = (char*) malloc(bufferLen);
-    infile->read(buffer, bufferLen, 1);
-    
-    int x,y,n;
-    stbi_uc *data = stbi_load_from_memory((const stbi_uc*)buffer, bufferLen, &x, &y, &n, 4);
-    
-    if(!data) {
-        Logger::log("Error reading image data: %s\n", fileName.c_str());
-        return false;
-    }
-    
-    imageType = Image::IMAGE_RGBA;
-    
-    width = x;
-    height = y;
-    
-    free(buffer);
-    
-    imageData = (char*)data;
-    
-    Services()->getCore()->closeFile(infile);
+	
+	CoreFile *infile = Services()->getCore()->openFile(fileName.c_str(), "rb");
+	
+	if(!infile) {
+		Logger::log("Error opening image file: %s\n", fileName.c_str());
+		return false;
+	}
+	
+	infile->seek(0, SEEK_END);
+	long bufferLen = infile->tell();
+	infile->seek(0, SEEK_SET);
+	
+	char *buffer = (char*) malloc(bufferLen);
+	infile->read(buffer, bufferLen, 1);
+	
+	int x,y,n;
+	stbi_uc *data = stbi_load_from_memory((const stbi_uc*)buffer, bufferLen, &x, &y, &n, 4);
+	
+	if(!data) {
+		Logger::log("Error reading image data: %s\n", fileName.c_str());
+		return false;
+	}
+	
+	imageType = Image::IMAGE_RGBA;
+	
+	width = x;
+	height = y;
+	
+	free(buffer);
+	
+	imageData = (char*)data;
+	
+	Services()->getCore()->closeFile(infile);
 
-    return true;
+	return true;
 }
 
 bool Image::loadHDR(const String &fileName) {
-    
-    imageType = Image::IMAGE_FP16;
-    
-    CoreFile *infile = Services()->getCore()->openFile(fileName.c_str(), "rb");
-    
-    if(!infile) {
-        Logger::log("Error opening HDR %s\n", fileName.c_str());
-        return false;
-    }
-    
-    infile->seek(0, SEEK_END);
-    long bufferLen = infile->tell();
-    infile->seek(0, SEEK_SET);
-    
-    char *buffer = (char*) malloc(bufferLen);
-    infile->read(buffer, bufferLen, 1);
-    
-    int x,y,n;
-    float *data = stbi_loadf_from_memory((const stbi_uc*)buffer, bufferLen, &x, &y, &n, 0);
-    
-    if(!data) {
-        Logger::log("Error reading image data: %s\n", fileName.c_str());
-        return false;
-    }
-    
-    width = x;
-    height = y;
-    
-    free(buffer);
-    
-    imageData = (char*)data;
-    
-    Services()->getCore()->closeFile(infile);
-    
-    
-    return true;
+	
+	imageType = Image::IMAGE_FP16;
+	
+	CoreFile *infile = Services()->getCore()->openFile(fileName.c_str(), "rb");
+	
+	if(!infile) {
+		Logger::log("Error opening HDR %s\n", fileName.c_str());
+		return false;
+	}
+	
+	infile->seek(0, SEEK_END);
+	long bufferLen = infile->tell();
+	infile->seek(0, SEEK_SET);
+	
+	char *buffer = (char*) malloc(bufferLen);
+	infile->read(buffer, bufferLen, 1);
+	
+	int x,y,n;
+	float *data = stbi_loadf_from_memory((const stbi_uc*)buffer, bufferLen, &x, &y, &n, 0);
+	
+	if(!data) {
+		Logger::log("Error reading image data: %s\n", fileName.c_str());
+		return false;
+	}
+	
+	width = x;
+	height = y;
+	
+	free(buffer);
+	
+	imageData = (char*)data;
+	
+	Services()->getCore()->closeFile(infile);
+	
+	
+	return true;
 }
 
 void Image::transformCoordinates(int *x, int *y) {

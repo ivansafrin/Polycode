@@ -33,24 +33,24 @@ namespace Polycode {
 	class Renderer;
 	
 	/**
-     * This class manages all rendered scenes in Polycode.
-     */
+	 * This class manages all rendered scenes in Polycode.
+	 */
 	class _PolyExport SceneManager : public PolyBase {
 		public:
 		SceneManager();
 		~SceneManager();
 		
-        /**
-         * Adds a scene to the render loop. Scenes automatically add themselves to the manager on creation, so there's no need to call this manually unless you remove a scene yourself.
-         */
+		/**
+		 * Adds a scene to the render loop. Scenes automatically add themselves to the manager on creation, so there's no need to call this manually unless you remove a scene yourself.
+		 */
 		void addScene(Scene *newScene);
 
-        /**
-         * Removes scene from the render loop (does not delete the scene).
-         */
+		/**
+		 * Removes scene from the render loop (does not delete the scene).
+		 */
 		void removeScene(Scene *scene);
-        
-        // Polycode internal
+		
+		// Polycode internal
 		void Update();
 		void fixedUpdate();
 		void Render(const Polycode::Rectangle &viewport);

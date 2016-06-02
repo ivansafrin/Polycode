@@ -31,21 +31,21 @@ bool writeUVs = false;
 bool writeSecondaryUVs = false;
 
 bool hasMesh(String meshName) {
-    for(int i=0; i < meshesInFile.size(); i++) {
-        if(meshesInFile[i] == meshName) {
-            return true;
-        }
-    }
-    return false;
+	for(int i=0; i < meshesInFile.size(); i++) {
+		if(meshesInFile[i] == meshName) {
+			return true;
+		}
+	}
+	return false;
 }
 
 bool hasMaterial(String materialName) {
-    for(int i=0; i < materialsInFile.size(); i++) {
-        if(materialsInFile[i] == materialName) {
-            return true;
-        }
-    }
-    return false;
+	for(int i=0; i < materialsInFile.size(); i++) {
+		if(materialsInFile[i] == materialName) {
+			return true;
+		}
+	}
+	return false;
 }
 
 unsigned int addBone(aiBone *bone) {
@@ -58,11 +58,11 @@ unsigned int addBone(aiBone *bone) {
 }
 
 aiMatrix4x4 getFullTransform(const struct aiNode *nd) {
-    if(nd->mParent) {
-        return  getFullTransform(nd->mParent) * nd->mTransformation;
-    } else {
-        return nd->mTransformation;
-    }
+	if(nd->mParent) {
+		return	getFullTransform(nd->mParent) * nd->mTransformation;
+	} else {
+		return nd->mTransformation;
+	}
 }
 
 void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, const struct aiNode* nd, bool swapZY, bool addSubmeshes, bool listOnly, ObjectEntry *parentSceneObject, String overrideMaterial, ObjectEntry *materialsParent, String assetPrefixPath, String baseFileName) {
@@ -72,29 +72,29 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
 
 	for (; n < nd->mNumMeshes; ++n) {
 
-        MeshGeometry geometry;
-        
+		MeshGeometry geometry;
+		
 		const struct aiMesh* mesh = scene->mMeshes[nd->mMeshes[n]];
-        
-        Vector3 bBox;
-        
-        String meshFileName = String(nd->mName.data);
+		
+		Vector3 bBox;
+		
+		String meshFileName = String(nd->mName.data);
 
-        if(meshFileName == "") {
-            meshFileName = baseFileName;
-        }
-        
-        
-        int idx = 0;
-        String baseMeshFileName = meshFileName;
-        
-        while(hasMesh(meshFileName)) {
-            meshFileName = baseMeshFileName + String::IntToString(idx);
-            idx++;
-        }
-        
-        meshesInFile.push_back(meshFileName);
-        
+		if(meshFileName == "") {
+			meshFileName = baseFileName;
+		}
+		
+		
+		int idx = 0;
+		String baseMeshFileName = meshFileName;
+		
+		while(hasMesh(meshFileName)) {
+			meshFileName = baseMeshFileName + String::IntToString(idx);
+			idx++;
+		}
+		
+		meshesInFile.push_back(meshFileName);
+		
 		if(listOnly) {
 			if(!addSubmeshes) {
 				printf("%s%s.mesh\n", prefix.c_str(), meshFileName.c_str());
@@ -103,207 +103,207 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
 			printf("Importing mesh:%s (%d vertices) (%d faces) \n", mesh->mName.data, mesh->mNumVertices, mesh->mNumFaces);
 		}
 		//apply_material(sc->mMaterials[mesh->mMaterialIndex]);
-        
-        
-        int baseVertexCount = 0;
-        
+		
+		
+		int baseVertexCount = 0;
+		
 		for (t = 0; t < mesh->mNumVertices; ++t) {
 
-            Vector3 vPosition;
-            
-            int index = t;
-            if(mesh->mColors[0] != NULL) {
-                geometry.addColor(mesh->mColors[0][index].r, mesh->mColors[0][index].g, mesh->mColors[0][index].b, mesh->mColors[0][index].a);
-            }
+			Vector3 vPosition;
+			
+			int index = t;
+			if(mesh->mColors[0] != NULL) {
+				geometry.addColor(mesh->mColors[0][index].r, mesh->mColors[0][index].g, mesh->mColors[0][index].b, mesh->mColors[0][index].a);
+			}
 
-            if(mesh->mTangents != NULL)  {
-                if(swapZY) {
-                    geometry.addTangent(mesh->mTangents[index].x, mesh->mTangents[index].z, -mesh->mTangents[index].y);
-                } else {
-                    geometry.addTangent(mesh->mTangents[index].x, mesh->mTangents[index].y, mesh->mTangents[index].z);
-                }
-            }
+			if(mesh->mTangents != NULL)	 {
+				if(swapZY) {
+					geometry.addTangent(mesh->mTangents[index].x, mesh->mTangents[index].z, -mesh->mTangents[index].y);
+				} else {
+					geometry.addTangent(mesh->mTangents[index].x, mesh->mTangents[index].y, mesh->mTangents[index].z);
+				}
+			}
 
-            if(mesh->mNormals != NULL)  {
-                if(swapZY) {
-                    geometry.addNormal(mesh->mNormals[index].x, mesh->mNormals[index].z, -mesh->mNormals[index].y);
-                } else {
-                    geometry.addNormal(mesh->mNormals[index].x, mesh->mNormals[index].y, mesh->mNormals[index].z);
-                }
-            }
+			if(mesh->mNormals != NULL)	{
+				if(swapZY) {
+					geometry.addNormal(mesh->mNormals[index].x, mesh->mNormals[index].z, -mesh->mNormals[index].y);
+				} else {
+					geometry.addNormal(mesh->mNormals[index].x, mesh->mNormals[index].y, mesh->mNormals[index].z);
+				}
+			}
 
-            if(mesh->HasTextureCoords(0))
-            {
-                geometry.addTexCoord(mesh->mTextureCoords[0][index].x, mesh->mTextureCoords[0][index].y);
-            }
+			if(mesh->HasTextureCoords(0))
+			{
+				geometry.addTexCoord(mesh->mTextureCoords[0][index].x, mesh->mTextureCoords[0][index].y);
+			}
 
-            if(mesh->HasTextureCoords(1))
-            {
-                geometry.addTexCoord2(mesh->mTextureCoords[1][index].x, mesh->mTextureCoords[1][index].y);
-            }
+			if(mesh->HasTextureCoords(1))
+			{
+				geometry.addTexCoord2(mesh->mTextureCoords[1][index].x, mesh->mTextureCoords[1][index].y);
+			}
 
-            int numAssignments = 0;
-            
-            float weights[4] = {0.0, 0.0, 0.0, 0.0};
-            unsigned int boneIds[4] = {0, 0, 0 ,0};
-            
-            for( unsigned int a = 0; a < mesh->mNumBones; a++) {
-                aiBone* bone = mesh->mBones[a];
-                unsigned int boneIndex = addBone(bone);
+			int numAssignments = 0;
+			
+			float weights[4] = {0.0, 0.0, 0.0, 0.0};
+			unsigned int boneIds[4] = {0, 0, 0 ,0};
+			
+			for( unsigned int a = 0; a < mesh->mNumBones; a++) {
+				aiBone* bone = mesh->mBones[a];
+				unsigned int boneIndex = addBone(bone);
 
-                for( unsigned int b = 0; b < bone->mNumWeights; b++) {
-                    if(bone->mWeights[b].mVertexId == index) {
-                        if(numAssignments < 4) {
-                            weights[numAssignments] = bone->mWeights[b].mWeight;
-                            boneIds[numAssignments] = boneIndex;
-                            numAssignments++;
-                        }
-                        hasWeights = true;
-                    }
-                }
-            }
-            
-            
-            geometry.addBoneAssignments(weights[0], boneIds[0], weights[1], boneIds[1], weights[2], boneIds[2], weights[3], boneIds[3]);
+				for( unsigned int b = 0; b < bone->mNumWeights; b++) {
+					if(bone->mWeights[b].mVertexId == index) {
+						if(numAssignments < 4) {
+							weights[numAssignments] = bone->mWeights[b].mWeight;
+							boneIds[numAssignments] = boneIndex;
+							numAssignments++;
+						}
+						hasWeights = true;
+					}
+				}
+			}
+			
+			
+			geometry.addBoneAssignments(weights[0], boneIds[0], weights[1], boneIds[1], weights[2], boneIds[2], weights[3], boneIds[3]);
 
-            if(swapZY) {
+			if(swapZY) {
 					vPosition.set(mesh->mVertices[index].x, mesh->mVertices[index].z, -mesh->mVertices[index].y);
-            } else {
-                vPosition.set(mesh->mVertices[index].x, mesh->mVertices[index].y, mesh->mVertices[index].z);
-            }
-            
-            if(fabs(vPosition.x) > bBox.x) {
-                bBox.x = fabs(vPosition.x);
-            }
-            if(fabs(vPosition.y) > bBox.y) {
-                bBox.y = fabs(vPosition.y);
-            }
-            if(fabs(vPosition.z) > bBox.z) {
-                bBox.z = fabs(vPosition.z);
-            }
-            
-            geometry.addVertex(vPosition.x, vPosition.y, vPosition.z);
+			} else {
+				vPosition.set(mesh->mVertices[index].x, mesh->mVertices[index].y, mesh->mVertices[index].z);
+			}
+			
+			if(fabs(vPosition.x) > bBox.x) {
+				bBox.x = fabs(vPosition.x);
+			}
+			if(fabs(vPosition.y) > bBox.y) {
+				bBox.y = fabs(vPosition.y);
+			}
+			if(fabs(vPosition.z) > bBox.z) {
+				bBox.z = fabs(vPosition.z);
+			}
+			
+			geometry.addVertex(vPosition.x, vPosition.y, vPosition.z);
 		}
-        
+		
 
-         for (t = 0; t < mesh->mNumFaces; ++t) {
-             const struct aiFace* face = &mesh->mFaces[t];
+		 for (t = 0; t < mesh->mNumFaces; ++t) {
+			 const struct aiFace* face = &mesh->mFaces[t];
 			 if (face->mNumIndices != 3) {
 				 nIgnoredPolygons++;
 				 continue;
 			 }
 
-             for(i = 0; i < face->mNumIndices; i++) {
-                 int index = face->mIndices[i];
-                 geometry.addIndex(baseVertexCount+index);
-             }
-         }
+			 for(i = 0; i < face->mNumIndices; i++) {
+				 int index = face->mIndices[i];
+				 geometry.addIndex(baseVertexCount+index);
+			 }
+		 }
 		
 		if(!addSubmeshes && !listOnly) {
 			String fileNameMesh = prefix+meshFileName+".mesh";
-            
-            Mesh *nmesh = new Polycode::Mesh();
-            nmesh->addSubmesh(geometry);
+			
+			Mesh *nmesh = new Polycode::Mesh();
+			nmesh->addSubmesh(geometry);
 			nmesh->saveToFile(fileNameMesh, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs);
 			delete nmesh;
-            
-            ObjectEntry *meshEntry = parentSceneObject->addChild("child");
-            meshEntry->addChild("id", String(nd->mName.data));
-            meshEntry->addChild("tags", "");
-            meshEntry->addChild("type", "SceneMesh");
-            meshEntry->addChild("cR", "1");
-            meshEntry->addChild("cG", "1");
-            meshEntry->addChild("cB", "1");
-            meshEntry->addChild("cA", "1");
-            meshEntry->addChild("blendMode", "0");
-            
-            aiVector3D p;
-            aiVector3D s;
-            aiQuaternion r;
+			
+			ObjectEntry *meshEntry = parentSceneObject->addChild("child");
+			meshEntry->addChild("id", String(nd->mName.data));
+			meshEntry->addChild("tags", "");
+			meshEntry->addChild("type", "SceneMesh");
+			meshEntry->addChild("cR", "1");
+			meshEntry->addChild("cG", "1");
+			meshEntry->addChild("cB", "1");
+			meshEntry->addChild("cA", "1");
+			meshEntry->addChild("blendMode", "0");
+			
+			aiVector3D p;
+			aiVector3D s;
+			aiQuaternion r;
 
-            aiMatrix4x4 fullTransform = getFullTransform(nd);
-            
-            fullTransform.Decompose(s, r, p);
-            
-            meshEntry->addChild("sX", s.x);
-            
-            if(swapZY) {
-                meshEntry->addChild("sY", s.z);
-                meshEntry->addChild("sZ", s.y);
-            } else {
-                meshEntry->addChild("sY", s.y);
-                meshEntry->addChild("sZ", s.z);
-            }
-            
-            meshEntry->addChild("rX", r.x);
-            
-            if(swapZY) {
-                meshEntry->addChild("rY", r.z);
-                meshEntry->addChild("rZ", -r.y);
-            } else {
-                meshEntry->addChild("rY", r.y);
-                meshEntry->addChild("rZ", r.z);
-            }
-            meshEntry->addChild("rW", r.w);
-            
-            meshEntry->addChild("pX", p.x);
-            
-            if(swapZY) {
-                meshEntry->addChild("pY", p.z);
-                meshEntry->addChild("pZ", -p.y);
-            } else{
-                meshEntry->addChild("pY", p.y);
-                meshEntry->addChild("pZ", p.z);
-            }
-            
-            bBox = bBox * 2.0;
-            
-            if(bBox.x == 0.0) {
-                bBox.x = 0.001;
-            }
-            if(bBox.y == 0.0) {
-                bBox.y = 0.001;
-            }
-            if(bBox.z == 0.0) {
-                bBox.z = 0.001;
-            }
-            
-            meshEntry->addChild("bbX", bBox.x);
-            meshEntry->addChild("bbY", bBox.y);
-            meshEntry->addChild("bbZ", bBox.z);
-            
-            ObjectEntry *sceneMeshEntry = meshEntry->addChild("SceneMesh");
-            sceneMeshEntry->addChild("file", assetPrefixPath+fileNameMesh);
-            
-            String materialName = "Default";
-            int materialIndex = mesh->mMaterialIndex;
-            if(materialIndex < scene->mNumMaterials) {
-                aiString name;
-                scene->mMaterials[materialIndex]->Get(AI_MATKEY_NAME,name);
-                if(name.length > 0) {
-                    materialName = String(name.data);
-                }
-            }
-            
-            if(materialsParent && materialName != "Default") {
-                if(!hasMaterial(materialName)) {
-                    ObjectEntry *materialEntry = materialsParent->addChild("material");
-                    materialEntry->addChild("name", materialName);
-                    materialEntry->addChild("blendingMode", 0);
-                    materialEntry->addChild("blendingMode", 0);
-                    ObjectEntry *shaderEntry = materialEntry->addChild("shader");
-                    shaderEntry->addChild("name", "DefaultShaderNoTexture");
-                    materialsInFile.push_back(materialName);
-                }
-            }
-            
-            if(overrideMaterial != "") {
-                sceneMeshEntry->addChild("material", overrideMaterial);
-            } else {
-                sceneMeshEntry->addChild("material", materialName);
-            }
-            
-            
+			aiMatrix4x4 fullTransform = getFullTransform(nd);
+			
+			fullTransform.Decompose(s, r, p);
+			
+			meshEntry->addChild("sX", s.x);
+			
+			if(swapZY) {
+				meshEntry->addChild("sY", s.z);
+				meshEntry->addChild("sZ", s.y);
+			} else {
+				meshEntry->addChild("sY", s.y);
+				meshEntry->addChild("sZ", s.z);
+			}
+			
+			meshEntry->addChild("rX", r.x);
+			
+			if(swapZY) {
+				meshEntry->addChild("rY", r.z);
+				meshEntry->addChild("rZ", -r.y);
+			} else {
+				meshEntry->addChild("rY", r.y);
+				meshEntry->addChild("rZ", r.z);
+			}
+			meshEntry->addChild("rW", r.w);
+			
+			meshEntry->addChild("pX", p.x);
+			
+			if(swapZY) {
+				meshEntry->addChild("pY", p.z);
+				meshEntry->addChild("pZ", -p.y);
+			} else{
+				meshEntry->addChild("pY", p.y);
+				meshEntry->addChild("pZ", p.z);
+			}
+			
+			bBox = bBox * 2.0;
+			
+			if(bBox.x == 0.0) {
+				bBox.x = 0.001;
+			}
+			if(bBox.y == 0.0) {
+				bBox.y = 0.001;
+			}
+			if(bBox.z == 0.0) {
+				bBox.z = 0.001;
+			}
+			
+			meshEntry->addChild("bbX", bBox.x);
+			meshEntry->addChild("bbY", bBox.y);
+			meshEntry->addChild("bbZ", bBox.z);
+			
+			ObjectEntry *sceneMeshEntry = meshEntry->addChild("SceneMesh");
+			sceneMeshEntry->addChild("file", assetPrefixPath+fileNameMesh);
+			
+			String materialName = "Default";
+			int materialIndex = mesh->mMaterialIndex;
+			if(materialIndex < scene->mNumMaterials) {
+				aiString name;
+				scene->mMaterials[materialIndex]->Get(AI_MATKEY_NAME,name);
+				if(name.length > 0) {
+					materialName = String(name.data);
+				}
+			}
+			
+			if(materialsParent && materialName != "Default") {
+				if(!hasMaterial(materialName)) {
+					ObjectEntry *materialEntry = materialsParent->addChild("material");
+					materialEntry->addChild("name", materialName);
+					materialEntry->addChild("blendingMode", 0);
+					materialEntry->addChild("blendingMode", 0);
+					ObjectEntry *shaderEntry = materialEntry->addChild("shader");
+					shaderEntry->addChild("name", "DefaultShaderNoTexture");
+					materialsInFile.push_back(materialName);
+				}
+			}
+			
+			if(overrideMaterial != "") {
+				sceneMeshEntry->addChild("material", overrideMaterial);
+			} else {
+				sceneMeshEntry->addChild("material", materialName);
+			}
+			
+			
 		}
 		if (nIgnoredPolygons) {
 			printf("Ignored %d non-triangular polygons\n", nIgnoredPolygons);
@@ -317,7 +317,7 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
 }
 
 int getBoneID(aiString name) {
-	for(int i=0; i  < bones.size(); i++) {
+	for(int i=0; i	< bones.size(); i++) {
 		if(bones[i]->mName == name) {
 			return i;
 		}
@@ -345,50 +345,50 @@ void addToISkeleton(ISkeleton *skel, IBone *parent, const struct aiScene *sc, co
 
 int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly, bool exportEntity, bool generateMaterialFile, String overrideMaterial, String assetPrefixPath, String baseFileName) {
 
-    Object materialObject;
-    ObjectEntry *materialsParent = NULL;;
-    
-    if(generateMaterialFile) {
-        materialObject.root.name = "polycode";
-        materialsParent = materialObject.root.addChild("materials");
-    }
-    
-    Object sceneObject;
-    sceneObject.root.name = "entity";
-    sceneObject.root.addChild("version", 2);
-    ObjectEntry *parentEntry = sceneObject.root.addChild("root");
-    
-    parentEntry->addChild("id", "");
-    parentEntry->addChild("tags", "");
-    parentEntry->addChild("type", "Entity");
-    parentEntry->addChild("cR", "1");
-    parentEntry->addChild("cG", "1");
-    parentEntry->addChild("cB", "1");
-    parentEntry->addChild("cA", "1");
-    parentEntry->addChild("blendMode", "0");
+	Object materialObject;
+	ObjectEntry *materialsParent = NULL;;
+	
+	if(generateMaterialFile) {
+		materialObject.root.name = "polycode";
+		materialsParent = materialObject.root.addChild("materials");
+	}
+	
+	Object sceneObject;
+	sceneObject.root.name = "entity";
+	sceneObject.root.addChild("version", 2);
+	ObjectEntry *parentEntry = sceneObject.root.addChild("root");
+	
+	parentEntry->addChild("id", "");
+	parentEntry->addChild("tags", "");
+	parentEntry->addChild("type", "Entity");
+	parentEntry->addChild("cR", "1");
+	parentEntry->addChild("cG", "1");
+	parentEntry->addChild("cB", "1");
+	parentEntry->addChild("cA", "1");
+	parentEntry->addChild("blendMode", "0");
 	parentEntry->addChild("sX", Number(1.0));
 	parentEntry->addChild("sY", Number(1.0));
 	parentEntry->addChild("sZ", Number(1.0));
-    
+	
 	parentEntry->addChild("rX", Number(0.0));
 	parentEntry->addChild("rY", Number(0.0));
 	parentEntry->addChild("rZ", Number(0.0));
 	parentEntry->addChild("rW", Number(1.0));
-    
+	
 	parentEntry->addChild("pX", Number(0.0));
 	parentEntry->addChild("pY", Number(0.0));
 	parentEntry->addChild("pZ", Number(0.0));
-    
+	
 	parentEntry->addChild("bbX", Number(0.0));
 	parentEntry->addChild("bbY", Number(0.0));
 	parentEntry->addChild("bbZ", Number(0.0));
-    
-    ObjectEntry *children = parentEntry->addChild("children");
+	
+	ObjectEntry *children = parentEntry->addChild("children");
 
 		
 	Polycode::Mesh *mesh = new Polycode::Mesh();
 	addToMesh(prefix, mesh, scene, scene->mRootNode, swapZY, addSubmeshes, listOnly, children, overrideMaterial, materialsParent, assetPrefixPath, baseFileName);
-    
+	
 	
 	if(addSubmeshes) {
 		String fileNameMesh;
@@ -413,11 +413,11 @@ int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly, b
 		}	
 		
 		String fileNameSkel;
-        if(prefix != "") {
-            fileNameSkel = prefix+".skeleton";
-        } else {
-            fileNameSkel = "out.skeleton";
-        }
+		if(prefix != "") {
+			fileNameSkel = prefix+".skeleton";
+		} else {
+			fileNameSkel = "out.skeleton";
+		}
 		ISkeleton *skeleton = new ISkeleton();
 	
 		for (int n = 0; n < scene->mRootNode->mNumChildren; ++n) {
@@ -468,25 +468,25 @@ int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly, b
 			printf("No weight data, skipping skeleton export...\n");
 		}
 	}
-    
-    String matFileName = baseFileName+".mat";
-    if(!listOnly && materialsParent) {
-        materialObject.saveToXML(matFileName);
-    }
-    
-    if(!listOnly && exportEntity) {
-        
-        if(materialsParent) {
-            ObjectEntry *settings = sceneObject.root.addChild("settings");
-            ObjectEntry *matFiles = settings->addChild("matFiles");
-            ObjectEntry *matFile = matFiles->addChild("matFile");
-            matFile->addChild("path", assetPrefixPath+matFileName);
-            
-        }
-        
+	
+	String matFileName = baseFileName+".mat";
+	if(!listOnly && materialsParent) {
+		materialObject.saveToXML(matFileName);
+	}
+	
+	if(!listOnly && exportEntity) {
+		
+		if(materialsParent) {
+			ObjectEntry *settings = sceneObject.root.addChild("settings");
+			ObjectEntry *matFiles = settings->addChild("matFiles");
+			ObjectEntry *matFile = matFiles->addChild("matFile");
+			matFile->addChild("path", assetPrefixPath+matFileName);
+			
+		}
+		
 		String entityFileName = baseFileName+".entity";
-        sceneObject.saveToXML(entityFileName);
-    }
+		sceneObject.saveToXML(entityFileName);
+	}
 
 	if(mesh) {
 		delete mesh;
@@ -497,8 +497,8 @@ int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly, b
 int main(int argc, char **argv) {
 
 
-    Core *core = new DummyCore();
-    
+	Core *core = new DummyCore();
+	
 	bool argsValid = true;
 	bool showHelp = false;
 
@@ -507,38 +507,38 @@ int main(int argc, char **argv) {
 	bool addSubmeshes = false;
 	bool listOnly = false;
 	bool showAssimpDebug = false;
-    bool generateNormals = false;
-    bool exportEntity = false;
+	bool generateNormals = false;
+	bool exportEntity = false;
 	bool generateMaterialFile = false;
-    String overrideMaterial;
-    
+	String overrideMaterial;
+	
 	String prefix;
-    String assetPrefixPath;
+	String assetPrefixPath;
 	
 	int opt;
 	while ((opt = getopt(argc, argv, "engcwuvadlhp:stmfo:x:")) != -1) {
 		switch ((char)opt) {
-            case 'e':
-                exportEntity = true;
-            break;
-            case 'n':
-                writeNormals = true;
-            break;
-            case 'g':
-                writeTangents = true;
-            break;
-            case 'c':
-                writeColors = true;
-            break;
-            case 'w':
-                writeBoneWeights = true;
-            break;
-            case 'u':
-                writeUVs = true;
-            break;
-            case 'v':
-                writeSecondaryUVs = true;
-            break;
+			case 'e':
+				exportEntity = true;
+			break;
+			case 'n':
+				writeNormals = true;
+			break;
+			case 'g':
+				writeTangents = true;
+			break;
+			case 'c':
+				writeColors = true;
+			break;
+			case 'w':
+				writeBoneWeights = true;
+			break;
+			case 'u':
+				writeUVs = true;
+			break;
+			case 'v':
+				writeSecondaryUVs = true;
+			break;
 			case 's':
 				swapZYAxis = true;
 			break;
@@ -547,7 +547,7 @@ int main(int argc, char **argv) {
 			break;
 			case 'm':
 				generateNormals = true;
-                break;
+				break;
 			case 'a':
 				addSubmeshes = true;
 			break;
@@ -563,15 +563,15 @@ int main(int argc, char **argv) {
 			case 'h':
 				showHelp = true;
 			break;
-            case 'f':
-                generateMaterialFile = true;
-            break;
+			case 'f':
+				generateMaterialFile = true;
+			break;
 			case 'o':
 				overrideMaterial = String(optarg);
-            break;
+			break;
 			case 'x':
 				assetPrefixPath = String(optarg)+"/";
-            break;
+			break;
 			default:
 				argsValid = false;
 			break;
@@ -630,35 +630,35 @@ int main(int argc, char **argv) {
 	if(!listOnly) {
 		printf("Loading %s...\n", argv[inputArg]);
 	}
-    
-    String baseFileName = String(argv[inputArg]);
+	
+	String baseFileName = String(argv[inputArg]);
 
 	std::vector<String> parts = baseFileName.split("/");	
 	if(parts.size() > 1) {
-        baseFileName = parts[parts.size()-1];
+		baseFileName = parts[parts.size()-1];
 	}
-    
-    baseFileName = baseFileName.substr(0, baseFileName.find_last_of("."));
-    
+	
+	baseFileName = baseFileName.substr(0, baseFileName.find_last_of("."));
+	
 	scene = aiImportFile(argv[inputArg], aiProcess_JoinIdenticalVertices|
-                         aiProcess_Triangulate);
-    
-    if(scene) {
+						 aiProcess_Triangulate);
+	
+	if(scene) {
 
-        if(generateTangents && !listOnly) {
-            aiApplyPostProcessing(scene, aiProcess_CalcTangentSpace);
-        }
-        
-        if(generateNormals && !listOnly) {
-            aiApplyPostProcessing(scene, aiProcess_GenSmoothNormals);
-        }
-        
+		if(generateTangents && !listOnly) {
+			aiApplyPostProcessing(scene, aiProcess_CalcTangentSpace);
+		}
+		
+		if(generateNormals && !listOnly) {
+			aiApplyPostProcessing(scene, aiProcess_GenSmoothNormals);
+		}
+		
 		exportToFile(prefix, swapZYAxis, addSubmeshes, listOnly, exportEntity, generateMaterialFile, overrideMaterial, assetPrefixPath, baseFileName);
 	} else {
 		printf("Error opening scene (%s)\n", aiGetErrorString());
 	}
 
 	aiReleaseImport(scene);
-    delete core;
+	delete core;
 	return 1;
 }

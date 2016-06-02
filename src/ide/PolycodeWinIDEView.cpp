@@ -17,31 +17,31 @@ PolycodeIDEApp *globalApp = NULL;
 
 static void OpenConsole()
 {
-    int outHandle, errHandle, inHandle;
-    FILE *outFile, *errFile, *inFile;
-    AllocConsole();
-    CONSOLE_SCREEN_BUFFER_INFO coninfo;
-    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &coninfo);
-    coninfo.dwSize.Y = 9999;
-    SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), coninfo.dwSize);
+	int outHandle, errHandle, inHandle;
+	FILE *outFile, *errFile, *inFile;
+	AllocConsole();
+	CONSOLE_SCREEN_BUFFER_INFO coninfo;
+	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &coninfo);
+	coninfo.dwSize.Y = 9999;
+	SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), coninfo.dwSize);
 
-    outHandle = _open_osfhandle((long)GetStdHandle(STD_OUTPUT_HANDLE), _O_TEXT);
-    errHandle = _open_osfhandle((long)GetStdHandle(STD_ERROR_HANDLE),_O_TEXT);
-    inHandle = _open_osfhandle((long)GetStdHandle(STD_INPUT_HANDLE),_O_TEXT );
+	outHandle = _open_osfhandle((long)GetStdHandle(STD_OUTPUT_HANDLE), _O_TEXT);
+	errHandle = _open_osfhandle((long)GetStdHandle(STD_ERROR_HANDLE),_O_TEXT);
+	inHandle = _open_osfhandle((long)GetStdHandle(STD_INPUT_HANDLE),_O_TEXT );
 
-    outFile = _fdopen(outHandle, "w" );
-    errFile = _fdopen(errHandle, "w");
-    inFile =  _fdopen(inHandle, "r");
+	outFile = _fdopen(outHandle, "w" );
+	errFile = _fdopen(errHandle, "w");
+	inFile =  _fdopen(inHandle, "r");
 
-    *stdout = *outFile;
-    *stderr = *errFile;
-    *stdin = *inFile;
+	*stdout = *outFile;
+	*stderr = *errFile;
+	*stdin = *inFile;
 
-    setvbuf( stdout, NULL, _IONBF, 0 );
-    setvbuf( stderr, NULL, _IONBF, 0 );
-    setvbuf( stdin, NULL, _IONBF, 0 );
+	setvbuf( stdout, NULL, _IONBF, 0 );
+	setvbuf( stderr, NULL, _IONBF, 0 );
+	setvbuf( stdin, NULL, _IONBF, 0 );
 
-    std::ios::sync_with_stdio();
+	std::ios::sync_with_stdio();
 
 }
 
@@ -230,7 +230,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				m.time = 0;
 				if ( PeekMessage(&m, hWnd, 0, WM_USER, PM_NOREMOVE) && (m.message == WM_CHAR) ) {
 					GetMessage(&m, hWnd, 0, WM_USER);
-			    		unicodeChar = (wchar_t)m.wParam;
+						unicodeChar = (wchar_t)m.wParam;
 				}
 
 			core->handleKeyDown(lParam,wParam, unicodeChar);

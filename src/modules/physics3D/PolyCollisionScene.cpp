@@ -51,7 +51,7 @@ void CollisionScene::fixedUpdate() {
 			collisionChildren[i]->Update();
 	}
 	
-	world->performDiscreteCollisionDetection();	
+	world->performDiscreteCollisionDetection(); 
 	
 	for(int i=0; i < collisionChildren.size(); i++) {
 		if(collisionChildren[i]->enabled)		
@@ -95,24 +95,24 @@ CollisionEntity *CollisionScene::getCollisionByScreenEntity(Entity *ent) {
 }
 
 bool CollisionScene::isColliding(Entity *ent1) {
-    CollisionEntity *cEnt1 = getCollisionByScreenEntity(ent1);
-    if(cEnt1) {
-        int numManifolds = world->getDispatcher()->getNumManifolds();
-        for (int i=0;i<numManifolds;i++)
-        {
-            btPersistentManifold* contactManifold = world->getDispatcher()->getManifoldByIndexInternal(i);
-          
-            btCollisionObject* obA = (btCollisionObject*)contactManifold->getBody0();
-            btCollisionObject* obB = (btCollisionObject*)contactManifold->getBody1();
-            
-            if(obA == cEnt1->collisionObject || obB == cEnt1->collisionObject) {
-                return true;
-            }
-        }
-    } else {
-        return false;
-    }
-    return false;
+	CollisionEntity *cEnt1 = getCollisionByScreenEntity(ent1);
+	if(cEnt1) {
+		int numManifolds = world->getDispatcher()->getNumManifolds();
+		for (int i=0;i<numManifolds;i++)
+		{
+			btPersistentManifold* contactManifold = world->getDispatcher()->getManifoldByIndexInternal(i);
+		  
+			btCollisionObject* obA = (btCollisionObject*)contactManifold->getBody0();
+			btCollisionObject* obB = (btCollisionObject*)contactManifold->getBody1();
+			
+			if(obA == cEnt1->collisionObject || obB == cEnt1->collisionObject) {
+				return true;
+			}
+		}
+	} else {
+		return false;
+	}
+	return false;
 }
 
 CollisionResult CollisionScene::testCollisionOnCollisionChild_Convex(CollisionEntity *cEnt1, CollisionEntity *cEnt2) {
@@ -122,7 +122,7 @@ CollisionResult CollisionScene::testCollisionOnCollisionChild_Convex(CollisionEn
 	
 	Vector3 collNormal;
 	result.colNormal.set(0,0,0);									
-	result.colDist = 0; 	
+	result.colDist = 0;		
 	
 	int numAdds = 0;
 	
@@ -132,7 +132,7 @@ CollisionResult CollisionScene::testCollisionOnCollisionChild_Convex(CollisionEn
 		btPersistentManifold* contactManifold = world->getDispatcher()->getManifoldByIndexInternal(i);
 		btCollisionObject* obA = (btCollisionObject*)contactManifold->getBody0();
 		btCollisionObject* obB = (btCollisionObject*)contactManifold->getBody1();
- 		if((obA == cEnt1->collisionObject && obB == cEnt2->collisionObject) ||
+		if((obA == cEnt1->collisionObject && obB == cEnt2->collisionObject) ||
 		   (obA == cEnt2->collisionObject && obB == cEnt1->collisionObject)) {
 //			contactManifold->refreshContactPoints(obA->getWorldTransform(), obB->getWorldTransform());
 			if(contactManifold->getNumContacts() > 0) {
@@ -158,7 +158,7 @@ CollisionResult CollisionScene::testCollisionOnCollisionChild_Convex(CollisionEn
 		result.colNormal = result.colNormal / (Number)numAdds;
 		//		result.colNormal = Vector3(0,1,0);
 		//		result.colNormal.Normalize();
-		result.colDist  = result.colDist / (Number)numAdds;
+		result.colDist	= result.colDist / (Number)numAdds;
 	}
 	
 	return result;

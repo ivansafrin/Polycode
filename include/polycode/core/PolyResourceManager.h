@@ -33,131 +33,131 @@ THE SOFTWARE.
 
 extern "C" {
 #ifndef NO_LUA
-    #include "lua.h"
-    #include "lualib.h"
-    #include "lauxlib.h"
-#endif   
-    #include "duktape.h"
+	#include "lua.h"
+	#include "lualib.h"
+	#include "lauxlib.h"
+#endif	 
+	#include "duktape.h"
 }
 
-#define RESOURCE_CHECK_INTERVAL	2000
+#define RESOURCE_CHECK_INTERVAL 2000
 
 namespace Polycode {
 
 	class Resource;
 	class PolycodeShaderModule;
 	class String;
-    class ResourceLoader;
-    
-    class _PolyExport ResourcePool : public EventDispatcher {
-        public:
-            ResourcePool(const String &name, ResourcePool *fallbackPool);
-            ~ResourcePool();
-        
-            void setFallbackPool(ResourcePool *pool);
-        
+	class ResourceLoader;
+	
+	class _PolyExport ResourcePool : public EventDispatcher {
+		public:
+			ResourcePool(const String &name, ResourcePool *fallbackPool);
+			~ResourcePool();
+		
+			void setFallbackPool(ResourcePool *pool);
+		
 			void addResource(Resource *resource);
 			void removeResource(Resource *resource);
-            bool hasResource(Resource *resource);
-        
-            void loadResourcesFromFolder(const String &folder, bool recursive);
-        
-            Resource *loadResource(const String &path);
-            Resource *loadResourceWithName(const String &path, const String &name);
-        
+			bool hasResource(Resource *resource);
+		
+			void loadResourcesFromFolder(const String &folder, bool recursive);
+		
+			Resource *loadResource(const String &path);
+			Resource *loadResourceWithName(const String &path, const String &name);
+		
 			Resource *getResource(int resourceType, const String& resourceName) const;
-            String getName();
-            void setName(const String &name);
-        
-            Resource *getResourceByPath(const String& resourcePath) const;
+			String getName();
+			void setName(const String &name);
+		
+			Resource *getResourceByPath(const String& resourcePath) const;
 			void Update(int elapsed);
-        
+		
 			std::vector<Resource *> getResources(int resourceType);
-        
+		
 			void checkForChangedFiles();
-        
+		
 			bool reloadResourcesOnModify;
-            bool dispatchChangeEvents;
-        
-            int resourceSubscribers;
-            bool deleteOnUnsubscribe;
-        
-            static bool defaultReloadResourcesOnModify;
-        
-        private:
-        
-            void loadResourcesFromFolderWithLoader(const String &folder, bool recursive, ResourceLoader *loader, const String &containingFolder);
-        
-            ResourcePool *fallbackPool;
-            String name;
+			bool dispatchChangeEvents;
+		
+			int resourceSubscribers;
+			bool deleteOnUnsubscribe;
+		
+			static bool defaultReloadResourcesOnModify;
+		
+		private:
+		
+			void loadResourcesFromFolderWithLoader(const String &folder, bool recursive, ResourceLoader *loader, const String &containingFolder);
+		
+			ResourcePool *fallbackPool;
+			String name;
 			int ticksSinceCheck;
-            std::vector <Resource*> resources;
-        
-    };
-    
-    class _PolyExport ResourceLoader {
-        public:
-            virtual ~ResourceLoader() {}
-            bool canHandleExtension(const String &extension);
-            virtual Resource *loadResource(const String &path, ResourcePool *targetPool) = 0;
-            std::vector<String> extensions;
-    };
-    
-    class _PolyExport TextureResourceLoader : public ResourceLoader {
-        public:
-            TextureResourceLoader();
-            Resource *loadResource(const String &path, ResourcePool *targetPool);
-    };
-    
-    class _PolyExport ProgramResourceLoader : public ResourceLoader {
-    public:
-        ProgramResourceLoader();
-        Resource *loadResource(const String &path, ResourcePool *targetPool);
-    };
+			std::vector <Resource*> resources;
+		
+	};
+	
+	class _PolyExport ResourceLoader {
+		public:
+			virtual ~ResourceLoader() {}
+			bool canHandleExtension(const String &extension);
+			virtual Resource *loadResource(const String &path, ResourcePool *targetPool) = 0;
+			std::vector<String> extensions;
+	};
+	
+	class _PolyExport TextureResourceLoader : public ResourceLoader {
+		public:
+			TextureResourceLoader();
+			Resource *loadResource(const String &path, ResourcePool *targetPool);
+	};
+	
+	class _PolyExport ProgramResourceLoader : public ResourceLoader {
+	public:
+		ProgramResourceLoader();
+		Resource *loadResource(const String &path, ResourcePool *targetPool);
+	};
 
-    class _PolyExport MaterialResourceLoader : public ResourceLoader {
-    public:
-            MaterialResourceLoader();
-            Resource *loadResource(const String &path, ResourcePool *targetPool);
-    };
-    
-    class _PolyExport FontResourceLoader : public ResourceLoader {
-    public:
-        FontResourceLoader();
-        ~FontResourceLoader();
-        Resource *loadResource(const String &path, ResourcePool *targetPool);
-    private:
-        FT_Library FTLibrary;
-    };
-    
-    class DebugBackTraceEntry {
-    public:
-        String fileName;
-        unsigned int lineNumber;
-    };
-    
-    class _PolyExport ScriptResourceLoader : public ResourceLoader {
-    public:
-        ScriptResourceLoader();
-        ~ScriptResourceLoader();
-        Resource *loadResource(const String &path, ResourcePool *targetPool);
-    private:
-        
-        void initJavascript();
-        duk_context *duktapeContext;
-        
+	class _PolyExport MaterialResourceLoader : public ResourceLoader {
+	public:
+			MaterialResourceLoader();
+			Resource *loadResource(const String &path, ResourcePool *targetPool);
+	};
+	
+	class _PolyExport FontResourceLoader : public ResourceLoader {
+	public:
+		FontResourceLoader();
+		~FontResourceLoader();
+		Resource *loadResource(const String &path, ResourcePool *targetPool);
+	private:
+		FT_Library FTLibrary;
+	};
+	
+	class DebugBackTraceEntry {
+	public:
+		String fileName;
+		unsigned int lineNumber;
+	};
+	
+	class _PolyExport ScriptResourceLoader : public ResourceLoader {
+	public:
+		ScriptResourceLoader();
+		~ScriptResourceLoader();
+		Resource *loadResource(const String &path, ResourcePool *targetPool);
+	private:
+		
+		void initJavascript();
+		duk_context *duktapeContext;
+		
 #ifndef NO_LUA
-        void initLua();
-        lua_State *luaState;
+		void initLua();
+		lua_State *luaState;
 #endif
-    };
-    
-    class _PolyExport MeshResourceLoader : public ResourceLoader {
-    public:
-        MeshResourceLoader();
-        Resource *loadResource(const String &path, ResourcePool *targetPool);
-    };
-    
+	};
+	
+	class _PolyExport MeshResourceLoader : public ResourceLoader {
+	public:
+		MeshResourceLoader();
+		Resource *loadResource(const String &path, ResourcePool *targetPool);
+	};
+	
 	/**
 	* Manages loading and unloading of resources from directories and archives. Should only be accessed via the CoreServices singleton.
 	*/ 
@@ -165,34 +165,34 @@ namespace Polycode {
 		public:
 			ResourceManager();
 			~ResourceManager();
-        
-            ResourcePool *getGlobalPool();
-            ResourcePool *getResourcePoolByName(const String &name);
-		      
-            void addResourceLoader(ResourceLoader *loader);
-            ResourceLoader *getResourceLoaderForExtension(const String &extension);
-            void removeResourceLoader(ResourceLoader *loader);
+		
+			ResourcePool *getGlobalPool();
+			ResourcePool *getResourcePoolByName(const String &name);
+			  
+			void addResourceLoader(ResourceLoader *loader);
+			ResourceLoader *getResourceLoaderForExtension(const String &extension);
+			void removeResourceLoader(ResourceLoader *loader);
 
-            unsigned int getNumResourceLoaders();
-            ResourceLoader *getResourceLoaderAtIndex(unsigned int index);
-        
-            void addResourcePool(ResourcePool *pool);
-            void removeResourcePool(ResourcePool *pool);
-        
+			unsigned int getNumResourceLoaders();
+			ResourceLoader *getResourceLoaderAtIndex(unsigned int index);
+		
+			void addResourcePool(ResourcePool *pool);
+			void removeResourcePool(ResourcePool *pool);
+		
 			std::vector<Resource*> getResources(int resourceType);
-        
+		
 			void removeResource(Resource *resource);
-        
-            void subscribeToResourcePool(ResourcePool *pool);
-            void unsubscibeFromResourcePool(ResourcePool *pool);
-        
+		
+			void subscribeToResourcePool(ResourcePool *pool);
+			void unsubscibeFromResourcePool(ResourcePool *pool);
+		
 			void Update(int elapsed);
 			void handleEvent(Event *event);
 		
 		private:
 		
-            std::vector<ResourceLoader*> resourceLoaders;
-            ResourcePool *globalPool;
-            std::vector <ResourcePool*> pools;
+			std::vector<ResourceLoader*> resourceLoaders;
+			ResourcePool *globalPool;
+			std::vector <ResourcePool*> pools;
 	};
 }

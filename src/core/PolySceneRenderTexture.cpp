@@ -31,23 +31,23 @@
 using namespace Polycode;
 
 SceneRenderTexture::SceneRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight, bool floatingPoint) : floatingPoint(floatingPoint) {
-    
-    targetFramebuffer = Services()->getRenderer()->createRenderBuffer(renderWidth, renderHeight, true, floatingPoint);
-    
+	
+	targetFramebuffer = Services()->getRenderer()->createRenderBuffer(renderWidth, renderHeight, true, floatingPoint);
+	
 	this->targetScene = targetScene;
 	this->targetCamera = targetCamera;
 
 	CoreServices::getInstance()->getSceneManager()->registerRenderTexture(this);
-    renderer = Services()->getRenderer();
-    
+	renderer = Services()->getRenderer();
+	
 	enabled = true;
 }
 
 void SceneRenderTexture::resizeRenderTexture(int newWidth, int newHeight) {
 
 	if(newWidth > 0 && newHeight > 0) {
-        Services()->getRenderer()->destroyRenderBuffer(targetFramebuffer);
-        targetFramebuffer = Services()->getRenderer()->createRenderBuffer(newWidth, newHeight, true, floatingPoint);
+		Services()->getRenderer()->destroyRenderBuffer(targetFramebuffer);
+		targetFramebuffer = Services()->getRenderer()->createRenderBuffer(newWidth, newHeight, true, floatingPoint);
 	}
 }
 	
@@ -68,18 +68,18 @@ Camera *SceneRenderTexture::getTargetCamera() {
 }
 
 void SceneRenderTexture::Render() {
-    if(targetCamera->hasFilterShader()) {
-        targetCamera->drawFilter(targetFramebuffer);
-    } else {
-        targetCamera->setViewport(Polycode::Rectangle(0.0, 0.0, targetFramebuffer->getWidth(), targetFramebuffer->getHeight()));
-        targetScene->Render(targetCamera, targetFramebuffer, NULL, true);
-    }
+	if(targetCamera->hasFilterShader()) {
+		targetCamera->drawFilter(targetFramebuffer);
+	} else {
+		targetCamera->setViewport(Polycode::Rectangle(0.0, 0.0, targetFramebuffer->getWidth(), targetFramebuffer->getHeight()));
+		targetScene->Render(targetCamera, targetFramebuffer, NULL, true);
+	}
 }
 
 Image *SceneRenderTexture::saveToImage() {
-    //RENDERER_TODO
-    //return renderer->renderBufferToImage(targetTexture);
-    return NULL;
+	//RENDERER_TODO
+	//return renderer->renderBufferToImage(targetTexture);
+	return NULL;
 }
 
 Texture *SceneRenderTexture::getTargetTexture() {
@@ -88,5 +88,5 @@ Texture *SceneRenderTexture::getTargetTexture() {
 
 SceneRenderTexture::~SceneRenderTexture() {
 	CoreServices::getInstance()->getSceneManager()->unregisterRenderTexture(this);
-    Services()->getRenderer()->destroyRenderBuffer(targetFramebuffer);
+	Services()->getRenderer()->destroyRenderBuffer(targetFramebuffer);
 }

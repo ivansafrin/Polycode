@@ -72,23 +72,23 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height, int custom
 	setAnchorPoint(0.0, 0.0, 0.0);
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	
-    if(customFont != "") {
-        fontName = customFont;
-    } else {
+	if(customFont != "") {
+		fontName = customFont;
+	} else {
 	if(multiLine)
 		fontName = conf->getStringValue("Polycode", "uiTextInputFontNameMultiLine");
 	else
 		fontName = conf->getStringValue("Polycode", "uiTextInputFontName");
-    }
-    if(customFontSize != -1) {
-        fontSize = customFontSize;
-    } else {
-        if(multiLine)
-            fontSize = conf->getNumericValue("Polycode", "uiTextInputFontSizeMultiline");	
-        else
-            fontSize = conf->getNumericValue("Polycode", "uiTextInputFontSize");
-    }
-    
+	}
+	if(customFontSize != -1) {
+		fontSize = customFontSize;
+	} else {
+		if(multiLine)
+			fontSize = conf->getNumericValue("Polycode", "uiTextInputFontSizeMultiline");	
+		else
+			fontSize = conf->getNumericValue("Polycode", "uiTextInputFontSize");
+	}
+	
 	Number rectHeight = height;
 	if(!multiLine) {
 		rectHeight = fontSize+10;
@@ -97,23 +97,23 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height, int custom
 	linesContainer = new Entity();	
 	linesContainer->processInputEvents = true;
 	linesContainer->ownsChildren = true;
-    
-    if(customLineSpacing != -1) {
-        lineSpacing = customLineSpacing;
-    } else {
-        lineSpacing = conf->getNumericValue("Polycode", "textEditLineSpacing");
-    }
-    
+	
+	if(customLineSpacing != -1) {
+		lineSpacing = customLineSpacing;
+	} else {
+		lineSpacing = conf->getNumericValue("Polycode", "textEditLineSpacing");
+	}
+	
 	st = conf->getNumericValue("Polycode", "textBgSkinT");
 	sr = conf->getNumericValue("Polycode", "textBgSkinR");
 	sb = conf->getNumericValue("Polycode", "textBgSkinB");
 	sl = conf->getNumericValue("Polycode", "textBgSkinL");
 
 	textInputOffsetY = conf->getNumericValue("Polycode", "uiTextInputFontOffsetY");
-    if(multiLine) {
-        textInputOffsetY = 0.0;
-    }
-    
+	if(multiLine) {
+		textInputOffsetY = 0.0;
+	}
+	
 	padding = conf->getNumericValue("Polycode", "textBgSkinPadding");
 	
 	textContainer = new UIElement();
@@ -124,17 +124,17 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height, int custom
 		inputRect = new UIBox(conf->getStringValue("Polycode", "textBgSkinMultiline"),
 						  st,sr,sb,sl,
 						  width+(padding*2), height+(padding*2));
-        inputRect->setBlendingMode(Renderer::BLEND_MODE_NONE);
+		inputRect->setBlendingMode(Renderer::BLEND_MODE_NONE);
 	} else {
 		inputRect = new UIBox(conf->getStringValue("Polycode", "textBgSkin"),
 						  st,sr,sb,sl,
 						  width+(padding*2), height+(padding*2));
-        
-        inputRectSelected = new UIBox(conf->getStringValue("Polycode", "textBgSkinFocus"),
-                              st,sr,sb,sl,
-                              width+(padding*2), height+(padding*2));
-        inputRectSelected->visible = false;
-        addChild(inputRectSelected);
+		
+		inputRectSelected = new UIBox(conf->getStringValue("Polycode", "textBgSkinFocus"),
+							  st,sr,sb,sl,
+							  width+(padding*2), height+(padding*2));
+		inputRectSelected->visible = false;
+		addChild(inputRectSelected);
 	}
 	
 	addChild(inputRect);		
@@ -160,7 +160,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height, int custom
 	
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_DOWN);
-	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_UP);	
+	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_UP); 
 	inputRect->addEventListener(this, InputEvent::EVENT_DOUBLECLICK);		
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);		
 	inputRect->addEventListener(this, InputEvent::EVENT_MOUSEOVER);
@@ -254,7 +254,7 @@ void UITextInput::checkBufferLines() {
 	for(int i=0; i < neededBufferLines - currentBufferLines; i++) {
 		if(multiLine) {
 			SceneLabel *newNumberLine = new SceneLabel(L"", fontSize, fontName, aaMode);
-            newNumberLine->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+			newNumberLine->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 			newNumberLine->color = lineNumberColor;
 			newNumberLine->positionAtBaseline = true;
 			lineNumberAnchor->addChild(newNumberLine);
@@ -266,7 +266,7 @@ void UITextInput::checkBufferLines() {
 		}
 	
 		SceneLabel *newLine = new SceneLabel(L"", fontSize, fontName, aaMode);
-        newLine->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+		newLine->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 		newLine->positionAtBaseline = true;
 		newLine->color = textColor;
 		lineHeight = newLine->getHeight();
@@ -332,7 +332,7 @@ void UITextInput::setSelection(int lineStart, int lineEnd, int colStart, int col
 	}
 	
 	if(lineStart > lines.size()-1) {
-		return;	
+		return; 
 	}
 	
 	String topLine = lines[lineStart].text;
@@ -366,7 +366,7 @@ void UITextInput::updateSelectionRects() {
 							
 	String topLine = wordWrapLines[lineStart].text;
 			
-	Number fColEnd  = colEnd;
+	Number fColEnd	= colEnd;
 	
 	if(colEnd > topLine.length() || lineStart != lineEnd)
 		fColEnd = topLine.length();
@@ -447,7 +447,7 @@ void UITextInput::deleteSelection() {
 		setOffsetToActual();		
 		updateCaretPosition();
 		
-		lines[actualLineOffset].text =  lines[actualLineOffset].text + newText;
+		lines[actualLineOffset].text =	lines[actualLineOffset].text + newText;
 		
 		removeLines(selectionTop+1, selectionBottom);
 		
@@ -468,7 +468,7 @@ void UITextInput::applyTokenOverride(int lineIndex, SyntaxHighlightToken overrid
 	
 		bool previousLineInBlockOverride = false;
 		if(lineIndex > 0) {		
-			if(lines[lineIndex-1].blockOverrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_LINE ||  lines[lineIndex-1].blockOverrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_START) {
+			if(lines[lineIndex-1].blockOverrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_LINE ||	lines[lineIndex-1].blockOverrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_START) {
 				previousLineInBlockOverride = true;
 			}
 		}	
@@ -660,7 +660,7 @@ void UITextInput::applySyntaxFormatting(int startLine, int endLine) {
 	
 	}
 
-//	readjustBuffer(startLine, endLine);	
+//	readjustBuffer(startLine, endLine); 
 }
 
 void UITextInput::changedText(int lineStart, int lineEnd, bool sendChangeEvent) {
@@ -690,14 +690,14 @@ void UITextInput::setSyntaxHighlighter(UITextInputSyntaxHighlighter *syntaxHighl
 void UITextInput::doMultilineResize() {
 
 	if(multiLine) {
-		int bufferOffset = -linesContainer->getPosition().y/ ( lineHeight+lineSpacing);	
+		int bufferOffset = -linesContainer->getPosition().y/ ( lineHeight+lineSpacing); 
 		
 		int realLineOffset = -1;
 		if(bufferOffset > 0 && bufferOffset < wordWrapLines.size()) {
 			realLineOffset = wordWrapLines[bufferOffset].actualLineNumber;
 		}
 		
-		if(getWidth() != lastResizeWidth) {	
+		if(getWidth() != lastResizeWidth) { 
 			updateWordWrap(0, lines.size()-1);
 		}
 		
@@ -727,12 +727,12 @@ void UITextInput::Resize(Number width, Number height) {
 	didMultilineResize = false;
 	
 	inputRect->resizeBox(width, height);
-    if(!multiLine) {
-        inputRectSelected->resizeBox(width, height);
-    }
+	if(!multiLine) {
+		inputRectSelected->resizeBox(width, height);
+	}
 	setWidth(width);
 	setHeight(height);
-	matrixDirty = true;	
+	matrixDirty = true; 
 	
 	if(multiLine) {
 		neededBufferLines = (height / ( lineHeight+lineSpacing)) + 1;
@@ -755,7 +755,7 @@ void UITextInput::Resize(Number width, Number height) {
 
 int UITextInput::insertLine(String lineText) {
 	
-	numLines++;	
+	numLines++; 
 		
 		String newText = lineText;
 		if(lines.size() > 0 && !settingText) {
@@ -879,7 +879,7 @@ void UITextInput::restructLines() {
 	}
 	
 	if(scrollContainer) {
-		scrollContainer->setContentSize(getWidth(),  (((wordWrapLines.size()+1) * ((lineHeight+lineSpacing)))) + padding);
+		scrollContainer->setContentSize(getWidth(),	 (((wordWrapLines.size()+1) * ((lineHeight+lineSpacing)))) + padding);
 	}
 }
 
@@ -1043,7 +1043,7 @@ void UITextInput::updateCaretPosition() {
 	
 	blinkerRect->setPosition(caretImagePosition + 1 -horizontalPixelScroll, (lineOffset * ( lineHeight+lineSpacing)));	
 /*	
-	if(multiLine) {	
+	if(multiLine) { 
 		if(linesContainer->getPosition().y + currentLine->getPosition2D().y < 0.0) {
 			scrollContainer->scrollVertical(-(lineHeight+lineSpacing+padding)/(scrollContainer->getContentSize().y));
 
@@ -1070,7 +1070,7 @@ void UITextInput::setActualLineOffset() {
 void UITextInput::dragSelectionTo(Number x, Number y) {
 	x -= (padding * 2.0) + decoratorOffset;
 	y -= padding;
-	int lineOffset = y  / (lineHeight+lineSpacing);
+	int lineOffset = y	/ (lineHeight+lineSpacing);
 	if(lineOffset > wordWrapLines.size()-1)
 		lineOffset = wordWrapLines.size()-1;
 	
@@ -1097,7 +1097,7 @@ void UITextInput::dragSelectionTo(Number x, Number y) {
 
 	setSelection(this->actualLineOffset, wordWrapLines[lineOffset].actualLineNumber, this->actualCaretPosition, newActualCaret);
 		
-	if(lineOffset > this->lineOffset) {	
+	if(lineOffset > this->lineOffset) { 
 		lineOffset += 1;
 		if(linesContainer->getPosition().y + (lineOffset*(lineHeight+lineSpacing)+padding) > scrollContainer->getHeight()-lineHeight-lineSpacing) {
 					scrollContainer->setScrollValue(0.0, (((((lineOffset) * ((lineHeight+lineSpacing)))) + padding-(scrollContainer->getHeight()-lineHeight-lineSpacing))/(scrollContainer->getContentSize().y-scrollContainer->getHeight())));
@@ -1116,18 +1116,18 @@ void UITextInput::dragSelectionTo(Number x, Number y) {
 int UITextInput::caretSkipWordBack(int caretLine, int caretPosition) {
 	for(int i=caretPosition; i > 0; i--) {
 		String bit = lines[caretLine].text.substr(i,1);
-		char chr = ((char*)bit.c_str())[0]; 		
+		char chr = ((char*)bit.c_str())[0];			
 		if(!isNumberOrCharacter(chr) && i < caretPosition-1) {
 			return i+1;
 		}
 	}
-    String bit = lines[caretLine].text;
-    char chr = ((char*)bit.c_str())[0];
-    if(isNumberOrCharacter(chr)) {
-        return 0;
-    } else {
-        return 1;
-    }
+	String bit = lines[caretLine].text;
+	char chr = ((char*)bit.c_str())[0];
+	if(isNumberOrCharacter(chr)) {
+		return 0;
+	} else {
+		return 1;
+	}
 }
 
 int UITextInput::caretSkipWordForward(int caretLine, int caretPosition) {
@@ -1238,7 +1238,7 @@ void UITextInput::findCurrent() {
 	lineOffset = match.lineNumber;
 	updateCaretPosition();
 
-	showLine(findMatches[findIndex].lineNumber, false);	
+	showLine(findMatches[findIndex].lineNumber, false); 
 	
 	setSelection(match.lineNumber, match.lineNumber, match.caretStart, match.caretEnd);
 	_setSelectionColor(Color(0.5, 0.2, 0.4, 1.0));	
@@ -1249,7 +1249,7 @@ void UITextInput::setCaretToMouse(Number x, Number y) {
 	x -= (padding) + decoratorOffset;
 	y -= padding;
 	//if(lines.size() > 1) {
-		lineOffset = y  / (lineHeight+lineSpacing);
+		lineOffset = y	/ (lineHeight+lineSpacing);
 		if(lineOffset > wordWrapLines.size()-1)
 			lineOffset = wordWrapLines.size()-1;
 		setActualLineOffset();	
@@ -1286,7 +1286,7 @@ void UITextInput::setCaretToMouse(Number x, Number y) {
 	updateCaretPosition();
 }
 
-void UITextInput::removeLines(unsigned int startIndex, unsigned int endIndex) {	
+void UITextInput::removeLines(unsigned int startIndex, unsigned int endIndex) { 
 
 	int startLine = lines[startIndex].wordWrapLineIndex;
 	int endLine = lines[endIndex].wordWrapLineIndex;	
@@ -1399,7 +1399,7 @@ String UITextInput::getLineText(unsigned int index) {
 	} else {
 		return "";
 	}
-}       
+}		
 
 String UITextInput::getSelectionText() {
 	if(!hasSelection)
@@ -1529,7 +1529,7 @@ void UITextInput::setTextDiff(String text) {
 		diffLineEnd = strings.size()-1;
 	}
 
-	int linesAdded = 0;	
+	int linesAdded = 0; 
 	if(diffLineStart == -1 || diffLineEnd == -1) {
 	} else {
 	
@@ -1595,7 +1595,7 @@ void UITextInput::setTextDiff(String text) {
 void UITextInput::setUndoState(UITextInputUndoState state) {
 	clearSelection();
 	if(multiLine) {
-		setTextDiff(state.content);	
+		setTextDiff(state.content); 
 	} else {
 		setText(state.content);
 	}
@@ -1618,7 +1618,7 @@ void UITextInput::showCurrentLineIfOffscreen() {
 	if(!multiLine)
 		return;
 		
-	int bufferOffset = -linesContainer->getPosition().y/ ( lineHeight+lineSpacing);	
+	int bufferOffset = -linesContainer->getPosition().y/ ( lineHeight+lineSpacing); 
 	int heightInLines = (getHeight() / ( lineHeight+lineSpacing)) + 1;
 			
 	if(lines[actualLineOffset].wordWrapLineIndex > bufferOffset && lines[actualLineOffset].wordWrapLineIndex < bufferOffset + heightInLines) {
@@ -1654,23 +1654,23 @@ void UITextInput::Cut() {
 	if(hasSelection) {
 		deleteSelection();
 	} else if (getLineText(lineOffset) != "") {
-        if (!multiLine) { setText(""); }
-        else {
-            removeLines(lineOffset, lineOffset);
-            caretPosition = 0;
-            updateCaretPosition();
-        }
-    }
+		if (!multiLine) { setText(""); }
+		else {
+			removeLines(lineOffset, lineOffset);
+			caretPosition = 0;
+			updateCaretPosition();
+		}
+	}
 }
 
 void UITextInput::Copy() {
 	if(hasSelection) {
 		CoreServices::getInstance()->getCore()->copyStringToClipboard(getSelectionText());
 	} else {
-        if (getLineText(lineOffset) != "") {
-            CoreServices::getInstance()->getCore()->copyStringToClipboard(getLineText(lineOffset));
-        }
-    }
+		if (getLineText(lineOffset) != "") {
+			CoreServices::getInstance()->getCore()->copyStringToClipboard(getLineText(lineOffset));
+		}
+	}
 }
 
 void UITextInput::Paste() {
@@ -1690,7 +1690,7 @@ void UITextInput::showLine(unsigned int lineNumber, bool top) {
 		return;
 	}
 	
-	scrollContainer->setContentSize(getWidth(),  (((wordWrapLines.size()+1) * ((lineHeight+lineSpacing)))) + padding);
+	scrollContainer->setContentSize(getWidth(),	 (((wordWrapLines.size()+1) * ((lineHeight+lineSpacing)))) + padding);
 
 	if(top) {
 		scrollContainer->setScrollValue(0.0, ((((offsetLineNumber) * ((lineHeight+lineSpacing)))) + padding)/(scrollContainer->getContentSize().y-scrollContainer->getHeight()));
@@ -1701,7 +1701,7 @@ void UITextInput::showLine(unsigned int lineNumber, bool top) {
 
 bool UITextInput::isNumberOrCharacter(wchar_t charCode) {
 
-    if(charCode == '\t' || charCode == ' ') return false;
+	if(charCode == '\t' || charCode == ' ') return false;
 	if(charCode == '_') return true;
 
 	if(charCode > 47 && charCode < 58)
@@ -2008,7 +2008,7 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 					updateCaretPosition();										
 				}
 				
-				// scroll down if cursor going out of view 			
+				// scroll down if cursor going out of view			
 				if(linesContainer->getPosition().y + (lineOffset*(lineHeight+lineSpacing)+padding) > scrollContainer->getHeight()-lineHeight-lineSpacing) {
 					scrollContainer->setScrollValue(0.0, (((((lineOffset) * ((lineHeight+lineSpacing)))) + padding-(scrollContainer->getHeight()-lineHeight-lineSpacing))/(scrollContainer->getContentSize().y-scrollContainer->getHeight())));
 				}				
@@ -2027,16 +2027,16 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 	}
 	
 	if(key == KEY_RETURN) {
-		if(multiLine) {	
+		if(multiLine) { 
 			saveUndoState();
 			if(hasSelection) {
 				deleteSelection();		
 			}			
 			insertLine();
 			updateCaretPosition();
-            if(linesContainer->getPosition().y + (lineOffset*(lineHeight+lineSpacing)+padding) > scrollContainer->getHeight()-lineHeight-lineSpacing) {
-                scrollContainer->setScrollValue(0.0, (((((lineOffset) * ((lineHeight+lineSpacing)))) + padding-(scrollContainer->getHeight()-lineHeight-lineSpacing))/(scrollContainer->getContentSize().y-scrollContainer->getHeight())));
-            }
+			if(linesContainer->getPosition().y + (lineOffset*(lineHeight+lineSpacing)+padding) > scrollContainer->getHeight()-lineHeight-lineSpacing) {
+				scrollContainer->setScrollValue(0.0, (((((lineOffset) * ((lineHeight+lineSpacing)))) + padding-(scrollContainer->getHeight()-lineHeight-lineSpacing))/(scrollContainer->getContentSize().y-scrollContainer->getHeight())));
+			}
 		} else {
 			dispatchEvent(new Event(), Event::COMPLETE_EVENT);
 		}
@@ -2123,11 +2123,11 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 				}
 			}
 		}
-        if (multiLine) {
-            if(linesContainer->getPosition().y + (lineOffset*(lineHeight+lineSpacing)+padding) < 0.0) {
-                scrollContainer->setScrollValue(0.0, ((((lineOffset) * ((lineHeight+lineSpacing)))) + padding)/(scrollContainer->getContentSize().y-scrollContainer->getHeight()));
-            }
-        }
+		if (multiLine) {
+			if(linesContainer->getPosition().y + (lineOffset*(lineHeight+lineSpacing)+padding) < 0.0) {
+				scrollContainer->setScrollValue(0.0, ((((lineOffset) * ((lineHeight+lineSpacing)))) + padding)/(scrollContainer->getContentSize().y-scrollContainer->getHeight()));
+			}
+		}
 	}
 	
 	if(key == KEY_BACKSPACE) {
@@ -2161,11 +2161,11 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 			}
 		}
 		}
-        if (multiLine) {
-            if(linesContainer->getPosition().y + (lineOffset*(lineHeight+lineSpacing)+padding) < 0.0) {
-                scrollContainer->setScrollValue(0.0, ((((lineOffset) * ((lineHeight+lineSpacing)))) + padding)/(scrollContainer->getContentSize().y-scrollContainer->getHeight()));
-            }
-        }
+		if (multiLine) {
+			if(linesContainer->getPosition().y + (lineOffset*(lineHeight+lineSpacing)+padding) < 0.0) {
+				scrollContainer->setScrollValue(0.0, ((((lineOffset) * ((lineHeight+lineSpacing)))) + padding)/(scrollContainer->getContentSize().y-scrollContainer->getHeight()));
+			}
+		}
 	}
 	
 	lines[actualLineOffset].text = ctext;
@@ -2179,12 +2179,12 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 void UITextInput::Update() {
 	resizeTimer += core->getElapsed();
 	
-    
-    if(!multiLine) {
-        inputRectSelected->visible = hasFocus;
-        inputRect->visible = !hasFocus;
-    }
-    
+	
+	if(!multiLine) {
+		inputRectSelected->visible = hasFocus;
+		inputRect->visible = !hasFocus;
+	}
+	
 	if(draggingSelection) {
 		if(selectionDragMouse != dragMouseStart) {
 			dragSelectionTo(selectionDragMouse.x, selectionDragMouse.y - linesContainer->getPosition().y);	
@@ -2202,7 +2202,7 @@ void UITextInput::Update() {
 	blinkerRect->setPosition(caretImagePosition + 1 -horizontalPixelScroll, (lineOffset * ( lineHeight+lineSpacing)));
 
 	if(hasFocus) {
-//		inputRect->setStrokeColor(1.0f, 1.0f, 1.0f, 0.25f);	
+//		inputRect->setStrokeColor(1.0f, 1.0f, 1.0f, 0.25f); 
 	} else {
 		blinkerRect->visible = false;		
 //		inputRect->setStrokeColor(1.0f, 1.0f, 1.0f, 0.1f);
@@ -2264,27 +2264,27 @@ LineColorInfo LineColorInfo::getColorInfoForRange(int start, int length) {
 }
 
 std::vector<TextColorPair> UITextInput::splitTokens(String stringToSplit, LineColorInfo *stringColorInfo) {
-    std::vector<TextColorPair> result;	
+	std::vector<TextColorPair> result;	
 	
-    size_t pos = 0, lastPos = 0;
-    while ((pos = stringToSplit.find_first_of(";,| .():-+/*", lastPos)) != string::npos)
-    {
+	size_t pos = 0, lastPos = 0;
+	while ((pos = stringToSplit.find_first_of(";,| .():-+/*", lastPos)) != string::npos)
+	{
 		TextColorPair chunk;
 		chunk.text = stringToSplit.contents.substr(lastPos, pos-lastPos+1);
 		if(stringColorInfo) {
 			chunk.colorInfo = stringColorInfo->getColorInfoForRange(lastPos, pos-lastPos+1);
 		}
-        result.push_back(chunk);
-        lastPos = pos+1;
-    }
+		result.push_back(chunk);
+		lastPos = pos+1;
+	}
 	TextColorPair chunk;
 	chunk.text = stringToSplit.contents.substr(lastPos);
 	if(stringColorInfo) {
 		chunk.colorInfo = stringColorInfo->getColorInfoForRange(lastPos, stringToSplit.size()-lastPos);
 	}
 
-    result.push_back(chunk);
-    return result;
+	result.push_back(chunk);
+	return result;
 }
 
 std::vector<TextColorPair> UITextInput::makeWordWrapBuffer(LineInfo *lineInfo, String indentPrefix) {
@@ -2457,8 +2457,8 @@ void UITextInput::readjustBuffer(int lineStart, int lineEnd) {
 		lineEnd = wordWrapLines.size()-1;
 	}
 
-	int bufferOffset = -linesContainer->getPosition().y/ ( lineHeight+lineSpacing);	
-	Number bufferLineOffset = bufferOffset * ( lineHeight+lineSpacing);	
+	int bufferOffset = -linesContainer->getPosition().y/ ( lineHeight+lineSpacing); 
+	Number bufferLineOffset = bufferOffset * ( lineHeight+lineSpacing); 
 
 	for(int i=0; i < bufferLines.size(); i++) {
 		if(bufferOffset + i < wordWrapLines.size()) {	
@@ -2582,7 +2582,7 @@ void UITextInput::handleEvent(Event *event) {
 						contextMenu->addOption("Cut", "cut");
 						contextMenu->addOption("Paste", "paste");
 						contextMenu->addDivider();
-						contextMenu->addOption("Select All", "select_all");	
+						contextMenu->addOption("Select All", "select_all"); 
 						contextMenu->fitToScreenVertical();
 						contextMenu->addEventListener(this, UIEvent::OK_EVENT);
 						return;						
@@ -2634,15 +2634,15 @@ void UITextInput::handleEvent(Event *event) {
 		}
 	}
 	
-    UIElement::handleEvent(event);
+	UIElement::handleEvent(event);
 }
 
 void UITextInput::onGainFocus() {
-    blinkerRect->visible  = true;
-    blinkTimer->Reset();
-    if(!multiLine) {
-        selectAll();
-    }
+	blinkerRect->visible  = true;
+	blinkTimer->Reset();
+	if(!multiLine) {
+		selectAll();
+	}
 }
 
 void UITextInput::shiftText(bool left) {

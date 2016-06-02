@@ -35,10 +35,10 @@ void Vector4::set(Number x, Number y, Number z, Number w) {
 }
 
 Vector4::Vector4(const Vector3 &v3) {
-    x = v3.x;
-    y = v3.y;
-    z = v3.z;
-    w = 1.0;
+	x = v3.x;
+	y = v3.y;
+	z = v3.z;
+	w = 1.0;
 }
 
 Vector4::Vector4(Number x,Number y,Number z, Number w) {

@@ -25,9 +25,9 @@
 using namespace Polycode;
 
 GPUDrawBuffer::GPUDrawBuffer() : targetFramebuffer(NULL) {
-    
+	
 }
 
 GPUDrawBuffer::~GPUDrawBuffer() {
-    
+	
 }

@@ -25,28 +25,28 @@
 #include "polycode/core/PolyCoreFileProvider.h"
 
 namespace Polycode {
-    
-    class _PolyExport BasicFile : public CoreFile {
-    public:
-        
-        long read( void * ptr, size_t size, size_t count);
-        long write( const void * ptr, size_t size, size_t count);
-        int seek(long int offset, int origin);
-        long tell();
-        
-        FILE *file;
-    };
-    
-    class _PolyExport BasicFileProvider : public CoreFileProvider {
-        public:
-            BasicFileProvider();
-            Polycode::CoreFile *openFile(const String &fileName, const String &opts);
-            void closeFile(Polycode::CoreFile *file);
-            void addSource(const String &source);
-            void removeSource(const String &source);
-      
-            std::vector<String> sourceFolders;
-        
-    };
-    
+	
+	class _PolyExport BasicFile : public CoreFile {
+	public:
+		
+		long read( void * ptr, size_t size, size_t count);
+		long write( const void * ptr, size_t size, size_t count);
+		int seek(long int offset, int origin);
+		long tell();
+		
+		FILE *file;
+	};
+	
+	class _PolyExport BasicFileProvider : public CoreFileProvider {
+		public:
+			BasicFileProvider();
+			Polycode::CoreFile *openFile(const String &fileName, const String &opts);
+			void closeFile(Polycode::CoreFile *file);
+			void addSource(const String &source);
+			void removeSource(const String &source);
+	  
+			std::vector<String> sourceFolders;
+		
+	};
+	
 }

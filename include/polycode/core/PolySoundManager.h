@@ -33,36 +33,36 @@
 #define POLY_MIX_BUFFER_SIZE (POLY_FRAMES_PER_BUFFER*POLY_CIRCULAR_BUFFER_SIZE)
 
 namespace Polycode {
-    
-    class _PolyExport AudioMixer {
-        public:
+	
+	class _PolyExport AudioMixer {
+		public:
 
 			AudioMixer();
 			~AudioMixer();
 
-            void mixIntoBuffer(int16_t *buffer, unsigned int numSamples);
-            std::vector<Sound*> sounds;
-            Number globalVolume;
-            Vector3 listenerPosition;
-            Quaternion listenerOrientation;
+			void mixIntoBuffer(int16_t *buffer, unsigned int numSamples);
+			std::vector<Sound*> sounds;
+			Number globalVolume;
+			Vector3 listenerPosition;
+			Quaternion listenerOrientation;
 			CoreMutex *mixerMutex;
-    };
+	};
 	
-    class _PolyExport AudioInterface {
-        public:
-            AudioInterface();
-            void addToBuffer(int16_t *data, unsigned int count);
-            virtual void setMixer(AudioMixer *mixer);
-            AudioMixer *getMixer();        
-        protected:
-            AudioMixer *mixer;
-    };
-    
-    
+	class _PolyExport AudioInterface {
+		public:
+			AudioInterface();
+			void addToBuffer(int16_t *data, unsigned int count);
+			virtual void setMixer(AudioMixer *mixer);
+			AudioMixer *getMixer();		   
+		protected:
+			AudioMixer *mixer;
+	};
+	
+	
 	/**
 	* Controls global sound settings.
 	*/
-    
+	
 	class _PolyExport SoundManager : public PolyBase{
 	public:
 		SoundManager();
@@ -70,33 +70,33 @@ namespace Polycode {
 		 
 		void setListenerPosition(const Vector3 &position);
 		void setListenerOrientation(const Quaternion &orientation);
-        
-        bool recordSound(unsigned int rate, unsigned int sampleSize);
-        Sound *stopRecording(bool generateFloatBuffer = false);
-        void setAudioInterface(AudioInterface *audioInterface);
-        
-        void Update();
+		
+		bool recordSound(unsigned int rate, unsigned int sampleSize);
+		Sound *stopRecording(bool generateFloatBuffer = false);
+		void setAudioInterface(AudioInterface *audioInterface);
+		
+		void Update();
 		
 		/**
 		* Sets the global sound volume.
 		*/ 
 		void setGlobalVolume(Number globalVolume);
-        
-        void registerSound(Sound *sound);
-        void unregisterSound(Sound *sound);
+		
+		void registerSound(Sound *sound);
+		void unregisterSound(Sound *sound);
 		
 	protected:
 		
-        AudioMixer *mixer;
-        AudioInterface *audioInterface;
-        
-        int16_t mixBuffer[POLY_MIX_BUFFER_SIZE*POLY_NUM_CHANNELS];
-        
-        Number testVal;
-        Number leftOver;
-        
-       
-        int recordingBufferSize;
-        int recordingBufferRate;
+		AudioMixer *mixer;
+		AudioInterface *audioInterface;
+		
+		int16_t mixBuffer[POLY_MIX_BUFFER_SIZE*POLY_NUM_CHANNELS];
+		
+		Number testVal;
+		Number leftOver;
+		
+	   
+		int recordingBufferSize;
+		int recordingBufferRate;
 	};
 }

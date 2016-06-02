@@ -33,7 +33,7 @@ namespace Polycode {
 	class Material;
 	class ShaderBinding;
 	class Texture;
-    class GPUDrawCall;
+	class GPUDrawCall;
 
 	/**
 	* Camera in a 3D scene. Cameras can be added to a scene and changed between dynamically. You can also set a shader to a camera that will run as a screen shader for post-processing effects.
@@ -58,10 +58,10 @@ namespace Polycode {
 
 			/** ProjectionMode: Perspective projection, with bounds set by edges of frustum. */
 			static const int PERSPECTIVE_FRUSTUM = 5;
-        
-            /** ProjectionMode: Manual matrix projection. Use setProjectionMatrix to set the matrix. */
-            static const int MANUAL_MATRIX = 6;
-        
+		
+			/** ProjectionMode: Manual matrix projection. Use setProjectionMatrix to set the matrix. */
+			static const int MANUAL_MATRIX = 6;
+		
 
 			/**
 			* Constructor.
@@ -70,9 +70,9 @@ namespace Polycode {
 			explicit Camera(Scene *parentScene);
 			virtual ~Camera();
 			
-            /**
-             * Builds the frustum clipping planes for this camera using the current render modelview and the camera's projection matrices.
-             */
+			/**
+			 * Builds the frustum clipping planes for this camera using the current render modelview and the camera's projection matrices.
+			 */
 			void buildFrustumPlanes();
 			
 			/**
@@ -83,13 +83,13 @@ namespace Polycode {
 			* @see canSee()
 			*/								
 			bool isSphereInFrustum(const Vector3 &pos, Number fRadius);
-        
-            /**
-             * Checks if an Axis-aligned bounding box is visible to the camera.
-             * @param aabb An axis-aligned bounding box
-             * @return Returns true if the AABB is within the camera's frustum, false if it isn't.
-             */
-            bool isAABBInFrustum(const AABB &aabb);
+		
+			/**
+			 * Checks if an Axis-aligned bounding box is visible to the camera.
+			 * @param aabb An axis-aligned bounding box
+			 * @return Returns true if the AABB is within the camera's frustum, false if it isn't.
+			 */
+			bool isAABBInFrustum(const AABB &aabb);
 			
 			/**
 			* Toggles orthographic projection mode for camera.
@@ -99,11 +99,11 @@ namespace Polycode {
 			*/			
 			void setOrthoMode(bool mode);
 
-            /**
-             * Sets the orthographic size of the camera.
-             * @param orthoSizeX Orthographic width
-             * @param orthoSizeY Orthographic height
-             */
+			/**
+			 * Sets the orthographic size of the camera.
+			 * @param orthoSizeX Orthographic width
+			 * @param orthoSizeY Orthographic height
+			 */
 			void setOrthoSize(Number orthoSizeX, Number orthoSizeY);
 			
 			/** Switches into frustum mode and sets up the planes. */
@@ -146,49 +146,49 @@ namespace Polycode {
 				return fov;
 			}
 			
-            /**
-             * Sets the clipping planes for the camera.
-             * @param nearClipPlane Near clipping plane.
-             * @param farClipPlane Far clipping plane.
-             */
+			/**
+			 * Sets the clipping planes for the camera.
+			 * @param nearClipPlane Near clipping plane.
+			 * @param farClipPlane Far clipping plane.
+			 */
 			void setClippingPlanes(Number nearClipPlane, Number farClipPlane);
-        
-            /**
-             * Returns the near clipping plane of the camera.
-             * @return Near clipping plane of the camera.
-             */
+		
+			/**
+			 * Returns the near clipping plane of the camera.
+			 * @return Near clipping plane of the camera.
+			 */
 			Number getNearClippingPlane();
-        
-            /**
-             * Returns the far clipping plane of the camera.
-             * @return Far clipping plane of the camera.
-             */
+		
+			/**
+			 * Returns the far clipping plane of the camera.
+			 * @return Far clipping plane of the camera.
+			 */
 			Number getFarClippingPlane();
-        
-            /**
-             * Sets the parent scene of the camera.
-             * @param parentScene New parent scene.
-             */
+		
+			/**
+			 * Sets the parent scene of the camera.
+			 * @param parentScene New parent scene.
+			 */
 			void setParentScene(Scene *parentScene);
-        
-            /**
-             * Returns the camera's parent scene.
-             * @return The camera's parent scene.
-             */
-            Scene *getParentScene() const;
+		
+			/**
+			 * Returns the camera's parent scene.
+			 * @return The camera's parent scene.
+			 */
+			Scene *getParentScene() const;
 			
 
-            Matrix4 createProjectionMatrix();
+			Matrix4 createProjectionMatrix();
 
-            /**
-             * Check if camera has a post filter material applied
-             * @return True if the camera has a filter material applied.
-             */
+			/**
+			 * Check if camera has a post filter material applied
+			 * @return True if the camera has a filter material applied.
+			 */
 			bool hasFilterShader();
-        
-            /**
-             * Binds target buffers and renders the scene in multiple passes based on the post filter material.
-             */
+		
+			/**
+			 * Binds target buffers and renders the scene in multiple passes based on the post filter material.
+			 */
 			void drawFilter(RenderBuffer *targetBuffer);
 
 			/**
@@ -213,90 +213,90 @@ namespace Polycode {
 			*/			
 			Material *getScreenShaderMaterial() { return filterShaderMaterial; }	
 
-            /**
-             * Clones the camera.
-             */
-            virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
+			/**
+			 * Clones the camera.
+			 */
+			virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
 
-            /**
-             * Applies clone parameters to the camera.
-             */
-            virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
+			/**
+			 * Applies clone parameters to the camera.
+			 */
+			virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
 			
-            /**
-             * Returns the camera's projection matrix.
-             * @return Projection matrix.
-             */
+			/**
+			 * Returns the camera's projection matrix.
+			 * @return Projection matrix.
+			 */
 			Matrix4 getProjectionMatrix();
-        
-            /**
-             * Manually sets the camera's projection matrix. Projection mode must be set to MANUAL_MATRIX.
-             * @param matrix Custom projection matrix.
-             * @see setProjectionMode
-             */
-            void setCustomProjectionMatrix(Matrix4 matrix);
+		
+			/**
+			 * Manually sets the camera's projection matrix. Projection mode must be set to MANUAL_MATRIX.
+			 * @param matrix Custom projection matrix.
+			 * @see setProjectionMode
+			 */
+			void setCustomProjectionMatrix(Matrix4 matrix);
 			
-            /**
-             * Return's the camera's pixel viewport based on the last render pass.
-             */
+			/**
+			 * Return's the camera's pixel viewport based on the last render pass.
+			 */
 			Polycode::Rectangle getViewport();
 
 			void setViewport(const Polycode::Rectangle &viewport);
-        
+		
 			/**
 			* Toggles the frustum culling of the camera. (Defaults to true).
 			*/
 			bool frustumCulling;
 			
-            /**
-             * If set to true, the orthographic projection will be set with the 0,0 coordinate in the top left corner of the viewport. Otherwise, the 0,0 coordinate is in the center.
-             */ 
+			/**
+			 * If set to true, the orthographic projection will be set with the 0,0 coordinate in the top left corner of the viewport. Otherwise, the 0,0 coordinate is in the center.
+			 */ 
 			bool topLeftOrtho;
 		
-            /**
-            * Shifts camera frustum by factor of the frustum size. (x=-1 will shift the frustum to the left by a whole screen width).
-            */
+			/**
+			* Shifts camera frustum by factor of the frustum size. (x=-1 will shift the frustum to the left by a whole screen width).
+			*/
 			Vector2 cameraShift;
-		      
+			  
 			/** @deprecated use setProjectionMode(ProjectionMode mode) */
 			void setOrthoSizeMode(int orthoSizeMode) { setProjectionMode(orthoSizeMode); }
 			/** @deprecated use getProjectionMode() */
 			int getOrthoSizeMode() const { return projectionMode; }
 
-            /**
-             * Sets the projection mode of the camera. Possible values are ORTHO_SIZE_MANUAL, ORTHO_SIZE_LOCK_HEIGHT,ORTHO_SIZE_LOCK_WIDTH, ORTHO_SIZE_LOCK_WIDTH, PERSPECTIVE_FOV, PERSPECTIVE_FRUSTUM and MANUAL_MATRIX.
-                See the documentation of each individual mode for details.
-             * @param mode New projection mode.
-             */
+			/**
+			 * Sets the projection mode of the camera. Possible values are ORTHO_SIZE_MANUAL, ORTHO_SIZE_LOCK_HEIGHT,ORTHO_SIZE_LOCK_WIDTH, ORTHO_SIZE_LOCK_WIDTH, PERSPECTIVE_FOV, PERSPECTIVE_FRUSTUM and MANUAL_MATRIX.
+				See the documentation of each individual mode for details.
+			 * @param mode New projection mode.
+			 */
 			void setProjectionMode(int mode);
-        
-            /**
-             * Returns the current projection mode.
-             * @return Current projection mode.
-             */
+		
+			/**
+			 * Returns the current projection mode.
+			 * @return Current projection mode.
+			 */
 			int getProjectionMode() const { return projectionMode; }
 
-            Vector3 projectRayFrom2DCoordinate(const Vector2 &coordinate, const Polycode::Rectangle &viewport);
+			Vector3 projectRayFrom2DCoordinate(const Vector2 &coordinate, const Polycode::Rectangle &viewport);
 
-            void renderFullScreenQuad(GPUDrawBuffer *drawBuffer, int shaderPass);
-        
-            ShaderPass getShaderPass(unsigned int index);
-            unsigned int getNumShaderPasses();        
-        
+			void renderFullScreenQuad(GPUDrawBuffer *drawBuffer, int shaderPass);
+		
+			ShaderPass getShaderPass(unsigned int index);
+			unsigned int getNumShaderPasses();		  
+		
 		protected:
-        
-            Mesh *screenQuadMesh;
+		
+			Mesh *screenQuadMesh;
 
-            void setOrthoMatrix(Matrix4 &matrix, Number xSize, Number ySize, Number _near, Number _far, bool centered);
-        
-			int projectionMode;        
+			void setOrthoMatrix(Matrix4 &matrix, Number xSize, Number ySize, Number _near, Number _far, bool centered);
+		
+			int projectionMode;		   
 			Matrix4 projectionMatrix;
 
 			Polycode::Rectangle viewport;
 			Number orthoSizeX;
 			Number orthoSizeY;
-        
-            std::vector<ShaderPass> shaderPasses;
+		
+			std::vector<ShaderPass> shaderPasses;
 
 			Number nearClipPlane;
 			Number farClipPlane;
@@ -309,8 +309,8 @@ namespace Polycode {
 			Scene *parentScene;
 
 			Material *filterShaderMaterial;			
-            RenderBuffer *originalFramebuffer;
-        
+			RenderBuffer *originalFramebuffer;
+		
 			bool _hasFilterShader;
 	};	
 }

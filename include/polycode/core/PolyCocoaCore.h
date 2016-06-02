@@ -48,8 +48,8 @@ namespace Polycode {
 	
 	class _PolyExport PosixMutex : public CoreMutex {
 	public:
-        void lock();
-        void unlock();
+		void lock();
+		void unlock();
 		pthread_mutex_t pMutex;
 	};
 	
@@ -61,9 +61,9 @@ namespace Polycode {
 		int mouseX;
 		int mouseY;
 		
-        std::vector<TouchInfo> touches;
-        TouchInfo touch;
-        
+		std::vector<TouchInfo> touches;
+		TouchInfo touch;
+		
 		PolyKEY keyCode;
 		wchar_t unicodeChar;
 		
@@ -94,7 +94,7 @@ namespace Polycode {
 		public:
 			GamepadDeviceEntry() {
 				numAxes = 0;
-                numButtons = 0;
+				numButtons = 0;
 			}
 			vector<HIDGamepadAxis> axisElements;
 			vector<HIDGamepadButton> buttonElements;			
@@ -111,8 +111,8 @@ namespace Polycode {
 		CocoaCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex=-1, bool retinaSupport=false);
 		virtual ~CocoaCore();
 		
-        bool createRenderContext();
-        
+		bool createRenderContext();
+		
 		void enableMouse(bool newval);
 		unsigned int getTicks();
 		bool systemUpdate();
@@ -127,14 +127,14 @@ namespace Polycode {
 		void removeDiskItem(const String& itemPath);
 		String openFolderPicker();
 		vector<String> openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple);
-        String saveFilePicker(std::vector<CoreFileExtension> extensions);
+		String saveFilePicker(std::vector<CoreFileExtension> extensions);
 		
 		String executeExternalCommand(String command, String args, String inDirectory="");
 		
-        void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport=true);
+		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport=true);
 
-        bool systemParseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector);
-        
+		bool systemParseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector);
+		
 		void launchApplicationWithFile(String application, String file);
 		void openFileWithApplication(String file, String application);
 		
@@ -167,18 +167,18 @@ namespace Polycode {
 		
 		bool checkSpecialKeyEvents(PolyKEY key);		
 
-        Number getBackingXRes();
-        Number getBackingYRes();
-        
-        void handleVideoModeChange(VideoModeChangeInfo *modeInfo);
-        void flushRenderContext();
-        
+		Number getBackingXRes();
+		Number getBackingYRes();
+		
+		void handleVideoModeChange(VideoModeChangeInfo *modeInfo);
+		void flushRenderContext();
+		
 	protected:
 	
 		PolycodeView *glView;
 		uint64_t initTime;
-        bool retinaSupport;
-        
+		bool retinaSupport;
+		
 		IOHIDManagerRef hidManager;
 	};
 }

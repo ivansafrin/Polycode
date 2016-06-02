@@ -46,10 +46,10 @@ Entity *PhysicsScene2DEvent::getSecondEntity() {
 
 void PhysicsScene2D::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
 {
-    if(((PhysicsScene2DEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly ||
-       ((PhysicsScene2DEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->collisionOnly) {
-        contact->SetEnabled(false);
-    }    
+	if(((PhysicsScene2DEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly ||
+	   ((PhysicsScene2DEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->collisionOnly) {
+		contact->SetEnabled(false);
+	}	 
 }
 
 void PhysicsScene2D::BeginContact (b2Contact *contact) {
@@ -61,11 +61,11 @@ void PhysicsScene2D::BeginContact (b2Contact *contact) {
 	newEvent->entity1 = ((PhysicsScene2DEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->getEntity();
 	newEvent->entity2 = ((PhysicsScene2DEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->getEntity();
 
-    if(((PhysicsScene2DEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly ||
-        ((PhysicsScene2DEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->collisionOnly) {
-        contact->SetEnabled(false);
-    }
-       
+	if(((PhysicsScene2DEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly ||
+		((PhysicsScene2DEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->collisionOnly) {
+		contact->SetEnabled(false);
+	}
+	   
 	b2Manifold *manifold = contact->GetManifold();
 	b2Vec2 nor = manifold->localNormal;
 	b2Vec2 point = manifold->localPoint;
@@ -78,10 +78,10 @@ void PhysicsScene2D::BeginContact (b2Contact *contact) {
 	newEvent->localCollisionNormal.x = nor.x;
 	newEvent->localCollisionNormal.y = nor.y;	
 	newEvent->worldCollisionNormal.x = w_nor.x;
-	newEvent->worldCollisionNormal.y = w_nor.y;	
+	newEvent->worldCollisionNormal.y = w_nor.y; 
 
 	newEvent->localCollisionPoint.x = point.x * worldScale;
-	newEvent->localCollisionPoint.y = point.y * worldScale;	
+	newEvent->localCollisionPoint.y = point.y * worldScale; 
 	
 	newEvent->worldCollisionPoint.x = w_manifold.points[0].x * worldScale;
 	newEvent->worldCollisionPoint.y = w_manifold.points[0].y * worldScale;
@@ -89,8 +89,8 @@ void PhysicsScene2D::BeginContact (b2Contact *contact) {
 	newEvent->impactStrength = 0;
 	newEvent->frictionStrength = 0;
 
-    newEvent->contact = contact;
-    
+	newEvent->contact = contact;
+	
 	newEvent->setEventCode(PhysicsScene2DEvent::EVENT_NEW_SHAPE_COLLISION);
 	eventsToDispatch.push_back(newEvent);
 	
@@ -102,13 +102,13 @@ void PhysicsScene2D::PostSolve(b2Contact* contact, const b2ContactImpulse* impul
 	newEvent->entity1 = ((PhysicsScene2DEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->getEntity();
 	newEvent->entity2 = ((PhysicsScene2DEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->getEntity();
 
-    
-    if(((PhysicsScene2DEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly ||
-       ((PhysicsScene2DEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->collisionOnly) {
-        contact->SetEnabled(false);
-    }
+	
+	if(((PhysicsScene2DEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->collisionOnly ||
+	   ((PhysicsScene2DEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->collisionOnly) {
+		contact->SetEnabled(false);
+	}
 
-    
+	
 	b2Manifold *manifold = contact->GetManifold();
 	b2Vec2 nor = manifold->localNormal;
 	b2Vec2 point = manifold->points[0].localPoint;
@@ -120,18 +120,18 @@ void PhysicsScene2D::PostSolve(b2Contact* contact, const b2ContactImpulse* impul
 	newEvent->localCollisionNormal.x = nor.x;
 	newEvent->localCollisionNormal.y = nor.y;	
 	newEvent->worldCollisionNormal.x = w_nor.x;
-	newEvent->worldCollisionNormal.y = w_nor.y;	
+	newEvent->worldCollisionNormal.y = w_nor.y; 
 
 	newEvent->localCollisionPoint.x = point.x * worldScale;
-	newEvent->localCollisionPoint.y = point.y * worldScale;	
+	newEvent->localCollisionPoint.y = point.y * worldScale; 
 	newEvent->worldCollisionPoint.x = w_manifold.points[0].x * worldScale;
 	newEvent->worldCollisionPoint.y = w_manifold.points[0].y * worldScale;
 	
 	
 	newEvent->impactStrength = 0;
 	newEvent->frictionStrength = 0;
-    
-    newEvent->contact = contact;
+	
+	newEvent->contact = contact;
 	for(int i=0; i < manifold->pointCount; i++) {
 		if(impulse->normalImpulses[i] > newEvent->impactStrength)
 			newEvent->impactStrength = impulse->normalImpulses[i];
@@ -149,8 +149,8 @@ void PhysicsScene2D::EndContact (b2Contact *contact) {
 	PhysicsScene2DEvent *newEvent = new PhysicsScene2DEvent();
 	newEvent->entity1 = ((PhysicsScene2DEntity*)contact->GetFixtureA()->GetBody()->GetUserData())->getEntity();
 	newEvent->entity2 = ((PhysicsScene2DEntity*)contact->GetFixtureB()->GetBody()->GetUserData())->getEntity();
-    newEvent->contact = contact;
-    
+	newEvent->contact = contact;
+	
 	for(int i=0; i < contacts.size(); i++) {
 		if(contacts[i] == contact) {
 			contacts.erase(contacts.begin()+i);
@@ -179,7 +179,7 @@ bool PhysicsScene2D::isEntityColliding(Entity *ent1) {
 
 bool PhysicsScene2D::testEntityCollision(Entity *ent1, Entity *ent2) {
 	PhysicsScene2DEntity *pEnt1 = getPhysicsByEntity(ent1);
-	PhysicsScene2DEntity *pEnt2 = getPhysicsByEntity(ent2);	
+	PhysicsScene2DEntity *pEnt2 = getPhysicsByEntity(ent2); 
 	if(pEnt1 == NULL || pEnt2 == NULL)
 		return false;
 	
@@ -187,7 +187,7 @@ bool PhysicsScene2D::testEntityCollision(Entity *ent1, Entity *ent2) {
 		Entity *cEnt1 = ((PhysicsScene2DEntity*)contacts[i]->GetFixtureA()->GetBody()->GetUserData())->getEntity();
 		Entity *cEnt2 = ((PhysicsScene2DEntity*)contacts[i]->GetFixtureB()->GetBody()->GetUserData())->getEntity();
 		
-	        
+			
 		if((cEnt1 == ent1 && cEnt2 == ent2) || (cEnt1 == ent2 && cEnt2 == ent1)) {
 			return true;
 		}
@@ -208,19 +208,19 @@ void PhysicsScene2D::init(Number worldScale, int velIterations, int posIteration
 	this->worldScale = worldScale;
 	
 	velocityIterations = velIterations;
-    positionIterations = posIterations;
+	positionIterations = posIterations;
 	
 	b2Vec2 gravity(physicsGravity.x,physicsGravity.y);
 	bool doSleep = true;
 	world  = new b2World(gravity, doSleep);
-    
+	
 	world->SetContactListener(this);
 }
 
 void PhysicsScene2D::setGravity(Vector2 newGravity) {
 	world->SetGravity(b2Vec2(newGravity.x, newGravity.y));
 }
-                                
+								
 PhysicsScene2DEntity *PhysicsScene2D::getPhysicsByEntity(Entity *ent) {
 	for(int i=0; i<physicsChildren.size();i++) {
 		if(physicsChildren[i]->getEntity() == ent)
@@ -238,7 +238,7 @@ PhysicsJoint *PhysicsScene2D::createRevoluteJoint(Entity *ent1, Entity *ent2, Nu
 	PhysicsScene2DEntity *pEnt1 = getPhysicsByEntity(ent1);
 	PhysicsScene2DEntity *pEnt2 = getPhysicsByEntity(ent2);
 	if(pEnt1 == NULL || pEnt2 == NULL)
-    {
+	{
 		return NULL;
 	}
 	b2Vec2 anchor((ent1->getPosition().x+ax)/worldScale, (ent1->getPosition().y+ay)/worldScale);
@@ -338,7 +338,7 @@ void PhysicsScene2D::setVelocityY(Entity *ent, Number fy) {
 PhysicsScene2DEntity *PhysicsScene2D::addCollisionChild(Entity *newEntity, int entType, int groupIndex, bool sensorOnly) {
 	PhysicsScene2DEntity *ret;
 	ret = addPhysicsChild(newEntity, entType, false, 0,0,0, sensorOnly, false, groupIndex);
-	newEntity->ignoreParentMatrix = false;    
+	newEntity->ignoreParentMatrix = false;	  
 	ret->collisionOnly = true; 
 	return ret;
 }
@@ -364,7 +364,7 @@ void PhysicsScene2D::applyForce(Entity *ent, Number fx, Number fy) {
 		return;
 
 	pEnt->body->SetAwake(true);
-	b2Vec2 f =  b2Vec2(fx,fy);
+	b2Vec2 f =	b2Vec2(fx,fy);
 	b2Vec2 p = pEnt->body->GetWorldPoint(b2Vec2(0.0f, 0.0f));
 		
 	pEnt->body->ApplyForce(f, p);
@@ -486,7 +486,7 @@ void PhysicsScene2D::stopTrackingChild(Entity *entity) {
 	}
 	
 	world->DestroyBody(physicsEntityToRemove->body);
-	physicsEntityToRemove->body = NULL;	
+	physicsEntityToRemove->body = NULL; 
 				
 	for(int i=0;i<physicsChildren.size();i++) {
 		if(physicsChildren[i] == physicsEntityToRemove) {
@@ -546,23 +546,23 @@ void PhysicsScene2D::handleEvent(Event *event) {
 }
 
 void PhysicsScene2D::fixedUpdate() {
-    
-    for(int i=0; i<physicsChildren.size();i++) {
-        if(physicsChildren[i]->collisionOnly) {
-            physicsChildren[i]->Update();
-        }
-    }
-    world->Step(core->getFixedTimestep(), velocityIterations,positionIterations);
-    
-    for(int i=0; i<physicsChildren.size();i++) {
-        if(!physicsChildren[i]->collisionOnly) {
-            physicsChildren[i]->Update();
-        }
-    }
+	
+	for(int i=0; i<physicsChildren.size();i++) {
+		if(physicsChildren[i]->collisionOnly) {
+			physicsChildren[i]->Update();
+		}
+	}
+	world->Step(core->getFixedTimestep(), velocityIterations,positionIterations);
+	
+	for(int i=0; i<physicsChildren.size();i++) {
+		if(!physicsChildren[i]->collisionOnly) {
+			physicsChildren[i]->Update();
+		}
+	}
 		
-    for(int i=0; i < eventsToDispatch.size(); i++) {
-        dispatchEvent(eventsToDispatch[i], eventsToDispatch[i]->getEventCode());
-    }
-    eventsToDispatch.clear();
+	for(int i=0; i < eventsToDispatch.size(); i++) {
+		dispatchEvent(eventsToDispatch[i], eventsToDispatch[i]->getEventCode());
+	}
+	eventsToDispatch.clear();
 	Scene::fixedUpdate();
 }

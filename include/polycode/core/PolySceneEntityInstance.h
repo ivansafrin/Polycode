@@ -37,12 +37,12 @@ THE SOFTWARE.
 namespace Polycode {
 
 class SceneEntityInstanceResourceEntry;
-    class SceneEntityInstanceLayer;
-    
+	class SceneEntityInstanceLayer;
+	
 class SceneEntityInstance : public Entity {
 	public:
-    
-        SceneEntityInstance(Scene *parentScene, const String& fileName);
+	
+		SceneEntityInstance(Scene *parentScene, const String& fileName);
 		explicit SceneEntityInstance(Scene *parentScene);
 		
 		static SceneEntityInstance *BlankSceneEntityInstance(Scene *parentScene);
@@ -59,25 +59,25 @@ class SceneEntityInstance : public Entity {
 		void parseObjectIntoCurve(ObjectEntry *entry, BezierCurve *curve);
 		Entity *loadObjectEntryIntoEntity(ObjectEntry *entry, Entity *targetEntity = NULL, int entityFileVersion = 1);
 		bool loadFromFile(const String& fileName);
-        void applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMesh);
+		void applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMesh);
 		
-        void linkResourcePool(ResourcePool *pool);
-        unsigned int getNumLinkedResourePools();
-        ResourcePool *getLinkedResourcePoolAtIndex(unsigned int index);
-    
-        void unlinkResourcePool(ResourcePool *pool);
-    
+		void linkResourcePool(ResourcePool *pool);
+		unsigned int getNumLinkedResourePools();
+		ResourcePool *getLinkedResourcePoolAtIndex(unsigned int index);
+	
+		void unlinkResourcePool(ResourcePool *pool);
+	
 		SceneEntityInstanceResourceEntry *getResourceEntry();
-    
-        ResourcePool *getTopLevelResourcePool();
+	
+		ResourcePool *getTopLevelResourcePool();
 
-        bool hasLayerID(unsigned char layerID) const;
-        unsigned int getNumLayers() const;
-        SceneEntityInstanceLayer *getLayerAtIndex(unsigned int index) const;
-        void removeLayer(SceneEntityInstanceLayer *layer);
-    
-    
-        SceneEntityInstanceLayer *createNewLayer(String name);
+		bool hasLayerID(unsigned char layerID) const;
+		unsigned int getNumLayers() const;
+		SceneEntityInstanceLayer *getLayerAtIndex(unsigned int index) const;
+		void removeLayer(SceneEntityInstanceLayer *layer);
+	
+	
+		SceneEntityInstanceLayer *createNewLayer(String name);
 		
 		String getFileName() const;
 		bool cloneUsingReload;
@@ -86,27 +86,27 @@ class SceneEntityInstance : public Entity {
 		
 	protected:
 		
-        std::vector<SceneEntityInstanceLayer*> layers;
-    
-        void rebuildResourceLinks();
-    
-        ResourcePool *topLevelResourcePool;
-        std::vector<ResourcePool*> resourcePools;
-        Scene *parentScene;
+		std::vector<SceneEntityInstanceLayer*> layers;
+	
+		void rebuildResourceLinks();
+	
+		ResourcePool *topLevelResourcePool;
+		std::vector<ResourcePool*> resourcePools;
+		Scene *parentScene;
 		SceneEntityInstanceResourceEntry *resourceEntry;
 		
 };
-    
+	
 class SceneEntityInstanceLayer {
-    public:
-        SceneEntityInstanceLayer(SceneEntityInstance *instance,String name);
-    
-        void setLayerVisibility(bool val);
-    
-        String name;
-        unsigned char layerID;
-        bool visible;
-        SceneEntityInstance *instance;
+	public:
+		SceneEntityInstanceLayer(SceneEntityInstance *instance,String name);
+	
+		void setLayerVisibility(bool val);
+	
+		String name;
+		unsigned char layerID;
+		bool visible;
+		SceneEntityInstance *instance;
 };
 
 

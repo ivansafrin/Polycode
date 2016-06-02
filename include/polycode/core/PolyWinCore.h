@@ -89,11 +89,11 @@
 #define VK_PERIOD	0xBE
 #define VK_SLASH	0xBF
 #define VK_GRAVE	0xC0
-#define VK_LBRACKET	0xDB
+#define VK_LBRACKET 0xDB
 #define VK_BACKSLASH	0xDC
-#define VK_RBRACKET	0xDD
+#define VK_RBRACKET 0xDD
 #define VK_APOSTROPHE	0xDE
-#define VK_BACKTICK	0xDF
+#define VK_BACKTICK 0xDF
 #define VK_OEM_102	0xE2
 
 #define EXTENDED_KEYMASK	(1<<24)
@@ -186,7 +186,7 @@ public:
 		
 	public:
 		
-		Win32Core(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate,  int monitorIndex = -1, bool retinaSupport = false);
+		Win32Core(PolycodeViewBase *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate,	 int monitorIndex = -1, bool retinaSupport = false);
 		~Win32Core();
 
 		void enableMouse(bool newval);

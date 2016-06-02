@@ -58,9 +58,9 @@ void Entity::initEntity() {
 	parentEntity = NULL;
 	matrixDirty = true;
 	billboardMode = false;
-    drawCall.options.forceMaterial = false;
+	drawCall.options.forceMaterial = false;
 	drawCall.options.depthOnly = false;
-	drawCall.options.blendingMode = Entity::defaultBlendingMode;    
+	drawCall.options.blendingMode = Entity::defaultBlendingMode;	
 	depthWrite = true;
 	ignoreParentMatrix = false;
 	lockMatrix = false;
@@ -77,9 +77,9 @@ void Entity::initEntity() {
 	mouseOver = false;
 	yAdjust = 1.0;
 	lastClickTicks = 0.0;
-    rendererVis = true;
-    layerID = 0;
-    containerScene = NULL;
+	rendererVis = true;
+	layerID = 0;
+	containerScene = NULL;
 }
 
 Entity *Entity::getEntityById(String id, bool recursive) const {
@@ -123,11 +123,11 @@ void Entity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) co
 	clone->scissorBox = scissorBox;
 	clone->editorOnly = editorOnly;
 	clone->snapToPixels = snapToPixels;
-    clone->setAnchorPoint(anchorPoint);
-    clone->layerID = layerID;
-    
-    clone->drawCall.options = drawCall.options;
-    
+	clone->setAnchorPoint(anchorPoint);
+	clone->layerID = layerID;
+	
+	clone->drawCall.options = drawCall.options;
+	
 	clone->id = id;
 	if(tags == NULL) {
 		clone->tags = NULL;
@@ -159,7 +159,7 @@ void Entity::setOwnsChildrenRecursive(bool val) {
 
 std::vector<Entity*> Entity::getEntitiesByLayerID(unsigned char layerID, bool recursive) const {
 	std::vector<Entity*> retVector;
-    
+	
 	for(int i=0;i<children.size();i++) {
 		if(children[i]->layerID == layerID) {
 			retVector.push_back(children[i]);
@@ -219,8 +219,8 @@ Color Entity::getCombinedColor() const {
 Matrix4 Entity::getLookAtMatrix(const Vector3 &loc, const Vector3 &upVector) {
 	rebuildTransformMatrix();
 	Vector3 D;
-    
-    D = loc - position;
+	
+	D = loc - position;
 	
 	Vector3 back = D * -1;
 	back.Normalize();
@@ -241,8 +241,8 @@ Matrix4 Entity::getLookAtMatrix(const Vector3 &loc, const Vector3 &upVector) {
 void Entity::lookAt(const Vector3 &loc, const Vector3 &upVector) {	
 	Matrix4 newMatrix = getLookAtMatrix(loc, upVector);
 	rotationQuat.createFromMatrix(newMatrix);
-    rotation = rotationQuat.toEulerAngles();
-    rotation = rotation * TODEGREES; 
+	rotation = rotationQuat.toEulerAngles();
+	rotation = rotation * TODEGREES; 
 	matrixDirty = true;
 }
 
@@ -256,7 +256,7 @@ void Entity::lookAtEntity(Entity *entity,  const Vector3 &upVector) {
 void Entity::removeChild(Entity *entityToRemove) {
 	for(int i=0;i<children.size();i++) {
 		if(children[i] == entityToRemove) {
-            entityToRemove->setParentEntity(NULL);
+			entityToRemove->setParentEntity(NULL);
 			children.erase(children.begin()+i);
 			return;
 		}
@@ -340,7 +340,7 @@ void Entity::setBlendingMode(unsigned int newBlendingMode) {
 }
 
 unsigned int Entity::getBlendingMode() {
-    return drawCall.options.blendingMode;
+	return drawCall.options.blendingMode;
 }
 
 Entity::~Entity() {
@@ -361,7 +361,7 @@ void Entity::setInverseY(bool val) {
 	for(int i=0; i < children.size(); i++) {
 		children[i]->setInverseY(val);
 	}
-    matrixDirty = true;
+	matrixDirty = true;
 }
 
 bool Entity::getInverseY() {
@@ -427,9 +427,9 @@ void Entity::updateEntityMatrix() {
 
 	if(matrixDirty) {
 		rebuildTransformMatrix();
-        recalculateAABBAllChildren();
+		recalculateAABBAllChildren();
 	}
-    
+	
 	for(int i=0; i < children.size(); i++) {
 		children[i]->updateEntityMatrix();
 	}
@@ -449,41 +449,41 @@ Vector3 Entity::getCompoundScale() const {
 Matrix4 Entity::getConcatenatedRollMatrix() const {
 	Quaternion q;
 	q.createFromAxisAngle(0.0f, 0.0f, 1.0f, rotation.z);
-	Matrix4 transformMatrix = q.createMatrix();	
+	Matrix4 transformMatrix = q.createMatrix(); 
 	
 	if(parentEntity != NULL) 
 		return transformMatrix * parentEntity->getConcatenatedRollMatrix();
 	else
-		return transformMatrix;	
+		return transformMatrix; 
 }
 
 Vector2 Entity::getScreenPosition(const Matrix4 &projectionMatrix, const Matrix4 &cameraMatrix, const Polycode::Rectangle &viewport) {
 	if(renderer){
-        Vector3 pos = Renderer::project(getConcatenatedMatrix().getPosition(), cameraMatrix, projectionMatrix, viewport);
-        return Vector2(pos.x, pos.y);
+		Vector3 pos = Renderer::project(getConcatenatedMatrix().getPosition(), cameraMatrix, projectionMatrix, viewport);
+		return Vector2(pos.x, pos.y);
 	} else {
 		return Vector2();
 	}
 }
 
 void Entity::setDepthOnly(bool val) {
-    drawCall.options.depthOnly = true;
+	drawCall.options.depthOnly = true;
 }
 
 bool Entity::getDepthOnly() {
-    return drawCall.options.depthOnly;
+	return drawCall.options.depthOnly;
 }
 
 void Entity::setContainerScene(Scene *scene) {
-    this->containerScene = scene;
+	this->containerScene = scene;
 }
 
 Scene *Entity::getContainerScene() {
-    if(parentEntity) {
-        return parentEntity->getContainerScene();
-    } else {
-        return containerScene;
-    }
+	if(parentEntity) {
+		return parentEntity->getContainerScene();
+	} else {
+		return containerScene;
+	}
 }
 
 void Entity::transformAndRender(GPUDrawBuffer *buffer, Polycode::Rectangle *parentScissorBox) {
@@ -492,65 +492,65 @@ void Entity::transformAndRender(GPUDrawBuffer *buffer, Polycode::Rectangle *pare
 
 	if(matrixDirty) {
 		rebuildTransformMatrix();
-    }
-    
+	}
+	
 
-    Polycode::Rectangle finalScissorBox = scissorBox;
-    Polycode::Rectangle *scissorBoxForChildren = parentScissorBox;
-    
+	Polycode::Rectangle finalScissorBox = scissorBox;
+	Polycode::Rectangle *scissorBoxForChildren = parentScissorBox;
+	
 	if(enableScissor) {
 		finalScissorBox = scissorBox;
 		// make sure that our scissor box is constrained to the parent one if it exists
 		if(parentScissorBox) {
 			finalScissorBox = finalScissorBox.Clipped(*parentScissorBox);
 		}
-        drawCall.options.enableScissor = true;
-        drawCall.options.scissorBox = finalScissorBox;
-        scissorBoxForChildren = &finalScissorBox;
-    } else if(parentScissorBox){
-        drawCall.options.enableScissor = true;
-        drawCall.options.scissorBox = *parentScissorBox;
-    } else {
-        drawCall.options.enableScissor = false;
-    }
+		drawCall.options.enableScissor = true;
+		drawCall.options.scissorBox = finalScissorBox;
+		scissorBoxForChildren = &finalScissorBox;
+	} else if(parentScissorBox){
+		drawCall.options.enableScissor = true;
+		drawCall.options.scissorBox = *parentScissorBox;
+	} else {
+		drawCall.options.enableScissor = false;
+	}
 
-    
-    drawCall.modelMatrix.identity();
-    drawCall.modelMatrix.Translate(-anchorPoint.x * bBox.x * 0.5, -anchorPoint.y * bBox.y * 0.5 * yAdjust, -anchorPoint.z * bBox.z * 0.5);
+	
+	drawCall.modelMatrix.identity();
+	drawCall.modelMatrix.Translate(-anchorPoint.x * bBox.x * 0.5, -anchorPoint.y * bBox.y * 0.5 * yAdjust, -anchorPoint.z * bBox.z * 0.5);
 		
 	if(ignoreParentMatrix) {
-        drawCall.modelMatrix = drawCall.modelMatrix * transformMatrix;
-    } else {
-        drawCall.modelMatrix = drawCall.modelMatrix * getConcatenatedMatrix();
-    }
-    
+		drawCall.modelMatrix = drawCall.modelMatrix * transformMatrix;
+	} else {
+		drawCall.modelMatrix = drawCall.modelMatrix * getConcatenatedMatrix();
+	}
+	
 
 	if(billboardMode) {
-        
-        Vector3 scale = getCompoundScale();
-        
-        drawCall.modelMatrix[0][0] = buffer->viewMatrix.m[0][0];
-        drawCall.modelMatrix[0][1] = buffer->viewMatrix.m[1][0];
-        drawCall.modelMatrix[0][2] = buffer->viewMatrix.m[2][0];
-            
-        drawCall.modelMatrix[1][0] = buffer->viewMatrix.m[0][1];
-        drawCall.modelMatrix[1][1] = buffer->viewMatrix.m[1][1];
-        drawCall.modelMatrix[1][2] = buffer->viewMatrix.m[2][1];
-            
-        drawCall.modelMatrix[2][0] = buffer->viewMatrix.m[0][2];
-        drawCall.modelMatrix[2][1] = buffer->viewMatrix.m[1][2];
-        drawCall.modelMatrix[2][2] = buffer->viewMatrix.m[2][2];
-        
+		
+		Vector3 scale = getCompoundScale();
+		
+		drawCall.modelMatrix[0][0] = buffer->viewMatrix.m[0][0];
+		drawCall.modelMatrix[0][1] = buffer->viewMatrix.m[1][0];
+		drawCall.modelMatrix[0][2] = buffer->viewMatrix.m[2][0];
+			
+		drawCall.modelMatrix[1][0] = buffer->viewMatrix.m[0][1];
+		drawCall.modelMatrix[1][1] = buffer->viewMatrix.m[1][1];
+		drawCall.modelMatrix[1][2] = buffer->viewMatrix.m[2][1];
+			
+		drawCall.modelMatrix[2][0] = buffer->viewMatrix.m[0][2];
+		drawCall.modelMatrix[2][1] = buffer->viewMatrix.m[1][2];
+		drawCall.modelMatrix[2][2] = buffer->viewMatrix.m[2][2];
+		
 	}
-    
-    
+	
+	
 	if(visible && rendererVis) {
 		Render(buffer);
 	}
-    
-    if(visible || (!visible && !visibilityAffectsChildren)) {
-        renderChildren(buffer, scissorBoxForChildren);
-    }
+	
+	if(visible || (!visible && !visibilityAffectsChildren)) {
+		renderChildren(buffer, scissorBoxForChildren);
+	}
 
 }
 
@@ -573,102 +573,102 @@ void Entity::dirtyMatrix(bool val) {
 }
 
 void Entity::recalculateAABBAllChildren() {
-    recalculateAABB();
-    for(int i=0; i< children.size(); i++) {
-        children[i]->recalculateAABBAllChildren();
-    }
+	recalculateAABB();
+	for(int i=0; i< children.size(); i++) {
+		children[i]->recalculateAABBAllChildren();
+	}
 }
 
 void Entity::recalculateAABB() {
 
-    aabb.min = Vector3();
-    aabb.max = Vector3();
-    
-    Vector3 bBoxCoords[8] = {
-        Vector3(-bBox.x * 0.5, -bBox.y * 0.5, bBox.z * 0.5),
-        Vector3(bBox.x * 0.5, -bBox.y * 0.5, bBox.z * 0.5),
-        Vector3(-bBox.x * 0.5, -bBox.y * 0.5, -bBox.z * 0.5),
-        Vector3(bBox.x * 0.5, -bBox.y * 0.5, -bBox.z * 0.5),
-        Vector3(-bBox.x * 0.5, bBox.y * 0.5, bBox.z * 0.5),
-        Vector3(bBox.x * 0.5, bBox.y * 0.5, bBox.z * 0.5),
-        Vector3(-bBox.x * 0.5, bBox.y * 0.5, -bBox.z * 0.5),
-        Vector3(bBox.x * 0.5, bBox.y * 0.5, -bBox.z * 0.5)
-    };
-    
-    Matrix4 fullMatrix = getAnchorAdjustedMatrix();
-    if(ignoreParentMatrix) {
-        if(matrixDirty) {
-            rebuildTransformMatrix();
-        }
-        fullMatrix = transformMatrix;
-    }
-    
-    for(int i=0; i < 8; i++) {
-        bBoxCoords[i] = fullMatrix * bBoxCoords[i];
-        if(i ==0 ) {
-            aabb.min = bBoxCoords[i];
-            aabb.max = bBoxCoords[i];
-        } else {
-            if(bBoxCoords[i].x < aabb.min.x) {
-                aabb.min.x = bBoxCoords[i].x;
-            }
-            if(bBoxCoords[i].y < aabb.min.y) {
-                aabb.min.y = bBoxCoords[i].y;
-            }
-            if(bBoxCoords[i].z < aabb.min.z) {
-                aabb.min.z = bBoxCoords[i].z;
-            }
-            
-            if(bBoxCoords[i].x > aabb.max.x) {
-                aabb.max.x = bBoxCoords[i].x;
-            }
-            if(bBoxCoords[i].y > aabb.max.y) {
-                aabb.max.y = bBoxCoords[i].y;
-            }
-            if(bBoxCoords[i].z > aabb.max.z) {
-                aabb.max.z = bBoxCoords[i].z;
-            }
-        }
-    }
-        
+	aabb.min = Vector3();
+	aabb.max = Vector3();
+	
+	Vector3 bBoxCoords[8] = {
+		Vector3(-bBox.x * 0.5, -bBox.y * 0.5, bBox.z * 0.5),
+		Vector3(bBox.x * 0.5, -bBox.y * 0.5, bBox.z * 0.5),
+		Vector3(-bBox.x * 0.5, -bBox.y * 0.5, -bBox.z * 0.5),
+		Vector3(bBox.x * 0.5, -bBox.y * 0.5, -bBox.z * 0.5),
+		Vector3(-bBox.x * 0.5, bBox.y * 0.5, bBox.z * 0.5),
+		Vector3(bBox.x * 0.5, bBox.y * 0.5, bBox.z * 0.5),
+		Vector3(-bBox.x * 0.5, bBox.y * 0.5, -bBox.z * 0.5),
+		Vector3(bBox.x * 0.5, bBox.y * 0.5, -bBox.z * 0.5)
+	};
+	
+	Matrix4 fullMatrix = getAnchorAdjustedMatrix();
+	if(ignoreParentMatrix) {
+		if(matrixDirty) {
+			rebuildTransformMatrix();
+		}
+		fullMatrix = transformMatrix;
+	}
+	
+	for(int i=0; i < 8; i++) {
+		bBoxCoords[i] = fullMatrix * bBoxCoords[i];
+		if(i ==0 ) {
+			aabb.min = bBoxCoords[i];
+			aabb.max = bBoxCoords[i];
+		} else {
+			if(bBoxCoords[i].x < aabb.min.x) {
+				aabb.min.x = bBoxCoords[i].x;
+			}
+			if(bBoxCoords[i].y < aabb.min.y) {
+				aabb.min.y = bBoxCoords[i].y;
+			}
+			if(bBoxCoords[i].z < aabb.min.z) {
+				aabb.min.z = bBoxCoords[i].z;
+			}
+			
+			if(bBoxCoords[i].x > aabb.max.x) {
+				aabb.max.x = bBoxCoords[i].x;
+			}
+			if(bBoxCoords[i].y > aabb.max.y) {
+				aabb.max.y = bBoxCoords[i].y;
+			}
+			if(bBoxCoords[i].z > aabb.max.z) {
+				aabb.max.z = bBoxCoords[i].z;
+			}
+		}
+	}
+		
 }
 
 AABB Entity::getWorldAABB() {
-    return aabb;
+	return aabb;
 }
 
 Vector3 Entity::getLocalBoundingBox() {
-    return bBox;
+	return bBox;
 }
 
 void Entity::setLocalBoundingBox(const Vector3 box) {
-    bBox = box;
-    recalculateAABB();
-    matrixDirty = true;
+	bBox = box;
+	recalculateAABB();
+	matrixDirty = true;
 }
 
 void Entity::setLocalBoundingBox(Number x, Number y, Number z) {
-    bBox.set(x, y, z);
-    recalculateAABB();
-    matrixDirty = true;
+	bBox.set(x, y, z);
+	recalculateAABB();
+	matrixDirty = true;
 }
 
 void Entity::setLocalBoundingBoxX(Number x) {
-    bBox.x = x;
-    recalculateAABB();
-    matrixDirty = true;
+	bBox.x = x;
+	recalculateAABB();
+	matrixDirty = true;
 }
 
 void Entity::setLocalBoundingBoxY(Number y) {
-    bBox.y = y;
-    recalculateAABB();
-    matrixDirty = true;
+	bBox.y = y;
+	recalculateAABB();
+	matrixDirty = true;
 }
 
 void Entity::setLocalBoundingBoxZ(Number z) {
-    bBox.z = z;
-    recalculateAABB();
-    matrixDirty = true;
+	bBox.z = z;
+	recalculateAABB();
+	matrixDirty = true;
 }
 
 void Entity::setRotationQuat(Number w, Number x, Number y, Number z) {
@@ -676,15 +676,15 @@ void Entity::setRotationQuat(Number w, Number x, Number y, Number z) {
 	rotationQuat.x = x;
 	rotationQuat.y = y;
 	rotationQuat.z = z;
-    rotation = rotationQuat.toEulerAngles();
-    rotation = rotation * TODEGREES;
+	rotation = rotationQuat.toEulerAngles();
+	rotation = rotation * TODEGREES;
 	matrixDirty = true;
 }
 
 void Entity::setRotationByQuaternion(const Quaternion &quaternion) {
 	rotationQuat = quaternion;
-    rotation = quaternion.toEulerAngles();
-    rotation = rotation * TODEGREES;
+	rotation = quaternion.toEulerAngles();
+	rotation = rotation * TODEGREES;
 	matrixDirty = true;
 }
 
@@ -693,11 +693,11 @@ Quaternion Entity::getRotationQuat() const {
 }
 
 Quaternion Entity::getConcatenatedQuat() const {
-    if(parentEntity ) {
-        return rotationQuat * parentEntity->getConcatenatedQuat();
-    } else {
-        return rotationQuat;
-    }
+	if(parentEntity ) {
+		return rotationQuat * parentEntity->getConcatenatedQuat();
+	} else {
+		return rotationQuat;
+	}
 }
 
 Vector3 Entity::getScale() const {
@@ -705,14 +705,14 @@ Vector3 Entity::getScale() const {
 }
 
 Vector3 Entity::getRotationEuler() const {
-    return rotation;
+	return rotation;
 }
 
 Matrix4 Entity::getConcatenatedMatrixRelativeTo(Entity *relativeEntity) {
 	
 	if(matrixDirty) {
 		rebuildTransformMatrix();
-    }
+	}
 
 	if(parentEntity != NULL && parentEntity != relativeEntity)
 		return transformMatrix * parentEntity->getConcatenatedMatrixRelativeTo(relativeEntity);
@@ -730,8 +730,8 @@ Matrix4 Entity::getAnchorAdjustedMatrix() {
 Matrix4 Entity::getConcatenatedMatrix() {
 	if(matrixDirty) {
 		rebuildTransformMatrix();
-    }
-    
+	}
+	
 	if(parentEntity != NULL && !ignoreParentMatrix) 
 		return transformMatrix * parentEntity->getConcatenatedMatrix();
 	else
@@ -779,9 +779,9 @@ void Entity::setYaw(Number yaw) {
 }
 
 void Entity::setRotationEuler(const Vector3 &rotation) {
-    this->rotation = rotation;
-    rebuildRotation();
-    matrixDirty = true;
+	this->rotation = rotation;
+	rebuildRotation();
+	matrixDirty = true;
 }
 
 void Entity::rebuildRotation() {
@@ -875,17 +875,17 @@ void Entity::setPositionX(Number x) {
 
 void Entity::setPositionY(Number y) {
 	position.y = y;
-	matrixDirty = true;	
+	matrixDirty = true; 
 }
 
 void Entity::setPositionZ(Number z) {
 	position.z = z;
-	matrixDirty = true;	
+	matrixDirty = true; 
 }
 
 void Entity::setScaleX(Number x) {
 	scale.x = x;
-	matrixDirty = true;	
+	matrixDirty = true; 
 }
 
 void Entity::setScaleY(Number y) {
@@ -899,10 +899,10 @@ void Entity::setScaleZ(Number z) {
 }
 
 void Entity::setScale(const Vector3 &v) {
-    scale.x = v.x;
-    scale.y = v.y;
-    scale.z = v.z;
-    matrixDirty = true;
+	scale.x = v.x;
+	scale.y = v.y;
+	scale.z = v.z;
+	matrixDirty = true;
 }
 
 void Entity::setPosition(Number x, Number y, Number z) {
@@ -1007,12 +1007,12 @@ void Entity::addTag(String tag) {
 
 void Entity::setAnchorPoint(const Vector3 &anchorPoint) {
 	this->anchorPoint = anchorPoint;
-    matrixDirty = true;
+	matrixDirty = true;
 }
 
 void Entity::setAnchorPoint(Number x, Number y, Number z) {
 	anchorPoint.set(x,y,z);
-    matrixDirty = true;
+	matrixDirty = true;
 }
 
 Vector3 Entity::getAnchorPoint() const {
@@ -1024,20 +1024,20 @@ MouseEventResult Entity::onMouseDown(const Ray &ray, int mouseButton, int timest
 	MouseEventResult ret;
 	ret.hit = false;
 	ret.blocked = false;
-    Number hitDistance;
+	Number hitDistance;
 	
 	if(processInputEvents && enabled) {
-        hitDistance = ray.boxIntersect(bBox, getAnchorAdjustedMatrix());
+		hitDistance = ray.boxIntersect(bBox, getAnchorAdjustedMatrix());
 		if(hitDistance >= 0.0) {
 			if(customHitDetection(ray)) {
-				ret.hit = true;	
+				ret.hit = true; 
 				
 				Vector3 localCoordinate = Vector3(ray.origin.x,ray.origin.y,0);
 				Matrix4 inverse = getConcatenatedMatrix().Inverse();
 				localCoordinate = inverse * localCoordinate;			
 				
 				InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp);
-                inputEvent->hitDistance = hitDistance;
+				inputEvent->hitDistance = hitDistance;
 				inputEvent->mouseButton = mouseButton;
 				dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEDOWN);
 				
@@ -1073,7 +1073,7 @@ MouseEventResult Entity::onMouseUp(const Ray &ray, int mouseButton, int timestam
 	ret.hit = false;
 	ret.blocked = false;
 	Number hitDistance;
-    
+	
 	if(processInputEvents && enabled) {
 	
 		Vector3 localCoordinate = Vector3(ray.origin.x,ray.origin.y,0);
@@ -1083,7 +1083,7 @@ MouseEventResult Entity::onMouseUp(const Ray &ray, int mouseButton, int timestam
 		InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp);
 		inputEvent->mouseButton = mouseButton;			
 
-        hitDistance = ray.boxIntersect(bBox, getAnchorAdjustedMatrix());
+		hitDistance = ray.boxIntersect(bBox, getAnchorAdjustedMatrix());
 		if(hitDistance >= 0.0) {
 			ret.hit = true;
 			inputEvent->hitDistance = hitDistance;
@@ -1112,25 +1112,25 @@ MouseEventResult Entity::onMouseMove(const Ray &ray, int timestamp) {
 	MouseEventResult ret;
 	ret.hit = false;
 	ret.blocked = false;
-    Number hitDistance;
-    
+	Number hitDistance;
+	
 	if(processInputEvents && enabled) {
 	
 		Vector3 localCoordinate = Vector3(ray.origin.x,ray.origin.y,0);
 		Matrix4 inverse = getConcatenatedMatrix().Inverse();
 		localCoordinate = inverse * localCoordinate;	
-        
-        hitDistance = ray.boxIntersect(bBox, getAnchorAdjustedMatrix());
+		
+		hitDistance = ray.boxIntersect(bBox, getAnchorAdjustedMatrix());
 		if(hitDistance >= 0.0) {
 			//setColor(1.0, 0.0, 0.0, 1.0);
 			ret.hit = true;
-            InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp);
-            inputEvent->hitDistance = hitDistance;
+			InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp);
+			inputEvent->hitDistance = hitDistance;
 			dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEMOVE);
 			
 			if(!mouseOver) {
-                InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp);
-                inputEvent->hitDistance = hitDistance;
+				InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp);
+				inputEvent->hitDistance = hitDistance;
 				dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEOVER);
 				mouseOver = true;
 			}			
@@ -1163,19 +1163,19 @@ MouseEventResult Entity::onMouseWheelUp(const Ray &ray, int timestamp) {
 	MouseEventResult ret;
 	ret.hit = false;
 	ret.blocked = false;
-    Number hitDistance;
+	Number hitDistance;
 	
 	if(processInputEvents && enabled) {
-        hitDistance = ray.boxIntersect(bBox, getAnchorAdjustedMatrix());
+		hitDistance = ray.boxIntersect(bBox, getAnchorAdjustedMatrix());
 		if(hitDistance >= 0.0) {
-			ret.hit = true;	
+			ret.hit = true; 
 			
 			Vector3 localCoordinate = Vector3(ray.origin.x,ray.origin.y,0);
 			Matrix4 inverse = getConcatenatedMatrix().Inverse();
 			localCoordinate = inverse * localCoordinate;			
 			
 			InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp);
-            inputEvent->hitDistance = hitDistance;
+			inputEvent->hitDistance = hitDistance;
 			dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEWHEEL_UP);
 												
 			if(blockMouseInput) {
@@ -1198,9 +1198,9 @@ MouseEventResult Entity::onMouseWheelUp(const Ray &ray, int timestamp) {
 }
 
 void Entity::Update() {
-    for(int i=0; i < scripts.size(); i++) {
-        scripts[i]->script->callUpdate(scripts[i], this, Services()->getCore()->getElapsed());
-    }
+	for(int i=0; i < scripts.size(); i++) {
+		scripts[i]->script->callUpdate(scripts[i], this, Services()->getCore()->getElapsed());
+	}
 }
 
 MouseEventResult Entity::onMouseWheelDown(const Ray &ray, int timestamp) {
@@ -1208,18 +1208,18 @@ MouseEventResult Entity::onMouseWheelDown(const Ray &ray, int timestamp) {
 	ret.hit = false;
 	ret.blocked = false;
 	Number hitDistance;
-    
+	
 	if(processInputEvents && enabled) {
-        hitDistance = ray.boxIntersect(bBox, getAnchorAdjustedMatrix());
+		hitDistance = ray.boxIntersect(bBox, getAnchorAdjustedMatrix());
 		if(hitDistance >= 0.0) {
-			ret.hit = true;	
+			ret.hit = true; 
 			
 			Vector3 localCoordinate = Vector3(ray.origin.x,ray.origin.y,0);
 			Matrix4 inverse = getConcatenatedMatrix().Inverse();
 			localCoordinate = inverse * localCoordinate;			
 			
 			InputEvent *inputEvent = new InputEvent(Vector2(localCoordinate.x, localCoordinate.y*yAdjust), timestamp);
-            inputEvent->hitDistance = hitDistance;
+			inputEvent->hitDistance = hitDistance;
 			dispatchEvent(inputEvent, InputEvent::EVENT_MOUSEWHEEL_DOWN);
 												
 			if(blockMouseInput) {
@@ -1242,29 +1242,29 @@ MouseEventResult Entity::onMouseWheelDown(const Ray &ray, int timestamp) {
 }
 
 void Entity::attachScript(Script *script) {
-    ScriptInstance *instance = script->callInit(this);
-    scripts.push_back(instance);
+	ScriptInstance *instance = script->callInit(this);
+	scripts.push_back(instance);
 }
 
 void Entity::detachScript(Script *script) {
-    for(int i=0; i < scripts.size(); i++) {
-        if(scripts[i]->script == script) {
-            ScriptInstance *instance = scripts[i];
-            scripts.erase(scripts.begin()+i);
-            delete instance;
-            return;
-        }
-    }
+	for(int i=0; i < scripts.size(); i++) {
+		if(scripts[i]->script == script) {
+			ScriptInstance *instance = scripts[i];
+			scripts.erase(scripts.begin()+i);
+			delete instance;
+			return;
+		}
+	}
 }
 
 unsigned int Entity::getNumScripts() {
-    return scripts.size();
+	return scripts.size();
 }
 
 ScriptInstance *Entity::getScriptAtIndex(unsigned int index) {
-    if(index < scripts.size()) {
-        return scripts[index];
-    } else {
-        return NULL;
-    }
+	if(index < scripts.size()) {
+		return scripts[index];
+	} else {
+		return NULL;
+	}
 }

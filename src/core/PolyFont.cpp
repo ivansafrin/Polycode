@@ -40,7 +40,7 @@ Font::Font(const String& fileName, FT_Library FTLibrary) : Resource(Resource::RE
 		buffer = (unsigned char*)malloc(progsize);
 		memset(buffer, 0, progsize);
 		file->read(buffer, progsize, 1);
-        
+		
 		Services()->getCore()->closeFile(file);
 		valid = true;
 		if(FT_New_Memory_Face(FTLibrary, buffer, progsize, 0, &ftFace) != 0) {
@@ -55,20 +55,20 @@ Font::Font(const String& fileName, FT_Library FTLibrary) : Resource(Resource::RE
 	} else {
 		Logger::log("Invalid font file specified (%s)\n", fileName.c_str());	
 	}
-    
-    setResourcePath(fileName);
+	
+	setResourcePath(fileName);
 }
 
 String Font::getFontPath() {
-	return  fileName;
+	return	fileName;
 }
 
 void Font::setFontName(String fontName) {
-    setResourceName(fontName);
+	setResourceName(fontName);
 }
 
 String Font::getFontName() {
-    return getResourceName();
+	return getResourceName();
 }
 
 bool Font::isValid() const {

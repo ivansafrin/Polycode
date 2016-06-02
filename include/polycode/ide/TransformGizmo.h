@@ -34,49 +34,49 @@ using namespace Polycode;
 
 class TransformGrips : public UIElement {
 public:
-    TransformGrips();
-    ~TransformGrips();
-    
-    void setGripRectangle(Polycode::Rectangle rectangle, Vector2 offset);
-    
-    void handleEvent(Event *event);
-    Polycode::Rectangle getGripRectangle();
-    
-    Vector2 getAnchorPoint();
-    
+	TransformGrips();
+	~TransformGrips();
+	
+	void setGripRectangle(Polycode::Rectangle rectangle, Vector2 offset);
+	
+	void handleEvent(Event *event);
+	Polycode::Rectangle getGripRectangle();
+	
+	Vector2 getAnchorPoint();
+	
 private:
-    
-    bool transforming;
-    UIImage *movingTransform;
-    
-    Polycode::Rectangle gripRectangle;
-    Vector2 anchorPoint;
-    
-    Vector2 mouseBase;
-    
-    UIRect *mainRect;
-    UIImage *transformTL;
-    UIImage *transformT;
-    UIImage *transformTR;
-    UIImage *transformR;
-    UIImage *transformL;
-    UIImage *transformBL;
-    UIImage *transformB;
-    UIImage *transformBR;
-    UIImage *transformOffset;
-    std::vector<UIElement*> grips;
-    
+	
+	bool transforming;
+	UIImage *movingTransform;
+	
+	Polycode::Rectangle gripRectangle;
+	Vector2 anchorPoint;
+	
+	Vector2 mouseBase;
+	
+	UIRect *mainRect;
+	UIImage *transformTL;
+	UIImage *transformT;
+	UIImage *transformTR;
+	UIImage *transformR;
+	UIImage *transformL;
+	UIImage *transformBL;
+	UIImage *transformB;
+	UIImage *transformBR;
+	UIImage *transformOffset;
+	std::vector<UIElement*> grips;
+	
 };
 
 class TrasnformGizmoEvent : public Event {
-    public:
-        TrasnformGizmoEvent(int mode);
-    
-        static const int EVENT_TRANSLATE = 0;
-        static const int EVENT_SCALE = 1;
-        static const int EVENT_ROTATE = 2;
-    
-        int mode;
+	public:
+		TrasnformGizmoEvent(int mode);
+	
+		static const int EVENT_TRANSLATE = 0;
+		static const int EVENT_SCALE = 1;
+		static const int EVENT_ROTATE = 2;
+	
+		int mode;
 };
 
 class TransformGizmo : public Entity {
@@ -86,13 +86,13 @@ class TransformGizmo : public Entity {
 		
 		void handleEvent(Event *event);
 		void setTransformMode(int newMode);
-        void setGizmoMode(int newMode);
-    
+		void setGizmoMode(int newMode);
+	
 		void fixedUpdate();
-    
-        void enableSnap(bool val);
-        void setSnapSize(Number snapSize);
-    
+	
+		void enableSnap(bool val);
+		void setSnapSize(Number snapSize);
+	
 		void setTransformSelection(std::vector<Entity*> selectedEntities);
 		
 		void transformSelectedEntities(const Vector3 &move, const Vector3 &scale, Number rotate);
@@ -105,16 +105,16 @@ class TransformGizmo : public Entity {
 		Vector2 getCorrectedMousePosition();
 
 		void resetTransform();
-    
-        void setTransformOrientation(int orientation);
-    
-        void updateOrientationForEntity(Entity *entity);
-    
-        void setTransformPlane(Number x, Number y, Number z, bool forceGlobal = false);
+	
+		void setTransformOrientation(int orientation);
+	
+		void updateOrientationForEntity(Entity *entity);
+	
+		void setTransformPlane(Number x, Number y, Number z, bool forceGlobal = false);
 		void setTransformPlane(bool useX, bool useY, bool useZ);
-        void setTransformPlaneFromView();
-    
-        void setCenterMode(int centerMode);
+		void setTransformPlaneFromView();
+	
+		void setCenterMode(int centerMode);
 
 		void toggleOrientation();
 		
@@ -124,33 +124,33 @@ class TransformGizmo : public Entity {
 		static const int TRANSFORM_SCALE_VIEW = 3;
 		static const int TRANSFORM_ROTATE_VIEW = 4;
 		static const int TRANSFORM_MOVE_VIEW = 5;
-    
-        static const int GIZMO_MODE_3D = 0;
+	
+		static const int GIZMO_MODE_3D = 0;
 		static const int GIZMO_MODE_2D_X = 1;
 		static const int GIZMO_MODE_2D_Y = 2;
 		static const int GIZMO_MODE_2D_Z = 3;
-    
-        static const int ORIENTATION_GLOBAL = 0;
-        static const int ORIENTATION_LOCAL = 1;
+	
+		static const int ORIENTATION_GLOBAL = 0;
+		static const int ORIENTATION_LOCAL = 1;
 
-        static const int CENTER_MODE_MEDIAN = 0;
-        static const int CENTER_MODE_INDIVIDUAL = 1;
-    
-        bool enableGizmo;
-    
+		static const int CENTER_MODE_MEDIAN = 0;
+		static const int CENTER_MODE_INDIVIDUAL = 1;
+	
+		bool enableGizmo;
+	
 	private:
-    
-        bool snapEnabled;
-        Number snapSize;
-    
-        void dispatchEndEvent();
-    
-        int transformMode;
-        int gizmoMode;
-        int orientation;
+	
+		bool snapEnabled;
+		Number snapSize;
+	
+		void dispatchEndEvent();
+	
+		int transformMode;
+		int gizmoMode;
+		int orientation;
 		int startingOrientation;
-    
-        int centerMode;
+	
+		int centerMode;
 	
 		std::vector<Entity*> selectedEntities;
 		std::vector<Vector3> entityPositions;
@@ -158,33 +158,33 @@ class TransformGizmo : public Entity {
 		std::vector<Vector3> oldPosition;
 		std::vector<Vector3> oldScale;
 		std::vector<Quaternion> oldRotation;
-    
+	
 		Scene *targetScene;
 		Camera *targetCamera;
-    
-        bool firstMove;
-    
+	
+		bool firstMove;
+	
 	
 		CoreInput *coreInput;
 		int mode;
-        int previousMode;
+		int previousMode;
 		bool transforming;
 		
 		Vector3 transformConstraint;
 		Vector3 transformPlane;
-        Vector3 localTransformPlane;
-    
-        Number transformPlaneDistance;
-    
-        Matrix4 planeMatrix;
+		Vector3 localTransformPlane;
+	
+		Number transformPlaneDistance;
+	
+		Matrix4 planeMatrix;
 				
-        Vector3 gizmoPoint;
+		Vector3 gizmoPoint;
 		Vector3 startingPoint;
 		Number startingAngle;
 
 		Vector2 mouseStart2d;
-    
-        Number scaleAmount;
+	
+		Number scaleAmount;
 				
 		Entity *trasnformDecorators;
 		Entity *scaleDecorators;
@@ -193,34 +193,34 @@ class TransformGizmo : public Entity {
 							
 		Entity *xTransformGrip;
 		Entity *yTransformGrip;
-		Entity *zTransformGrip;	
+		Entity *zTransformGrip; 
 		
 		ScenePrimitive *pitchGrip;
 		ScenePrimitive *rollGrip;
 		ScenePrimitive *yawGrip;
 
-        ScenePrimitive *viewportRotateGrip;
-        Entity *viewportRotateGripBase;
-    
-        SceneMesh *xLine;
-        SceneMesh *yLine;
-        SceneMesh *zLine;
-    
-        ScenePrimitive *xArrow;
-        ScenePrimitive *yArrow;
-        ScenePrimitive *zArrow;
-    
-        ScenePrimitive *xBox;
-        ScenePrimitive *yBox;
-        ScenePrimitive *zBox;
-    
-        ScenePrimitive *outerCircle;
-        ScenePrimitive *bgCircle;
-    
-        ScenePrimitive *pitchCircle;
-        ScenePrimitive *yawCircle;
-        ScenePrimitive *rollCircle;
-    
+		ScenePrimitive *viewportRotateGrip;
+		Entity *viewportRotateGripBase;
+	
+		SceneMesh *xLine;
+		SceneMesh *yLine;
+		SceneMesh *zLine;
+	
+		ScenePrimitive *xArrow;
+		ScenePrimitive *yArrow;
+		ScenePrimitive *zArrow;
+	
+		ScenePrimitive *xBox;
+		ScenePrimitive *yBox;
+		ScenePrimitive *zBox;
+	
+		ScenePrimitive *outerCircle;
+		ScenePrimitive *bgCircle;
+	
+		ScenePrimitive *pitchCircle;
+		ScenePrimitive *yawCircle;
+		ScenePrimitive *rollCircle;
+	
 };
 
 class TransformGizmoMenu : public UIElement {
@@ -232,10 +232,10 @@ class TransformGizmoMenu : public UIElement {
 		
 	private:
 	
-        UIIconSelector *transformSelector;
-        UIComboBox *orientationCombo;
-        UIIconSelector *centerSelector;
-    
+		UIIconSelector *transformSelector;
+		UIComboBox *orientationCombo;
+		UIIconSelector *centerSelector;
+	
 		TransformGizmo *gizmo;
 };
 

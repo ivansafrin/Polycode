@@ -30,8 +30,8 @@ class IBone {
 class ITrack {
 	public:
 		ITrack(){}
-        aiNodeAnim *nodeAnim;
-        Polycode::String boneName;
+		aiNodeAnim *nodeAnim;
+		Polycode::String boneName;
 };
 
 class IAnimation {
@@ -181,8 +181,8 @@ class ISkeleton {
 
 	//	unsigned int numAnimations = animations.size();
 	//	fwrite(&numAnimations, sizeof(unsigned int), 1, file);
-        
-        
+		
+		
 		for(int i=0; i < animations.size(); i++) {
 
 			char anim_s[2];
@@ -200,17 +200,17 @@ class ISkeleton {
 			fwrite(&anim->length, sizeof(float), 1, file);
 	
 			fwrite(&anim->numTracks, sizeof(unsigned int), 1, file);
-            
+			
 			for(int j=0; j < anim->numTracks; j++) {
 				ITrack *track = anim->tracks[j];
-                
-                unsigned short boneNameLen = track->boneName.length();
+				
+				unsigned short boneNameLen = track->boneName.length();
 				fwrite(&boneNameLen, sizeof(unsigned short), 1, file);
-                
-                char boneNameBuffer[1024];
-                memcpy(boneNameBuffer, track->boneName.c_str(), boneNameLen);
-                fwrite(boneNameBuffer, 1, boneNameLen, file);
-                
+				
+				char boneNameBuffer[1024];
+				memcpy(boneNameBuffer, track->boneName.c_str(), boneNameLen);
+				fwrite(boneNameBuffer, 1, boneNameLen, file);
+				
 				aiNodeAnim *nodeAnim = track->nodeAnim;
 
 				unsigned int curveType,numPoints;

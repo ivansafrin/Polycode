@@ -156,58 +156,58 @@ namespace Polycode {
 		*/																				
 		Vector3 getPointBetween(Number a, BezierPoint *bp1, BezierPoint *bp2);
 
-        /**
-         * Removes all curve control points.
-         */
+		/**
+		 * Removes all curve control points.
+		 */
 		void clearControlPoints();
-        
-        /**
-         * Returns the Y-axis value of the curve at specified X-axis value.
-         */
-        Number getYValueAtX(Number x);
+		
+		/**
+		 * Returns the Y-axis value of the curve at specified X-axis value.
+		 */
+		Number getYValueAtX(Number x);
 
-        /**
-         * Returns the normalized curve position value at specified X-axis value.
-         */
+		/**
+		 * Returns the normalized curve position value at specified X-axis value.
+		 */
 		Number getTValueAtX(Number x);
 		
 		/**
 		* Removes (and deletes!) a given point by pointer.
 		*/
 		void removePoint(BezierPoint *point);
-        
-        void setHeightCacheResolution(Number resolution);
-        void rebuildHeightCache();
-        
-        /**
-        * The point after which new control points should be added. If NULL, new control points are added to the end of the curve.
-        */
+		
+		void setHeightCacheResolution(Number resolution);
+		void rebuildHeightCache();
+		
+		/**
+		* The point after which new control points should be added. If NULL, new control points are added to the end of the curve.
+		*/
 		BezierPoint *insertPoint;
 		
-        /**
-         * Accuracy value for X-axis curve evaluation. The higher this number, the faster but less accurate X-axis curve evaluation is.
-            Defaults to 0.01
-         */
-        Number evaluationAccuracy;
-        
-        void recalculateDistances();
-        
-        static bool cacheHeightValues;
-        static unsigned int defaultHeightCacheResolution;
+		/**
+		 * Accuracy value for X-axis curve evaluation. The higher this number, the faster but less accurate X-axis curve evaluation is.
+			Defaults to 0.01
+		 */
+		Number evaluationAccuracy;
+		
+		void recalculateDistances();
+		
+		static bool cacheHeightValues;
+		static unsigned int defaultHeightCacheResolution;
 		
 		protected:
-        
-            unsigned int heightCacheResolution;
-            std::vector<BezierPoint*> controlPoints;
-            std::vector<Number> distances;
-        
-            std::vector<Number> heightCache;
 		
-            Number minX;
-            Number maxX;
-            Number midX;
-        
-            bool distancesDirty;
+			unsigned int heightCacheResolution;
+			std::vector<BezierPoint*> controlPoints;
+			std::vector<Number> distances;
+		
+			std::vector<Number> heightCache;
+		
+			Number minX;
+			Number maxX;
+			Number midX;
+		
+			bool distancesDirty;
 			
 	};
 

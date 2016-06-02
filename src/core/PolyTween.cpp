@@ -31,7 +31,7 @@
 
 using namespace Polycode;
 
-Tween::	Tween(Number *target, int easeType, Number startVal, Number endVal, Number time, bool repeat, bool deleteOnComplete, Number waitTime) : EventDispatcher() {
+Tween:: Tween(Number *target, int easeType, Number startVal, Number endVal, Number time, bool repeat, bool deleteOnComplete, Number waitTime) : EventDispatcher() {
 	this->waitTime = waitTime;
 	this->deleteOnComplete = deleteOnComplete;
 	targetVal = target;
@@ -53,7 +53,7 @@ Tween::	Tween(Number *target, int easeType, Number startVal, Number endVal, Numb
 }
 
 Number *Tween::getTarget() {
-    return targetVal;
+	return targetVal;
 }
 
 void Tween::Pause(bool pauseVal) {
@@ -80,10 +80,10 @@ void Tween::doOnComplete() {
 
 void Tween::updateTween(Number elapsed) {
 
-    if(paused) {
-        return;
-    }
-    
+	if(paused) {
+		return;
+	}
+	
 	tweenTime += elapsed;
 	
 	if(tweenTime >= endTime+waitTime) {
@@ -107,7 +107,7 @@ void Tween::updateTween(Number elapsed) {
 void Tween::Reset() {
 	tweenTime = 0;
 	complete = false;
-    *targetVal = startVal;
+	*targetVal = startVal;
 }
 
 Number Tween::interpolateTween() {

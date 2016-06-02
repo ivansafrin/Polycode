@@ -28,156 +28,156 @@ THE SOFTWARE.
 #include "polycode/core/PolyBezierCurve.h"
 
 namespace Polycode {
-    
-    class SceneParticle {
-        public:
-            Number lifetime;
-            Vector3 position;
-            Vector3 velocity;
-            Vector3 perlinPos;
-            Vector3 rotation;
-            Number brightnessDeviation;
-            Number scale;
-            Color color;
-            int varianceIndex;
-    };
-    
-    class SceneParticleEmitter : public SceneMesh {
-        public:
-            SceneParticleEmitter(unsigned int particleCount, Number lifetime, Number speed);
-            virtual ~SceneParticleEmitter();
-        
-            void setParticleCount(unsigned int newParticleCount);
-            unsigned int getParticleCount() const;
-        
-            void setParticleLifetime(Number lifetime);
-            Number getParticleLifetime() const;
-        
-            void setDirectionDeviation(const Vector3 &newDeviation);
-            Vector3 getDirectionDeviation() const;
-        
-            void setEmitterSize(const Vector3 &newSize);
-            Vector3 getEmitterSize() const;
-        
-            void setGravity(const Vector3 &newGravity);
-            Vector3 getGravity() const;
-        
-            void fixedUpdate();
-            void Render(GPUDrawBuffer *buffer);
-            void updateParticles();
-            void rebuildParticles(GPUDrawBuffer *buffer);
-        
-            void triggerParticles(bool allAtOnce);
-        
-            void enableParticleSystem(bool val);
-        
-            void setUseFloorPlane(bool val);
-            void setFloorPlaneOffset(Number floorPlaneOffset);
-            void setFloorDamping(Number floorDamping);
-        
-            void setParticlesInWorldSpace(bool val);
-            bool getParticlesInWorldSpace() const;
-        
-            void setPerlinEnabled(bool val);
-            bool getPerlinEnabled() const;
-        
-            Number getParticleSpeed() const;
-            void setParticleSpeed(Number speed);
-        
-            void setPerlinValue(const Vector3 &perlinValue);
-            Vector3 getPerlinValue() const;
-        
-            void setParticleType(unsigned int particleType);
-            unsigned int getParticleType() const;
-        
-            void setParticleSize(Number particleSize);
-            Number getParticleSize() const;
-        
-            void setParticleRotationSpeed(const Vector3 &rotationSpeed);
-            Vector3 getParticleRotationSpeed() const;
-        
-            void setParticleDirection(const Vector3 &direction);
-            Vector3 getParticleDirection() const;
-        
-            void setLoopParticles(bool val);
-            bool getLoopParticles() const;
-        
-            static const int PARTICLE_TYPE_POINT = 0;
-            static const int PARTICLE_TYPE_QUAD = 1;
-            static const int PARTICLE_TYPE_MESH = 2;
-        
-            bool useScaleCurve;
-        
-            /**
-             * Bezier curve that controls the scale of the particles.
-             */
-            BezierCurve scaleCurve;
-        
-            bool useColorCurves;
+	
+	class SceneParticle {
+		public:
+			Number lifetime;
+			Vector3 position;
+			Vector3 velocity;
+			Vector3 perlinPos;
+			Vector3 rotation;
+			Number brightnessDeviation;
+			Number scale;
+			Color color;
+			int varianceIndex;
+	};
+	
+	class SceneParticleEmitter : public SceneMesh {
+		public:
+			SceneParticleEmitter(unsigned int particleCount, Number lifetime, Number speed);
+			virtual ~SceneParticleEmitter();
+		
+			void setParticleCount(unsigned int newParticleCount);
+			unsigned int getParticleCount() const;
+		
+			void setParticleLifetime(Number lifetime);
+			Number getParticleLifetime() const;
+		
+			void setDirectionDeviation(const Vector3 &newDeviation);
+			Vector3 getDirectionDeviation() const;
+		
+			void setEmitterSize(const Vector3 &newSize);
+			Vector3 getEmitterSize() const;
+		
+			void setGravity(const Vector3 &newGravity);
+			Vector3 getGravity() const;
+		
+			void fixedUpdate();
+			void Render(GPUDrawBuffer *buffer);
+			void updateParticles();
+			void rebuildParticles(GPUDrawBuffer *buffer);
+		
+			void triggerParticles(bool allAtOnce);
+		
+			void enableParticleSystem(bool val);
+		
+			void setUseFloorPlane(bool val);
+			void setFloorPlaneOffset(Number floorPlaneOffset);
+			void setFloorDamping(Number floorDamping);
+		
+			void setParticlesInWorldSpace(bool val);
+			bool getParticlesInWorldSpace() const;
+		
+			void setPerlinEnabled(bool val);
+			bool getPerlinEnabled() const;
+		
+			Number getParticleSpeed() const;
+			void setParticleSpeed(Number speed);
+		
+			void setPerlinValue(const Vector3 &perlinValue);
+			Vector3 getPerlinValue() const;
+		
+			void setParticleType(unsigned int particleType);
+			unsigned int getParticleType() const;
+		
+			void setParticleSize(Number particleSize);
+			Number getParticleSize() const;
+		
+			void setParticleRotationSpeed(const Vector3 &rotationSpeed);
+			Vector3 getParticleRotationSpeed() const;
+		
+			void setParticleDirection(const Vector3 &direction);
+			Vector3 getParticleDirection() const;
+		
+			void setLoopParticles(bool val);
+			bool getLoopParticles() const;
+		
+			static const int PARTICLE_TYPE_POINT = 0;
+			static const int PARTICLE_TYPE_QUAD = 1;
+			static const int PARTICLE_TYPE_MESH = 2;
+		
+			bool useScaleCurve;
+		
+			/**
+			 * Bezier curve that controls the scale of the particles.
+			 */
+			BezierCurve scaleCurve;
+		
+			bool useColorCurves;
 
-            /**
-             * Bezier curve that controls the red component of particles' color.
-             */
-            BezierCurve colorCurveR;
-            /**
-             * Bezier curve that controls the green component of particles' color.
-             */
-            BezierCurve colorCurveG;
-            /**
-             * Bezier curve that controls the blue component of particles' color.
-             */
-            BezierCurve colorCurveB;
-            /**
-             * Bezier curve that controls the alpha component of particles' color.
-             */
-            BezierCurve colorCurveA;
-        
-        
-            Color colorDeviation;
-        
-            void addSourceMesh(Mesh *mesh);
-            int getNumSourceMeshes();
-            Mesh *getSourcesMeshAtIndex(int index);
-            void removeSourceMeshAtIndex(int index);
-        
-            void positionParticle(unsigned int index);
-        
-            virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
-            virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
-        
-        protected:
-        
-            std::vector<Mesh*> sourceMeshes;
-            void resetParticle(unsigned int index);
-        
-            bool systemEnabled;
-            Core *core;
-            unsigned int particleCount;
-            std::vector<SceneParticle> particles;
-            Number particleSpeed;
-            Number lifetime;
-        
-            Vector3 directionVector;
-            Vector3 directionDeviation;
-            Vector3 emitterSize;
-            Vector3 gravity;
-        
-            Matrix4 systemTrasnformMatrix;
-            bool useFloorPlane;
-            bool particlesInWorldSpace;
-            bool perlinEnabled;
-            Vector3 perlinValue;
-            Perlin *motionPerlin;
-            Number particleSize;
-            Vector3 particleRotationSpeed;
-        
-            Number floorPlaneOffset;
-            Number floorDamping;
-        
-            bool loopParticles;
-        
-            unsigned int particleType;
-            Quaternion q;
-    };
-    
+			/**
+			 * Bezier curve that controls the red component of particles' color.
+			 */
+			BezierCurve colorCurveR;
+			/**
+			 * Bezier curve that controls the green component of particles' color.
+			 */
+			BezierCurve colorCurveG;
+			/**
+			 * Bezier curve that controls the blue component of particles' color.
+			 */
+			BezierCurve colorCurveB;
+			/**
+			 * Bezier curve that controls the alpha component of particles' color.
+			 */
+			BezierCurve colorCurveA;
+		
+		
+			Color colorDeviation;
+		
+			void addSourceMesh(Mesh *mesh);
+			int getNumSourceMeshes();
+			Mesh *getSourcesMeshAtIndex(int index);
+			void removeSourceMeshAtIndex(int index);
+		
+			void positionParticle(unsigned int index);
+		
+			virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
+			virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
+		
+		protected:
+		
+			std::vector<Mesh*> sourceMeshes;
+			void resetParticle(unsigned int index);
+		
+			bool systemEnabled;
+			Core *core;
+			unsigned int particleCount;
+			std::vector<SceneParticle> particles;
+			Number particleSpeed;
+			Number lifetime;
+		
+			Vector3 directionVector;
+			Vector3 directionDeviation;
+			Vector3 emitterSize;
+			Vector3 gravity;
+		
+			Matrix4 systemTrasnformMatrix;
+			bool useFloorPlane;
+			bool particlesInWorldSpace;
+			bool perlinEnabled;
+			Vector3 perlinValue;
+			Perlin *motionPerlin;
+			Number particleSize;
+			Vector3 particleRotationSpeed;
+		
+			Number floorPlaneOffset;
+			Number floorDamping;
+		
+			bool loopParticles;
+		
+			unsigned int particleType;
+			Quaternion q;
+	};
+	
 }

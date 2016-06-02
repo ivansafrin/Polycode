@@ -38,8 +38,8 @@ namespace Polycode {
 			virtual ~UIButton();
 			void Resize(Number width, Number height);		
 			void handleEvent(Event *event);
-            void setCaption(String caption);
-        
+			void setCaption(String caption);
+		
 			void Update();
 				
 		private:

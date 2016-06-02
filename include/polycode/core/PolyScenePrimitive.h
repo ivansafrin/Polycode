@@ -67,14 +67,14 @@ namespace Polycode {
 			*/			
 			static const int TYPE_PLANE = 1;			
 
-            /**
-             * A vertical plane.
-             * v1 - X size
-             * v2 - Y size
+			/**
+			 * A vertical plane.
+			 * v1 - X size
+			 * v2 - Y size
 			 * v3 - # of tiles
-             */
-            static const int TYPE_VPLANE = 2;
-        
+			 */
+			static const int TYPE_VPLANE = 2;
+		
 			/**
 			* A cylinder.
 			* v1 - Cylinder length			
@@ -84,23 +84,23 @@ namespace Polycode {
 			*/			
 			static const int TYPE_CYLINDER = 3;
 
-            /**
-             * A cylinder.
-             * v1 - Cylinder length
-             * v2 - Cylinder radius
-             * v3 - Number of segments.
+			/**
+			 * A cylinder.
+			 * v1 - Cylinder length
+			 * v2 - Cylinder radius
+			 * v3 - Number of segments.
 			 * v4 - # of tiles
-             */
-            static const int TYPE_UNCAPPED_CYLINDER = 4;
+			 */
+			static const int TYPE_UNCAPPED_CYLINDER = 4;
 
-            /**
-             * A sphere.
-             * v1 - Sphere radius
-             * v2 - Lat segments
-             * v3 - Long segments
+			/**
+			 * A sphere.
+			 * v1 - Sphere radius
+			 * v2 - Lat segments
+			 * v3 - Long segments
 			 * v4 - # of tiles
-             */
-            static const int TYPE_SPHERE = 5;
+			 */
+			static const int TYPE_SPHERE = 5;
 
 			/**
 			* A torus.
@@ -111,15 +111,15 @@ namespace Polycode {
 			* v5 - # of tiles
 			*/			
 			static const int TYPE_TORUS = 6;	
-			     
-            /**
-             * A cone.
-             * v1 - Cone length.
-             * v2 - Cone raidus.
-             * v3 - Number of segments.
+				 
+			/**
+			 * A cone.
+			 * v1 - Cone length.
+			 * v2 - Cone raidus.
+			 * v3 - Number of segments.
 			 * v4 - # of tiles
-             */
-            static const int TYPE_CONE = 7;
+			 */
+			static const int TYPE_CONE = 7;
 
 			/**
 			* A 2D circle.
@@ -129,41 +129,41 @@ namespace Polycode {
 			* v4 - # of tiles
 			*/			
 			static const int TYPE_CIRCLE = 8;			
-        
-            /**
-             * An ico sphere.
-             * v1 - Sphere radius
-             * v2 - number of subdivisions
-             */
-            static const int TYPE_ICOSPHERE = 9;
-        
-            /**
-             * An ico sphere.
-             * v1 - Sphere radius
-             * v2 - number of subdivisions
-             */
-            static const int TYPE_OCTOSPHERE = 10;
-        
-            /**
-             * A 2D line circle.
-             * v1 - X size
-             * v2 - Y size
-             * v3 - Number of segments
+		
+			/**
+			 * An ico sphere.
+			 * v1 - Sphere radius
+			 * v2 - number of subdivisions
+			 */
+			static const int TYPE_ICOSPHERE = 9;
+		
+			/**
+			 * An ico sphere.
+			 * v1 - Sphere radius
+			 * v2 - number of subdivisions
+			 */
+			static const int TYPE_OCTOSPHERE = 10;
+		
+			/**
+			 * A 2D line circle.
+			 * v1 - X size
+			 * v2 - Y size
+			 * v3 - Number of segments
 			 * v4 - # of tiles
-             */
-            static const int TYPE_LINE_CIRCLE = 11;
+			 */
+			static const int TYPE_LINE_CIRCLE = 11;
 
 
-            int getPrimitiveType() const;
-        
-            Number getPrimitiveParameter1() const;
-            Number getPrimitiveParameter2() const;
-            Number getPrimitiveParameter3() const;
-            Number getPrimitiveParameter4() const;
-            Number getPrimitiveParameter5() const;
-        
-            virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
-            virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
+			int getPrimitiveType() const;
+		
+			Number getPrimitiveParameter1() const;
+			Number getPrimitiveParameter2() const;
+			Number getPrimitiveParameter3() const;
+			Number getPrimitiveParameter4() const;
+			Number getPrimitiveParameter5() const;
+		
+			virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
+			virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
 		
 		protected:
 

@@ -26,54 +26,54 @@
 #include "polycode/core/PolyString.h"
 
 namespace Polycode {
-    
-    class _PolyExport OSFileEntry : public PolyBase {
-        
-    public:
-        OSFileEntry() {};
-        OSFileEntry(const Polycode::String& fullPath, int type);
-        OSFileEntry(const Polycode::String& path, const Polycode::String& name, int type);
-        void init(const Polycode::String& path, const Polycode::String& name, int type);
-        
-        Polycode::String name;
-        Polycode::String extension;
-        Polycode::String nameWithoutExtension;
-        Polycode::String basePath;
-        Polycode::String fullPath;
-        int type;
-        
-        static const int TYPE_FILE = 0;
-        static const int TYPE_FOLDER = 1;
-    };
-    
-    class CoreFileProvider;
-    
-    class _PolyExport CoreFile : public PolyBase {
-    public:
-        CoreFile(){}
-        
-        virtual long read( void * ptr, size_t size, size_t count) = 0;
-        virtual long write( const void * ptr, size_t size, size_t count) = 0;
-        virtual int seek(long int offset, int origin) = 0;
-        virtual long tell() = 0;
-        
-        CoreFileProvider *provider;
-    };
-    
-    class _PolyExport CoreFileProvider {
-    public:
-        CoreFileProvider();
-        
-        virtual CoreFile *openFile(const String &fileName, const String &opts) = 0;
-        virtual void closeFile(CoreFile *file) = 0;
-        virtual bool parseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector);
-        
-        virtual void addSource(const String &source);
-        virtual void removeSource(const String &source);
-        
-        String type;
-        bool canListFiles;
-    };
+	
+	class _PolyExport OSFileEntry : public PolyBase {
+		
+	public:
+		OSFileEntry() {};
+		OSFileEntry(const Polycode::String& fullPath, int type);
+		OSFileEntry(const Polycode::String& path, const Polycode::String& name, int type);
+		void init(const Polycode::String& path, const Polycode::String& name, int type);
+		
+		Polycode::String name;
+		Polycode::String extension;
+		Polycode::String nameWithoutExtension;
+		Polycode::String basePath;
+		Polycode::String fullPath;
+		int type;
+		
+		static const int TYPE_FILE = 0;
+		static const int TYPE_FOLDER = 1;
+	};
+	
+	class CoreFileProvider;
+	
+	class _PolyExport CoreFile : public PolyBase {
+	public:
+		CoreFile(){}
+		
+		virtual long read( void * ptr, size_t size, size_t count) = 0;
+		virtual long write( const void * ptr, size_t size, size_t count) = 0;
+		virtual int seek(long int offset, int origin) = 0;
+		virtual long tell() = 0;
+		
+		CoreFileProvider *provider;
+	};
+	
+	class _PolyExport CoreFileProvider {
+	public:
+		CoreFileProvider();
+		
+		virtual CoreFile *openFile(const String &fileName, const String &opts) = 0;
+		virtual void closeFile(CoreFile *file) = 0;
+		virtual bool parseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector);
+		
+		virtual void addSource(const String &source);
+		virtual void removeSource(const String &source);
+		
+		String type;
+		bool canListFiles;
+	};
 
-    
+	
 }

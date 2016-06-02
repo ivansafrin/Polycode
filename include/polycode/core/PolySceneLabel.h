@@ -42,14 +42,14 @@ namespace Polycode {
 			SceneLabel(const String& text, int size, const String& fontName = "sans", int amode = 0, Number actualHeight = 0.0, bool premultiplyAlpha = false, const Color &backgroundColor = Color(0.0, 0.0, 0.0, 0.0), const Color &foregroundColor = Color(1.0, 1.0, 1.0, 1.0));
 			
 			String getText();
-        
-            void setLabelActualHeight(Number actualHeight);
-            Number getLabelActualHeight();
+		
+			void setLabelActualHeight(Number actualHeight);
+			Number getLabelActualHeight();
 			
 			void Render(GPUDrawBuffer *buffer);
 
-            int getTextWidthForString(String text);
-        
+			int getTextWidthForString(String text);
+		
 			virtual ~SceneLabel();
 		
 			/**
@@ -57,12 +57,12 @@ namespace Polycode {
 			* @param newText New text to display.
 			*/ 
 			void setText(const String& newText);
-        
-            virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
-            virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
+		
+			virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
+			virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
 			
 			void updateFromLabel();
-        
+		
 			Label *getLabel();
 			
 			bool positionAtBaseline;
@@ -74,9 +74,9 @@ namespace Polycode {
 						
 		protected:
 			
-			     
+				 
 			Number actualHeight;
-            Number labelScale;
+			Number labelScale;
 			Label *label;
 	};
 }

@@ -35,48 +35,48 @@ namespace Polycode {
 	class Cubemap;
 	class ShaderBinding;
 	class Texture;
-    class VertexDataArray;
-    class LocalShaderParam;
-    class RenderBuffer;
-    class CoreMutex;
-    
+	class VertexDataArray;
+	class LocalShaderParam;
+	class RenderBuffer;
+	class CoreMutex;
+	
 	class _PolyExport ProgramParam {
 		public:
 	
-        ProgramParam();
-        
-        String name;
-        int type;
-        void *platformData;
-        LocalShaderParam *globalParam;
+		ProgramParam();
+		
+		String name;
+		int type;
+		void *platformData;
+		LocalShaderParam *globalParam;
 
-        static void *createParamData(int type);
-        
-        static const int PARAM_UNKNOWN = 0;	
-        static const int PARAM_NUMBER = 1;
-        static const int PARAM_VECTOR2 = 2;		
-        static const int PARAM_VECTOR3 = 3;
-        static const int PARAM_COLOR = 4;
-        static const int PARAM_MATRIX = 5;
-        static const int PARAM_TEXTURE = 6;
-        static const int PARAM_CUBEMAP = 7;
+		static void *createParamData(int type);
+		
+		static const int PARAM_UNKNOWN = 0; 
+		static const int PARAM_NUMBER = 1;
+		static const int PARAM_VECTOR2 = 2;		
+		static const int PARAM_VECTOR3 = 3;
+		static const int PARAM_COLOR = 4;
+		static const int PARAM_MATRIX = 5;
+		static const int PARAM_TEXTURE = 6;
+		static const int PARAM_CUBEMAP = 7;
 	};
 	
-    class _PolyExport ProgramAttribute {
-        public:
-            ProgramAttribute();
-        
-            int size;
-            String name;
-            int arrayType;
-            void *platformData;
-    };
-    
+	class _PolyExport ProgramAttribute {
+		public:
+			ProgramAttribute();
+		
+			int size;
+			String name;
+			int arrayType;
+			void *platformData;
+	};
+	
 	typedef struct {
 		Texture *texture;
 		String name;
 	} TextureBinding;
-    
+	
 	typedef struct {
 		Cubemap *cubemap;
 		String name;
@@ -103,9 +103,9 @@ namespace Polycode {
 			void setName(const String& name);
 			const String& getName() const;
 			
-            ProgramParam *getParamPointer(const String &name);
-            ProgramAttribute *getAttribPointer(const String &name);
-        
+			ProgramParam *getParamPointer(const String &name);
+			ProgramAttribute *getAttribPointer(const String &name);
+		
 			virtual void reload() {}
 			
 			int getExpectedParamType(String name);
@@ -148,47 +148,47 @@ namespace Polycode {
 	
 	class LocalShaderParam : public PolyBase {
 		public:
-        
-            LocalShaderParam();
-            ~LocalShaderParam();
-            LocalShaderParam *Copy();
-        
+		
+			LocalShaderParam();
+			~LocalShaderParam();
+			LocalShaderParam *Copy();
+		
 			String name;
 			void *data;
 			int type;
-            bool ownsPointer;
-            unsigned int arraySize;
-            ProgramParam *param;
-        
-            // Convenience getters/setters for Lua users
-            Number getNumber();
-            Vector2 getVector2();
-            Vector3 getVector3();
-            Matrix4 getMatrix4();
-            Color getColor();
-            void setNumber(Number x);
-            void setVector2(Vector2 x);
-            void setVector3(Vector3 x);
-            void setMatrix4(Matrix4 x);
-            void setColor(Color x);
-        
-            void setTexture(Texture *texture);
-            Texture *getTexture();
-        
-            void setCubemap(Cubemap *cubemap);
-            Cubemap *getCubemap();
-        
-            void setParamValueFromString(int type, String pvalue);
+			bool ownsPointer;
+			unsigned int arraySize;
+			ProgramParam *param;
+		
+			// Convenience getters/setters for Lua users
+			Number getNumber();
+			Vector2 getVector2();
+			Vector3 getVector3();
+			Matrix4 getMatrix4();
+			Color getColor();
+			void setNumber(Number x);
+			void setVector2(Vector2 x);
+			void setVector3(Vector3 x);
+			void setMatrix4(Matrix4 x);
+			void setColor(Color x);
+		
+			void setTexture(Texture *texture);
+			Texture *getTexture();
+		
+			void setCubemap(Cubemap *cubemap);
+			Cubemap *getCubemap();
+		
+			void setParamValueFromString(int type, String pvalue);
 	};
-    
-    class AttributeBinding : public PolyBase {
-        public:
-            AttributeBinding();
-            String name;
-            VertexDataArray *vertexData;
-            ProgramAttribute *attribute;
-            bool enabled;
-    };
+	
+	class AttributeBinding : public PolyBase {
+		public:
+			AttributeBinding();
+			String name;
+			VertexDataArray *vertexData;
+			ProgramAttribute *attribute;
+			bool enabled;
+	};
 	
 	class RenderTargetBinding : public PolyBase {
 		public:
@@ -206,26 +206,26 @@ namespace Polycode {
 		public:
 			ShaderBinding();
 			virtual ~ShaderBinding();
-        
-            void copyTo(ShaderBinding *targetBinding);
-        
+		
+			void copyTo(ShaderBinding *targetBinding);
+		
 			LocalShaderParam *addParam(int type, const String& name);
-			LocalShaderParam *addParamPointer(int type, const String& name, void *ptr);        
+			LocalShaderParam *addParamPointer(int type, const String& name, void *ptr);		   
 			unsigned int getNumLocalParams();
 			LocalShaderParam *getLocalParam(unsigned int index);
 			LocalShaderParam *getLocalParamByName(const String& name);
-        
-            void removeParam(const String &name);
-        
-            Texture *loadTextureForParam(const String &paramName, const String &fileName);
-            void setTextureForParam(const String &paramName, Texture *texture);
-            void setCubemapForParam(const String &paramName, Cubemap *cubemap);
-        
-            unsigned int getNumAttributeBindings();
-            AttributeBinding *getAttributeBinding(unsigned int index);
-        
-            AttributeBinding *addAttributeBinding(const String &name, VertexDataArray *dataArray);
-            AttributeBinding *getAttributeBindingByName(const String &name);
+		
+			void removeParam(const String &name);
+		
+			Texture *loadTextureForParam(const String &paramName, const String &fileName);
+			void setTextureForParam(const String &paramName, Texture *texture);
+			void setCubemapForParam(const String &paramName, Cubemap *cubemap);
+		
+			unsigned int getNumAttributeBindings();
+			AttributeBinding *getAttributeBinding(unsigned int index);
+		
+			AttributeBinding *addAttributeBinding(const String &name, VertexDataArray *dataArray);
+			AttributeBinding *getAttributeBindingByName(const String &name);
 			
 			void addRenderTargetBinding(RenderTargetBinding *binding);
 			void removeRenderTargetBinding(RenderTargetBinding *binding);
@@ -244,20 +244,20 @@ namespace Polycode {
 
 			unsigned int getNumOutTargetBindings();
 			RenderTargetBinding *getOutTargetBinding(unsigned int index);
-        
+		
 			std::vector<LocalShaderParam*> localParams;
 			std::vector<AttributeBinding*> attributes;
-        
+		
 			std::vector<RenderTargetBinding*> renderTargetBindings;
 			std::vector<RenderTargetBinding*> inTargetBindings;
 			std::vector<RenderTargetBinding*> outTargetBindings;
 			std::vector<RenderTargetBinding*> colorTargetBindings;
 			std::vector<RenderTargetBinding*> depthTargetBindings;
-        
-            bool resetAttributes;
-            Shader *targetShader;
-        
-            CoreMutex *accessMutex;
+		
+			bool resetAttributes;
+			Shader *targetShader;
+		
+			CoreMutex *accessMutex;
 	};
 
 }

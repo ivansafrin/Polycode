@@ -61,7 +61,7 @@ public:
 #endif
 	~PolycodeIDEApp();
 	
-	void handleEvent(Event *event);	
+	void handleEvent(Event *event); 
 	bool Update();
 	
 	void saveConfigFile();
@@ -136,7 +136,7 @@ protected:
 	PolycodeFrame *frame;
 	
 	PolycodeEditorManager *editorManager;
-	PolycodeProjectManager *projectManager;	
+	PolycodeProjectManager *projectManager; 
 	PolycodeRemoteDebugger *debugger;
 
 	UIMenuBar *menuBar;

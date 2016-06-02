@@ -45,9 +45,9 @@ namespace Polycode {
 			* @param w W coordinate.
 			*/					
 			Vector4(Number x,Number y,Number z, Number w);
-        
-        
-            Vector4(const Vector3 &v3);
+		
+		
+			Vector4(const Vector3 &v3);
 
 			/**
 			* Create from single value for all coordinates
@@ -66,7 +66,7 @@ namespace Polycode {
 			* @param x X coordinate.
 			* @param y Y coordinate.			
 			* @param z Z coordinate.
-            * @param w W coordinate
+			* @param w W coordinate
 			*/
 			void set(Number x, Number y, Number z, Number w);
 
@@ -96,7 +96,7 @@ namespace Polycode {
 				return operator*(1/val);
 			}
 
-			inline Vector4& operator = ( const Vector4& v2)  {
+			inline Vector4& operator = ( const Vector4& v2)	 {
 				x = v2.x;
 				y = v2.y;
 				z = v2.z;
@@ -123,10 +123,10 @@ namespace Polycode {
 			inline Vector4 operator + ( const Vector4& v2 ) const {
 				return Vector4(x + v2.x, y + v2.y, z + v2.z, w + v2.w);
 			}
-        
-            inline Vector4 operator - () {
-                return Vector4(-x, -y, -z, -w);
-            }
+		
+			inline Vector4 operator - () {
+				return Vector4(-x, -y, -z, -w);
+			}
 
 			inline bool operator == ( const Vector4& v2)  {
 				return (v2.x == x && v2.y == y && v2.z == z && v2.w == w);
@@ -163,10 +163,10 @@ namespace Polycode {
 			*/			
 			Number z;			
 
-            /**
-             * W coordinate.
-             */
-            Number w;
+			/**
+			 * W coordinate.
+			 */
+			Number w;
 
 	};
 }

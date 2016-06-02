@@ -35,21 +35,21 @@ class TrackballCamera : public EventDispatcher {
 		void setOrbitingCenter(const Vector3 &newCenter);
 		void setCameraDistance(Number cameraDistance);
 		Camera *getTargetCamera();
-    
-    
-        void setCameraPosition(Vector3 cameraPosition);
-    
+	
+	
+		void setCameraPosition(Vector3 cameraPosition);
+	
 		bool isNavKeyDown();
 
-        void disableRotation(bool val);
-    
+		void disableRotation(bool val);
+	
 		static const int MOUSE_MODE_IDLE = 0;
 		static const int MOUSE_MODE_ORBITING = 1;
 		static const int MOUSE_MODE_PANNING = 2;
 		static const int MOUSE_MODE_ZOOMING = 3;
-    
-        Number getCameraDistance();
-        Vector3 getOribitingCenter();
+	
+		Number getCameraDistance();
+		Vector3 getOribitingCenter();
 		
 		Number trackballPanSpeed;
 		Number trackballZoomSpeed;	
@@ -64,8 +64,8 @@ class TrackballCamera : public EventDispatcher {
 		
 		Camera *targetCamera;
 		Entity *trackballShape;
-    
-        bool rotationDisabled;
+	
+		bool rotationDisabled;
 		
 		Vector2 trackBallMouseStart;
 		Vector2 trackBallMouseEnd;			

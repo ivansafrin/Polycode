@@ -137,9 +137,9 @@ namespace Polycode {
 			inline String operator + (const char *str) const { return String(contents + String(str).contents); }		
 			inline String operator + (const String &str) const { return String(contents + str.contents); }		
 			String operator += (const String &str) { contents = contents + str.contents; return *this; }		
-			String operator = (const String &str) {  contents = str.contents; return *this;}
-			inline bool operator == (const String &str) const {  return (str.contents == contents); }		
-			inline bool operator != (const String &str) const {  return (str.contents != contents); }		
+			String operator = (const String &str) {	 contents = str.contents; return *this;}
+			inline bool operator == (const String &str) const {	 return (str.contents == contents); }		
+			inline bool operator != (const String &str) const {	 return (str.contents != contents); }		
 			inline wchar_t operator [] ( const size_t i ) const { return contents[i]; }
 
 			/**
@@ -175,10 +175,10 @@ namespace Polycode {
 			* @return A string converted from the Number.
 			*/																										
 			static String NumberToString(Number value, int precision = 2);
-        
-        
-            Number toNumber();
-            int toInteger();
+		
+		
+			Number toNumber();
+			int toInteger();
 
 			/**
 			* Convert an integer to a String.

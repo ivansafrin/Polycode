@@ -61,8 +61,8 @@ class PolycodeProjectBrowser : public UIElement {
 		UITree *nodeHasName(UITree *node, String name);
 		bool listHasFileEntry(vector<OSFileEntry> files, OSFileEntry fileEntry);
 		
-        static String getIconForExtension(String extension);
-    
+		static String getIconForExtension(String extension);
+	
 		void Refresh();
 		
 		void handleEvent(Event *event);
@@ -81,4 +81,4 @@ protected:
 		UIRect *headerBg;	
 		UIMenu *contextMenu;	
 		BrowserUserData *selectedData;
-};	
+};

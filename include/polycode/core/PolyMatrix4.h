@@ -41,33 +41,33 @@ namespace Polycode {
 		/**
 		* Construct with 16 matrix values.
 		*/ 
-        inline Matrix4(
-            Number m00, Number m01, Number m02, Number m03,
-            Number m10, Number m11, Number m12, Number m13,
-            Number m20, Number m21, Number m22, Number m23,
-            Number m30, Number m31, Number m32, Number m33 )
-        {
-            m[0][0] = m00;
-            m[0][1] = m01;
-            m[0][2] = m02;
-            m[0][3] = m03;
-            m[1][0] = m10;
-            m[1][1] = m11;
-            m[1][2] = m12;
-            m[1][3] = m13;
-            m[2][0] = m20;
-            m[2][1] = m21;
-            m[2][2] = m22;
-            m[2][3] = m23;
-            m[3][0] = m30;
-            m[3][1] = m31;
-            m[3][2] = m32;
-            m[3][3] = m33;
-        }
+		inline Matrix4(
+			Number m00, Number m01, Number m02, Number m03,
+			Number m10, Number m11, Number m12, Number m13,
+			Number m20, Number m21, Number m22, Number m23,
+			Number m30, Number m31, Number m32, Number m33 )
+		{
+			m[0][0] = m00;
+			m[0][1] = m01;
+			m[0][2] = m02;
+			m[0][3] = m03;
+			m[1][0] = m10;
+			m[1][1] = m11;
+			m[1][2] = m12;
+			m[1][3] = m13;
+			m[2][0] = m20;
+			m[2][1] = m21;
+			m[2][2] = m22;
+			m[2][3] = m23;
+			m[3][0] = m30;
+			m[3][1] = m31;
+			m[3][2] = m32;
+			m[3][3] = m33;
+		}
 
 			/**
 			* Construct with pointer to 16 Number values.
-			*/ 			
+			*/			
 			Matrix4(const Number *m);
 			~Matrix4();			
 			
@@ -121,40 +121,40 @@ namespace Polycode {
 			*/
 			//@{
 
-        
-            inline Matrix4 operator * (Number n) const {
-                return Matrix4(
-                           n*m[0][0], n*m[0][1], n*m[0][2], n*m[0][3],
-                           n*m[1][0], n*m[1][1], n*m[1][2], n*m[1][3],
-                           n*m[2][0], n*m[2][1], n*m[2][2], n*m[2][3],
-                           n*m[3][0], n*m[3][1], n*m[3][2], n*m[3][3]);
-            }
-        
-            inline Vector3 multVector3( const Vector3 &v2 ) const
-            {
-                return Vector3(v2.x*m[0][0] + v2.y*m[1][0] + v2.z*m[2][0] + m[3][0],
-                               v2.x*m[0][1] + v2.y*m[1][1] + v2.z*m[2][1] + m[3][1],
-                               v2.x*m[0][2] + v2.y*m[1][2] + v2.z*m[2][2] + m[3][2]);
-            }
-        
-            inline Vector4 multVector4( const Vector4 &v2 ) const
-            {
-                return Vector4(v2.x*m[0][0] + v2.y*m[1][0] + v2.z*m[2][0] + v2.w*m[3][0],
-                           v2.x*m[0][1] + v2.y*m[1][1] + v2.z*m[2][1] + v2.w*m[3][1],
-                           v2.x*m[0][2] + v2.y*m[1][2] + v2.z*m[2][2] + v2.w*m[3][2],
-                           v2.x*m[0][3] + v2.y*m[1][3] + v2.z*m[2][3] + v2.w*m[3][3]);
-            }
-        
+		
+			inline Matrix4 operator * (Number n) const {
+				return Matrix4(
+						   n*m[0][0], n*m[0][1], n*m[0][2], n*m[0][3],
+						   n*m[1][0], n*m[1][1], n*m[1][2], n*m[1][3],
+						   n*m[2][0], n*m[2][1], n*m[2][2], n*m[2][3],
+						   n*m[3][0], n*m[3][1], n*m[3][2], n*m[3][3]);
+			}
+		
+			inline Vector3 multVector3( const Vector3 &v2 ) const
+			{
+				return Vector3(v2.x*m[0][0] + v2.y*m[1][0] + v2.z*m[2][0] + m[3][0],
+							   v2.x*m[0][1] + v2.y*m[1][1] + v2.z*m[2][1] + m[3][1],
+							   v2.x*m[0][2] + v2.y*m[1][2] + v2.z*m[2][2] + m[3][2]);
+			}
+		
+			inline Vector4 multVector4( const Vector4 &v2 ) const
+			{
+				return Vector4(v2.x*m[0][0] + v2.y*m[1][0] + v2.z*m[2][0] + v2.w*m[3][0],
+						   v2.x*m[0][1] + v2.y*m[1][1] + v2.z*m[2][1] + v2.w*m[3][1],
+						   v2.x*m[0][2] + v2.y*m[1][2] + v2.z*m[2][2] + v2.w*m[3][2],
+						   v2.x*m[0][3] + v2.y*m[1][3] + v2.z*m[2][3] + v2.w*m[3][3]);
+			}
+		
 			inline Vector3 operator * ( const Vector3 &v2 ) const
 			{
 				return multVector3(v2);
 			}
-        
-        
-            inline Vector4 operator * ( const Vector4 &v2 ) const
-            {
-                return multVector4(v2);
-            }
+		
+		
+			inline Vector4 operator * ( const Vector4 &v2 ) const
+			{
+				return multVector4(v2);
+			}
 			
 			inline Number* operator [] ( int row ) { return m[row];}
 			inline const Number* operator [] ( int row ) const { return m[row];}
@@ -212,28 +212,28 @@ namespace Polycode {
 			}	
 			
 			inline Matrix4 operator * (const Matrix4 &m2) const {
-           Matrix4 r;
-            r.m[0][0] = m[0][0] * m2.m[0][0] + m[0][1] * m2.m[1][0] + m[0][2] * m2.m[2][0] + m[0][3] * m2.m[3][0];
-            r.m[0][1] = m[0][0] * m2.m[0][1] + m[0][1] * m2.m[1][1] + m[0][2] * m2.m[2][1] + m[0][3] * m2.m[3][1];
-            r.m[0][2] = m[0][0] * m2.m[0][2] + m[0][1] * m2.m[1][2] + m[0][2] * m2.m[2][2] + m[0][3] * m2.m[3][2];
-            r.m[0][3] = m[0][0] * m2.m[0][3] + m[0][1] * m2.m[1][3] + m[0][2] * m2.m[2][3] + m[0][3] * m2.m[3][3];
+		   Matrix4 r;
+			r.m[0][0] = m[0][0] * m2.m[0][0] + m[0][1] * m2.m[1][0] + m[0][2] * m2.m[2][0] + m[0][3] * m2.m[3][0];
+			r.m[0][1] = m[0][0] * m2.m[0][1] + m[0][1] * m2.m[1][1] + m[0][2] * m2.m[2][1] + m[0][3] * m2.m[3][1];
+			r.m[0][2] = m[0][0] * m2.m[0][2] + m[0][1] * m2.m[1][2] + m[0][2] * m2.m[2][2] + m[0][3] * m2.m[3][2];
+			r.m[0][3] = m[0][0] * m2.m[0][3] + m[0][1] * m2.m[1][3] + m[0][2] * m2.m[2][3] + m[0][3] * m2.m[3][3];
 
-            r.m[1][0] = m[1][0] * m2.m[0][0] + m[1][1] * m2.m[1][0] + m[1][2] * m2.m[2][0] + m[1][3] * m2.m[3][0];
-            r.m[1][1] = m[1][0] * m2.m[0][1] + m[1][1] * m2.m[1][1] + m[1][2] * m2.m[2][1] + m[1][3] * m2.m[3][1];
-            r.m[1][2] = m[1][0] * m2.m[0][2] + m[1][1] * m2.m[1][2] + m[1][2] * m2.m[2][2] + m[1][3] * m2.m[3][2];
-            r.m[1][3] = m[1][0] * m2.m[0][3] + m[1][1] * m2.m[1][3] + m[1][2] * m2.m[2][3] + m[1][3] * m2.m[3][3];
+			r.m[1][0] = m[1][0] * m2.m[0][0] + m[1][1] * m2.m[1][0] + m[1][2] * m2.m[2][0] + m[1][3] * m2.m[3][0];
+			r.m[1][1] = m[1][0] * m2.m[0][1] + m[1][1] * m2.m[1][1] + m[1][2] * m2.m[2][1] + m[1][3] * m2.m[3][1];
+			r.m[1][2] = m[1][0] * m2.m[0][2] + m[1][1] * m2.m[1][2] + m[1][2] * m2.m[2][2] + m[1][3] * m2.m[3][2];
+			r.m[1][3] = m[1][0] * m2.m[0][3] + m[1][1] * m2.m[1][3] + m[1][2] * m2.m[2][3] + m[1][3] * m2.m[3][3];
 
-            r.m[2][0] = m[2][0] * m2.m[0][0] + m[2][1] * m2.m[1][0] + m[2][2] * m2.m[2][0] + m[2][3] * m2.m[3][0];
-            r.m[2][1] = m[2][0] * m2.m[0][1] + m[2][1] * m2.m[1][1] + m[2][2] * m2.m[2][1] + m[2][3] * m2.m[3][1];
-            r.m[2][2] = m[2][0] * m2.m[0][2] + m[2][1] * m2.m[1][2] + m[2][2] * m2.m[2][2] + m[2][3] * m2.m[3][2];
-            r.m[2][3] = m[2][0] * m2.m[0][3] + m[2][1] * m2.m[1][3] + m[2][2] * m2.m[2][3] + m[2][3] * m2.m[3][3];
+			r.m[2][0] = m[2][0] * m2.m[0][0] + m[2][1] * m2.m[1][0] + m[2][2] * m2.m[2][0] + m[2][3] * m2.m[3][0];
+			r.m[2][1] = m[2][0] * m2.m[0][1] + m[2][1] * m2.m[1][1] + m[2][2] * m2.m[2][1] + m[2][3] * m2.m[3][1];
+			r.m[2][2] = m[2][0] * m2.m[0][2] + m[2][1] * m2.m[1][2] + m[2][2] * m2.m[2][2] + m[2][3] * m2.m[3][2];
+			r.m[2][3] = m[2][0] * m2.m[0][3] + m[2][1] * m2.m[1][3] + m[2][2] * m2.m[2][3] + m[2][3] * m2.m[3][3];
 
-            r.m[3][0] = m[3][0] * m2.m[0][0] + m[3][1] * m2.m[1][0] + m[3][2] * m2.m[2][0] + m[3][3] * m2.m[3][0];
-            r.m[3][1] = m[3][0] * m2.m[0][1] + m[3][1] * m2.m[1][1] + m[3][2] * m2.m[2][1] + m[3][3] * m2.m[3][1];
-            r.m[3][2] = m[3][0] * m2.m[0][2] + m[3][1] * m2.m[1][2] + m[3][2] * m2.m[2][2] + m[3][3] * m2.m[3][2];
-            r.m[3][3] = m[3][0] * m2.m[0][3] + m[3][1] * m2.m[1][3] + m[3][2] * m2.m[2][3] + m[3][3] * m2.m[3][3];
+			r.m[3][0] = m[3][0] * m2.m[0][0] + m[3][1] * m2.m[1][0] + m[3][2] * m2.m[2][0] + m[3][3] * m2.m[3][0];
+			r.m[3][1] = m[3][0] * m2.m[0][1] + m[3][1] * m2.m[1][1] + m[3][2] * m2.m[2][1] + m[3][3] * m2.m[3][1];
+			r.m[3][2] = m[3][0] * m2.m[0][2] + m[3][1] * m2.m[1][2] + m[3][2] * m2.m[2][2] + m[3][3] * m2.m[3][2];
+			r.m[3][3] = m[3][0] * m2.m[0][3] + m[3][1] * m2.m[1][3] + m[3][2] * m2.m[2][3] + m[3][3] * m2.m[3][3];
 
-            return r;
+			return r;
 
 					}
 			
@@ -241,20 +241,20 @@ namespace Polycode {
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------
 
-        
-            /**
-             * Translates the position in the matrix.
-             * @param x X coordinate.
-             * @param y Y coordinate.
-             * @param z Z coordinate.
-             */
-            inline void Translate(Number x, Number y, Number z) {
-                m[3][0] += x;
-                m[3][1] += y;
-                m[3][2] += z;
-            }
-        
-        
+		
+			/**
+			 * Translates the position in the matrix.
+			 * @param x X coordinate.
+			 * @param y Y coordinate.
+			 * @param z Z coordinate.
+			 */
+			inline void Translate(Number x, Number y, Number z) {
+				m[3][0] += x;
+				m[3][1] += y;
+				m[3][2] += z;
+			}
+		
+		
 			/**
 			* Sets the position in the matrix.
 			* @param x X coordinate.
@@ -294,17 +294,17 @@ namespace Polycode {
 				angle_y *= TODEGREES;
 				
 				if(fabsf(C) > 0.005) {
-					tr_x      =  m[2][2] / C; // 10 
-					tr_y      = -m[1][2]  / C; // 6
-					angle_x  = atan2f( tr_y, tr_x ) * TODEGREES;
-					tr_x      =  m[0][0] / C; // 0
-					tr_y      = -m[0][1] / C; // 1
-					angle_z  = atan2f( tr_y, tr_x ) * TODEGREES;
+					tr_x	  =	 m[2][2] / C; // 10 
+					tr_y	  = -m[1][2]  / C; // 6
+					angle_x	 = atan2f( tr_y, tr_x ) * TODEGREES;
+					tr_x	  =	 m[0][0] / C; // 0
+					tr_y	  = -m[0][1] / C; // 1
+					angle_z	 = atan2f( tr_y, tr_x ) * TODEGREES;
 				} else {
-					angle_x  = 0;
-					tr_x      =  m[1][1];
-					tr_y      =  m[1][0];
-					angle_z  = atan2f( tr_y, tr_x ) * TODEGREES;
+					angle_x	 = 0;
+					tr_x	  =	 m[1][1];
+					tr_y	  =	 m[1][0];
+					angle_z	 = atan2f( tr_y, tr_x ) * TODEGREES;
 				}					
 				
 				if (angle_x < 0) angle_x += 360;
@@ -348,45 +348,45 @@ namespace Polycode {
 			 * @param n The number of dimensions in matrix A.
 			 */
 			static Number generalDeterminant(Number const* const*a, int n);
-        
-            // projection stuff
-        
-            inline void setOrthoProjection(Number left, Number right, Number bottom, Number top, Number zNear, Number zFar) {
-                m[0][0] = 2.0/(right-left);
-                m[1][1] = 2.0/(top-bottom);
-                m[2][2] = -2.0/(zFar-zNear);
-                
-                m[3][0] = -((right+left)/(right-left));
-                m[3][1] = -((top+bottom)/(top-bottom));
-                m[3][2] = -((zFar+zNear)/(zFar-zNear));
-            }
-        
-            inline void setProjectionFrustum(Number left, Number right, Number bottom, Number top, Number zNear, Number zFar) {
-                
-                m[0][0] = (2.0*zNear)/(right-left);
-                m[1][1] = (2.0*zNear)/(top-bottom);
-                m[3][3] = 0.0;
+		
+			// projection stuff
+		
+			inline void setOrthoProjection(Number left, Number right, Number bottom, Number top, Number zNear, Number zFar) {
+				m[0][0] = 2.0/(right-left);
+				m[1][1] = 2.0/(top-bottom);
+				m[2][2] = -2.0/(zFar-zNear);
+				
+				m[3][0] = -((right+left)/(right-left));
+				m[3][1] = -((top+bottom)/(top-bottom));
+				m[3][2] = -((zFar+zNear)/(zFar-zNear));
+			}
+		
+			inline void setProjectionFrustum(Number left, Number right, Number bottom, Number top, Number zNear, Number zFar) {
+				
+				m[0][0] = (2.0*zNear)/(right-left);
+				m[1][1] = (2.0*zNear)/(top-bottom);
+				m[3][3] = 0.0;
 
-                m[2][0] = (right+left)/(right-left);
-                m[2][1] = (top+bottom)/(top-bottom);
-                m[2][2] = (zFar+zNear)/(zFar-zNear);
-                m[2][3] = -1.0;
-                
-                m[3][2] = (2.0*zFar*zNear)/(zFar-zNear);
-                
-            }
+				m[2][0] = (right+left)/(right-left);
+				m[2][1] = (top+bottom)/(top-bottom);
+				m[2][2] = (zFar+zNear)/(zFar-zNear);
+				m[2][3] = -1.0;
+				
+				m[3][2] = (2.0*zFar*zNear)/(zFar-zNear);
+				
+			}
 
-            inline void setProjection(Number fov, Number aspect, Number zNear, Number zFar) {
-                
-                m[0][0] = 1.0f/tanf(fov/2.0)/aspect;
-                m[1][1] = 1.0f/tanf(fov/2.0);
-                m[2][2] = (zFar+zNear)/(zNear-zFar);
-                m[3][2] = (2.0f*zFar*zNear)/(zNear-zFar);
-                m[2][3] = -1.0f;
-                m[3][3] = 0.0f;
-            }
-        
-        
+			inline void setProjection(Number fov, Number aspect, Number zNear, Number zFar) {
+				
+				m[0][0] = 1.0f/tanf(fov/2.0)/aspect;
+				m[1][1] = 1.0f/tanf(fov/2.0);
+				m[2][2] = (zFar+zNear)/(zNear-zFar);
+				m[3][2] = (2.0f*zFar*zNear)/(zNear-zFar);
+				m[2][3] = -1.0f;
+				m[3][3] = 0.0f;
+			}
+		
+		
 		protected:
 		
 	};

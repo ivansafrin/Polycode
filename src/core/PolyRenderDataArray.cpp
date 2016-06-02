@@ -28,61 +28,61 @@ RenderDataArray::RenderDataArray(unsigned int type) : type(type), platformData(N
 }
 
 RenderDataArray::RenderDataArray(const RenderDataArray &other) : platformData(NULL) {
-    type = other.type;
-    customArrayName = other.customArrayName;
+	type = other.type;
+	customArrayName = other.customArrayName;
 }
 
 RenderDataArray &RenderDataArray::operator=(const RenderDataArray &other) {
-    type = other.type;
-    return *this;
+	type = other.type;
+	return *this;
 }
 
 void *RenderDataArray::getArrayData()  const{
-    return NULL;
+	return NULL;
 }
 
 unsigned int RenderDataArray::getDataSize() const {
-    return 0;
+	return 0;
 }
 
 VertexDataArray::VertexDataArray(const VertexDataArray &other) : RenderDataArray(other) {
-    countPerVertex = other.countPerVertex;
-    data = other.data;
+	countPerVertex = other.countPerVertex;
+	data = other.data;
 }
 
 VertexDataArray &VertexDataArray::operator=(const VertexDataArray &other) {
-    data = other.data;
-    countPerVertex = other.countPerVertex;
-    RenderDataArray::operator=(other);
-    return *this;
+	data = other.data;
+	countPerVertex = other.countPerVertex;
+	RenderDataArray::operator=(other);
+	return *this;
 }
 
 void *VertexDataArray::getArrayData() const {
-    return (void*) data.data();
+	return (void*) data.data();
 }
 
-unsigned int VertexDataArray::getDataSize()  const{
-    return data.size();
+unsigned int VertexDataArray::getDataSize()	 const{
+	return data.size();
 }
 
 IndexDataArray &IndexDataArray::operator=(const IndexDataArray &other) {
-    data = other.data;
-    RenderDataArray::operator=(other);
-    return *this;
+	data = other.data;
+	RenderDataArray::operator=(other);
+	return *this;
 }
 
 IndexDataArray::IndexDataArray(const IndexDataArray &other) : RenderDataArray(other) {
-    data = other.data;
+	data = other.data;
 }
 
 void *IndexDataArray::getArrayData() const {
-    return (void*) data.data();
+	return (void*) data.data();
 }
 
-unsigned int IndexDataArray::getDataSize()  const {
-    return data.size();
+unsigned int IndexDataArray::getDataSize()	const {
+	return data.size();
 }
 
 unsigned char VertexDataArray::getCountPerVertex() const {
-    return countPerVertex;
+	return countPerVertex;
 }

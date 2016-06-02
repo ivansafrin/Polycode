@@ -33,11 +33,11 @@ THE SOFTWARE.
 using namespace Polycode;
 
 void RPICoreMutex::lock() {
-    pthread_mutex_lock(&pMutex);    
+	pthread_mutex_lock(&pMutex);	
 }
 
 void RPICoreMutex::unlock() {
-    pthread_mutex_unlock(&pMutex);
+	pthread_mutex_unlock(&pMutex);
 }
 
 
@@ -321,23 +321,23 @@ String RPICore::executeExternalCommand(String command, String args, String inDir
 
 bool RPICore::systemParseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector) {
 	
-    DIR           *d;
-    struct dirent *dir;
-    
-    d = opendir(pathString.c_str());
-    if(d) {
-        while ((dir = readdir(d)) != NULL) {
-            if(dir->d_name[0] != '.' || (dir->d_name[0] == '.'  && showHidden)) {
-                if(dir->d_type == DT_DIR) {
-                    targetVector.push_back(OSFileEntry(pathString, dir->d_name, OSFileEntry::TYPE_FOLDER));
-                } else {
-                    targetVector.push_back(OSFileEntry(pathString, dir->d_name, OSFileEntry::TYPE_FILE));
-                }
-            }
-        }
-        closedir(d);
-    }
-    return true;
+	DIR			  *d;
+	struct dirent *dir;
+	
+	d = opendir(pathString.c_str());
+	if(d) {
+		while ((dir = readdir(d)) != NULL) {
+			if(dir->d_name[0] != '.' || (dir->d_name[0] == '.'	&& showHidden)) {
+				if(dir->d_type == DT_DIR) {
+					targetVector.push_back(OSFileEntry(pathString, dir->d_name, OSFileEntry::TYPE_FOLDER));
+				} else {
+					targetVector.push_back(OSFileEntry(pathString, dir->d_name, OSFileEntry::TYPE_FILE));
+				}
+			}
+		}
+		closedir(d);
+	}
+	return true;
 }
 
 void RPICore::handleSystemEvent(RPIEvent systemEvent) {

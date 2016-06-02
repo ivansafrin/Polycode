@@ -29,76 +29,76 @@ EventDispatcher::EventDispatcher() : EventHandler() {
 }
 
 EventDispatcher::~EventDispatcher() {
-    
+	
 }
 
 void EventDispatcher::addEventListenerUnique(EventHandler *handler, int eventCode) {
-    if(!hasEventListener(handler, eventCode)) {
-        addEventListener(handler, eventCode);
-    }
+	if(!hasEventListener(handler, eventCode)) {
+		addEventListener(handler, eventCode);
+	}
 }
 
 bool EventDispatcher::hasEventListener(EventHandler *handler, int eventCode) {
-    std::vector<EventEntry>::iterator iter = handlerEntries.begin();
-    for(int i=0;i<handlerEntries.size();i++) {
-        if(handlerEntries[i].eventCode == eventCode && handlerEntries[i].handler == handler) {
-            return true;
-        }
-    }
-    return false;
+	std::vector<EventEntry>::iterator iter = handlerEntries.begin();
+	for(int i=0;i<handlerEntries.size();i++) {
+		if(handlerEntries[i].eventCode == eventCode && handlerEntries[i].handler == handler) {
+			return true;
+		}
+	}
+	return false;
 }
 
 
 void EventDispatcher::addEventListener(EventHandler *handler, int eventCode) {
-    EventEntry newEntry;
-    newEntry.handler = handler;
-    newEntry.eventCode = eventCode;
-    handlerEntries.push_back(newEntry);
+	EventEntry newEntry;
+	newEntry.handler = handler;
+	newEntry.eventCode = eventCode;
+	handlerEntries.push_back(newEntry);
 }
 
 void EventDispatcher::removeAllHandlers() {
-    handlerEntries.clear();
+	handlerEntries.clear();
 }
 
 void EventDispatcher::removeAllHandlersForListener(EventHandler *handler) {
-    std::vector<EventEntry>::iterator iter = handlerEntries.begin();
-    while (iter != handlerEntries.end()) {	
-        if((*iter).handler == handler) {
-            iter = handlerEntries.erase(iter);
-        } else {	
-            ++iter;						
-        }
-    }
-    
+	std::vector<EventEntry>::iterator iter = handlerEntries.begin();
+	while (iter != handlerEntries.end()) {	
+		if((*iter).handler == handler) {
+			iter = handlerEntries.erase(iter);
+		} else {	
+			++iter;						
+		}
+	}
+	
 }
 
 void EventDispatcher::removeEventListener(EventHandler *handler, int eventCode) {
-    for(int i=0;i<handlerEntries.size();i++) {
-        if(handlerEntries[i].eventCode == eventCode && handlerEntries[i].handler == handler) {
-            handlerEntries.erase(handlerEntries.begin()+i);
-        }
-    }
+	for(int i=0;i<handlerEntries.size();i++) {
+		if(handlerEntries[i].eventCode == eventCode && handlerEntries[i].handler == handler) {
+			handlerEntries.erase(handlerEntries.begin()+i);
+		}
+	}
 }
 
 void EventDispatcher::__dispatchEvent(Event *event, int eventCode) {
-    //		event->setDispatcher(dynamic_cast<void*>(this));
-    event->setDispatcher(this);
-    event->setEventCode(eventCode);
-    for(int i=0;i<handlerEntries.size();i++) {
-        if(handlerEntries[i].eventCode == eventCode) {
-            handlerEntries[i].handler->handleEvent(event);
-            if(event->cancelEventFlag) {
-                break;
-            }
-        }
-    }	
+	//		event->setDispatcher(dynamic_cast<void*>(this));
+	event->setDispatcher(this);
+	event->setEventCode(eventCode);
+	for(int i=0;i<handlerEntries.size();i++) {
+		if(handlerEntries[i].eventCode == eventCode) {
+			handlerEntries[i].handler->handleEvent(event);
+			if(event->cancelEventFlag) {
+				break;
+			}
+		}
+	}	
 }
 
 void EventDispatcher::dispatchEventNoDelete(Event *event, int eventCode) {
-    __dispatchEvent(event,eventCode);
+	__dispatchEvent(event,eventCode);
 }
 
 void EventDispatcher::dispatchEvent(Event *event, int eventCode) {
-    __dispatchEvent(event,eventCode);
-    delete event;
+	__dispatchEvent(event,eventCode);
+	delete event;
 }

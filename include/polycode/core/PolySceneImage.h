@@ -83,7 +83,7 @@ namespace Polycode {
 
 		/**
 		* Returns the image height.
-		*/ 		
+		*/		
 		Number getImageHeight() const;
 
 		protected:

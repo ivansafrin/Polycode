@@ -1,4 +1,4 @@
-    
+	
 /*
 Copyright (C) 2015 by Ivan Safrin
 
@@ -29,22 +29,22 @@ THE SOFTWARE.
 
 
 namespace Polycode {
-    
-    class PAAudioInterface : public Polycode::AudioInterface {
-        public:
-            PAAudioInterface();
-            ~PAAudioInterface();
-        
-            static int paCallback(const void *inputBuffer, void *outputBuffer,
-                                  unsigned long framesPerBuffer,
-                                  const PaStreamCallbackTimeInfo* timeInfo,
-                                  PaStreamCallbackFlags statusFlags,
-                                   void *userData);
-        
-        private:
-        
-        
-            PaStream *stream;
-    };
-    
+	
+	class PAAudioInterface : public Polycode::AudioInterface {
+		public:
+			PAAudioInterface();
+			~PAAudioInterface();
+		
+			static int paCallback(const void *inputBuffer, void *outputBuffer,
+								  unsigned long framesPerBuffer,
+								  const PaStreamCallbackTimeInfo* timeInfo,
+								  PaStreamCallbackFlags statusFlags,
+								   void *userData);
+		
+		private:
+		
+		
+			PaStream *stream;
+	};
+	
 }

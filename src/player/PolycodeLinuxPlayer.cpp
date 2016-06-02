@@ -31,5 +31,5 @@ PolycodeLinuxPlayer::~PolycodeLinuxPlayer() {
 }
 
 void PolycodeLinuxPlayer::createCore() {
-	core =  new SDLCore(view, xRes, yRes,  fullScreen, false, aaLevel, 0, frameRate);	
+	core =	new SDLCore(view, xRes, yRes,  fullScreen, false, aaLevel, 0, frameRate);	
 }

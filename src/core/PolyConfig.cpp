@@ -62,13 +62,13 @@ void Config::loadConfig(const String& configNamespace, const String& fileName) {
 
 void Config::saveConfig(const String& configNamespace, const String& fileName) {
 
-	TiXmlDocument doc;  
-	TiXmlElement* node;  
+	TiXmlDocument doc;	
+	TiXmlElement* node;	 
 	
- 	TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "", "" );  
+	TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "", "" );	 
 	doc.LinkEndChild( decl );  
 
-	TiXmlElement * root = new TiXmlElement( "PolyConfig" );  
+	TiXmlElement * root = new TiXmlElement( "PolyConfig" );	 
 	doc.LinkEndChild( root );  
 		
 	
@@ -76,13 +76,13 @@ void Config::saveConfig(const String& configNamespace, const String& fileName) {
 		if(entries[i]->configNamespace == configNamespace) {
 			node = new TiXmlElement(entries[i]->key.c_str());  
 			if(entries[i]->isString)
-				node->LinkEndChild( new	TiXmlText(entries[i]->stringVal.c_str()));  
+				node->LinkEndChild( new TiXmlText(entries[i]->stringVal.c_str()));	
 			else
-				node->LinkEndChild( new	TiXmlText(String::NumberToString(entries[i]->numVal).c_str()));  						
+				node->LinkEndChild( new TiXmlText(String::NumberToString(entries[i]->numVal).c_str()));							
 			root->LinkEndChild( node);		
 		}
 	}
-	doc.SaveFile(fileName.c_str());  	
+	doc.SaveFile(fileName.c_str());		
 }
 
 ConfigEntry *Config::getEntry(const String& configNamespace, const String& key) {
@@ -108,7 +108,7 @@ void Config::setStringValue(const String& configNamespace, const String& key, co
 }
 
 void Config::setNumericValue(const String& configNamespace, const String& key, Number value) {
-	getEntry(configNamespace, key)->numVal = value;	
+	getEntry(configNamespace, key)->numVal = value; 
 	getEntry(configNamespace, key)->isString = false;		
 }
 

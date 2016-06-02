@@ -141,7 +141,7 @@ namespace Polycode {
 			/**
 			 * Create a new text input element.
 			 * @param multiLine Whether the text field should consist of a single line,
-			 *                  or of a multiline text editor with vertical scroll bar.
+			 *					or of a multiline text editor with vertical scroll bar.
 			 * @param width The width of the element.
 			 * @param height The height of the element.
 			 */
@@ -335,7 +335,7 @@ namespace Polycode {
 			 * Return the contents of a line.
 			 *
 			 * @param index The index of the line to get the contents of.
-			 *              First line has index 0.
+			 *				First line has index 0.
 			 */
 			String getLineText(unsigned int index);
 			
@@ -356,14 +356,14 @@ namespace Polycode {
 			UIScrollContainer *getScrollContainer();
 			
 			bool useStrongHinting;
-        
-            void shiftText(bool left=false);
-            void convertIndentToTabs();
-            void convertIndentToSpaces();
+		
+			void shiftText(bool left=false);
+			void convertIndentToTabs();
+			void convertIndentToSpaces();
 			
 			void doMultilineResize();
-        
-            virtual void onGainFocus();
+		
+			virtual void onGainFocus();
 						
 			static void setMenuSingleton(UIGlobalMenu *_globalMenu);
 					
@@ -442,7 +442,7 @@ namespace Polycode {
 			int selectionR;
 			
 			UIRect *lineNumberBg;
-            Number textInputOffsetY;
+			Number textInputOffsetY;
 			
 			int decoratorOffset;
 		
@@ -490,8 +490,8 @@ namespace Polycode {
 			bool multiLine;
 			Timer *blinkTimer;
 			UIBox *inputRect;
-            UIBox *inputRectSelected;
-        
+			UIBox *inputRectSelected;
+		
 			UIRect *blinkerRect;
 			Vector2 dragMouseStart;
 			
@@ -535,7 +535,7 @@ namespace Polycode {
 			Number _newWidth;
 			Number _newHeight;
 			bool didMultilineResize;
-        
+		
 			enum indentTypes { INDENT_SPACE, INDENT_TAB } indentType;
 			int indentSpacing;
 			

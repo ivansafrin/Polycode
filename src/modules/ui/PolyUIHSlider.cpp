@@ -32,14 +32,14 @@ UIHSlider::UIHSlider(Number start, Number end, Number width) : UIElement() {
 	continuous = true;
 	
 	Config *conf = CoreServices::getInstance()->getConfig();	
-    Number uiScale = conf->getNumericValue("Polycode", "uiScale");
+	Number uiScale = conf->getNumericValue("Polycode", "uiScale");
 	
 	String bgImage = conf->getStringValue("Polycode", "uiHSliderBg");
 	String gripImage = conf->getStringValue("Polycode", "uiHSliderGrip");	
 	bgHeight = conf->getNumericValue("Polycode", "uiHSliderBgHeight");
 
-    sidePadding = conf->getNumericValue("Polycode", "uiHSliderSidePadding");
-    
+	sidePadding = conf->getNumericValue("Polycode", "uiHSliderSidePadding");
+	
 	Number st = conf->getNumericValue("Polycode", "uiHSliderBgT");
 	Number sr = conf->getNumericValue("Polycode", "uiHSliderBgR");
 	Number sb = conf->getNumericValue("Polycode", "uiHSliderBgB");
@@ -56,14 +56,14 @@ UIHSlider::UIHSlider(Number start, Number end, Number width) : UIElement() {
 	endValue = end;
 		
 	gripRect = new UIImage(gripImage);
-    gripRect->Resize(gripRect->getWidth() / uiScale, gripRect->getHeight() / uiScale);
+	gripRect->Resize(gripRect->getWidth() / uiScale, gripRect->getHeight() / uiScale);
 	gripRect->setAnchorPoint(0.0, 0.0, 0.0);
 	gripRect->setPosition(0, floor(bgHeight/2.0));
 
 	bgHitBox = new Entity();
-    bgHitBox->setWidth(width);
-    bgHitBox->setHeight(gripRect->getHeight());
-    bgHitBox->visible = false;
+	bgHitBox->setWidth(width);
+	bgHitBox->setHeight(gripRect->getHeight());
+	bgHitBox->visible = false;
 	bgHitBox->setAnchorPoint(-1.0, -1.0, 0.0);
 	bgHitBox->setPosition(0, gripRect->getPosition().y - (gripRect->getHeight()/2.0));
 	addChild(bgHitBox);
@@ -117,12 +117,12 @@ void UIHSlider::Resize(Number width, Number height) {
 	bgRect->resizeBox(width, bgHeight);
 	setWidth(width);
 	setHeight(height);
-	matrixDirty = true;	
+	matrixDirty = true; 
 	sliderWidth = width- (sidePadding*2);
 	gripRect->setDragLimits(Rectangle(sidePadding,floor(bgHeight/2.0),sliderWidth,0));
 	setSliderValue(sliderValue);
 	bgHitBox->setWidth(width);
-    bgHitBox->setHeight(gripRect->getHeight());
+	bgHitBox->setHeight(gripRect->getHeight());
 }
 			
 void UIHSlider::handleEvent(Event *event) {

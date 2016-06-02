@@ -142,12 +142,12 @@ void Color::RGBtoHSV(const Number &r, const Number &g, const Number &b, Number &
 	max = MAX(r, g);
 	max = MAX(max, b);
 
-    v = max;
+	v = max;
 
 	s = (max != 0) ? (max - min) / max : 0;
 
 	if (s == 0) {
-                h = 0;
+				h = 0;
 	} else {
 		delta = max - min;
 		if (r == max) {
@@ -186,24 +186,24 @@ Number Color::getValue() const {
 
 void Color::setColorHSV(Number H, Number S, Number V) {
 	Number r,g,b;
-    
+	
 	if (S == 0) {
-        r = g = b = V;
-    } else {
-        int i = (int)(H/60.0f);
-        Number f = (H/60.0f) - (Number)i;
-        Number p = V*(1.0f-S);
-        Number q = V*(1.0f-S*f);
-        Number t = V*(1.0f-(1.0f-f)*S);
-        switch (i) {
-            case 0: r = V;   g = t;  b = p;  break;
-            case 1: r = q;  g = V;   b = p;  break;
-            case 2: r = p;  g = V;   b = t;  break;
-            case 3: r = p;  g = q;  b = V;   break;
-            case 4: r = t;  g = p;  b = V;   break;
-            case 5: r = V;   g = p;  b = q;  break;
-        }
-    }
+		r = g = b = V;
+	} else {
+		int i = (int)(H/60.0f);
+		Number f = (H/60.0f) - (Number)i;
+		Number p = V*(1.0f-S);
+		Number q = V*(1.0f-S*f);
+		Number t = V*(1.0f-(1.0f-f)*S);
+		switch (i) {
+			case 0: r = V;	 g = t;	 b = p;	 break;
+			case 1: r = q;	g = V;	 b = p;	 break;
+			case 2: r = p;	g = V;	 b = t;	 break;
+			case 3: r = p;	g = q;	b = V;	 break;
+			case 4: r = t;	g = p;	b = V;	 break;
+			case 5: r = V;	 g = p;	 b = q;	 break;
+		}
+	}
 
 	setColor(r, g, b, a);
 }

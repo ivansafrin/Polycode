@@ -52,9 +52,9 @@ namespace Polycode {
 			
 			PhysicsEntity *entityA;
 			PhysicsEntity *entityB;
-            CollisionEntity *collisionEntityA;
-            CollisionEntity *collisionEntityB;
-        
+			CollisionEntity *collisionEntityA;
+			CollisionEntity *collisionEntityB;
+		
 
 			Number appliedImpulse;
 						
@@ -63,7 +63,7 @@ namespace Polycode {
 			Vector3 worldNormalOnB;				
 	};
 	
-    class _PolyExport PhysicsGenericConstraint : public PhysicsConstraint {
+	class _PolyExport PhysicsGenericConstraint : public PhysicsConstraint {
 		public:
 			
 			void setLinearLowerLimit(Vector3 limit);
@@ -82,11 +82,11 @@ namespace Polycode {
 			
 			btHingeConstraint *_btHingeConstraint;
 	};
-    
-    class _PolyExport PhysicsPointToPointConstraint : public PhysicsConstraint {
-        public:
-            btPoint2PointConstraint *btPointToPointConstraint;
-    };
+	
+	class _PolyExport PhysicsPointToPointConstraint : public PhysicsConstraint {
+		public:
+			btPoint2PointConstraint *btPointToPointConstraint;
+	};
 
 	/**
 	* A scene subclass that simulates physics for its children.
@@ -118,13 +118,13 @@ namespace Polycode {
 		PhysicsEntity *addPhysicsChild(Entity *newEntity, int type=0, Number mass = 0.0f, Number friction=1, Number restitution=0, int group=1, bool compoundChildren = false);		
 		PhysicsEntity *trackPhysicsChild(Entity *newEntity, int type=0, Number mass = 0.0f, Number friction=1, Number restitution=0, int group=1, bool compoundChildren = false);		
 		
-		PhysicsCharacter *addCharacterChild(Entity *newEntity, Number mass, Number friction, Number stepSize, int group  = 1);
+		PhysicsCharacter *addCharacterChild(Entity *newEntity, Number mass, Number friction, Number stepSize, int group	 = 1);
 		PhysicsCharacter *trackCharacterChild(Entity *newEntity, Number mass, Number friction, Number stepSize, int group  = 1);
-        
+		
 		void removeCharacterChild(PhysicsCharacter *character);
 
-        PhysicsPointToPointConstraint *createPointToPointConstraint(Entity *entity1, Entity *entity2, const Vector3 &pivot1, const Vector3 &pivot2);
-        
+		PhysicsPointToPointConstraint *createPointToPointConstraint(Entity *entity1, Entity *entity2, const Vector3 &pivot1, const Vector3 &pivot2);
+		
 		PhysicsHingeConstraint *createHingeConstraint(Entity *entity, Vector3 pivot, Vector3 axis, Number minLimit, Number maxLimit);
 
 		PhysicsHingeConstraint *createHingeJoint(Entity *entity1, Entity *entity2, Vector3 pivot1, Vector3 axis1, Vector3 pivot2, Vector3 axis2, Number minLimit, Number maxLimit);
@@ -140,7 +140,7 @@ namespace Polycode {
 		
 		void applyImpulse(Entity *entity, Vector3 force, Vector3 point);
 		
-		PhysicsVehicle *addVehicleChild(Entity *newEntity, Number mass, Number friction, int group  = 1);
+		PhysicsVehicle *addVehicleChild(Entity *newEntity, Number mass, Number friction, int group	= 1);
 
 		PhysicsVehicle *trackVehicleChild(Entity *newEntity, Number mass, Number friction, int group  = 1);
 		

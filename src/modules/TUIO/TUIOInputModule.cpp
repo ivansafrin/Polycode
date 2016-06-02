@@ -29,7 +29,7 @@ void TUIOInputModule::removeTuioObject(TuioObject *tobj) {
 }
 
 void TUIOInputModule::addTuioCursor(TuioCursor *tcur) {
-	std::vector<TouchInfo> touches;	
+	std::vector<TouchInfo> touches; 
 	std::list<TuioCursor*> cursorList = tuioClient->getTuioCursors();
 	tuioClient->lockCursorList();
 	for (std::list<TuioCursor*>::iterator iter = cursorList.begin(); iter!=cursorList.end(); iter++) {
@@ -40,7 +40,7 @@ void TUIOInputModule::addTuioCursor(TuioCursor *tcur) {
 			touch.id= tuioCursor->getCursorID();
 			touches.push_back(touch);
 	}
-	tuioClient->unlockCursorList();	
+	tuioClient->unlockCursorList(); 
 	TUIOEvent event;
 	event.type = InputEvent::EVENT_TOUCHES_BEGAN;
 	event.touches = touches;
@@ -55,7 +55,7 @@ void TUIOInputModule::addTuioCursor(TuioCursor *tcur) {
 }
 
 void TUIOInputModule::updateTuioCursor(TuioCursor *tcur) {
-	std::vector<TouchInfo> touches;	
+	std::vector<TouchInfo> touches; 
 	std::list<TuioCursor*> cursorList = tuioClient->getTuioCursors();
 	tuioClient->lockCursorList();
 	for (std::list<TuioCursor*>::iterator iter = cursorList.begin(); iter!=cursorList.end(); iter++) {
@@ -66,7 +66,7 @@ void TUIOInputModule::updateTuioCursor(TuioCursor *tcur) {
 			touch.id= tuioCursor->getCursorID();			
 			touches.push_back(touch);
 	}
-	tuioClient->unlockCursorList();	
+	tuioClient->unlockCursorList(); 
 	TUIOEvent event;
 	event.type = InputEvent::EVENT_TOUCHES_MOVED;
 	event.touches = touches;
@@ -81,7 +81,7 @@ void TUIOInputModule::updateTuioCursor(TuioCursor *tcur) {
 }
 
 void TUIOInputModule::removeTuioCursor(TuioCursor *tcur) {
-	std::vector<TouchInfo> touches;	
+	std::vector<TouchInfo> touches; 
 	std::list<TuioCursor*> cursorList = tuioClient->getTuioCursors();
 	tuioClient->lockCursorList();
 	for (std::list<TuioCursor*>::iterator iter = cursorList.begin(); iter!=cursorList.end(); iter++) {

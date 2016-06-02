@@ -41,28 +41,28 @@ namespace Polycode {
 			/**
 			* Initializes the event with an eventCode
 			* @param eventCode Event code to initalize with.
-			*/ 			
+			*/			
 			Event(int eventCode);
 			virtual ~Event();
 			
 			/**
 			* Returns the event code for this event.
 			* @return Event code for the event.
-			*/ 						
+			*/						
 			int getEventCode() const;
 			
 			/**
 			* Returns the event dispatcher which originated the event.
 			* @return Event dispatcher which originated the event.
-			*/ 									
+			*/									
 			EventDispatcher *getDispatcher() const;
 			
 			void setEventCode(int eventCode);			
 			void setDispatcher(EventDispatcher *dispatcher);
 			const String& getEventType() const;
-        
-        
-            void cancelEvent();
+		
+		
+			void cancelEvent();
 			
 			// In order to prevent "namespace" collisions between events of different types, all event integers must be unique.
 			// This is managed by arbitrarily assigning each class a "base" constant, and adding it to all its event type constants.
@@ -94,8 +94,8 @@ namespace Polycode {
 			static const int EVENTBASE_NONPOLYCODE = 0x10000;
 		
 			bool deleteOnDispatch;
-            bool cancelEventFlag;
-        
+			bool cancelEventFlag;
+		
 		protected:
 			
 			String eventType;

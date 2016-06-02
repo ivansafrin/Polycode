@@ -117,9 +117,9 @@ bool String::isNumber() {
 #if PLATFORM == PLATFORM_WINDOWS
 	return false;
 #else
-    std::string::const_iterator it = contents.begin();
-    while (it != contents.end() && std::isdigit(*it)) ++it;
-    return !contents.empty() && it == contents.end();
+	std::string::const_iterator it = contents.begin();
+	while (it != contents.end() && std::isdigit(*it)) ++it;
+	return !contents.empty() && it == contents.end();
 #endif
 }				
 
@@ -159,11 +159,11 @@ vector<String> String::split(const String &delim) const {
 }
 
 Number String::toNumber() {
-    return atof(contents.c_str());
+	return atof(contents.c_str());
 }
 
 int String::toInteger() {
-    return atoi(contents.c_str());
+	return atoi(contents.c_str());
 }
 
 String String::replace(const String &what, const String &withWhat) const {
@@ -191,9 +191,9 @@ String String::toUpperCase() const {
 
 
 String String::NumberToString(Number value, int precision) {
-    stringstream ss;
-    ss << fixed << setprecision(precision) << value;
-    return String(ss.str());
+	stringstream ss;
+	ss << fixed << setprecision(precision) << value;
+	return String(ss.str());
 }
 
 String String::IntToString(int value) {

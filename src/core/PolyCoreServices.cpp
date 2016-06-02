@@ -41,7 +41,7 @@ CoreMutex *CoreServices::renderMutex = 0;
 CoreServices* CoreServices::overrideInstance = NULL;
 
 CoreServices *Polycode::Services() {
-    return CoreServices::getInstance();
+	return CoreServices::getInstance();
 }
 
 CoreMutex *CoreServices::getRenderMutex() {
@@ -58,12 +58,12 @@ void CoreServices::setInstance(CoreServices *_instance) {
 }
 
 void CoreServices::createInstance() {
-    overrideInstance = new CoreServices;
-    Logger::log("Creating new core services instance...\n");
+	overrideInstance = new CoreServices;
+	Logger::log("Creating new core services instance...\n");
 }
 
 CoreServices* CoreServices::getInstance() {
-    return overrideInstance;
+	return overrideInstance;
 }
 
 MaterialManager *CoreServices::getMaterialManager() {
@@ -102,9 +102,9 @@ CoreServices::~CoreServices() {
 	delete tweenManager;
 	delete resourceManager;
 	delete soundManager;
-    delete logger;
-    delete config;
-    delete renderer;
+	delete logger;
+	delete config;
+	delete renderer;
 
 	instanceMap.clear();
 	overrideInstance = NULL;
@@ -143,16 +143,16 @@ void CoreServices::Render(const Polycode::Rectangle &viewport) {
 }
 
 void CoreServices::fixedUpdate() {
-    sceneManager->fixedUpdate();
+	sceneManager->fixedUpdate();
 }
 
 void CoreServices::Update(int elapsed) {
 	resourceManager->Update(elapsed);
-	timerManager->Update();	
+	timerManager->Update(); 
 	tweenManager->Update(elapsed);	
 	materialManager->Update(elapsed);		
 	sceneManager->Update();
-    soundManager->Update();
+	soundManager->Update();
 }
 
 SoundManager *CoreServices::getSoundManager() {

@@ -59,7 +59,7 @@ namespace Polycode {
 			static void log(const char *format, ...);
 
 			static void log(const String &message);
-        
+		
 			/**
 			* Logs information through wcout
 			* @param str The c-string to log

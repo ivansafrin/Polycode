@@ -44,8 +44,8 @@ namespace Polycode {
 			* @param type Type of light to create. Can be SceneLight::POINT_LIGHT or SceneLight::SPOT_LIGHT
 			* @param parentScene Scene to light.
 			* @param intensity Light color intensity
-			* @param constantAttenuation Constant falloff attenuation value	
-			* @param linearAttenuation Linear falloff attenuation value	
+			* @param constantAttenuation Constant falloff attenuation value 
+			* @param linearAttenuation Linear falloff attenuation value 
 			* @param quadraticAttenuation Quadratic falloff attenuation value				
 			*/ 
 			SceneLight(int type, Scene *parentScene, Number intensity, Number constantAttenuation=1, Number linearAttenuation=1, Number quadraticAttenuation=1);
@@ -64,16 +64,16 @@ namespace Polycode {
 						
 			/**
 			* Sets the attenuation values for the light.
-			* @param constantAttenuation Constant falloff attenuation value	
-			* @param linearAttenuation Linear falloff attenuation value	
+			* @param constantAttenuation Constant falloff attenuation value 
+			* @param linearAttenuation Linear falloff attenuation value 
 			* @param quadraticAttenuation Quadratic falloff attenuation value
 			* 
 			*/
 			void setAttenuation(Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation);			
 						
-            Number getConstantAttenuation() const;
-            Number getLinearAttenuation() const;
-            Number getQuadraticAttenuation() const;
+			Number getConstantAttenuation() const;
+			Number getLinearAttenuation() const;
+			Number getQuadraticAttenuation() const;
 									
 			/*
 			* Returns the light's type.
@@ -106,16 +106,16 @@ namespace Polycode {
 			*/	
 			void setDiffuseLightColor(Number r, Number g, Number b, Number a=1.0) { lightInfo.diffuseColor.r = r; lightInfo.diffuseColor.g = g; lightInfo.diffuseColor.b = b; lightInfo.diffuseColor.a = a; }
 			
-        
-        	void setDiffuseLightColor(const Color &color) {
-                lightInfo.diffuseColor = color;
-            }
+		
+			void setDiffuseLightColor(const Color &color) {
+				lightInfo.diffuseColor = color;
+			}
 
-            void setSpecularLightColor(const Color &color) {
-                lightInfo.specularColor = color;
-            }
-        
-        
+			void setSpecularLightColor(const Color &color) {
+				lightInfo.specularColor = color;
+			}
+		
+		
 			/**
 			* Sets both the specular and diffust light colors. Use setDiffuseLightColor and setSpecularLightColor to set the individual light colors.
 			* @param r Red value 0-1.
@@ -136,10 +136,10 @@ namespace Polycode {
 			* @param spotlightExponent Spotlight exponent size
 			* @param spotlightCutoff Spotlight furstrum cutoff.
 			*/
-            void setSpotlightProperties(Number spotlightCutoff, Number spotlightExponent);
+			void setSpotlightProperties(Number spotlightCutoff, Number spotlightExponent);
 			
-            Number getSpotlightCutoff() const;
-            Number getSpotlightExponent() const;
+			Number getSpotlightCutoff() const;
+			Number getSpotlightExponent() const;
 			
 			/**
 			* If this is called with 'true', the light will generate a shadow map.
@@ -154,13 +154,13 @@ namespace Polycode {
 			*/
 			void setShadowMapFOV(Number fov);
 		
-            /**
-             * Returns the light's shadow map field of view.
-             */
-            Number getShadowMapFOV() const;
-        
-            unsigned int getShadowMapResolution() const;
-        
+			/**
+			 * Returns the light's shadow map field of view.
+			 */
+			Number getShadowMapFOV() const;
+		
+			unsigned int getShadowMapResolution() const;
+		
 			/**
 			* Returns true if shadows are enabled.
 			*/
@@ -169,29 +169,29 @@ namespace Polycode {
 			/**
 			* Returns the light type.
 			*/
-            int getLightType() const;
+			int getLightType() const;
 			
 			void setLightImportance(int newImportance);
 			int getLightImportance() const;
-        
-            void setLightType(int lightType);
 		
-            virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
-            virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
-        
-            Scene *getParentScene() const;
-            void setParentScene(Scene *scene);
-        
-            Camera *getSpotlightCamera();
-        
-            LightInfo getLightInfo() const;
-        
+			void setLightType(int lightType);
+		
+			virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
+			virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
+		
+			Scene *getParentScene() const;
+			void setParentScene(Scene *scene);
+		
+			Camera *getSpotlightCamera();
+		
+			LightInfo getLightInfo() const;
+		
 		protected:
-        
-            LightInfo lightInfo;
+		
+			LightInfo lightInfo;
 
-            RenderBuffer *shadowMapRenderBuffer;
-            Material *unlitMaterial;
+			RenderBuffer *shadowMapRenderBuffer;
+			Material *unlitMaterial;
 			Camera *spotCamera;
 			Scene *parentScene;
 		

@@ -25,5 +25,5 @@ THE SOFTWARE.
 using namespace Polycode;
 
 PhysicsConstraint::~PhysicsConstraint() {
-    delete btConstraint;
+	delete btConstraint;
 }

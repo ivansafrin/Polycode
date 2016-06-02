@@ -39,9 +39,9 @@ namespace Polycode {
 			virtual ~UIElement();
 			
 			virtual void Resize(Number width, Number height);
-        
-            Vector2 getScreenPositionForMainCamera();
-        
+		
+			Vector2 getScreenPositionForMainCamera();
+		
 			bool hasFocus;
 			bool focusable;
 			
@@ -50,15 +50,15 @@ namespace Polycode {
 			bool isDragged();
 			void startDrag(Number xOffset, Number yOffset);
 			void stopDrag();
-        
-            void handleEvent(Event *event);
+		
+			void handleEvent(Event *event);
 			
 			void focusChild(UIElement *child);
 			void focusNextChild();
 			void focusPreviousChild();
 			bool isFocusable();
 			void focusSelf();
-        
+		
 			virtual void onLoseFocus() {}
 			virtual void onGainFocus() {}
 			
@@ -89,7 +89,7 @@ namespace Polycode {
 	class _PolyExport UIRect : public UIElement {
 		public:
 			UIRect(String fileName);
-            UIRect(String fileName, Number width, Number height);
+			UIRect(String fileName, Number width, Number height);
 			UIRect(Number width, Number height);
 			void initRect(Number width, Number height);
 			~UIRect();
@@ -100,19 +100,19 @@ namespace Polycode {
 			void setImageCoordinates(Number x, Number y, Number width, Number height, Number imageScale = 1.0);
 			Number getImageWidth() const;
 			Number getImageHeight() const;
-            void setMaterial(Material *material);
-        
+			void setMaterial(Material *material);
+		
 			Texture *getTexture();			
 		protected:
 		
 			Number imageWidth;
 			Number imageHeight;
-        
-            Material *material;
-            std::vector<ShaderPass> shaderPasses;
+		
+			Material *material;
+			std::vector<ShaderPass> shaderPasses;
 			
 			Mesh *rectMesh;
-            MeshGeometry rectMeshGeometry;
+			MeshGeometry rectMeshGeometry;
 
 			Texture *texture;
 			
@@ -122,7 +122,7 @@ namespace Polycode {
 		public:
 			UILabel(const String& text, int size=-1, const String& fontName = "sans", int amode = 0);
 			void setText(const String& text);
-            void setLabelColor(const Color &color);
+			void setLabelColor(const Color &color);
 			Label *getLabel();
 			String getText();
 			
@@ -130,13 +130,13 @@ namespace Polycode {
 		protected:
 			SceneLabel *label;
 	};
-    
+	
 	class _PolyExport UIMultilineLabel : public UIElement {
-    public:
-        UIMultilineLabel(const String& text, int size, int spacing, const String& fontName = "sans", int amode = 0);
-        void setText(const String& text);
-        String getText();
-        
+	public:
+		UIMultilineLabel(const String& text, int size, int spacing, const String& fontName = "sans", int amode = 0);
+		void setText(const String& text);
+		String getText();
+		
 		/**
 		* Sets the color of the Labels as normalized floating point values.
 		* @param r Red value as a 0-1 floating point number.
@@ -171,23 +171,23 @@ namespace Polycode {
 		*/
 		Number getHeight();
 
-        ~UIMultilineLabel();
-    protected:
-        
-        int labelSize;
-        String labelFontName;
-        int labelAAMode;
-        int spacing;
+		~UIMultilineLabel();
+	protected:
+		
+		int labelSize;
+		String labelFontName;
+		int labelAAMode;
+		int spacing;
 		int linesCount;
 
-        void clearLabels();
-        std::vector<UILabel*> labels;
+		void clearLabels();
+		std::vector<UILabel*> labels;
 	};
-    	
+		
 	class _PolyExport UIImage : public UIRect {
 		public:
 			UIImage(String imagePath);
-            UIImage(String imagePath, int width, int height);
+			UIImage(String imagePath, int width, int height);
 	};
 	
 }

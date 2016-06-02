@@ -64,21 +64,21 @@ typedef unsigned long uint32;
 
 
 enum TypeTagValues {
-    TRUE_TYPE_TAG = 'T',
-    FALSE_TYPE_TAG = 'F',
-    NIL_TYPE_TAG = 'N',
-    INFINITUM_TYPE_TAG = 'I',
-    INT32_TYPE_TAG = 'i',
-    FLOAT_TYPE_TAG = 'f',
-    CHAR_TYPE_TAG = 'c',
-    RGBA_COLOR_TYPE_TAG = 'r',
-    MIDI_MESSAGE_TYPE_TAG = 'm',
-    INT64_TYPE_TAG = 'h',
-    TIME_TAG_TYPE_TAG = 't',
-    DOUBLE_TYPE_TAG = 'd',
-    STRING_TYPE_TAG = 's',
-    SYMBOL_TYPE_TAG = 'S',
-    BLOB_TYPE_TAG = 'b'
+	TRUE_TYPE_TAG = 'T',
+	FALSE_TYPE_TAG = 'F',
+	NIL_TYPE_TAG = 'N',
+	INFINITUM_TYPE_TAG = 'I',
+	INT32_TYPE_TAG = 'i',
+	FLOAT_TYPE_TAG = 'f',
+	CHAR_TYPE_TAG = 'c',
+	RGBA_COLOR_TYPE_TAG = 'r',
+	MIDI_MESSAGE_TYPE_TAG = 'm',
+	INT64_TYPE_TAG = 'h',
+	TIME_TAG_TYPE_TAG = 't',
+	DOUBLE_TYPE_TAG = 'd',
+	STRING_TYPE_TAG = 's',
+	SYMBOL_TYPE_TAG = 'S',
+	BLOB_TYPE_TAG = 'b'
 };
 
 
@@ -86,15 +86,15 @@ enum TypeTagValues {
 // i/o manipulators used for streaming interfaces
 
 struct BundleInitiator{
-    explicit BundleInitiator( uint64 timeTag_ ) : timeTag( timeTag_ ) {}
-    uint64 timeTag;
+	explicit BundleInitiator( uint64 timeTag_ ) : timeTag( timeTag_ ) {}
+	uint64 timeTag;
 };
 
 extern BundleInitiator BeginBundleImmediate;
 
 inline BundleInitiator BeginBundle( uint64 timeTag=1 )
 {
-    return BundleInitiator(timeTag);
+	return BundleInitiator(timeTag);
 }
 
 
@@ -104,8 +104,8 @@ struct BundleTerminator{
 extern BundleTerminator EndBundle;
 
 struct BeginMessage{
-    explicit BeginMessage( const char *addressPattern_ ) : addressPattern( addressPattern_ ) {}
-    const char *addressPattern;
+	explicit BeginMessage( const char *addressPattern_ ) : addressPattern( addressPattern_ ) {}
+	const char *addressPattern;
 };
 
 struct MessageTerminator{
@@ -129,47 +129,47 @@ struct InfinitumType{
 extern InfinitumType Infinitum;
 
 struct RgbaColor{
-    RgbaColor() {}
-    explicit RgbaColor( uint32 value_ ) : value( value_ ) {}
-    uint32 value;
+	RgbaColor() {}
+	explicit RgbaColor( uint32 value_ ) : value( value_ ) {}
+	uint32 value;
 
-    operator uint32() const { return value; }
+	operator uint32() const { return value; }
 };
 
 
 struct MidiMessage{
-    MidiMessage() {}
-    explicit MidiMessage( uint32 value_ ) : value( value_ ) {}
-    uint32 value;
+	MidiMessage() {}
+	explicit MidiMessage( uint32 value_ ) : value( value_ ) {}
+	uint32 value;
 
-    operator uint32() const { return value; }
+	operator uint32() const { return value; }
 };
 
 
 struct TimeTag{
-    TimeTag() {}
-    explicit TimeTag( uint64 value_ ) : value( value_ ) {}
-    uint64 value;
+	TimeTag() {}
+	explicit TimeTag( uint64 value_ ) : value( value_ ) {}
+	uint64 value;
 
-    operator uint64() const { return value; }
+	operator uint64() const { return value; }
 };
 
 
 struct Symbol{
-    Symbol() {}
-    explicit Symbol( const char* value_ ) : value( value_ ) {}
-    const char* value;
+	Symbol() {}
+	explicit Symbol( const char* value_ ) : value( value_ ) {}
+	const char* value;
 
-    operator const char *() const { return value; }
+	operator const char *() const { return value; }
 };
 
 
 struct Blob{
-    Blob() {}
-    explicit Blob( const void* data_, unsigned long size_ )
-            : data( data_ ), size( size_ ) {}
-    const void* data;
-    unsigned long size;
+	Blob() {}
+	explicit Blob( const void* data_, unsigned long size_ )
+			: data( data_ ), size( size_ ) {}
+	const void* data;
+	unsigned long size;
 };
 
 } // namespace osc

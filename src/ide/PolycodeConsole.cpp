@@ -71,7 +71,7 @@ void BackTraceEntry::Select() {
 	dispatchEvent(event, BackTraceEvent::EVENT_BACKTRACE_SELECTED);
 		
 	labelBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiAccentColor"));
-    
+	
 }
 
 void BackTraceEntry::Deselect() {
@@ -180,7 +180,7 @@ ConsoleWindow::ConsoleWindow() : UIElement() {
 
 	debugTextInput = new UITextInput(true, 100, 100);
 	consoleTextInput = new UITextInput(false, 100, 100);
-	addChild(consoleTextInput);	
+	addChild(consoleTextInput); 
 	addChild(debugTextInput);	
 	
 	clearButton = new UIImageButton("main/clear_buffer_icon.png", 1.0, 16, 16);
@@ -189,8 +189,8 @@ ConsoleWindow::ConsoleWindow() : UIElement() {
 	hideConsoleButton = new UIImageButton("main/console_hide_button.png", 1.0, 20, 20);
 	addChild(hideConsoleButton);
 	hideConsoleButton->setPosition(7,5);
-    
-    consoleBufferMaxSize = 256;
+	
+	consoleBufferMaxSize = 256;
 	
 }
 
@@ -204,39 +204,39 @@ void ConsoleWindow::Resize(Number width, Number height) {
 
 	consoleTextInput->Resize(width, 25);
 	consoleTextInput->setPosition(0, height-25);
-    
-    consoleDirty = false;
-    consoleTimer = 0.0;
-    consoleRefreshInterval = 0.3;
+	
+	consoleDirty = false;
+	consoleTimer = 0.0;
+	consoleRefreshInterval = 0.3;
 }
 
 void ConsoleWindow::Update() {
-    consoleTimer += Services()->getCore()->getElapsed();
-    if(consoleTimer > consoleRefreshInterval) {
-        consoleTimer = 0.0;
-        if(consoleDirty) {
-            String fullText;
-            for(int i=0; i < consoleBuffer.size(); i++) {
-                fullText += consoleBuffer[i];
-            }
-            debugTextInput->setText(fullText);
-            debugTextInput->getScrollContainer()->setScrollValue(0, 1.0);
-            consoleDirty = false;
-        }
-    }
+	consoleTimer += Services()->getCore()->getElapsed();
+	if(consoleTimer > consoleRefreshInterval) {
+		consoleTimer = 0.0;
+		if(consoleDirty) {
+			String fullText;
+			for(int i=0; i < consoleBuffer.size(); i++) {
+				fullText += consoleBuffer[i];
+			}
+			debugTextInput->setText(fullText);
+			debugTextInput->getScrollContainer()->setScrollValue(0, 1.0);
+			consoleDirty = false;
+		}
+	}
 }
 
 void ConsoleWindow::clearBuffer() {
-    consoleBuffer.clear();
-    consoleDirty = true;
+	consoleBuffer.clear();
+	consoleDirty = true;
 }
 
 void ConsoleWindow::printToBuffer(String msg) {
-    consoleBuffer.push_back(msg);
-    if(consoleBuffer.size() > consoleBufferMaxSize) {
-        consoleBuffer.erase(consoleBuffer.begin());
-    }
-    consoleDirty = true;
+	consoleBuffer.push_back(msg);
+	if(consoleBuffer.size() > consoleBufferMaxSize) {
+		consoleBuffer.erase(consoleBuffer.begin());
+	}
+	consoleDirty = true;
 }
 
 
@@ -254,7 +254,7 @@ PolycodeConsole::PolycodeConsole() : UIElement() {
 	backtraceWindow = new BackTraceWindow();
 	backtraceSizer->addRightChild(backtraceWindow);
 
-	debugTextInput = consoleWindow->debugTextInput;    
+	debugTextInput = consoleWindow->debugTextInput;	   
 	consoleTextInput = consoleWindow->consoleTextInput;
 	
 	consoleTextInput->addEventListener(this, Event::COMPLETE_EVENT);
@@ -263,7 +263,7 @@ PolycodeConsole::PolycodeConsole() : UIElement() {
 
 	consoleHistoryPosition = 0;
 	consoleHistoryMaxSize = 15;
-    
+	
 	consoleWindow->clearButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	consoleWindow->hideConsoleButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
@@ -298,7 +298,7 @@ void PolycodeConsole::handleEvent(Event *event) {
 		}
 	} else if(event->getDispatcher() == consoleWindow->clearButton) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
-            consoleWindow->clearBuffer();
+			consoleWindow->clearBuffer();
 		}
 	} else if(event->getDispatcher() == consoleWindow->hideConsoleButton) {
 		globalFrame->hideConsole();
@@ -374,7 +374,7 @@ void PolycodeConsole::_clearBacktraces() {
 
 
 void PolycodeConsole::_print(String msg) {
-    consoleWindow->printToBuffer(msg);
+	consoleWindow->printToBuffer(msg);
 	printf("%s", msg.c_str());
 }
 

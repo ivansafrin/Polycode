@@ -32,19 +32,19 @@ namespace Polycode {
 	class Shader;
 	class ShaderBinding;
 	class ShaderRenderTarget;
-    class Mesh;
-    class VertexDataArray;
-    
-    class _PolyExport ShaderPass {
-        public:
-            ShaderPass();
-            ShaderPass(Shader *shader);        
-            Shader *shader;
-            bool wireframe;
-            unsigned short blendingMode;
-            ShaderBinding* shaderBinding;
-            ShaderBinding* materialShaderBinding;
-    };
+	class Mesh;
+	class VertexDataArray;
+	
+	class _PolyExport ShaderPass {
+		public:
+			ShaderPass();
+			ShaderPass(Shader *shader);		   
+			Shader *shader;
+			bool wireframe;
+			unsigned short blendingMode;
+			ShaderBinding* shaderBinding;
+			ShaderBinding* materialShaderBinding;
+	};
 
 	class _PolyExport Material : public Resource {
 		public:
@@ -53,18 +53,18 @@ namespace Polycode {
 
 			void addShaderPass(const ShaderPass &pass);
 			void addShaderPassAtIndex(const ShaderPass &pass, unsigned int shaderIndex);
-        
-            /* DEPRECATED! Use addShaderPass! */
+		
+			/* DEPRECATED! Use addShaderPass! */
 			void addShader(Shader *shader,ShaderBinding *shaderBinding);
-            /* DEPRECATED! Use addShaderPassAtIndex! */
+			/* DEPRECATED! Use addShaderPassAtIndex! */
 			void addShaderAtIndex(Shader *shader,ShaderBinding *shaderBinding, int shaderIndex);			
 			unsigned int getNumShaderPasses() const;
 			
-        
+		
 			void removeShaderPass(int shaderIndex);
 			
-            void recreateExpectedShaderParams();
-        
+			void recreateExpectedShaderParams();
+		
 			void addShaderRenderTarget(ShaderRenderTarget *newTarget);
 			int getNumShaderRenderTargets();
 			ShaderRenderTarget *getShaderRenderTarget(unsigned int index);
@@ -78,7 +78,7 @@ namespace Polycode {
 			ShaderPass getShaderPass(unsigned int index) const;
 			ShaderBinding *getShaderBinding(unsigned int index) const;
 			Shader *getShader(unsigned int index) const;
-        
+		
 			void loadMaterial(const String& fileName);
 			
 			void setName(const String &name);

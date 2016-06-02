@@ -38,7 +38,7 @@ namespace Polycode {
 	class Shader;
 	class String;
 	class ShaderProgram;
-    class ResourcePool;
+	class ResourcePool;
 	
 	/**
 	* Manages loading and reloading of materials, textures and shaders. This class should be only accessed from the CoreServices singleton.
@@ -63,8 +63,8 @@ namespace Polycode {
 		
 			Texture *getTextureByResourcePath(const String& resourcePath) const;
 			ShaderProgram *createProgramFromFile(String programPath);			
-            void loadMaterialLibraryIntoPool(ResourcePool *pool, const String &materialFile);
-        
+			void loadMaterialLibraryIntoPool(ResourcePool *pool, const String &materialFile);
+		
 			// cubemaps
 		
 			Cubemap *cubemapFromXMLNode(TiXmlNode *node);
@@ -81,10 +81,10 @@ namespace Polycode {
 			std::vector<Material*> loadMaterialsFromFile(ResourcePool *resourcePool, const String &fileName);
 			std::vector<Shader*> loadShadersFromFile(ResourcePool *resourcePool, String fileName);
 			std::vector<Cubemap*> loadCubemapsFromFile(String fileName);
-        
-            void setAnisotropyAmount(unsigned int anisotropy);
-            void setTextureFilteringMode(unsigned int textureFilteringMode);
-            unsigned int getTextureFilteringMode();
+		
+			void setAnisotropyAmount(unsigned int anisotropy);
+			void setTextureFilteringMode(unsigned int textureFilteringMode);
+			unsigned int getTextureFilteringMode();
 						
 			void addMaterial(Material *material);
 			void addShader(Shader *shader);
@@ -98,10 +98,10 @@ namespace Polycode {
 			bool keepTextureData;
 			
 		private:
-        
-            unsigned int textureFilteringMode;
-            unsigned int anisotropyAmount;
-        
+		
+			unsigned int textureFilteringMode;
+			unsigned int anisotropyAmount;
+		
 			std::vector<Texture*> textures;
 			std::vector<Material*> materials;
 			std::vector<Shader*> shaders;

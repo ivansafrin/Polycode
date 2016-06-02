@@ -38,7 +38,7 @@ namespace Polycode {
 	class ResourceManager;
 	class SoundManager;
 	class Core;
-    class CoreInput;
+	class CoreInput;
 	class CoreMutex;
 	class Logger;
 	
@@ -55,8 +55,8 @@ namespace Polycode {
 			static void setInstance(CoreServices *_instance);
 			static CoreMutex *getRenderMutex();
 			
-            static void createInstance();
-        
+			static void createInstance();
+		
 			void setRenderer(Renderer *renderer);
 
 			/**
@@ -67,24 +67,24 @@ namespace Polycode {
 			Renderer *getRenderer();
 			
 			void Update(int elapsed);
-            void fixedUpdate();
+			void fixedUpdate();
 			void Render(const Polycode::Rectangle &viewport);
 			
 			void setCore(Core *core);
-        
+		
 			/**
 			* Returns the core. 
 			* @return The core.
 			* @see Core
 			*/																														
 			Core *getCore();
-        
-            /**
-             * Returns the core input.
-             * @return Core input.
-             * @see CoreInput
-             */
-            CoreInput *getInput();
+		
+			/**
+			 * Returns the core input.
+			 * @return Core input.
+			 * @see CoreInput
+			 */
+			CoreInput *getInput();
 			
 			void handleEvent(Event *event);
 
@@ -169,8 +169,8 @@ namespace Polycode {
 			SoundManager *soundManager;
 			Renderer *renderer;
 	};
-    
+	
 
 	_PolyExport CoreServices *Services();
-    
+	
 }

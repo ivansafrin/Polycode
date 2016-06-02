@@ -47,9 +47,9 @@ typedef unsigned int PolyRendererIndexType;
 	#endif
 	// Prevent windows.h includes from generating min/max macros that
 	// clash with the templates in <algorithm>
-    #ifndef NOMINMAX
+	#ifndef NOMINMAX
 	#define NOMINMAX
-    #endif
+	#endif
 #endif
 #include <stdint.h>
  
@@ -58,7 +58,7 @@ typedef unsigned int PolyRendererIndexType;
 #endif
  
 #define PI 3.14159265
-#define RADIANS	57.2957795
+#define RADIANS 57.2957795
 
 #define TODEGREES 57.2957795
 #define TORADIANS 0.0174532925
@@ -66,22 +66,22 @@ typedef unsigned int PolyRendererIndexType;
 //#define COMPILE_SDL_CORE		1
 
 #define PLATFORM_WINDOWS  1
-#define PLATFORM_MAC      2
-#define PLATFORM_UNIX     3
-#define PLATFORM_IOS      4
+#define PLATFORM_MAC	  2
+#define PLATFORM_UNIX	  3
+#define PLATFORM_IOS	  4
 
-#if defined(_WINDOWS) || defined(WINAPI_FAMILY)  || defined(WIN32)
+#if defined(_WINDOWS) || defined(WINAPI_FAMILY)	 || defined(WIN32)
 	#define PLATFORM PLATFORM_WINDOWS
 #elif __APPLE__ && __MACH__
-    #ifndef CLDOC
-	    #include <TargetConditionals.h>
-    #endif
-    #if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
-        #define PLATFORM PLATFORM_IOS
-        #define STRICT_OPENGLES2 1
-    #else
-        #define PLATFORM PLATFORM_MAC
-    #endif
+	#ifndef CLDOC
+		#include <TargetConditionals.h>
+	#endif
+	#if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
+		#define PLATFORM PLATFORM_IOS
+		#define STRICT_OPENGLES2 1
+	#else
+		#define PLATFORM PLATFORM_MAC
+	#endif
 #else
 	#include <cstddef>
 	#define PLATFORM PLATFORM_UNIX
@@ -115,7 +115,7 @@ inline int round(Number x) {
 
 inline Number clampf(Number x, Number a, Number b)
 {
-    return x < a ? a : (x > b ? b : x);
+	return x < a ? a : (x > b ? b : x);
 }
 
 #ifndef MIN
@@ -126,7 +126,7 @@ inline Number clampf(Number x, Number a, Number b)
 #endif
 
 #if PLATFORM == PLATFORM_IOS
-//    #define BGRA_TEXTURE_FORMAT
+//	  #define BGRA_TEXTURE_FORMAT
 #endif
 
 // Special flag read by create_lua_library parser, suppresses Lua bindings for item.

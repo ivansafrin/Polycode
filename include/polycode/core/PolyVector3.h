@@ -99,7 +99,7 @@ namespace Polycode {
 				return operator*(1/val);
 			}
 
-			inline Vector3& operator = ( const Vector3& v2)  {
+			inline Vector3& operator = ( const Vector3& v2)	 {
 				x = v2.x;
 				y = v2.y;
 				z = v2.z;
@@ -123,10 +123,10 @@ namespace Polycode {
 			inline Vector3 operator + ( const Vector3& v2 ) const {
 				return Vector3(x + v2.x, y + v2.y, z + v2.z);
 			}
-        
-            inline Vector3 operator - () {
-                return Vector3(-x, -y, -z);
-            }
+		
+			inline Vector3 operator - () {
+				return Vector3(-x, -y, -z);
+			}
 
 			inline bool operator == ( const Vector3& v2)  {
 				return (v2.x == x && v2.y == y && v2.z == z);

@@ -38,7 +38,7 @@ PeerConnection::~PeerConnection() {
 
 }
 
-void PeerConnection::ackPackets(unsigned int ack) {	
+void PeerConnection::ackPackets(unsigned int ack) { 
 	std::vector<SentPacketEntry>::iterator it;	
 	for(it = reliablePacketQueue.begin(); it != reliablePacketQueue.end();) {
 		if((*it).packet->header.sequence == ack) {
@@ -115,7 +115,7 @@ void Peer::setReliableRetransmissionInterval(int interval) {
 	reliableRetransmissionInverval = interval;
 }
 
-Packet *Peer::createPacket(const Address &target, char *data, unsigned int size, unsigned short type) {	
+Packet *Peer::createPacket(const Address &target, char *data, unsigned int size, unsigned short type) { 
 	PeerConnection *connection = getPeerConnection(target);
 	if(!connection)
 		connection = addPeerConnection(target);
@@ -149,11 +149,11 @@ Packet *Peer::createPacket(const Address &target, char *data, unsigned int size,
 }
 
 void Peer::sendReliableData(const Address &target, char *data, unsigned int size, unsigned short type) {	
-	PeerConnection *connection = getPeerConnection(target);	
+	PeerConnection *connection = getPeerConnection(target); 
 	if(!connection)
-		connection = addPeerConnection(target);	
+		connection = addPeerConnection(target); 
 	Packet *packet = createPacket(target, data, size, type);	
-	sendPacket(target, packet);	
+	sendPacket(target, packet); 
 
 	SentPacketEntry entry;
 	entry.packet = packet;
@@ -181,7 +181,7 @@ void Peer::sendData(const Address &target, char *data, unsigned int size, unsign
 }
 
 void Peer::sendPacket(const Address &target, Packet *packet) {
-	unsigned int packetSize = packet->header.size + sizeof(packet->header);	
+	unsigned int packetSize = packet->header.size + sizeof(packet->header); 
 	socket->sendData(target, (char*)packet, packetSize);	
 }
 
@@ -192,10 +192,10 @@ bool Peer::checkPacketAcks(PeerConnection *connection, Packet *packet) {
 		return false;
 	}
 	
-	connection->receivedPacketQueue.push_back(packet->header.sequence);	
+	connection->receivedPacketQueue.push_back(packet->header.sequence); 
 	connection->receivedPacketQueue.pop_front();
 	
-	connection->ackPacketsWithBitfield(packet->header.ack, packet->header.ackBitfield);	
+	connection->ackPacketsWithBitfield(packet->header.ack, packet->header.ackBitfield); 
 	return true;
 }
 

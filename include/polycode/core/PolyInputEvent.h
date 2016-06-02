@@ -113,7 +113,7 @@ namespace Polycode {
 		PolyKEY key;
 		
 		
-        wchar_t getCharCode();
+		wchar_t getCharCode();
 		
 		int keyCode() { return key; }
 		
@@ -132,8 +132,8 @@ namespace Polycode {
 		unsigned int joystickButton;
 		unsigned int joystickAxis;
 		unsigned int joystickIndex;
-        
-        Number hitDistance;
+		
+		Number hitDistance;
 		
 		protected:
 		

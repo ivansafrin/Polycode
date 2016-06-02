@@ -73,7 +73,7 @@ namespace Polycode {
 		/* 
 		 Skip uppercase letters
 		 */
-		KEY_LEFTBRACKET	= 91,
+		KEY_LEFTBRACKET = 91,
 		KEY_BACKSLASH		= 92,
 		KEY_RIGHTBRACKET	= 93,
 		KEY_CARET		= 94,
@@ -219,7 +219,7 @@ namespace Polycode {
 		KEY_KP9		= 265,
 		KEY_KP_PERIOD		= 266,
 		KEY_KP_DIVIDE		= 267,
-		KEY_KP_MULTIPLY	= 268,
+		KEY_KP_MULTIPLY = 268,
 		KEY_KP_MINUS		= 269,
 		KEY_KP_PLUS		= 270,
 		KEY_KP_ENTER		= 271,

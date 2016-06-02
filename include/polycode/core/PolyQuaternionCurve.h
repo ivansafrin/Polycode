@@ -34,7 +34,7 @@ namespace Polycode {
 		Quaternion q1;
 		Quaternion q2;
 		Quaternion q3;
-        Number time;
+		Number time;
 	};	
 
 	class _PolyExport QuaternionCurve : public PolyBase {

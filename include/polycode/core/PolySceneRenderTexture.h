@@ -29,9 +29,9 @@ namespace Polycode {
 	class Scene;
 	class Camera;
 	class Texture;
-    class Renderer;
-    class RenderBuffer;
-    class Image;
+	class Renderer;
+	class RenderBuffer;
+	class Image;
 	
 	/**
 	* Renders scenes to texture. This class automatically renders a scene to a texture every frame that you can use to texture anything else. You can set a scene to virtual (see Scene for details) to only render a scene to a texture if you need to. This class automatically adds itself to the render cycle, so you do not need to do anything manual every frame.
@@ -46,7 +46,7 @@ namespace Polycode {
 			* @param renderHeight Vertical size of the render texture.
 			* @param floatingPoint Pass true if you want fp16 target renders			
 			*/
-            SceneRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight, bool floatingPoint);
+			SceneRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight, bool floatingPoint);
 			virtual ~SceneRenderTexture();
 						
 			/**
@@ -56,10 +56,10 @@ namespace Polycode {
 			
 			Texture *getFilterColorBufferTexture();
 			Texture *getFilterZBufferTexture();
-        
-            void Render();
-        
-            Image *saveToImage();
+		
+			void Render();
+		
+			Image *saveToImage();
 
 			void resizeRenderTexture(int newWidth, int newHeight);
 			/**
@@ -75,12 +75,12 @@ namespace Polycode {
 			bool enabled;
 			
 		protected:
-        
-            bool floatingPoint;
-        
-            Renderer *renderer;
-            RenderBuffer *targetFramebuffer;
-        
+		
+			bool floatingPoint;
+		
+			Renderer *renderer;
+			RenderBuffer *targetFramebuffer;
+		
 			Scene *targetScene;
 			Camera *targetCamera;
 	};

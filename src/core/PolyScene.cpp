@@ -48,30 +48,30 @@ Scene::Scene(int sceneType, bool virtualScene) : EventDispatcher() {
 
 void Scene::initScene(int sceneType, bool virtualScene) {
 
-    rootEntity.setContainerScene(this);
+	rootEntity.setContainerScene(this);
 	core = CoreServices::getInstance()->getCore();
 	this->sceneType = sceneType;
 	defaultCamera = new Camera(this);
 	activeCamera = defaultCamera;
-    overrideMaterial = NULL;
+	overrideMaterial = NULL;
 	enabled = true;
 	isSceneVirtual = virtualScene;	
 	hasLightmaps = false;
 	clearColor.setColor(0.13f,0.13f,0.13f,1.0f); 
-	ambientColor.setColor(0.0,0.0,0.0,1.0);	
+	ambientColor.setColor(0.0,0.0,0.0,1.0); 
 	useClearColor = false;
 	useClearDepth = true;
 	ownsChildren = false;
-    remapMouse = false;
-    _doVisibilityChecking = true;
-    constrainPickingToViewport = true;
+	remapMouse = false;
+	_doVisibilityChecking = true;
+	constrainPickingToViewport = true;
 	renderer = CoreServices::getInstance()->getRenderer();
 	rootEntity.setRenderer(renderer);
-    CoreServices::getInstance()->getSceneManager()->addScene(this);
+	CoreServices::getInstance()->getSceneManager()->addScene(this);
 	
-    setSceneType(sceneType);
+	setSceneType(sceneType);
 	
-    core->addEventListener(this, Core::EVENT_CORE_RESIZE);
+	core->addEventListener(this, Core::EVENT_CORE_RESIZE);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
@@ -80,30 +80,30 @@ void Scene::initScene(int sceneType, bool virtualScene) {
 }
 
 void Scene::setOverrideMaterial(Material *material) {
-    overrideMaterial = material;
+	overrideMaterial = material;
 }
 
 void Scene::setSceneType(int newType) {
-    sceneType = newType;
+	sceneType = newType;
 	switch(sceneType) {
 		case SCENE_2D:
 			defaultCamera->setClippingPlanes(-100.0, 100.0);
 			defaultCamera->setOrthoMode(true);
-            defaultCamera->setOrthoSize(1.0, 1.0);
-            break;
+			defaultCamera->setOrthoSize(1.0, 1.0);
+			break;
 		case SCENE_2D_TOPLEFT:
 			defaultCamera->setClippingPlanes(-100.0, 100.0);
 			defaultCamera->setOrthoMode(true);
-            defaultCamera->setOrthoSizeMode(Camera::ORTHO_SIZE_VIEWPORT);
+			defaultCamera->setOrthoSizeMode(Camera::ORTHO_SIZE_VIEWPORT);
 			defaultCamera->topLeftOrtho = true;
 			rootEntity.setInverseY(true);
-            rootEntity.setPositionY(-CoreServices::getInstance()->getCore()->getYRes());
-            break;
+			rootEntity.setPositionY(-CoreServices::getInstance()->getCore()->getYRes());
+			break;
 		case SCENE_3D:
 			defaultCamera->setClippingPlanes(1.0, 1000.0);
-            break;		
+			break;		
 	}
-    
+	
 }
 
 void Scene::setActiveCamera(Camera *camera) {
@@ -131,18 +131,18 @@ bool Scene::isEnabled() {
 }
 
 void Scene::Update() {
-    rootEntity.updateEntityMatrix();
+	rootEntity.updateEntityMatrix();
 	rootEntity.doUpdates();
 }
 
 void Scene::fixedUpdate() {
-    rootEntity.updateEntityMatrix();
+	rootEntity.updateEntityMatrix();
 	rootEntity.doFixedUpdates();
 }
 
 Scene::~Scene() {
 	core->getInput()->removeAllHandlersForListener(this);
-    core->removeAllHandlersForListener(this);
+	core->removeAllHandlersForListener(this);
 	CoreServices::getInstance()->getSceneManager()->removeScene(this);	
 	delete defaultCamera;
 }
@@ -178,150 +178,150 @@ Camera *Scene::getDefaultCamera() {
 }
 
 void Scene::doVisibilityChecking(bool val) {
-    _doVisibilityChecking = val;
-    if(!_doVisibilityChecking) {
-        setEntityVisibilityBool(&rootEntity, true);
-    }
+	_doVisibilityChecking = val;
+	if(!_doVisibilityChecking) {
+		setEntityVisibilityBool(&rootEntity, true);
+	}
 }
 
 bool Scene::doesVisibilityChecking() {
-    return _doVisibilityChecking;
+	return _doVisibilityChecking;
 }
 
 void Scene::setEntityVisibilityBool(Entity *entity, bool val) {
-    entity->rendererVis = val;
-    for(int i=0; i < entity->getNumChildren(); i++) {
-        setEntityVisibilityBool(entity->getChildAtIndex(i), val);
-    }
+	entity->rendererVis = val;
+	for(int i=0; i < entity->getNumChildren(); i++) {
+		setEntityVisibilityBool(entity->getChildAtIndex(i), val);
+	}
 }
 
 void Scene::setEntityVisibility(Entity *entity, Camera *camera) {
-    if(camera->frustumCulling) {
-        entity->recalculateAABB();
-        entity->rendererVis = camera->isAABBInFrustum(entity->getWorldAABB());
-    } else {
-        entity->rendererVis = true;
-    }
-    for(int i=0; i < entity->getNumChildren(); i++) {
-        setEntityVisibility(entity->getChildAtIndex(i), camera);
-    }
+	if(camera->frustumCulling) {
+		entity->recalculateAABB();
+		entity->rendererVis = camera->isAABBInFrustum(entity->getWorldAABB());
+	} else {
+		entity->rendererVis = true;
+	}
+	for(int i=0; i < entity->getNumChildren(); i++) {
+		setEntityVisibility(entity->getChildAtIndex(i), camera);
+	}
 }
 
 void Scene::Render(Camera *targetCamera, RenderBuffer *targetFramebuffer, Material *overrideMaterial, bool sendLights) {
-    if(!targetCamera && !activeCamera)
-        return;
-    
-    if(!targetCamera)
-        targetCamera = activeCamera;
-    
-    GPUDrawBuffer *drawBuffer = new GPUDrawBuffer();
-    drawBuffer->clearColor = clearColor;
-    drawBuffer->clearColorBuffer = useClearColor;
-    drawBuffer->clearDepthBuffer = useClearDepth;
-    drawBuffer->targetFramebuffer = targetFramebuffer;
-    drawBuffer->viewport = targetCamera->getViewport();
-    
-    if(overrideMaterial) {
-        drawBuffer->globalMaterial = overrideMaterial;
-    } else {
-        drawBuffer->globalMaterial = this->overrideMaterial;
-    }
-    
+	if(!targetCamera && !activeCamera)
+		return;
+	
+	if(!targetCamera)
+		targetCamera = activeCamera;
+	
+	GPUDrawBuffer *drawBuffer = new GPUDrawBuffer();
+	drawBuffer->clearColor = clearColor;
+	drawBuffer->clearColorBuffer = useClearColor;
+	drawBuffer->clearDepthBuffer = useClearDepth;
+	drawBuffer->targetFramebuffer = targetFramebuffer;
+	drawBuffer->viewport = targetCamera->getViewport();
+	
+	if(overrideMaterial) {
+		drawBuffer->globalMaterial = overrideMaterial;
+	} else {
+		drawBuffer->globalMaterial = this->overrideMaterial;
+	}
+	
 	Matrix4 textureMatrix;
 	targetCamera->rebuildTransformMatrix();
-    
-    drawBuffer->projectionMatrix = targetCamera->createProjectionMatrix();
-    drawBuffer->viewMatrix = targetCamera->getConcatenatedMatrix().Inverse();
-    drawBuffer->cameraMatrix = targetCamera->getConcatenatedMatrix();
 	
-    if(sendLights) {
-        for(int i=0; i < lights.size(); i++) {
-            SceneLight *light = lights[i];
-            if(!light->enabled)
-                continue;
-                
-            Vector3 direction;
-            Vector3 position;
-            
-            direction.x = 0;
-            direction.y = 0.0;
-            direction.z = -1.0;
-            direction.Normalize();
-            
-            direction = light->getConcatenatedMatrix().rotateVector(direction);
-            direction = drawBuffer->viewMatrix.rotateVector(direction);
-            
-            if(light->areShadowsEnabled()) {
-                if(light->getType() == SceneLight::SPOT_LIGHT) {
-                    light->renderDepthMap(this);
-                }
-            }
-            
-            position = light->getPosition();
-            if(light->getParentEntity() != NULL) {
-                position = light->getParentEntity()->getConcatenatedMatrix() * position;
-            }
-            position = drawBuffer->viewMatrix * position;
-            
-            drawBuffer->lights.push_back(light->getLightInfo());
-            drawBuffer->lights[drawBuffer->lights.size()-1].position = position;
-            drawBuffer->lights[drawBuffer->lights.size()-1].direction = direction;
-        }
-    }
-    
-    if(_doVisibilityChecking) {
-        targetCamera->buildFrustumPlanes();
-        setEntityVisibility(&rootEntity, targetCamera);
-    }
+	drawBuffer->projectionMatrix = targetCamera->createProjectionMatrix();
+	drawBuffer->viewMatrix = targetCamera->getConcatenatedMatrix().Inverse();
+	drawBuffer->cameraMatrix = targetCamera->getConcatenatedMatrix();
+	
+	if(sendLights) {
+		for(int i=0; i < lights.size(); i++) {
+			SceneLight *light = lights[i];
+			if(!light->enabled)
+				continue;
+				
+			Vector3 direction;
+			Vector3 position;
+			
+			direction.x = 0;
+			direction.y = 0.0;
+			direction.z = -1.0;
+			direction.Normalize();
+			
+			direction = light->getConcatenatedMatrix().rotateVector(direction);
+			direction = drawBuffer->viewMatrix.rotateVector(direction);
+			
+			if(light->areShadowsEnabled()) {
+				if(light->getType() == SceneLight::SPOT_LIGHT) {
+					light->renderDepthMap(this);
+				}
+			}
+			
+			position = light->getPosition();
+			if(light->getParentEntity() != NULL) {
+				position = light->getParentEntity()->getConcatenatedMatrix() * position;
+			}
+			position = drawBuffer->viewMatrix * position;
+			
+			drawBuffer->lights.push_back(light->getLightInfo());
+			drawBuffer->lights[drawBuffer->lights.size()-1].position = position;
+			drawBuffer->lights[drawBuffer->lights.size()-1].direction = direction;
+		}
+	}
+	
+	if(_doVisibilityChecking) {
+		targetCamera->buildFrustumPlanes();
+		setEntityVisibility(&rootEntity, targetCamera);
+	}
 
 	rootEntity.transformAndRender(drawBuffer, NULL);
-    renderer->processDrawBuffer(drawBuffer);
+	renderer->processDrawBuffer(drawBuffer);
 }
 
 Ray Scene::projectRayFromCameraAndViewportCoordinate(Camera *camera, Vector2 coordinate) {
 
 	Polycode::Rectangle viewport = camera->getViewport();
-    
-    if(remapMouse) {
-        viewport.x = sceneMouseRect.x * renderer->getBackingResolutionScaleX();
-        viewport.y = sceneMouseRect.y * renderer->getBackingResolutionScaleY();
-    }
-    
-    Vector3 dir =  camera->projectRayFrom2DCoordinate(Vector2(coordinate.x *  renderer->getBackingResolutionScaleX(), coordinate.y  * renderer->getBackingResolutionScaleY()), viewport);
+	
+	if(remapMouse) {
+		viewport.x = sceneMouseRect.x * renderer->getBackingResolutionScaleX();
+		viewport.y = sceneMouseRect.y * renderer->getBackingResolutionScaleY();
+	}
+	
+	Vector3 dir =  camera->projectRayFrom2DCoordinate(Vector2(coordinate.x *  renderer->getBackingResolutionScaleX(), coordinate.y	* renderer->getBackingResolutionScaleY()), viewport);
 	Vector3 pos;
-    
+	
 	switch(sceneType) {
 		case SCENE_2D:
 		{
-            
-            Number orthoSizeX = camera->getOrthoSizeX();
-            Number orthoSizeY = camera->getOrthoSizeY();
+			
+			Number orthoSizeX = camera->getOrthoSizeX();
+			Number orthoSizeY = camera->getOrthoSizeY();
 
-            switch(camera->getProjectionMode()) {
-                case Camera::ORTHO_SIZE_LOCK_HEIGHT:
-                    orthoSizeX = orthoSizeY * (viewport.w/viewport.h);
-                    break;
-                case Camera::ORTHO_SIZE_LOCK_WIDTH:
-                    orthoSizeY = orthoSizeX * (viewport.h/viewport.w);
-                    break;
-                case Camera::ORTHO_SIZE_VIEWPORT:
-                    orthoSizeX = camera->getViewport().x;
-                    orthoSizeY = camera->getViewport().y;
-                break;
-            }
-            
-            Vector2 remappedMouse = Vector2(coordinate.x, coordinate.y);
-            Vector2 screenSize = Vector2(core->getXRes(), core->getYRes());
-            if(remapMouse) {
-                remappedMouse.x = coordinate.x - sceneMouseRect.x;
-                remappedMouse.y = coordinate.y - sceneMouseRect.y;
-                screenSize = Vector2(sceneMouseRect.w, sceneMouseRect.h);
-            }
-            
+			switch(camera->getProjectionMode()) {
+				case Camera::ORTHO_SIZE_LOCK_HEIGHT:
+					orthoSizeX = orthoSizeY * (viewport.w/viewport.h);
+					break;
+				case Camera::ORTHO_SIZE_LOCK_WIDTH:
+					orthoSizeY = orthoSizeX * (viewport.h/viewport.w);
+					break;
+				case Camera::ORTHO_SIZE_VIEWPORT:
+					orthoSizeX = camera->getViewport().x;
+					orthoSizeY = camera->getViewport().y;
+				break;
+			}
+			
+			Vector2 remappedMouse = Vector2(coordinate.x, coordinate.y);
+			Vector2 screenSize = Vector2(core->getXRes(), core->getYRes());
+			if(remapMouse) {
+				remappedMouse.x = coordinate.x - sceneMouseRect.x;
+				remappedMouse.y = coordinate.y - sceneMouseRect.y;
+				screenSize = Vector2(sceneMouseRect.w, sceneMouseRect.h);
+			}
+			
 			pos = Vector3(((remappedMouse.x/screenSize.x)*orthoSizeX) - (orthoSizeX*0.5), (((screenSize.y-remappedMouse.y)/screenSize.y)*orthoSizeY) - (orthoSizeY*0.5), 0.0);
-            
+			
 			pos = camera->getConcatenatedMatrix() * pos;
-            
+			
 		}
 		break;
 		case SCENE_2D_TOPLEFT:
@@ -338,25 +338,25 @@ Ray Scene::projectRayFromCameraAndViewportCoordinate(Camera *camera, Vector2 coo
 
 
 void Scene::handleEvent(Event *event) {
-    if(event->getDispatcher() == core) {
-        if(sceneType == SCENE_2D_TOPLEFT) {
-            rootEntity.setPositionY(-CoreServices::getInstance()->getCore()->getYRes());
-        }
-    } else if(event->getDispatcher() == core->getInput() && rootEntity.processInputEvents) {
+	if(event->getDispatcher() == core) {
+		if(sceneType == SCENE_2D_TOPLEFT) {
+			rootEntity.setPositionY(-CoreServices::getInstance()->getCore()->getYRes());
+		}
+	} else if(event->getDispatcher() == core->getInput() && rootEntity.processInputEvents) {
 		InputEvent *inputEvent = (InputEvent*) event;
-        
-        if(constrainPickingToViewport) {
-            Polycode::Rectangle v = activeCamera->getViewport();
-            if(remapMouse) {
-                v.x = sceneMouseRect.x;
-                v.y = sceneMouseRect.y;
-            }
-            
-            if(inputEvent->mousePosition.x < v.x || inputEvent->mousePosition.x > v.x+(v.w / renderer->getBackingResolutionScaleX()) || inputEvent->mousePosition.y < v.y || inputEvent->mousePosition.y > v.y + (v.h/renderer->getBackingResolutionScaleY())) {
-                    return;
-            }
-        }
-        
+		
+		if(constrainPickingToViewport) {
+			Polycode::Rectangle v = activeCamera->getViewport();
+			if(remapMouse) {
+				v.x = sceneMouseRect.x;
+				v.y = sceneMouseRect.y;
+			}
+			
+			if(inputEvent->mousePosition.x < v.x || inputEvent->mousePosition.x > v.x+(v.w / renderer->getBackingResolutionScaleX()) || inputEvent->mousePosition.y < v.y || inputEvent->mousePosition.y > v.y + (v.h/renderer->getBackingResolutionScaleY())) {
+					return;
+			}
+		}
+		
 		Ray ray = projectRayFromCameraAndViewportCoordinate(activeCamera, inputEvent->mousePosition);
 		
 		switch(inputEvent->getEventCode()) {
@@ -373,7 +373,7 @@ void Scene::handleEvent(Event *event) {
 				rootEntity.onMouseWheelUp(ray, inputEvent->timestamp);
 			break;
 			case InputEvent::EVENT_MOUSEWHEEL_DOWN:
-				rootEntity.onMouseWheelDown(ray,inputEvent->timestamp);	
+				rootEntity.onMouseWheelDown(ray,inputEvent->timestamp); 
 			break;	
 		}
 	}

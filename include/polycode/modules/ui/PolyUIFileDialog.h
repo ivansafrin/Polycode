@@ -102,7 +102,7 @@ namespace Polycode {
 			 * Get the selected entry.
 			 *
 			 * @return Full path of the selected entry
-			 * 		   (base path + relative path to top level directory)
+			 *		   (base path + relative path to top level directory)
 			 */
 			String getSelection();
 

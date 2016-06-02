@@ -48,8 +48,8 @@ using namespace Polycode;
 	
 	int glSizeX;
 	int glSizeY;	
-    
-    BOOL viewReady;
+	
+	BOOL viewReady;
 	
 }
 

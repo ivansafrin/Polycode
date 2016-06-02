@@ -59,8 +59,8 @@ namespace Polycode {
 			
 			UIBox *bgRect;
 			UIImage *gripRect;
-        
-            Number sidePadding;
+		
+			Number sidePadding;
 			
 			Number sliderValue;
 			Number startValue;

@@ -63,34 +63,34 @@ void QuaternionCurve::generatePointsFromCurves(BezierCurve *wCurve, BezierCurve 
 Quaternion QuaternionCurve::interpolate(Number t, bool useShortestPath)
 {
 	t = std::min(std::max(t, Number(0.0)), Number(1.0));
-    Number fSeg = t * (tPoints.size() - 1);
-    unsigned int segIdx = (unsigned int)fSeg;
-    t = fSeg - segIdx;
+	Number fSeg = t * (tPoints.size() - 1);
+	unsigned int segIdx = (unsigned int)fSeg;
+	t = fSeg - segIdx;
 
-    return interpolate(segIdx, t, useShortestPath);
+	return interpolate(segIdx, t, useShortestPath);
 }
 
 Quaternion QuaternionCurve::interpolate(unsigned int fromIndex, Number t, bool useShortestPath) {
-    if ((fromIndex + 1) == tPoints.size() && tPoints[fromIndex].q2 != tPoints[0].q2) {
-        return  tPoints[fromIndex].q2;
+	if ((fromIndex + 1) == tPoints.size() && tPoints[fromIndex].q2 != tPoints[0].q2) {
+		return	tPoints[fromIndex].q2;
 
-    }
-    if (t == 0.0f) {
-        return tPoints[fromIndex].q2;
-    }
-    else if(t == 1.0f) {
-        return tPoints[fromIndex + 1].q2;
-    }
-    
-    Quaternion &p = tPoints[fromIndex].q2;
-    Quaternion &q = tPoints[fromIndex+1].q2;
-    Quaternion &a = tPoints[fromIndex].q3;
-    Quaternion &b = tPoints[fromIndex+1].q1;		
-    
-    if ((fromIndex + 1) == tPoints.size() && tPoints[fromIndex].q2 == tPoints[0].q2) {
-        q = tPoints[1].q2;
-        b = tPoints[1].q1;					
-    } 
+	}
+	if (t == 0.0f) {
+		return tPoints[fromIndex].q2;
+	}
+	else if(t == 1.0f) {
+		return tPoints[fromIndex + 1].q2;
+	}
+	
+	Quaternion &p = tPoints[fromIndex].q2;
+	Quaternion &q = tPoints[fromIndex+1].q2;
+	Quaternion &a = tPoints[fromIndex].q3;
+	Quaternion &b = tPoints[fromIndex+1].q1;		
+	
+	if ((fromIndex + 1) == tPoints.size() && tPoints[fromIndex].q2 == tPoints[0].q2) {
+		q = tPoints[1].q2;
+		b = tPoints[1].q1;					
+	} 
 
-    return Quaternion::Squad(t, p, a, b, q, useShortestPath);
+	return Quaternion::Squad(t, p, a, b, q, useShortestPath);
 }

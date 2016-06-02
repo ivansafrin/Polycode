@@ -28,39 +28,39 @@
 using namespace Polycode;
 
 class PolycodeOVR {
-    public:
-        PolycodeOVR(Scene *parentScene, Number scale);
-        ~PolycodeOVR();
-    
-        void initOVR();
-    
-        Texture *getLeftTexture();
-        Texture *getRightTexture();
-    
-        void Update();
-        Entity *getCameraRoot();
-        Entity *getCameraBase();
-    
-        void setEyeDistanceScale(Number scale);
-        Number getEyeDistanceScale();
-    protected:
-    
-        float    interpupilaryDistance;
-        Number eyeDistanceScale;
-    
-        OVR::Ptr<OVR::DeviceManager> pManager;
-        OVR::Ptr<OVR::HMDDevice>     pHMD;
-        OVR::Ptr<OVR::SensorDevice> pSensor;
-        OVR::SensorFusion *SFusion;
-    
-        Entity *cameraRoot;
-        Entity *cameraBase;
-    
-        SceneRenderTexture *leftTexture;
-        SceneRenderTexture *rightTexture;
-    
-        Scene *parentScene; 
-    
-        Camera *leftCamera;
-        Camera *rightCamera;
+	public:
+		PolycodeOVR(Scene *parentScene, Number scale);
+		~PolycodeOVR();
+	
+		void initOVR();
+	
+		Texture *getLeftTexture();
+		Texture *getRightTexture();
+	
+		void Update();
+		Entity *getCameraRoot();
+		Entity *getCameraBase();
+	
+		void setEyeDistanceScale(Number scale);
+		Number getEyeDistanceScale();
+	protected:
+	
+		float	 interpupilaryDistance;
+		Number eyeDistanceScale;
+	
+		OVR::Ptr<OVR::DeviceManager> pManager;
+		OVR::Ptr<OVR::HMDDevice>	 pHMD;
+		OVR::Ptr<OVR::SensorDevice> pSensor;
+		OVR::SensorFusion *SFusion;
+	
+		Entity *cameraRoot;
+		Entity *cameraBase;
+	
+		SceneRenderTexture *leftTexture;
+		SceneRenderTexture *rightTexture;
+	
+		Scene *parentScene; 
+	
+		Camera *leftCamera;
+		Camera *rightCamera;
 };

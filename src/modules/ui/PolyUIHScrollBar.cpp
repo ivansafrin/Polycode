@@ -57,7 +57,7 @@ UIHScrollBar::UIHScrollBar(Number width, Number height, Number initialRatio) : U
 	if(initialRatio > 1)
 		initialRatio = 1;
 	
-	scrollHandleWidth = width*initialRatio;	
+	scrollHandleWidth = width*initialRatio; 
 	
 	if(scrollHandleWidth < minHandleSize)
 		scrollHandleWidth = minHandleSize;

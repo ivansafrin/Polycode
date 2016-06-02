@@ -43,13 +43,13 @@ InputEvent::InputEvent(PolyKEY key, wchar_t charCode, int timestamp) : Event() {
 	this->timestamp = timestamp;
 	eventType = "InputEvent";	
 }
-    
+	
 wchar_t InputEvent::getCharCode() {
-    return charCode;
+	return charCode;
 }
 
 /*
-InputEvent::InputEvent(PolyKEY key, int timestamp)  : Event() {
+InputEvent::InputEvent(PolyKEY key, int timestamp)	: Event() {
 	this->key = key;
 	this->timestamp = timestamp;	
 }

@@ -57,7 +57,7 @@ bool PolycodeProject::loadProjectFromFile() {
 	
 	if(!configFile.root.readString("textureFiltering", &(data.filteringMode))) {
 		data.filteringMode = "linear";
-		configFile.root.addChild("textureFiltering", String("linear"));	
+		configFile.root.addChild("textureFiltering", String("linear")); 
 	}
 	
 
@@ -91,8 +91,8 @@ bool PolycodeProject::loadProjectFromFile() {
 			if(module->type != ObjectEntry::STRING_ENTRY) continue;
 			
 			data.modules.push_back(module->stringVal);
-            
-            // NOCMAKE_TODO:
+			
+			// NOCMAKE_TODO:
 			//CoreServices::getInstance()->getResourceManager()->addArchive("Standalone/Modules/"+module->stringVal+"/API");
 			
 		}

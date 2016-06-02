@@ -56,9 +56,9 @@ namespace Polycode {
 		
 		ServerClientEvent *handlePacket(Packet *packet);
 		
-		unsigned int    clientID;
+		unsigned int	clientID;
 		PeerConnection *connection;
-        bool clientReady;
+		bool clientReady;
 	};
 		
 	class _PolyExport ServerEvent : public Event {
@@ -99,14 +99,14 @@ namespace Polycode {
 			~Server();
 		
 			void handlePacket(Packet *packet, PeerConnection *connection);
-			void handleEvent(Event *event);	
+			void handleEvent(Event *event); 
 			void handlePeerConnection(PeerConnection *connection);
 			void DisconnectClient(ServerClient *client);
 
 			/**
 			* Get a connected client from its associated peer connection, if any.
 			* @param connection The PeerConnection through which we're communicating 
-			*                   with the client to obtain.
+			*					with the client to obtain.
 			* @return The connected client or NULL if doesn't exist.
 			*/
 			ServerClient *getConnectedClient(PeerConnection *connection);

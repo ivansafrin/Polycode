@@ -30,9 +30,9 @@ using namespace Polycode;
 
 typedef struct {
 	unsigned int lineNumber;
-	char errorMessage[256];	
+	char errorMessage[256]; 
 	char fileName[256];
-	unsigned int backTraceSize;	
+	unsigned int backTraceSize; 
 } RemoteErrorData;
 
 typedef struct {
@@ -53,7 +53,7 @@ class PolycodeRemoteDebugger : EventHandler {
 		void injectCode(String code);
 		
 		void handleEvent(Event *event);
-        void resetDebugger();
+		void resetDebugger();
 			
 		bool isConnected();
 		
@@ -71,8 +71,8 @@ class PolycodeRemoteDebugger : EventHandler {
 	protected:
 		
 		bool hasErred;
-    
-        std::vector<RemoteBacktraceData> receivedBacktraceData;
+	
+		std::vector<RemoteBacktraceData> receivedBacktraceData;
 		
 		PolycodeProjectManager *projectManager;
 		

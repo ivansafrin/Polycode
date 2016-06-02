@@ -42,7 +42,7 @@ UIVSizer::UIVSizer(Number width, Number height, Number mainHeight, bool topSizer
 	
 	separatorBgShape = new UIRect(width,1);
 	separatorBgShape->setAnchorPoint(-1.0, -1.0, 0.0);
-	separatorBgShape->setColor(0.0, 0.0, 0.0, 1.0);	
+	separatorBgShape->setColor(0.0, 0.0, 0.0, 1.0); 
 	addChild(separatorBgShape);
 
 	childElements = new Entity();
@@ -61,14 +61,14 @@ UIVSizer::UIVSizer(Number width, Number height, Number mainHeight, bool topSizer
 	separatorHitShape->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	separatorHitShape->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	separatorHitShape->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);
-	separatorHitShape->addEventListener(this, InputEvent::EVENT_MOUSEOVER);	
+	separatorHitShape->addEventListener(this, InputEvent::EVENT_MOUSEOVER); 
 	separatorHitShape->addEventListener(this, InputEvent::EVENT_MOUSEOUT);		
 	separatorHitShape->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);			
 	separatorHitShape->visible = false;
 	
 	coreInput = CoreServices::getInstance()->getCore()->getInput();
 	
-	coreInput->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);	
+	coreInput->addEventListener(this, InputEvent::EVENT_MOUSEMOVE); 
 	
 	separatorHitShape->processInputEvents = true;
 	
@@ -80,7 +80,7 @@ UIVSizer::UIVSizer(Number width, Number height, Number mainHeight, bool topSizer
 UIVSizer::~UIVSizer() {
 	coreInput->removeAllHandlersForListener(this);
 			
-    childElements->ownsChildren = false;
+	childElements->ownsChildren = false;
 	if(!ownsChildren) {
 		delete childElements;	
 		delete separatorBgShape;
@@ -96,7 +96,7 @@ void UIVSizer::handleEvent(Event *event) {
 				baseMainHeight = mainHeight;
 			break;
 			case InputEvent::EVENT_MOUSEUP:
-			case InputEvent::EVENT_MOUSEUP_OUTSIDE:	
+			case InputEvent::EVENT_MOUSEUP_OUTSIDE: 
 			{
 				resizing = false;			
 			}

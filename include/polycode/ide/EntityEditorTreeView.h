@@ -29,41 +29,41 @@
 using namespace Polycode;
 
 class EntityEditorTreeSheet : public PropSheet {
-    public:
-        EntityEditorTreeSheet();
-        ~EntityEditorTreeSheet();
-    
-        void refreshTree();
-        void syncNodeToEntity(UITree *node, Entity *entity);
-        void handleEvent(Event *event);
-        void setSelectedEntity(Entity *entity);
-        Entity *getSelectedEntity();
-        void Resize(Number width, Number height);
-        void setRootEntity(Entity *entity);
-    
-    private:
+	public:
+		EntityEditorTreeSheet();
+		~EntityEditorTreeSheet();
+	
+		void refreshTree();
+		void syncNodeToEntity(UITree *node, Entity *entity);
+		void handleEvent(Event *event);
+		void setSelectedEntity(Entity *entity);
+		Entity *getSelectedEntity();
+		void Resize(Number width, Number height);
+		void setRootEntity(Entity *entity);
+	
+	private:
 
-        Entity *selectedEntity;
-        bool dontSendSelectionEvent;
-        UITreeContainer *treeContainer;
-        Entity *rootEntity;
-    
+		Entity *selectedEntity;
+		bool dontSendSelectionEvent;
+		UITreeContainer *treeContainer;
+		Entity *rootEntity;
+	
 };
 
 class EntityEditorTreeView : public UIElement {
-    public:
-        EntityEditorTreeView();
+	public:
+		EntityEditorTreeView();
 
-        void setEntityInstance(SceneEntityInstance *instance);
-        EntityEditorTreeSheet *getTreeSheet();
-        void Resize(Number width, Number height);
-    
-    private:
-    
-    
-        PropList *entityProps;
-        EntityEditorTreeSheet *treeSheet;
-        LayerSheet *layerSheet;
-    
+		void setEntityInstance(SceneEntityInstance *instance);
+		EntityEditorTreeSheet *getTreeSheet();
+		void Resize(Number width, Number height);
+	
+	private:
+	
+	
+		PropList *entityProps;
+		EntityEditorTreeSheet *treeSheet;
+		LayerSheet *layerSheet;
+	
 
 };

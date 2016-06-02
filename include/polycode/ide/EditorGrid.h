@@ -37,61 +37,61 @@ class EditorGrid : public Entity {
 		EditorGrid();
 		~EditorGrid();
 		
-        void setGridMode(int mode);
-    
-        Number getGridSize();
-        int getGridLen();
-    
-        void setGridSize(Number size);
-        void setGridLen(int len);
-    
-        bool isXAxisEnabled();
-        bool isYAxisEnabled();
-        bool isZAxisEnabled();
+		void setGridMode(int mode);
+	
+		Number getGridSize();
+		int getGridLen();
+	
+		void setGridSize(Number size);
+		void setGridLen(int len);
+	
+		bool isXAxisEnabled();
+		bool isYAxisEnabled();
+		bool isZAxisEnabled();
 
-        void enableXAxis(bool val);
-        void enableYAxis(bool val);
-        void enableZAxis(bool val);
-    
-        void rebuildGrid();
+		void enableXAxis(bool val);
+		void enableYAxis(bool val);
+		void enableZAxis(bool val);
+	
+		void rebuildGrid();
 		
-        static const int GRID_MODE_3D = 0;
-        static const int GRID_MODE_2D_X = 1;
-        static const int GRID_MODE_2D_Y = 2;
-        static const int GRID_MODE_2D_Z = 3;
-    
+		static const int GRID_MODE_3D = 0;
+		static const int GRID_MODE_2D_X = 1;
+		static const int GRID_MODE_2D_Y = 2;
+		static const int GRID_MODE_2D_Z = 3;
+	
 	private:
-        int gridMode;
+		int gridMode;
 		SceneMesh *grid;
-    
-        SceneLine *yLine;
-        SceneLine *xLine;
-        SceneLine *zLine;
-    
-        Number gridSize;
-        int gridLen;
-    
-        bool threeDeeGrid;
+	
+		SceneLine *yLine;
+		SceneLine *xLine;
+		SceneLine *zLine;
+	
+		Number gridSize;
+		int gridLen;
+	
+		bool threeDeeGrid;
 };
 
 
 class EditorGridSettingsWindow : public UIWindow {
 public:
-    EditorGridSettingsWindow(EditorGrid *grid);
-    ~EditorGridSettingsWindow();
-    
-    void handleEvent(Event *event);
-    
+	EditorGridSettingsWindow(EditorGrid *grid);
+	~EditorGridSettingsWindow();
+	
+	void handleEvent(Event *event);
+	
 protected:
-    
-    EditorGrid *grid;
-    
-    UICheckBox *visibleCheck;
-    
-    UITextInput *sizeInput;
-    UITextInput *countInput;
-    
-    UICheckBox *xAxisBox;
-    UICheckBox *yAxisBox;
-    UICheckBox *zAxisBox;
+	
+	EditorGrid *grid;
+	
+	UICheckBox *visibleCheck;
+	
+	UITextInput *sizeInput;
+	UITextInput *countInput;
+	
+	UICheckBox *xAxisBox;
+	UICheckBox *yAxisBox;
+	UICheckBox *zAxisBox;
 };

@@ -244,7 +244,7 @@ namespace TUIO {
 			TuioPoint::update(tcon);
 			x_speed = tcon->getXSpeed();
 			y_speed =  tcon->getYSpeed();
-			motion_speed =  tcon->getMotionSpeed();
+			motion_speed =	tcon->getMotionSpeed();
 			motion_accel = tcon->getMotionAccel();
 			
 			TuioPoint p(tcon->getTuioTime(),xpos,ypos);

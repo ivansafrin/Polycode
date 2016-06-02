@@ -67,7 +67,7 @@ namespace Polycode {
 			UIMenuBar(int width, UIGlobalMenu *globalMenu);
 			virtual ~UIMenuBar();
 
-			void handleEvent(Event *event);	
+			void handleEvent(Event *event); 
 
 			void showMenuForEntry(UIMenuBarEntry *entry);
 			void Resize(Number width, Number height);

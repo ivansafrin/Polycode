@@ -83,7 +83,7 @@ void UITreeContainer::Resize(Number width, Number height) {
 }
 
 UIScrollContainer *UITreeContainer::getScrollContainer() {
-    return mainContainer;
+	return mainContainer;
 }
 
 void UITreeContainer::handleEvent(Event *event) {
@@ -109,7 +109,7 @@ void UITreeContainer::handleEvent(Event *event) {
 		
 		if (!hasFocus) {
 			if (event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
-                focusSelf();
+				focusSelf();
 			} else if (event->getEventCode() == InputEvent::EVENT_MOUSEOVER) {
 				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);
 			}
@@ -129,7 +129,7 @@ UITreeContainer::~UITreeContainer() {
 		delete rootNode;
 		delete mainContainer;
 	}
-	CoreServices::getInstance()->getCore()->getInput()->removeAllHandlersForListener(this);	
+	CoreServices::getInstance()->getCore()->getInput()->removeAllHandlersForListener(this); 
 }
 
 void UITreeContainer::onGainFocus() {

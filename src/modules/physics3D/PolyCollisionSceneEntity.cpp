@@ -34,7 +34,7 @@ CollisionEntity::CollisionEntity(Entity *entity, int type, bool compoundChildren
 	shape = NULL;
 	
 	this->type = type;
-	enabled = true;	
+	enabled = true; 
 	lastPosition = entity->getPosition();	
 	
 	
@@ -67,7 +67,7 @@ CollisionEntity::CollisionEntity(Entity *entity, int type, bool compoundChildren
 		 
 		 shape = compoundShape;
 	} else {
-		shape = createCollisionShape(entity, type);	
+		shape = createCollisionShape(entity, type); 
 	}
 	
 	if(shape) {
@@ -79,7 +79,7 @@ CollisionEntity::CollisionEntity(Entity *entity, int type, bool compoundChildren
 //	if(type == SHAPE_MESH) {		
 //		concaveShape = dynamic_cast<btConcaveShape*>(shape);
 //	} else {
-		convexShape	= dynamic_cast<btConvexShape*>(shape);		
+		convexShape = dynamic_cast<btConvexShape*>(shape);		
 //	}		
 }
 
@@ -87,17 +87,17 @@ btCollisionShape *CollisionEntity::createCollisionShape(Entity *entity, int type
 	
 	btCollisionShape *collisionShape = NULL;	
 	
-    Vector3 scale = entity->getCompoundScale();
-    Vector3 bBox = entity->getLocalBoundingBox();// * scale;
+	Vector3 scale = entity->getCompoundScale();
+	Vector3 bBox = entity->getLocalBoundingBox();// * scale;
 	
-    Number largestSize = bBox.x;
-    if(bBox.y > largestSize) {
-        largestSize = bBox.y;
-    }
-    if(bBox.z > largestSize) {
-        largestSize = bBox.z;
-    }
-    
+	Number largestSize = bBox.x;
+	if(bBox.y > largestSize) {
+		largestSize = bBox.y;
+	}
+	if(bBox.z > largestSize) {
+		largestSize = bBox.z;
+	}
+	
 	switch(type) {
 		case SHAPE_CAPSULE:
 		case CHARACTER_CONTROLLER:
@@ -130,14 +130,14 @@ btCollisionShape *CollisionEntity::createCollisionShape(Entity *entity, int type
 			SceneMesh* sceneMesh = dynamic_cast<SceneMesh*>(entity);
 			if(sceneMesh != NULL) {
 				btConvexHullShape *hullShape = new btConvexHullShape();
-                Mesh *mesh = sceneMesh->getMesh();
-                // TODO: fix to work with new mesh system
-                /*
+				Mesh *mesh = sceneMesh->getMesh();
+				// TODO: fix to work with new mesh system
+				/*
 				for(int i=0; i < mesh->vertexPositionArray.data.size()-2; i += 3) {
-                    
-                    hullShape->addPoint(btVector3((btScalar)mesh->vertexPositionArray.data[i], (btScalar)mesh->vertexPositionArray.data[i+1],mesh->vertexPositionArray.data[i+2]));
+					
+					hullShape->addPoint(btVector3((btScalar)mesh->vertexPositionArray.data[i], (btScalar)mesh->vertexPositionArray.data[i+1],mesh->vertexPositionArray.data[i+2]));
 				}
-                 */
+				 */
 				collisionShape = hullShape;
 				
 			} else {
@@ -147,23 +147,23 @@ btCollisionShape *CollisionEntity::createCollisionShape(Entity *entity, int type
 		}
 		break;
 	}
-    
-    
-    collisionShape->setLocalScaling(btVector3(scale.x, scale.y, scale.z));
-    
+	
+	
+	collisionShape->setLocalScaling(btVector3(scale.x, scale.y, scale.z));
+	
 	return collisionShape; 
 }
 
 void CollisionEntity::Update() {
 
-    Vector3 pos = entity->getConcatenatedMatrix().getPosition();
-    Quaternion quat = entity->getConcatenatedQuat();
-    
-    btVector3 btPos(pos.x, pos.y, pos.z);
-    btQuaternion btQuat(quat.x, quat.y, quat.z, quat.w);
-    
-    collisionObject->getWorldTransform().setOrigin(btPos);
-    collisionObject->getWorldTransform().setRotation(btQuat);
+	Vector3 pos = entity->getConcatenatedMatrix().getPosition();
+	Quaternion quat = entity->getConcatenatedQuat();
+	
+	btVector3 btPos(pos.x, pos.y, pos.z);
+	btQuaternion btQuat(quat.x, quat.y, quat.z, quat.w);
+	
+	collisionObject->getWorldTransform().setOrigin(btPos);
+	collisionObject->getWorldTransform().setRotation(btQuat);
 }
 
 Entity *CollisionEntity::getEntity() {

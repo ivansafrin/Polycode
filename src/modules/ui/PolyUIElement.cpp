@@ -37,44 +37,44 @@ using namespace Polycode;
 UIElement *UIElement::globalFocusedChild = NULL;
 
 UIMultilineLabel::UIMultilineLabel(const String& text, int size, int spacing, const String& fontName, int amode) : UIElement() {
-    labelSize = size;
-    labelFontName = fontName;
-    labelAAMode = amode;
-    this->spacing = spacing;
-    setText(text);
+	labelSize = size;
+	labelFontName = fontName;
+	labelAAMode = amode;
+	this->spacing = spacing;
+	setText(text);
 }
 
 void UIMultilineLabel::setText(const String& text) {
-    clearLabels();
-    
-    std::vector<String> lines = text.split("\n");
+	clearLabels();
+	
+	std::vector<String> lines = text.split("\n");
 	linesCount = lines.size();
 
 	Number lineSize = spacing;
-    Number yPos = 0.0;
-    for(int i=0; i < lines.size(); i++) {
-        if(lines[i] == "") {
-            yPos += lineSize + spacing;
-        } else {
-            UILabel *label = new UILabel(lines[i], labelSize, labelFontName, labelAAMode);
-            lineSize = label->getHeight();
-            label->setPositionY(yPos);
-            yPos += label->getHeight() + spacing;
-            addChild(label);
+	Number yPos = 0.0;
+	for(int i=0; i < lines.size(); i++) {
+		if(lines[i] == "") {
+			yPos += lineSize + spacing;
+		} else {
+			UILabel *label = new UILabel(lines[i], labelSize, labelFontName, labelAAMode);
+			lineSize = label->getHeight();
+			label->setPositionY(yPos);
+			yPos += label->getHeight() + spacing;
+			addChild(label);
 			labels.push_back(label);
-        }
-    }
+		}
+	}
 }
 
 String UIMultilineLabel::getText() {
-    String text;
-    for(int i=0; i < labels.size(); i++) {
-        if(i != 0) {
-            text += "\n";
-        }
-        text += labels[i]->getText();
-    }
-    return text;
+	String text;
+	for(int i=0; i < labels.size(); i++) {
+		if(i != 0) {
+			text += "\n";
+		}
+		text += labels[i]->getText();
+	}
+	return text;
 }
 
 void UIMultilineLabel::setColor(Color color) {
@@ -96,11 +96,11 @@ void UIMultilineLabel::setColor(Number r, Number g, Number b, Number a) {
 }
 
 void UIMultilineLabel::clearLabels() {
-    for(int i=0; i < labels.size(); i++) {
-        removeChild(labels[i]);
-        delete labels[i];
-    }
-    labels.clear();
+	for(int i=0; i < labels.size(); i++) {
+		removeChild(labels[i]);
+		delete labels[i];
+	}
+	labels.clear();
 }
 
 Number UIMultilineLabel::getWidth(){
@@ -123,39 +123,39 @@ Number UIMultilineLabel::getHeight(){
 }
 
 UIMultilineLabel::~UIMultilineLabel() {
-    if(!ownsChildren) {
-        clearLabels();
-    }
+	if(!ownsChildren) {
+		clearLabels();
+	}
 }
 
 UILabel::UILabel(const String& text, int size, const String& fontName, int amode) : UIElement() {
 
 	Config *conf = CoreServices::getInstance()->getConfig();
-    
-    if(size == -1) {
-        size = conf->getNumericValue("Polycode", "uiDefaultFontSize");
-    }
-    
+	
+	if(size == -1) {
+		size = conf->getNumericValue("Polycode", "uiDefaultFontSize");
+	}
+	
 	label = new SceneLabel(text, size, fontName, amode);
-    label->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
-    label->positionAtBaseline = true;
-    label->setAnchorPoint(-1.0, -1.0, 0.0);
+	label->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+	label->positionAtBaseline = true;
+	label->setAnchorPoint(-1.0, -1.0, 0.0);
 	label->snapToPixels = true;
-    label->depthTest = false;
-    label->depthWrite = false;
-    
+	label->depthTest = false;
+	label->depthWrite = false;
+	
 	label->color.setColorHexFromString(conf->getStringValue("Polycode", "uiDefaultFontColor"));
 	addChild(label);
 	setLocalBoundingBox(label->getLocalBoundingBox());
 }
 
 void UILabel::setLabelColor(const Color &color) {
-    label->color = color;
+	label->color = color;
 }
 
 void UILabel::setText(const String& text) {
 	label->setText(text);
-    setLocalBoundingBox(label->getLocalBoundingBox());
+	setLocalBoundingBox(label->getLocalBoundingBox());
 }
 
 String UILabel::getText() {
@@ -163,9 +163,9 @@ String UILabel::getText() {
 }
 
 UILabel::~UILabel() {
-    if(!ownsChildren) {
-        delete label;
-    }
+	if(!ownsChildren) {
+		delete label;
+	}
 }
 
 Label *UILabel::getLabel() {
@@ -175,9 +175,9 @@ Label *UILabel::getLabel() {
 UIRect::UIRect(String fileName, Number width, Number height) : UIElement() {
 	texture = NULL;
 	loadTexture(fileName);
-    initRect(width, height);
-    imageWidth = width;
-    imageHeight = height;
+	initRect(width, height);
+	imageWidth = width;
+	imageHeight = height;
 }
 
 UIRect::UIRect(String fileName) : UIElement() {
@@ -186,14 +186,14 @@ UIRect::UIRect(String fileName) : UIElement() {
 	if(texture) {	
 		initRect(texture->getWidth(), texture->getHeight());
 		imageWidth = texture->getWidth();
-		imageHeight = texture->getHeight();	
+		imageHeight = texture->getHeight(); 
 	} else {
-		initRect(1,  1);
+		initRect(1,	 1);
 		imageWidth = 0;
 		imageHeight = 0;
 	}
-    setWidth(imageWidth);
-    setHeight(imageHeight);
+	setWidth(imageWidth);
+	setHeight(imageHeight);
 }
 
 UIRect::UIRect(Number width, Number height) : UIElement() {
@@ -219,11 +219,11 @@ void UIRect::setImageCoordinates(Number x, Number y, Number width, Number height
 	Number wFloat = width * pixelSizeX * imageScale;
 	Number hFloat = height * pixelSizeY * imageScale;
 
-    rectMesh->clearMesh();
-    
-    rectMeshGeometry.vertexPositionArray.data.clear();
-    rectMeshGeometry.vertexTexCoordArray.data.clear();
-    
+	rectMesh->clearMesh();
+	
+	rectMeshGeometry.vertexPositionArray.data.clear();
+	rectMeshGeometry.vertexTexCoordArray.data.clear();
+	
 	rectMeshGeometry.addVertex(-whalf,-hhalf,0);
 	rectMeshGeometry.addTexCoord(xFloat, (1.0-yFloat) - hFloat);
 
@@ -236,12 +236,12 @@ void UIRect::setImageCoordinates(Number x, Number y, Number width, Number height
 	rectMeshGeometry.addVertex(-whalf,-hhalf+height,0);
 	rectMeshGeometry.addTexCoord(xFloat, 1.0-yFloat);
 
-    rectMeshGeometry.addIndexedFace(0, 1, 2);
-    rectMeshGeometry.addIndexedFace(0, 2, 3);
-    
-    rectMesh->addSubmesh(rectMeshGeometry);
-    
-    
+	rectMeshGeometry.addIndexedFace(0, 1, 2);
+	rectMeshGeometry.addIndexedFace(0, 2, 3);
+	
+	rectMesh->addSubmesh(rectMeshGeometry);
+	
+	
 	rebuildTransformMatrix();
 	matrixDirty = true;
 }
@@ -251,7 +251,7 @@ Number UIRect::getImageWidth() const {
 }
 
 Number UIRect::getImageHeight() const {
-	return imageHeight;	
+	return imageHeight; 
 }
 
 void UIRect::initRect(Number width, Number height) {
@@ -269,75 +269,75 @@ void UIRect::initRect(Number width, Number height) {
 	rectMeshGeometry.addVertexWithUV(-whalf+width,-hhalf,0, 1, 0);
 	rectMeshGeometry.addVertexWithUV(-whalf+width,-hhalf+height,0, 1, 1);
 	rectMeshGeometry.addVertexWithUV(-whalf,-hhalf+height,0,0,1);
-    
-    rectMeshGeometry.indexedMesh = true;
-    rectMeshGeometry.addIndexedFace(0, 1, 2);
-    rectMeshGeometry.addIndexedFace(0, 2, 3);
-    
-    rectMesh->addSubmesh(rectMeshGeometry);
-    
-    setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured"));
-    
-    if(texture) {
-        setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
-        shaderPasses[0].shaderBinding->setTextureForParam("diffuse", texture);
-    }
+	
+	rectMeshGeometry.indexedMesh = true;
+	rectMeshGeometry.addIndexedFace(0, 1, 2);
+	rectMeshGeometry.addIndexedFace(0, 2, 3);
+	
+	rectMesh->addSubmesh(rectMeshGeometry);
+	
+	setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured"));
+	
+	if(texture) {
+		setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
+		shaderPasses[0].shaderBinding->setTextureForParam("diffuse", texture);
+	}
 }
 
 UIRect::~UIRect() {
 	delete rectMesh;
-    Services()->getRenderer()->destroyShaderBinding(shaderPasses[0].shaderBinding);
+	Services()->getRenderer()->destroyShaderBinding(shaderPasses[0].shaderBinding);
 }
 
 void UIRect::loadTexture(String fileName) {
 
-    material =  (Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit");
-    
+	material =	(Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit");
+	
 	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
 	texture = materialManager->createTextureFromFile(fileName, materialManager->clampDefault, false);
-    
-    if(!texture) {
-        setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured"));
-    } else {
-        setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
-    }
-    
-    if(shaderPasses.size() > 0) {
-        shaderPasses[0].shaderBinding->setTextureForParam("diffuse", texture);
-    }
+	
+	if(!texture) {
+		setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured"));
+	} else {
+		setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
+	}
+	
+	if(shaderPasses.size() > 0) {
+		shaderPasses[0].shaderBinding->setTextureForParam("diffuse", texture);
+	}
 }
 
 void UIRect::setTexture(Texture *texture) {
-    
-    if(!texture) {
-        setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured"));
-    } else {
-        setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
-    }
-    
+	
+	if(!texture) {
+		setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured"));
+	} else {
+		setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
+	}
+	
 	this->texture = texture;
-    if(shaderPasses[0].shaderBinding) {
-        shaderPasses[0].shaderBinding->setTextureForParam("diffuse", texture);
-    }
+	if(shaderPasses[0].shaderBinding) {
+		shaderPasses[0].shaderBinding->setTextureForParam("diffuse", texture);
+	}
 }
 
 void UIRect::setMaterial(Material *material) {
-    
-    for(int i=0; i < shaderPasses.size(); i++) {
-        Services()->getRenderer()->destroyShaderBinding(shaderPasses[i].shaderBinding);
-    }
-    shaderPasses.clear();
-    
-    this->material = material;
-    
-    ShaderPass pass;
-    pass.shaderBinding = new ShaderBinding();
-    pass.shaderBinding->targetShader = pass.shader;
-    pass.shader = material->getShaderPass(0).shader;
-    shaderPasses.push_back(pass);
-    
-    shaderPasses[0].shaderBinding->addParamPointer(ProgramParam::PARAM_COLOR, "entityColor", &color);
-    shaderPasses[0].shaderBinding->resetAttributes = true;
+	
+	for(int i=0; i < shaderPasses.size(); i++) {
+		Services()->getRenderer()->destroyShaderBinding(shaderPasses[i].shaderBinding);
+	}
+	shaderPasses.clear();
+	
+	this->material = material;
+	
+	ShaderPass pass;
+	pass.shaderBinding = new ShaderBinding();
+	pass.shaderBinding->targetShader = pass.shader;
+	pass.shader = material->getShaderPass(0).shader;
+	shaderPasses.push_back(pass);
+	
+	shaderPasses[0].shaderBinding->addParamPointer(ProgramParam::PARAM_COLOR, "entityColor", &color);
+	shaderPasses[0].shaderBinding->resetAttributes = true;
 }
 
 Texture *UIRect::getTexture() {
@@ -345,18 +345,18 @@ Texture *UIRect::getTexture() {
 }
 
 void UIRect::Render(GPUDrawBuffer *buffer) {
-    
-    drawCall.options.depthTest = depthTest;
-    drawCall.options.depthWrite = depthWrite;
-    
-    if(rectMesh->getNumSubmeshes() == 0) {
-        assert(false);
-    }
-    drawCall.submesh = rectMesh->getSubmeshPointer(0);
-    drawCall.material = material;
-    drawCall.shaderPasses = shaderPasses;
-    
-    buffer->drawCalls.push_back(drawCall);
+	
+	drawCall.options.depthTest = depthTest;
+	drawCall.options.depthWrite = depthWrite;
+	
+	if(rectMesh->getNumSubmeshes() == 0) {
+		assert(false);
+	}
+	drawCall.submesh = rectMesh->getSubmeshPointer(0);
+	drawCall.material = material;
+	drawCall.shaderPasses = shaderPasses;
+	
+	buffer->drawCalls.push_back(drawCall);
 }
 
 void UIRect::Resize(Number width, Number height) {
@@ -367,26 +367,26 @@ void UIRect::Resize(Number width, Number height) {
 	Number whalf = width/2.0f;
 	Number hhalf = height/2.0f;
 
-    rectMesh->clearMesh();
-    
-    rectMeshGeometry.vertexPositionArray.data.clear();
-    rectMeshGeometry.addVertex(-whalf,-hhalf,0);
-    rectMeshGeometry.addVertex(-whalf+width,-hhalf,0);
-    rectMeshGeometry.addVertex(-whalf+width,-hhalf+height,0);
-    rectMeshGeometry.addVertex(-whalf,-hhalf+height,0);
-    
-    rectMeshGeometry.addIndexedFace(0, 1, 2);
-    rectMeshGeometry.addIndexedFace(0, 2, 3);
-    
-    rectMesh->addSubmesh(rectMeshGeometry);
+	rectMesh->clearMesh();
+	
+	rectMeshGeometry.vertexPositionArray.data.clear();
+	rectMeshGeometry.addVertex(-whalf,-hhalf,0);
+	rectMeshGeometry.addVertex(-whalf+width,-hhalf,0);
+	rectMeshGeometry.addVertex(-whalf+width,-hhalf+height,0);
+	rectMeshGeometry.addVertex(-whalf,-hhalf+height,0);
+	
+	rectMeshGeometry.addIndexedFace(0, 1, 2);
+	rectMeshGeometry.addIndexedFace(0, 2, 3);
+	
+	rectMesh->addSubmesh(rectMeshGeometry);
 }
 
 UIImage::UIImage(String imagePath, int width, int height) : UIRect(imagePath, width, height) {
-    setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+	setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 }
 
 UIImage::UIImage(String imagePath) : UIRect(imagePath) {
-    setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+	setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 }
 
 UIElement::UIElement() : Entity() {
@@ -401,7 +401,7 @@ UIElement::UIElement() : Entity() {
 	dragged = false;
 	depthTest = false;
 	depthWrite = false;
-    Services()->getInput()->addEventListenerUnique(this, InputEvent::EVENT_KEYDOWN);
+	Services()->getInput()->addEventListenerUnique(this, InputEvent::EVENT_KEYDOWN);
 }
 
 UIElement::UIElement(Number width, Number height) : Entity() {
@@ -416,23 +416,23 @@ UIElement::UIElement(Number width, Number height) : Entity() {
 	depthWrite = false;		
 	setWidth(width);
 	setHeight(height);
-    Services()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
+	Services()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 }
 
 void UIElement::handleEvent(Event *event) {
-    if(event->getDispatcher() == Services()->getInput() && event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
-        if(hasFocus && focusParent) {
-            InputEvent *inputEvent = (InputEvent*) event;
-            if(inputEvent->key == KEY_TAB) {
-                if(Services()->getInput()->getKeyState(KEY_RSHIFT) || Services()->getInput()->getKeyState(KEY_LSHIFT)) {
-                    focusParent->focusPreviousChild();
-                } else {
-                    focusParent->focusNextChild();
-                }
-                inputEvent->cancelEvent();
-            }
-        }
-    }
+	if(event->getDispatcher() == Services()->getInput() && event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
+		if(hasFocus && focusParent) {
+			InputEvent *inputEvent = (InputEvent*) event;
+			if(inputEvent->key == KEY_TAB) {
+				if(Services()->getInput()->getKeyState(KEY_RSHIFT) || Services()->getInput()->getKeyState(KEY_LSHIFT)) {
+					focusParent->focusPreviousChild();
+				} else {
+					focusParent->focusNextChild();
+				}
+				inputEvent->cancelEvent();
+			}
+		}
+	}
 }
 
 void UIElement::setDragLimits(Rectangle rect) {
@@ -490,61 +490,61 @@ MouseEventResult UIElement::onMouseMove(const Ray &ray, int timestamp) {
 }
 
 UIElement::~UIElement() {
-    
-    Services()->getInput()->removeAllHandlersForListener(this);
+	
+	Services()->getInput()->removeAllHandlersForListener(this);
 
-    if(focusParent) {
-        focusParent->unregisterFocusChild(this);
-    }
-    
+	if(focusParent) {
+		focusParent->unregisterFocusChild(this);
+	}
+	
 	if(UIElement::globalFocusedChild == this) {
 		UIElement::globalFocusedChild = NULL;
 	}
 }
 
 Vector2 UIElement::getScreenPositionForMainCamera() {
-    Scene *containerScene = getContainerScene();
-    Vector2 screenPos;
-    
-    if(containerScene) {
-        Camera *camera = containerScene->getActiveCamera();
-        if(camera) {
-            screenPos = getScreenPosition(camera->getProjectionMatrix(), camera->getConcatenatedMatrix().Inverse(), camera->getViewport());
-        }
-    }
-    screenPos.y = Services()->getCore()->getYRes() - screenPos.y;
-    
-    return screenPos;
+	Scene *containerScene = getContainerScene();
+	Vector2 screenPos;
+	
+	if(containerScene) {
+		Camera *camera = containerScene->getActiveCamera();
+		if(camera) {
+			screenPos = getScreenPosition(camera->getProjectionMatrix(), camera->getConcatenatedMatrix().Inverse(), camera->getViewport());
+		}
+	}
+	screenPos.y = Services()->getCore()->getYRes() - screenPos.y;
+	
+	return screenPos;
 }
 
 void UIElement::focusPreviousChild() {
-    
-    int j = 0;
-    bool hasFocusedChild = false;
-    if(UIElement::globalFocusedChild) {
-        for(int i=0; i < focusChildren.size(); i++) {
-            if(focusChildren[i] == UIElement::globalFocusedChild) {
-                j = i;
-                hasFocusedChild = true;
-            }
-        }
-    }
-    
-    if(!hasFocusedChild) {
-        return;
-    }
-    
-    for(int i=0; i < focusChildren.size(); i++) {
-        if(focusChildren[j]->isFocusable() && focusChildren[j] != UIElement::globalFocusedChild && focusChildren[j]->enabled && focusChildren[j]->visible) {
-            focusChild(focusChildren[j]);
-            return;
-        }
-        
-        j--;
-        if(j == -1) {
-            j = focusChildren.size()-1;
-        }
-    }
+	
+	int j = 0;
+	bool hasFocusedChild = false;
+	if(UIElement::globalFocusedChild) {
+		for(int i=0; i < focusChildren.size(); i++) {
+			if(focusChildren[i] == UIElement::globalFocusedChild) {
+				j = i;
+				hasFocusedChild = true;
+			}
+		}
+	}
+	
+	if(!hasFocusedChild) {
+		return;
+	}
+	
+	for(int i=0; i < focusChildren.size(); i++) {
+		if(focusChildren[j]->isFocusable() && focusChildren[j] != UIElement::globalFocusedChild && focusChildren[j]->enabled && focusChildren[j]->visible) {
+			focusChild(focusChildren[j]);
+			return;
+		}
+		
+		j--;
+		if(j == -1) {
+			j = focusChildren.size()-1;
+		}
+	}
 }
 
 
@@ -561,9 +561,9 @@ void UIElement::focusNextChild() {
 		}
 	}
 
-    if(!hasFocusedChild) {
+	if(!hasFocusedChild) {
 		return;
-    }
+	}
 
 	for(int i=0; i < focusChildren.size(); i++) {
 		if(focusChildren[j]->isFocusable() && focusChildren[j] != UIElement::globalFocusedChild && focusChildren[j]->enabled && focusChildren[j]->visible) {
@@ -572,9 +572,9 @@ void UIElement::focusNextChild() {
 		}
 
 		j++;
-        if(j == focusChildren.size()) {
+		if(j == focusChildren.size()) {
 			j = 0;
-        }
+		}
 	}
 }
 
@@ -606,24 +606,24 @@ void UIElement::focusChild(UIElement *child) {
 }
 
 void UIElement::registerFocusChild(UIElement *element) {
-    if(element->isFocusable()) {
-        element->setFocusParent(this);
-        focusChildren.push_back(element);
-    }
+	if(element->isFocusable()) {
+		element->setFocusParent(this);
+		focusChildren.push_back(element);
+	}
 }
 
 void UIElement::unregisterFocusChild(UIElement *element) {
-    for(int i=0; i < focusChildren.size(); i++) {
-        if(focusChildren[i] == element) {
-            focusChildren.erase(focusChildren.begin()+i);
-            return;
-        }
-    }
+	for(int i=0; i < focusChildren.size(); i++) {
+		if(focusChildren[i] == element) {
+			focusChildren.erase(focusChildren.begin()+i);
+			return;
+		}
+	}
 }
 
 void UIElement::addFocusChild(UIElement *element) {
-    registerFocusChild(element);
-    addChild(element);
+	registerFocusChild(element);
+	addChild(element);
 }
 
 void UIElement::setFocusParent(UIElement *element) {

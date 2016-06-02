@@ -54,8 +54,8 @@ namespace Polycode {
 		Number interpolateTween();
 		virtual void updateCustomTween() {}
 		void doOnComplete();
-        
-        Number *getTarget();
+		
+		Number *getTarget();
 		
 		/**
 		* Pauses and resumes the tween.
@@ -155,7 +155,7 @@ namespace Polycode {
 		protected:
 			Number pathValue;
 			Tween *pathTween;
-			QuaternionCurve	*quatCurve;
+			QuaternionCurve *quatCurve;
 			Quaternion *target;			
 	};
 	

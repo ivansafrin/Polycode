@@ -27,7 +27,7 @@
 #include "polycode/ide/PolycodeProject.h"
 #include "polycode/ide/PolycodeClipboard.h"
 
-#define MAX_EDITOR_UNDO_ACTIONS	40
+#define MAX_EDITOR_UNDO_ACTIONS 40
 
 using namespace Polycode;
 
@@ -39,12 +39,12 @@ class PolycodeEditorActionData {
 		virtual ~PolycodeEditorActionData() {}
 };
 
-class PolycodeEditorAction  {
+class PolycodeEditorAction	{
 	public:
 		PolycodeEditorAction(){
-            beforeData = NULL;
-            afterData = NULL;
-        }
+			beforeData = NULL;
+			afterData = NULL;
+		}
 		~PolycodeEditorAction() {}
 		
 		void deleteData() {
@@ -69,7 +69,7 @@ public:
 	virtual void handleEvent(Event *event);
 
 	virtual void Activate() {};
-   	virtual void Deactivate() {};
+	virtual void Deactivate() {};
 	virtual void saveFile(){};
 	
 	void didAction(String actionName, PolycodeEditorActionData *beforeData, PolycodeEditorActionData *afterData, bool setFileChanged = true);
@@ -78,7 +78,7 @@ public:
 	virtual String Copy(void **data) { return ""; }
 	virtual void Paste(void *data, String clipboardType) {}
 	virtual void selectAll() {}
-    
+	
 	virtual void handleDroppedFile(OSFileEntry file, Number x, Number y) {};
 	
 	virtual ObjectEntry *getEditorConfig() { return NULL; }

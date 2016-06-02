@@ -43,7 +43,7 @@ PolycodeProject* PolycodeProjectManager::openProject(String path) {
 		}
 	}	
 
-	printf("Opening project  %s\n", path.c_str());
+	printf("Opening project	 %s\n", path.c_str());
 	
 	FILE *f = fopen(path.c_str(), "r");
 	if(!f) {
@@ -70,8 +70,8 @@ PolycodeProject* PolycodeProjectManager::openProject(String path) {
 	for(int i=0; i < newProject->data.fonts.size(); i++) {
 		String fontPath = projectPath+"/"+newProject->data.fonts[i].fontPath;
 		String fontName = newProject->data.fonts[i].fontName;
-        ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
-        pool->loadResourceWithName(fontPath, fontName);
+		ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
+		pool->loadResourceWithName(fontPath, fontName);
 	}
 	
 	setActiveProject(newProject);
@@ -109,12 +109,12 @@ void PolycodeProjectManager::setActiveProject(PolycodeProject* project) {
 	if(project != activeProject) {
 		
 		if(activeProject != NULL) {
-            Services()->getCore()->removeFileSource("archive", activeProject->getRootFolder());
+			Services()->getCore()->removeFileSource("archive", activeProject->getRootFolder());
 		}
 
 		activeProject = project;
 		if(project){
-            Services()->getCore()->addFileSource("archive", activeProject->getRootFolder());
+			Services()->getCore()->addFileSource("archive", activeProject->getRootFolder());
 		}
 		
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
@@ -128,15 +128,15 @@ void PolycodeProjectManager::createNewFile(String templatePath, String newFileNa
 	std::vector<String> bits = templatePath.split(".");
 	String extension = bits[bits.size()-1];
 	
-	CoreServices::getInstance()->getCore()->copyDiskItem(templatePath, activeFolder+"/"+newFileName+"."+extension);	
+	CoreServices::getInstance()->getCore()->copyDiskItem(templatePath, activeFolder+"/"+newFileName+"."+extension); 
 }
 
 void PolycodeProjectManager::createNewProject(String templateFolder, String projectName, String projectLocation) {	
 
 	CoreServices::getInstance()->getCore()->createFolder(projectLocation);		
 	
-    // NOCMAKE_TODO:
-    /*
+	// NOCMAKE_TODO:
+	/*
 	if(OSBasics::isFolder(projectLocation+"/"+projectName)) {
 		int projectSuffix = 0;
 		do {
@@ -145,7 +145,7 @@ void PolycodeProjectManager::createNewProject(String templateFolder, String proj
 		} while (OSBasics::isFolder(projectLocation+"/"+projectName));
 	}	
 	*/
-    
+	
 	CoreServices::getInstance()->getCore()->copyDiskItem(CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory()+"/"+templateFolder, projectLocation+"/"+projectName);
 	CoreServices::getInstance()->getCore()->moveDiskItem(projectLocation+"/"+projectName+"/template.polyproject",  projectLocation+"/"+projectName+"/"+projectName+".polyproject");
 	openProject(projectLocation+"/"+projectName+"/"+projectName+".polyproject");	

@@ -37,8 +37,8 @@
 // layer is initialized.
 class NetworkInitializer{
 public:
-    NetworkInitializer();
-    ~NetworkInitializer();
+	NetworkInitializer();
+	~NetworkInitializer();
 };
 
 

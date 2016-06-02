@@ -49,7 +49,7 @@ UIVScrollBar::UIVScrollBar(Number width, Number height, Number initialRatio) : U
 					  width, height);
 	
 	bgBox->processInputEvents = true;
-	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);	
+	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN); 
 	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEOVER);
 	addChild(bgBox);
 	
@@ -74,7 +74,7 @@ UIVScrollBar::UIVScrollBar(Number width, Number height, Number initialRatio) : U
 		
 	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
-	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);	
+	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN); 
 	handleBox->addEventListener(this, InputEvent::EVENT_MOUSEOVER);
 	handleBox->processInputEvents = true;
 	handleBox->blockMouseInput = true;
@@ -130,7 +130,7 @@ void UIVScrollBar::Scroll(Number amount) {
 }
 
 void UIVScrollBar::setHandleRatio(Number newRatio) {
-    
+	
 	scrollHandleHeight = getHeight()*newRatio;	
 	
 	if(scrollHandleHeight < minHandleSize)
@@ -213,8 +213,8 @@ void UIVScrollBar::handleEvent(Event *event) {
 	
 
 UIVScrollBar::~UIVScrollBar() {
-    if(!ownsChildren) {
-        delete bgBox;
-        delete handleBox;
-    }
+	if(!ownsChildren) {
+		delete bgBox;
+		delete handleBox;
+	}
 }

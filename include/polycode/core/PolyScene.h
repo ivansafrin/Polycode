@@ -111,8 +111,8 @@ namespace Polycode {
 		* @param endDepth Ending depth of the fog.							
 		*/				
 		void setFogProperties(int fogMode, Color color, Number density, Number startDepth, Number endDepth);
-        
-        void setSceneType(int newType);
+		
+		void setSceneType(int newType);
 
 		virtual void fixedUpdate();
 		virtual void Update();
@@ -123,8 +123,8 @@ namespace Polycode {
 		void setEnabled(bool enabled);
 		
 		void Render(Camera *targetCamera, RenderBuffer *targetFramebuffer, Material *overrideMaterial, bool sendLights);
-        
-        void setOverrideMaterial(Material *material);
+		
+		void setOverrideMaterial(Material *material);
 		
 		void handleEvent(Event *event);
 		
@@ -188,22 +188,22 @@ namespace Polycode {
 						
 		Entity rootEntity;
 		
-        Polycode::Rectangle sceneMouseRect;
-        bool remapMouse;
-        
-        bool constrainPickingToViewport;
-        
-        void doVisibilityChecking(bool val);
-        bool doesVisibilityChecking();
-		      
+		Polycode::Rectangle sceneMouseRect;
+		bool remapMouse;
+		
+		bool constrainPickingToViewport;
+		
+		void doVisibilityChecking(bool val);
+		bool doesVisibilityChecking();
+			  
 	protected:
 		
 		void initScene(int sceneType, bool virtualScene);
-        void setEntityVisibility(Entity *entity, Camera *camera);
-        void setEntityVisibilityBool(Entity *entity, bool val);
-        
+		void setEntityVisibility(Entity *entity, Camera *camera);
+		void setEntityVisibilityBool(Entity *entity, bool val);
+		
 		bool hasLightmaps;
-        bool _doVisibilityChecking;
+		bool _doVisibilityChecking;
 		
 		Renderer *renderer;
 		std::vector <SceneLight*> lights;		
@@ -212,8 +212,8 @@ namespace Polycode {
 		Camera *defaultCamera;
 		Camera *activeCamera;
 		
-        Material *overrideMaterial;
-        
+		Material *overrideMaterial;
+		
 		Core *core;
 		
 		bool fogEnabled;

@@ -28,22 +28,22 @@ PolycodeMeshEditor::PolycodeMeshEditor() : PolycodeEditor(true){
 	
 	previewScene = new Scene(Scene::SCENE_3D, true);		
 	renderTexture = new SceneRenderTexture(previewScene, previewScene->getDefaultCamera(), 512, 512, false);
-    
-    
-    ownsChildren = true;
+	
+	
+	ownsChildren = true;
 
 	previewScene->clearColor.setColor(0.2, 0.2, 0.2, 1.0);
 	previewScene->useClearColor = true;
 	
 //	previewScene->ambientColor.setColor(0.0, 0.0, 0.0, 1.0);
 				
-    Number customFalloff = 0.006;
+	Number customFalloff = 0.006;
 	mainLight = new SceneLight(SceneLight::POINT_LIGHT, previewScene, 999999, customFalloff, customFalloff, customFalloff);
 	previewScene->addLight(mainLight);
 
 	secondLight = new SceneLight(SceneLight::POINT_LIGHT, previewScene, 999999, customFalloff, customFalloff, customFalloff);
 	previewScene->addLight(secondLight);
-    
+	
 	mainLight->setPosition(9999, 9999, 9999);
 	secondLight->setPosition(-9999, -9999, -9999);
 
@@ -59,33 +59,33 @@ PolycodeMeshEditor::PolycodeMeshEditor() : PolycodeEditor(true){
 	CoreServices::getInstance()->getResourceManager()->getGlobalPool()->dispatchChangeEvents = true;
 	CoreServices::getInstance()->getResourceManager()->getGlobalPool()->addEventListener(this, Event::CHANGE_EVENT);
 	
-	previewMesh = NULL;	
+	previewMesh = NULL; 
 	trackballCamera = new TrackballCamera(previewScene->getDefaultCamera(), previewShape);
-    trackballCamera->getTargetCamera()->setClippingPlanes(0.1, 1000.0);
-    //trackballCamera->getTargetCamera()->setPosition(0.0, 0.0, 50.);
-    trackballCamera->setOrbitingCenter(Vector3(0.0, 0.0, 0.0));
+	trackballCamera->getTargetCamera()->setClippingPlanes(0.1, 1000.0);
+	//trackballCamera->getTargetCamera()->setPosition(0.0, 0.0, 50.);
+	trackballCamera->setOrbitingCenter(Vector3(0.0, 0.0, 0.0));
 }
 
 void PolycodeMeshEditor::Activate() {
-    previewScene->enabled = true;
-    renderTexture->enabled = true;
+	previewScene->enabled = true;
+	renderTexture->enabled = true;
 }
 
 void PolycodeMeshEditor::Deactivate() {
-    previewScene->enabled = false;
-    renderTexture->enabled = false;
-    
+	previewScene->enabled = false;
+	renderTexture->enabled = false;
+	
 }
 
 void PolycodeMeshEditor::handleEvent(Event *event) {
 }
 
 PolycodeMeshEditor::~PolycodeMeshEditor() {
-    CoreServices::getInstance()->getResourceManager()->getGlobalPool()->removeAllHandlersForListener(this);
-    previewScene->rootEntity.setOwnsChildrenRecursive(true);
-    delete previewScene;
-    delete renderTexture;
-    delete trackballCamera;
+	CoreServices::getInstance()->getResourceManager()->getGlobalPool()->removeAllHandlersForListener(this);
+	previewScene->rootEntity.setOwnsChildrenRecursive(true);
+	delete previewScene;
+	delete renderTexture;
+	delete trackballCamera;
 }
 
 bool PolycodeMeshEditor::openFile(OSFileEntry filePath) {
@@ -93,13 +93,13 @@ bool PolycodeMeshEditor::openFile(OSFileEntry filePath) {
 	previewBase->addChild(previewMesh);
 	previewMesh->setMaterialByName("Default");
 	PolycodeEditor::openFile(filePath);
-    trackballCamera->setCameraDistance(previewMesh->getMesh()->getRadius() * 3.0);
-    trackballCamera->setCameraPosition(trackballCamera->getOribitingCenter()+Vector3(0.0, 0.0, trackballCamera->getCameraDistance()));
+	trackballCamera->setCameraDistance(previewMesh->getMesh()->getRadius() * 3.0);
+	trackballCamera->setCameraPosition(trackballCamera->getOribitingCenter()+Vector3(0.0, 0.0, trackballCamera->getCameraDistance()));
 	return true;
 }
 
 void PolycodeMeshEditor::Resize(int x, int y) {
-    
+	
 	renderTexture->resizeRenderTexture(x, y-30);
 	previewShape->setTexture(renderTexture->getTargetTexture());	
 	previewShape->Resize(x, y-30);	

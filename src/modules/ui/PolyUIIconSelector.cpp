@@ -27,7 +27,7 @@
 
 
 UIIconSelector::UIIconSelector(Number height) : UIElement() {
-    
+	
 	Config *conf = CoreServices::getInstance()->getConfig();
 	
 	Number st = conf->getNumericValue("Polycode", "uiIconSelectorBgT");
@@ -37,80 +37,80 @@ UIIconSelector::UIIconSelector(Number height) : UIElement() {
 
 	paddingX = conf->getNumericValue("Polycode", "uiIconSelectorPaddingX");
 	paddingY = conf->getNumericValue("Polycode", "uiIconSelectorPaddingY");
-    
+	
 	bgRect = new UIBox(conf->getStringValue("Polycode", "uiIconSelectorBg"),
 						   st,sr,sb,sl,
 						   10, 10);
-    addChild(bgRect);
-    
-    selectorSize = height;
-    if(selectorSize == 0.0) {
-        selectorSize = conf->getNumericValue("Polycode", "uiIconSelectorDefaultSize");
-    }
-    
-    st = conf->getNumericValue("Polycode", "uiIconSelectorBoxT");
-    sr = conf->getNumericValue("Polycode", "uiIconSelectorBoxR");
-    sb = conf->getNumericValue("Polycode", "uiIconSelectorBoxB");
-    sl = conf->getNumericValue("Polycode", "uiIconSelectorBoxL");
-    
-    selectorRect = new UIBox(conf->getStringValue("Polycode", "uiIconSelectorBox"),
-                             st,sr,sb,sl,
-                             selectorSize, selectorSize);
-    addChild(selectorRect);
-    selectorRect->visible = false;
-    resetSize();
-    
+	addChild(bgRect);
+	
+	selectorSize = height;
+	if(selectorSize == 0.0) {
+		selectorSize = conf->getNumericValue("Polycode", "uiIconSelectorDefaultSize");
+	}
+	
+	st = conf->getNumericValue("Polycode", "uiIconSelectorBoxT");
+	sr = conf->getNumericValue("Polycode", "uiIconSelectorBoxR");
+	sb = conf->getNumericValue("Polycode", "uiIconSelectorBoxB");
+	sl = conf->getNumericValue("Polycode", "uiIconSelectorBoxL");
+	
+	selectorRect = new UIBox(conf->getStringValue("Polycode", "uiIconSelectorBox"),
+							 st,sr,sb,sl,
+							 selectorSize, selectorSize);
+	addChild(selectorRect);
+	selectorRect->visible = false;
+	resetSize();
+	
 }
 
 void UIIconSelector::addIcon(String fileName) {
-    UIImageButton *newIcon = new UIImageButton(fileName, 1.0, selectorSize, selectorSize);
-    icons.push_back(newIcon);
-    addChild(newIcon);
-    newIcon->addEventListener(this, UIEvent::CLICK_EVENT);
-    resetSize();
-    if(icons.size() == 1) {
-        selectIndex(0);
-    }
+	UIImageButton *newIcon = new UIImageButton(fileName, 1.0, selectorSize, selectorSize);
+	icons.push_back(newIcon);
+	addChild(newIcon);
+	newIcon->addEventListener(this, UIEvent::CLICK_EVENT);
+	resetSize();
+	if(icons.size() == 1) {
+		selectIndex(0);
+	}
 }
 
 void UIIconSelector::selectIndex(unsigned int index) {
-    selectedIndex = index;
-    selectorRect->visible = true;
-    selectorRect->setPosition(paddingX + (index * selectorSize), paddingY);
-    dispatchEvent(new UIEvent(), UIEvent::SELECT_EVENT);
+	selectedIndex = index;
+	selectorRect->visible = true;
+	selectorRect->setPosition(paddingX + (index * selectorSize), paddingY);
+	dispatchEvent(new UIEvent(), UIEvent::SELECT_EVENT);
 }
 
 unsigned int UIIconSelector::getSelectedIndex() {
-    return selectedIndex;
+	return selectedIndex;
 }
 
 void UIIconSelector::handleEvent(Event *event){
-    for(int i=0; i < icons.size(); i++) {
-        if(icons[i] == event->getDispatcher()) {
-            selectIndex(i);
-            return;
-        }
-    }
+	for(int i=0; i < icons.size(); i++) {
+		if(icons[i] == event->getDispatcher()) {
+			selectIndex(i);
+			return;
+		}
+	}
 }
 
 void UIIconSelector::resetSize() {
-    for(int i=0; i < icons.size(); i++) {
-        icons[i]->setPosition(paddingX+(selectorSize*i), paddingY);
-    }
-    
-    Number innerSize = icons.size() * selectorSize;
-    setWidth((paddingX*2)+innerSize);
-    setHeight((paddingY*2)+selectorSize);
-    
-    bgRect->resizeBox(getWidth(), getHeight());
+	for(int i=0; i < icons.size(); i++) {
+		icons[i]->setPosition(paddingX+(selectorSize*i), paddingY);
+	}
+	
+	Number innerSize = icons.size() * selectorSize;
+	setWidth((paddingX*2)+innerSize);
+	setHeight((paddingY*2)+selectorSize);
+	
+	bgRect->resizeBox(getWidth(), getHeight());
 }
 
 UIIconSelector::~UIIconSelector() {
 	if(!ownsChildren) {
-        for(int i=0; i < icons.size(); i++) {
-            delete icons[i];
-        }
-        delete bgRect;
-        delete selectorRect;
-    }
+		for(int i=0; i < icons.size(); i++) {
+			delete icons[i];
+		}
+		delete bgRect;
+		delete selectorRect;
+	}
 }

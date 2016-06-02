@@ -30,14 +30,14 @@ NewFileWindow::NewFileWindow() : UIWindow(L"Create New File", 580, 280) {
 	
 	closeOnEscape = true;	
 	
-	templateContainer = new UITreeContainer("boxIcon.png", L"File Templates", 250, 300-topPadding-padding-padding);	
+	templateContainer = new UITreeContainer("boxIcon.png", L"File Templates", 250, 300-topPadding-padding-padding); 
 	
 	FileTemplateUserData *data = new FileTemplateUserData();
 	data->type = 0;
 	templateContainer->getRootNode()->setUserData(data);			
 
 	addChild(templateContainer);		
-	templateContainer->setPosition(padding,topPadding+padding);	
+	templateContainer->setPosition(padding,topPadding+padding); 
 	templateContainer->getRootNode()->toggleCollapsed();
 	
 	templateContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
@@ -143,7 +143,7 @@ void NewFileWindow::parseTemplatesIntoTree(UITree *tree, OSFileEntry folder) {
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];	
 		if(entry.type != OSFileEntry::TYPE_FOLDER) {
-            UITree *newChild = tree->addTreeChild(PolycodeProjectBrowser::getIconForExtension(entry.extension), entry.nameWithoutExtension, NULL);
+			UITree *newChild = tree->addTreeChild(PolycodeProjectBrowser::getIconForExtension(entry.extension), entry.nameWithoutExtension, NULL);
 			FileTemplateUserData *data = new FileTemplateUserData();
 			data->type = 1;
 			data->templatePath = entry.fullPath;

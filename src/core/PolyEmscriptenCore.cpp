@@ -53,7 +53,7 @@ using std::vector;
 
 void EmscriptenCoreMutex::lock()
 {
-	//pthread_mutex_lock(&pMutex);    
+	//pthread_mutex_lock(&pMutex);	  
 }
 
 void EmscriptenCoreMutex::unlock() {
@@ -143,7 +143,7 @@ EmscriptenCore::EmscriptenCore(PolycodeView *view, int _xRes, int _yRes, bool fu
 #ifdef USE_X11
 	// Start listening to clipboard events.
 	// (Yes on X11 you need to actively listen to
-	//  clipboard events and respond to them)
+	//	clipboard events and respond to them)
 	init_scrap();
 #endif // USE_X11
 }
@@ -167,9 +167,9 @@ void EmscriptenCore::handleVideoModeChange(VideoModeChangeInfo* modeInfo){
 	
 	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24);
 	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute( SDL_GL_RED_SIZE,   8);
+	SDL_GL_SetAttribute( SDL_GL_RED_SIZE,	8);
 	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8);
-	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE,  8);
+	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE,	8);
 	SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8);
 	
 	if(aaLevel > 0) {
@@ -190,9 +190,9 @@ void EmscriptenCore::handleVideoModeChange(VideoModeChangeInfo* modeInfo){
 		flags |= SDL_RESIZABLE;
 	}
 	
-// 	if(modeInfo->retinaSupport) {
-// 		flags |= SDL_WINDOW_ALLOW_HIGHDPI;
-// 	}
+//	if(modeInfo->retinaSupport) {
+//		flags |= SDL_WINDOW_ALLOW_HIGHDPI;
+//	}
 /*
 	if(vSync) {
 		flags |= SDL_DOUBLEBUF;
@@ -238,13 +238,13 @@ EmscriptenCore::~EmscriptenCore() {
 }
 
 void EmscriptenCore::openURL(String url) {
-    int childExitStatus;
-    pid_t pid = fork();
-    if (pid == 0) {
+	int childExitStatus;
+	pid_t pid = fork();
+	if (pid == 0) {
 	execl("/usr/bin/xdg-open", "/usr/bin/xdg-open", url.c_str(), (char *)0);
-    } else {
-        pid_t ws = waitpid( pid, &childExitStatus, WNOHANG);
-    }
+	} else {
+		pid_t ws = waitpid( pid, &childExitStatus, WNOHANG);
+	}
 }
 
 String EmscriptenCore::executeExternalCommand(String command, String args, String inDirectory) {
@@ -327,12 +327,12 @@ bool EmscriptenCore::checkSpecialKeyEvents(PolyKEY key) {
 	}
 	
 	
-	if(key == KEY_z  && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL)) && (input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT))) {
+	if(key == KEY_z	 && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL)) && (input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT))) {
 		dispatchEvent(new Event(), Core::EVENT_REDO);
 		return true;
 	}
 		
-	if(key == KEY_z  && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
+	if(key == KEY_z	 && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
 		dispatchEvent(new Event(), Core::EVENT_UNDO);
 		return true;
 	}
@@ -477,7 +477,7 @@ CoreMutex *EmscriptenCore::createMutex() {
 }
 
 void EmscriptenCore::copyStringToClipboard(const String& str) {
-// 	SDL_SetClipboardText(str.c_str());
+//	SDL_SetClipboardText(str.c_str());
 }
 
 String EmscriptenCore::getClipboardString() {
@@ -488,33 +488,33 @@ void EmscriptenCore::createFolder(const String& folderPath) {
 }
 
 void EmscriptenCore::copyDiskItem(const String& itemPath, const String& destItemPath) {
-    int childExitStatus;
-    pid_t pid = fork();
-    if (pid == 0) {
-        execl("/bin/cp", "/bin/cp", "-RT", itemPath.c_str(), destItemPath.c_str(), (char *)0);
-    } else {
-        pid_t ws = waitpid( pid, &childExitStatus, 0);
-    }
+	int childExitStatus;
+	pid_t pid = fork();
+	if (pid == 0) {
+		execl("/bin/cp", "/bin/cp", "-RT", itemPath.c_str(), destItemPath.c_str(), (char *)0);
+	} else {
+		pid_t ws = waitpid( pid, &childExitStatus, 0);
+	}
 }
 
 void EmscriptenCore::moveDiskItem(const String& itemPath, const String& destItemPath) {
-    int childExitStatus;
-    pid_t pid = fork();
-    if (pid == 0) {
-        execl("/bin/mv", "/bin/mv", itemPath.c_str(), destItemPath.c_str(), (char *)0);
-    } else {
-        pid_t ws = waitpid( pid, &childExitStatus, 0);
-    }
+	int childExitStatus;
+	pid_t pid = fork();
+	if (pid == 0) {
+		execl("/bin/mv", "/bin/mv", itemPath.c_str(), destItemPath.c_str(), (char *)0);
+	} else {
+		pid_t ws = waitpid( pid, &childExitStatus, 0);
+	}
 }
 
 void EmscriptenCore::removeDiskItem(const String& itemPath) {
-    int childExitStatus;
-    pid_t pid = fork();
-    if (pid == 0) {
-        execl("/bin/rm", "/bin/rm", "-rf", itemPath.c_str(), (char *)0);
-    } else {
-        pid_t ws = waitpid( pid, &childExitStatus, 0);
-    }
+	int childExitStatus;
+	pid_t pid = fork();
+	if (pid == 0) {
+		execl("/bin/rm", "/bin/rm", "-rf", itemPath.c_str(), (char *)0);
+	} else {
+		pid_t ws = waitpid( pid, &childExitStatus, 0);
+	}
 }
 
 String EmscriptenCore::openFolderPicker() {
@@ -528,8 +528,8 @@ vector<String> EmscriptenCore::openFilePicker(vector<CoreFileExtension> extensio
 }
 
 String EmscriptenCore::saveFilePicker(std::vector<CoreFileExtension> extensions) {
-        String r = "";
-        return r;
+		String r = "";
+		return r;
 }
 
 void EmscriptenCore::resizeTo(int xRes, int yRes) {
@@ -539,21 +539,21 @@ void EmscriptenCore::resizeTo(int xRes, int yRes) {
 }
 
 bool EmscriptenCore::systemParseFolder(const String& pathString, bool showHidden, vector< OSFileEntry >& targetVector) {
-    DIR           *d;
-    struct dirent *dir;
-    
-    d = opendir(pathString.c_str());
-    if(d) {
-        while ((dir = readdir(d)) != NULL) {
-            if(dir->d_name[0] != '.' || (dir->d_name[0] == '.'  && showHidden)) {
-                if(dir->d_type == DT_DIR) {
-                    targetVector.push_back(OSFileEntry(pathString, dir->d_name, OSFileEntry::TYPE_FOLDER));
-                } else {
-                    targetVector.push_back(OSFileEntry(pathString, dir->d_name, OSFileEntry::TYPE_FILE));
-                }
-            }
-        }
-        closedir(d);
-    }
-    return true;
+	DIR			  *d;
+	struct dirent *dir;
+	
+	d = opendir(pathString.c_str());
+	if(d) {
+		while ((dir = readdir(d)) != NULL) {
+			if(dir->d_name[0] != '.' || (dir->d_name[0] == '.'	&& showHidden)) {
+				if(dir->d_type == DT_DIR) {
+					targetVector.push_back(OSFileEntry(pathString, dir->d_name, OSFileEntry::TYPE_FOLDER));
+				} else {
+					targetVector.push_back(OSFileEntry(pathString, dir->d_name, OSFileEntry::TYPE_FILE));
+				}
+			}
+		}
+		closedir(d);
+	}
+	return true;
 }

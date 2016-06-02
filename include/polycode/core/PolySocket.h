@@ -69,18 +69,18 @@ namespace Polycode {
 		/**
 		* Constructor.
 		* @param ipAsString An IP address represented as string,
-		*                   for example "127.0.0.1"
+		*					for example "127.0.0.1"
 		* @param port The UDP/TCP port of the address, given in
-		*             host byte order.
+		*			  host byte order.
 		*/
 		Address(String ipAsString, unsigned int port);
 
 		/**
 		* Constructor.
 		* @param ip An IP address given as integer in host byte
-		*           order.
+		*			order.
 		* @param port The UDP/TCP port of the address, given in
-		*             host byte order.
+		*			  host byte order.
 		*/
 		Address(unsigned int ip, unsigned int port);
 
@@ -103,33 +103,33 @@ namespace Polycode {
 		/**
 		* @return 1 if the address IP and port match, 0 otherwise.
 		*/
-		inline bool operator == ( const Address& add2)  {
+		inline bool operator == ( const Address& add2)	{
 			return (uintAddress == add2.uintAddress && port == add2.port);
 		}
 			
 		/**
 		* Update the address IP and port.
 		* @param ipAsString An IP address represented as string,
-		*                   for example "197.0.0.1"
+		*					for example "197.0.0.1"
 		* @param port The UDP/TCP port of the address, given in
-		*             host byte order.
+		*			  host byte order.
 		*/
 		void setAddress(String ipAsString, unsigned int port);
 
 		/**
 		* Update the address IP and port.
 		* @param ip An IP address given as integer in host byte
-		*           order.
+		*			order.
 		* @param port The UDP/TCP port of the address, given in
-		*             host byte order.
+		*			  host byte order.
 		*/
 		void setAddress(unsigned int ip, unsigned int port);
 		
 		// TODO: A way to get the IP/port without exposing internal members.
-		//       The problem here is that the IP internally is converted to
-		//       network byte order, but the API seems to work with host byte
-		//       order, so I'm unsure in which byte order the IP/port should
-		//       be returned.
+		//		 The problem here is that the IP internally is converted to
+		//		 network byte order, but the API seems to work with host byte
+		//		 order, so I'm unsure in which byte order the IP/port should
+		//		 be returned.
 
 		protected:
 		unsigned int uintAddress;

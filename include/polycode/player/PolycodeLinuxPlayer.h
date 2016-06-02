@@ -35,5 +35,5 @@ class PolycodeLinuxPlayer : public PolycodePlayer {
 	
 	protected:
 
-		PolycodeView *view;	
+		PolycodeView *view; 
 };

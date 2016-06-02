@@ -30,7 +30,7 @@ using namespace Polycode;
 using std::vector;
 
 ServerClient::ServerClient() {
-    clientReady	= false;
+	clientReady = false;
 }
 
 ServerClient::~ServerClient() {
@@ -38,12 +38,12 @@ ServerClient::~ServerClient() {
 }
 
 ServerClientEvent *ServerClient::handlePacket(Packet *packet) {
-	ServerClientEvent *event = new ServerClientEvent();	
+	ServerClientEvent *event = new ServerClientEvent(); 
 	event->data = packet->data;
 	event->dataSize = packet->header.size;
 	event->dataType = packet->header.type;
 	event->client = this;
-	dispatchEvent(event, ServerClientEvent::EVENT_CLIENT_DATA);	
+	dispatchEvent(event, ServerClientEvent::EVENT_CLIENT_DATA); 
 	return event;
 }
 
@@ -108,7 +108,7 @@ void Server::handlePeerConnection(PeerConnection *connection) {
 	clients.push_back(newClient);	
 
 	unsigned short clientID = newClient->clientID;
-    printf("SENDING PACKET_TYPE_SETCLIENT_ID\n");
+	printf("SENDING PACKET_TYPE_SETCLIENT_ID\n");
 	sendReliableData(newClient->connection->address, (char*)&clientID, sizeof(unsigned short), PACKET_TYPE_SETCLIENT_ID);
 
 }
@@ -150,12 +150,12 @@ void Server::handlePacket(Packet *packet, PeerConnection *connection) {
 	switch (packet->header.type) {
 		case PACKET_TYPE_CLIENT_READY:
 		{
-            if(!client->clientReady) {
-                client->clientReady = true;
-                ServerEvent *event = new ServerEvent();
-                event->client = client;
-                dispatchEvent(event, ServerEvent::EVENT_CLIENT_CONNECTED);
-            }
+			if(!client->clientReady) {
+				client->clientReady = true;
+				ServerEvent *event = new ServerEvent();
+				event->client = client;
+				dispatchEvent(event, ServerEvent::EVENT_CLIENT_CONNECTED);
+			}
 		}
 		break;
 		case PACKET_TYPE_DISONNECT:

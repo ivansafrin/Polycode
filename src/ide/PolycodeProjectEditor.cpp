@@ -60,29 +60,29 @@ ProjectFontEntry::ProjectFontEntry(String fontPath, String fontName) : UIElement
 	addFocusChild(fontFileLabel);
 	fontFileLabel->setPosition(140, 3);
 	
-    ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
-    globalPool->loadResourceWithName(fontPath, fontName);
+	ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
+	globalPool->loadResourceWithName(fontPath, fontName);
 }
 
 void ProjectFontEntry::handleEvent(Event *event) {
-    
-    ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
-    
+	
+	ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
+	
 	if(event->getDispatcher() == fontNameInput && event->getEventCode() == UIEvent::CHANGE_EVENT && event->getEventType() == "UIEvent") {
-        Font *font = (Font*) globalPool->getResourceByPath(fontPath);
+		Font *font = (Font*) globalPool->getResourceByPath(fontPath);
 		if(font) {
 			font->setResourceName(fontNameInput->getText());
 		}
 	}
 	
 	if(event->getDispatcher() == removeButton && event->getEventCode() == UIEvent::CLICK_EVENT && event->getEventType() == "UIEvent") {
-        
-        Font *font = (Font*) globalPool->getResourceByPath(fontPath);
-        if(font) {
-            globalPool->removeResource(font);
-            font->setResourceName(fontNameInput->getText());
-        }
-        
+		
+		Font *font = (Font*) globalPool->getResourceByPath(fontPath);
+		if(font) {
+			globalPool->removeResource(font);
+			font->setResourceName(fontNameInput->getText());
+		}
+		
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 	}
 }
@@ -153,7 +153,7 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	lastYPos += 30;
 	
 	fontEntryBase = new UIElement();
-	moduleSettingsWindow->addFocusChild(fontEntryBase);	
+	moduleSettingsWindow->addFocusChild(fontEntryBase); 
 	fontEntryBase->setPosition(0, lastYPos);
 			
 	addFontButton = new UIButton("Add Font", 100);
@@ -174,7 +174,7 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	mainSettingsWindow->addFocusChild(label2);
 	label2->setPosition(padding + 6, 80);		
 	
-	defaultWidthInput = new UITextInput(false, 60, 12);	
+	defaultWidthInput = new UITextInput(false, 60, 12); 
 	mainSettingsWindow->addFocusChild(defaultWidthInput);
 	defaultWidthInput->setPosition(label2->getPosition().x-6, label2->getPosition().y+18);
 	defaultWidthInput->setNumberOnly(true);
@@ -209,7 +209,7 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	texFilteringComboBox->setPosition(label2->getPosition().x - 6, label2->getPosition().y+18);
 	
 
-	label2 = new UILabel(L"Anisotropic filtering:", fontSize, fontName, Label::ANTIALIAS_FULL);	
+	label2 = new UILabel(L"Anisotropic filtering:", fontSize, fontName, Label::ANTIALIAS_FULL); 
 	mainSettingsWindow->addFocusChild(label2);
 	label2->setPosition(padding + 6, texFilteringComboBox->getPosition().y+30);		
 	
@@ -235,7 +235,7 @@ PolycodeProjectEditor::PolycodeProjectEditor(PolycodeProjectManager *projectMana
 	vSyncCheckBox->setPosition(label2->getPosition().x + 80, label2->getPosition().y+18);
 	mainSettingsWindow->addFocusChild(vSyncCheckBox);
 	
-	label2 = new UILabel(L"STARTUP OPTIONS", 18, "section", Label::ANTIALIAS_FULL);	
+	label2 = new UILabel(L"STARTUP OPTIONS", 18, "section", Label::ANTIALIAS_FULL); 
 	label2->color.setColorHexFromString(conf->getStringValue("Polycode", "uiSectionFontColor"));
 	mainSettingsWindow->addFocusChild(label2);
 	label2->setPosition(padding, vSyncCheckBox->getPosition().y+vSyncCheckBox->getHeight()+20);		
@@ -399,7 +399,7 @@ bool PolycodeProjectEditor::openFile(OSFileEntry filePath) {
 
 	bgColorBox->setBoxColor(Color(associatedProject->data.backgroundColorR, associatedProject->data.backgroundColorG, associatedProject->data.backgroundColorB, 1.0));	
 	
-	PolycodeEditor::openFile(filePath);	
+	PolycodeEditor::openFile(filePath); 
 	refreshFontEntries();	
 	isLoading = false;	
 	return true;

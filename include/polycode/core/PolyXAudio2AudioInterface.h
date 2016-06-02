@@ -1,4 +1,4 @@
-    
+	
 /*
 Copyright (C) 2015 by Ivan Safrin
 
@@ -34,7 +34,7 @@ THE SOFTWARE.
 #define MAX_XAUDIO_BUFFER_COUNT 4
 
 #ifndef SAFE_RELEASE
-#define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=nullptr; } }
+#define SAFE_RELEASE(p)		 { if(p) { (p)->Release(); (p)=nullptr; } }
 #endif
 
 
@@ -105,15 +105,15 @@ namespace Polycode {
 
 	};
 
-    class XAudio2AudioInterface : public Polycode::AudioInterface {
-        public:
+	class XAudio2AudioInterface : public Polycode::AudioInterface {
+		public:
 			XAudio2AudioInterface();
-            ~XAudio2AudioInterface();
+			~XAudio2AudioInterface();
 			void setMixer(AudioMixer *mixer);
 
-        private:
+		private:
 			
 			XAudio2Stream *xAudioStream;
-    };
-    
+	};
+	
 }

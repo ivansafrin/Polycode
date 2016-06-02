@@ -268,8 +268,8 @@ void UIFileDialog::handleEvent(Event *event) {
 						entries[i]->Select();
 						currentEntry = entries[i];
 
-						if((foldersOnly &&  entries[i]->fileEntry.type == OSFileEntry::TYPE_FOLDER) 
-							|| (!foldersOnly &&  entries[i]->fileEntry.type == OSFileEntry::TYPE_FILE)) {
+						if((foldersOnly &&	entries[i]->fileEntry.type == OSFileEntry::TYPE_FOLDER) 
+							|| (!foldersOnly &&	 entries[i]->fileEntry.type == OSFileEntry::TYPE_FILE)) {
 							selection = entries[i]->fileEntry.fullPath;
 						}
 					}

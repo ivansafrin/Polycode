@@ -36,7 +36,7 @@ class CoreFile;
 namespace Polycode {
 	
 	class String;
-    class Mesh;
+	class Mesh;
 		
 	typedef struct {
 		float x;
@@ -63,18 +63,18 @@ namespace Polycode {
 	class _PolyExport MeshGeometry {
 		public:
 			
-        
-            MeshGeometry();
+		
+			MeshGeometry();
 			/**
 			* Construct with an empty mesh of specified type.
 			* @param meshType Type of mesh. Possible values are: Mesh::TRISTRIP_MESH, Mesh::TRI_MESH, Mesh::TRIFAN_MESH, Mesh::TRISTRIP_MESH, Mesh::LINE_MESH, Mesh::POINT_MESH.
 			*/			
 			explicit MeshGeometry(int meshType);
 			virtual ~MeshGeometry();
-        
-            MeshGeometry(const MeshGeometry &geom);
-            MeshGeometry &operator=(const MeshGeometry &geom);
-        
+		
+			MeshGeometry(const MeshGeometry &geom);
+			MeshGeometry &operator=(const MeshGeometry &geom);
+		
 			/**
 			* Clears mesh data.
 			*/
@@ -107,16 +107,16 @@ namespace Polycode {
 			* Creates a 2D circle.
 			* @param w Width of circle.
 			* @param h Height of plane.			
-			* @param numSegments Number of segments 			
+			* @param numSegments Number of segments				
 			*/ 
 			void createCircle(Number w, Number h, unsigned int numSegments, Number tilingValue = 1.0);
 
-            /**
-             * Creates a 2D circle with normals pointing outwards from vertices.
-             * @param w Width of circle.
-             * @param h Height of plane.
-             * @param numSegments Number of segments
-             */
+			/**
+			 * Creates a 2D circle with normals pointing outwards from vertices.
+			 * @param w Width of circle.
+			 * @param h Height of plane.
+			 * @param numSegments Number of segments
+			 */
 			void createLineCircle(Number w, Number h, unsigned int numSegments, Number tilingValue = 1.0);
 
 			/**
@@ -125,7 +125,7 @@ namespace Polycode {
 			* @param tubeRadius Radious of the tube.
 			* @param rSegments Number of radial segments.
 			* @param tSegments Number of tube segments.
-			*/ 	
+			*/	
 			void createTorus(Number radius, Number tubeRadius, int segmentsW, int segmentsH, Number tilingValue = 1.0);
 			
 			/**
@@ -133,7 +133,7 @@ namespace Polycode {
 			* @param w Width of cube.
 			* @param d Depth of cube.			
 			* @param h Height of cube.
-			*/ 			
+			*/			
 			void createBox(Number w, Number d, Number h, Number tilingValue = 1.0);
 			
 			/**
@@ -141,7 +141,7 @@ namespace Polycode {
 			* @param radius Radius of sphere.
 			* @param numRings Number of rings.	
 			* @param numSegments Number of segments.
-			*/ 						
+			*/						
 			void createSphere(Number radius, int numRings, int numSegments, Number tilingValue = 1.0);
 
 			/**
@@ -164,7 +164,7 @@ namespace Polycode {
 			* @param radius Radius of the cylinder.
 			* @param numSegments Number of segments.
 			* @param capped Create the end caps.
-			*/ 								
+			*/								
 			void createCylinder(Number height, Number radius, int numSegments, bool capped = true, Number tilingValue = 1.0);
 
 			/**
@@ -172,7 +172,7 @@ namespace Polycode {
 			* @param height Height of the cone.
 			* @param radius Radius of the cone.
 			* @param numSegments Number of segments.
-			*/ 								
+			*/								
 			void createCone(Number height, Number radius, int numSegments, Number tilingValue = 1.0);
 
 		
@@ -181,37 +181,37 @@ namespace Polycode {
 			*/
 			Vector3 recenterMesh();
 
-            void setVertexAtOffset(unsigned int offset, Number x, Number y, Number z);
-        
-            void addVertexWithUVAndNormal(Number x, Number y, Number z, Number u, Number v, Number nx, Number ny, Number nz);
+			void setVertexAtOffset(unsigned int offset, Number x, Number y, Number z);
 		
-            void addTexCoord(Number u, Number v);
-            void addTexCoord2(Number u, Number v);
-        
-            void addTangent(Number x, Number y, Number z);
-        
-            void addVertexWithUV(Number x, Number y, Number z, Number u, Number v);
-        
-            void addVertex(Number x, Number y, Number z);
-        
-            void addNormal(Number nx, Number ny, Number nz);
-            void addNormal(const Vector3 &n);
+			void addVertexWithUVAndNormal(Number x, Number y, Number z, Number u, Number v, Number nx, Number ny, Number nz);
+		
+			void addTexCoord(Number u, Number v);
+			void addTexCoord2(Number u, Number v);
+		
+			void addTangent(Number x, Number y, Number z);
+		
+			void addVertexWithUV(Number x, Number y, Number z, Number u, Number v);
+		
+			void addVertex(Number x, Number y, Number z);
+		
+			void addNormal(Number nx, Number ny, Number nz);
+			void addNormal(const Vector3 &n);
 
-            void addBoneAssignments(Number b1Weight, unsigned int b1Index, Number b2Weight, unsigned int b2Index, Number b3Weight, unsigned int b3Index, Number b4Weight, unsigned int b4Index);
-        
-            void addColor(Number r, Number g, Number b, Number a);
-            void addColor(const Color &color);
-        
-        
-            Vector3 getVertexPosition(unsigned int vertexOffset);
-        
-            Vector3 getVertexPositionAtIndex(unsigned int index);
+			void addBoneAssignments(Number b1Weight, unsigned int b1Index, Number b2Weight, unsigned int b2Index, Number b3Weight, unsigned int b3Index, Number b4Weight, unsigned int b4Index);
+		
+			void addColor(Number r, Number g, Number b, Number a);
+			void addColor(const Color &color);
+		
+		
+			Vector3 getVertexPosition(unsigned int vertexOffset);
+		
+			Vector3 getVertexPositionAtIndex(unsigned int index);
 
-            Vector2 getVertexTexCoord(unsigned int vertexOffset);
-        
-            Vector2 getVertexTexCoordAtIndex(unsigned int index);
-        
-            MeshGeometry *Copy() const;
+			Vector2 getVertexTexCoord(unsigned int vertexOffset);
+		
+			Vector2 getVertexTexCoordAtIndex(unsigned int index);
+		
+			MeshGeometry *Copy() const;
 			
 			/**
 			* Returns the radius of the mesh (furthest vertex away from origin).
@@ -289,12 +289,12 @@ namespace Polycode {
 			* Line loop based mesh.
 			*/									
 			static const int LINE_LOOP_MESH = 7;
-        
-        
-        
-            void addIndexedFace(unsigned int i1, unsigned int i2);
-            void addIndexedFace(unsigned int i1, unsigned int i2, unsigned int i3);
-            void addIndexedFace(unsigned int i1, unsigned int i2, unsigned int i3, unsigned int i4);
+		
+		
+		
+			void addIndexedFace(unsigned int i1, unsigned int i2);
+			void addIndexedFace(unsigned int i1, unsigned int i2, unsigned int i3);
+			void addIndexedFace(unsigned int i1, unsigned int i2, unsigned int i3, unsigned int i4);
 			void addIndex(unsigned int index);
 
 			/** Removes a range of vertices starting at beginRemoveVertex. vertexRemovalCount should be a multiple of the num
@@ -304,115 +304,115 @@ namespace Polycode {
 			void removeVertexRange(unsigned int beginRemoveVertex, int vertexRemovalCount = 3);
 
 			/** Removes a face from the mesh. Face is defined as a triangle for TRI_MESH, or a line for LI
-			 *  In indexedMesh mode this may result in orphaned vertices.
+			 *	In indexedMesh mode this may result in orphaned vertices.
 			 * @param faceIndex The 0-indexed face of the mesh (and NOT the index into the indices array!) */
 			void removeFace(unsigned int faceIndex);
 
 			/** For indexedMesh only, removes any unused vertices from the mesh. */
 			int removeUnusedVertices();
-        
-            unsigned int getIndexCount();
-        
-            void subdivideToRadius(Number radius, int subdivisions);
-        
-            static Vector3 calculateFaceTangent(const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector2 &texCoord1, const Vector2 &texCoord2, const Vector2 &texCoord3);
-        
-            void saveAsOBJ(const String fileName);
-        
-            void normalizeBoneWeights();
-        
-            VertexDataArray vertexPositionArray;
-            VertexDataArray vertexColorArray;
-            VertexDataArray vertexNormalArray;
-            VertexDataArray vertexTexCoordArray;
-            VertexDataArray vertexTexCoord2Array;
-            VertexDataArray vertexTangentArray;
-        
-            VertexDataArray vertexBoneWeightArray;
-            VertexDataArray vertexBoneIndexArray;
-        
-            VertexDataArray customVertexArray1;
-            VertexDataArray customVertexArray2;
-            VertexDataArray customVertexArray3;
-            VertexDataArray customVertexArray4;
-        
-            IndexDataArray indexArray;
-        
-            int meshType;
-            bool dataChanged;
-            bool indexedMesh;
+		
+			unsigned int getIndexCount();
+		
+			void subdivideToRadius(Number radius, int subdivisions);
+		
+			static Vector3 calculateFaceTangent(const Vector3 &v1, const Vector3 &v2, const Vector3 &v3, const Vector2 &texCoord1, const Vector2 &texCoord2, const Vector2 &texCoord3);
+		
+			void saveAsOBJ(const String fileName);
+		
+			void normalizeBoneWeights();
+		
+			VertexDataArray vertexPositionArray;
+			VertexDataArray vertexColorArray;
+			VertexDataArray vertexNormalArray;
+			VertexDataArray vertexTexCoordArray;
+			VertexDataArray vertexTexCoord2Array;
+			VertexDataArray vertexTangentArray;
+		
+			VertexDataArray vertexBoneWeightArray;
+			VertexDataArray vertexBoneIndexArray;
+		
+			VertexDataArray customVertexArray1;
+			VertexDataArray customVertexArray2;
+			VertexDataArray customVertexArray3;
+			VertexDataArray customVertexArray4;
+		
+			IndexDataArray indexArray;
+		
+			int meshType;
+			bool dataChanged;
+			bool indexedMesh;
 	};
-    
-    class _PolyExport Mesh : public Resource {
-        public:
-        
-        
-            Mesh();
-            /**
-             * Construct from a mesh loaded from a file.
-             * @param fileName Path to mesh file.
-             */
-            explicit Mesh(const String& fileName);
-        
-            ~Mesh();
-        
-            /**
-             * Construct from a mesh loaded from a file.
-             * @param fileName Path to mesh file.
-             */
-            static Mesh *MeshFromFileName(String& fileName);
-        
-        
-            Mesh *Copy() const;
-        
-            /**
-             * Loads a mesh from a file.
-             * @param fileName Path to mesh file.
-             */
-            void loadMesh(const String& fileName);
-            /**
-             * Saves mesh to a file.
-             * @param fileName Path to file to save to.
-             */
-            void saveToFile(const String& fileName, bool writeNormals = true, bool writeTangents = true, bool writeColors = true, bool writeBoneWeights = true, bool writeUVs = true, bool writeSecondaryUVs = false);
-            
-            void loadFromFile(CoreFile *inFile);
-        
-            void saveToFile(CoreFile *outFile, bool writeNormals = true, bool writeTangents = true, bool writeColors = true, bool writeBoneWeights = true, bool writeUVs = true, bool writeSecondaryUVs = false) const;
-        
-            void addSubmesh(const MeshGeometry &newSubmesh);
-            void removeSubmeshAtIndex(unsigned int index);
-        
-            unsigned int getNumSubmeshes() const;
-            MeshGeometry getSubmeshAtIndex(unsigned int index) const;
-        
-            /**
-             * Returns an unsafe pointer to submesh.
-             @param index Index of submesh to return pointer to.
-             **/
-            std::shared_ptr<MeshGeometry> getSubmeshPointer(unsigned int index);
-        
-            void clearMesh();
-        
-            /**
-             * Calculates the mesh bounding box.
-             */
-            Vector3 calculateBBox();
-        
-            /**
-             * Returns the radius of the mesh (furthest vertex away from origin).
-             * @return Mesh radius.
-             */
-            Number getRadius();
-        
-        private:
-        
-            std::vector<std::shared_ptr<MeshGeometry>> submeshes;
-        
-            void loadFromFileV2(Polycode::CoreFile *inFile);
-            void loadFromFileLegacyV1(Polycode::CoreFile *inFile);
-            
-            void writeVertexBlock(const VertexDataArray &array, Polycode::CoreFile *outFile) const ;
-            void writeIndexBlock(const IndexDataArray &array, Polycode::CoreFile *outFile) const ;
-    };
+	
+	class _PolyExport Mesh : public Resource {
+		public:
+		
+		
+			Mesh();
+			/**
+			 * Construct from a mesh loaded from a file.
+			 * @param fileName Path to mesh file.
+			 */
+			explicit Mesh(const String& fileName);
+		
+			~Mesh();
+		
+			/**
+			 * Construct from a mesh loaded from a file.
+			 * @param fileName Path to mesh file.
+			 */
+			static Mesh *MeshFromFileName(String& fileName);
+		
+		
+			Mesh *Copy() const;
+		
+			/**
+			 * Loads a mesh from a file.
+			 * @param fileName Path to mesh file.
+			 */
+			void loadMesh(const String& fileName);
+			/**
+			 * Saves mesh to a file.
+			 * @param fileName Path to file to save to.
+			 */
+			void saveToFile(const String& fileName, bool writeNormals = true, bool writeTangents = true, bool writeColors = true, bool writeBoneWeights = true, bool writeUVs = true, bool writeSecondaryUVs = false);
+			
+			void loadFromFile(CoreFile *inFile);
+		
+			void saveToFile(CoreFile *outFile, bool writeNormals = true, bool writeTangents = true, bool writeColors = true, bool writeBoneWeights = true, bool writeUVs = true, bool writeSecondaryUVs = false) const;
+		
+			void addSubmesh(const MeshGeometry &newSubmesh);
+			void removeSubmeshAtIndex(unsigned int index);
+		
+			unsigned int getNumSubmeshes() const;
+			MeshGeometry getSubmeshAtIndex(unsigned int index) const;
+		
+			/**
+			 * Returns an unsafe pointer to submesh.
+			 @param index Index of submesh to return pointer to.
+			 **/
+			std::shared_ptr<MeshGeometry> getSubmeshPointer(unsigned int index);
+		
+			void clearMesh();
+		
+			/**
+			 * Calculates the mesh bounding box.
+			 */
+			Vector3 calculateBBox();
+		
+			/**
+			 * Returns the radius of the mesh (furthest vertex away from origin).
+			 * @return Mesh radius.
+			 */
+			Number getRadius();
+		
+		private:
+		
+			std::vector<std::shared_ptr<MeshGeometry>> submeshes;
+		
+			void loadFromFileV2(Polycode::CoreFile *inFile);
+			void loadFromFileLegacyV1(Polycode::CoreFile *inFile);
+			
+			void writeVertexBlock(const VertexDataArray &array, Polycode::CoreFile *outFile) const ;
+			void writeIndexBlock(const IndexDataArray &array, Polycode::CoreFile *outFile) const ;
+	};
 }

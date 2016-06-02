@@ -10,7 +10,7 @@ size_t DownloaderCallback(char *ptr, size_t size, size_t nmemb, void *userdata) 
 	
 	memcpy(downloader->data+downloader->size, ptr, (size*nmemb));
 	
-	downloader->size = newSize;	
+	downloader->size = newSize; 
 	return size * nmemb;
 }
 
@@ -46,9 +46,9 @@ void PolycodeDownloader::runThread() {
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, DownloaderCallback);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, this);
 	curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
-    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
-    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
-    
+	curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+	curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+	
 	CURLcode curl_res = curl_easy_perform(curl);
 	
 	curl_easy_cleanup(curl);	

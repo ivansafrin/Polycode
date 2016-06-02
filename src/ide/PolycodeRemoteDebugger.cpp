@@ -56,8 +56,8 @@ void PolycodeRemoteDebugger::Disconnect() {
 }
 
 void PolycodeRemoteDebugger::resetDebugger() {
-    receivedBacktraceData.clear();
-    hasErred = false;
+	receivedBacktraceData.clear();
+	hasErred = false;
 }
 
 void PolycodeRemoteDebugger::handleEvent(Event *event) {
@@ -86,27 +86,27 @@ void PolycodeRemoteDebugger::handleEvent(Event *event) {
 							
 							CoreServices::getInstance()->getCore()->makeApplicationMain();
 						}
-                        hasErred = true;
+						hasErred = true;
 					}
 						break;			
 					case EVENT_DEBUG_BACKTRACE_INFO:
 					{			
 						
-                        
+						
 						RemoteBacktraceData *data = (RemoteBacktraceData*)serverEvent->data;
-                        
-                        for(int i=0;i <receivedBacktraceData.size(); i++) {
-                            if(receivedBacktraceData[i].lineNumber == data->lineNumber && String(receivedBacktraceData[i].fileName) == String(data->fileName)) {
-                                return;
-                            }
-                        }
-                        
-                        
+						
+						for(int i=0;i <receivedBacktraceData.size(); i++) {
+							if(receivedBacktraceData[i].lineNumber == data->lineNumber && String(receivedBacktraceData[i].fileName) == String(data->fileName)) {
+								return;
+							}
+						}
+						
+						
 						PolycodeConsole::print("In file "+String(data->fileName)+" on line "+String::IntToString(data->lineNumber)+"\n");
 						
 						PolycodeConsole::addBacktrace(String(data->fileName), data->lineNumber, projectManager->getActiveProject());
-                        
-                        receivedBacktraceData.push_back(*data);
+						
+						receivedBacktraceData.push_back(*data);
 						
 					}
 						break;							
@@ -132,7 +132,7 @@ void PolycodeRemoteDebugger::handleEvent(Event *event) {
 				DebuggerClient *newClient = new DebuggerClient();
 				newClient->client = serverEvent->client;
 				PolycodeConsole::print("Remote debugger client connected...\n");
-                printf("CLIENT CONNECTED\n");
+				printf("CLIENT CONNECTED\n");
 				debuggerClients.push_back(newClient);				
 			}
 				break;

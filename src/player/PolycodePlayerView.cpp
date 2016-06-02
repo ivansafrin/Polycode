@@ -83,7 +83,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				m.time = 0;
 				if ( PeekMessage(&m, hWnd, 0, WM_USER, PM_NOREMOVE) && (m.message == WM_CHAR) ) {
 					GetMessage(&m, hWnd, 0, WM_USER);
-			    		unicodeChar = (wchar_t)m.wParam;
+						unicodeChar = (wchar_t)m.wParam;
 				}
 
 			core->handleKeyDown(lParam,wParam, unicodeChar);
@@ -101,13 +101,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
-      case WM_COMMAND:
-            switch(LOWORD(wParam))
-            {
-                case ID_FILE_EXIT:
+	  case WM_COMMAND:
+			switch(LOWORD(wParam))
+			{
+				case ID_FILE_EXIT:
 					if(core)
 						core->Shutdown();
-                break;
+				break;
 				 case ID_FILE_OPEN:
 					 {
 					TCHAR szFile[2048];
@@ -139,13 +139,13 @@ ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 							 CreateProcess(fullLine.getWDataWithEncoding(String::ENCODING_UTF8), szFile, NULL, NULL, false, 0, 0, NULL, &si, &pi);
 						 }
 					 }
-                break;
-                case ID_SHOW_CONSOLE:
+				break;
+				case ID_SHOW_CONSOLE:
 					ShowWindow(consoleHwnd, SW_SHOW);
 					UpdateWindow(consoleHwnd);
-                break;
-            }
-        break;
+				break;
+			}
+		break;
 	default:
 		useDefault = true;
 		break;
@@ -220,7 +220,7 @@ WNDCLASSEX wcex;
 	wcex.cbWndExtra		= 0;
 	wcex.hInstance		= hInstance;
 	wcex.hIcon			= LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_MYICON));
-	//wcex.hIconSm  = (HICON)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_MYICON), IMAGE_ICON, 16, 16, 0);
+	//wcex.hIconSm	= (HICON)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_MYICON), IMAGE_ICON, 16, 16, 0);
 	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground	= NULL;
 	if(standaloneMode) {
@@ -234,7 +234,7 @@ WNDCLASSEX wcex;
 	RegisterClassEx(&wcex);
 
   hwnd = CreateWindowEx(WS_EX_APPWINDOW, L"POLYCODEAPPLICATION", windowTitle, WS_OVERLAPPED|WS_SYSMENU,
-      0, 0, 640, 480, NULL, NULL, hInstance, NULL);
+	  0, 0, 640, 480, NULL, NULL, hInstance, NULL);
 
   windowData = (void*)&hwnd;
 

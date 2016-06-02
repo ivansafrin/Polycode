@@ -35,7 +35,7 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	continuous = true;
 
 	Config *conf = CoreServices::getInstance()->getConfig();	
-    Number uiScale = conf->getNumericValue("Polycode", "uiScale");
+	Number uiScale = conf->getNumericValue("Polycode", "uiScale");
 		
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
 	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");
@@ -59,40 +59,40 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	alphaSlider->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
 	mainColorRect = new SceneMesh();
-    mainColorRect->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+	mainColorRect->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	mainColorRect->setWidth(mainFrame->getWidth());
 	mainColorRect->setHeight(mainFrame->getWidth());
 	mainColorRect->setDepth(0.001);
-    
-    
-    MeshGeometry geometry;
-    
+	
+	
+	MeshGeometry geometry;
+	
 	geometry.addVertexWithUV(-mainFrame->getWidth()/2,mainFrame->getHeight()/2.0,0,0,0);
 	geometry.addVertexWithUV(mainFrame->getWidth()/2,mainFrame->getHeight()/2.0,0, 1, 0);
 	geometry.addVertexWithUV(mainFrame->getWidth()/2,-mainFrame->getHeight()/2.0,0, 1, 1);
 	geometry.addVertexWithUV(-mainFrame->getWidth()/2,-mainFrame->getHeight()/2.0,0,0,1);
-    geometry.indexedMesh = true;
-        
-    geometry.addIndexedFace(3, 0, 1);
-    geometry.addIndexedFace(3, 1, 2);
-    
-    mainColorRect->getMesh()->addSubmesh(geometry);
-    
+	geometry.indexedMesh = true;
+		
+	geometry.addIndexedFace(3, 0, 1);
+	geometry.addIndexedFace(3, 1, 2);
+	
+	mainColorRect->getMesh()->addSubmesh(geometry);
+	
 	mainColorRect->backfaceCulled = false;	
 
 	mainColorRect->setAnchorPoint(-1.0, -1.0, 0.0);
 	mainColorRect->setPosition(padding, topPadding+padding);
 	addChild(mainColorRect);
 	addChild(mainFrame);
-    
-    mainColorRect->setMaterialByName("UnlitUntexturedVertexColor");
+	
+	mainColorRect->setMaterialByName("UnlitUntexturedVertexColor");
 
 	hueFrame = new UIImage(hueFrameImage, 20, 187);
 	hueFrame->setPosition(mainFrame->getPosition().x + mainFrame->getWidth()+10, topPadding+padding);
 	addChild(hueFrame);
 	
 	hueSelector = new UIImage(hueSelectorImage);
-    hueSelector->Resize(hueSelector->getWidth() / uiScale, hueSelector->getHeight() / uiScale);
+	hueSelector->Resize(hueSelector->getWidth() / uiScale, hueSelector->getHeight() / uiScale);
 	hueSelector->setAnchorPoint(0.0, 0.0, 0.0);
 	hueSelector->setPosition(hueFrame->getPosition().x + (hueFrame->getWidth()/2.0), hueFrame->getPosition().y);
 	addChild(hueSelector);	
@@ -100,10 +100,10 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	hueSelector->setDragLimits(Polycode::Rectangle(hueSelector->getPosition().x,hueSelector->getPosition().y,0,hueFrame->getHeight()));
 				
 	mainSelector = new UIImage(mainSelectorImage);
-    mainSelector->Resize(mainSelector->getWidth() / uiScale, mainSelector->getHeight() / uiScale);
+	mainSelector->Resize(mainSelector->getWidth() / uiScale, mainSelector->getHeight() / uiScale);
 	mainSelector->setAnchorPoint(0.0, 0.0, 0.0);
 	mainSelector->setPosition(mainFrame->getPosition());
-	addChild(mainSelector);	
+	addChild(mainSelector); 
 	
 	
 	mainColorRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
@@ -186,10 +186,10 @@ void UIColorPicker::onClose() {
 }
 
 void UIColorPicker::rebuildFromTextInputs() {
-	int	newR = atoi(rTextInput->getText().c_str());
-	int	newG = atoi(gTextInput->getText().c_str());
-	int	newB = atoi(bTextInput->getText().c_str());
-	int	newA = atoi(aTextInput->getText().c_str());			
+	int newR = atoi(rTextInput->getText().c_str());
+	int newG = atoi(gTextInput->getText().c_str());
+	int newB = atoi(bTextInput->getText().c_str());
+	int newA = atoi(aTextInput->getText().c_str());			
 	
 	
 	if(newR < 0)
@@ -210,7 +210,7 @@ void UIColorPicker::rebuildFromTextInputs() {
 	if(newA < 0)
 		newA = 0;
 	if(newA > 255)
-		newA = 255;	
+		newA = 255; 
 	
 	Color newColor;
 	newColor.setColorRGBA(newR, newG, newB, newA);
@@ -274,15 +274,15 @@ void UIColorPicker::updateSelectedColor(bool updateTextFields, bool updateHue, b
 	hueCol.setColorHSV(currentH, 1.0, 1.0);
 	hueCol.a = colorAlpha;
 
-    mainColorRect->getMesh()->clearMesh();
-    
-    MeshGeometry geometry;
-    geometry.addColor(Color((Number)1,(Number)1,(Number)1,colorAlpha));
-    geometry.addColor(hueCol);
-    geometry.addColor(Color((Number)0,(Number)0,(Number)0,colorAlpha));
-    geometry.addColor(Color((Number)0,(Number)0,(Number)0,colorAlpha));
-    mainColorRect->getMesh()->addSubmesh(geometry);    
-    
+	mainColorRect->getMesh()->clearMesh();
+	
+	MeshGeometry geometry;
+	geometry.addColor(Color((Number)1,(Number)1,(Number)1,colorAlpha));
+	geometry.addColor(hueCol);
+	geometry.addColor(Color((Number)0,(Number)0,(Number)0,colorAlpha));
+	geometry.addColor(Color((Number)0,(Number)0,(Number)0,colorAlpha));
+	mainColorRect->getMesh()->addSubmesh(geometry);	   
+	
 	if(updateHue) {
 		hueSelector->setPositionY(hueFrame->getPosition().y + hueFrame->getHeight() - ((currentH/360.0) * hueFrame->getHeight()));
 		lastHueSelectorPosition = hueSelector->getPosition().y;
@@ -468,13 +468,13 @@ UIColorBox::UIColorBox(UIColorPicker *colorPicker, Color initialColor, Number wi
 	bgImage->processInputEvents = true;
 
 	colorShape = new UIRect(width-(frameInset*2), height-(frameInset*2));
-    colorShape->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+	colorShape->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	colorShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	colorShape->setPosition(frameInset, frameInset);
 	addChild(colorShape);
 
 		
-	frameImage = new UIBox(frameImageFile, st,sr,sb,sl, width, height);	
+	frameImage = new UIBox(frameImageFile, st,sr,sb,sl, width, height); 
 	addChild(frameImage);
 	
 	this->colorPicker = colorPicker;	

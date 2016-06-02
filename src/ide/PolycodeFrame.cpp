@@ -39,7 +39,7 @@ EditPoint::EditPoint(BezierPoint *point, unsigned int type) : Entity() {
 	dragging = false;
 
 	controlHandle1 = new UIRect(5, 5);
-    controlHandle1->setColor(0.0, 1.0, 0.3, 1.0);
+	controlHandle1->setColor(0.0, 1.0, 0.3, 1.0);
 	controlHandle1->setAnchorPoint(0.0, 0.0, 0.0);
 	
 	controlHandle1->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
@@ -52,7 +52,7 @@ EditPoint::EditPoint(BezierPoint *point, unsigned int type) : Entity() {
 	addChild(controlHandle1);
 	
 	controlHandle2 = new UIRect(5, 5);
-    controlHandle2->setColor(0.0, 1.0, 0.3, 1.0);
+	controlHandle2->setColor(0.0, 1.0, 0.3, 1.0);
 	controlHandle2->setAnchorPoint(0.0, 0.0, 0.0);
 	controlHandle2->processInputEvents = true;
 	
@@ -65,11 +65,11 @@ EditPoint::EditPoint(BezierPoint *point, unsigned int type) : Entity() {
 	addChild(controlHandle2);
 	
 	pointHandle = new UIRect(8, 8);
-    pointHandle->setColor(1.0, 0.5, 0.2, 1.0);
+	pointHandle->setColor(1.0, 0.5, 0.2, 1.0);
 	pointHandle->processInputEvents = true;
 	pointHandle->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	pointHandle->addEventListener(this, InputEvent::EVENT_MOUSEUP);
-	pointHandle->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
+	pointHandle->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE); 
 	pointHandle->setAnchorPoint(0.0, 0.0, 0.0);
 	pointHandle->setWidth(30);
 	pointHandle->setHeight(30);
@@ -140,7 +140,7 @@ void EditPoint::handleEvent(Event *event) {
 
 							// don't let drag start and end control points
 							translateAmt.x = 0.0;
-						} 						
+						}						
 						
 						draggingPoint->setPosition(basePointPosition.x - translateAmt.x, basePointPosition.y - translateAmt.y);												
 						
@@ -204,7 +204,7 @@ void EditPoint::limitPoint(UIRect *point) {
 }
 
 void EditPoint::updatePosition() {
-	pointHandle->setPosition(300.0*point->p2.x, -100*point->p2.y, 0.0);	
+	pointHandle->setPosition(300.0*point->p2.x, -100*point->p2.y, 0.0); 
 	controlHandle1->setPosition(300.0*point->p1.x, -100*point->p1.y, 0.0);	
 	controlHandle2->setPosition(300.0*point->p3.x, -100*point->p3.y, 0.0);	
 }
@@ -219,11 +219,11 @@ EditCurve::EditCurve(BezierCurve *targetCurve, Color curveColor) : UIElement() {
 	
 	visMesh = new SceneMesh();
 	
-    MeshGeometry geometry;
+	MeshGeometry geometry;
 	for(int i=0; i < CURVE_SIZE; i++) {		
 		geometry.addVertex(0.0, 0.0, 0.0);
 	}
-    visMesh->getMesh()->addSubmesh(geometry);
+	visMesh->getMesh()->addSubmesh(geometry);
 	
 	visMesh->lineSmooth = true;
 	visMesh->lineWidth = 2.0;
@@ -280,13 +280,13 @@ void EditCurve::setMode(unsigned int mode) {
 void EditCurve::Activate() {
 	pointsBase->visible = true;
 	pointsBase->enabled = true;
-	visMesh->color.a = 1.0;	
+	visMesh->color.a = 1.0; 
 }
 
 void EditCurve::Deactivate() {
 	pointsBase->visible = false;
 	pointsBase->enabled = false;
-	visMesh->color.a = 1.0;	
+	visMesh->color.a = 1.0; 
 }
 
 void EditCurve::Update() {
@@ -322,15 +322,15 @@ void EditCurve::updateCurve() {
 	interval += interval/CURVE_SIZE;
 	normInterval += normInterval/CURVE_SIZE;
 
-    visMesh->getMesh()->clearMesh();
-    MeshGeometry geometry;
-    
-	for(int i=0; i < CURVE_SIZE; i++) {        
-        geometry.addVertex(targetCurve->getPointAt(normInterval * i).x * 300, targetCurve->getPointAt(normInterval * i).y * 100.0, 0.0);
+	visMesh->getMesh()->clearMesh();
+	MeshGeometry geometry;
+	
+	for(int i=0; i < CURVE_SIZE; i++) {		   
+		geometry.addVertex(targetCurve->getPointAt(normInterval * i).x * 300, targetCurve->getPointAt(normInterval * i).y * 100.0, 0.0);
 	}
-    visMesh->getMesh()->addSubmesh(geometry);
-    
-    visMesh->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+	visMesh->getMesh()->addSubmesh(geometry);
+	
+	visMesh->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 }
 
 EditCurve::~EditCurve() {
@@ -342,7 +342,7 @@ CurveEditor::CurveEditor() : UIWindow("", 440, 160) {
 	closeOnEscape = true;
 		
 	bg = new UIRect(300, 100);
-    bg->setColor(0.1, 0.1, 0.1, 1.0);
+	bg->setColor(0.1, 0.1, 0.1, 1.0);
 	addChild(bg);
 	bg->setPosition(160, 63);
 	bg->processInputEvents = true;
@@ -474,7 +474,7 @@ void CurveEditor::handleEvent(Event *event) {
 			if(curve) {
 				curve->Activate();
 				curve->setMode(mode);
-                curve->getParentEntity()->moveChildTop(curve);
+				curve->getParentEntity()->moveChildTop(curve);
 			}
 		}
 	}	
@@ -508,11 +508,11 @@ EditorHolder::EditorHolder(PolycodeProject *project, PolycodeEditorManager *edit
 
 	hSplitButton = new UIImageButton("main/editor_hsplit.png", 1.0, 19, 13);
 	holderBar->addChild(hSplitButton);
-	hSplitButton->addEventListener(this, UIEvent::CLICK_EVENT);	
+	hSplitButton->addEventListener(this, UIEvent::CLICK_EVENT); 
 
 	mergeSplitButton = new UIImageButton("main/editor_mergesplit.png", 1.0, 19, 13);
 	holderBar->addChild(mergeSplitButton);
-	mergeSplitButton->addEventListener(this, UIEvent::CLICK_EVENT);	
+	mergeSplitButton->addEventListener(this, UIEvent::CLICK_EVENT); 
 		
 	closeFileButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
 	holderBar->addChild(closeFileButton);
@@ -539,8 +539,8 @@ EditorHolder::EditorHolder(PolycodeProject *project, PolycodeEditorManager *edit
 	
 	editorToMerge = NULL;
 	isActive = false;
-    
-    setOwnsChildrenRecursive(true);
+	
+	setOwnsChildrenRecursive(true);
 }
 
 void EditorHolder::activateEditor(bool val) {
@@ -549,13 +549,13 @@ void EditorHolder::activateEditor(bool val) {
 		secondChildHolder->activateEditor(val);
 		return;
 	}
-    if(currentEditor) {
-        if(val) {
-            currentEditor->Activate();
-        } else {
-            currentEditor->Deactivate();
-        }
-    }
+	if(currentEditor) {
+		if(val) {
+			currentEditor->Activate();
+		} else {
+			currentEditor->Deactivate();
+		}
+	}
 }
 
 ObjectEntry *EditorHolder::getEditorHolderConfig() {
@@ -573,9 +573,9 @@ ObjectEntry *EditorHolder::getEditorHolderConfig() {
 		childEditors->addChild(firstChildHolder->getEditorHolderConfig())->addChild("size", hSizer->getMainWidth());
 		childEditors->addChild(secondChildHolder->getEditorHolderConfig());				
 	} else {
-		configEntry->addChild("split", "none");	
+		configEntry->addChild("split", "none"); 
 		if(currentEditor) {
-			configEntry->addChild("file_name", 	currentEditor->getFilePath());
+			configEntry->addChild("file_name",	currentEditor->getFilePath());
 			ObjectEntry *editorConfig = currentEditor->getEditorConfig();
 			if(editorConfig) {
 				configEntry->addChild(editorConfig)->name = "editor_config";
@@ -706,12 +706,12 @@ void EditorHolder::setEditor(PolycodeEditor *newEditor) {
 
 	if(currentEditor) {
 		removeChild(currentEditor);
-        currentEditor->Deactivate();
+		currentEditor->Deactivate();
 		currentEditor->setEditorHolder(NULL);
 	}
 	currentEditor = newEditor;
 	if(currentEditor) {
-        currentEditor->Activate();
+		currentEditor->Activate();
 		EditorHolder *currentEditorHolder = currentEditor->getEditorHolder();
 		if(currentEditorHolder) {
 			currentEditorHolder->setEditor(NULL);
@@ -723,11 +723,11 @@ void EditorHolder::setEditor(PolycodeEditor *newEditor) {
 	}
 
 	updateFileSelector();
-    
+	
 	if(isActive) {
 		editorManager->setCurrentEditor(currentEditor);
 	}
-    
+	
 	Resize(getWidth(), getHeight());
 }
 
@@ -761,7 +761,7 @@ void EditorHolder::makeVSplit() {
 		firstChildHolder->setEditor(currentEditor);
 		currentEditor = NULL;
 	}
-    Resize(getWidth(), getHeight());
+	Resize(getWidth(), getHeight());
 }
 
 void EditorHolder::makeHSplit() {
@@ -789,7 +789,7 @@ void EditorHolder::makeHSplit() {
 		firstChildHolder->setEditor(currentEditor);
 		currentEditor = NULL;
 	}
-    Resize(getWidth(), getHeight());    
+	Resize(getWidth(), getHeight());	
 }
 
 void EditorHolder::handleEvent(Event *event) {
@@ -806,13 +806,13 @@ void EditorHolder::handleEvent(Event *event) {
 		PolycodeEditor *editor = (PolycodeEditor*) currentFileSelector->getSelectedItem()->data;
 		if(currentEditor != editor) {
 			setEditor(editor);
-            Resize(getWidth(), getHeight());
+			Resize(getWidth(), getHeight());
 		}
 	
 	} else if(event->getDispatcher() == mergeSplitButton) {
 		if(parentHolder) {
 			parentHolder->mergeSides(this);
-            Resize(getWidth(), getHeight());
+			Resize(getWidth(), getHeight());
 		}
 	} else if(event->getDispatcher() == closeFileButton) {
 		dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);
@@ -820,7 +820,7 @@ void EditorHolder::handleEvent(Event *event) {
 		if(event->getEventCode() == UIEvent::CLOSE_EVENT) {
 			dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);		
 		}
-        Resize(getWidth(), getHeight());
+		Resize(getWidth(), getHeight());
 	}
 	
 	UIElement::handleEvent(event);
@@ -841,8 +841,8 @@ void EditorHolder::_mergeSides(EditorHolder *mainHolder) {
 	holderBar->visible = true;
 	holderBar->enabled = true;
 
-    activeEditorHolder = this;
-    
+	activeEditorHolder = this;
+	
 	PolycodeEditor *mainHolderEditor = mainHolder->getEditor();
 		
 	if(firstChildHolder) {
@@ -867,10 +867,10 @@ void EditorHolder::_mergeSides(EditorHolder *mainHolder) {
 		removeChild(hSizer);
 		delete hSizer;
 	}
-    
-    firstChildHolder->setOwnsChildrenRecursive(false);
-    secondChildHolder->setOwnsChildrenRecursive(false);
-    
+	
+	firstChildHolder->setOwnsChildrenRecursive(false);
+	secondChildHolder->setOwnsChildrenRecursive(false);
+	
 	delete firstChildHolder;
 	delete secondChildHolder;
 	
@@ -959,11 +959,11 @@ PolycodeProjectTab::PolycodeProjectTab(String caption, PolycodeProject *project,
 
 void PolycodeProjectTab::setActive(bool val) {
 	active = val;
-    editorHolder->activateEditor(val);
-    
+	editorHolder->activateEditor(val);
+	
 	if(!active) {
 		projectBrowser->removeAllHandlers();
-    }
+	}
 }
 
 bool PolycodeProjectTab::isActive() {
@@ -987,7 +987,7 @@ ObjectEntry *PolycodeProjectTab::getTabConfig() {
 	
 	configEntry->addChild(projectBrowser->getBrowserConfig());
 	
-	configEntry->addChild("tab_name", tabName);	
+	configEntry->addChild("tab_name", tabName); 
 	configEntry->addChild("tab_active", isActive());
 	
 	configEntry->addChild(editorHolder->getEditorHolderConfig());
@@ -1024,10 +1024,10 @@ EditorHolder *PolycodeProjectTab::getEditorHolder() {
 }
 
 void PolycodeProjectTab::showEditor(PolycodeEditor *editor) {
-    if(!activeEditorHolder) {
-        return;
-    }
-    
+	if(!activeEditorHolder) {
+		return;
+	}
+	
 	if(activeEditorHolder->getEditor()) {
 		activeEditorHolder->setEditor(NULL);
 	}
@@ -1057,7 +1057,7 @@ PolycodeTabButton::PolycodeTabButton(PolycodeProjectTab *tab) : UIElement() {
 	setHeight(30);
 	
 	tabLabel = new UILabel(tab->getTabName().toUpperCase(), 16, "section");
-    tabLabel->setColor(0.0, 0.0, 0.0, 1.0);
+	tabLabel->setColor(0.0, 0.0, 0.0, 1.0);
 	tabLabel->setPosition(getWidth()-tabLabel->getWidth()-10.0, ((getHeight()-tabLabel->getHeight())/2.0) - 3.0);
 	addChild(tabLabel);
 	
@@ -1290,10 +1290,10 @@ void PolycodeProjectFrame::handleEvent(Event *event) {
 				if(event->getEventCode() == Event::SELECT_EVENT) {
 					showTab(tabButtons[i]->getTab());
 					break;
-				} else 	if(event->getEventCode() == UIEvent::CLOSE_EVENT) {
+				} else	if(event->getEventCode() == UIEvent::CLOSE_EVENT) {
 					closeTab(tabButtons[i]->getTab());
 					break;
-				} else 	if(event->getEventCode() == UIEvent::CHANGE_EVENT) {
+				} else	if(event->getEventCode() == UIEvent::CHANGE_EVENT) {
 					dispatchEvent(new UIEvent(), UIEvent::CHANGE_EVENT);
 					break;
 				}
@@ -1340,7 +1340,7 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 	newProjectButton->setPosition(260,120);
 	newProjectButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-	examplesButton = new UIButton("Browse Example Projects!", 220);	
+	examplesButton = new UIButton("Browse Example Projects!", 220); 
 	examplesButton->setPosition(490,120);
 	examplesButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
@@ -1383,7 +1383,7 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 	resizer->setColor(0,0,0,0.4);
 	
 	modalBlocker = new UIRect(10,10);
-    modalBlocker->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+	modalBlocker->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	modalBlocker->setColor(0,0,0,0.1);
 	modalBlocker->setAnchorPoint(-1.0, -1.0, 0.0);
 	modalBlocker->enabled = false;	
@@ -1414,9 +1414,9 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 	
 	yesNoPopup = new YesNoPopup();
 	yesNoPopup->visible = false;
-    
-    messagePopup = new MessagePopup();
-    messagePopup->visible = false;
+	
+	messagePopup = new MessagePopup();
+	messagePopup->visible = false;
 	
 	yesNoCancelPopup = new YesNoCancelPopup();
 	yesNoCancelPopup->visible = false;
@@ -1433,17 +1433,17 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 	aboutOKButton->setPosition(700, 420);
 	aboutOKButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-    String info1Text = "Polycode is developed by:\n\nProject lead:\nIvan Safrin\n\nTop project contributors in order of commits:\nCameron Hart, Andi McClure, samiamwork, Christian Bielert,\nChristopher Reed, TheCosmotect, Danny Warren, Paul Smith,\nDevin Stone, Jon Kristinsson, Henry Maddocks,\nJohan Klokkhammer Helsing, Chris Ledet, Per Bodin, Quinlan P.,\nLee-R, Guillaume Papin, Remi Gillig, ZenX2,\nMatt Tuttle, Alejandro Cámara, Jake Scott, tastymorsel";
-    
-    UIMultilineLabel *info1 = new UIMultilineLabel(info1Text, 12, 5);
-    aboutWindow->addChild(info1);
-    info1->setPosition(40, 200);
-    
-    String info2Text = "Polycode uses the following open-source libraries:\n\nAssimp (BSD license)\nBox2D (zlib license)\nBullet Physics (zlib license)\nFreetype (Freetype license)\nlibpng (libpng license)\nLua (MIT license),\nOggVorbis (BSD license)\nPhysFS (zlib license)\ntinyXML (zlib license)\nSDL (on Linux only) (zlib license)\n\nPolycode itself is distributed\nunder the MIT license.\n\n\n\nThank you for using Polycode!";
-    
-    UIMultilineLabel *info2 = new UIMultilineLabel(info2Text, 12, 5);
-    aboutWindow->addChild(info2);
-    info2->setPosition(450, 40);
+	String info1Text = "Polycode is developed by:\n\nProject lead:\nIvan Safrin\n\nTop project contributors in order of commits:\nCameron Hart, Andi McClure, samiamwork, Christian Bielert,\nChristopher Reed, TheCosmotect, Danny Warren, Paul Smith,\nDevin Stone, Jon Kristinsson, Henry Maddocks,\nJohan Klokkhammer Helsing, Chris Ledet, Per Bodin, Quinlan P.,\nLee-R, Guillaume Papin, Remi Gillig, ZenX2,\nMatt Tuttle, Alejandro Cámara, Jake Scott, tastymorsel";
+	
+	UIMultilineLabel *info1 = new UIMultilineLabel(info1Text, 12, 5);
+	aboutWindow->addChild(info1);
+	info1->setPosition(40, 200);
+	
+	String info2Text = "Polycode uses the following open-source libraries:\n\nAssimp (BSD license)\nBox2D (zlib license)\nBullet Physics (zlib license)\nFreetype (Freetype license)\nlibpng (libpng license)\nLua (MIT license),\nOggVorbis (BSD license)\nPhysFS (zlib license)\ntinyXML (zlib license)\nSDL (on Linux only) (zlib license)\n\nPolycode itself is distributed\nunder the MIT license.\n\n\n\nThank you for using Polycode!";
+	
+	UIMultilineLabel *info2 = new UIMultilineLabel(info2Text, 12, 5);
+	aboutWindow->addChild(info2);
+	info2->setPosition(450, 40);
 
 	UILabel *versionLabel = new UILabel("version " POLYCODE_VERSION_STRING, 12, "mono");
 	aboutWindow->addChild(versionLabel);
@@ -1453,7 +1453,7 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 	assetImporterWindow = new AssetImporterWindow();
 	
 		
-	isDragging  = false;
+	isDragging	= false;
 	dragLabel = new UILabel("NONE", 11, "sans");
 	dragLabel->setPosition(0,-15);
 	
@@ -1476,7 +1476,7 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 		
 	globalColorPicker = new UIColorPicker();
 	globalColorPicker->setPosition(300,300);
-    globalColorPicker->setContinuous(false);
+	globalColorPicker->setContinuous(false);
 	addChild(globalColorPicker);
 
 	modalRoot = new UIElement();
@@ -1530,8 +1530,8 @@ void PolycodeFrame::showModal(UIWindow *modalChild) {
 	modalChild->addEventListener(this, UIEvent::CLOSE_EVENT);
 	Resize(getWidth(), getHeight());
 	
-    modalChild->focusSelf();
-    
+	modalChild->focusSelf();
+	
 	CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);	
 }
 
@@ -1601,9 +1601,9 @@ void PolycodeFrame::showAssetBrowserForPools(std::vector<ResourcePool*> pools, i
 		return;
 	}
 	assetBrowser->setResourcePools(pools, resourceType);
-    assetBrowser->setBrowseMode(AssetBrowser::BROWSE_MODE_RESOURCES);
+	assetBrowser->setBrowseMode(AssetBrowser::BROWSE_MODE_RESOURCES);
 	showModal(assetBrowser);
-    
+	
 }
 
 void PolycodeFrame::showAssetBrowser(std::vector<String> extensions) {
@@ -1789,7 +1789,7 @@ ObjectEntry *PolycodeFrame::getFrameConfigForProject(PolycodeProject *project) {
 }
 
 void PolycodeFrame::removeProjectFrame(PolycodeProject *project) {
-    //TODO: implement. this is being called from PolycodeIDEApp::doCloseProject()
+	//TODO: implement. this is being called from PolycodeIDEApp::doCloseProject()
 }
 
 PolycodeProjectFrame *PolycodeFrame::getActiveProjectFrame() {
@@ -1840,7 +1840,7 @@ PolycodeProjectFrame *PolycodeFrame::getProjectFrame(PolycodeProject *project) {
 }
 
 void PolycodeFrame::updateFileSelector() {
-	if(activeProjectFrame)  {
+	if(activeProjectFrame)	{
 		activeProjectFrame->getActiveTab()->getEditorHolder()->updateFileSelector();
 	}
 }

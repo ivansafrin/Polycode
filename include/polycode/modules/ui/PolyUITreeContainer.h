@@ -51,8 +51,8 @@ namespace Polycode {
 		 */
 		void scrollToNode(UITree *node, bool showAtTop);
 		
-        UIScrollContainer *getScrollContainer();
-        
+		UIScrollContainer *getScrollContainer();
+		
 	protected:
 		bool keyNavigable;
 		

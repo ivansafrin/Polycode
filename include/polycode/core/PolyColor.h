@@ -153,7 +153,7 @@ namespace Polycode {
 			void setColorHexFromString(String hex);
 			
 			/** 
-			* Sets the color using a 24-bit RGB integer color value  from a string
+			* Sets the color using a 24-bit RGB integer color value	 from a string
 			* @param hex String with hex RGB color values.
 			*/						
 			void setColorHexRGBFromString(String hex);

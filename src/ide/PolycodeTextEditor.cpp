@@ -194,11 +194,11 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseGLSL(String te
 			if(ch == '\"' && mode != MODE_COMMENT)
 				ch_type = MODE_STRING;
 	
-			if(mode != MODE_STRING && ch == '('  && mode != MODE_COMMENT) {
+			if(mode != MODE_STRING && ch == '('	 && mode != MODE_COMMENT) {
 				type = MODE_METHOD;
 			}
 
-			if(mode != MODE_STRING  && mode != MODE_COMMENT) {
+			if(mode != MODE_STRING	&& mode != MODE_COMMENT) {
 				if(contains(line, &keywords)) {
 					type = MODE_KEYWORD;
 				}
@@ -244,7 +244,7 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseGLSL(String te
 			}
 			
 			if(ch == '/' && lastSeparator == '*' && mode == MODE_COMMENT) {
-				if(mode == MODE_COMMENT) 	
+				if(mode == MODE_COMMENT)	
 					mode = MODE_GENERAL;
 				if(mode != MODE_STRING)
 					tokens[tokens.size()-1].overrideType = SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_END;
@@ -335,11 +335,11 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String tex
 			if(ch == '\"' && mode != MODE_COMMENT)
 				ch_type = MODE_STRING;
 	
-			if(mode != MODE_STRING && ch == '('  && mode != MODE_COMMENT) {
+			if(mode != MODE_STRING && ch == '('	 && mode != MODE_COMMENT) {
 				type = MODE_METHOD;
 			}
 
-			if(mode != MODE_STRING  && mode != MODE_COMMENT) {
+			if(mode != MODE_STRING	&& mode != MODE_COMMENT) {
 				if(contains(line, &keywords)) {
 					type = MODE_KEYWORD;
 				}
@@ -454,9 +454,9 @@ PolycodeTextEditor::PolycodeTextEditor() : PolycodeEditor(true){
 }
 
 PolycodeTextEditor::~PolycodeTextEditor() {
-    textInput->setOwnsChildrenRecursive(true);
+	textInput->setOwnsChildrenRecursive(true);
 	delete textInput;
-    findBar->setOwnsChildrenRecursive(true);
+	findBar->setOwnsChildrenRecursive(true);
 	delete findBar;
 	if(syntaxHighligher)
 		delete syntaxHighligher;
@@ -612,10 +612,10 @@ void PolycodeTextEditor::showFindBar() {
 	for(int i=0; i < functionMatches.size(); i++) {
 		FindMatch *match = new FindMatch();
 		(*match) = functionMatches[i];
-        String lineText = textInput->getLineText(functionMatches[i].lineNumber);
-        if (lineText.substr(0,8) == "function") {
-            findBar->functionList->addComboItem(lineText.replace("function ", ""), (void*) match);
-        }
+		String lineText = textInput->getLineText(functionMatches[i].lineNumber);
+		if (lineText.substr(0,8) == "function") {
+			findBar->functionList->addComboItem(lineText.replace("function ", ""), (void*) match);
+		}
 	}
 	
 	Resize(editorSize.x, editorSize.y);

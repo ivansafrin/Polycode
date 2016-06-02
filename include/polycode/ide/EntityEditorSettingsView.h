@@ -31,14 +31,14 @@ using namespace Polycode;
 
 class EntityEditorSettingsView : public UIElement {
 public:
-    EntityEditorSettingsView();
-    ~EntityEditorSettingsView();
-    
-    void setEntityInstance(SceneEntityInstance *instance);
-    
-    void Resize(Number width, Number height);
-    
+	EntityEditorSettingsView();
+	~EntityEditorSettingsView();
+	
+	void setEntityInstance(SceneEntityInstance *instance);
+	
+	void Resize(Number width, Number height);
+	
 private:
-    PropList *entityProps;
-    LinkedMaterialsSheet *materialsSheet;
+	PropList *entityProps;
+	LinkedMaterialsSheet *materialsSheet;
 };

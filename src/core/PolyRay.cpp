@@ -62,7 +62,7 @@ Vector3 Ray::planeIntersectPoint(const Vector3 &planeNormal, const Vector3 &plan
 
 bool Ray::polygonIntersect(const Vector3 &v1, const Vector3 &v2, const Vector3 &v3) const {
 
-    Number t,u,v;
+	Number t,u,v;
 	t = 0; u = 0; v = 0;
 
 	Vector3 edge1 = v2 - v3;
@@ -142,7 +142,7 @@ Number Ray::boxIntersect(const Vector3 &box, const Matrix4 &transformMatrix, flo
 
 	Vector3 bounds[2];
 	bounds[0] = Vector3(-box.x * 0.5, -box.y * 0.5, -box.z * 0.5);
-	bounds[1] = Vector3(box.x * 0.5, box.y * 0.5, box.z * 0.5);	
+	bounds[1] = Vector3(box.x * 0.5, box.y * 0.5, box.z * 0.5); 
 	
 	float tmin, tmax, tymin, tymax, tzmin, tzmax;
 	tmin = (bounds[r.sign[0]].x - r.origin.x) * r.inv_direction.x;
@@ -172,10 +172,10 @@ Number Ray::boxIntersect(const Vector3 &box, const Matrix4 &transformMatrix, flo
 		tmax = tzmax;
 		
 	if( (tmin < far) && (tmax > near) ) {
-        Vector3 hitpoint = r.origin + (r.direction * fabs(tmin));
-        hitpoint = transformMatrix * hitpoint;
-        return origin.distance(hitpoint);
-    } else {
-        return -1.0;
-    }
+		Vector3 hitpoint = r.origin + (r.direction * fabs(tmin));
+		hitpoint = transformMatrix * hitpoint;
+		return origin.distance(hitpoint);
+	} else {
+		return -1.0;
+	}
 }

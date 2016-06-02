@@ -90,14 +90,14 @@ SettingsWindow::SettingsWindow() : UIWindow(L"Settings", SETTINGS_WINDOW_WIDTH, 
 	
 	for(int i=0; i < uiThemes.size(); i++) {
 		if(uiThemes[i].type == OSFileEntry::TYPE_FOLDER) {
-            
-            // do not list retina theme copies
-            if(uiThemes[i].name.find("_retina") == -1) {
-                uiThemeBox->addComboItem(uiThemes[i].name);
-                if(uiThemes[i].name == CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiTheme")) {
-                    uiThemeBox->setSelectedIndex(i);
-                }
-            }
+			
+			// do not list retina theme copies
+			if(uiThemes[i].name.find("_retina") == -1) {
+				uiThemeBox->addComboItem(uiThemes[i].name);
+				if(uiThemes[i].name == CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiTheme")) {
+					uiThemeBox->setSelectedIndex(i);
+				}
+			}
 		}
 	}
 

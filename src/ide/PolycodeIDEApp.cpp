@@ -39,18 +39,18 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 #endif
 	
 //	core->pauseOnLoseFocus = true;
-    
+	
 	printf("DIR: %s\n", core->getDefaultWorkingDirectory().c_str());
 
-    Entity::defaultBlendingMode = Renderer::BLEND_MODE_NONE;
+	Entity::defaultBlendingMode = Renderer::BLEND_MODE_NONE;
 	
-    ResourcePool::defaultReloadResourcesOnModify = true;
-    Resource::defaultReloadOnFileModify = true;
-    
+	ResourcePool::defaultReloadResourcesOnModify = true;
+	Resource::defaultReloadOnFileModify = true;
+	
 	CoreServices::getInstance()->getResourceManager()->getGlobalPool()->reloadResourcesOnModify = true;
 	
-    CoreServices::getInstance()->getMaterialManager()->mipmapsDefault = true;    
-    
+	CoreServices::getInstance()->getMaterialManager()->mipmapsDefault = true;	 
+	
 	runNextFrame = false;
 	
 	core->addEventListener(this, Core::EVENT_CORE_RESIZE);
@@ -61,25 +61,25 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 	
 	CoreServices::getInstance()->getMaterialManager()->setTextureFilteringMode(Texture::FILTERING_NEAREST);
 
-    ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
-    
-    //TODO: this results in doubling "sans" in the font browsers, need to fix
-    globalPool->loadResourceWithName("Fonts/Lato-Semibold.ttf", "sans");
-    
-    core->addFileSource("archive", "default.pak");
-    globalPool->loadResourcesFromFolder("default", true);
+	ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
+	
+	//TODO: this results in doubling "sans" in the font browsers, need to fix
+	globalPool->loadResourceWithName("Fonts/Lato-Semibold.ttf", "sans");
+	
+	core->addFileSource("archive", "default.pak");
+	globalPool->loadResourcesFromFolder("default", true);
   
 	/*
-    core->addFileSource("archive", "hdr.pak");
-    globalPool->loadResourcesFromFolder("hdr", true);
-    core->addFileSource("archive", "api.pak");
-    core->addFileSource("archive", "Physics2D.pak");
-    core->addFileSource("archive", "Physics3D.pak");
-    core->addFileSource("archive", "UI.pak");
-    */
+	core->addFileSource("archive", "hdr.pak");
+	globalPool->loadResourcesFromFolder("hdr", true);
+	core->addFileSource("archive", "api.pak");
+	core->addFileSource("archive", "Physics2D.pak");
+	core->addFileSource("archive", "Physics3D.pak");
+	core->addFileSource("archive", "UI.pak");
+	*/
 
-    globalPool->loadResourcesFromFolder("Materials", true);
-    globalPool->loadResourceWithName("Fonts/Lato-Black.ttf", "section");
+	globalPool->loadResourcesFromFolder("Materials", true);
+	globalPool->loadResourceWithName("Fonts/Lato-Black.ttf", "section");
 	
 
 	CoreServices::getInstance()->getMaterialManager()->setTextureFilteringMode(Texture::FILTERING_LINEAR);
@@ -88,25 +88,25 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 
 	String themeName = CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiTheme");
 	
-    if(core->getBackingXRes() == core->getXRes()) {
-        core->addFileSource("folder", "Images");
-    } else {
-        core->addFileSource("folder", "ImagesRetina");
-        
-        // NOCMAKE_TODO
-        /*
-        if(OSBasics::fileExists("UIThemes/"+themeName+"_retina")) {
-            themeName = themeName + "_retina";
-        }
-         */
-    }
-    
-    printf("LOADING THEME: %s\n", themeName.c_str());
-    
+	if(core->getBackingXRes() == core->getXRes()) {
+		core->addFileSource("folder", "Images");
+	} else {
+		core->addFileSource("folder", "ImagesRetina");
+		
+		// NOCMAKE_TODO
+		/*
+		if(OSBasics::fileExists("UIThemes/"+themeName+"_retina")) {
+			themeName = themeName + "_retina";
+		}
+		 */
+	}
+	
+	printf("LOADING THEME: %s\n", themeName.c_str());
+	
 	CoreServices::getInstance()->getConfig()->loadConfig("Polycode", "UIThemes/"+themeName+"/theme.xml");
-    
-    core->addFileSource("folder", "UIThemes/"+themeName+"/");
-    
+	
+	core->addFileSource("folder", "UIThemes/"+themeName+"/");
+	
 	
 	willRunProject = false;
 
@@ -120,12 +120,12 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 			
 	
 	Scene *screen = new Scene(Scene::SCENE_2D_TOPLEFT);
-    
-    screen->doVisibilityChecking(false);
-    screen->getDefaultCamera()->frustumCulling = false;
-    
-    globalScene = screen;
-    
+	
+	screen->doVisibilityChecking(false);
+	screen->getDefaultCamera()->frustumCulling = false;
+	
+	globalScene = screen;
+	
 	screen->rootEntity.processInputEvents = true;
 //	screen->rootEntity.setDefaultScreenOptions(true);
 
@@ -161,7 +161,7 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 	frame->stopButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
 	frame->addEventListener(this, UIEvent::CLOSE_EVENT);
-	frame->addEventListener(this, Event::CHANGE_EVENT);	
+	frame->addEventListener(this, Event::CHANGE_EVENT); 
 	screen->addChild(frame);
 	
 	projectManager = new PolycodeProjectManager();
@@ -241,9 +241,9 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 	
 	applyFinalConfig();
-    
-    core->updateAndRender();
-    frame->Resize(core->getXRes(), core->getYRes());
+	
+	core->updateAndRender();
+	frame->Resize(core->getXRes(), core->getYRes());
 
 }
 
@@ -294,7 +294,7 @@ void PolycodeIDEApp::doRemoveFile() {
 	if(projectManager->selectedFile != "") {
 		core->removeDiskItem(projectManager->selectedFile);
 		if(projectManager->getActiveProject()) {
-            refreshProject();
+			refreshProject();
 		}
 		PolycodeEditor *editor = 0;
 		for (int i=0; i < editorManager->openEditors.size(); i++) {
@@ -334,12 +334,12 @@ void PolycodeIDEApp::newFile() {
 
 void PolycodeIDEApp::refreshProject() {
 	if(projectManager->getActiveProject()) {
-        PolycodeProjectBrowser *browser;
-        PolycodeProject *project = projectManager->getActiveProject();
-        for (int i=0; i < frame->getProjectFrame(project)->getNumTabs(); i++) {
-            browser = frame->getProjectFrame(project)->getTabAtIndex(i)->getProjectBrowser();
-            browser->Refresh();
-        }
+		PolycodeProjectBrowser *browser;
+		PolycodeProject *project = projectManager->getActiveProject();
+		for (int i=0; i < frame->getProjectFrame(project)->getNumTabs(); i++) {
+			browser = frame->getProjectFrame(project)->getTabAtIndex(i)->getProjectBrowser();
+			browser->Refresh();
+		}
 	}
 }
 
@@ -455,7 +455,7 @@ void PolycodeIDEApp::openProject() {
 		PolycodeProject *project = projectManager->openProject(paths[0]);
 		if(project) {
 			projectManager->setActiveProject(project);
-			OSFileEntry projectEntry =	OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);	
+			OSFileEntry projectEntry =	OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE); 
 		}
 	}
 #endif
@@ -485,9 +485,9 @@ void PolycodeIDEApp::doRunProject() {
 	printf("Running project...\n");
 	stopProject();
 
-    debugger->resetDebugger();
-    frame->console->clearBacktraces();
-    
+	debugger->resetDebugger();
+	frame->console->clearBacktraces();
+	
 	frame->showConsole();
 
 	String outPath = PolycodeToolLauncher::generateTempPath(projectManager->getActiveProject()) + ".polyapp";
@@ -533,10 +533,10 @@ void PolycodeIDEApp::runProject() {
 			frame->yesNoPopup->action = "saveAndRun";
 			frame->showModal(frame->yesNoPopup);		
 		} else {
-			doRunProject();	
+			doRunProject(); 
 		}
 	} else {
-		PolycodeConsole::print("No active project!\n");	
+		PolycodeConsole::print("No active project!\n"); 
 	}
 }
 
@@ -621,7 +621,7 @@ void PolycodeIDEApp::addFiles() {
 			core->copyDiskItem(files[i], projectManager->activeFolder + "/" + entry.name);
 		}
 		
-        refreshProject();
+		refreshProject();
 #endif
 	}		
 }
@@ -674,11 +674,11 @@ void PolycodeIDEApp::openDocs() {
 }
 
 void PolycodeIDEApp::openFileInProject(PolycodeProject *project, String filePath) {
-	OSFileEntry fileEntry = OSFileEntry(project->getRootFolder()+"/"+filePath, OSFileEntry::TYPE_FILE);	
-    Polycode::CoreFile *file = Services()->getCore()->openFile(project->getRootFolder()+"/"+filePath,"r");
+	OSFileEntry fileEntry = OSFileEntry(project->getRootFolder()+"/"+filePath, OSFileEntry::TYPE_FILE); 
+	Polycode::CoreFile *file = Services()->getCore()->openFile(project->getRootFolder()+"/"+filePath,"r");
 	
 	if(file) {
-        Services()->getCore()->closeFile(file);
+		Services()->getCore()->closeFile(file);
 		openFile(fileEntry);		
 	} else {
 		fileEntry = OSFileEntry(filePath, OSFileEntry::TYPE_FILE);	
@@ -698,7 +698,7 @@ void PolycodeIDEApp::openFile(OSFileEntry file) {
 	PolycodeEditorFactory *factory = editorManager->getEditorFactoryForExtension(file.extension);
 	if(dynamic_cast<PolycodeTextEditorFactory*>(factory)) {
 		CoreServices *core = CoreServices::getInstance();
-		Config *config = core->getConfig();	
+		Config *config = core->getConfig(); 
 		bool useExternalTextEditor = (config->getStringValue("Polycode", "useExternalTextEditor") == "true") && (config->getStringValue("Polycode", "externalTextEditorCommand") != "");
 		
 		if(useExternalTextEditor) {
@@ -718,7 +718,7 @@ void PolycodeIDEApp::openFile(OSFileEntry file) {
 void PolycodeIDEApp::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == frame->assetImporterWindow) {
-        refreshProject();
+		refreshProject();
 	}
 	
 	if(event->getDispatcher() == projectManager && event->getEventCode() == Event::CHANGE_EVENT) {
@@ -765,7 +765,7 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 				} else if(frame->fileDialog->action == "addFiles") {
 					OSFileEntry entry = OSFileEntry(path, OSFileEntry::TYPE_FILE);
 					core->copyDiskItem(path, projectManager->activeFolder + "/" + entry.name);
- 			                   refreshProject();
+							   refreshProject();
 				} else if(frame->fileDialog->action == "openImportAssets") {
 					frame->assetImporterWindow->setSourceFileAndTargetFolder(path, projectManager->activeFolder, projectManager->activeFolder.replace(projectManager->getActiveProject()->getRootFolder(), ""));
 					frame->showModal(frame->assetImporterWindow);
@@ -1047,14 +1047,14 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			if(frame->textInputPopup->action == "newGroup") {	
 				core->createFolder(projectManager->activeFolder+"/"+frame->textInputPopup->getValue());
 				if(projectManager->getActiveProject()) {
-                    refreshProject();
+					refreshProject();
 				}			
 			}
 			
 			if(frame->textInputPopup->action == "renameFile") {		
 				core->moveDiskItem(projectManager->selectedFileEntry.fullPath, projectManager->selectedFileEntry.basePath + "/" + frame->textInputPopup->getValue());			
 				if(projectManager->getActiveProject()) {
-                    refreshProject();
+					refreshProject();
 				}
 				
 				PolycodeEditor *editor = editorManager->getEditorForPath(projectManager->selectedFileEntry.fullPath);
@@ -1111,7 +1111,7 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 			projectManager->createNewFile(frame->newFileWindow->getTemplatePath(), frame->newFileWindow->getFileName());
 			frame->hideModal();						
 			if(projectManager->getActiveProject()) {
-                refreshProject();
+				refreshProject();
 			}			
 		}
 	}
@@ -1194,7 +1194,7 @@ void PolycodeIDEApp::saveConfigFile() {
 	configFile.saveToXML(core->getUserHomeDirectory()+"/Library/Application Support/Polycode/config.xml");	
 #else
 	core->createFolder(core->getUserHomeDirectory()+"/.polycode");
-	configFile.saveToXML(core->getUserHomeDirectory()+"/.polycode/config.xml");	
+	configFile.saveToXML(core->getUserHomeDirectory()+"/.polycode/config.xml"); 
 
 #endif
 }
@@ -1280,18 +1280,18 @@ void PolycodeIDEApp::applyFinalConfig() {
 		int newYRes = appHeight->intVal;		
 		if(newXRes > 100 && newYRes > 100) {
 			setResFromConfig = true;
-            core->setVideoMode(newXRes, newYRes, false, true, 0, 0, false);
+			core->setVideoMode(newXRes, newYRes, false, true, 0, 0, false);
 			frame->Resize(newXRes, newYRes);
 		}
 	}
 	
 	if(!setResFromConfig) {
-        core->setVideoMode(1100, 700, false, true, 0, 0);
+		core->setVideoMode(1100, 700, false, true, 0, 0);
 		frame->Resize(1100, 700);			
 	}
 
 
-	ObjectEntry *consoleEntry = configFile.root["console"];	
+	ObjectEntry *consoleEntry = configFile.root["console"]; 
 	if(consoleEntry) {
 		if((*consoleEntry)["size"]) {
 			frame->getConsoleSizer()->setMainHeight((*consoleEntry)["size"]->NumberVal);
@@ -1325,7 +1325,7 @@ void PolycodeIDEApp::applyFinalConfig() {
 			PolycodeProjectTab *activeTab = NULL;
 			
 			if(project) {
-				OSFileEntry projectEntry =	OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE);	
+				OSFileEntry projectEntry =	OSFileEntry(project->getProjectFile(), OSFileEntry::TYPE_FILE); 
 				ObjectEntry *frameEntry = ((*projectsToOpen[i])["frame"]);
 				if(frameEntry) {
 					ObjectEntry *tabs = (*frameEntry)["tabs"];
@@ -1368,7 +1368,7 @@ void PolycodeIDEApp::applyFinalConfig() {
 
 }
 
-PolycodeIDEApp::~PolycodeIDEApp() {	
+PolycodeIDEApp::~PolycodeIDEApp() { 
 	saveConfigFile();
 	delete core;
 }
@@ -1412,11 +1412,11 @@ bool PolycodeIDEApp::Update() {
 	}
 	
 	if(projectManager->getProjectCount() > 0) {
-		frame->welcomeEntity->enabled =  false;
+		frame->welcomeEntity->enabled =	 false;
 		
 		frame->getConsoleSizer()->enabled = true;
 	} else {
-		frame->welcomeEntity->enabled =  true;
+		frame->welcomeEntity->enabled =	 true;
 		frame->getConsoleSizer()->enabled = false;		
 	}
 

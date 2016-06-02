@@ -1,4 +1,4 @@
-    
+	
 /*
 Copyright (C) 2015 by Ivan Safrin
 
@@ -30,15 +30,15 @@ THE SOFTWARE.
 #include "polycode/core/PolyMesh.h"
 
 #if PLATFORM == PLATFORM_MAC
-    
+	
 	#include <OpenGL/gl.h>
 	#include <OpenGL/glext.h>
 	#include <OpenGL/glu.h>
 
 #elif PLATFORM == PLATFORM_IOS
 
-    #include <OpenGLES/ES2/gl.h>
-    #include <OpenGLES/ES2/glext.h>
+	#include <OpenGLES/ES2/gl.h>
+	#include <OpenGLES/ES2/glext.h>
 
 #elif PLATFORM == PLATFORM_WINDOWS
 
@@ -79,63 +79,63 @@ namespace Polycode {
 		~OpenGLGraphicsInterface();
 
 		// implementation
-        
-        void createTexture(Texture *texture);
-        void destroyTexture(Texture *texture);
-        
-        void setViewport(unsigned int x,unsigned  int y,unsigned  int width, unsigned height);
-        void clearBuffers(const Color &clearColor, bool colorBuffer, bool depthBuffer, bool stencilBuffer);
-        void setParamInShader(Shader *shader, ProgramParam *param, LocalShaderParam *localParam);
-        void setAttributeInShader(Shader *shader, ProgramAttribute *attribute, AttributeBinding *attributeBinding);
-        void disableAttribute(Shader *shader, const ProgramAttribute &attribute);
-        void useShader(Shader *shader);
-        
-        void createProgram(ShaderProgram *program);
-        void destroyProgram(ShaderProgram *program);
-        
-        void createShader(Shader *shader);
-        void destroyShader(Shader *shader);
-        
-        void beginDrawCall();
-        void endDrawCall();
-        void setBlendingMode(unsigned int blendingMode);
-        
-        void createRenderBuffer(RenderBuffer *renderBuffer);
-        void destroyRenderBuffer(RenderBuffer *renderBuffer);
-        void bindRenderBuffer(RenderBuffer *renderBuffer);
-        
-        void createSubmeshBuffers(MeshGeometry *submesh);
-        void destroySubmeshBufferData(void *platformData);
-        void drawSubmeshBuffers(MeshGeometry *submesh, Shader *shader);
-        
-        void drawIndices(int type, IndexDataArray *indexArray);
-        void drawArrays(int type, unsigned int vertexCount);
-        
-        void enableDepthTest(bool val);
-        void enableDepthWrite(bool val);
-        void enableBackfaceCulling(bool val);
-        void setLineSize(Number lineSize);
-        
-        void setWireframeMode(bool val);
-        
-        void enableScissor(bool val);
-        void setScissorBox(const Polycode::Rectangle &box);
-        
-        bool lineSmooth;
-        
+		
+		void createTexture(Texture *texture);
+		void destroyTexture(Texture *texture);
+		
+		void setViewport(unsigned int x,unsigned  int y,unsigned  int width, unsigned height);
+		void clearBuffers(const Color &clearColor, bool colorBuffer, bool depthBuffer, bool stencilBuffer);
+		void setParamInShader(Shader *shader, ProgramParam *param, LocalShaderParam *localParam);
+		void setAttributeInShader(Shader *shader, ProgramAttribute *attribute, AttributeBinding *attributeBinding);
+		void disableAttribute(Shader *shader, const ProgramAttribute &attribute);
+		void useShader(Shader *shader);
+		
+		void createProgram(ShaderProgram *program);
+		void destroyProgram(ShaderProgram *program);
+		
+		void createShader(Shader *shader);
+		void destroyShader(Shader *shader);
+		
+		void beginDrawCall();
+		void endDrawCall();
+		void setBlendingMode(unsigned int blendingMode);
+		
+		void createRenderBuffer(RenderBuffer *renderBuffer);
+		void destroyRenderBuffer(RenderBuffer *renderBuffer);
+		void bindRenderBuffer(RenderBuffer *renderBuffer);
+		
+		void createSubmeshBuffers(MeshGeometry *submesh);
+		void destroySubmeshBufferData(void *platformData);
+		void drawSubmeshBuffers(MeshGeometry *submesh, Shader *shader);
+		
+		void drawIndices(int type, IndexDataArray *indexArray);
+		void drawArrays(int type, unsigned int vertexCount);
+		
+		void enableDepthTest(bool val);
+		void enableDepthWrite(bool val);
+		void enableBackfaceCulling(bool val);
+		void setLineSize(Number lineSize);
+		
+		void setWireframeMode(bool val);
+		
+		void enableScissor(bool val);
+		void setScissorBox(const Polycode::Rectangle &box);
+		
+		bool lineSmooth;
+		
 	protected:
 		
-        GLuint currentShaderID;
-        int textureIndex;
-        
-        static int mapNameToArrayType(const String &name);
-        static GLenum getGLDrawMode(int polycodeMode);
-        static int getPolycodeParamType(int glType);
-        static int getAttributeSize(int glType);
-        void setUniformMatrix(GLint paramLocation, const Polycode::Matrix4& matrix);
-        void createVertexBuffer(VertexDataArray *array);
-        void createIndexBuffer(IndexDataArray *array);
-        void destroyBuffer(RenderDataArray *array);
+		GLuint currentShaderID;
+		int textureIndex;
+		
+		static int mapNameToArrayType(const String &name);
+		static GLenum getGLDrawMode(int polycodeMode);
+		static int getPolycodeParamType(int glType);
+		static int getAttributeSize(int glType);
+		void setUniformMatrix(GLint paramLocation, const Polycode::Matrix4& matrix);
+		void createVertexBuffer(VertexDataArray *array);
+		void createIndexBuffer(IndexDataArray *array);
+		void destroyBuffer(RenderDataArray *array);
 	};
 }
 

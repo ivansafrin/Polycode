@@ -156,7 +156,7 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 #ifdef USE_X11
 	// Start listening to clipboard events.
 	// (Yes on X11 you need to actively listen to
-	//  clipboard events and respond to them)
+	//	clipboard events and respond to them)
 	init_scrap();
 #endif // USE_X11
 }
@@ -179,9 +179,9 @@ void SDLCore::handleVideoModeChange(VideoModeChangeInfo* modeInfo){
 	
 	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24);
 	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute( SDL_GL_RED_SIZE,   8);
+	SDL_GL_SetAttribute( SDL_GL_RED_SIZE,	8);
 	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8);
-	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE,  8);
+	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE,	8);
 	SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8);
 	
 	if(aaLevel > 0) {
@@ -202,9 +202,9 @@ void SDLCore::handleVideoModeChange(VideoModeChangeInfo* modeInfo){
 		flags |= SDL_RESIZABLE;
 	}
 	
-// 	if(modeInfo->retinaSupport) {
-// 		flags |= SDL_WINDOW_ALLOW_HIGHDPI;
-// 	}
+//	if(modeInfo->retinaSupport) {
+//		flags |= SDL_WINDOW_ALLOW_HIGHDPI;
+//	}
 /*
 	if(vSync) {
 		flags |= SDL_DOUBLEBUF;
@@ -250,13 +250,13 @@ SDLCore::~SDLCore() {
 }
 
 void SDLCore::openURL(String url) {
-    int childExitStatus;
-    pid_t pid = fork();
-    if (pid == 0) {
+	int childExitStatus;
+	pid_t pid = fork();
+	if (pid == 0) {
 	execl("/usr/bin/xdg-open", "/usr/bin/xdg-open", url.c_str(), (char *)0);
-    } else {
-        pid_t ws = waitpid( pid, &childExitStatus, WNOHANG);
-    }
+	} else {
+		pid_t ws = waitpid( pid, &childExitStatus, WNOHANG);
+	}
 }
 
 String SDLCore::executeExternalCommand(String command, String args, String inDirectory) {
@@ -336,12 +336,12 @@ bool SDLCore::checkSpecialKeyEvents(PolyKEY key) {
 	}
 	
 	
-	if(key == KEY_z  && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL)) && (input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT))) {
+	if(key == KEY_z	 && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL)) && (input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT))) {
 		dispatchEvent(new Event(), Core::EVENT_REDO);
 		return true;
 	}
 		
-	if(key == KEY_z  && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
+	if(key == KEY_z	 && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
 		dispatchEvent(new Event(), Core::EVENT_UNDO);
 		return true;
 	}
@@ -491,7 +491,7 @@ void SDLCore::copyStringToClipboard(const String& str) {
 #ifdef USE_X11
 	put_scrap(T('T', 'E', 'X', 'T'), str.size(), str.c_str());
 #endif
-// 	SDL_SetClipboardText(str.c_str());
+//	SDL_SetClipboardText(str.c_str());
 }
 
 String SDLCore::getClipboardString() {
@@ -504,13 +504,13 @@ String SDLCore::getClipboardString() {
 	free(buffer);
 	return rval;
 	#endif
-// 	String rval;
-// 	if(SDL_HasClipboardText() ==SDL_TRUE){
-// 		rval=SDL_GetClipboardText();
-// 	} else {
-// 		rval="";
-// 	}
-// 	return rval;
+//	String rval;
+//	if(SDL_HasClipboardText() ==SDL_TRUE){
+//		rval=SDL_GetClipboardText();
+//	} else {
+//		rval="";
+//	}
+//	return rval;
 }
 
 void SDLCore::createFolder(const String& folderPath) {
@@ -518,33 +518,33 @@ void SDLCore::createFolder(const String& folderPath) {
 }
 
 void SDLCore::copyDiskItem(const String& itemPath, const String& destItemPath) {
-    int childExitStatus;
-    pid_t pid = fork();
-    if (pid == 0) {
-        execl("/bin/cp", "/bin/cp", "-RT", itemPath.c_str(), destItemPath.c_str(), (char *)0);
-    } else {
-        pid_t ws = waitpid( pid, &childExitStatus, 0);
-    }
+	int childExitStatus;
+	pid_t pid = fork();
+	if (pid == 0) {
+		execl("/bin/cp", "/bin/cp", "-RT", itemPath.c_str(), destItemPath.c_str(), (char *)0);
+	} else {
+		pid_t ws = waitpid( pid, &childExitStatus, 0);
+	}
 }
 
 void SDLCore::moveDiskItem(const String& itemPath, const String& destItemPath) {
-    int childExitStatus;
-    pid_t pid = fork();
-    if (pid == 0) {
-        execl("/bin/mv", "/bin/mv", itemPath.c_str(), destItemPath.c_str(), (char *)0);
-    } else {
-        pid_t ws = waitpid( pid, &childExitStatus, 0);
-    }
+	int childExitStatus;
+	pid_t pid = fork();
+	if (pid == 0) {
+		execl("/bin/mv", "/bin/mv", itemPath.c_str(), destItemPath.c_str(), (char *)0);
+	} else {
+		pid_t ws = waitpid( pid, &childExitStatus, 0);
+	}
 }
 
 void SDLCore::removeDiskItem(const String& itemPath) {
-    int childExitStatus;
-    pid_t pid = fork();
-    if (pid == 0) {
-        execl("/bin/rm", "/bin/rm", "-rf", itemPath.c_str(), (char *)0);
-    } else {
-        pid_t ws = waitpid( pid, &childExitStatus, 0);
-    }
+	int childExitStatus;
+	pid_t pid = fork();
+	if (pid == 0) {
+		execl("/bin/rm", "/bin/rm", "-rf", itemPath.c_str(), (char *)0);
+	} else {
+		pid_t ws = waitpid( pid, &childExitStatus, 0);
+	}
 }
 
 String SDLCore::openFolderPicker() {
@@ -558,8 +558,8 @@ vector<String> SDLCore::openFilePicker(vector<CoreFileExtension> extensions, boo
 }
 
 String SDLCore::saveFilePicker(std::vector<CoreFileExtension> extensions) {
-        String r = "";
-        return r;
+		String r = "";
+		return r;
 }
 
 void SDLCore::resizeTo(int xRes, int yRes) {
@@ -569,23 +569,23 @@ void SDLCore::resizeTo(int xRes, int yRes) {
 }
 
 bool SDLCore::systemParseFolder(const String& pathString, bool showHidden, vector< OSFileEntry >& targetVector) {
-    DIR           *d;
-    struct dirent *dir;
-    
-    d = opendir(pathString.c_str());
-    if(d) {
-        while ((dir = readdir(d)) != NULL) {
-            if(dir->d_name[0] != '.' || (dir->d_name[0] == '.'  && showHidden)) {
-                if(dir->d_type == DT_DIR) {
-                    targetVector.push_back(OSFileEntry(pathString, dir->d_name, OSFileEntry::TYPE_FOLDER));
-                } else {
-                    targetVector.push_back(OSFileEntry(pathString, dir->d_name, OSFileEntry::TYPE_FILE));
-                }
-            }
-        }
-        closedir(d);
-    }
-    return true;
+	DIR			  *d;
+	struct dirent *dir;
+	
+	d = opendir(pathString.c_str());
+	if(d) {
+		while ((dir = readdir(d)) != NULL) {
+			if(dir->d_name[0] != '.' || (dir->d_name[0] == '.'	&& showHidden)) {
+				if(dir->d_type == DT_DIR) {
+					targetVector.push_back(OSFileEntry(pathString, dir->d_name, OSFileEntry::TYPE_FOLDER));
+				} else {
+					targetVector.push_back(OSFileEntry(pathString, dir->d_name, OSFileEntry::TYPE_FILE));
+				}
+			}
+		}
+		closedir(d);
+	}
+	return true;
 }
 
 #ifdef USE_X11
@@ -601,7 +601,7 @@ bool SDLCore::systemParseFolder(const String& pathString, bool showHidden, vecto
 
 /* Miscellaneous defines */
 #define PUBLIC
-#define PRIVATE	static
+#define PRIVATE static
 
 #define X11_SCRAP
 
@@ -618,20 +618,20 @@ PRIVATE scrap_type
 convert_format(int type)
 {
   switch (type)
-    {
+	{
 
-    case T('T', 'E', 'X', 'T'):
-      return XA_STRING;
+	case T('T', 'E', 'X', 'T'):
+	  return XA_STRING;
 
-    default:
-      {
-        char format[sizeof(FORMAT_PREFIX)+8+1];
+	default:
+	  {
+		char format[sizeof(FORMAT_PREFIX)+8+1];
 
-        sprintf(format, "%s%08lx", FORMAT_PREFIX, (unsigned long)type);
+		sprintf(format, "%s%08lx", FORMAT_PREFIX, (unsigned long)type);
 
-        return XInternAtom(SDL_Display, format, False);
-      }
-    }
+		return XInternAtom(SDL_Display, format, False);
+	  }
+	}
 }
 
 /* Convert internal data to scrap format */
@@ -642,56 +642,56 @@ convert_data(int type, char *dst, const char *src, int srclen)
 
   dstlen = 0;
   switch (type)
-    {
-    case T('T', 'E', 'X', 'T'):
-      if ( dst )
-        {
-          while ( --srclen >= 0 )
-            {
-              if ( *src == '\r' )
-                {
-                  *dst++ = '\n';
-                  ++dstlen;
-                }
-              else
-                {
-                  *dst++ = *src;
-                  ++dstlen;
-                }
-              ++src;
-            }
-            *dst = '\0';
-            ++dstlen;
-        }
-      else
-        {
-          while ( --srclen >= 0 )
-            {
-              if ( *src == '\r' )
-                {
-                  ++dstlen;
-                }
-              else
-                {
-                  ++dstlen;
-                }
-              ++src;
-            }
-            ++dstlen;
-        }
-      break;
+	{
+	case T('T', 'E', 'X', 'T'):
+	  if ( dst )
+		{
+		  while ( --srclen >= 0 )
+			{
+			  if ( *src == '\r' )
+				{
+				  *dst++ = '\n';
+				  ++dstlen;
+				}
+			  else
+				{
+				  *dst++ = *src;
+				  ++dstlen;
+				}
+			  ++src;
+			}
+			*dst = '\0';
+			++dstlen;
+		}
+	  else
+		{
+		  while ( --srclen >= 0 )
+			{
+			  if ( *src == '\r' )
+				{
+				  ++dstlen;
+				}
+			  else
+				{
+				  ++dstlen;
+				}
+			  ++src;
+			}
+			++dstlen;
+		}
+	  break;
 
-    default:
-      if ( dst )
-        {
-          *(int *)dst = srclen;
-          dst += sizeof(int);
-          memcpy(dst, src, srclen);
-        }
-      dstlen = sizeof(int)+srclen;
-      break;
-    }
-    return(dstlen);
+	default:
+	  if ( dst )
+		{
+		  *(int *)dst = srclen;
+		  dst += sizeof(int);
+		  memcpy(dst, src, srclen);
+		}
+	  dstlen = sizeof(int)+srclen;
+	  break;
+	}
+	return(dstlen);
 }
 
 /* Convert scrap data to internal format */
@@ -702,53 +702,53 @@ convert_scrap(int type, char *dst, char *src, int srclen)
 
   dstlen = 0;
   switch (type)
-    {
-    case T('T', 'E', 'X', 'T'):
-      {
-        if ( srclen == 0 )
-          srclen = strlen(src);
-        if ( dst )
-          {
-            while ( --srclen >= 0 )
-              {
-                if ( *src == '\n' )
-                  {
-                    *dst++ = '\r';
-                    ++dstlen;
-                  }
-                else
-                  {
-                    *dst++ = *src;
-                    ++dstlen;
-                  }
-                ++src;
-              }
-              *dst = '\0';
-              ++dstlen;
-          }
-        else
-          {
-            while ( --srclen >= 0 )
-              {
-                ++dstlen;
-                ++src;
-              }
-              ++dstlen;
-          }
-        }
-      break;
+	{
+	case T('T', 'E', 'X', 'T'):
+	  {
+		if ( srclen == 0 )
+		  srclen = strlen(src);
+		if ( dst )
+		  {
+			while ( --srclen >= 0 )
+			  {
+				if ( *src == '\n' )
+				  {
+					*dst++ = '\r';
+					++dstlen;
+				  }
+				else
+				  {
+					*dst++ = *src;
+					++dstlen;
+				  }
+				++src;
+			  }
+			  *dst = '\0';
+			  ++dstlen;
+		  }
+		else
+		  {
+			while ( --srclen >= 0 )
+			  {
+				++dstlen;
+				++src;
+			  }
+			  ++dstlen;
+		  }
+		}
+	  break;
 
-    default:
-      dstlen = *(int *)src;
-      if ( dst )
-        {
-          if ( srclen == 0 )
-            memcpy(dst, src+sizeof(int), dstlen);
-          else
-            memcpy(dst, src+sizeof(int), srclen-sizeof(int));
-        }
-      break;
-    }
+	default:
+	  dstlen = *(int *)src;
+	  if ( dst )
+		{
+		  if ( srclen == 0 )
+			memcpy(dst, src+sizeof(int), dstlen);
+		  else
+			memcpy(dst, src+sizeof(int), srclen-sizeof(int));
+		}
+	  break;
+	}
   return dstlen;
 }
 
@@ -767,27 +767,27 @@ init_scrap(void)
 
   SDL_VERSION(&info.version);
   if ( SDL_GetWMInfo(&info) )
-    {
-      /* Save the information for later use */
+	{
+	  /* Save the information for later use */
 /* * */
-      if ( info.subsystem == SDL_SYSWM_X11 )
-        {
-          SDL_Display = info.info.x11.display;
-          SDL_Window = info.info.x11.window;
-          Lock_Display = info.info.x11.lock_func;
-          Unlock_Display = info.info.x11.unlock_func;
+	  if ( info.subsystem == SDL_SYSWM_X11 )
+		{
+		  SDL_Display = info.info.x11.display;
+		  SDL_Window = info.info.x11.window;
+		  Lock_Display = info.info.x11.lock_func;
+		  Unlock_Display = info.info.x11.unlock_func;
 
-          /* Enable the special window hook events */
-          SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
-          SDL_SetEventFilter(clipboard_filter);
+		  /* Enable the special window hook events */
+		  SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
+		  SDL_SetEventFilter(clipboard_filter);
 
-          retval = 0;
-        }
-      else
-        {
-          SDL_SetError("SDL is not running on X11");
-        }
-    }
+		  retval = 0;
+		}
+	  else
+		{
+		  SDL_SetError("SDL is not running on X11");
+		}
+	}
   return(retval);
 }
 
@@ -817,19 +817,19 @@ put_scrap(int type, int srclen, const char *src)
 /* * */
   dst = (char *)malloc(dstlen);
   if ( dst != NULL )
-    {
-      Lock_Display();
-      convert_data(type, dst, src, srclen);
-      XChangeProperty(SDL_Display, DefaultRootWindow(SDL_Display),
-        XA_CUT_BUFFER0, format, 8, PropModeReplace, (unsigned char*) dst, dstlen);
-      free(dst);
-      Atom XA_CLIPBOARD = XInternAtom(SDL_Display, "CLIPBOARD", 0);
-      if ( lost_scrap() ) {
-        XSetSelectionOwner(SDL_Display, XA_PRIMARY, SDL_Window, CurrentTime);
-        XSetSelectionOwner(SDL_Display, XA_CLIPBOARD, SDL_Window, CurrentTime);
-      }
-      Unlock_Display();
-    }
+	{
+	  Lock_Display();
+	  convert_data(type, dst, src, srclen);
+	  XChangeProperty(SDL_Display, DefaultRootWindow(SDL_Display),
+		XA_CUT_BUFFER0, format, 8, PropModeReplace, (unsigned char*) dst, dstlen);
+	  free(dst);
+	  Atom XA_CLIPBOARD = XInternAtom(SDL_Display, "CLIPBOARD", 0);
+	  if ( lost_scrap() ) {
+		XSetSelectionOwner(SDL_Display, XA_PRIMARY, SDL_Window, CurrentTime);
+		XSetSelectionOwner(SDL_Display, XA_CLIPBOARD, SDL_Window, CurrentTime);
+	  }
+	  Unlock_Display();
+	}
 
 }
 
@@ -843,118 +843,118 @@ get_scrap(int type, int *dstlen, char **dst)
 
 /* * */
   {
-    Window owner;
-    Atom selection;
-    Atom seln_type;
-    int seln_format;
-    unsigned long nbytes;
-    unsigned long overflow;
-    char *src;
+	Window owner;
+	Atom selection;
+	Atom seln_type;
+	int seln_format;
+	unsigned long nbytes;
+	unsigned long overflow;
+	char *src;
 
-    Lock_Display();
-    Atom XA_CLIPBOARD = XInternAtom(SDL_Display, "CLIPBOARD", 0);
-    owner = XGetSelectionOwner(SDL_Display, XA_PRIMARY);
-    Unlock_Display();
-    if ( (owner == None) || (owner == SDL_Window) )
-      {
-        owner = DefaultRootWindow(SDL_Display);
-        selection = XA_CUT_BUFFER0;
-      }
-    else
-      {
-        int selection_response = 0;
-        SDL_Event event;
+	Lock_Display();
+	Atom XA_CLIPBOARD = XInternAtom(SDL_Display, "CLIPBOARD", 0);
+	owner = XGetSelectionOwner(SDL_Display, XA_PRIMARY);
+	Unlock_Display();
+	if ( (owner == None) || (owner == SDL_Window) )
+	  {
+		owner = DefaultRootWindow(SDL_Display);
+		selection = XA_CUT_BUFFER0;
+	  }
+	else
+	  {
+		int selection_response = 0;
+		SDL_Event event;
 
-        owner = SDL_Window;
-        Lock_Display();
-        selection = XInternAtom(SDL_Display, "SDL_SELECTION", False);
-        XConvertSelection(SDL_Display, XA_PRIMARY, format,
-                                        selection, owner, CurrentTime);
-        XConvertSelection(SDL_Display, XA_CLIPBOARD, format,
-                                        selection, owner, CurrentTime);
-        Unlock_Display();
-        while ( ! selection_response )
-          {
-            SDL_WaitEvent(&event);
-            if ( event.type == SDL_SYSWMEVENT )
-              {
-                XEvent xevent = event.syswm.msg->event.xevent;
+		owner = SDL_Window;
+		Lock_Display();
+		selection = XInternAtom(SDL_Display, "SDL_SELECTION", False);
+		XConvertSelection(SDL_Display, XA_PRIMARY, format,
+										selection, owner, CurrentTime);
+		XConvertSelection(SDL_Display, XA_CLIPBOARD, format,
+										selection, owner, CurrentTime);
+		Unlock_Display();
+		while ( ! selection_response )
+		  {
+			SDL_WaitEvent(&event);
+			if ( event.type == SDL_SYSWMEVENT )
+			  {
+				XEvent xevent = event.syswm.msg->event.xevent;
 
-                if ( (xevent.type == SelectionNotify) &&
-                     (xevent.xselection.requestor == owner) )
-                    selection_response = 1;
-              }
-          }
-      }
-    Lock_Display();
-    if ( XGetWindowProperty(SDL_Display, owner, selection, 0, INT_MAX/4,
-                            False, format, &seln_type, &seln_format,
-                       &nbytes, &overflow, (unsigned char **)&src) == Success )
-      {
-        if ( seln_type == format )
-          {
-            *dstlen = convert_scrap(type, NULL, src, nbytes);
-            *dst = (char *)malloc(*dstlen);
-            if ( *dst == NULL )
-              *dstlen = 0;
-            else
-              convert_scrap(type, *dst, src, nbytes);
-          }
-        XFree(src);
-      }
-    }
-    Unlock_Display();
+				if ( (xevent.type == SelectionNotify) &&
+					 (xevent.xselection.requestor == owner) )
+					selection_response = 1;
+			  }
+		  }
+	  }
+	Lock_Display();
+	if ( XGetWindowProperty(SDL_Display, owner, selection, 0, INT_MAX/4,
+							False, format, &seln_type, &seln_format,
+					   &nbytes, &overflow, (unsigned char **)&src) == Success )
+	  {
+		if ( seln_type == format )
+		  {
+			*dstlen = convert_scrap(type, NULL, src, nbytes);
+			*dst = (char *)malloc(*dstlen);
+			if ( *dst == NULL )
+			  *dstlen = 0;
+			else
+			  convert_scrap(type, *dst, src, nbytes);
+		  }
+		XFree(src);
+	  }
+	}
+	Unlock_Display();
 }
 
 PRIVATE int clipboard_filter(const SDL_Event *event)
 {
   /* Post all non-window manager specific events */
   if ( event->type != SDL_SYSWMEVENT ) {
-    return(1);
+	return(1);
   }
 
   /* Handle window-manager specific clipboard events */
   switch (event->syswm.msg->event.xevent.type) {
-    /* Copy the selection from XA_CUT_BUFFER0 to the requested property */
-    case SelectionRequest: {
-      XSelectionRequestEvent *req;
-      XEvent sevent;
-      int seln_format;
-      unsigned long nbytes;
-      unsigned long overflow;
-      unsigned char *seln_data;
+	/* Copy the selection from XA_CUT_BUFFER0 to the requested property */
+	case SelectionRequest: {
+	  XSelectionRequestEvent *req;
+	  XEvent sevent;
+	  int seln_format;
+	  unsigned long nbytes;
+	  unsigned long overflow;
+	  unsigned char *seln_data;
 
-      req = &event->syswm.msg->event.xevent.xselectionrequest;
-      sevent.xselection.type = SelectionNotify;
-      sevent.xselection.display = req->display;
-      sevent.xselection.selection = req->selection;
-      sevent.xselection.target = None;
-      sevent.xselection.property = None;
-      sevent.xselection.requestor = req->requestor;
-      sevent.xselection.time = req->time;
-      if ( XGetWindowProperty(SDL_Display, DefaultRootWindow(SDL_Display),
-                              XA_CUT_BUFFER0, 0, INT_MAX/4, False, req->target,
-                              &sevent.xselection.target, &seln_format,
-                              &nbytes, &overflow, &seln_data) == Success )
-        {
-          if ( sevent.xselection.target == req->target )
-            {
-              if ( sevent.xselection.target == XA_STRING )
-                {
-                  if ( seln_data[nbytes-1] == '\0' )
-                    --nbytes;
-                }
-              XChangeProperty(SDL_Display, req->requestor, req->property,
-                sevent.xselection.target, seln_format, PropModeReplace,
-                                                      seln_data, nbytes);
-              sevent.xselection.property = req->property;
-            }
-          XFree(seln_data);
-        }
-      XSendEvent(SDL_Display,req->requestor,False,0,&sevent);
-      XSync(SDL_Display, False);
-    }
-    break;
+	  req = &event->syswm.msg->event.xevent.xselectionrequest;
+	  sevent.xselection.type = SelectionNotify;
+	  sevent.xselection.display = req->display;
+	  sevent.xselection.selection = req->selection;
+	  sevent.xselection.target = None;
+	  sevent.xselection.property = None;
+	  sevent.xselection.requestor = req->requestor;
+	  sevent.xselection.time = req->time;
+	  if ( XGetWindowProperty(SDL_Display, DefaultRootWindow(SDL_Display),
+							  XA_CUT_BUFFER0, 0, INT_MAX/4, False, req->target,
+							  &sevent.xselection.target, &seln_format,
+							  &nbytes, &overflow, &seln_data) == Success )
+		{
+		  if ( sevent.xselection.target == req->target )
+			{
+			  if ( sevent.xselection.target == XA_STRING )
+				{
+				  if ( seln_data[nbytes-1] == '\0' )
+					--nbytes;
+				}
+			  XChangeProperty(SDL_Display, req->requestor, req->property,
+				sevent.xselection.target, seln_format, PropModeReplace,
+													  seln_data, nbytes);
+			  sevent.xselection.property = req->property;
+			}
+		  XFree(seln_data);
+		}
+	  XSendEvent(SDL_Display,req->requestor,False,0,&sevent);
+	  XSync(SDL_Display, False);
+	}
+	break;
   }
 
   /* Post the event for X11 clipboard reading above */

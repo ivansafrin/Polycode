@@ -37,8 +37,8 @@ namespace Polycode {
 			virtual ~UIMenuItem();
 
 			virtual bool isSelectable();
-        
-            String getMenuItemID();
+		
+			String getMenuItemID();
 			
 			/**
 			 * The user-data associated with this entry, as set in UIMenu::addOption()

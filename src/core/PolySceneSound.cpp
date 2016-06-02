@@ -37,34 +37,34 @@ SceneSoundListener::~SceneSoundListener() {
 void SceneSoundListener::Update() {
 	Matrix4 finalMatrix = getConcatenatedMatrix();
 	CoreServices::getInstance()->getSoundManager()->setListenerPosition(finalMatrix.getPosition());
-    Quaternion orientation;
-    orientation.setFromMatrix(finalMatrix);
+	Quaternion orientation;
+	orientation.setFromMatrix(finalMatrix);
 	CoreServices::getInstance()->getSoundManager()->setListenerOrientation(orientation);
 }
 
 void SceneSound::setLoopOnLoad(bool val) {
-    loopOnLoad = val;
+	loopOnLoad = val;
 }
 
 bool SceneSound::getLoopOnLoad() {
-    return loopOnLoad;
+	return loopOnLoad;
 }
 
 
 Entity *SceneSound::Clone(bool deepClone, bool ignoreEditorOnly) const {
-    SceneSound *newSound = new SceneSound(sound->getFileName(), sound->getReferenceDistance(), sound->getMaxDistance(), directionalSound);
-    applyClone(newSound, deepClone, ignoreEditorOnly);
-    return newSound;
+	SceneSound *newSound = new SceneSound(sound->getFileName(), sound->getReferenceDistance(), sound->getMaxDistance(), directionalSound);
+	applyClone(newSound, deepClone, ignoreEditorOnly);
+	return newSound;
 }
 
 void SceneSound::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
-    Entity::applyClone(clone, deepClone, ignoreEditorOnly);
-    SceneSound *cloneSound = (SceneSound*) clone;
-    cloneSound->setLoopOnLoad(loopOnLoad);
-    cloneSound->getSound()->setPositionalProperties(sound->getReferenceDistance(), sound->getMaxDistance());
-    cloneSound->setDirectionalSound(directionalSound);
-    cloneSound->getSound()->setVolume(sound->getVolume());
-    cloneSound->getSound()->setPitch(sound->getPitch());
+	Entity::applyClone(clone, deepClone, ignoreEditorOnly);
+	SceneSound *cloneSound = (SceneSound*) clone;
+	cloneSound->setLoopOnLoad(loopOnLoad);
+	cloneSound->getSound()->setPositionalProperties(sound->getReferenceDistance(), sound->getMaxDistance());
+	cloneSound->setDirectionalSound(directionalSound);
+	cloneSound->getSound()->setVolume(sound->getVolume());
+	cloneSound->getSound()->setPitch(sound->getPitch());
 }
 
 SceneSound::SceneSound(const String& fileName, Number referenceDistance, Number maxDistance, bool directionalSound) : Entity() {
@@ -81,10 +81,10 @@ SceneSound::~SceneSound() {
 }
 
 bool SceneSound::isDirectionalSound() const {
-    return directionalSound;
+	return directionalSound;
 }
 void SceneSound::setDirectionalSound(bool val) {
-    directionalSound = val;
+	directionalSound = val;
 }
 
 void SceneSound::Update() {

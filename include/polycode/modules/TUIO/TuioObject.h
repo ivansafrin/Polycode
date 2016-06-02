@@ -61,8 +61,8 @@ namespace TUIO {
 		 * Session ID, Symbol ID, X and Y coordinate and angle to the newly created TuioObject.
 		 *
 		 * @param	ttime	the TuioTime to assign
-		 * @param	si	the Session ID  to assign
-		 * @param	sym	the Symbol ID  to assign
+		 * @param	si	the Session ID	to assign
+		 * @param	sym the Symbol ID  to assign
 		 * @param	xp	the X coordinate to assign
 		 * @param	yp	the Y coordinate to assign
 		 * @param	a	the angle to assign
@@ -78,12 +78,12 @@ namespace TUIO {
 		 * This constructor takes the provided Session ID, Symbol ID, X and Y coordinate 
 		 * and angle, and assigs these values to the newly created TuioObject.
 		 *
-		 * @param	si	the Session ID  to assign
-		 * @param	sym	the Symbol ID  to assign
+		 * @param	si	the Session ID	to assign
+		 * @param	sym the Symbol ID  to assign
 		 * @param	xp	the X coordinate to assign
 		 * @param	yp	the Y coordinate to assign
 		 * @param	a	the angle to assign
-		 */	
+		 */ 
 		TuioObject (long si, int sym, float xp, float yp, float a):TuioContainer(si, xp, yp) {
 			symbol_id = sym;
 			angle = a;
@@ -200,7 +200,7 @@ namespace TUIO {
 		 * The TuioTime time stamp of this TuioContainer remains unchanged.
 		 *
 		 * @param	tobj	the TuioContainer to assign
-		 */	
+		 */ 
 		void update (TuioObject *tobj) {
 			TuioContainer::update(tobj);
 			angle = tobj->getAngle();

@@ -31,71 +31,71 @@
 #include <memory>
 
 namespace Polycode {
-    
-    class RenderBuffer;
-    
-    class _PolyExport LightInfo {
-        public:
-            unsigned short importance;
-            Vector3 position;
-            Vector3 direction;
-            unsigned short type;
-            Color diffuseColor;
-            Color specularColor;
-            Number constantAttenuation;
-            Number linearAttenuation;
-            Number quadraticAttenuation;
-            Number intensity;
-            Number spotlightCutoff;
-            Number spotlightExponent;
-            bool shadowsEnabled;
-            Texture *shadowMapTexture;
-            Matrix4 lightViewMatrix;
-    };
-    
-    class _PolyExport GPUDrawOptions {
-    public:
-        bool depthTest;
-        bool depthWrite;
-        float linePointSize;
-        bool alphaTest;
-        bool backfaceCull;
-        bool depthOnly;
-        bool forceMaterial;
-        unsigned int blendingMode;
-        Polycode::Rectangle scissorBox;
-        bool enableScissor;
-        Color drawColor;
-    };
-    
-    
-    class _PolyExport GPUDrawCall {
-    public:
-        std::shared_ptr<MeshGeometry> submesh;
-        GPUDrawOptions options;
-        Matrix4 modelMatrix;
-        Material *material;
-        std::vector<ShaderPass> shaderPasses;
-    };
-    
-    class _PolyExport GPUDrawBuffer {
-    public:
-        GPUDrawBuffer();
-        ~GPUDrawBuffer();
-        
-        RenderBuffer *targetFramebuffer;
-        Matrix4 projectionMatrix;
-        Matrix4 viewMatrix;
-        Matrix4 cameraMatrix;
-        Color clearColor;
-        bool clearDepthBuffer;
-        bool clearColorBuffer;
-        Vector2 backingResolutionScale;
-        Material *globalMaterial;
-        
-        std::vector<LightInfo> lights;
-        
-        Polycode::Rectangle viewport;
-        std::vector<GPUDrawCall> drawCalls;
-    };
+	
+	class RenderBuffer;
+	
+	class _PolyExport LightInfo {
+		public:
+			unsigned short importance;
+			Vector3 position;
+			Vector3 direction;
+			unsigned short type;
+			Color diffuseColor;
+			Color specularColor;
+			Number constantAttenuation;
+			Number linearAttenuation;
+			Number quadraticAttenuation;
+			Number intensity;
+			Number spotlightCutoff;
+			Number spotlightExponent;
+			bool shadowsEnabled;
+			Texture *shadowMapTexture;
+			Matrix4 lightViewMatrix;
+	};
+	
+	class _PolyExport GPUDrawOptions {
+	public:
+		bool depthTest;
+		bool depthWrite;
+		float linePointSize;
+		bool alphaTest;
+		bool backfaceCull;
+		bool depthOnly;
+		bool forceMaterial;
+		unsigned int blendingMode;
+		Polycode::Rectangle scissorBox;
+		bool enableScissor;
+		Color drawColor;
+	};
+	
+	
+	class _PolyExport GPUDrawCall {
+	public:
+		std::shared_ptr<MeshGeometry> submesh;
+		GPUDrawOptions options;
+		Matrix4 modelMatrix;
+		Material *material;
+		std::vector<ShaderPass> shaderPasses;
+	};
+	
+	class _PolyExport GPUDrawBuffer {
+	public:
+		GPUDrawBuffer();
+		~GPUDrawBuffer();
+		
+		RenderBuffer *targetFramebuffer;
+		Matrix4 projectionMatrix;
+		Matrix4 viewMatrix;
+		Matrix4 cameraMatrix;
+		Color clearColor;
+		bool clearDepthBuffer;
+		bool clearColorBuffer;
+		Vector2 backingResolutionScale;
+		Material *globalMaterial;
+		
+		std::vector<LightInfo> lights;
+		
+		Polycode::Rectangle viewport;
+		std::vector<GPUDrawCall> drawCalls;
+	};
 }

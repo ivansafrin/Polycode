@@ -34,7 +34,7 @@ namespace Polycode {
 	class Texture;
 	class Skeleton;
 	class Image;
-    class ResourcePool;
+	class ResourcePool;
 	
 	/**
 	* 3D polygonal mesh instance. The SceneMesh is the base for all polygonal 3d geometry. It can have simple textures or complex materials applied to it.
@@ -52,8 +52,8 @@ namespace Polycode {
 			* Construct scene mesh from an existing Mesh instance.
 			*/
 			explicit SceneMesh(Mesh *mesh);
-        
-            SceneMesh();
+		
+			SceneMesh();
 			
 			/**
 			* Construct scene mesh from an existing Mesh instance.
@@ -66,10 +66,10 @@ namespace Polycode {
 			
 
 			ShaderPass getShaderPass(unsigned int index);
-            unsigned int getNumShaderPasses();
-            void addShaderPass(ShaderPass pass);
-            void removeShaderPass(int shaderIndex);
-        
+			unsigned int getNumShaderPasses();
+			void addShaderPass(ShaderPass pass);
+			void removeShaderPass(int shaderIndex);
+		
 			/**
 			* Returns the Mesh instance of the actual mesh.
 			*/
@@ -122,39 +122,39 @@ namespace Polycode {
 		
 			void applySkeletonLocally();
 			
-            /**
-             * Sets the line width for line-based meshes.
-             */
+			/**
+			 * Sets the line width for line-based meshes.
+			 */
 			void setLineWidth(Number newWidth);
 
-            /**
-             * If this mesh was loaded form file, returns the filename of the loaded mesh.
-             */
-            String getFilename();
-        
-            /**
-             * Sets the filename path of the mesh.
-             */
-            void setFilename(String fileName);
-        
-            /**
-             * Loads mesh from file. Deletes current mesh if ownsMesh is set to true.
-             */
-            void loadFromFile(String fileName);
-        
-            /**
-             * Line width for line-based meshes.
-             */
+			/**
+			 * If this mesh was loaded form file, returns the filename of the loaded mesh.
+			 */
+			String getFilename();
+		
+			/**
+			 * Sets the filename path of the mesh.
+			 */
+			void setFilename(String fileName);
+		
+			/**
+			 * Loads mesh from file. Deletes current mesh if ownsMesh is set to true.
+			 */
+			void loadFromFile(String fileName);
+		
+			/**
+			 * Line width for line-based meshes.
+			 */
 			Number lineWidth;
-        
-            /**
-             * If set to true, will antialias the lines in a line-based mesh. Defaults to false.
-             */
+		
+			/**
+			 * If set to true, will antialias the lines in a line-based mesh. Defaults to false.
+			 */
 			bool lineSmooth;
 			
-            /**
-             * If setto true, will antialias points in a point-based mesh. Defaults to false.
-             */
+			/**
+			 * If setto true, will antialias points in a point-based mesh. Defaults to false.
+			 */
 			bool pointSmooth;
 			
 			/**
@@ -164,53 +164,53 @@ namespace Polycode {
 
 			/**
 			* If true, will delete its Skeleton upon destruction. (defaults to true)
-			*/ 			
+			*/			
 			bool ownsSkeleton;
 			
-            /**
-             * If set to true, will check against actual geometry polygons on ray hit detection. Defaults to false.
-             */
+			/**
+			 * If set to true, will check against actual geometry polygons on ray hit detection. Defaults to false.
+			 */
 			bool useGeometryHitDetection;
 			
 			bool customHitDetection(const Ray &ray);
-        
-            /**
-             * The Renderer has an ability to set an override material that is set for all rendered entities. If forceMaterial is set to true, this entity will always use its assigned material, even if an override material is set.
-             */
-            void setForceMaterial(bool forceMaterial);
-            bool getForceMaterial();
-        
-            virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
-            virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;        
-            
-            /**
-             * Normally, translucent textures do not affect the depth buffer, but if this flag is set to true, this entity's alpha channel is written to the depth buffer at a preset threshold. This flag is set to false by default.
-             */
-            bool alphaTest;
-            
-            /**
-             * If this flag is set to false, backface culling is disabled when rendering this entity, rendering both sides of each face. Set to true by default.
-             */
-            bool backfaceCulled;
-            bool sendBoneMatricesToMaterial;
+		
+			/**
+			 * The Renderer has an ability to set an override material that is set for all rendered entities. If forceMaterial is set to true, this entity will always use its assigned material, even if an override material is set.
+			 */
+			void setForceMaterial(bool forceMaterial);
+			bool getForceMaterial();
+		
+			virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
+			virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;		
+			
+			/**
+			 * Normally, translucent textures do not affect the depth buffer, but if this flag is set to true, this entity's alpha channel is written to the depth buffer at a preset threshold. This flag is set to false by default.
+			 */
+			bool alphaTest;
+			
+			/**
+			 * If this flag is set to false, backface culling is disabled when rendering this entity, rendering both sides of each face. Set to true by default.
+			 */
+			bool backfaceCulled;
+			bool sendBoneMatricesToMaterial;
 			
 		protected:
-        
+		
 			bool useVertexBuffer;
 			Mesh *mesh;
 			Material *material;
 			Skeleton *skeleton;
-        
-            std::vector<ShaderPass> shaderPasses;
-        
-            String fileName;
-            std::vector<Matrix4> materialBoneMatrices;
-                    
-        
-            VertexDataArray skeletalVertexPositions;
-            VertexDataArray skeletalVertexNormals;
-        
-        
-        
+		
+			std::vector<ShaderPass> shaderPasses;
+		
+			String fileName;
+			std::vector<Matrix4> materialBoneMatrices;
+					
+		
+			VertexDataArray skeletalVertexPositions;
+			VertexDataArray skeletalVertexNormals;
+		
+		
+		
 	};
 }

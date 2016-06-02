@@ -39,8 +39,8 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : UIElement()
 	snapToPixels = true;
 	
 	Config *conf = CoreServices::getInstance()->getConfig();	
-    Number uiScale = conf->getNumericValue("Polycode", "uiScale");
-    
+	Number uiScale = conf->getNumericValue("Polycode", "uiScale");
+	
 	String fontName = conf->getStringValue("Polycode", "uiWindowTitleFont");
 	int fontSize = conf->getNumericValue("Polycode", "uiWindowTitleFontSize");	
 	
@@ -51,7 +51,7 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : UIElement()
 	
 	topPadding = st;
 	
-	padding = conf->getNumericValue("Polycode", "uiWindowSkinPadding");	
+	padding = conf->getNumericValue("Polycode", "uiWindowSkinPadding"); 
 	
 	width = width+(padding*2.0);
 	height = height+topPadding;
@@ -66,17 +66,17 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : UIElement()
 	Number titleBarOffset = conf->getNumericValue("Polycode", "uiWindowTitleBarOffset");
 		
 	titlebarRect = new Entity();
-    titlebarRect->setWidth(width);
-    titlebarRect->setHeight(titleBarHeight);
-    titlebarRect->visible = false;
+	titlebarRect->setWidth(width);
+	titlebarRect->setHeight(titleBarHeight);
+	titlebarRect->visible = false;
 	titlebarRect->setPosition(0, titleBarOffset);
 	titlebarRect->setAnchorPoint(-1.0, -1.0, 0.0);
 	titlebarRect->processInputEvents = true;
 	addChild(titlebarRect);
 	
 	titleLabel = new SceneLabel(windowName, fontSize, fontName, Label::ANTIALIAS_FULL);
-    titleLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
-    
+	titleLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+	
 	titleLabel->setPosition(conf->getNumericValue("Polycode", "uiWindowTitleX"),conf->getNumericValue("Polycode", "uiWindowTitleY"));
 	addChild(titleLabel);
 	titleLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiWindowFontColor"));
@@ -168,8 +168,8 @@ void UIWindow::hideWindow() {
 }
 
 void UIWindow::onClose() {
-    visible = false;
-    enabled = false;
+	visible = false;
+	enabled = false;
 }
 
 void UIWindow::handleEvent(Event *event) {

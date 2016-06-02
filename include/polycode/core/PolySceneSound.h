@@ -30,7 +30,7 @@ namespace Polycode {
 
 	/**
 	* Creates a positional 3D sound listener. There can be only one listener active at any one time.
- 	*/	
+	*/	
 	class _PolyExport SceneSoundListener : public Entity {
 		public:
 			SceneSoundListener();
@@ -47,24 +47,24 @@ namespace Polycode {
 			SceneSound(const String& fileName, Number referenceDistance, Number maxDistance, bool directionalSound = false);
 			virtual ~SceneSound();			
 			void Update();
-        
-            virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
-            virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
+		
+			virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
+			virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
 			
-            bool isDirectionalSound() const;
-            void setDirectionalSound(bool val);
-        
+			bool isDirectionalSound() const;
+			void setDirectionalSound(bool val);
+		
 			/**
 			* Returns the sound object associated with this positional sound.
 			*/
 			Sound *getSound();
-        
-            void setLoopOnLoad(bool val);
-            bool getLoopOnLoad();
+		
+			void setLoopOnLoad(bool val);
+			bool getLoopOnLoad();
 			
 		protected:
 		
-            bool loopOnLoad;
+			bool loopOnLoad;
 			bool directionalSound;
 			Sound *sound;
 	};

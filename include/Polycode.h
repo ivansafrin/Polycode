@@ -91,7 +91,7 @@
 
 #if defined(__APPLE__) && defined(__MACH__)
 	#include <TargetConditionals.h>
-    #if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
+	#if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
 		#include "polycode/core/PolyIOSCore.h"
  	#endif
 #else

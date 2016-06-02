@@ -26,8 +26,8 @@
 TrackballCamera::TrackballCamera(Camera *targetCamera, Entity *trackballShape) : EventDispatcher() {
 	mouseMode = MOUSE_MODE_IDLE;
 	
-    rotationDisabled = false;
-    
+	rotationDisabled = false;
+	
 	this->targetCamera = targetCamera;
 	this->trackballShape = trackballShape;
 	
@@ -51,7 +51,7 @@ TrackballCamera::TrackballCamera(Camera *targetCamera, Entity *trackballShape) :
 }
 
 Number TrackballCamera::getCameraDistance() {
-    return cameraDistance;
+	return cameraDistance;
 }
 
 TrackballCamera::~TrackballCamera() {
@@ -93,13 +93,13 @@ void TrackballCamera::handleEvent(Event *event) {
 						);
 						trackBallMouseEnd = trackBallMouseStart;												
 					} else {
-                        if(!rotationDisabled) {
-                            mouseMode = MOUSE_MODE_ORBITING;
+						if(!rotationDisabled) {
+							mouseMode = MOUSE_MODE_ORBITING;
 							trackBallMouseStart = trackBallMouseEnd = Vector2(
 								inputEvent->getMousePosition().x / trackballShape->getWidth(),
 								inputEvent->getMousePosition().y / trackballShape->getHeight()
 							);
-                        }
+						}
 					}
 				}
 			break;
@@ -154,10 +154,10 @@ void TrackballCamera::processMouseMovement(const Vector2 &newPosition) {
 								
 				Vector3 pan = trackballEye.crossProduct(Vector3(0.0, 1.0, 0.0)).setLength(mouseChange.x);
 				
-                Vector3 panCross = trackballEye.crossProduct(Vector3(0.0, 1.0, 0.0)).crossProduct(trackballEye);
-                
+				Vector3 panCross = trackballEye.crossProduct(Vector3(0.0, 1.0, 0.0)).crossProduct(trackballEye);
+				
 				pan = pan + (panCross.setLength(mouseChange.y));
-                
+				
 				targetCamera->Translate(pan);
 				orbitingCenter += pan;
 				trackBallMouseStart = trackBallMouseEnd;
@@ -185,13 +185,13 @@ void TrackballCamera::processMouseMovement(const Vector2 &newPosition) {
 }
 
 void TrackballCamera::setCameraPosition(Vector3 cameraPosition) {
-    targetCamera->setPosition(cameraPosition);
+	targetCamera->setPosition(cameraPosition);
 	targetCamera->lookAt(orbitingCenter);
-    updateCamera();
+	updateCamera();
 }
 
 Vector3 TrackballCamera::getOribitingCenter() {
-    return orbitingCenter;
+	return orbitingCenter;
 }
 
 void TrackballCamera::updateCamera() {
@@ -205,7 +205,7 @@ void TrackballCamera::updateCamera() {
 
 		Quaternion q;
 		// yaw
-        q.fromAngleAxis(localMouse.x*-2.0, Vector3(0.0, 1.0, 0.0));
+		q.fromAngleAxis(localMouse.x*-2.0, Vector3(0.0, 1.0, 0.0));
 		currentCamQuat = q * currentCamQuat;
 		trackballEye = q.applyTo(trackballEye);
 
@@ -217,23 +217,23 @@ void TrackballCamera::updateCamera() {
 		
 	targetCamera->setPosition(orbitingCenter + trackballEye);	
 	targetCamera->setRotationByQuaternion(currentCamQuat);
-    dispatchEvent(new Event(), Event::CHANGE_EVENT);
+	dispatchEvent(new Event(), Event::CHANGE_EVENT);
 }
 
 void TrackballCamera::disableRotation(bool val) {
-    rotationDisabled = val;
+	rotationDisabled = val;
 }
 
 /*
 void TrackballCamera::setCameraPosition(Vector3 cameraPosition) {
 
 }
-    
+	
 bool TrackballCamera::disableRotation(bool val) {
 	return false;
 }
 
-    
+	
 Number TrackballCamera::getCameraDistance() {
 	return 0.0;
 }

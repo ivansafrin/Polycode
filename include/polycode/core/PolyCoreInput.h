@@ -76,12 +76,12 @@ namespace Polycode {
 		
 		/**
 		* Right mouse button
-		*/ 		
+		*/		
 		static const int MOUSE_BUTTON2 = 1;
 		
 		/**
 		* Middle mouse button
-		*/ 		
+		*/		
 		static const int MOUSE_BUTTON3 = 2;
 		
 		/** 
@@ -141,11 +141,11 @@ namespace Polycode {
 		JoystickInfo *getJoystickInfoByIndex(unsigned int index);
 
 		/**
-         * Returns joystick info for specified joystick device ID. Returns NULL if the joystick device ID is invalid.
-         * @param deviceID Joystick device ID.
-         * @return Joystick info for specified joystick.
-         * @see JoystickInfo
-         */
+		 * Returns joystick info for specified joystick device ID. Returns NULL if the joystick device ID is invalid.
+		 * @param deviceID Joystick device ID.
+		 * @return Joystick info for specified joystick.
+		 * @see JoystickInfo
+		 */
 		JoystickInfo *getJoystickInfoByID(unsigned int deviceID);
 		void addJoystick(unsigned int deviceID);
 		void removeJoystick(unsigned int deviceID);
@@ -176,22 +176,22 @@ namespace Polycode {
 		*/
 		bool simulateTouchAsPen;
 
-        /**
-         * If set to true, will fire mouse events on touch input. Defaults to false.
-         */
+		/**
+		 * If set to true, will fire mouse events on touch input. Defaults to false.
+		 */
 		bool simulateMouseWithTouch;
-        
-        /**
-         * If set to true, will not send touch events outside of the screen as define by current core resolution. Defaults to false.
-         */
+		
+		/**
+		 * If set to true, will not send touch events outside of the screen as define by current core resolution. Defaults to false.
+		 */
 		bool ignoreOffScreenTouch;	
 		
 		void clearInput();
 		
-        /**
-        * If set to false, will ignore repeat system keypress events if a key is already pressed-down. Defaults to true.
-        */
-        bool keyRepeat;
+		/**
+		* If set to false, will ignore repeat system keypress events if a key is already pressed-down. Defaults to true.
+		*/
+		bool keyRepeat;
 		
 		std::vector<JoystickInfo> joysticks;
 		bool keyboardState[512];

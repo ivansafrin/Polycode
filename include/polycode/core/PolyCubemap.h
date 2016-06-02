@@ -37,7 +37,7 @@ namespace Polycode {
 			
 			virtual void recreateFromTextures(){}
 			
-			virtual ~Cubemap();	
+			virtual ~Cubemap(); 
 			
 			static const int CUBEMAP_XPOS = 0;
 			static const int CUBEMAP_XNEG = 1;

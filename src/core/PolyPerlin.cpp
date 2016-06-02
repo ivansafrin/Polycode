@@ -32,7 +32,7 @@ using namespace Polycode;
 #define BM (SAMPLE_SIZE-1)
 
 #define N 0x1000
-#define NP 12   /* 2^N */
+#define NP 12	/* 2^N */
 #define NM 0xfff
 
 #define s_curve(t) ( t * t * (3.0f - 2.0f * t) )
@@ -54,7 +54,7 @@ Number Perlin::noise1(Number arg)
 
 	if (mStart)
   {
-    srand(mSeed);
+	srand(mSeed);
 		mStart = false;
 		init();
 	}
@@ -75,9 +75,8 @@ Number Perlin::noise2(Number vec[2])
 	Number rx0, rx1, ry0, ry1, *q, sx, sy, a, b, t, u, v;
 	int i, j;
 
-	if (mStart)
-  {
-    srand(mSeed);
+	if (mStart) {
+		srand(mSeed);
 		mStart = false;
 		init();
 	}
@@ -121,7 +120,7 @@ Number Perlin::noise3(Number vec[3])
 
 	if (mStart)
   {
-    srand(mSeed);
+	srand(mSeed);
 		mStart = false;
 		init();
 	}
@@ -227,7 +226,7 @@ void Perlin::init(void)
 
 Number Perlin::perlin_noise_2D(Number vec[2])
 {
-  int terms    = mOctaves;
+  int terms	   = mOctaves;
 	Number result = 0.0f;
   Number amp = mAmplitude;
 
@@ -239,7 +238,7 @@ Number Perlin::perlin_noise_2D(Number vec[2])
 		result += noise2(vec)*amp;
 		vec[0] *= 2.0f;
 		vec[1] *= 2.0f;
-    amp*=0.5f;
+	amp*=0.5f;
 	}
 
 
@@ -248,7 +247,7 @@ Number Perlin::perlin_noise_2D(Number vec[2])
 
 Number Perlin::perlin_noise_3D(Number vec[3])
 {
-  int terms    = mOctaves;
+  int terms	   = mOctaves;
 	Number result = 0.0f;
   Number amp = mAmplitude;
 

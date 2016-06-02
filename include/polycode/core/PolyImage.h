@@ -29,19 +29,19 @@ THE SOFTWARE.
 namespace Polycode {
 
 	class String;
-    
-    #define HALF_FLOAT_MIN_BIASED_EXP_AS_SINGLE_FP_EXP 0x38000000
-    #define HALF_FLOAT_MAX_BIASED_EXP_AS_SINGLE_FP_EXP 0x47800000
-    #define FLOAT_MAX_BIASED_EXP (0xFF << 23)
-    #define HALF_FLOAT_MAX_BIASED_EXP (0x1F << 10)
-    
-    typedef uint16_t hfloat;
+	
+	#define HALF_FLOAT_MIN_BIASED_EXP_AS_SINGLE_FP_EXP 0x38000000
+	#define HALF_FLOAT_MAX_BIASED_EXP_AS_SINGLE_FP_EXP 0x47800000
+	#define FLOAT_MAX_BIASED_EXP (0xFF << 23)
+	#define HALF_FLOAT_MAX_BIASED_EXP (0x1F << 10)
+	
+	typedef uint16_t hfloat;
 
-    typedef struct POLYIGNORE  {
-        int size;
-        char **tokens;
-    } TokenArray;
-    
+	typedef struct POLYIGNORE  {
+		int size;
+		char **tokens;
+	} TokenArray;
+	
 	/**
 	* An image in memory. Basic RGB or RGBA images stored in memory. Can be loaded from PNG files, created into textures and written to file.
 	*/
@@ -59,7 +59,7 @@ namespace Polycode {
 			* @param width Width of the image to create.
 			* @param height Height of the image to create.			
 			* @param type Type of image to create. Can be IMAGE_RGBA or IMAGE_RGB.
-			*/ 			
+			*/			
 			Image(int width, int height, int type = Image::IMAGE_RGBA);
 			
 			/**
@@ -68,7 +68,7 @@ namespace Polycode {
 			* @param width Width of the image to create.
 			* @param height Height of the image to create.			
 			* @param type Type of image to create. Can be IMAGE_RGBA or IMAGE_RGB.
-			*/ 						
+			*/						
 			Image(char *data, int width, int height, int type = Image::IMAGE_RGBA);
 			
 			/**
@@ -76,13 +76,13 @@ namespace Polycode {
 			* @param width Width of the image to create.
 			* @param height Height of the image to create.			
 			* @param type Type of image to create. Can be IMAGE_RGBA or IMAGE_RGB.
-			*/ 			
+			*/			
 			static Image *BlankImage(int width, int height, int type = Image::IMAGE_RGBA);
 			
 			/**
 			* Create an image from another image.
 			* @param copyImage The image to copy.
-			*/ 						
+			*/						
 			Image(Image *copyImage);		
 			Image();			
 			virtual ~Image();
@@ -91,16 +91,16 @@ namespace Polycode {
 			* Load an image from a file
 			* @param fileName Path to image file to load.
 			* @return True if successfully loaded, false otherwise.
-			*/ 			
+			*/			
 			bool loadImage(const String& fileName);
-        
-            static POLYIGNORE TokenArray readTokens(char *line, const char *tokens);
-            static POLYIGNORE void freeTokens(TokenArray tokens);
-        
+		
+			static POLYIGNORE TokenArray readTokens(char *line, const char *tokens);
+			static POLYIGNORE void freeTokens(TokenArray tokens);
+		
 			/**
 			* Saves the image to a file. Currently only PNG files are supported.
 			* @param fileName Path to image file to load.	
-			* @return True if successfully loaded, false otherwise.	
+			* @return True if successfully loaded, false otherwise. 
 			*/
 			bool saveImage(const String &fileName);
 			
@@ -108,7 +108,7 @@ namespace Polycode {
 			* Pastes another image into the image using a blending mode
 			* @param image Image to paste
 			* @param x X position of new image within the image 
-			* @param y Y position of new image within the image 			
+			* @param y Y position of new image within the image				
 			* @param blendingMode Blending mode to use. Currently not used.
 			*/
 			void pasteImage(Image *image, int x, int y, int blendingMode = 0, Number blendAmount = 1.0, Color blendColor = Color());
@@ -117,13 +117,13 @@ namespace Polycode {
 			* Recreate the image as an empty image of specified size. The image type stays the same.
 			* @param width Width of the image to create.
 			* @param height Height of the image to create.			
-			*/ 						
+			*/						
 			void createEmpty(int width, int height, const Color &fillColor);
 
 			/**
 			* Fills the image with the specified color values.
 			* @param color The color to fill it with.
-			*/ 									
+			*/									
 			void fill(const Color &color);
 			
 			/**
@@ -228,7 +228,7 @@ namespace Polycode {
 			*
 			* @param subRect The part of the image to copy. (0, 0) refers to the top left of the image.
 			* @return A pointer to an Image object allocated with new. You have to manually delete this
-			*         object using free.
+			*		  object using free.
 			*/
 			Image *getImagePart(Rectangle subRect);
 			
@@ -262,12 +262,12 @@ namespace Polycode {
 			*/						
 			char *getPixels();
 			
-            /**
-             * Multiplies the RGB values by alpha for each pixel.
-             */
+			/**
+			 * Multiplies the RGB values by alpha for each pixel.
+			 */
 			void premultiplyAlpha();
-        
-            bool savePNG(const String &fileName);
+		
+			bool savePNG(const String &fileName);
 		
 			static const int IMAGE_RGB = 0;
 			static const int IMAGE_RGBA = 1;
@@ -275,12 +275,12 @@ namespace Polycode {
 		
 		protected:
 		
-            bool loadHDR(const String &fileName);
-            bool loadSTB(const String &fileName);
-        
-        
-            static inline hfloat convertFloatToHFloat(float f);
-        
+			bool loadHDR(const String &fileName);
+			bool loadSTB(const String &fileName);
+		
+		
+			static inline hfloat convertFloatToHFloat(float f);
+		
 			void setPixelType(int type);
 
 			// transform coordinates from external topleft position mode

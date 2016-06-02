@@ -4,19 +4,19 @@
 
 	Copyright (c) 2005-2009 Martin Kaltenbrunner <mkalten@iua.upf.edu>
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 #include "TuioServer.h"
@@ -150,7 +150,7 @@ void TuioServer::sendFullMessages() {
 		// add the actual object set message
 		(*fullPacket) << osc::BeginMessage( "/tuio/2Dobj") << "set";
 		(*fullPacket) << (int32)((*tuioObject)->getSessionID()) << (*tuioObject)->getSymbolID() << (*tuioObject)->getX() << (*tuioObject)->getY() << (*tuioObject)->getAngle();
-		(*fullPacket) << (*tuioObject)->getXSpeed() << (*tuioObject)->getYSpeed() << (*tuioObject)->getRotationSpeed() << (*tuioObject)->getMotionAccel() << (*tuioObject)->getRotationAccel();	
+		(*fullPacket) << (*tuioObject)->getXSpeed() << (*tuioObject)->getYSpeed() << (*tuioObject)->getRotationSpeed() << (*tuioObject)->getMotionAccel() << (*tuioObject)->getRotationAccel(); 
 		(*fullPacket) << osc::EndMessage;
 		
 	}
@@ -317,7 +317,7 @@ void TuioServer::updateTuioCursor(TuioCursor *tcur,float x, float y) {
 	tcur->update(currentFrameTime,x,y);
 	updateCursor = true;
 
-	if (verbose && tcur->isMoving())	 	
+	if (verbose && tcur->isMoving())		
 		std::cout << "set cur " << tcur->getCursorID() << " (" <<  tcur->getSessionID() << ") " << tcur->getX() << " " << tcur->getY() 
 		<< " " << tcur->getXSpeed() << " " << tcur->getYSpeed() << " " << tcur->getMotionAccel() << " " << std::endl;
 }
@@ -431,7 +431,7 @@ void TuioServer::commitFrame() {
 			}
 			
 			TuioObject *tobj = (*tuioObject);
-			if  ((full_update) || (tobj->getTuioTime()==currentFrameTime)) addObjectMessage(tobj);
+			if	((full_update) || (tobj->getTuioTime()==currentFrameTime)) addObjectMessage(tobj);
 		} 
 		sendObjectBundle(currentFrame);
 	} else if ((!periodic_update) && (lastObjectUpdate<currentFrameTime.getSeconds())) {
@@ -443,7 +443,7 @@ void TuioServer::commitFrame() {
 }
 
 void TuioServer::sendEmptyCursorBundle() {
-	oscPacket->Clear();	
+	oscPacket->Clear(); 
 	(*oscPacket) << osc::BeginBundleImmediate;
 	(*oscPacket) << osc::BeginMessage( "/tuio/2Dcur") << "alive" << osc::EndMessage;	
 	(*oscPacket) << osc::BeginMessage( "/tuio/2Dcur") << "fseq" << -1 << osc::EndMessage;
@@ -452,12 +452,12 @@ void TuioServer::sendEmptyCursorBundle() {
 }
 
 void TuioServer::startCursorBundle() {	
-	oscPacket->Clear();	
+	oscPacket->Clear(); 
 	(*oscPacket) << osc::BeginBundleImmediate;
 	
 	(*oscPacket) << osc::BeginMessage( "/tuio/2Dcur") << "alive";
 	for (std::list<TuioCursor*>::iterator tuioCursor = cursorList.begin(); tuioCursor!=cursorList.end(); tuioCursor++) {
-		(*oscPacket) << (int32)((*tuioCursor)->getSessionID());	
+		(*oscPacket) << (int32)((*tuioCursor)->getSessionID()); 
 	}
 	(*oscPacket) << osc::EndMessage;	
 }
@@ -477,7 +477,7 @@ void TuioServer::sendCursorBundle(long fseq) {
 }
 
 void TuioServer::sendEmptyObjectBundle() {
-	oscPacket->Clear();	
+	oscPacket->Clear(); 
 	(*oscPacket) << osc::BeginBundleImmediate;
 	(*oscPacket) << osc::BeginMessage( "/tuio/2Dobj") << "alive" << osc::EndMessage;	
 	(*oscPacket) << osc::BeginMessage( "/tuio/2Dobj") << "fseq" << -1 << osc::EndMessage;
@@ -486,12 +486,12 @@ void TuioServer::sendEmptyObjectBundle() {
 }
 
 void TuioServer::startObjectBundle() {
-	oscPacket->Clear();	
+	oscPacket->Clear(); 
 	(*oscPacket) << osc::BeginBundleImmediate;
 	
 	(*oscPacket) << osc::BeginMessage( "/tuio/2Dobj") << "alive";
 	for (std::list<TuioObject*>::iterator tuioObject = objectList.begin(); tuioObject!=objectList.end(); tuioObject++) {
-		(*oscPacket) << (int32)((*tuioObject)->getSessionID());	
+		(*oscPacket) << (int32)((*tuioObject)->getSessionID()); 
 	}
 	(*oscPacket) << osc::EndMessage;	
 }
@@ -620,7 +620,7 @@ void TuioServer::stopUntouchedMovingCursors() {
 		if ((tcur->getTuioTime()!=currentFrameTime) && (tcur->isMoving())) {
 			tcur->stop(currentFrameTime);
 			updateCursor = true;
-			if (verbose) 	
+			if (verbose)	
 				std::cout << "set cur " << tcur->getCursorID() << " (" <<  tcur->getSessionID() << ") " << tcur->getX() << " " << tcur->getY() 
 				<< " " << tcur->getXSpeed() << " " << tcur->getYSpeed()<< " " << tcur->getMotionAccel() << " " << std::endl;							
 		}

@@ -26,7 +26,7 @@ namespace Polycode {
 	};
 
 	/** Wraps a sheet of rendered font glyphs on a Texture.
-	 *  Use in combination with TextMesh to render text from minimal texture creation. */
+	 *	Use in combination with TextMesh to render text from minimal texture creation. */
 	class _PolyExport FontGlyphSheet : public PolyBase {
 		public:
 
@@ -35,13 +35,13 @@ namespace Polycode {
 				ANTIALIAS,
 				/** Using distance-from-edge calculation as described in the Valve paper.
 				 *
-				 *  "Improved Alpha-Tested Magniﬁcation for Vector Textures and Special Effects"
-				 *  http://www.valvesoftware.com/publications/2007/SIGGRAPH2007_AlphaTestedMagnification.pdf
+				 *	"Improved Alpha-Tested Magniﬁcation for Vector Textures and Special Effects"
+				 *	http://www.valvesoftware.com/publications/2007/SIGGRAPH2007_AlphaTestedMagnification.pdf
 				 *
 				 * To make the most of this:
-				 *   set renderer->alphaTestValue = 0.5
-				 *   set sceneMesh->alphaTest = true
-				 *   set sceneMesh->blendingMode = Renderer::BLEND_MODE_NONE;
+				 *	 set renderer->alphaTestValue = 0.5
+				 *	 set sceneMesh->alphaTest = true
+				 *	 set sceneMesh->blendingMode = Renderer::BLEND_MODE_NONE;
 				 *
 				 * Or use a custom shader - alpha values of 0.5 indicate the boundary.
 				 * */

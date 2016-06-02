@@ -28,7 +28,7 @@
 
 using namespace Polycode;
 
-class TemplateUserData  {
+class TemplateUserData	{
 public:
 	String templateFolder;
 	int type;
@@ -57,7 +57,7 @@ class NewProjectWindow : public UIWindow {
 	
 		UIButton *cancelButton;
 		UIButton *okButton;
-		UIButton *locationSelectButton;	
+		UIButton *locationSelectButton; 
 		UITreeContainer *templateContainer;
 	
 		String templateFolder;

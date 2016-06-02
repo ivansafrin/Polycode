@@ -37,10 +37,10 @@ PolycodeFontEditor::~PolycodeFontEditor() {
 
 bool PolycodeFontEditor::openFile(OSFileEntry filePath) {
 	
-    
-    ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
-    
-    Resource *resource = globalPool->loadResourceWithName(filePath.fullPath, filePath.fullPath);
+	
+	ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
+	
+	Resource *resource = globalPool->loadResourceWithName(filePath.fullPath, filePath.fullPath);
 		
 	anchor = new UIElement();
 	addChild(anchor);
@@ -73,7 +73,7 @@ bool PolycodeFontEditor::openFile(OSFileEntry filePath) {
 	
 	PolycodeEditor::openFile(filePath);
 	
-    globalPool->removeResource(resource);
+	globalPool->removeResource(resource);
 	
 	return true;
 }

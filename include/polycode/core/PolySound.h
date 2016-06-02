@@ -31,27 +31,27 @@
 
 namespace Polycode {
 
-    enum SoundFormat {SoundFormatUnsupported, SoundFormat8, SoundFormat16, SoundFormat32};
-    
+	enum SoundFormat {SoundFormatUnsupported, SoundFormat8, SoundFormat16, SoundFormat32};
+	
 	class String;
-    class Vector3;
-    class Quaternion;
-    
-    class  AudioStreamingSource {
-        public:
-            AudioStreamingSource(unsigned int channels, unsigned int freq);        
-            POLYIGNORE virtual unsigned int streamData(int16_t *buffer, unsigned int size);
-        
-            unsigned int getNumChannels();
-            unsigned int getFrequency();
-        
-        protected:
-        
-            unsigned int channels;
-            unsigned int freq;
-        
-    };
-    
+	class Vector3;
+	class Quaternion;
+	
+	class  AudioStreamingSource {
+		public:
+			AudioStreamingSource(unsigned int channels, unsigned int freq);		   
+			POLYIGNORE virtual unsigned int streamData(int16_t *buffer, unsigned int size);
+		
+			unsigned int getNumChannels();
+			unsigned int getFrequency();
+		
+		protected:
+		
+			unsigned int channels;
+			unsigned int freq;
+		
+	};
+	
 	/**
 	* Loads and plays a sound. This class can load and play an OGG or WAV sound file.
 	*/
@@ -64,10 +64,10 @@ namespace Polycode {
 		*/ 
 		Sound(const String& fileName);
 		Sound(int size, const char *data, int channels, unsigned int freq, SoundFormat format);
-        Sound(AudioStreamingSource *streamingSource);
-        
-        Number getSampleAsNumber(unsigned int offset, unsigned int channel, const Vector3 &position, const Quaternion &orientation);
-        
+		Sound(AudioStreamingSource *streamingSource);
+		
+		Number getSampleAsNumber(unsigned int offset, unsigned int channel, const Vector3 &position, const Quaternion &orientation);
+		
 		virtual ~Sound();
 		
 		void loadFile(String fileName);
@@ -105,8 +105,8 @@ namespace Polycode {
 		*/
 		bool isPlaying();
 		
-        bool isLooped();
-        
+		bool isLooped();
+		
 		void setIsPositional(bool isPositional);
 		
 		void setSoundPosition(const Vector3 &position);
@@ -131,15 +131,15 @@ namespace Polycode {
 		* @return The sample offset if it is known, -1 otherwise.
 		*/
 		int getOffset();
-        
+		
 		/**
 		* Returns the number of samples in the sound.
 		* @return The sample length if it is known, -1 otherwise.
 		*/
 		int getSampleLength();
 		
-        unsigned int getFrequency();
-        
+		unsigned int getFrequency();
+		
 		void setPositionalProperties(Number referenceDistance, Number maxDistance);
 		
 		void setReferenceDistance(Number referenceDistance);
@@ -147,51 +147,51 @@ namespace Polycode {
 		
 		Number getReferenceDistance();
 		Number getMaxDistance();
-        
+		
 
 		bool loadBytes(const char *data, int size, int channels, unsigned int freq, SoundFormat format);
 		bool loadWAV(const String& fileName);
 		bool loadOGG(const String& fileName);
-        
+		
 		void soundCheck(bool result, const String& err);
 		static unsigned long readByte32(const unsigned char buffer[4]);		
 		static unsigned short readByte16(const unsigned char buffer[2]);
 		
-        void updateStream(unsigned int streamCount);
+		void updateStream(unsigned int streamCount);
 
 	protected:
-        
-        Number modulateSampleForListener(Number sample, unsigned int channel, const Vector3 &position, const Quaternion &orientation);
-        
-        Vector3 position;
-        Vector3 velocity;
-        Vector3 direction;
-        
+		
+		Number modulateSampleForListener(Number sample, unsigned int channel, const Vector3 &position, const Quaternion &orientation);
+		
+		Vector3 position;
+		Vector3 velocity;
+		Vector3 direction;
+		
 		Number referenceDistance;
 		Number maxDistance;
-        
-        bool streamingSound;
-        AudioStreamingSource *streamingSource;
-        
+		
+		bool streamingSound;
+		AudioStreamingSource *streamingSource;
+		
 		Number pitch;
 		Number frequencyAdjust;
-        
+		
 		Number volume;
 	
 		String fileName;
 		
 		bool soundLoaded;
 	
-        bool playing;
-        bool looped;
-        
+		bool playing;
+		bool looped;
+		
 		bool isPositional;
 		unsigned int numSamples;
-        unsigned int numChannels;
-        unsigned int playbackOffset;
-        unsigned int frequency;
-    
-        int16_t *soundBuffer;
+		unsigned int numChannels;
+		unsigned int playbackOffset;
+		unsigned int frequency;
+	
+		int16_t *soundBuffer;
 
 	};
 }

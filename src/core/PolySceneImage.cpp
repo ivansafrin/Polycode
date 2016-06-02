@@ -32,11 +32,11 @@ SceneImage* SceneImage::SceneImageWithImage(Image *image) {
 }
 
 SceneImage* SceneImage::SceneImageWithTexture(Texture *texture) {
-	return new SceneImage(texture);	
+	return new SceneImage(texture); 
 }
 
 SceneImage::SceneImage(const String& fileName) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1) {
-    
+	
 	setMaterialByName("Unlit");
 	Texture *texture = getShaderPass(0).shaderBinding->loadTextureForParam("diffuse", fileName);
 
@@ -50,8 +50,8 @@ SceneImage::SceneImage(const String& fileName) : ScenePrimitive(ScenePrimitive::
 
 SceneImage::SceneImage(Image *image) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1) {
 	setMaterialByName("Unlit");
-    Texture *texture = Services()->getMaterialManager()->createTextureFromImage(image);
-    getShaderPass(0).shaderBinding->setTextureForParam("diffuse", texture);
+	Texture *texture = Services()->getMaterialManager()->createTextureFromImage(image);
+	getShaderPass(0).shaderBinding->setTextureForParam("diffuse", texture);
 
 	imageWidth = texture->getWidth();
 	imageHeight = texture->getHeight();
@@ -78,11 +78,11 @@ SceneImage::~SceneImage() {
 }
 
 Entity *SceneImage::Clone(bool deepClone, bool ignoreEditorOnly) const {
-    // RENDERER_TODO
+	// RENDERER_TODO
 	//SceneImage *newImage = new SceneImage(getTexture()->getResourcePath());
 //	applyClone(newImage, deepClone, ignoreEditorOnly);
 //	return newImage;
-    return NULL;
+	return NULL;
 }
 
 void SceneImage::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
@@ -109,10 +109,10 @@ void SceneImage::setImageCoordinates(Number x, Number y, Number width, Number he
 	Number wFloat = width * pixelSizeX;
 	Number hFloat = height * pixelSizeY;
 
-    mesh->clearMesh();
-    MeshGeometry geometry;
-    
-    geometry.indexedMesh = true;
+	mesh->clearMesh();
+	MeshGeometry geometry;
+	
+	geometry.indexedMesh = true;
 
 	geometry.setMeshType(MeshGeometry::TRI_MESH);
 	geometry.addVertex(0 - whalf, 0 - hhalf, 0);
@@ -126,12 +126,12 @@ void SceneImage::setImageCoordinates(Number x, Number y, Number width, Number he
 
 	geometry.addVertex(0 - whalf, realHeight - hhalf, 0);
 	geometry.addTexCoord(xFloat, 1.0 - yFloat);
-    
-    geometry.addIndexedFace(0, 1, 2);
-    geometry.addIndexedFace(0, 2, 3);
-    
-    mesh->addSubmesh(geometry);
-    
+	
+	geometry.addIndexedFace(0, 1, 2);
+	geometry.addIndexedFace(0, 2, 3);
+	
+	mesh->addSubmesh(geometry);
+	
 	rebuildTransformMatrix();
 	matrixDirty = true;
 }
@@ -141,5 +141,5 @@ Number SceneImage::getImageWidth() const {
 }
 
 Number SceneImage::getImageHeight() const {
-	return imageHeight;	
+	return imageHeight; 
 }

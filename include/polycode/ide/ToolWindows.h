@@ -38,8 +38,8 @@ class TextInputPopup : public UIWindow {
 		String getValue();
 		void handleEvent(Event *event);
 		
-        virtual void onGainFocus();
-    
+		virtual void onGainFocus();
+	
 		String action;
 				
 	protected:
@@ -47,23 +47,23 @@ class TextInputPopup : public UIWindow {
 		UITextInput *textInput;
 	
 		UIButton *cancelButton;
-		UIButton *okButton;	
+		UIButton *okButton; 
 };
 
 class MessagePopup : public UIWindow {
-    public:
-    MessagePopup();
-    ~MessagePopup();
-    
-    void setCaption(String caption);
-    void handleEvent(Event *event);
-    
-    virtual void onGainFocus();
-    
-        String action;
-        UILabel *captionLabel;
-        UIButton *okButton;
-    
+	public:
+	MessagePopup();
+	~MessagePopup();
+	
+	void setCaption(String caption);
+	void handleEvent(Event *event);
+	
+	virtual void onGainFocus();
+	
+		String action;
+		UILabel *captionLabel;
+		UIButton *okButton;
+	
 };
 
 class YesNoPopup : public UIWindow {
@@ -74,15 +74,15 @@ class YesNoPopup : public UIWindow {
 		void setCaption(String caption);
 		void handleEvent(Event *event);
 		
-        virtual void onGainFocus();
-    
+		virtual void onGainFocus();
+	
 		String action;
 	
 		UILabel *captionLabel;
 	
 		UIElement *buttonAnchor;
 		UIButton *cancelButton;
-		UIButton *okButton;	
+		UIButton *okButton; 
 };
 
 
@@ -94,8 +94,8 @@ class YesNoCancelPopup : public UIWindow {
 		void setCaption(String caption);
 		void handleEvent(Event *event);
 		
-        virtual void onGainFocus();
-    
+		virtual void onGainFocus();
+	
 		String action;
 	
 		UILabel *captionLabel;
@@ -117,17 +117,17 @@ class AssetImporterWindow : public UIWindow {
 		
 		void setSourceFileAndTargetFolder(String file, String folder, String projectRelativeFolder);
 		void refreshPreview();
-    
-        virtual void onGainFocus();
+	
+		virtual void onGainFocus();
 			
-		void handleEvent(Event *event);	
+		void handleEvent(Event *event); 
 			
 	protected:
 
 		String file;
 		String folder;
 		String projectRelativeFolder;
-    
+	
 		UIButton *cancelButton;
 		UIButton *okButton;
 		std::vector<UILabel*> fileLabels;
@@ -139,18 +139,18 @@ class AssetImporterWindow : public UIWindow {
 		UICheckBox *generateNormalsCheckbox;
 		UICheckBox *swapZYAxisCheckbox;
 
-        UICheckBox *exportNormals;
-        UICheckBox *exportTangents;
-        UICheckBox *exportColors;
-        UICheckBox *exportBoneWeights;
-        UICheckBox *exportUVs;
-        UICheckBox *exportSecondaryUVs;
-        UICheckBox *exportScene;
-    
-        UICheckBox *generateMatFile;
-        UICheckBox *overrideMaterial;
-        UITextInput *overrideMaterialInput;
-    
+		UICheckBox *exportNormals;
+		UICheckBox *exportTangents;
+		UICheckBox *exportColors;
+		UICheckBox *exportBoneWeights;
+		UICheckBox *exportUVs;
+		UICheckBox *exportSecondaryUVs;
+		UICheckBox *exportScene;
+	
+		UICheckBox *generateMatFile;
+		UICheckBox *overrideMaterial;
+		UITextInput *overrideMaterialInput;
+	
 		UIElement *filesAnchor;
 		UIScrollContainer *filesScroller;
 

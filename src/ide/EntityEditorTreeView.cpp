@@ -23,72 +23,72 @@
 #include "polycode/ide/EntityEditorTreeView.h"
 
 EntityEditorTreeSheet::EntityEditorTreeSheet() : PropSheet("LIST VIEW", "list_view"){
-    treeContainer = new UITreeContainer("folder.png", "Root", 10, 10);
-    contents->addChild(treeContainer);
-    treeContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
-    treeContainer->setPosition(-20, -5);
-    treeContainer->getRootNode()->toggleCollapsed();
-    
+	treeContainer = new UITreeContainer("folder.png", "Root", 10, 10);
+	contents->addChild(treeContainer);
+	treeContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
+	treeContainer->setPosition(-20, -5);
+	treeContainer->getRootNode()->toggleCollapsed();
 	
-    selectedEntity = NULL;
-    dontSendSelectionEvent = false;
+	
+	selectedEntity = NULL;
+	dontSendSelectionEvent = false;
 }
 
 EntityEditorTreeView::EntityEditorTreeView() : UIElement() {
 
-    entityProps = new PropList("HIERARCHY");
-    addChild(entityProps);
-    
-    layerSheet = new LayerSheet();
-    entityProps->addPropSheet(layerSheet);
-    layerSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
-    
-    
-    treeSheet = new EntityEditorTreeSheet();
-    entityProps->addPropSheet(treeSheet);
-    
+	entityProps = new PropList("HIERARCHY");
+	addChild(entityProps);
+	
+	layerSheet = new LayerSheet();
+	entityProps->addPropSheet(layerSheet);
+	layerSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
+	
+	
+	treeSheet = new EntityEditorTreeSheet();
+	entityProps->addPropSheet(treeSheet);
+	
 
 }
 
 
 void EntityEditorTreeSheet::setRootEntity(Entity *entity) {
-    rootEntity = entity;
-    treeContainer->getRootNode()->setUserData((void*) entity);
-    refreshTree();
+	rootEntity = entity;
+	treeContainer->getRootNode()->setUserData((void*) entity);
+	refreshTree();
 }
 
 void EntityEditorTreeSheet::syncNodeToEntity(UITree *node, Entity *entity) {
-    // remove non existing and set proper ids,
+	// remove non existing and set proper ids,
 	
 	std::vector<UITree*> nodesToRemove;
-    
+	
 	for(int i=0; i < node->getNumTreeChildren(); i++) {
 		UITree *child = node->getTreeChild(i);
 		
 		bool hasChild = false;
 		for(int j=0; j < entity->getNumChildren(); j++) {
 			if(!entity->getChildAtIndex(j)->editorOnly) {
-                if(((Entity*)child->getUserData()) == entity->getChildAtIndex(j)) {
-                    hasChild = true;
-                    
-                    String entityName = entity->getChildAtIndex(j)->id;
-                    if(entityName == "") {
-                        entityName = "<unnamed entity>";
-                    }
-                    
-                    if(child->getLabelText() != entityName) {
-                        child->setLabelText(entityName);
-                    }
-                    
-                    if(entity->getChildAtIndex(j) == selectedEntity) {
-                        dontSendSelectionEvent = true;
-                        child->setSelected();
-                    }
-                    
-                }
+				if(((Entity*)child->getUserData()) == entity->getChildAtIndex(j)) {
+					hasChild = true;
+					
+					String entityName = entity->getChildAtIndex(j)->id;
+					if(entityName == "") {
+						entityName = "<unnamed entity>";
+					}
+					
+					if(child->getLabelText() != entityName) {
+						child->setLabelText(entityName);
+					}
+					
+					if(entity->getChildAtIndex(j) == selectedEntity) {
+						dontSendSelectionEvent = true;
+						child->setSelected();
+					}
+					
+				}
 			}
 		}
-        
+		
 		if(!hasChild) {
 			nodesToRemove.push_back(child);
 		}
@@ -102,27 +102,27 @@ void EntityEditorTreeSheet::syncNodeToEntity(UITree *node, Entity *entity) {
 	
 	for(int j=0; j < entity->getNumChildren(); j++) {
 		if(!entity->getChildAtIndex(j)->editorOnly) {
-            bool hasEntity = false;
-            for(int i=0; i < node->getNumTreeChildren(); i++) {
-                UITree *child = node->getTreeChild(i);
-                if(((Entity*)child->getUserData()) == entity->getChildAtIndex(j)) {
-                    hasEntity = true;
-                }
-            }
-            
-            if(!hasEntity) {
-                entitiesToAdd.push_back(entity->getChildAtIndex(j));
-            }
+			bool hasEntity = false;
+			for(int i=0; i < node->getNumTreeChildren(); i++) {
+				UITree *child = node->getTreeChild(i);
+				if(((Entity*)child->getUserData()) == entity->getChildAtIndex(j)) {
+					hasEntity = true;
+				}
+			}
+			
+			if(!hasEntity) {
+				entitiesToAdd.push_back(entity->getChildAtIndex(j));
+			}
 		}
 	}
 	
 	for(int i=0; i < entitiesToAdd.size(); i++) {
-        
+		
 		String entityName = entitiesToAdd[i]->id;
-        if(entityName == "") {
-            entityName = "<unnamed entity>";
-        }
-        
+		if(entityName == "") {
+			entityName = "<unnamed entity>";
+		}
+		
 		UITree *newNode = node->addTreeChild("file.png", entityName);
 		newNode->setUserData((void*)entitiesToAdd[i]);
 		
@@ -139,12 +139,12 @@ void EntityEditorTreeSheet::syncNodeToEntity(UITree *node, Entity *entity) {
 }
 
 Entity *EntityEditorTreeSheet::getSelectedEntity() {
-    return selectedEntity;
+	return selectedEntity;
 }
 
 void EntityEditorTreeSheet::setSelectedEntity(Entity *entity) {
-    selectedEntity = entity;
-    refreshTree();
+	selectedEntity = entity;
+	refreshTree();
 }
 
 void EntityEditorTreeSheet::handleEvent(Event *event) {
@@ -152,10 +152,10 @@ void EntityEditorTreeSheet::handleEvent(Event *event) {
 	if(event->getDispatcher() == treeContainer->getRootNode()) {
 		if(event->getEventCode() == UITreeEvent::SELECTED_EVENT){
 			if(!dontSendSelectionEvent) {
-//                if(treeContainer->getRootNode()->getSelectedNode() != treeContainer->getRootNode()) {
-                    selectedEntity = (Entity*)treeContainer->getRootNode()->getSelectedNode()->getUserData();
-                    dispatchEvent(new Event(), Event::CHANGE_EVENT);
-//                }
+//				  if(treeContainer->getRootNode()->getSelectedNode() != treeContainer->getRootNode()) {
+					selectedEntity = (Entity*)treeContainer->getRootNode()->getSelectedNode()->getUserData();
+					dispatchEvent(new Event(), Event::CHANGE_EVENT);
+//				  }
 			}
 			dontSendSelectionEvent = false;
 		}
@@ -164,32 +164,32 @@ void EntityEditorTreeSheet::handleEvent(Event *event) {
 }
 
 void EntityEditorTreeView::setEntityInstance(SceneEntityInstance *instance) {
-    treeSheet->setRootEntity(instance);
-    layerSheet->setEntityInstance(instance);
+	treeSheet->setRootEntity(instance);
+	layerSheet->setEntityInstance(instance);
 }
 
 void EntityEditorTreeSheet::refreshTree() {
-    if(selectedEntity == rootEntity) {
-        dontSendSelectionEvent = true;
-        treeContainer->getRootNode()->setSelected();
-    } else {
-        syncNodeToEntity(treeContainer->getRootNode(), rootEntity);
-    }
+	if(selectedEntity == rootEntity) {
+		dontSendSelectionEvent = true;
+		treeContainer->getRootNode()->setSelected();
+	} else {
+		syncNodeToEntity(treeContainer->getRootNode(), rootEntity);
+	}
 }
 
 EntityEditorTreeSheet::~EntityEditorTreeSheet() {
-    
+	
 }
 
 EntityEditorTreeSheet *EntityEditorTreeView::getTreeSheet() {
-    return treeSheet;
+	return treeSheet;
 }
 
 void EntityEditorTreeSheet::Resize(Number width, Number height) {
-    treeContainer->Resize(width, height-60);
-    PropSheet::Resize(width, height);
+	treeContainer->Resize(width, height-60);
+	PropSheet::Resize(width, height);
 }
 
 void EntityEditorTreeView::Resize(Number width, Number height) {
-    entityProps->Resize(width, height);
+	entityProps->Resize(width, height);
 }

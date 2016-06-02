@@ -27,59 +27,59 @@
 using namespace Polycode;
 
 PAAudioInterface::PAAudioInterface() {
-    mixer = NULL;
-    
-    PaError error = Pa_Initialize();
-    if(error != paNoError) {
-        String portAudioError = Pa_GetErrorText(error);
-        Logger::log("Error initializing PortAudio interface:"+portAudioError+"\n");
-    }
-    
-    error = Pa_OpenDefaultStream( &stream,
-                               0,
-                               POLY_NUM_CHANNELS,
-                               paInt16,
-                               POLY_AUDIO_FREQ,
-                               POLY_FRAMES_PER_BUFFER,
-                               PAAudioInterface::paCallback,
-                               this);
-    if( error != paNoError ) {
-        String portAudioError = Pa_GetErrorText(error);
-        Logger::log("Error opening PortAudio stream:"+portAudioError+"\n");
-    }
-    
-    error = Pa_StartStream(stream);
-    if( error != paNoError ) {
-        String portAudioError = Pa_GetErrorText(error);
-        Logger::log("Error starting PortAudio stream:"+portAudioError+"\n");
-    }
+	mixer = NULL;
+	
+	PaError error = Pa_Initialize();
+	if(error != paNoError) {
+		String portAudioError = Pa_GetErrorText(error);
+		Logger::log("Error initializing PortAudio interface:"+portAudioError+"\n");
+	}
+	
+	error = Pa_OpenDefaultStream( &stream,
+							   0,
+							   POLY_NUM_CHANNELS,
+							   paInt16,
+							   POLY_AUDIO_FREQ,
+							   POLY_FRAMES_PER_BUFFER,
+							   PAAudioInterface::paCallback,
+							   this);
+	if( error != paNoError ) {
+		String portAudioError = Pa_GetErrorText(error);
+		Logger::log("Error opening PortAudio stream:"+portAudioError+"\n");
+	}
+	
+	error = Pa_StartStream(stream);
+	if( error != paNoError ) {
+		String portAudioError = Pa_GetErrorText(error);
+		Logger::log("Error starting PortAudio stream:"+portAudioError+"\n");
+	}
 }
 
 PAAudioInterface::~PAAudioInterface() {
-    PaError error;
-    
-    error = Pa_CloseStream( stream );
-    if(error != paNoError)  {
-        String portAudioError = Pa_GetErrorText(error);
-        Logger::log("Error terminating PortAudio stream:"+portAudioError+"\n");
-    }
-    
-    error = Pa_Terminate();
-    if(error != paNoError) {
-        String portAudioError = Pa_GetErrorText(error);
-        Logger::log("Error terminating PortAudio interface:"+portAudioError+"\n");
-    }
+	PaError error;
+	
+	error = Pa_CloseStream( stream );
+	if(error != paNoError)	{
+		String portAudioError = Pa_GetErrorText(error);
+		Logger::log("Error terminating PortAudio stream:"+portAudioError+"\n");
+	}
+	
+	error = Pa_Terminate();
+	if(error != paNoError) {
+		String portAudioError = Pa_GetErrorText(error);
+		Logger::log("Error terminating PortAudio interface:"+portAudioError+"\n");
+	}
 }
 
 int PAAudioInterface::paCallback(const void *inputBuffer, void *outputBuffer,
-                      unsigned long framesPerBuffer,
-                      const PaStreamCallbackTimeInfo* timeInfo,
-                      PaStreamCallbackFlags statusFlags,
-                                 void *userData) {
-    PAAudioInterface *audioInterface = (PAAudioInterface*) userData;
-    if(outputBuffer && audioInterface->getMixer()) {
-        int16_t *out = (int16_t*)outputBuffer;
-        audioInterface->getMixer()->mixIntoBuffer(out, framesPerBuffer);
-    }
-    return 0;
+					  unsigned long framesPerBuffer,
+					  const PaStreamCallbackTimeInfo* timeInfo,
+					  PaStreamCallbackFlags statusFlags,
+								 void *userData) {
+	PAAudioInterface *audioInterface = (PAAudioInterface*) userData;
+	if(outputBuffer && audioInterface->getMixer()) {
+		int16_t *out = (int16_t*)outputBuffer;
+		audioInterface->getMixer()->mixIntoBuffer(out, framesPerBuffer);
+	}
+	return 0;
 }

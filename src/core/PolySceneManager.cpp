@@ -38,7 +38,7 @@ SceneManager::~SceneManager() {
 	for(int i=0; i < scenes.size(); i++) {	
 		delete scenes[i];
 	}
-	scenes.clear();	
+	scenes.clear(); 
 }
 
 void SceneManager::removeScene(Scene *scene) {
@@ -76,20 +76,20 @@ void SceneManager::setRenderer(Renderer *renderer) {
 void SceneManager::renderVirtual() {
 	for(int i=0;i<renderTextures.size();i++) {
 		if(renderTextures[i]->enabled) {
-            renderTextures[i]->Render();
+			renderTextures[i]->Render();
 		}			
 	}
 }
 
-void SceneManager::Render(const Polycode::Rectangle &viewport) {    
+void SceneManager::Render(const Polycode::Rectangle &viewport) {	
 	for(int i=0;i<scenes.size();i++) {
 		if(scenes[i]->isEnabled() && !scenes[i]->isVirtual()) {
 			Scene *scene = scenes[i];
 			if(scene->getActiveCamera()->hasFilterShader()) {
-                scene->getActiveCamera()->setViewport(viewport);                
+				scene->getActiveCamera()->setViewport(viewport);				
 				scene->getActiveCamera()->drawFilter(NULL);
 			} else {
-                scene->getActiveCamera()->setViewport(viewport);
+				scene->getActiveCamera()->setViewport(viewport);
 				scene->Render(NULL, NULL, NULL, true);
 			}
 		}

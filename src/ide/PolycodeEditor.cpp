@@ -48,7 +48,7 @@ void PolycodeEditor::setFilePath(String newPath) {
 
 PolycodeEditor::PolycodeEditor(bool _isReadOnly) : UIElement(), ClipboardProvider() {
 	this->_isReadOnly = _isReadOnly;
-    enableScissor = true;
+	enableScissor = true;
 	processInputEvents = true;
 	_hasChanges = false;
 	
@@ -60,7 +60,7 @@ PolycodeEditor::PolycodeEditor(bool _isReadOnly) : UIElement(), ClipboardProvide
 	
 	core->addEventListener(this, Core::EVENT_COPY);
 	core->addEventListener(this, Core::EVENT_PASTE);
-	core->addEventListener(this, Core::EVENT_UNDO);	
+	core->addEventListener(this, Core::EVENT_UNDO); 
 	core->addEventListener(this, Core::EVENT_REDO);
 	core->addEventListener(this, Core::EVENT_SELECT_ALL);
 }
@@ -81,8 +81,8 @@ EditorHolder *PolycodeEditor::getEditorHolder() {
 }
 
 
-void PolycodeEditor::handleEvent(Event *event) {    
-    
+void PolycodeEditor::handleEvent(Event *event) {	
+	
 	if(event->getDispatcher() == CoreServices::getInstance()->getCore() && enabled) {
 		switch(event->getEventCode()) {
 
@@ -91,9 +91,9 @@ void PolycodeEditor::handleEvent(Event *event) {
 			// Modules/Contents/UI/Source/PolyUITextInput.cpp
 			case Core::EVENT_SELECT_ALL:
 			{
-                selectAll();
-            }
-            break;
+				selectAll();
+			}
+			break;
 			case Core::EVENT_COPY:
 			{
 				void *data = NULL;
@@ -150,11 +150,11 @@ void PolycodeEditor::didAction(String actionName, PolycodeEditorActionData *befo
 		for(int i=currentUndoPosition+1; i < editorActions.size(); i++) {
 			editorActions[i].deleteData();		
 		}
-        if(currentUndoPosition > -1) {
-            editorActions.erase(editorActions.begin()+currentUndoPosition+1, editorActions.end());
-        } else {
-            editorActions.clear();
-        }
+		if(currentUndoPosition > -1) {
+			editorActions.erase(editorActions.begin()+currentUndoPosition+1, editorActions.end());
+		} else {
+			editorActions.clear();
+		}
 	}
 
 	PolycodeEditorAction newAction;
@@ -173,7 +173,7 @@ void PolycodeEditor::didAction(String actionName, PolycodeEditorActionData *befo
 
 void PolycodeEditor::Resize(int x, int y) {
 	editorSize = Vector2(x,y);
-    // RENDERER_TODO
+	// RENDERER_TODO
 
 	Vector2 pos = getScreenPositionForMainCamera();
 	scissorBox.setRect(pos.x,pos.y, x, y);	
@@ -183,12 +183,12 @@ PolycodeEditor::~PolycodeEditor() {
 	if(editorHolder) {
 		editorHolder->setEditor(NULL);
 	}
-    
-    if(globalClipboard->getCurrentProvider() == this) {
-        destroyClipboardData(globalClipboard->getData(), globalClipboard->getType());
-        globalClipboard->setCurrentProvider(NULL);
-    }
-    
+	
+	if(globalClipboard->getCurrentProvider() == this) {
+		destroyClipboardData(globalClipboard->getData(), globalClipboard->getType());
+		globalClipboard->setCurrentProvider(NULL);
+	}
+	
 	Core *core = CoreServices::getInstance()->getCore();
 	core->removeAllHandlersForListener(this);
 }

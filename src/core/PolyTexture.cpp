@@ -27,7 +27,7 @@
 using namespace Polycode;
 
 Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool clamp, bool createMipmaps, int type, bool framebufferTexture) : Resource(Resource::RESOURCE_TEXTURE), width(width), height(height), clamp(true), type(type), createMipmaps(createMipmaps), filteringMode(FILTERING_LINEAR), anisotropy(0), framebufferTexture(framebufferTexture), depthTexture(false) {
-    
+	
 	switch(type) {
 		case Image::IMAGE_RGB:
 			pixelSize = 3;			
@@ -43,15 +43,15 @@ Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool
 		break;
 	}
 	
-    if(!framebufferTexture) {
-        this->textureData = (char*)malloc(width*height*pixelSize);
-        if(textureData)
-            memcpy(this->textureData, textureData, width*height*pixelSize);	
-        else
-            memset(this->textureData, 0, width*height*pixelSize);
-    } else {
-        this->textureData = NULL;
-    }
+	if(!framebufferTexture) {
+		this->textureData = (char*)malloc(width*height*pixelSize);
+		if(textureData)
+			memcpy(this->textureData, textureData, width*height*pixelSize); 
+		else
+			memset(this->textureData, 0, width*height*pixelSize);
+	} else {
+		this->textureData = NULL;
+	}
 
 }
 
@@ -59,7 +59,7 @@ void Texture::reloadResource() {
 	Image *image = new Image(getResourcePath());
 	setImageData(image);
 	delete image;
-	Resource::reloadResource();	
+	Resource::reloadResource(); 
 }
 
 int Texture::getWidth() const {
@@ -101,7 +101,7 @@ void Texture::setImageData(Image *data) {
 
 }
 
-Texture::Texture(Image *image) : Resource(Resource::RESOURCE_TEXTURE) {	
+Texture::Texture(Image *image) : Resource(Resource::RESOURCE_TEXTURE) { 
 	pixelSize = 4;
 	this->textureData = (char*)malloc(image->getWidth()*image->getHeight()*pixelSize);
 	memcpy(this->textureData, image->getPixels(), image->getWidth()*image->getHeight()*pixelSize);	
@@ -109,25 +109,25 @@ Texture::Texture(Image *image) : Resource(Resource::RESOURCE_TEXTURE) {
 }
 
 RenderBuffer::RenderBuffer(unsigned int width, unsigned int height, bool attachDepthBuffer, bool floatingPoint) : platformData(NULL), width(width), height(height), depthBufferPlatformData(NULL), floatingPoint(floatingPoint) {
-    
-    int imageType = Image::IMAGE_RGBA;
-    if(floatingPoint) {
-        imageType = Image::IMAGE_FP16;
-    }
-    colorTexture = new Texture(width, height, NULL, false, false, imageType, true);
-    if(attachDepthBuffer) {
-        depthTexture = new Texture(width, height, NULL, false, false, Image::IMAGE_RGBA, true);
-    } else {
-        depthTexture = NULL;
-    }
-    
+	
+	int imageType = Image::IMAGE_RGBA;
+	if(floatingPoint) {
+		imageType = Image::IMAGE_FP16;
+	}
+	colorTexture = new Texture(width, height, NULL, false, false, imageType, true);
+	if(attachDepthBuffer) {
+		depthTexture = new Texture(width, height, NULL, false, false, Image::IMAGE_RGBA, true);
+	} else {
+		depthTexture = NULL;
+	}
+	
 }
 
 unsigned int RenderBuffer::getWidth() {
-    return width;
+	return width;
 }
 
 unsigned int RenderBuffer::getHeight() {
-    return height;
+	return height;
 }
 

@@ -50,7 +50,7 @@ UIButton::UIButton(String text, Number width, Number height) : UIElement() {
 						   st,sr,sb,sl,
 						   width, height);	
 	
-	buttonRect->blockMouseInput  = true;
+	buttonRect->blockMouseInput	 = true;
 	buttonFocusedRect= new UIBox(conf->getStringValue("Polycode", "uiButtonFocusedSkin"),
 								 st,sr,sb,sl,
 								 width, height);		
@@ -72,7 +72,7 @@ UIButton::UIButton(String text, Number width, Number height) : UIElement() {
 	pressedDown = false;
 	
 	buttonLabel = new SceneLabel(text, fontSize, fontName, Label::ANTIALIAS_FULL);
-    buttonLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+	buttonLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	buttonLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiButtonFontColor"));
 	addChild(buttonLabel);
 	labelXPos = floor((width-buttonLabel->getWidth())/2.0f) + labelOffsetX;
@@ -89,8 +89,8 @@ UIButton::UIButton(String text, Number width, Number height) : UIElement() {
 }
 
 void UIButton::setCaption(String caption) {
-    buttonLabel->setText(caption);
-    Resize(getWidth(), getHeight());
+	buttonLabel->setText(caption);
+	Resize(getWidth(), getHeight());
 }
 
 void UIButton::Resize(Number width, Number height) {
@@ -98,7 +98,7 @@ void UIButton::Resize(Number width, Number height) {
 	buttonFocusedRect->resizeBox(width, height);
 	setWidth(width);
 	setHeight(height);
-	matrixDirty = true;	
+	matrixDirty = true; 
 	
 	labelXPos = floor((width-buttonLabel->getWidth())/2.0f) + labelOffsetX;
 	buttonLabel->setPosition(labelXPos,labelYPos);
@@ -169,6 +169,6 @@ void UIButton::handleEvent(Event *event) {
 			break;
 		}
 	}
-    
-    UIElement::handleEvent(event);    
+	
+	UIElement::handleEvent(event);	  
 }

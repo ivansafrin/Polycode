@@ -29,23 +29,23 @@ using std::min;
 using std::max;
 
 SceneCurve::SceneCurve() : SceneMesh() {
-    curveResolution = 256;
-    renderCurve = true;
-    curve = new BezierCurve();
+	curveResolution = 256;
+	renderCurve = true;
+	curve = new BezierCurve();
 }
 
 SceneCurve::SceneCurve(BezierCurve *curve) : SceneMesh() {
-    curveResolution = 256;
-    renderCurve = true;
-    this->curve = curve;
+	curveResolution = 256;
+	renderCurve = true;
+	this->curve = curve;
 }
 
 SceneCurve *SceneCurve::SceneCurveWithCurve(BezierCurve *curve) {
-    return new SceneCurve(curve);
+	return new SceneCurve(curve);
 }
 
 Vector3 SceneCurve::getWorldPointAt(Number t) {
-    return getConcatenatedMatrix() * curve->getPointAt(t);
+	return getConcatenatedMatrix() * curve->getPointAt(t);
 }
 
 Entity *SceneCurve::Clone(bool deepClone, bool ignoreEditorOnly) const {
@@ -55,53 +55,53 @@ Entity *SceneCurve::Clone(bool deepClone, bool ignoreEditorOnly) const {
 }
 
 void SceneCurve::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const {
-    SceneMesh::applyClone(clone, deepClone, ignoreEditorOnly);
-    
-    SceneCurve *cloneCurve = (SceneCurve*)clone;
-    cloneCurve->renderCurve = renderCurve;
-    cloneCurve->curveResolution = curveResolution;
-    
-    for(int i=0; i < curve->getNumControlPoints(); i++) {
-        BezierPoint *pt = curve->getControlPoint(i);
-        cloneCurve->getCurve()->addControlPoint(
-            pt->p1.x, pt->p1.y, pt->p1.z,
-            pt->p2.x, pt->p2.y, pt->p2.z,
-            pt->p3.x, pt->p3.y, pt->p3.z);
-    }
+	SceneMesh::applyClone(clone, deepClone, ignoreEditorOnly);
+	
+	SceneCurve *cloneCurve = (SceneCurve*)clone;
+	cloneCurve->renderCurve = renderCurve;
+	cloneCurve->curveResolution = curveResolution;
+	
+	for(int i=0; i < curve->getNumControlPoints(); i++) {
+		BezierPoint *pt = curve->getControlPoint(i);
+		cloneCurve->getCurve()->addControlPoint(
+			pt->p1.x, pt->p1.y, pt->p1.z,
+			pt->p2.x, pt->p2.y, pt->p2.z,
+			pt->p3.x, pt->p3.y, pt->p3.z);
+	}
 }
 
 
 SceneCurve::~SceneCurve() {
-    delete curve;
+	delete curve;
 }
 
 BezierCurve *SceneCurve::getCurve() {
-    return curve;
+	return curve;
 }
 
 void SceneCurve::Update() {
-    mesh->clearMesh();
-    Vector3 bBox;
-    
-    MeshGeometry geometry;
-    geometry.meshType = MeshGeometry::LINE_STRIP_MESH;
-    if(renderCurve) {
-        Number step = (1.0 / ((Number)curveResolution));
-        
-        for(Number offset=0.0; offset <= 1.0; offset += step) {
-            Vector3 pt = curve->getPointAt(offset);
-            geometry.addVertexWithUV(pt.x, pt.y, pt.z, offset, 0.0);
-            
-            bBox.x = max(bBox.x,(Number)fabs(pt.x));
-            bBox.y = max(bBox.y,(Number)fabs(pt.y));
-            bBox.z = max(bBox.z,(Number)fabs(pt.z));
+	mesh->clearMesh();
+	Vector3 bBox;
+	
+	MeshGeometry geometry;
+	geometry.meshType = MeshGeometry::LINE_STRIP_MESH;
+	if(renderCurve) {
+		Number step = (1.0 / ((Number)curveResolution));
+		
+		for(Number offset=0.0; offset <= 1.0; offset += step) {
+			Vector3 pt = curve->getPointAt(offset);
+			geometry.addVertexWithUV(pt.x, pt.y, pt.z, offset, 0.0);
+			
+			bBox.x = max(bBox.x,(Number)fabs(pt.x));
+			bBox.y = max(bBox.y,(Number)fabs(pt.y));
+			bBox.z = max(bBox.z,(Number)fabs(pt.z));
 
-        }
-    }
-    
-    mesh->addSubmesh(geometry);
-    
-    setLocalBoundingBox(bBox * 2.0);
+		}
+	}
+	
+	mesh->addSubmesh(geometry);
+	
+	setLocalBoundingBox(bBox * 2.0);
 }
 
 SceneLine::SceneLine(Vector3 startp, Vector3 endp) : SceneMesh() {
@@ -122,12 +122,12 @@ SceneLine::SceneLine(Entity *ent1, Entity *ent2) : SceneMesh() {
 }
 
 void SceneLine::initLine() {
-    mesh->clearMesh();
-    MeshGeometry geometry;
-    geometry.meshType = MeshGeometry::LINE_MESH;
+	mesh->clearMesh();
+	MeshGeometry geometry;
+	geometry.meshType = MeshGeometry::LINE_MESH;
 	geometry.addVertexWithUV(0,0,0,0,0);
 	geometry.addVertexWithUV(0,0,0,1,0);
-    mesh->addSubmesh(geometry);
+	mesh->addSubmesh(geometry);
 }
 
 SceneLine *SceneLine::SceneLineWithPositions(Vector3 startp, Vector3 endp) {
@@ -150,22 +150,22 @@ void SceneLine::Update(){
 	Vector3 v1;
 	Vector3 v2;
 
-    mesh->clearMesh();
-    MeshGeometry geometry;
+	mesh->clearMesh();
+	MeshGeometry geometry;
 	geometry.meshType = MeshGeometry::LINE_MESH;
-    
+	
 	if(ent1 != NULL && ent2 != NULL) {
 		v1 = ent1->getConcatenatedMatrix().getPosition();
 		v2 = ent2->getConcatenatedMatrix().getPosition();
-        
-        geometry.addVertex(v1.x,v1.y,v1.z);
-        geometry.addVertex(v2.x,v2.y,v2.z);
+		
+		geometry.addVertex(v1.x,v1.y,v1.z);
+		geometry.addVertex(v2.x,v2.y,v2.z);
 	} else {
 		v1 = start;
 		v2 = end;
-        geometry.addVertex(v1.x,v1.y*yAdjust,v1.z);
-        geometry.addVertex(v2.x,v2.y*yAdjust,v2.z);
+		geometry.addVertex(v1.x,v1.y*yAdjust,v1.z);
+		geometry.addVertex(v2.x,v2.y*yAdjust,v2.z);
 
 	}
-    mesh->addSubmesh(geometry);
+	mesh->addSubmesh(geometry);
 }

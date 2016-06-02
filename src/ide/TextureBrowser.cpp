@@ -24,7 +24,7 @@
 
 AssetEntry::AssetEntry(String assetPath, String assetName, String extension, Resource *resource) : UIElement() {
 
-    this->resource = resource;
+	this->resource = resource;
 	this->assetPath = assetPath;
 
 	if(assetName.length() > 20)
@@ -36,15 +36,15 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension, Res
 	addChild(selectShape);
 	selectShape->processInputEvents = true;
 	selectShape->setColor(0.0, 0.0, 0.0, 0.5);
-    selectShape->loadTexture("browserIcons/large_selector.png");
-    selectShape->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+	selectShape->loadTexture("browserIcons/large_selector.png");
+	selectShape->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 
 	imageShape = new UIRect(64,64);
 	imageShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(imageShape);
 	
-    spritePreview = NULL;
-    
+	spritePreview = NULL;
+	
 	extension = extension.toLowerCase();
 	
 	if(extension == "png" || extension == "hdr" || extension == "jpg" || extension == "tga" || extension == "psd") {
@@ -61,66 +61,66 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension, Res
 		imageShape->loadTexture("browserIcons/shader_icon.png");
 	} else if(extension == "mesh") {
 		imageShape->loadTexture("browserIcons/mesh_icon.png");
-    } else if(extension == "mat") {
+	} else if(extension == "mat") {
 		imageShape->loadTexture("browserIcons/materials_icon.png");
-    } else if(extension == "material_resource") {
+	} else if(extension == "material_resource") {
 		imageShape->loadTexture("browserIcons/material_resource_icon.png");
-    } else if(extension == "sprite_resource") {
+	} else if(extension == "sprite_resource") {
 		imageShape->visible = false;
-        
-        SpriteSet *spriteSet = (SpriteSet*) CoreServices::getInstance()->getResourceManager()->getResourcePoolByName(assetPath);
-        if(spriteSet) {
-            spritePreview = new SceneSprite(spriteSet);
-            spritePreview->setSpriteByName(assetName);
-            if(spritePreview->getCurrentSprite()) {
-                if(spritePreview->getCurrentSprite()->getNumStates() > 0) {
-                    spritePreview->setSpriteState(spritePreview->getCurrentSprite()->getState(0), 0, false);
-                }
-            }
-            addChild(spritePreview);
-            spritePreview->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
-            
-            spritePreview->setPosition(28+32, 10+32);
-            
-            Number spriteScale = 1.0;
-            if(spritePreview->getHeight() > spritePreview->getWidth()) {
-                spriteScale = 64.0 / spritePreview->getSpriteBoundingBox().y;
-            } else {
-                spriteScale = 64.0 / spritePreview->getSpriteBoundingBox().x;
-            }
-            spritePreview->setScale(spriteScale, spriteScale, 1.0);
-            
-        }
-    }
+		
+		SpriteSet *spriteSet = (SpriteSet*) CoreServices::getInstance()->getResourceManager()->getResourcePoolByName(assetPath);
+		if(spriteSet) {
+			spritePreview = new SceneSprite(spriteSet);
+			spritePreview->setSpriteByName(assetName);
+			if(spritePreview->getCurrentSprite()) {
+				if(spritePreview->getCurrentSprite()->getNumStates() > 0) {
+					spritePreview->setSpriteState(spritePreview->getCurrentSprite()->getState(0), 0, false);
+				}
+			}
+			addChild(spritePreview);
+			spritePreview->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+			
+			spritePreview->setPosition(28+32, 10+32);
+			
+			Number spriteScale = 1.0;
+			if(spritePreview->getHeight() > spritePreview->getWidth()) {
+				spriteScale = 64.0 / spritePreview->getSpriteBoundingBox().y;
+			} else {
+				spriteScale = 64.0 / spritePreview->getSpriteBoundingBox().x;
+			}
+			spritePreview->setScale(spriteScale, spriteScale, 1.0);
+			
+		}
+	}
 
 	
 	imageShape->setPosition(28, 10);
-    imageShape->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
-    
-    String name = assetName;
-    if(name.length() > 15) {
-        name = name.substr(0, 15)+"...";
-    }
+	imageShape->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+	
+	String name = assetName;
+	if(name.length() > 15) {
+		name = name.substr(0, 15)+"...";
+	}
 	nameLabel = new UILabel(name, 11);
 	addChild(nameLabel);
-    nameLabel->setPosition((120.0-nameLabel->getWidth())/2.0, 80);
-    
+	nameLabel->setPosition((120.0-nameLabel->getWidth())/2.0, 80);
+	
 }
 
 AssetEntry::~AssetEntry() {
 	delete imageShape;
 	delete nameLabel;
 	delete selectShape;
-    if(spritePreview) {
-        delete spritePreview;
-    }
+	if(spritePreview) {
+		delete spritePreview;
+	}
 }
 
 AssetList::AssetList() : UIElement() {
-	    
+		
 	reloadButton = new UIImageButton("browserIcons/reload_icon.png", 1.0, 20, 20);
 	reloadButton->addEventListener(this, UIEvent::CLICK_EVENT);
-	addChild(reloadButton);	
+	addChild(reloadButton); 
 	reloadButton->setPosition(10, 5);		
 	
 }
@@ -130,7 +130,7 @@ AssetList::~AssetList() {
 }
 
 Resource *AssetList::getSelectedResource() {
-    return selectedResource;
+	return selectedResource;
 }
 
 void AssetList::setExtensions(std::vector<String> extensions) {
@@ -151,32 +151,32 @@ bool AssetList::hasExtension(String extension) {
 
 void AssetList::showResourcePool(ResourcePool *pool, int resourceFilter) {
 	
-    clearList();
-    
+	clearList();
+	
 	Number xPos = 20;
 	Number yPos = 30;
 	
-    std::vector<Resource*> resources = pool->getResources(resourceFilter);
-    
-    String extension;
-    
-    if(resourceFilter == Resource::RESOURCE_MATERIAL ) {
-        extension = "material_resource";
-    } else if(resourceFilter == Resource::RESOURCE_SPRITE ) {
-        extension = "sprite_resource";
-    }
-    
+	std::vector<Resource*> resources = pool->getResources(resourceFilter);
+	
+	String extension;
+	
+	if(resourceFilter == Resource::RESOURCE_MATERIAL ) {
+		extension = "material_resource";
+	} else if(resourceFilter == Resource::RESOURCE_SPRITE ) {
+		extension = "sprite_resource";
+	}
+	
 	for(int i=0; i < resources.size(); i++) {
-        AssetEntry *newEntry = new AssetEntry(pool->getName(), resources[i]->getResourceName(), extension, resources[i]);
-        newEntry->selectShape->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
-        assetEntries.push_back(newEntry);
-        newEntry->setPosition(xPos, yPos);
-        xPos += 120;
-        if(xPos > 500) {
-            xPos = 20;
-            yPos += 100;
-        }
-        addChild(newEntry);
+		AssetEntry *newEntry = new AssetEntry(pool->getName(), resources[i]->getResourceName(), extension, resources[i]);
+		newEntry->selectShape->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+		assetEntries.push_back(newEntry);
+		newEntry->setPosition(xPos, yPos);
+		xPos += 120;
+		if(xPos > 500) {
+			xPos = 20;
+			yPos += 100;
+		}
+		addChild(newEntry);
 	}
 	
 	setWidth(640);
@@ -195,16 +195,16 @@ void AssetList::clearList() {
 	}
 	assetEntries.clear();
 	currentEntry = NULL;
-    selectedResource = NULL;
+	selectedResource = NULL;
 }
 
 void AssetList::showFolder(String folderPath) {
 
 	currentFolderPath = folderPath;
 
-    clearList();
+	clearList();
 	
-	vector<OSFileEntry> assets = Services()->getCore()->parseFolder(folderPath, false);	
+	vector<OSFileEntry> assets = Services()->getCore()->parseFolder(folderPath, false); 
 	
 	Number xPos = 20;
 	Number yPos = 30;
@@ -265,8 +265,8 @@ void AssetList::handleEvent(Event *event) {
 
 AssetBrowser::AssetBrowser() : UIWindow(L"Asset Browser", 850, 500) {
 	defaultTemplateTree = NULL;
-    
-    browseMode = BROWSE_MODE_FILES;
+	
+	browseMode = BROWSE_MODE_FILES;
 	
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
@@ -280,7 +280,7 @@ AssetBrowser::AssetBrowser() : UIWindow(L"Asset Browser", 850, 500) {
 	templateContainer->getRootNode()->setUserData(data);			
 
 	addChild(templateContainer);		
-	templateContainer->setPosition(padding,topPadding+padding);	
+	templateContainer->setPosition(padding,topPadding+padding); 
 	templateContainer->getRootNode()->toggleCollapsed();
 	
 	templateContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
@@ -301,7 +301,7 @@ AssetBrowser::AssetBrowser() : UIWindow(L"Asset Browser", 850, 500) {
 	okButton = new UIButton(L"OK", 100);
 	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(okButton);
-	okButton->setPosition(850-80-padding, 485);	
+	okButton->setPosition(850-80-padding, 485); 
 	
 
 			
@@ -309,36 +309,36 @@ AssetBrowser::AssetBrowser() : UIWindow(L"Asset Browser", 850, 500) {
 }
 
 void AssetBrowser::setResourcePools(std::vector<ResourcePool*> pools, int resourceFilter) {
-    
-    if(this->resourceFilter != resourceFilter) {
-        assetList->clearList();
-    }
-    
-    this->resourceFilter = resourceFilter;
-    
+	
+	if(this->resourceFilter != resourceFilter) {
+		assetList->clearList();
+	}
+	
+	this->resourceFilter = resourceFilter;
+	
 	templateContainer->getRootNode()->clearTree();
 	templateContainer->getRootNode()->setLabelText("Resource pools");
 
-    FolderUserData *userData = (FolderUserData*) templateContainer->getRootNode()->getUserData();
-    if(userData) {
-        delete userData;
-    }
+	FolderUserData *userData = (FolderUserData*) templateContainer->getRootNode()->getUserData();
+	if(userData) {
+		delete userData;
+	}
 	templateContainer->getRootNode()->setUserData(NULL);
-    
-    
-    for(int i=0; i < pools.size(); i++) {
-        ResourcePool *pool = pools[i];
-        UITree *newChild = templateContainer->getRootNode()->addTreeChild("folder.png", pool->getName(), (void*)pool);
-        newChild->setUserData(pool);
-    }
-    
+	
+	
+	for(int i=0; i < pools.size(); i++) {
+		ResourcePool *pool = pools[i];
+		UITree *newChild = templateContainer->getRootNode()->addTreeChild("folder.png", pool->getName(), (void*)pool);
+		newChild->setUserData(pool);
+	}
+	
 }
 
 void AssetBrowser::setBrowseMode(unsigned int newBrowseMode) {
-    if(browseMode != newBrowseMode) {
-        assetList->clearList();
-        browseMode = newBrowseMode;
-    }
+	if(browseMode != newBrowseMode) {
+		assetList->clearList();
+		browseMode = newBrowseMode;
+	}
 }
 
 void AssetBrowser::setProject(PolycodeProject *project) {
@@ -348,16 +348,16 @@ void AssetBrowser::setProject(PolycodeProject *project) {
 	vector<OSFileEntry> templates = Services()->getCore()->parseFolder(project->getRootFolder(), false);
 	templateContainer->getRootNode()->setLabelText(project->getProjectName());
 	
-    FolderUserData *userData = (FolderUserData*) templateContainer->getRootNode()->getUserData();
-    if(userData) {
-        delete userData;
-    }
-    
+	FolderUserData *userData = (FolderUserData*) templateContainer->getRootNode()->getUserData();
+	if(userData) {
+		delete userData;
+	}
+	
 	FolderUserData *rootData = new FolderUserData();
-    rootData->folderPath = project->getRootFolder();
-    rootData->type = 0;
-    templateContainer->getRootNode()->setUserData(rootData);
-    
+	rootData->folderPath = project->getRootFolder();
+	rootData->type = 0;
+	templateContainer->getRootNode()->setUserData(rootData);
+	
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {
@@ -372,7 +372,7 @@ void AssetBrowser::setProject(PolycodeProject *project) {
 	}	
 	
 	currentProject = project;
-    templateContainer->getScrollContainer()->setScrollValue(0.0, 0.0);    
+	templateContainer->getScrollContainer()->setScrollValue(0.0, 0.0);	  
 }
 
 AssetBrowser::~AssetBrowser() {
@@ -401,7 +401,7 @@ void AssetBrowser::setExtensions(std::vector<String> extensions) {
 
 Resource *AssetBrowser::getSelectedResource() {
 	return assetList->getSelectedResource();
-    
+	
 }
 
 void AssetBrowser::handleEvent(Event *event) {
@@ -413,7 +413,7 @@ void AssetBrowser::handleEvent(Event *event) {
 			
 			if(event->getDispatcher() == cancelButton) {
 				dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);
-                removeAllHandlers();
+				removeAllHandlers();
 			}									
 		}
 		if (event->getEventCode() == UIEvent::OK_EVENT){
@@ -424,18 +424,18 @@ void AssetBrowser::handleEvent(Event *event) {
 	if(event->getEventType() == "UITreeEvent" && event->getEventCode() == UITreeEvent::SELECTED_EVENT) {
 		if(event->getDispatcher() == templateContainer->getRootNode()) {
 			UITreeEvent *treeEvent = (UITreeEvent*) event;
-            
-            if(browseMode == BROWSE_MODE_FILES) {
-                FolderUserData *data = (FolderUserData *)treeEvent->selection->getUserData();
-                if(data) {
-                    assetList->showFolder(data->folderPath);
-                }
-            } else {
-                ResourcePool *pool = (ResourcePool*) treeEvent->selection->getUserData();
-                if(pool) {
-                    assetList->showResourcePool(pool, resourceFilter);
-                }
-            }
+			
+			if(browseMode == BROWSE_MODE_FILES) {
+				FolderUserData *data = (FolderUserData *)treeEvent->selection->getUserData();
+				if(data) {
+					assetList->showFolder(data->folderPath);
+				}
+			} else {
+				ResourcePool *pool = (ResourcePool*) treeEvent->selection->getUserData();
+				if(pool) {
+					assetList->showResourcePool(pool, resourceFilter);
+				}
+			}
 			listContainer->setContentSize(assetList->getWidth(), assetList->getHeight());
 			listContainer->setScrollValue(0,0);
 		}

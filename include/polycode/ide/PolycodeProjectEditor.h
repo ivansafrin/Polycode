@@ -101,5 +101,5 @@ class PolycodeProjectEditorFactory : public PolycodeEditorFactory {
 		PolycodeEditor *createEditor();
 		
 	protected:
-		PolycodeProjectManager *projectManager;	
+		PolycodeProjectManager *projectManager; 
 };

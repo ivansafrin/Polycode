@@ -37,8 +37,8 @@ class PolycodeMeshEditor : public PolycodeEditor {
 		virtual ~PolycodeMeshEditor();
 	
 		void handleEvent(Event *event);
-        void Activate();
-        void Deactivate();
+		void Activate();
+		void Deactivate();
 	
 		bool openFile(OSFileEntry filePath);
 		void Resize(int x, int y);

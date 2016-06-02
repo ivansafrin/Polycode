@@ -42,11 +42,11 @@ namespace TUIO {
 		
 	protected:
 		/**
-		 * X coordinate, representated as a floating point value in a range of 0..1  
+		 * X coordinate, representated as a floating point value in a range of 0..1	 
 		 */
 		float xpos;
 		/**
-		 * X coordinate, representated as a floating point value in a range of 0..1  
+		 * X coordinate, representated as a floating point value in a range of 0..1	 
 		 */
 		float ypos;
 		/**
@@ -60,7 +60,7 @@ namespace TUIO {
 		
 	public:
 		/**
-		 * The default constructor takes no arguments and sets   
+		 * The default constructor takes no arguments and sets	 
 		 * its coordinate attributes to zero and its time stamp to the current session time.
 		 */
 		TuioPoint (float xp, float yp) {
@@ -252,7 +252,7 @@ namespace TUIO {
 		/**
 		 * Returns current time stamp of this TuioPoint as TuioTime 
 		 *
-		 * @return	the  time stamp of this TuioPoint as TuioTime
+		 * @return	the	 time stamp of this TuioPoint as TuioTime
 		 */
 		TuioTime getTuioTime() { 
 			return currentTime;

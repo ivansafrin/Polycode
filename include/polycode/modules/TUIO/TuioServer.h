@@ -89,8 +89,8 @@ namespace TUIO {
 		 * This constructor creates a TuioServer that sends to the provided port on the the given host
 		 * using a default packet size of 1492 bytes to deliver unfragmented UDP packets on a LAN
 		 *
-		 * @param  host  the receiving host name
-		 * @param  port  the outgoing TUIO UDP port number
+		 * @param  host	 the receiving host name
+		 * @param  port	 the outgoing TUIO UDP port number
 		 */
 		TuioServer(const char *host, int port);
 
@@ -98,9 +98,9 @@ namespace TUIO {
 		 * This constructor creates a TuioServer that sends to the provided port on the the given host
 		 * the packet UDP size can be set to a value between 576 and 65536 bytes
 		 *
-		 * @param  host  the receiving host name
-		 * @param  port  the outgoing TUIO UDP port number
-		 * @param  size  the maximum UDP packet size
+		 * @param  host	 the receiving host name
+		 * @param  port	 the outgoing TUIO UDP port number
+		 * @param  size	 the maximum UDP packet size
 		 */
 		TuioServer(const char *host, int port, int size);
 
@@ -114,7 +114,7 @@ namespace TUIO {
 		 * The new TuioObject is added to the TuioServer's internal list of active TuioObjects 
 		 * and a reference is returned to the caller.
 		 *
-		 * @param	sym	the Symbol ID  to assign
+		 * @param	sym the Symbol ID  to assign
 		 * @param	xp	the X coordinate to assign
 		 * @param	yp	the Y coordinate to assign
 		 * @param	a	the angle to assign
@@ -264,7 +264,7 @@ namespace TUIO {
 		 * Enables the full update of all currently active and inactive TuioObjects and TuioCursors 
 		 *
 		 */
-		void enableFullUpdate()  {
+		void enableFullUpdate()	 {
 			full_update = true;
 		}
 		
@@ -294,14 +294,14 @@ namespace TUIO {
 		/**
 		 * Returns a List of all currently inactive TuioObjects
 		 *
-		 * @return  a List of all currently inactive TuioObjects
+		 * @return	a List of all currently inactive TuioObjects
 		 */
 		std::list<TuioObject*> getUntouchedObjects();
 
 		/**
 		 * Returns a List of all currently inactive TuioCursors
 		 *
-		 * @return  a List of all currently inactive TuioCursors
+		 * @return	a List of all currently inactive TuioCursors
 		 */
 		std::list<TuioCursor*> getUntouchedCursors();
 		
@@ -328,7 +328,7 @@ namespace TUIO {
 		/**
 		 * Returns a List of all currently active TuioObjects
 		 *
-		 * @return  a List of all currently active TuioObjects
+		 * @return	a List of all currently active TuioObjects
 		 */
 		std::list<TuioObject*> getTuioObjects();
 		
@@ -336,7 +336,7 @@ namespace TUIO {
 		/**
 		 * Returns a List of all currently active TuioCursors
 		 *
-		 * @return  a List of all currently active TuioCursors
+		 * @return	a List of all currently active TuioCursors
 		 */
 		std::list<TuioCursor*> getTuioCursors();
 		
@@ -344,7 +344,7 @@ namespace TUIO {
 		 * Returns the TuioObject corresponding to the provided Session ID
 		 * or NULL if the Session ID does not refer to an active TuioObject
 		 *
-		 * @return  an active TuioObject corresponding to the provided Session ID or NULL
+		 * @return	an active TuioObject corresponding to the provided Session ID or NULL
 		 */
 		TuioObject* getTuioObject(long s_id);
 		
@@ -352,7 +352,7 @@ namespace TUIO {
 		 * Returns the TuioCursor corresponding to the provided Session ID
 		 * or NULL if the Session ID does not refer to an active TuioCursor
 		 *
-		 * @return  an active TuioCursor corresponding to the provided Session ID or NULL
+		 * @return	an active TuioCursor corresponding to the provided Session ID or NULL
 		 */
 		TuioCursor* getTuioCursor(long s_id);
 
@@ -360,7 +360,7 @@ namespace TUIO {
 		 * Returns the TuioObject closest to the provided coordinates
 		 * or NULL if there isn't any active TuioObject
 		 *
-		 * @return  the closest TuioObject to the provided coordinates or NULL
+		 * @return	the closest TuioObject to the provided coordinates or NULL
 		 */
 		TuioObject* getClosestTuioObject(float xp, float yp);
 		
@@ -368,7 +368,7 @@ namespace TUIO {
 		 * Returns the TuioCursor closest to the provided coordinates
 		 * or NULL if there isn't any active TuioCursor
 		 *
-		 * @return  the closest TuioCursor corresponding to the provided coordinates or NULL
+		 * @return	the closest TuioCursor corresponding to the provided coordinates or NULL
 		 */
 		TuioCursor* getClosestTuioCursor(float xp, float yp);
 		
@@ -380,7 +380,7 @@ namespace TUIO {
 		
 		/**
 		 * The TuioServer prints verbose TUIO event messages to the console if set to true.
-		 * @param	verbose	verbose message output if set to true
+		 * @param	verbose verbose message output if set to true
 		 */
 		void setVerbose(bool verbose) { this->verbose=verbose; }
 		

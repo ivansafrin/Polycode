@@ -90,8 +90,8 @@ namespace Polycode {
 			* port and accept incoming packets.
 			*
 			* @param port The UDP port to listen for packets. Can not be omitted,
-			*             this will be the actual port this peer will use to send
-			*             and receive packets.
+			*			  this will be the actual port this peer will use to send
+			*			  and receive packets.
 			*/
 			Peer(unsigned int port);
 			~Peer();

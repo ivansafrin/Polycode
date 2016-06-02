@@ -44,9 +44,9 @@ using namespace Polycode;
 
 typedef struct {
 	unsigned int lineNumber;
-	char errorMessage[256];	
+	char errorMessage[256]; 
 	char fileName[256];
-	unsigned int backTraceSize;	
+	unsigned int backTraceSize; 
 } RemoteErrorData;
 
 typedef struct {
@@ -133,7 +133,7 @@ public:
 	void *windowData;	
 	bool doneLoading;
 	
-	Core *core;	
+	Core *core; 
 	
 	String fullPath;
 	

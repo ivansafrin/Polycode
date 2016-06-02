@@ -46,14 +46,14 @@ LoggerEvent::~LoggerEvent() {
 
 Logger::Logger() : EventDispatcher() {
 	logToFile = false;
-    logFile = NULL;
+	logFile = NULL;
 }
 
 Logger::~Logger() {
-    if(logFile) {
-        fclose(logFile);
-    }
-    overrideInstance = NULL;
+	if(logFile) {
+		fclose(logFile);
+	}
+	overrideInstance = NULL;
 }
 
 void Logger::logBroadcast(String message) {
@@ -75,7 +75,7 @@ void Logger::log(const char *format, ...) {
 		if (Logger::getInstance()->getLogFile()){
 			va_start(args, format);
 			vfprintf(Logger::getInstance()->getLogFile(), format, args);
-            fflush(Logger::getInstance()->getLogFile());
+			fflush(Logger::getInstance()->getLogFile());
 			va_end(args);
 		} else {
 			time_t t = time(NULL);
@@ -111,7 +111,7 @@ void Logger::log(const char *format, ...) {
 }
 
 void Logger::log(const String &message) {
-    log(message.c_str());
+	log(message.c_str());
 }
 
 void Logger::setLogToFile(bool val){

@@ -44,7 +44,7 @@ NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 480, 280)
 	
 	
 	addChild(templateContainer);
-	templateContainer->setPosition(padding,topPadding+padding);	
+	templateContainer->setPosition(padding,topPadding+padding); 
 	templateContainer->getRootNode()->toggleCollapsed();
 	
 	templateContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
@@ -69,7 +69,7 @@ NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 480, 280)
 	addChild(label2);
 	label2->setPosition(padding+220, templateContainer->getPosition().y-2);		
 
-	projectNameInput = new UITextInput(false, 500-padding-210-padding-padding, 12);	
+	projectNameInput = new UITextInput(false, 500-padding-210-padding-padding, 12); 
 	addFocusChild(projectNameInput);
 	projectNameInput->setPosition(label2->getPosition().x-6, label2->getPosition().y + 25);
 	
@@ -78,13 +78,13 @@ NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 480, 280)
 	addChild(label3);
 	label3->setPosition(padding+220, templateContainer->getPosition().y+65);		
 	
-	projectLocationInput = new UITextInput(false, 500-padding-210-padding-padding, 12);	
+	projectLocationInput = new UITextInput(false, 500-padding-210-padding-padding, 12); 
 	addFocusChild(projectLocationInput);
 	projectLocationInput->setPosition(label3->getPosition().x-6, label3->getPosition().y+25);
 
 	
 	locationSelectButton = new UIButton(L"Choose...", 100);
-	locationSelectButton->addEventListener(this, UIEvent::CLICK_EVENT);	
+	locationSelectButton->addEventListener(this, UIEvent::CLICK_EVENT); 
 	addFocusChild(locationSelectButton);
 	locationSelectButton->setPosition(500-103-padding, projectLocationInput->getPosition().y+projectLocationInput->getHeight()+10);
 	

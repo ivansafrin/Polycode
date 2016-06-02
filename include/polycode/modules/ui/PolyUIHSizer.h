@@ -45,7 +45,7 @@ namespace Polycode {
 			void addRightChild(UIElement *element);			
 			
 			UIElement *getLeftChild();
-			UIElement *getRightChild();	
+			UIElement *getRightChild(); 
 			void removeLeftChild();
 			void removeRightChild();
 						

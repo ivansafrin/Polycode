@@ -31,10 +31,10 @@
 #define OSC_HOSTENDIANNESS_H
 
 /*
-    Make sure either OSC_HOST_LITTLE_ENDIAN or OSC_HOST_BIG_ENDIAN is defined
+	Make sure either OSC_HOST_LITTLE_ENDIAN or OSC_HOST_BIG_ENDIAN is defined
 
-    If you know a way to enhance the detection below for Linux and/or MacOSX
-    please let me know! I've tried a few things which don't work.
+	If you know a way to enhance the detection below for Linux and/or MacOSX
+	please let me know! I've tried a few things which don't work.
 */
 
 #if defined(OSC_HOST_LITTLE_ENDIAN) || defined(OSC_HOST_BIG_ENDIAN)

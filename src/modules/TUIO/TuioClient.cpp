@@ -71,12 +71,12 @@ void TuioClient::unlockCursorList() {
 }
 
 TuioClient::TuioClient(int port)
-: socket      (NULL)
+: socket	  (NULL)
 , currentFrame(-1)
 , maxCursorID (-1)
-, thread      (NULL)
-, locked      (false)
-, connected   (false)
+, thread	  (NULL)
+, locked	  (false)
+, connected	  (false)
 {
 	try {
 		socket = new UdpListeningReceiveSocket(IpEndpointName( IpEndpointName::ANY_ADDRESS, port ), this );
@@ -93,7 +93,7 @@ TuioClient::TuioClient(int port)
 	}	
 }
 
-TuioClient::~TuioClient() {	
+TuioClient::~TuioClient() { 
 	delete socket;
 }
 
@@ -121,7 +121,7 @@ void TuioClient::ProcessMessage( const ReceivedMessage& msg, const IpEndpointNam
 			const char* cmd;
 			args >> cmd;
 			
-			if (strcmp(cmd,"set")==0) {	
+			if (strcmp(cmd,"set")==0) { 
 												
 				int32 s_id, c_id;
 				float xpos, ypos, angle, xspeed, yspeed, rspeed, maccel, raccel;
@@ -254,7 +254,7 @@ void TuioClient::ProcessMessage( const ReceivedMessage& msg, const IpEndpointNam
 			const char* cmd;
 			args >> cmd;
 			
-			if (strcmp(cmd,"set")==0) {	
+			if (strcmp(cmd,"set")==0) { 
 
 				int32 s_id;
 				float xpos, ypos, xspeed, yspeed, maccel;				

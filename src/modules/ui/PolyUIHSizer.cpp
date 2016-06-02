@@ -42,7 +42,7 @@ UIHSizer::UIHSizer(Number width, Number height, Number mainWidth, bool leftSizer
 	
 	separatorBgShape = new UIRect(1,height);
 	separatorBgShape->setAnchorPoint(-1.0, -1.0, 0.0);
-	separatorBgShape->setColor(0.0, 0.0, 0.0, 1.0);	
+	separatorBgShape->setColor(0.0, 0.0, 0.0, 1.0); 
 	addChild(separatorBgShape);
 	
 
@@ -62,13 +62,13 @@ UIHSizer::UIHSizer(Number width, Number height, Number mainWidth, bool leftSizer
 	separatorHitShape->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	separatorHitShape->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	separatorHitShape->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);
-	separatorHitShape->addEventListener(this, InputEvent::EVENT_MOUSEOVER);	
+	separatorHitShape->addEventListener(this, InputEvent::EVENT_MOUSEOVER); 
 	separatorHitShape->addEventListener(this, InputEvent::EVENT_MOUSEOUT);		
 	separatorHitShape->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);			
 	separatorHitShape->visible = false;
 	
-	coreInput = CoreServices::getInstance()->getCore()->getInput();	
-	coreInput->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);	
+	coreInput = CoreServices::getInstance()->getCore()->getInput(); 
+	coreInput->addEventListener(this, InputEvent::EVENT_MOUSEMOVE); 
 	
 	separatorHitShape->processInputEvents = true;
 	
@@ -80,7 +80,7 @@ UIHSizer::UIHSizer(Number width, Number height, Number mainWidth, bool leftSizer
 UIHSizer::~UIHSizer() {
 	coreInput->removeAllHandlersForListener(this);
 
-    childElements->ownsChildren = false;
+	childElements->ownsChildren = false;
 	if(!ownsChildren) {
 		delete childElements;	
 		delete separatorBgShape;
@@ -96,7 +96,7 @@ void UIHSizer::handleEvent(Event *event) {
 				baseMainWidth = mainWidth;
 			break;
 			case InputEvent::EVENT_MOUSEUP:
-			case InputEvent::EVENT_MOUSEUP_OUTSIDE:	
+			case InputEvent::EVENT_MOUSEUP_OUTSIDE: 
 			{
 				resizing = false;			
 			}
@@ -214,7 +214,7 @@ void UIHSizer::updateSizer() {
 		}	
 		if(secondElement) {
 			secondElement->setPosition(mainWidth+1,0);
-			secondElement->Resize(getWidth()-mainWidth-1, getHeight());	
+			secondElement->Resize(getWidth()-mainWidth-1, getHeight()); 
 		}
 
 		separatorBgShape->Resize(1, getHeight());

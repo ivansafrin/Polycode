@@ -39,5 +39,5 @@ class CocoaPolycodePlayer : public PolycodePlayer {
 	
 	protected:
 
-		PolycodeView *view;	
+		PolycodeView *view; 
 };

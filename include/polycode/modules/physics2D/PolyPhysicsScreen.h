@@ -40,7 +40,7 @@ class Timer;
 * Event sent out by the PhysicsScreen class when collisions begin and end.
 */	
 class _PolyExport PhysicsScene2DEvent : public Event {
-	public:	
+	public: 
 		PhysicsScene2DEvent();
 		~PhysicsScene2DEvent();
 		
@@ -86,12 +86,12 @@ class _PolyExport PhysicsScene2DEvent : public Event {
 		Vector2 worldCollisionPoint;
 
 		/**
-         * Raw Box2d Contact
-         */
-    
-        b2Contact POLYIGNORE *contact;
+		 * Raw Box2d Contact
+		 */
 	
-        /**
+		b2Contact POLYIGNORE *contact;
+	
+		/**
 		* Strength of the collision impact.
 		*/
 		Number impactStrength;	
@@ -180,11 +180,11 @@ public:
 	* @param restitution Restitution of the physics entity. Restitution controls how bouncy the entity is.
 	* @param isSensor If this is set to true, the entity won't collide with other entities, but its collision will register.
 	* @param fixedRotation If this is set to true, the entity will always have a locked rotation.
-    * @param groupIndex is the physiscs shape's collision group. A negative number means objects of that group won't collide with eachother
-    * @return The physics entity wrapper.
+	* @param groupIndex is the physiscs shape's collision group. A negative number means objects of that group won't collide with eachother
+	* @return The physics entity wrapper.
 	*/
 	PhysicsScene2DEntity *addPhysicsChild(Entity *newEntity, int entType, bool isStatic, Number friction=0.1, Number density=1, Number restitution = 0, bool isSensor = false, bool fixedRotation = false, int groupIndex = 0);
-    
+	
 	/**
 	* Tracks a Entity as a physics enabled child. Once an entity is added as a physics child, its transforms are set by the physics engine and you are not able to position it manually. Use addCollisionChild/trackCollisionChild to track collisions of entities that you can position manually.
 	* @param newEntity Screen entity to add.
@@ -195,11 +195,11 @@ public:
 	* @param restitution Restitution of the physics entity. Restitution controls how bouncy the entity is.
 	* @param isSensor If this is set to true, the entity won't collide with other entities, but its collision will register.
 	* @param fixedRotation If this is set to true, the entity will always have a locked rotation.
-    * @param groupIndex is the physiscs shape's collision group. A negative number means objects of that group won't collide with eachother
+	* @param groupIndex is the physiscs shape's collision group. A negative number means objects of that group won't collide with eachother
 	* @return The physics entity wrapper.
 	*/
 	PhysicsScene2DEntity *trackPhysicsChild(Entity *newEntity, int entType, bool isStatic, Number friction=0.1, Number density=1, Number restitution = 0, bool isSensor = false, bool fixedRotation = false, int groupIndex = 0);
-    
+	
 	
 	/**
 	* Stops physics tracking for this entity but does not remove from screen.
@@ -262,7 +262,7 @@ public:
 	* @param maxTorque	If motorEnabled is true, specifies the maximum force applied.		
 	* @param worldAxis Specifies the relative world axis for the prismatic joint.	
 	* @return Created physics joint.	
-	*/ 	
+	*/	
 	PhysicsJoint *createPrismaticJoint(Entity *ent1, Entity *ent2, Vector2 worldAxis, Number ax, Number ay, bool collideConnected=false, Number lowerTranslation=0, Number upperTranslation=0, bool enableLimit=false, Number motorSpeed=0, Number motorForce=0, bool motorEnabled=false);
 
 	/**
@@ -278,7 +278,7 @@ public:
 	* @param motorSpeed If motorEnabled is true, controls the speed at which the motor rotates.
 	* @param maxTorque	If motorEnabled is true, specifies the maximum torque applied.		
 	* @return Created physics joint.
-	*/ 		
+	*/		
 	PhysicsJoint *createRevoluteJoint(Entity *ent1, Entity *ent2, Number ax, Number ay, bool collideConnected=false, bool enableLimit=false, Number lowerLimit=0, Number upperLimit=0, bool motorEnabled=false, Number motorSpeed=0, Number maxTorque=0);
 	
 //	b2MouseJoint *createMouseJoint(Entity *ent1, Vector2 *mp);
@@ -288,7 +288,7 @@ public:
 	* @param ent Entity to apply force to.
 	* @param fx X value of the force direction vector.
 	* @param fy Y value of the force direction vector.		
-	*/ 	
+	*/	
 	void applyForce(Entity *ent, Number fx, Number fy);
 	
 	/**
@@ -296,13 +296,13 @@ public:
 	* @param ent Entity to apply force to.
 	* @param fx X value of the impulse direction vector.
 	* @param fy Y value of the impulse direction vector.		
-	*/ 		
+	*/		
 	void applyImpulse(Entity *ent, Number fx, Number fy);
 
 	/**
 	* Sets the gravity for this screen.
 	* @param newGravity The new gravity vector.
-	*/ 			
+	*/			
 	void setGravity(Vector2 newGravity);
 
 	/**
@@ -310,7 +310,7 @@ public:
 	* @param ent Entity to transform.
 	* @param pos New position to set.
 	* @param angle New angle to set.
-	*/ 				
+	*/				
 	void setTransform(Entity *ent, Vector2 pos, Number angle);
 
 	
@@ -322,46 +322,46 @@ public:
 	* @param ent Entity to set velocity to.
 	* @param fx X direction of velocity vector.
 	* @param fy Y direction of velocity vector.
-	*/ 					
+	*/					
 	void setVelocity(Entity *ent, Number fx, Number fy);	
 
 	/**
 	* Sets the linear velocity of an entity on the X axis.
 	* @param ent Entity to set velocity to.
 	* @param fx X direction of velocity vector.
-	*/ 						
+	*/						
 	void setVelocityX(Entity *ent, Number fx);	
 	
 	/**
 	* Sets the linear velocity of an entity on the Y axis.
 	* @param ent Entity to set velocity to.
 	* @param fy Y direction of velocity vector.
-	*/ 							
+	*/							
 	void setVelocityY(Entity *ent, Number fy);	
 	
 	/**
 	* Sets the angular velocity of an entity
 	* @param ent Entity to apply spin to.
 	* @param spin Spin value.
-	*/ 								
+	*/								
 	void setAngularVelocity(Entity *ent, Number spin);
 
 	/**
 	* Returns the velocity of an entity.
 	* @param ent Entity to return velocity for
 	* @return Velocity of the specified entity.
-	*/ 									
+	*/									
 	Vector2 getVelocity(Entity *ent);
 			
 	void BeginContact (b2Contact *contact);
 	void EndContact (b2Contact *contact);	
-    void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);    
+	void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);	 
 	void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
 
 	/**
 	* Wake up a sleeping entity. The physics engine puts non-moving entities to sleep automatically. Use this to wake them up.
 	* @param ent Entity to wake up.
-	*/ 										
+	*/										
 	void wakeUp(Entity *ent);
 	
 	void handleEvent(Event *event);
@@ -371,7 +371,7 @@ public:
 	* @param x X position.
 	* @param y Y position.
 	* @return If there is a collision-tracked entity at the specified position, it will be returned, NULL if there isn't.
-	*/ 													
+	*/													
 	Entity *getEntityAtPosition(Number x, Number y);
 	
 	/**
@@ -380,9 +380,9 @@ public:
 	* @param x X position.
 	* @param y Y position.
 	* @return If there specified entity overlaps the specified position, this returns true.
-	*/ 														
+	*/														
 	bool testEntityAtPosition(Entity *ent, Number x, Number y);
-    
+	
 	/**
 	* Tests collision between two entities
 	*/
@@ -401,19 +401,19 @@ public:
 	void destroyMouseJoint(b2MouseJoint *mJoint);
 
 
-    
+	
 protected:
 
 	
-    Number worldScale;
-    
-    std::vector <PhysicsScene2DEntity*> physicsChildren;
+	Number worldScale;
+	
+	std::vector <PhysicsScene2DEntity*> physicsChildren;
 	std::vector<PhysicsScene2DEvent*> eventsToDispatch;
 			
 	void init(Number worldScale, int velIterations, int posIterations, Vector2 physicsGravity);
 
 	std::vector<b2Contact*> contacts;
-    b2World *world;
+	b2World *world;
 	int32 velocityIterations, positionIterations;
 };
 

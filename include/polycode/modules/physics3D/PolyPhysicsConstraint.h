@@ -30,10 +30,10 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-    class _PolyExport PhysicsConstraint {
-        public:
-            virtual ~PhysicsConstraint();
-            btTypedConstraint *btConstraint;
-    };
+	class _PolyExport PhysicsConstraint {
+		public:
+			virtual ~PhysicsConstraint();
+			btTypedConstraint *btConstraint;
+	};
 
 }

@@ -126,7 +126,7 @@ class MaterialBrowser : public UIElement {
 		
 		MaterialBrowserData *selectedData;
 
-		UIImageButton *newShaderButton;	
+		UIImageButton *newShaderButton; 
 		UIImageButton *newMaterialButton;
 		UIImageButton *newCubemapButton;
 		UIImageButton *newPostButton;
@@ -143,7 +143,7 @@ class MaterialBrowser : public UIElement {
 		UITree *cubemapsNode;
 		UITree *postEffectsNode;
 			
-		UITreeContainer *treeContainer;	
+		UITreeContainer *treeContainer; 
 };
 
 class CubemapEditorPane : public UIElement {
@@ -155,9 +155,9 @@ class CubemapEditorPane : public UIElement {
 		void handleEvent(Event *event);
 		Cubemap *currentCubemap;		
 		
-        void Activate();
-        void Deactivate();
-    
+		void Activate();
+		void Deactivate();
+	
 	protected:
 	
 		PropList *propList;
@@ -184,9 +184,9 @@ class PostEditorPane : public UIElement {
 		void handleEvent(Event *event);
 		Material *currentMaterial;	
 		
-        void Activate();
-        void Deactivate();
-    
+		void Activate();
+		void Deactivate();
+	
 		void adjustPreview();
 		
 		protected:
@@ -230,7 +230,7 @@ class ShaderEditorPane : public UIElement {
 			
 	protected:
 	
-        ResourcePool *resourcePool;
+		ResourcePool *resourcePool;
 		bool changingShader;
 
 		bool choosingVertexProgram;
@@ -254,10 +254,10 @@ class MaterialEditorPane : public UIElement {
 	public:
 		MaterialEditorPane();
 		~MaterialEditorPane();
-    
-        void Activate();
-        void Deactivate();
-    
+	
+		void Activate();
+		void Deactivate();
+	
 		
 		void setMaterial(Material *material);
 		void handleEvent(Event *event);
@@ -279,7 +279,7 @@ class MaterialEditorPane : public UIElement {
 		ComboProp *blendModeProp;
 		ComboProp *shaderProp;
 		
-		ShaderOptionsSheet *shaderOptionsSheet;	
+		ShaderOptionsSheet *shaderOptionsSheet; 
 };
 
 class MaterialMainWindow : public UIElement {
@@ -287,14 +287,14 @@ class MaterialMainWindow : public UIElement {
 	MaterialMainWindow(ResourcePool *resourcePool);
 	~MaterialMainWindow();
 	
-    void Activate();
-    void Deactivate();
-    
+	void Activate();
+	void Deactivate();
+	
 	void Resize(Number width, Number height);
 	
 	MaterialEditorPane *materialPane;
 	ShaderEditorPane *shaderPane;	
-	CubemapEditorPane *cubemapPane;	
+	CubemapEditorPane *cubemapPane; 
 	PostEditorPane *postPane;	
 		
 	UIColorPicker *colorPicker;
@@ -308,8 +308,8 @@ class PolycodeMaterialEditor : public PolycodeEditor {
 	bool openFile(OSFileEntry filePath);
 	void Resize(int x, int y);
 	
-    void Activate();
-    void Deactivate();
+	void Activate();
+	void Deactivate();
 	
 	void handleEvent(Event *event);
 	void saveFile();
@@ -318,8 +318,8 @@ class PolycodeMaterialEditor : public PolycodeEditor {
 	static String createStringValue(unsigned int type, void *value);
 	
 	protected:
-    
-        ResourcePool *resourcePool;
+	
+		ResourcePool *resourcePool;
 		
 		MaterialBrowser *materialBrowser;
 		UIHSizer *mainSizer;

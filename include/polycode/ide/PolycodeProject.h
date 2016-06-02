@@ -43,7 +43,7 @@ class ProjectData {
 		String entryPoint;
 		int defaultWidth;
 		int defaultHeight;
-		bool vSync;	
+		bool vSync; 
 		unsigned int anisotropy;	
 		unsigned int aaLevel;
 		unsigned int frameRate;
@@ -60,13 +60,13 @@ class ProjectData {
 class PolycodeProject {
 	public:
 		PolycodeProject(String name, String path, String file);
-		~PolycodeProject();	
+		~PolycodeProject(); 
 		
-		bool loadProjectFromFile();	
+		bool loadProjectFromFile(); 
 		bool saveFile();
 	
 		String getProjectName() { return projectName; }
-		String getProjectFile() { return projectFile; }	
+		String getProjectFile() { return projectFile; } 
 		String getRootFolder() { return projectFolder; }	
 	
 		ProjectData data;

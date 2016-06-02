@@ -66,8 +66,8 @@ EXPRESSLY ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 	#endif
 
 	// Standard GNU options
-	#define	null_argument		0	/*Argument Null*/
-	#define	no_argument			0	/*Argument Switch Only*/
+	#define null_argument		0	/*Argument Null*/
+	#define no_argument			0	/*Argument Switch Only*/
 	#define required_argument	1	/*Argument Required*/
 	#define optional_argument	2	/*Argument Optional*/	
 
@@ -132,4 +132,4 @@ _END_EXTERN_C
 		#define option option_a
 		#define optarg optarg_a
 	#endif
-#endif  // __GETOPT_H_
+#endif	// __GETOPT_H_

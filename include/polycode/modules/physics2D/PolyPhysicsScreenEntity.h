@@ -34,9 +34,9 @@ namespace Polycode {
 	*/	
 	class _PolyExport PhysicsScene2DEntity {
 		public:
-        
-            PhysicsScene2DEntity() { collisionOnly = false; }
-        
+		
+			PhysicsScene2DEntity() { collisionOnly = false; }
+		
 			PhysicsScene2DEntity(Entity *entity, b2World *world, Number worldScale, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation, int groupIndex = 0);
 			virtual ~PhysicsScene2DEntity();
 
@@ -68,41 +68,41 @@ namespace Polycode {
 			void setTransform(Vector2 pos, Number angle);
 			
 			/**
-             * Sets the velocity of the physics entity
-             */
-			void setVelocity(Number fx, Number fy);	
+			 * Sets the velocity of the physics entity
+			 */
+			void setVelocity(Number fx, Number fy); 
 			void setVelocityX( Number fx);	
 			void setVelocityY(Number fy);				
-        
-            /**
-             * Sets the dampening of the physics entity
-             */
-            void setLinearDamping(Number damping);
-            void setAngularDamping(Number damping);
-            void setFriction(Number friction);
-        
-            /**
-             * Returns dampening information
-             */ 
-            Number getLinearDamping();
-            Number getAngularDamping();
-            Number getFriction();
+		
+			/**
+			 * Sets the dampening of the physics entity
+			 */
+			void setLinearDamping(Number damping);
+			void setAngularDamping(Number damping);
+			void setFriction(Number friction);
+		
+			/**
+			 * Returns dampening information
+			 */ 
+			Number getLinearDamping();
+			Number getAngularDamping();
+			Number getFriction();
 
-            /**
-             * Sets physics entity density
-             */
-            void setDensity(Number density);
-            Number getDensity();
-        
-            /**
-             * Sets collision filtering
-             * Collision category specifies which bits on a 16 bit field the physics entity belongs to. default is 1 (or "0000000000000001")
-             * Collision mask specifies which bits the physics entity will collide with. default 65535 (or 0xFFFF, or "1111111111111111", or everything)
-             * If a physics entity's mask bits don't line up with any of an overlapping entity's category bits, their collisions will be skipped
-             */
-            void setCollisionCategory(int categoryBits);
-            void setCollisionMask(int maskBits);
-            void setCollisionGroupIndex(int group);
+			/**
+			 * Sets physics entity density
+			 */
+			void setDensity(Number density);
+			Number getDensity();
+		
+			/**
+			 * Sets collision filtering
+			 * Collision category specifies which bits on a 16 bit field the physics entity belongs to. default is 1 (or "0000000000000001")
+			 * Collision mask specifies which bits the physics entity will collide with. default 65535 (or 0xFFFF, or "1111111111111111", or everything)
+			 * If a physics entity's mask bits don't line up with any of an overlapping entity's category bits, their collisions will be skipped
+			 */
+			void setCollisionCategory(int categoryBits);
+			void setCollisionMask(int maskBits);
+			void setCollisionGroupIndex(int group);
 
 			/**
 			 * Gets a specific fixture based on it's index position
@@ -112,9 +112,9 @@ namespace Polycode {
 			 * Gets the last fixture selected (automatically set to last added on creation)
 			 */
 			b2Fixture* getFixture();
-        
-            bool getFixedRotation() const;
-            void setFixedRotation(bool val);
+		
+			bool getFixedRotation() const;
+			void setFixedRotation(bool val);
 
 			/**
 			* Rectangular physics entity
@@ -122,25 +122,25 @@ namespace Polycode {
 			static const int ENTITY_RECT = 1;
 			/**
 			* Circular physics entity
-			*/ 			
-			static const int ENTITY_CIRCLE = 2;	
+			*/			
+			static const int ENTITY_CIRCLE = 2; 
 			/**
 			* Mesh physics entity.
-			*/ 						
+			*/						
 			static const int ENTITY_MESH = 3;
 			/**
 			* Edge phyiscs Entity
 			*/ 
-            static const int ENTITY_EDGE = 4;
+			static const int ENTITY_EDGE = 4;
 			/**
 			* Capsule entity. 
 			*/ 
-            static const int ENTITY_CAPSULE = 5;
+			static const int ENTITY_CAPSULE = 5;
 
 			/**
 			* Three vertical circles.
 			*/ 
-            static const int ENTITY_TRIPLE_CIRCLE = 6;
+			static const int ENTITY_TRIPLE_CIRCLE = 6;
 
 
 			b2Body *body;			
@@ -149,8 +149,8 @@ namespace Polycode {
 			bool collisionOnly;
 
 		protected:
-        
-            bool fixedRotation;
+		
+			bool fixedRotation;
 			Number worldScale;
 			Entity *entity;
 	};

@@ -47,7 +47,7 @@ namespace TUIO {
 		 * Session ID, Cursor ID, X and Y coordinate to the newly created TuioCursor.
 		 *
 		 * @param	ttime	the TuioTime to assign
-		 * @param	si	the Session ID  to assign
+		 * @param	si	the Session ID	to assign
 		 * @param	ci	the Cursor ID  to assign
 		 * @param	xp	the X coordinate to assign
 		 * @param	yp	the Y coordinate to assign
@@ -60,7 +60,7 @@ namespace TUIO {
 		 * This constructor takes the provided Session ID, Cursor ID, X and Y coordinate 
 		 * and assigs these values to the newly created TuioCursor.
 		 *
-		 * @param	si	the Session ID  to assign
+		 * @param	si	the Session ID	to assign
 		 * @param	ci	the Cursor ID  to assign
 		 * @param	xp	the X coordinate to assign
 		 * @param	yp	the Y coordinate to assign

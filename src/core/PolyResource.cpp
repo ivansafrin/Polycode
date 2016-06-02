@@ -32,7 +32,7 @@ Resource::Resource(int type) : EventDispatcher() {
 	this->type = type;
 	reloadOnFileModify = defaultReloadOnFileModify;
 	resourceFileTime = 0;
-    platformData = NULL;
+	platformData = NULL;
 }
 
 Resource::~Resource() {

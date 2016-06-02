@@ -29,7 +29,7 @@
 
 using namespace Polycode;
 
-class FileTemplateUserData  {
+class FileTemplateUserData	{
 public:
 	String templatePath;
 	int type;
@@ -57,6 +57,6 @@ class NewFileWindow : public UIWindow {
 		
 		String templatePath;
 			
-		UITreeContainer *templateContainer;	
+		UITreeContainer *templateContainer; 
 		UITree *defaultTemplateTree;
 };

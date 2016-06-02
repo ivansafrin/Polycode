@@ -35,7 +35,7 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	class Font;	
+	class Font; 
 	
 	class GlyphData {
 		public:
@@ -60,122 +60,122 @@ namespace Polycode {
 	};
 
 	/**
-     * An image that can render text into itself. This class is mostly used internally in SceneLabel, but can be used by itself to manually create text-based textures.
-     */
+	 * An image that can render text into itself. This class is mostly used internally in SceneLabel, but can be used by itself to manually create text-based textures.
+	 */
 	class _PolyExport Label : public Image {
 		public:
 			
-            /**
-             * Create a text label.
-             * @param font Font to use for this label.
-             * @param text Initial text to render.
-             * @param size Pixel size of the text to render.
-             * @param antiAliasMode Antialiasing mode. Can be ANTIALIAS_FULL, ANTIALIAS_NONE or ANTIALIAS_STRONG.
-             * @param premultiplyAlpha If set to true, will premultiply alpha in the label image.
-             * @see Font
-             */
+			/**
+			 * Create a text label.
+			 * @param font Font to use for this label.
+			 * @param text Initial text to render.
+			 * @param size Pixel size of the text to render.
+			 * @param antiAliasMode Antialiasing mode. Can be ANTIALIAS_FULL, ANTIALIAS_NONE or ANTIALIAS_STRONG.
+			 * @param premultiplyAlpha If set to true, will premultiply alpha in the label image.
+			 * @see Font
+			 */
 			Label(Font *font, const String& text, int size, int antiAliasMode, bool premultiplyAlpha = false, const Color &backgroundColor = Color(0.0, 0.0, 0.0, 0.0), const Color &foregroundColor = Color(1.0, 1.0, 1.0, 1.0));
 			virtual ~Label();
-        
-            /**
-             * Sets the text of the label.
-             * @param text Text to set.
-             */
+		
+			/**
+			 * Sets the text of the label.
+			 * @param text Text to set.
+			 */
 			void setText(const String& text);
-        
-            /**
-             * Returns the current text of the label.
-             * @return Current text.
-             */
+		
+			/**
+			 * Returns the current text of the label.
+			 * @return Current text.
+			 */
 			const String& getText() const;
 			
-            /**
-             * Returns the pixel width for the specified string based on the current label font and size settings.
-             * @param text Text to return width for.
-             * @return Pixel width of specified text.
-             */
+			/**
+			 * Returns the pixel width for the specified string based on the current label font and size settings.
+			 * @param text Text to return width for.
+			 * @return Pixel width of specified text.
+			 */
 			int getTextWidthForString(const String& text);
-        
-            /**
-             * Returns the pixel height for the specified string based on the current label font and size settings.
-             * @param text Text to return height for.
-             * @return Pixel height of specified text.
-             */
+		
+			/**
+			 * Returns the pixel height for the specified string based on the current label font and size settings.
+			 * @param text Text to return height for.
+			 * @return Pixel height of specified text.
+			 */
 			int getTextHeightForString(const String& text);
 
-            /**
-             * Returns the width of the current text.
-             * @return Width of the current text.
-             */
+			/**
+			 * Returns the width of the current text.
+			 * @return Width of the current text.
+			 */
 			Number getTextWidth() const;
-        
-            /**
-             * Returns the height of the current text.
-             * @return Height of the current text.
-             */
+		
+			/**
+			 * Returns the height of the current text.
+			 * @return Height of the current text.
+			 */
 			Number getTextHeight() const;
 		
-            /**
-             * Sets the color for a range of characters in the label. The colors are only applied upon the next call to setText, not the currently rendered text. This call appends the color range to a list of color ranges, so if you are calling this multiple times for the same ranges, you must call clearColors.
-             * @param color The color to set for the specified range.
-             * @param rangeStart Starting index of the specified range.
-             * @param rangeEnd Ending index of the specified range.
-             * @see clearColors
-             */
+			/**
+			 * Sets the color for a range of characters in the label. The colors are only applied upon the next call to setText, not the currently rendered text. This call appends the color range to a list of color ranges, so if you are calling this multiple times for the same ranges, you must call clearColors.
+			 * @param color The color to set for the specified range.
+			 * @param rangeStart Starting index of the specified range.
+			 * @param rangeEnd Ending index of the specified range.
+			 * @see clearColors
+			 */
 			void setColorForRange(Color color, unsigned int rangeStart, unsigned int rangeEnd);
-        
-            /**
-             * Clears the current label colors.
-             * @see setColorForRange
-             */
-            void clearColors();
 		
-            /**
-             * Returns the text color for specified character index.
-             */
+			/**
+			 * Clears the current label colors.
+			 * @see setColorForRange
+			 */
+			void clearColors();
+		
+			/**
+			 * Returns the text color for specified character index.
+			 */
 			Color getColorForIndex(unsigned int index);
-        
-            /**
-             * Returns the premultiply alpha setting.
-             */
-            bool getPremultiplyAlpha() const;
-        
-            /**
-             * If set to true, will premultiply alpha when text is set to the label.
-             */
-            void setPremultiplyAlpha(bool val);
 		
-            /**
-             * Sets the Font used to render text in the label.
-             * @see Font
-             */
+			/**
+			 * Returns the premultiply alpha setting.
+			 */
+			bool getPremultiplyAlpha() const;
+		
+			/**
+			 * If set to true, will premultiply alpha when text is set to the label.
+			 */
+			void setPremultiplyAlpha(bool val);
+		
+			/**
+			 * Sets the Font used to render text in the label.
+			 * @see Font
+			 */
 			void setFont(Font *newFont);
-        
-            /**
-             * Returns the Font currently used to render text in the label.
-             * @see Font
-             */
+		
+			/**
+			 * Returns the Font currently used to render text in the label.
+			 * @see Font
+			 */
 			Font *getFont() const;
 			
-            /**
-             * Sets the vertical pixel size of text rendered in the label.
-             */
+			/**
+			 * Sets the vertical pixel size of text rendered in the label.
+			 */
 			void setSize(int newSize);
-        
-            /**
-             * Return the current vertical pixel size of text rendered in the label.
-             */
+		
+			/**
+			 * Return the current vertical pixel size of text rendered in the label.
+			 */
 			unsigned int getSize() const;
 			
-            /**
-             * Returns the current antialasing mode.
-             */
+			/**
+			 * Returns the current antialasing mode.
+			 */
 			int getAntialiasMode() const;
-        
-            /**
-             * Sets the antialiasing mode used to render text.
-             * @param newMode Antialiasing mode. Can be ANTIALIAS_FULL, ANTIALIAS_NONE or ANTIALIAS_STRONG.
-             */
+		
+			/**
+			 * Sets the antialiasing mode used to render text.
+			 * @param newMode Antialiasing mode. Can be ANTIALIAS_FULL, ANTIALIAS_NONE or ANTIALIAS_STRONG.
+			 */
 			void setAntialiasMode(int newMode);
 					
 			static const int ANTIALIAS_FULL = 0;
@@ -184,33 +184,33 @@ namespace Polycode {
 			static const int ANTIALIAS_LCD = 3;
 			static const int ANTIALIAS_LCD_HINT = 4;
 			static const int ANTIALIAS_FULL_HINT = 5;
-            /**
-             * Returns the pixel distance from top of image to the baseline of the rendered text.
-             */
+			/**
+			 * Returns the pixel distance from top of image to the baseline of the rendered text.
+			 */
 			int getBaselineAdjust();
-        
-            void setBackgroundColor(const Color &color);
-            void setForegroundColor(const Color &color);
-            void setColors(const Color &backgroundColor, const Color &foregroundColor);
-        
-            Color getBackgroundColor();
-            Color getForegroundColor();
-        
+		
+			void setBackgroundColor(const Color &color);
+			void setForegroundColor(const Color &color);
+			void setColors(const Color &backgroundColor, const Color &foregroundColor);
+		
+			Color getBackgroundColor();
+			Color getForegroundColor();
+		
 			bool optionsChanged();
 			
 		protected:
-        
-            Color backgroundColor;
-            Color foregroundColor;
-        
-            void computeStringBbox(GlyphData *glyphData, FT_BBox *abbox);
-            void precacheGlyphs(String text, GlyphData *glyphData);
-            void renderGlyphs(GlyphData *glyphData);
-            void drawGlyphBitmap(FT_Bitmap *bitmap, unsigned int x, unsigned int y, const Color &glyphColor);
+		
+			Color backgroundColor;
+			Color foregroundColor;
+		
+			void computeStringBbox(GlyphData *glyphData, FT_BBox *abbox);
+			void precacheGlyphs(String text, GlyphData *glyphData);
+			void renderGlyphs(GlyphData *glyphData);
+			void drawGlyphBitmap(FT_Bitmap *bitmap, unsigned int x, unsigned int y, const Color &glyphColor);
 		
 			bool _optionsChanged;
 			GlyphData labelData;
-	        
+			
 			std::vector<ColorRange> colorRanges;
 		
 			int baseLineOffset;

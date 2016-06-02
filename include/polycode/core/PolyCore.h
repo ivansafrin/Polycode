@@ -37,10 +37,10 @@ long getThreadID();
 namespace Polycode {
 
 	class Renderer;
-          
+		  
 	class _PolyExport CoreMutex : public PolyBase {
 	public:
-        virtual ~CoreMutex(){}
+		virtual ~CoreMutex(){}
 
 		virtual void lock() = 0;
 		virtual void unlock() = 0;
@@ -80,22 +80,22 @@ namespace Polycode {
 			int year;
 			int yearDay;
 	};
-    
-    class VideoModeChangeInfo {
-    public:
-        int xRes;
-        int yRes;
-        bool fullScreen;
-        bool vSync;
-        int aaLevel;
-        int anisotropyLevel;
-        bool retinaSupport;
-    };
-    
-    class CoreMotionEvent : public Event {
-        public:
-            Vector3 amount;
-    };
+	
+	class VideoModeChangeInfo {
+	public:
+		int xRes;
+		int yRes;
+		bool fullScreen;
+		bool vSync;
+		int aaLevel;
+		int anisotropyLevel;
+		bool retinaSupport;
+	};
+	
+	class CoreMotionEvent : public Event {
+		public:
+			Vector3 amount;
+	};
 
 	/**
 	* The main core of the framework. The core deals with system-level functions, such as window initialization and OS interaction. Each platform has its own implementation of this base class. NOTE: SOME OF THE FUNCTIONALITY IN THE CORE IS NOT FULLY IMPLEMENTED!!
@@ -116,11 +116,11 @@ namespace Polycode {
 		Core(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex);
 		virtual ~Core();
 		
-        bool Update();
+		bool Update();
 		virtual void Render() = 0;
-        
-        bool fixedUpdate();
-        virtual bool systemUpdate() = 0;
+		
+		bool fixedUpdate();
+		virtual bool systemUpdate() = 0;
 		
 		bool updateAndRender();
 		
@@ -148,7 +148,7 @@ namespace Polycode {
 		/**
 		* Warps the cursor to a specified point in the window.
 		* @param x New cursor x position 
-		* @param y New cursor y position 		
+		* @param y New cursor y position		
 		*/
 		virtual void warpCursor(int x, int y) {}
 		
@@ -166,7 +166,7 @@ namespace Polycode {
 		void lockMutex(CoreMutex *mutex);
 		
 		/**
-		* Unlocks a mutex.  Legacy method. Use the "unlock" method of CoreMutex!
+		* Unlocks a mutex.	Legacy method. Use the "unlock" method of CoreMutex!
 		* @param mutex Mutex to lock.
 		*/		
 		void unlockMutex(CoreMutex *mutex);
@@ -239,16 +239,16 @@ namespace Polycode {
 		Number getYRes();
 
 		/**
-         * Returns actual current horizontal resolution.
-         * @return Current actual horizontal resolution.
-         */
-        virtual Number getBackingXRes() { return getXRes(); }
+		 * Returns actual current horizontal resolution.
+		 * @return Current actual horizontal resolution.
+		 */
+		virtual Number getBackingXRes() { return getXRes(); }
 
-        /**
-         * Returns actual current vertical resolution.
-         * @return Current actual horizontal resolution.
-         */
-        virtual Number getBackingYRes() { return getYRes(); }
+		/**
+		 * Returns actual current vertical resolution.
+		 * @return Current actual horizontal resolution.
+		 */
+		virtual Number getBackingYRes() { return getYRes(); }
 				
 		/**
 		* Provides the current width, height, and refresh rate of the screen.
@@ -258,9 +258,9 @@ namespace Polycode {
 		*/
 		static void getScreenInfo(int *width, int *height, int *hz);
 
-        int getScreenWidth();
-        int getScreenHeight();
-        
+		int getScreenWidth();
+		int getScreenHeight();
+		
 		/**
 		* Creates a folder on disk with the specified path.
 		* @param folderPath Path to create the folder in.
@@ -307,8 +307,8 @@ namespace Polycode {
 
 		virtual void handleVideoModeChange(VideoModeChangeInfo *modeInfo) = 0;
 		virtual void flushRenderContext() = 0;
-        virtual void prepareRenderContext() {}
-        
+		virtual void prepareRenderContext() {}
+		
 		CoreFile *openFile(const Polycode::String& fileName, const Polycode::String& opts);
 		void closeFile(CoreFile *file);
 		
@@ -318,9 +318,9 @@ namespace Polycode {
 		std::vector<OSFileEntry> parseFolder(const Polycode::String& pathString, bool showHidden);
 
 		virtual bool systemParseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector) = 0;
-        
-        virtual String getResourcePathForFile(const String &fileName);
-        
+		
+		virtual String getResourcePathForFile(const String &fileName);
+		
 		/**
 		* Sets a new video mode.
 		* @param xRes New horizontal resolution of the renderer.
@@ -365,7 +365,7 @@ namespace Polycode {
 		long getTimeSleptMs() const {
 			return timeSleptMs;
 		}
-        
+		
 		Number getFixedTimestep();
 		
 		/**
@@ -388,10 +388,10 @@ namespace Polycode {
 		static const int EVENT_CUT = EVENTBASE_CORE+6;
 		static const int EVENT_SELECT_ALL = EVENTBASE_CORE+7;
 		static const int EVENT_PASTE = EVENTBASE_CORE+8;
-        
+		
 		static const int EVENT_GYRO_ROTATION = EVENTBASE_CORE+9;
 		static const int EVENT_ACCELEROMETER_MOTION = EVENTBASE_CORE+10;
-        
+		
 		virtual String executeExternalCommand(String command, String args, String inDirectory) = 0;
 		
 		/**
@@ -434,15 +434,15 @@ namespace Polycode {
 		* Default height of the desktop screen
 		*/		
 		int defaultScreenHeight;
-        
-        Quaternion deviceAttitude;
+		
+		Quaternion deviceAttitude;
 				
 	protected:	
 	
 		virtual bool checkSpecialKeyEvents(PolyKEY key) { return false; }
-        
-        std::vector<CoreFileProvider*> fileProviders;
-        
+		
+		std::vector<CoreFileProvider*> fileProviders;
+		
 		void loseFocus();
 		void gainFocus();
 		
@@ -468,15 +468,15 @@ namespace Polycode {
 		unsigned int lastFrameTicks;
 		unsigned int lastFPSTicks;
 		unsigned int elapsed;
-        
-        double fixedElapsed;
-        double fixedTimestep;
-        double timeLeftOver;
-        double maxFixedElapsed;
+		
+		double fixedElapsed;
+		double fixedTimestep;
+		double timeLeftOver;
+		double maxFixedElapsed;
 		
 		bool mouseEnabled;
 		bool mouseCaptured;
-        int anisotropyLevel;
+		int anisotropyLevel;
 		unsigned int lastSleepFrameTicks;
 		
 		std::vector<Threaded*> threads;
@@ -484,10 +484,10 @@ namespace Polycode {
 		
 		int xRes;
 		int yRes;
-        bool vSync;
-        
-        bool coreResized;
-        
+		bool vSync;
+		
+		bool coreResized;
+		
 		int monitorIndex;
 		
 		int frames;
@@ -496,38 +496,38 @@ namespace Polycode {
 		Renderer *renderer;
 		CoreServices *services;
 	};
-    
-    class _PolyExport DummyCore : public Core {
-    public:
-        
-        DummyCore();
-        ~DummyCore();
-        
-        void Render();
-        bool systemUpdate();
-        void setCursor(int cursorType);
-        void createThread(Threaded *target);
-        CoreMutex *createMutex();
-        void copyStringToClipboard(const String& str);
-        String getClipboardString();
-        void createFolder(const String& folderPath);
-        void copyDiskItem(const String& itemPath, const String& destItemPath);
-        void moveDiskItem(const String& itemPath, const String& destItemPath);
-        void removeDiskItem(const String& itemPath);
-        String openFolderPicker();
-        std::vector<String> openFilePicker(std::vector<CoreFileExtension> extensions, bool allowMultiple);
-        String saveFilePicker(std::vector<CoreFileExtension> extensions);
-        void handleVideoModeChange(VideoModeChangeInfo *modeInfo);
-        void flushRenderContext();
-        void openURL(String url);
-        unsigned int getTicks();
-        String executeExternalCommand(String command, String args, String inDirectory);
-        bool systemParseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector);
-        
-        
-        
-    };
-    
-    
+	
+	class _PolyExport DummyCore : public Core {
+	public:
+		
+		DummyCore();
+		~DummyCore();
+		
+		void Render();
+		bool systemUpdate();
+		void setCursor(int cursorType);
+		void createThread(Threaded *target);
+		CoreMutex *createMutex();
+		void copyStringToClipboard(const String& str);
+		String getClipboardString();
+		void createFolder(const String& folderPath);
+		void copyDiskItem(const String& itemPath, const String& destItemPath);
+		void moveDiskItem(const String& itemPath, const String& destItemPath);
+		void removeDiskItem(const String& itemPath);
+		String openFolderPicker();
+		std::vector<String> openFilePicker(std::vector<CoreFileExtension> extensions, bool allowMultiple);
+		String saveFilePicker(std::vector<CoreFileExtension> extensions);
+		void handleVideoModeChange(VideoModeChangeInfo *modeInfo);
+		void flushRenderContext();
+		void openURL(String url);
+		unsigned int getTicks();
+		String executeExternalCommand(String command, String args, String inDirectory);
+		bool systemParseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector);
+		
+		
+		
+	};
+	
+	
 	
 }

@@ -38,22 +38,22 @@ UIMenuItem::UIMenuItem(String label, String _id, void *data, Number comboWidth, 
 	Config *conf = CoreServices::getInstance()->getConfig();	
 	
 	String fontName = conf->getStringValue("Polycode", "uiMenuFont");
-	int fontSize = conf->getNumericValue("Polycode", "uiMenuFontSize");	
+	int fontSize = conf->getNumericValue("Polycode", "uiMenuFontSize"); 
 
 	Number paddingX = conf->getNumericValue("Polycode", "uiMenuTextOffsetX");	
 	Number paddingY = conf->getNumericValue("Polycode", "uiMenuTextOffsetY");	
 
 	itemLabel = new SceneLabel(label, fontSize, fontName);
-    itemLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+	itemLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	itemLabel->setPosition(paddingX, floor(((comboHeight/2.0) - itemLabel->getHeight()/2.0) + paddingY));
 	addChild(itemLabel);
-    itemLabel->color.setColor(0.0, 0.0, 0.0, 1.0);
+	itemLabel->color.setColor(0.0, 0.0, 0.0, 1.0);
 	this->_id = _id;
 	this->data = data;
 }
 
 String UIMenuItem::getMenuItemID() {
-    return _id;
+	return _id;
 }
 
 UIMenuItem::UIMenuItem() : UIElement(), data(NULL), itemLabel(NULL) {
@@ -70,7 +70,7 @@ UIMenuItem::~UIMenuItem() {
 }
 
 UIMenuDivider::UIMenuDivider(Number comboWidth, Number comboHeight) : UIMenuItem() {
-	Config *conf    = CoreServices::getInstance()->getConfig();
+	Config *conf	= CoreServices::getInstance()->getConfig();
 	Number paddingX = conf->getNumericValue("Polycode", "uiMenuSelectorPadding");
 
 	line = new SceneLine(Vector3(paddingX, comboHeight/2.0, 0.0), Vector3(comboWidth-paddingX, comboHeight/2.0, 0.0));
@@ -100,7 +100,7 @@ UIMenu::UIMenu(Number menuWidth) : UIElement() {
 	paddingX = conf->getNumericValue("Polycode", "uiMenuPaddingX");
 	paddingY = conf->getNumericValue("Polycode", "uiMenuPaddingY");
 				
-	String dropdownBgImage = conf->getStringValue("Polycode", "uiMenuBgImage");	
+	String dropdownBgImage = conf->getStringValue("Polycode", "uiMenuBgImage"); 
 	
 	Number st = conf->getNumericValue("Polycode", "uiMenuBgT");
 	Number sr = conf->getNumericValue("Polycode", "uiMenuBgR");
@@ -111,7 +111,7 @@ UIMenu::UIMenu(Number menuWidth) : UIElement() {
 	dropDownBox->setPosition(0,0);	
 	addChild(dropDownBox);
 	
-	String selectorBgImage = conf->getStringValue("Polycode", "uiMenuSelectorBgImage");	
+	String selectorBgImage = conf->getStringValue("Polycode", "uiMenuSelectorBgImage"); 
 	
 	st = conf->getNumericValue("Polycode", "uiMenuSelectorBgT");
 	sr = conf->getNumericValue("Polycode", "uiMenuSelectorBgR");
@@ -235,7 +235,7 @@ UIMenu::~UIMenu() {
 	CoreServices::getInstance()->getCore()->getInput()->removeAllHandlersForListener(this);
 
 	dropDownBox->ownsChildren = true;
-	if(!ownsChildren) {	
+	if(!ownsChildren) { 
 		delete dropDownBox;
 	}
 }
@@ -247,16 +247,16 @@ UIMenuItem *UIMenu::addOption(String label, String _id, void *data) {
 	newItem->setPosition(0,paddingY+nextItemHeight);
 	nextItemHeight += menuItemHeight;
 	dropDownBox->resizeBox(menuWidth, nextItemHeight + (paddingY * 2.0));
-    
-    Number difference = CoreServices::getInstance()->getCore()->getYRes() - (getPosition().y + dropDownBox->getHeight());
-    if(difference < 0) {
-        setPositionY(getPosition().y + difference);
-    }
-    difference = CoreServices::getInstance()->getCore()->getXRes() - (getPosition().x + dropDownBox->getWidth());
-    if(difference < 0) {
-        setPositionX(getPosition().x + difference);
-    }
-    
+	
+	Number difference = CoreServices::getInstance()->getCore()->getYRes() - (getPosition().y + dropDownBox->getHeight());
+	if(difference < 0) {
+		setPositionY(getPosition().y + difference);
+	}
+	difference = CoreServices::getInstance()->getCore()->getXRes() - (getPosition().x + dropDownBox->getWidth());
+	if(difference < 0) {
+		setPositionX(getPosition().x + difference);
+	}
+	
 	return newItem;
 }
 

@@ -25,7 +25,7 @@ THE SOFTWARE.
 
 PolycodeRemoteDebuggerClient::PolycodeRemoteDebuggerClient() : EventDispatcher() {
 	client = new Client(0, 1);
-	client->Connect("127.0.0.1", 4630);	
+	client->Connect("127.0.0.1", 4630); 
 	client->addEventListener(this, ClientEvent::EVENT_SERVER_DISCONNECTED);
 }
 
@@ -101,12 +101,12 @@ extern "C" {
 		defaultPath.append(module);
 		
 		const char* fullPath = module.c_str();		
-        Logger::log("Loading custom class: %s\n", module.c_str());
+		Logger::log("Loading custom class: %s\n", module.c_str());
 
 		OSFILE *inFile = OSBasics::open(module, "r");	
 		
 		if(!inFile) {
-			inFile =  OSBasics::open(defaultPath, "r");	
+			inFile =  OSBasics::open(defaultPath, "r"); 
 		}
 		
 		if(inFile) {
@@ -117,7 +117,7 @@ extern "C" {
 			memset(buffer, 0, progsize+1);
 			OSBasics::read(buffer, progsize, 1, inFile);
 	
-			PolycodePlayer *player = (PolycodePlayer*)CoreServices::getInstance()->getCore()->getUserPointer();	
+			PolycodePlayer *player = (PolycodePlayer*)CoreServices::getInstance()->getCore()->getUserPointer(); 
 			player->report(pState, luaL_loadbuffer(pState, (const char*)buffer, progsize, fullPath));		
 			free(buffer);
 			OSBasics::close(inFile);	
@@ -282,7 +282,7 @@ extern "C" {
 			} else {
 				event->errorString = std::string(msg);
 				event->lineNumber = 0;
-				event->fileName = player->fullPath; 								
+				event->fileName = player->fullPath;									
 				trace.fileName = event->fileName;
 				trace.lineNumber = 0;
 			}
@@ -328,7 +328,7 @@ extern "C" {
 		lua_pushcfunction(L, MyLoader);
 		lua_rawset(L, -3);
 		
-		// Table is still on the stack.  Get rid of it now.
+		// Table is still on the stack.	 Get rid of it now.
 		lua_pop(L, 1);		
 		
 		lua_register(L, "debugPrint", debugPrint);
@@ -367,8 +367,8 @@ extern "C" {
 		luaopen_Physics2D(L);
 		luaopen_Physics3D(L);
 		luaopen_UI(L);
-        
-        printf("CORE SERVICES: %d\n", CoreServices::getInstance());
+		
+		printf("CORE SERVICES: %d\n", CoreServices::getInstance());
 
 		for(int i=0; i < loadedModules.size(); i++) {
 			String moduleName = loadedModules[i];
@@ -393,7 +393,7 @@ extern "C" {
 
 			printf("LOADING MODULE %s\n", moduleDestPath.c_str());
 			lua_getfield(L, LUA_GLOBALSINDEX, "package");
-			lua_getfield(L, -1, "loadlib");	
+			lua_getfield(L, -1, "loadlib"); 
 			lua_pushstring(L, moduleDestPath.c_str());
 			lua_pushstring(L, moduleLoadCall.c_str());			
 			lua_call(L, 2, 2);
@@ -450,7 +450,7 @@ PolycodePlayer::PolycodePlayer(String fileName, bool knownArchive, bool useDebug
 	xRes = 640;
 	yRes = 480;
 	aaLevel = 6;
-	fullScreen = false;	
+	fullScreen = false; 
 	
 }
 
@@ -610,7 +610,7 @@ void PolycodePlayer::loadFile(const char *fileName) {
 	
 	PolycodeDebugEvent *event = new PolycodeDebugEvent();			
 	event->xRes = xRes;
-	event->yRes = yRes;	
+	event->yRes = yRes; 
 	
 	}
 	createCore();
@@ -711,7 +711,7 @@ PolycodePlayer::~PolycodePlayer() {
 	Logger::log("deleting core...\n");
 	delete core;
 	PolycodeDebugEvent *event = new PolycodeDebugEvent();			
-	dispatchEvent(event, PolycodeDebugEvent::EVENT_REMOVE);	
+	dispatchEvent(event, PolycodeDebugEvent::EVENT_REMOVE); 
 //	lua_close(L);
 }
 
@@ -803,7 +803,7 @@ void PolycodePlayer::handleEvent(Event *event) {
 					lua_getfield(L, LUA_GLOBALSINDEX, "onMouseDown");
 					lua_pushinteger(L, inputEvent->mouseButton);
 					lua_pushnumber(L, inputEvent->mousePosition.x);
-					lua_pushnumber(L, inputEvent->mousePosition.y);	
+					lua_pushnumber(L, inputEvent->mousePosition.y); 
 					lua_pcall(L, 3,0,errH);					
 					lua_settop(L, 0);					
 				}
@@ -830,7 +830,7 @@ void PolycodePlayer::handleEvent(Event *event) {
 					errH = lua_gettop(L);									
 					lua_getfield(L, LUA_GLOBALSINDEX, "onMouseMove");
 					lua_pushnumber(L, inputEvent->mousePosition.x);
-					lua_pushnumber(L, inputEvent->mousePosition.y);	
+					lua_pushnumber(L, inputEvent->mousePosition.y); 
 					lua_pcall(L, 2,0,errH);					
 					lua_settop(L, 0);					
 				}
@@ -844,7 +844,7 @@ void PolycodePlayer::handleEvent(Event *event) {
 					lua_getfield(L, LUA_GLOBALSINDEX, "onJoystickButtonDown");
 					lua_pushnumber(L, inputEvent->joystickIndex);
 					lua_pushnumber(L, inputEvent->joystickButton);
-					lua_pcall(L, 2,0,errH);	
+					lua_pcall(L, 2,0,errH); 
 					lua_settop(L, 0);					
 				}
 			}
@@ -857,7 +857,7 @@ void PolycodePlayer::handleEvent(Event *event) {
 					lua_getfield(L, LUA_GLOBALSINDEX, "onJoystickButtonUp");
 					lua_pushnumber(L, inputEvent->joystickIndex);
 					lua_pushnumber(L, inputEvent->joystickButton);
-					lua_pcall(L, 2,0,errH);	
+					lua_pcall(L, 2,0,errH); 
 					lua_settop(L, 0);
 				}
 			}
@@ -871,7 +871,7 @@ void PolycodePlayer::handleEvent(Event *event) {
 					lua_pushnumber(L, inputEvent->joystickIndex);
 					lua_pushnumber(L, inputEvent->joystickAxis);
 					lua_pushnumber(L, inputEvent->joystickAxisValue);
-					lua_pcall(L, 3,0,errH);	
+					lua_pcall(L, 3,0,errH); 
 					lua_settop(L, 0);
 				}
 			}
@@ -894,18 +894,18 @@ bool PolycodePlayer::Update() {
 		}	
 		if(!crashed) {
 			lua_getfield(L, LUA_GLOBALSINDEX, "__process_safe_delete");
-			lua_pcall(L, 0,0,errH);	
+			lua_pcall(L, 0,0,errH); 
 		
 			lua_getfield(L, LUA_GLOBALSINDEX, "__update");
 			lua_pushnumber(L, core->getElapsed());
 			lua_pcall(L, 1,0,errH);
 		}
-        
-        while(core->fixedUpdate()) {
+		
+		while(core->fixedUpdate()) {
 			lua_getfield(L, LUA_GLOBALSINDEX, "fixedUpdate");
 			lua_pcall(L, 0,0,errH);
-        }
-        
+		}
+		
 		lua_settop(L, 0);
 	}
 	core->Render();

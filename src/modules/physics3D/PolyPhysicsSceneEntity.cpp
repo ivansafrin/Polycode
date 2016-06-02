@@ -44,13 +44,13 @@ void PhysicsVehicle::warpVehicle(Vector3 position) {
 
 }
 
-void PhysicsVehicle::addWheel(Entity *entity, Vector3 connection, Vector3 direction, Vector3 axle, Number suspentionRestLength, Number wheelRadius, bool isFrontWheel,Number  suspensionStiffness, Number  suspensionDamping, Number suspensionCompression, Number  wheelFriction, Number rollInfluence) {
-    entity->ignoreParentMatrix = true;
-    entity->setScale(entity->getCompoundScale());
-    
-    Vector3 vehicleScale = getEntity()->getScale();
-    btVector3 conn = btVector3(connection.x * vehicleScale.x, connection.y  * vehicleScale.y, connection.z * vehicleScale.z);
-    
+void PhysicsVehicle::addWheel(Entity *entity, Vector3 connection, Vector3 direction, Vector3 axle, Number suspentionRestLength, Number wheelRadius, bool isFrontWheel,Number  suspensionStiffness, Number  suspensionDamping, Number suspensionCompression, Number	wheelFriction, Number rollInfluence) {
+	entity->ignoreParentMatrix = true;
+	entity->setScale(entity->getCompoundScale());
+	
+	Vector3 vehicleScale = getEntity()->getScale();
+	btVector3 conn = btVector3(connection.x * vehicleScale.x, connection.y	* vehicleScale.y, connection.z * vehicleScale.z);
+	
 	vehicle->addWheel(conn,
 					btVector3(direction.x, direction.y, direction.z),
 					btVector3(axle.x, axle.y, axle.z),	
@@ -99,11 +99,11 @@ void PhysicsVehicle::Update() {
 	
 	for(int i=0; i < wheels.size(); i++) {	
 		PhysicsVehicleWheelInfo wheel_info = wheels[i];
-		vehicle->updateWheelTransform(i,true);        
-        btVector3 t = vehicle->getWheelInfo(i).m_worldTransform.getOrigin();
-        btQuaternion q = vehicle->getWheelInfo(i).m_worldTransform.getRotation();
-        wheel_info.wheelEntity->setRotationQuat(q.getW(), q.getX(), q.getY(), q.getZ());
-        wheel_info.wheelEntity->setPosition(t.getX(), t.getY(), t.getZ());
+		vehicle->updateWheelTransform(i,true);		  
+		btVector3 t = vehicle->getWheelInfo(i).m_worldTransform.getOrigin();
+		btQuaternion q = vehicle->getWheelInfo(i).m_worldTransform.getRotation();
+		wheel_info.wheelEntity->setRotationQuat(q.getW(), q.getX(), q.getY(), q.getZ());
+		wheel_info.wheelEntity->setPosition(t.getX(), t.getY(), t.getZ());
 	}
 	
 	PhysicsEntity::Update();
@@ -117,7 +117,7 @@ PhysicsVehicle::~PhysicsVehicle() {
 	}
 }
 
-PhysicsCharacter::PhysicsCharacter(Entity *entity, Number mass, Number friction, Number stepSize) : PhysicsEntity(entity, PhysicsEntity::CHARACTER_CONTROLLER, mass, friction, 1) {	
+PhysicsCharacter::PhysicsCharacter(Entity *entity, Number mass, Number friction, Number stepSize) : PhysicsEntity(entity, PhysicsEntity::CHARACTER_CONTROLLER, mass, friction, 1) { 
 	ghostObject = new btPairCachingGhostObject();
 	
 	Vector3 pos = entity->getPosition();	
@@ -131,7 +131,7 @@ PhysicsCharacter::PhysicsCharacter(Entity *entity, Number mass, Number friction,
 	ghostObject->setWorldTransform(transform);	
 	ghostObject->setCollisionShape (shape);
 	
-	ghostObject->setFriction(friction);	
+	ghostObject->setFriction(friction); 
 	
 	ghostObject->setCollisionFlags (btCollisionObject::CF_CHARACTER_OBJECT);	
 	character = new btKinematicCharacterController (ghostObject,convexShape,btScalar(stepSize));			
@@ -178,20 +178,20 @@ void PhysicsCharacter::Update() {
 
 PhysicsCharacter::~PhysicsCharacter() {
 	delete character;
-	delete ghostObject;	
+	delete ghostObject; 
 }
 
 PhysicsEntity::PhysicsEntity(Entity *entity, int type, Number mass, Number friction, Number restitution, bool compoundChildren) : CollisionEntity(entity, type, compoundChildren) {
-    enabled = true;
+	enabled = true;
 	this->mass = mass;
 	btVector3 localInertia(0,0,0);
 	btTransform transform;
 	transform.setIdentity();
-    
+	
 	Matrix4 ent_mat = entity->getConcatenatedMatrix();
-    Vector3 pos = ent_mat * Vector3(0.0, 0.0, 0.0);
+	Vector3 pos = ent_mat * Vector3(0.0, 0.0, 0.0);
 	transform.setOrigin(btVector3(pos.x,pos.y,pos.z));
-    
+	
 	Quaternion q = entity->getConcatenatedQuat();
 	transform.setRotation(btQuaternion(q.x,q.y,q.z,q.w));
 	
@@ -211,9 +211,9 @@ PhysicsEntity::PhysicsEntity(Entity *entity, int type, Number mass, Number frict
 		rigidBody->setRestitution(restitution);
 		rigidBody->setUserPointer((void*)this);
 	}
-    
-    delete collisionObject;
-    collisionObject = rigidBody;
+	
+	delete collisionObject;
+	collisionObject = rigidBody;
 }
 
 void PhysicsEntity::setFriction(Number friction) {
@@ -280,16 +280,16 @@ void PhysicsEntity::warpTo(Vector3 position, bool resetRotation) {
 		for(int i=0; i < 16; i++) {
 			mat[i] = ent_mat.ml[i];
 		}	
-		transform.setFromOpenGLMatrix(mat);	
+		transform.setFromOpenGLMatrix(mat); 
 	} else {
-        rigidBody->setAngularVelocity(btVector3());
-    }
+		rigidBody->setAngularVelocity(btVector3());
+	}
 	
 	transform.setOrigin(btVector3(position.x,position.y,position.z));
-    
+	
 	rigidBody->setCenterOfMassTransform(transform);
-    
-    
+	
+	
 }
 
 PhysicsEntity::~PhysicsEntity() {

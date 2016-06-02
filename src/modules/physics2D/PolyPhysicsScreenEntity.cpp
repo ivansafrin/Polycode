@@ -31,7 +31,7 @@ using namespace Polycode;
 
 PhysicsScene2DEntity::PhysicsScene2DEntity(Entity *entity, b2World *world, Number worldScale, int entType, bool isStatic, Number friction, Number density, Number restitution, bool isSensor, bool fixedRotation, int groupIndex) {
 	
-    this->fixedRotation =  fixedRotation;
+	this->fixedRotation =  fixedRotation;
 	this->entity = entity;
 
 	Vector3 entityScale = entity->getCompoundScale();
@@ -47,10 +47,10 @@ PhysicsScene2DEntity::PhysicsScene2DEntity(Entity *entity, b2World *world, Numbe
 	// Create body definition---------------------------------------
 	b2BodyDef bodyDef;
 	bodyDef.position.Set(compoundMatrix.getPosition().x/worldScale, compoundMatrix.getPosition().y/worldScale);
-    
-    Number ax,ay,az;
-    compoundMatrix.getEulerAngles(&ax, &ay, &az);
-    
+	
+	Number ax,ay,az;
+	compoundMatrix.getEulerAngles(&ax, &ay, &az);
+	
 	bodyDef.angle = az*(PI/180.0f);
 	bodyDef.bullet = isSensor;	
 	bodyDef.fixedRotation = fixedRotation;	
@@ -98,7 +98,7 @@ PhysicsScene2DEntity::PhysicsScene2DEntity(Entity *entity, b2World *world, Numbe
 			fDef.shape = &Shape;
 			fixture = body->CreateFixture(&fDef);
 			break;
-        }
+		}
 		case ENTITY_CAPSULE: {
 		
 			Number rectSize = (entity->getHeight()/(worldScale*2.0f) * entityScale.y) - (entity->getWidth()/(worldScale*2.0f * entityScale.y));
@@ -168,12 +168,12 @@ PhysicsScene2DEntity::PhysicsScene2DEntity(Entity *entity, b2World *world, Numbe
 }
 
 bool PhysicsScene2DEntity::getFixedRotation() const {
-    return fixedRotation;
+	return fixedRotation;
 }
 
 void PhysicsScene2DEntity::setFixedRotation(bool val) {
-    fixedRotation = val;
-    
+	fixedRotation = val;
+	
 }
 
 void PhysicsScene2DEntity::applyTorque(Number torque) {
@@ -210,69 +210,69 @@ void PhysicsScene2DEntity::setVelocityY(Number fy) {
 	body->SetAwake(true);
 	b2Vec2 f = body->GetLinearVelocity();
 	f.y = fy;	
-	body->SetLinearVelocity(f);	
+	body->SetLinearVelocity(f); 
 }
 
 
 void PhysicsScene2DEntity::setCollisionCategory(int categoryBits) {
-        b2Filter filter=fixture->GetFilterData();
-        filter.categoryBits = categoryBits;
-        fixture->SetFilterData(filter);
+		b2Filter filter=fixture->GetFilterData();
+		filter.categoryBits = categoryBits;
+		fixture->SetFilterData(filter);
 }
 
 void PhysicsScene2DEntity::setCollisionMask(int maskBits) {
-        b2Filter filter=fixture->GetFilterData();
-        filter.maskBits = maskBits;
-        fixture->SetFilterData(filter);
+		b2Filter filter=fixture->GetFilterData();
+		filter.maskBits = maskBits;
+		fixture->SetFilterData(filter);
 }
 
 void PhysicsScene2DEntity::setCollisionGroupIndex(int group) {
-    b2Filter filter=fixture->GetFilterData();
-    filter.groupIndex = group;
-    fixture->SetFilterData(filter);    
+	b2Filter filter=fixture->GetFilterData();
+	filter.groupIndex = group;
+	fixture->SetFilterData(filter);	   
 }
 
 void PhysicsScene2DEntity::setLinearDamping(Number damping) {
-    body->SetLinearDamping(damping);
+	body->SetLinearDamping(damping);
 }
 
 void PhysicsScene2DEntity::setAngularDamping(Number damping) {
-    body->SetAngularDamping(damping);
+	body->SetAngularDamping(damping);
 }
 
 void PhysicsScene2DEntity::setFriction(Number friction) {
-    if(fixture) {
-        fixture->SetFriction(friction);
-    }
+	if(fixture) {
+		fixture->SetFriction(friction);
+	}
 }
 
 void PhysicsScene2DEntity::setDensity(Number density) {
-    if(fixture) {
-        fixture->SetDensity(density);
-    }
+	if(fixture) {
+		fixture->SetDensity(density);
+	}
 }
 
 Number PhysicsScene2DEntity::getLinearDamping() {
-    return body->GetLinearDamping();
+	return body->GetLinearDamping();
 }
 
 Number PhysicsScene2DEntity::getAngularDamping() {
-    return body->GetAngularDamping();
+	return body->GetAngularDamping();
 }
 
 Number PhysicsScene2DEntity::getFriction() {
-    return fixture->GetFriction();
+	return fixture->GetFriction();
 }
 
 Number PhysicsScene2DEntity::getDensity() {
-    return fixture->GetDensity();
+	return fixture->GetDensity();
 }
 
 void PhysicsScene2DEntity::applyImpulse(Number fx, Number fy) {
 	body->SetAwake(true);
-	b2Vec2 f =  b2Vec2(fx,fy);
-	b2Vec2 p = body->GetWorldPoint(b2Vec2(0.0f, 0.0f));	
-	body->ApplyLinearImpulse(f, p);	
+	b2Vec2 f =	b2Vec2(fx,fy);
+	b2Vec2 p = body->GetWorldPoint(b2Vec2(0.0f, 0.0f)); 
+	body->ApplyLinearImpulse(f, p); 
 }
 			
 void PhysicsScene2DEntity::setTransform(Vector2 pos, Number angle) {
@@ -303,13 +303,13 @@ void PhysicsScene2DEntity::Update() {
 	} else {
 		b2Vec2 position = body->GetPosition();
 		Number angle = body->GetAngle();	
-		entity->setRoll(angle*(180.0f/PI));	
+		entity->setRoll(angle*(180.0f/PI)); 
 		entity->setPosition(position.x*worldScale, position.y*worldScale, 0.0);
 	}	
 }
 
 b2Fixture* PhysicsScene2DEntity::getFixture(unsigned short index) {
-	if(fixture)	{
+	if(fixture) {
 		short i = 0;
 		for (b2Fixture* f = body->GetFixtureList(); f; f = f->GetNext()) {
 			if (i == index) {
@@ -319,7 +319,7 @@ b2Fixture* PhysicsScene2DEntity::getFixture(unsigned short index) {
 			else {i++;}
 		}
 		
-		Logger::log("That fixture index does not exist\n");	
+		Logger::log("That fixture index does not exist\n"); 
 		return fixture = NULL;
 	}
 

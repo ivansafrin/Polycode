@@ -123,7 +123,7 @@ class CurveEditor : public UIWindow {
 		UIImageButton *addButton;
 		UIImageButton *removeButton;
 				
-		UIImage	*selectorImage;
+		UIImage *selectorImage;
 		
 		static const int MODE_SELECT = 0;		
 		static const int MODE_ADD = 1;
@@ -146,8 +146,8 @@ class EditorHolder : public UIElement {
 		ObjectEntry *getEditorHolderConfig();
 		void applyConfig(ObjectEntry *entry);
 		
-        void activateEditor(bool val);
-    
+		void activateEditor(bool val);
+	
 		void handleEvent(Event *event);
 		void Resize(Number width, Number height);		
 		
@@ -311,11 +311,11 @@ public:
 	
 	void showFileBrowser(String baseDir, bool foldersOnly, std::vector<String> extensions, bool allowMultiple);
 
-	void handleEvent(Event *event);	
+	void handleEvent(Event *event); 
 	void showAssetBrowser(std::vector<String> extensions);
 
 	void showAssetBrowserForPools(std::vector<ResourcePool*> pools, int resourceType);
-    
+	
 	PolycodeProjectBrowser *getCurrentProjectBrowser();
 	PolycodeProjectFrame *getActiveProjectFrame();	
 	PolycodeProjectFrame *getProjectFrame(PolycodeProject *project);
@@ -337,16 +337,16 @@ public:
 	
 	void showCurveEditor();
 	
-	NewProjectWindow *newProjectWindow;	
+	NewProjectWindow *newProjectWindow; 
 	ExampleBrowserWindow *exampleBrowserWindow;
 	NewFileWindow *newFileWindow;
 	ExportProjectWindow *exportProjectWindow;
-	SettingsWindow *settingsWindow;	
+	SettingsWindow *settingsWindow; 
 	AssetBrowser *assetBrowser;
 	
 	TextInputPopup *textInputPopup;
 	YesNoPopup *yesNoPopup;
-    MessagePopup *messagePopup;
+	MessagePopup *messagePopup;
 	YesNoCancelPopup *yesNoCancelPopup;
 	
 	Entity *welcomeEntity;	
@@ -380,7 +380,7 @@ private:
 				
 	UIVSizer *consoleSizer;
 	
-	bool willHideModal;	
+	bool willHideModal; 
 	bool showingConsole;
 
 	UIRect *fileDialogBlocker;
@@ -394,7 +394,7 @@ private:
 	UILabel *dragLabel;
 	bool isDragging;
 	
-	UIComboBox *currentProjectSelector;	
+	UIComboBox *currentProjectSelector; 
 	UIImage *welcomeImage;	
 	
 	UIRect *modalBlocker;

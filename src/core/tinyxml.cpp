@@ -44,7 +44,7 @@ bool TiXmlBase::condenseWhiteSpace = true;
 // Microsoft compiler security
 Polycode::CoreFile* TiXmlFOpen( const char* filename, const char* mode )
 {
-    return Polycode::Services()->getCore()->openFile( filename, mode );
+	return Polycode::Services()->getCore()->openFile( filename, mode );
 }
 
 void TiXmlBase::EncodeString( const TIXML_STRING& str, TIXML_STRING* outString )
@@ -55,8 +55,8 @@ void TiXmlBase::EncodeString( const TIXML_STRING& str, TIXML_STRING* outString )
 	{
 		unsigned char c = (unsigned char) str[i];
 
-		if (    c == '&' 
-		     && i < ( (int)str.length() - 2 )
+		if (	c == '&' 
+			 && i < ( (int)str.length() - 2 )
 			 && str[i+1] == '#'
 			 && str[i+2] == 'x' )
 		{
@@ -124,7 +124,7 @@ void TiXmlBase::EncodeString( const TIXML_STRING& str, TIXML_STRING* outString )
 		{
 			//char realc = (char) c;
 			//outString->append( &realc, 1 );
-			*outString += (char) c;	// somewhat more efficient function call.
+			*outString += (char) c; // somewhat more efficient function call.
 			++i;
 		}
 	}
@@ -414,7 +414,7 @@ const TiXmlNode* TiXmlNode::PreviousSibling( const char * _value ) const
 
 void TiXmlElement::RemoveAttribute( const char * name )
 {
-    #ifdef TIXML_USE_STL
+	#ifdef TIXML_USE_STL
 	TIXML_STRING str( name );
 	TiXmlAttribute* node = attributeSet.Find( str );
 	#else
@@ -715,7 +715,7 @@ void TiXmlElement::SetDoubleAttribute( const char * name, double val )
 
 void TiXmlElement::SetAttribute( const char * cname, const char * cvalue )
 {
-    #ifdef TIXML_USE_STL
+	#ifdef TIXML_USE_STL
 	TIXML_STRING _name( cname );
 	TIXML_STRING _value( cvalue );
 	#else
@@ -768,15 +768,15 @@ void TiXmlElement::SetAttribute( const std::string& name, const std::string& _va
 
 void cf_fprintf(Polycode::CoreFile* cfile, const char *format, ...) {
 
-    char str[2048];
-    memset(str, 0, 2048);
-    
-    va_list args;
-    va_start(args, format);
-    vsnprintf(str, 2048, format, args);
-    va_end(args);
-    
-    cfile->write(str, strlen(str), 1);
+	char str[2048];
+	memset(str, 0, 2048);
+	
+	va_list args;
+	va_start(args, format);
+	vsnprintf(str, 2048, format, args);
+	va_end(args);
+	
+	cfile->write(str, strlen(str), 1);
 
 }
 
@@ -785,7 +785,7 @@ void TiXmlElement::Print(Polycode::CoreFile* cfile, int depth ) const
 	int i;
 	assert( cfile );
 	for ( i=0; i<depth; i++ ) {
-		cf_fprintf( cfile, "    " );
+		cf_fprintf( cfile, "	" );
 	}
 
 	cf_fprintf( cfile, "<%s", value.c_str() );
@@ -826,7 +826,7 @@ void TiXmlElement::Print(Polycode::CoreFile* cfile, int depth ) const
 		}
 		cf_fprintf( cfile, NEWLINE );
 		for( i=0; i<depth; ++i ) {
-			cf_fprintf( cfile, "    " );
+			cf_fprintf( cfile, "	" );
 		}
 		cf_fprintf( cfile, "</%s>", value.c_str() );
 	}
@@ -914,7 +914,7 @@ TiXmlDocument::TiXmlDocument( const std::string& documentName ) : TiXmlNode( TiX
 {
 	tabsize = 4;
 	useMicrosoftBOM = false;
-    value = documentName;
+	value = documentName;
 	ClearError();
 }
 #endif
@@ -970,12 +970,12 @@ bool TiXmlDocument::LoadFile( const char* _filename, TiXmlEncoding encoding )
 	value = filename;
 
 	// reading in binary mode so that tinyxml can normalize the EOL
-    Polycode::CoreFile* file = TiXmlFOpen( value.c_str (), "rb" );
+	Polycode::CoreFile* file = TiXmlFOpen( value.c_str (), "rb" );
 
 	if ( file )
 	{
 		bool result = LoadFile( file, encoding );
-        Polycode::Services()->getCore()->closeFile(file);
+		Polycode::Services()->getCore()->closeFile(file);
 		return result;
 	}
 	else
@@ -1094,8 +1094,8 @@ bool TiXmlDocument::LoadFile(Polycode::CoreFile* file, TiXmlEncoding encoding )
 	Parse( data.c_str(), 0, encoding );
 
 	if (  Error() )
-        return false;
-    else
+		return false;
+	else
 		return true;
 }
 
@@ -1103,11 +1103,11 @@ bool TiXmlDocument::LoadFile(Polycode::CoreFile* file, TiXmlEncoding encoding )
 bool TiXmlDocument::SaveFile( const char * filename ) const
 {
 	// The old c stuff lives on...
-    Polycode::CoreFile* fp = TiXmlFOpen( filename, "wb" );
+	Polycode::CoreFile* fp = TiXmlFOpen( filename, "wb" );
 	if ( fp )
 	{
-        SaveFile(fp);
-        Polycode::Services()->getCore()->closeFile(fp);
+		SaveFile(fp);
+		Polycode::Services()->getCore()->closeFile(fp);
 		return true;
 	}
 	return false;
@@ -1122,12 +1122,12 @@ bool TiXmlDocument::SaveFile( Polycode::CoreFile* fp ) const
 		const unsigned char TIXML_UTF_LEAD_1 = 0xbbU;
 		const unsigned char TIXML_UTF_LEAD_2 = 0xbfU;
 
-        unsigned char head[3] = {TIXML_UTF_LEAD_0, TIXML_UTF_LEAD_1, TIXML_UTF_LEAD_2};
-        fp->write(head, 3, 1);
+		unsigned char head[3] = {TIXML_UTF_LEAD_0, TIXML_UTF_LEAD_1, TIXML_UTF_LEAD_2};
+		fp->write(head, 3, 1);
 	}
-    
+	
 	Print( fp, 0 );
-    return true;
+	return true;
 }
 
 
@@ -1293,7 +1293,7 @@ int TiXmlAttribute::IntValue() const
 	return atoi (value.c_str ());
 }
 
-double  TiXmlAttribute::DoubleValue() const
+double	TiXmlAttribute::DoubleValue() const
 {
 	return atof (value.c_str ());
 }
@@ -1317,7 +1317,7 @@ void TiXmlComment::Print(Polycode::CoreFile* cfile, int depth ) const
 	assert( cfile );
 	for ( int i=0; i<depth; i++ )
 	{
-		cf_fprintf( cfile,  "    " );
+		cf_fprintf( cfile,	"	 " );
 	}
 	cf_fprintf( cfile, "<!--%s-->", value.c_str() );
 }
@@ -1355,7 +1355,7 @@ void TiXmlText::Print( Polycode::CoreFile* cfile, int depth ) const
 		int i;
 		cf_fprintf( cfile, NEWLINE );
 		for ( i=0; i<depth; i++ ) {
-			cf_fprintf( cfile, "    " );
+			cf_fprintf( cfile, "	" );
 		}
 		cf_fprintf( cfile, "<![CDATA[%s]]>" NEWLINE, value.c_str() );	// unformatted output
 	}
@@ -1406,7 +1406,7 @@ TiXmlDeclaration::TiXmlDeclaration( const char * _version,
 
 
 #ifdef TIXML_USE_STL
-TiXmlDeclaration::TiXmlDeclaration(	const std::string& _version,
+TiXmlDeclaration::TiXmlDeclaration( const std::string& _version,
 									const std::string& _encoding,
 									const std::string& _standalone )
 	: TiXmlNode( TiXmlNode::DECLARATION )
@@ -1485,7 +1485,7 @@ TiXmlNode* TiXmlDeclaration::Clone() const
 void TiXmlUnknown::Print(Polycode::CoreFile* cfile, int depth ) const
 {
 	for ( int i=0; i<depth; i++ )
-		cf_fprintf( cfile, "    " );
+		cf_fprintf( cfile, "	" );
 	cf_fprintf( cfile, "<%s>", value.c_str() );
 }
 
@@ -1530,7 +1530,7 @@ TiXmlAttributeSet::~TiXmlAttributeSet()
 
 void TiXmlAttributeSet::Add( TiXmlAttribute* addMe )
 {
-    #ifdef TIXML_USE_STL
+	#ifdef TIXML_USE_STL
 	assert( !Find( TIXML_STRING( addMe->Name() ) ) );	// Shouldn't be multiply adding to the set.
 	#else
 	assert( !Find( addMe->Name() ) );	// Shouldn't be multiply adding to the set.
@@ -1540,7 +1540,7 @@ void TiXmlAttributeSet::Add( TiXmlAttribute* addMe )
 	addMe->prev = sentinel.prev;
 
 	sentinel.prev->next = addMe;
-	sentinel.prev      = addMe;
+	sentinel.prev	   = addMe;
 }
 
 void TiXmlAttributeSet::Remove( TiXmlAttribute* removeMe )
@@ -1574,7 +1574,7 @@ const TiXmlAttribute* TiXmlAttributeSet::Find( const std::string& name ) const
 }
 
 /*
-TiXmlAttribute*	TiXmlAttributeSet::Find( const std::string& name )
+TiXmlAttribute* TiXmlAttributeSet::Find( const std::string& name )
 {
 	for( TiXmlAttribute* node = sentinel.next; node != &sentinel; node = node->next )
 	{
@@ -1598,7 +1598,7 @@ const TiXmlAttribute* TiXmlAttributeSet::Find( const char* name ) const
 }
 
 /*
-TiXmlAttribute*	TiXmlAttributeSet::Find( const char* name )
+TiXmlAttribute* TiXmlAttributeSet::Find( const char* name )
 {
 	for( TiXmlAttribute* node = sentinel.next; node != &sentinel; node = node->next )
 	{
@@ -1800,7 +1800,7 @@ bool TiXmlPrinter::VisitEnter( const TiXmlElement& element, const TiXmlAttribute
 	else 
 	{
 		buffer += ">";
-		if (    element.FirstChild()->ToText()
+		if (	element.FirstChild()->ToText()
 			  && element.LastChild() == element.FirstChild()
 			  && element.FirstChild()->ToText()->CDATA() == false )
 		{

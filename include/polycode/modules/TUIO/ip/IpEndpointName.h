@@ -32,27 +32,27 @@
 
 
 class IpEndpointName{
-    static unsigned long GetHostByName( const char *s );
+	static unsigned long GetHostByName( const char *s );
 public:
-    static const unsigned long ANY_ADDRESS = 0xFFFFFFFF;
-    static const int ANY_PORT = -1;
+	static const unsigned long ANY_ADDRESS = 0xFFFFFFFF;
+	static const int ANY_PORT = -1;
 
-    IpEndpointName()
+	IpEndpointName()
 		: address( ANY_ADDRESS ), port( ANY_PORT ) {}
-    IpEndpointName( int port_ ) 
+	IpEndpointName( int port_ ) 
 		: address( ANY_ADDRESS ), port( port_ ) {}
-    IpEndpointName( unsigned long ipAddress_, int port_ ) 
+	IpEndpointName( unsigned long ipAddress_, int port_ ) 
 		: address( ipAddress_ ), port( port_ ) {}
-    IpEndpointName( const char *addressName, int port_=ANY_PORT )
+	IpEndpointName( const char *addressName, int port_=ANY_PORT )
 		: address( GetHostByName( addressName ) )
 		, port( port_ ) {}
-    IpEndpointName( int addressA, int addressB, int addressC, int addressD, int port_=ANY_PORT )
+	IpEndpointName( int addressA, int addressB, int addressC, int addressD, int port_=ANY_PORT )
 		: address( ( (addressA << 24) | (addressB << 16) | (addressC << 8) | addressD ) )
 		, port( port_ ) {}
 
 	// address and port are maintained in host byte order here
-    unsigned long address;
-    int port;
+	unsigned long address;
+	int port;
 
 	enum { ADDRESS_STRING_LENGTH=17 };
 	void AddressAsString( char *s ) const;

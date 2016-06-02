@@ -47,46 +47,46 @@ using namespace Polycode;
 
 class _PolyExport PosixMutex : public CoreMutex {
 public:
-    void lock();
-    void unlock();
-    pthread_mutex_t pMutex;
+	void lock();
+	void unlock();
+	pthread_mutex_t pMutex;
 };
 
 class IOSEvent {
-    public:
-    int eventGroup;
-    int eventCode;
-    
-    int mouseX;
-    int mouseY;
-    
-    std::vector<TouchInfo> touches;
-    TouchInfo touch;
-    
-    PolyKEY keyCode;
-    wchar_t unicodeChar;
-    
-    char mouseButton;
-    
-    static const int EVENTBASE_PLATFORMEVENT = 0x300;
-    static const int INPUT_EVENT = EVENTBASE_PLATFORMEVENT+0;
-    static const int FOCUS_EVENT = EVENTBASE_PLATFORMEVENT+1;
+	public:
+	int eventGroup;
+	int eventCode;
+	
+	int mouseX;
+	int mouseY;
+	
+	std::vector<TouchInfo> touches;
+	TouchInfo touch;
+	
+	PolyKEY keyCode;
+	wchar_t unicodeChar;
+	
+	char mouseButton;
+	
+	static const int EVENTBASE_PLATFORMEVENT = 0x300;
+	static const int INPUT_EVENT = EVENTBASE_PLATFORMEVENT+0;
+	static const int FOCUS_EVENT = EVENTBASE_PLATFORMEVENT+1;
 };
 
 namespace Polycode {
-    
-    class IOSCoreAudioInterface : public Polycode::AudioInterface {
-    public:
-        IOSCoreAudioInterface();
-        ~IOSCoreAudioInterface();
-        
-        static void CoreAudioCallback(void *custom_data, AudioQueueRef queue, AudioQueueBufferRef buffer);
-    private:
-        AudioQueueBufferRef buffers[NUM_AQ_BUFFERS];
-        AudioStreamBasicDescription format;
-        AudioQueueRef queue;
-        
-    };
+	
+	class IOSCoreAudioInterface : public Polycode::AudioInterface {
+	public:
+		IOSCoreAudioInterface();
+		~IOSCoreAudioInterface();
+		
+		static void CoreAudioCallback(void *custom_data, AudioQueueRef queue, AudioQueueBufferRef buffer);
+	private:
+		AudioQueueBufferRef buffers[NUM_AQ_BUFFERS];
+		AudioStreamBasicDescription format;
+		AudioQueueRef queue;
+		
+	};
 
 	class _PolyExport IOSCore : public Core {
 	public:
@@ -110,41 +110,41 @@ namespace Polycode {
 		String saveFilePicker(std::vector<CoreFileExtension> extensions);
 		void handleVideoModeChange(VideoModeChangeInfo *modeInfo);
 		
-        void flushRenderContext();
-        void prepareRenderContext();
-        
+		void flushRenderContext();
+		void prepareRenderContext();
+		
 		void openURL(String url);
 		unsigned int getTicks();
 		String executeExternalCommand(String command, String args, String inDirectory);
 		bool systemParseFolder(const Polycode::String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector);
-        
-        String getResourcePathForFile(const String &fileName);
+		
+		String getResourcePathForFile(const String &fileName);
 
 		void checkEvents();
 		void setDeviceSize(Number x, Number y);
-        
-        void renderTest();
+		
+		void renderTest();
 
 		Number getBackingXRes();
 		Number getBackingYRes();
-        
-        void _setAcceleration(const Vector3 &acceleration);
-        void _setGyroRotation(const Vector3 &rotation);
-        
-        std::vector<IOSEvent> iosEvents;
-        
+		
+		void _setAcceleration(const Vector3 &acceleration);
+		void _setGyroRotation(const Vector3 &rotation);
+		
+		std::vector<IOSEvent> iosEvents;
+		
 	private:
-        
-        CADisplayLink *displayLink;
-        
-        GLuint colorRenderbuffer;
-        GLuint depthRenderbuffer;
-        GLuint defaultFBOName;
-        bool retinaSupport;
-        
-        EAGLContext *context;
-        uint64_t initTime;
-        PolycodeView *glView;
+		
+		CADisplayLink *displayLink;
+		
+		GLuint colorRenderbuffer;
+		GLuint depthRenderbuffer;
+		GLuint defaultFBOName;
+		bool retinaSupport;
+		
+		EAGLContext *context;
+		uint64_t initTime;
+		PolycodeView *glView;
 
 	};
 }

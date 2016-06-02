@@ -45,6 +45,6 @@ class PolycodeImageEditor : public PolycodeEditor {
 
 class PolycodeImageEditorFactory : public PolycodeEditorFactory {
 	public:
-        PolycodeImageEditorFactory() : PolycodeEditorFactory() { extensions.push_back("png"); extensions.push_back("hdr");  extensions.push_back("jpg");  extensions.push_back("tga");  extensions.push_back("psd");}
+		PolycodeImageEditorFactory() : PolycodeEditorFactory() { extensions.push_back("png"); extensions.push_back("hdr");	extensions.push_back("jpg");  extensions.push_back("tga");	extensions.push_back("psd");}
 		PolycodeEditor *createEditor() { return new PolycodeImageEditor(); }
 };

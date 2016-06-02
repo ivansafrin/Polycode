@@ -31,5 +31,5 @@ PolycodeWindowsPlayer::~PolycodeWindowsPlayer() {
 }
 
 void PolycodeWindowsPlayer::createCore() {
-	core =  new Win32Core(view, xRes, yRes,  fullScreen, true, aaLevel, 16, frameRate);	
+	core =	new Win32Core(view, xRes, yRes,	 fullScreen, true, aaLevel, 16, frameRate); 
 }

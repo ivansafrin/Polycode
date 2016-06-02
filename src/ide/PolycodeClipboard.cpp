@@ -43,11 +43,11 @@ void PolycodeClipboard::setData(void *data, String type, ClipboardProvider *prov
 }
 
 ClipboardProvider *PolycodeClipboard::getCurrentProvider() {
-    return currentProvider;
+	return currentProvider;
 }
 
 void PolycodeClipboard::setCurrentProvider(ClipboardProvider *provider) {
-    currentProvider = provider;
+	currentProvider = provider;
 }
 
 void *PolycodeClipboard::getData() {

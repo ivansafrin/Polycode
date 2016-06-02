@@ -32,7 +32,7 @@ void TuioTime::initSession() {
 }
 
 TuioTime TuioTime::getSessionTime() {
-	return  (getSystemTime() - getStartTime());
+	return	(getSystemTime() - getStartTime());
 }
 
 TuioTime TuioTime::getStartTime() {

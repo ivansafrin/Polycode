@@ -33,8 +33,8 @@
 
 class TimerListener{
 public:
-    virtual ~TimerListener() {}
-    virtual void TimerExpired() = 0;
+	virtual ~TimerListener() {}
+	virtual void TimerExpired() = 0;
 };
 
 #endif /* INCLUDED_TIMERLISTENER_H */
