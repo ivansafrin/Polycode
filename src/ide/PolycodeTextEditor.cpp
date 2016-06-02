@@ -630,7 +630,8 @@ void PolycodeTextEditor::hideFindBar() {
 void PolycodeTextEditor::highlightLine(unsigned int lineNumber) {
 	int lineSize = textInput->getLineText(lineNumber-1).length();
 	textInput->setSelection(lineNumber-1, lineNumber-1, 0, lineSize);
-	textInput->showLine(lineNumber, false);
+	if (lineNumber > 0)
+		textInput->showLine(lineNumber-1, false);
 }
 
 void PolycodeTextEditor::saveFile() {

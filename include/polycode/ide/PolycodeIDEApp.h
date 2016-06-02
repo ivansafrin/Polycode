@@ -67,7 +67,7 @@ public:
 	void saveConfigFile();
 	void loadConfigFile();
 	
-	void openFileInProject(PolycodeProject *project, String filePath);
+	bool openFileInProject(PolycodeProject *project, String filePath);
 	
 	void openFile(OSFileEntry file);
 	
