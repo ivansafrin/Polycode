@@ -1,5 +1,5 @@
 
-#include "PolycodeDownloader.h"
+#include <polycode/modules/downloader/PolycodeDownloader.h>
 
 size_t DownloaderCallback(char *ptr, size_t size, size_t nmemb, void *userdata) {
 

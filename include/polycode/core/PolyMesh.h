@@ -407,7 +407,7 @@ namespace Polycode {
 		
 		private:
 		
-			std::vector<std::shared_ptr<MeshGeometry>> submeshes;
+			std::vector<std::shared_ptr<MeshGeometry> > submeshes;
 		
 			void loadFromFileV2(Polycode::CoreFile *inFile);
 			void loadFromFileLegacyV1(Polycode::CoreFile *inFile);

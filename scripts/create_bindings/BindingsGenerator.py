@@ -8,7 +8,7 @@ from JSBindingsGenerator import *
 
 class BindingsGenerator(object):
 
-	def __init__(self, engines, configFile):
+	def __init__(self, configFile):
 		self.config = ConfigParser.RawConfigParser(allow_no_value=True)
 		self.config.read(configFile)
 		self.targetDir = self.config.get('global', 'TargetDirectory')
