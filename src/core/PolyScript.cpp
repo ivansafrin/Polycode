@@ -107,6 +107,7 @@ void JSScript::callUpdate(ScriptInstance *instance, Entity *entity, Number elaps
 
 }
 
+#ifndef NO_LUA
 LuaScript::LuaScript(lua_State *state, const String &path) : Script(path) {
 
     lua_getglobal(state, "__customError");
@@ -159,3 +160,4 @@ void LuaScript::callUpdate(ScriptInstance *instance, Entity *entity, Number elap
         lua_pcall(state, 2, 0, errH);
     }
 }
+#endif

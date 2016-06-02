@@ -116,9 +116,9 @@ void SceneLabel::updateFromLabel() {
 
     Texture *texture;
 	if(SceneLabel::createMipmapsForLabels) {
-		texture = materialManager->createTextureFromImage(label, materialManager->clampDefault, materialManager->mipmapsDefault);
+		texture = materialManager->createTextureFromImage(label, true, false);
 	} else {
-		texture = materialManager->createTextureFromImage(label, materialManager->clampDefault, false);		
+		texture = materialManager->createTextureFromImage(label, true, false);
 	}
 
 	setPrimitiveOptions(type, label->getWidth()*labelScale/CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(),label->getHeight()*labelScale/CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());

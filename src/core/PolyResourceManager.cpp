@@ -33,7 +33,9 @@
 #include "polycode/core/PolyMesh.h"
 #include "polycode/core/PolyScript.h"
 #include "polycode/core/PolyCore.h"
-#include "polycode/bindings/lua/PolycodeLua.h"
+#ifndef NO_LUA
+	#include "polycode/bindings/lua/PolycodeLua.h"
+#endif
 #include "polycode/bindings/javascript/PolycodeJS.h"
 #include "tinyxml.h"
 
@@ -371,6 +373,7 @@ Resource *ProgramResourceLoader::loadResource(const String &path, ResourcePool *
     return newProgram;
 }
 
+#ifndef NO_LUA
 static int customError(lua_State *L) {
     std::vector<DebugBackTraceEntry> backTrace;
     lua_Debug entry;
@@ -517,6 +520,7 @@ void ScriptResourceLoader::initLua() {
     lua_pushstring(luaState, "defaults");
     lua_pcall(luaState, 1, 0, errH);
 }
+#endif
 
 void loadJSFile(duk_context *context, String fileName) {
 
@@ -572,15 +576,18 @@ void ScriptResourceLoader::initJavascript() {
 }
 
 ScriptResourceLoader::ScriptResourceLoader() {
+#ifndef NO_LUA
     luaState = NULL;
-    duktapeContext = NULL;
-    
     extensions.push_back("lua");
+#endif
+    duktapeContext = NULL;
     extensions.push_back("js");
 }
 
 ScriptResourceLoader::~ScriptResourceLoader() {
+#ifndef NO_LUA
     lua_close(luaState);
+#endif
     duk_destroy_heap(duktapeContext);
 }
 
@@ -588,10 +595,12 @@ Resource *ScriptResourceLoader::loadResource(const String &path, ResourcePool *t
     OSFileEntry entry(path, OSFileEntry::TYPE_FILE);
     Script *newScript = NULL;
     if(entry.extension == "lua") {
+#ifndef NO_LUA
         if(!luaState) {
             initLua();
         }
         newScript = new LuaScript(luaState, path);
+#endif
     } else if(entry.extension == "js") {
         if(!duktapeContext) {
             initJavascript();
@@ -602,10 +611,8 @@ Resource *ScriptResourceLoader::loadResource(const String &path, ResourcePool *t
 }
 
 FontResourceLoader::FontResourceLoader() {
-    
     FT_Init_FreeType(&FTLibrary);
     FT_Library_SetLcdFilter(FTLibrary, FT_LCD_FILTER_LIGHT);
-    
     extensions.push_back("ttf");
     extensions.push_back("otf");
 }
@@ -625,10 +632,10 @@ Resource *MeshResourceLoader::loadResource(const String &path, ResourcePool *tar
 
 
 Resource *FontResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
-    OSFileEntry entry = OSFileEntry(path, OSFileEntry::TYPE_FILE);
-    Font *font = new Font(path, FTLibrary);
-    font->setResourceName(entry.nameWithoutExtension);
-    return font;
+	OSFileEntry entry = OSFileEntry(path, OSFileEntry::TYPE_FILE);
+	Font *font = new Font(path, FTLibrary);
+	font->setResourceName(entry.nameWithoutExtension);
+	return font;
 }
 
 void ResourceManager::handleEvent(Event *event) {

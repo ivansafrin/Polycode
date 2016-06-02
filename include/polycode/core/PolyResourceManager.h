@@ -32,10 +32,11 @@ THE SOFTWARE.
 #include FT_LCD_FILTER_H
 
 extern "C" {
+#ifndef NO_LUA
     #include "lua.h"
     #include "lualib.h"
     #include "lauxlib.h"
-    
+#endif   
     #include "duktape.h"
 }
 
@@ -142,11 +143,13 @@ namespace Polycode {
         Resource *loadResource(const String &path, ResourcePool *targetPool);
     private:
         
-        void initLua();
         void initJavascript();
-        
-        lua_State *luaState;
         duk_context *duktapeContext;
+        
+#ifndef NO_LUA
+        void initLua();
+        lua_State *luaState;
+#endif
     };
     
     class _PolyExport MeshResourceLoader : public ResourceLoader {

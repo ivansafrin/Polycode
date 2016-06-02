@@ -67,13 +67,7 @@ void RenderThread::initGlobals() {
     }
 }
 
-
-void RenderThread::runThread() {
-    
-    initGlobals();
-    
-    while(threadRunning) {
-        
+void RenderThread::updateRenderThread() {
         jobQueueMutex->lock();
         
         while(jobQueue.size() > 0) {
@@ -98,6 +92,15 @@ void RenderThread::runThread() {
             }
             delete nextFrame;
         }
+
+}
+
+void RenderThread::runThread() {
+    
+    initGlobals();
+    
+    while(threadRunning) {
+        updateRenderThread();
     }
 }
 
@@ -309,7 +312,6 @@ void RenderThread::clearFrameQueue() {
 }
 
 void RenderThread::processJob(const RendererThreadJob &job) {
-    
     lockRenderMutex();
     switch(job.jobType) {
         case JOB_REQUEST_CONTEXT_CHANGE:
@@ -457,15 +459,19 @@ void RenderThread::setGraphicsInterface(Core *core, GraphicsInterface *graphicsI
     this->core = core;
 }
 
-Renderer::Renderer() :
+Renderer::Renderer(RenderThread *customThread) :
     backingResolutionScaleX(1.0),
     backingResolutionScaleY(1.0),
     cpuBufferIndex(0),
     gpuBufferIndex(1),
     currentFrame(NULL) {
-        
-    renderThread = new RenderThread();
-    Services()->getCore()->createThread(renderThread);
+       
+	if(!customThread) {
+		renderThread = new RenderThread();
+		Services()->getCore()->createThread(renderThread);
+	} else {
+		renderThread = customThread;
+	}
 }
 
 Renderer::~Renderer() {

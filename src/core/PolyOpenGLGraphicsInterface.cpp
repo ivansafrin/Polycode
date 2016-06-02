@@ -24,6 +24,7 @@
 #include "polycode/core/PolyOpenGLGraphicsInterface.h"
 #include "polycode/core/PolyLogger.h"
 #include "polycode/core/PolyCoreServices.h"
+#include <stdlib.h>
 
 using namespace Polycode;
 

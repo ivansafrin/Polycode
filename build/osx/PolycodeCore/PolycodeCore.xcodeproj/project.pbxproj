@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		6D904FCD1CC2A4DA00D0E80A /* PolyScript.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D904FCC1CC2A4DA00D0E80A /* PolyScript.cpp */; };
 		6D904FCF1CC2A4E900D0E80A /* PolyScript.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D904FCE1CC2A4E900D0E80A /* PolyScript.h */; };
-		6D904FD91CC4817C00D0E80A /* duktape.c in Sources */ = {isa = PBXBuildFile; fileRef = 6D904FD81CC4817C00D0E80A /* duktape.c */; };
+		8A40875E1D0087AD009FF944 /* duktape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A40875D1D0087AD009FF944 /* duktape.cpp */; };
 		8A5EF4FC1CD90E4800F8466A /* PolycodeLua.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A5EF4FB1CD90E4800F8466A /* PolycodeLua.cpp */; };
 		8A5EF4FF1CD90F0200F8466A /* PolycodeLua.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A5EF4FD1CD90F0200F8466A /* PolycodeLua.h */; };
 		8A5EF5001CD90F0200F8466A /* PolycodeLuaWrappers.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A5EF4FE1CD90F0200F8466A /* PolycodeLuaWrappers.h */; };
@@ -180,7 +180,7 @@
 /* Begin PBXFileReference section */
 		6D904FCC1CC2A4DA00D0E80A /* PolyScript.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyScript.cpp; path = ../../../src/core/PolyScript.cpp; sourceTree = "<group>"; };
 		6D904FCE1CC2A4E900D0E80A /* PolyScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyScript.h; path = ../../../include/polycode/core/PolyScript.h; sourceTree = "<group>"; };
-		6D904FD81CC4817C00D0E80A /* duktape.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = duktape.c; path = ../../../src/duktape/duktape.c; sourceTree = "<group>"; };
+		8A40875D1D0087AD009FF944 /* duktape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = duktape.cpp; path = ../../../src/duktape/duktape.cpp; sourceTree = "<group>"; };
 		8A5EF4FB1CD90E4800F8466A /* PolycodeLua.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolycodeLua.cpp; path = ../../../src/bindings/lua/PolycodeLua.cpp; sourceTree = "<group>"; };
 		8A5EF4FD1CD90F0200F8466A /* PolycodeLua.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeLua.h; path = ../../../include/polycode/bindings/lua/PolycodeLua.h; sourceTree = "<group>"; };
 		8A5EF4FE1CD90F0200F8466A /* PolycodeLuaWrappers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeLuaWrappers.h; path = ../../../include/polycode/bindings/lua/PolycodeLuaWrappers.h; sourceTree = "<group>"; };
@@ -372,7 +372,7 @@
 		8A8651E61B728638009F94DD /* src */ = {
 			isa = PBXGroup;
 			children = (
-				6D904FD81CC4817C00D0E80A /* duktape.c */,
+				8A40875D1D0087AD009FF944 /* duktape.cpp */,
 				8A9D12311CDD504400ACD484 /* PolycodeJS.cpp */,
 				8A5EF4FB1CD90E4800F8466A /* PolycodeLua.cpp */,
 				8A825F241B829BC20039E823 /* PolyPAAudioInterface.cpp */,
@@ -736,6 +736,7 @@
 				8A8652E21B72867F009F94DD /* PolyEntity.cpp in Sources */,
 				8A8652F21B72867F009F94DD /* PolyObject.cpp in Sources */,
 				8A8653011B72867F009F94DD /* PolySceneImage.cpp in Sources */,
+				8A40875E1D0087AD009FF944 /* duktape.cpp in Sources */,
 				8A8653001B72867F009F94DD /* PolySceneEntityInstance.cpp in Sources */,
 				8A8652DC1B72867F009F94DD /* PolyConfig.cpp in Sources */,
 				8A8652FE1B72867F009F94DD /* PolyResourceManager.cpp in Sources */,
@@ -764,7 +765,6 @@
 				8A825F251B829BC20039E823 /* PolyPAAudioInterface.cpp in Sources */,
 				8A8653041B72867F009F94DD /* PolySceneLine.cpp in Sources */,
 				8A8653191B72867F009F94DD /* PolyVector3.cpp in Sources */,
-				6D904FD91CC4817C00D0E80A /* duktape.c in Sources */,
 				8A8653141B72867F009F94DD /* PolyTimer.cpp in Sources */,
 				8A86530D1B72867F009F94DD /* PolySkeleton.cpp in Sources */,
 				8A86530E1B72867F009F94DD /* PolySocket.cpp in Sources */,

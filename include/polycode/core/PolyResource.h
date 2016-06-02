@@ -66,7 +66,7 @@ namespace Polycode {
         
             static bool defaultReloadOnFileModify;
         
-			time_t resourceFileTime;
+			size_t resourceFileTime;
 						
 			//@}
 			

@@ -19,7 +19,7 @@ function Resource:__getvar(name)
 	elseif name == "resourceFileTime" then
 		local retVal = Polycode.Resource_get_resourceFileTime(self.__ptr)
 		if retVal == nil then return nil end
-		local __c = _G["time_t"]("__skip_ptr__")
+		local __c = _G["size_t"]("__skip_ptr__")
 		__c.__ptr = retVal
 		return __c
 	end

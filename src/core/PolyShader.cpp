@@ -25,6 +25,7 @@
 #include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyRenderer.h"
 #include "polycode/core/PolyCore.h"
+#include <stdlib.h>
 
 using namespace Polycode;
 

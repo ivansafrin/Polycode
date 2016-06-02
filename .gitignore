@@ -14,6 +14,16 @@ build/linux/TemplateApp/default
 build/linux/TemplateApp/default.pak
 build/linux/Studio/*
 
+build/emscripten/default
+build/emscripten/TemplateApp/*.mem
+build/emscripten/TemplateApp/*.js
+build/emscripten/TemplateApp/*.html
+build/emscripten/TemplateApp/*.png
+build/emscripten/TemplateApp/*.bc
+build/emscripten/TemplateApp/*.pak
+build/emscripten/TemplateApp/*.data
+build/emscripten/main_icon.png
+
 *.opendb
 
 docs/cldoc

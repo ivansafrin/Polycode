@@ -104,7 +104,11 @@
 			#ifdef RPI_CORE
 				#include "polycode/core/PolyRPICore.h"
 			#else
-				#include "polycode/core/PolySDLCore.h"
+				#ifdef EMSCRIPTEN
+					#include "polycode/core/PolyEmscriptenCore.h"
+				#else
+					#include "polycode/core/PolySDLCore.h"
+				#endif
 			#endif
 		#endif
     #endif

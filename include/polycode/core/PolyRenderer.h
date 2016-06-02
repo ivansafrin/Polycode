@@ -130,7 +130,7 @@ namespace Polycode {
             RenderThread();
              void setGraphicsInterface(Core *core, GraphicsInterface *graphicsInterface);
             virtual void runThread();
-        
+	    void updateRenderThread();   
             void enqueueFrame(RenderFrame *frame);
         
             void enqueueJob(int jobType, void *data, void *data2=NULL);
@@ -192,8 +192,8 @@ namespace Polycode {
     class _PolyExport Renderer : public PolyBase {
 	public:
         
-		Renderer();
-		virtual ~Renderer();
+	Renderer(RenderThread *customThread=NULL);
+	virtual ~Renderer();
         void setGraphicsInterface(Core *core, GraphicsInterface *graphicsInterface);
         
         RenderThread *getRenderThread();

@@ -15,6 +15,10 @@ RenderThread.prototype.runThread = function() {
 	Polycode.RenderThread_runThread(this.__ptr)
 }
 
+RenderThread.prototype.updateRenderThread = function() {
+	Polycode.RenderThread_updateRenderThread(this.__ptr)
+}
+
 RenderThread.prototype.enqueueFrame = function(frame) {
 	Polycode.RenderThread_enqueueFrame(this.__ptr, frame)
 }

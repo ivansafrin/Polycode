@@ -813,7 +813,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_Camera_setViewport(duk_context *context) {
 		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 1);
+		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 1);
 		inst->setViewport(viewport);
 		return 0;
 	}
@@ -847,7 +847,7 @@ namespace Polycode {
 	duk_ret_t Polycode_Camera_projectRayFrom2DCoordinate(duk_context *context) {
 		Camera *inst = (Camera*)duk_to_pointer(context, 0);
 		Vector2 coordinate = *(Vector2*)duk_to_pointer(context, 1);
-		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 2);
+		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 2);
 		Vector3 *retInst = new Vector3();
 		*retInst = inst->projectRayFrom2DCoordinate(coordinate,viewport);
 		duk_push_pointer(context, (void*)retInst);
@@ -2546,7 +2546,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_CoreServices_Render(duk_context *context) {
 		CoreServices *inst = (CoreServices*)duk_to_pointer(context, 0);
-		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 1);
+		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 1);
 		inst->Render(viewport);
 		return 0;
 	}
@@ -3100,7 +3100,7 @@ namespace Polycode {
 	duk_ret_t Polycode_Entity_transformAndRender(duk_context *context) {
 		Entity *inst = (Entity*)duk_to_pointer(context, 0);
 		GPUDrawBuffer* drawBuffer = (GPUDrawBuffer*)duk_to_pointer(context, 1);
-		Rectangle* parentScissorBox = (Rectangle*)duk_to_pointer(context, 2);
+		Polycode::Rectangle* parentScissorBox = (Polycode::Rectangle*)duk_to_pointer(context, 2);
 		inst->transformAndRender(drawBuffer,parentScissorBox);
 		return 0;
 	}
@@ -3108,7 +3108,7 @@ namespace Polycode {
 	duk_ret_t Polycode_Entity_renderChildren(duk_context *context) {
 		Entity *inst = (Entity*)duk_to_pointer(context, 0);
 		GPUDrawBuffer* buffer = (GPUDrawBuffer*)duk_to_pointer(context, 1);
-		Rectangle* parentScissorBox = (Rectangle*)duk_to_pointer(context, 2);
+		Polycode::Rectangle* parentScissorBox = (Polycode::Rectangle*)duk_to_pointer(context, 2);
 		inst->renderChildren(buffer,parentScissorBox);
 		return 0;
 	}
@@ -3846,7 +3846,7 @@ namespace Polycode {
 		Entity *inst = (Entity*)duk_to_pointer(context, 0);
 		Matrix4 projectionMatrix = *(Matrix4*)duk_to_pointer(context, 1);
 		Matrix4 cameraMatrix = *(Matrix4*)duk_to_pointer(context, 2);
-		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 3);
+		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 3);
 		Vector2 *retInst = new Vector2();
 		*retInst = inst->getScreenPosition(projectionMatrix,cameraMatrix,viewport);
 		duk_push_pointer(context, (void*)retInst);
@@ -4845,7 +4845,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_Image_getImagePart(duk_context *context) {
 		Image *inst = (Image*)duk_to_pointer(context, 0);
-		Rectangle subRect = *(Rectangle*)duk_to_pointer(context, 1);
+		Polycode::Rectangle subRect = *(Polycode::Rectangle*)duk_to_pointer(context, 1);
 		PolyBase *ptrRetVal = (PolyBase*)inst->getImagePart(subRect);
 		duk_push_pointer(context, (void*)ptrRetVal);
 		return 1;
@@ -7880,7 +7880,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_Rectangle_Clipped(duk_context *context) {
 		Rectangle *inst = (Rectangle*)duk_to_pointer(context, 0);
-		Rectangle rect = *(Rectangle*)duk_to_pointer(context, 1);
+		Polycode::Rectangle rect = *(Polycode::Rectangle*)duk_to_pointer(context, 1);
 		Polycode::Rectangle *retInst = new Polycode::Rectangle();
 		*retInst = inst->Clipped(rect);
 		duk_push_pointer(context, (void*)retInst);
@@ -8162,6 +8162,12 @@ namespace Polycode {
 	duk_ret_t Polycode_RenderThread_runThread(duk_context *context) {
 		RenderThread *inst = (RenderThread*)duk_to_pointer(context, 0);
 		inst->runThread();
+		return 0;
+	}
+
+	duk_ret_t Polycode_RenderThread_updateRenderThread(duk_context *context) {
+		RenderThread *inst = (RenderThread*)duk_to_pointer(context, 0);
+		inst->updateRenderThread();
 		return 0;
 	}
 
@@ -8492,7 +8498,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_Resource__get_resourceFileTime(duk_context *context) {
 		Resource *inst = (Resource*)duk_to_pointer(context, 0);
-		time_t *retInst = new time_t();
+		size_t *retInst = new size_t();
 		*retInst = inst->resourceFileTime;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
@@ -8500,7 +8506,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_Resource__set_resourceFileTime(duk_context *context) {
 		Resource *inst = (Resource*)duk_to_pointer(context, 0);
-		inst->resourceFileTime = *(time_t*)duk_to_pointer(context, 1);
+		inst->resourceFileTime = *(size_t*)duk_to_pointer(context, 1);
 		return 0;
 	}
 
@@ -9999,7 +10005,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_SceneManager_Render(duk_context *context) {
 		SceneManager *inst = (SceneManager*)duk_to_pointer(context, 0);
-		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 1);
+		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 1);
 		inst->Render(viewport);
 		return 0;
 	}
@@ -11070,30 +11076,6 @@ namespace Polycode {
 		SpriteState *inst = (SpriteState*)duk_to_pointer(context, 0);
 		Vector2 offset = *(Vector2*)duk_to_pointer(context, 1);
 		inst->setSpriteOffset(offset);
-		return 0;
-	}
-
-	duk_ret_t Polycode_JSScriptInstance__delete(duk_context *context) {
-		JSScriptInstance *inst = (JSScriptInstance*)duk_to_pointer(context, 0);
-		delete inst;
-		return 0;
-	}
-
-	duk_ret_t Polycode_LuaScriptInstance__get_tableRef(duk_context *context) {
-		LuaScriptInstance *inst = (LuaScriptInstance*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->tableRef);
-		return 1;
-	}
-
-	duk_ret_t Polycode_LuaScriptInstance__set_tableRef(duk_context *context) {
-		LuaScriptInstance *inst = (LuaScriptInstance*)duk_to_pointer(context, 0);
-		inst->tableRef = duk_to_int(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_LuaScriptInstance__delete(duk_context *context) {
-		LuaScriptInstance *inst = (LuaScriptInstance*)duk_to_pointer(context, 0);
-		delete inst;
 		return 0;
 	}
 

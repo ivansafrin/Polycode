@@ -33,6 +33,7 @@
 #include "polycode/core/PolySoundManager.h"
 #include "polycode/core/PolyCore.h"
 #include "polycode/core/PolyCoreServices.h"
+#include <stdlib.h>
 #include <string>
 #include <vector>
 #include <stdint.h>

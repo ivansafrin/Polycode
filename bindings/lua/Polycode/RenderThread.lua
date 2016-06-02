@@ -39,6 +39,10 @@ function RenderThread:runThread()
 	local retVal =  Polycode.RenderThread_runThread(self.__ptr)
 end
 
+function RenderThread:updateRenderThread()
+	local retVal =  Polycode.RenderThread_updateRenderThread(self.__ptr)
+end
+
 function RenderThread:enqueueFrame(frame)
 	local retVal = Polycode.RenderThread_enqueueFrame(self.__ptr, frame.__ptr)
 end

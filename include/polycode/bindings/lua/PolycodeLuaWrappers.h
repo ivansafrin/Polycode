@@ -11264,6 +11264,12 @@ static int Polycode_RendererThreadJob_set_jobType(lua_State *L) {
 		inst->runThread();
 		return 0;
 	}
+	static int Polycode_RenderThread_updateRenderThread(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		RenderThread *inst = (RenderThread*) *((PolyBase**)lua_touserdata(L, 1));
+		inst->updateRenderThread();
+		return 0;
+	}
 	static int Polycode_RenderThread_enqueueFrame(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		RenderThread *inst = (RenderThread*) *((PolyBase**)lua_touserdata(L, 1));
@@ -11747,7 +11753,7 @@ static int Polycode_Resource_set_resourceFileTime(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	Resource *inst = (Resource*) *((PolyBase**)lua_touserdata(L, 1));
 	luaL_checktype(L, 2, LUA_TUSERDATA);
-	time_t *argInst = (time_t*) *((PolyBase**)lua_touserdata(L, 2));
+	size_t *argInst = (size_t*) *((PolyBase**)lua_touserdata(L, 2));
 	inst->resourceFileTime = *argInst;
 	return 0;
 }
@@ -15593,37 +15599,6 @@ static int Polycode_SpriteFrame_set_frameID(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		PolyBase **inst = (PolyBase**)lua_touserdata(L, 1);
 		delete ((SpriteState*) *inst);
-		*inst = NULL;
-		return 0;
-	}
-
-	static int Polycode_delete_JSScriptInstance(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		PolyBase **inst = (PolyBase**)lua_touserdata(L, 1);
-		delete ((JSScriptInstance*) *inst);
-		*inst = NULL;
-		return 0;
-	}
-
-static int Polycode_LuaScriptInstance_get_tableRef(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LuaScriptInstance *inst = (LuaScriptInstance*) *((PolyBase**)lua_touserdata(L, 1));
-	lua_pushinteger(L, inst->tableRef);
-	return 1;
-}
-
-static int Polycode_LuaScriptInstance_set_tableRef(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LuaScriptInstance *inst = (LuaScriptInstance*) *((PolyBase**)lua_touserdata(L, 1));
-	int param = lua_tointeger(L, 2);
-	inst->tableRef = param;
-	return 0;
-}
-
-	static int Polycode_delete_LuaScriptInstance(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		PolyBase **inst = (PolyBase**)lua_touserdata(L, 1);
-		delete ((LuaScriptInstance*) *inst);
 		*inst = NULL;
 		return 0;
 	}

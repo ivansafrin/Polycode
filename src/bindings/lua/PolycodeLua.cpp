@@ -1227,6 +1227,7 @@ int luaopen_Polycode(lua_State *L) {
 		{"RenderThread", Polycode_RenderThread},
 		{"RenderThread_setGraphicsInterface", Polycode_RenderThread_setGraphicsInterface},
 		{"RenderThread_runThread", Polycode_RenderThread_runThread},
+		{"RenderThread_updateRenderThread", Polycode_RenderThread_updateRenderThread},
 		{"RenderThread_enqueueFrame", Polycode_RenderThread_enqueueFrame},
 		{"RenderThread_enqueueJob", Polycode_RenderThread_enqueueJob},
 		{"RenderThread_processJob", Polycode_RenderThread_processJob},
@@ -1683,10 +1684,6 @@ int luaopen_Polycode(lua_State *L) {
 		{"SpriteState_getSpriteOffset", Polycode_SpriteState_getSpriteOffset},
 		{"SpriteState_setSpriteOffset", Polycode_SpriteState_setSpriteOffset},
 		{"delete_SpriteState", Polycode_delete_SpriteState},
-		{"delete_JSScriptInstance", Polycode_delete_JSScriptInstance},
-		{"LuaScriptInstance_get_tableRef", Polycode_LuaScriptInstance_get_tableRef},
-		{"LuaScriptInstance_set_tableRef", Polycode_LuaScriptInstance_set_tableRef},
-		{"delete_LuaScriptInstance", Polycode_delete_LuaScriptInstance},
 		{"ScriptInstance_get_script", Polycode_ScriptInstance_get_script},
 		{"ScriptInstance_set_script", Polycode_ScriptInstance_set_script},
 		{"delete_ScriptInstance", Polycode_delete_ScriptInstance},
@@ -2587,18 +2584,6 @@ int luaopen_Polycode(lua_State *L) {
 	luaL_newmetatable(L, "Polycode.SpriteState");
 	lua_pushstring(L, "__gc");
 	lua_pushcfunction(L, Polycode_delete_SpriteState);
-	lua_settable(L, -3);
-	lua_pop(L, 1);
-
-	luaL_newmetatable(L, "Polycode.JSScriptInstance");
-	lua_pushstring(L, "__gc");
-	lua_pushcfunction(L, Polycode_delete_JSScriptInstance);
-	lua_settable(L, -3);
-	lua_pop(L, 1);
-
-	luaL_newmetatable(L, "Polycode.LuaScriptInstance");
-	lua_pushstring(L, "__gc");
-	lua_pushcfunction(L, Polycode_delete_LuaScriptInstance);
 	lua_settable(L, -3);
 	lua_pop(L, 1);
 

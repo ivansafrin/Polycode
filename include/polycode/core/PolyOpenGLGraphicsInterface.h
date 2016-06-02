@@ -59,8 +59,11 @@ THE SOFTWARE.
 		#include <EGL/eglext.h>
 		#include <GLES2/gl2.h>
 	#else
-		#include <glew/GL/glew.h>
-		
+		#ifdef EMSCRIPTEN
+			#include "SDL/SDL_opengl.h"
+		#else
+			#include <glew/GL/glew.h>
+		#endif
 		/*#include <GL/gl.h>
 		#include <GL/glu.h>
 		#include <GL/glext.h>*/

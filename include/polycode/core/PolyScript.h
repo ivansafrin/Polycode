@@ -26,10 +26,11 @@
 #include "polycode/core/PolyString.h"
 
 extern "C" {
+#ifndef NO_LUA
     #include "lua.h"
     #include "lualib.h"
     #include "lauxlib.h"
-    
+#endif
     #include "duktape.h"
 }
 
@@ -51,6 +52,7 @@ namespace Polycode {
             virtual void callUpdate(ScriptInstance *instance, Entity *entity, Number elapsed) = 0;
     };
     
+#ifndef NO_LUA
     class LuaScriptInstance : public ScriptInstance {
         public:
             int tableRef;
@@ -68,7 +70,8 @@ namespace Polycode {
             int tableRef;
             int errH;
     };
-    
+#endif
+
     class JSScriptInstance : public ScriptInstance {
     public:
         void *objectRef;
