@@ -563,9 +563,9 @@ void OpenGLGraphicsInterface::createTexture(Texture *texture) {
 			break;
 		case Image::IMAGE_FP16:
 #ifdef BGRA_TEXTURE_FORMAT
-			glTextureType = GL_BGRA;
+			glTextureType = GL_BGR;
 #else
-			glTextureType = GL_RGBA;
+			glTextureType = GL_RGB;
 #endif
 #if defined(GL_RGBA16F_EXT)
 			glTextureFormat = GL_RGBA16F_EXT;
