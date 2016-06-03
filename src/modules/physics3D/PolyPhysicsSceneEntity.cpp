@@ -134,7 +134,7 @@ PhysicsCharacter::PhysicsCharacter(Entity *entity, Number mass, Number friction,
 	ghostObject->setFriction(friction); 
 	
 	ghostObject->setCollisionFlags (btCollisionObject::CF_CHARACTER_OBJECT);	
-	character = new btKinematicCharacterController (ghostObject,convexShape,btScalar(stepSize));			
+	character = new btKinematicCharacterController (ghostObject,(btConvexShape*) shape,btScalar(stepSize));
 	
 }
 
@@ -181,7 +181,7 @@ PhysicsCharacter::~PhysicsCharacter() {
 	delete ghostObject; 
 }
 
-PhysicsEntity::PhysicsEntity(Entity *entity, int type, Number mass, Number friction, Number restitution, bool compoundChildren) : CollisionEntity(entity, type, compoundChildren) {
+PhysicsEntity::PhysicsEntity(Entity *entity, int type, Number mass, Number friction, Number restitution, bool compoundChildren, MeshGeometry *collisionGeometry) : CollisionEntity(entity, type, compoundChildren, collisionGeometry) {
 	enabled = true;
 	this->mass = mass;
 	btVector3 localInertia(0,0,0);

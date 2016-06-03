@@ -81,7 +81,6 @@ void EventDispatcher::removeEventListener(EventHandler *handler, int eventCode) 
 }
 
 void EventDispatcher::__dispatchEvent(Event *event, int eventCode) {
-	//		event->setDispatcher(dynamic_cast<void*>(this));
 	event->setDispatcher(this);
 	event->setEventCode(eventCode);
 	for(int i=0;i<handlerEntries.size();i++) {

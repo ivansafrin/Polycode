@@ -38,9 +38,12 @@ namespace Polycode {
 	/**
 	* A wrapper around Entity that provides physics information.
 	*/
+	
+	class MeshGeometry;
+	
 	class _PolyExport PhysicsEntity : public CollisionEntity {
 	public:
-		PhysicsEntity(Entity *entity, int type, Number mass, Number friction, Number restitution, bool compoundChildren = false);
+		PhysicsEntity(Entity *entity, int type, Number mass, Number friction, Number restitution, bool compoundChildren = false, MeshGeometry *collisionGeometry = NULL);
 		virtual ~PhysicsEntity();
 		virtual void Update();
 				

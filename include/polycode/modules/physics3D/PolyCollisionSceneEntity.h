@@ -36,12 +36,14 @@ namespace Polycode {
 	/**
 	* A wrapped around Entity that provides collision information.
 	*/
+	
+	class MeshGeometry;
 	class _PolyExport CollisionEntity {
 		public:
 			/**
 			* Main constructor.
 			*/ 
-			CollisionEntity(Entity *entity, int type, bool compoundChildren = false);
+			CollisionEntity(Entity *entity, int type, bool compoundChildren = false, MeshGeometry *collisionGeometry = NULL);
 			virtual ~CollisionEntity();
 			
 			/** @name Collision scene entity
@@ -58,8 +60,7 @@ namespace Polycode {
 			
 			virtual void Update();
 		
-			btConvexShape *getConvexShape(){ return convexShape; }					
-			btCollisionShape *createCollisionShape(Entity *entity, int type);		
+			btCollisionShape *createCollisionShape(Entity *entity, int type, MeshGeometry *collisionGeometry);
 			btCollisionObject *collisionObject;		
 			Vector3 lastPosition;
 		
@@ -111,10 +112,6 @@ namespace Polycode {
 			btCollisionShape *shape;
 		
 		protected:
-		
-
-			btConvexShape *convexShape;
-			btConcaveShape *concaveShape;
 		
 			int type;
 			Entity *entity;
