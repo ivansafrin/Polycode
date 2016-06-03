@@ -42,8 +42,8 @@ Duktape.fin(Ray.prototype, function (x) {
 	Polycode.Ray__delete(x.__ptr)
 })
 
-Ray.prototype.boxIntersect = function(box,transformMatrix,near,far) {
-	return Polycode.Ray_boxIntersect(this.__ptr, box,transformMatrix,near,far)
+Ray.prototype.boxIntersect = function(box,transformMatrix,vnear,vfar) {
+	return Polycode.Ray_boxIntersect(this.__ptr, box,transformMatrix,vnear,vfar)
 }
 
 Ray.prototype.planeIntersectPoint = function(planeNormal,planeDistance) {

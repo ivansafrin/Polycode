@@ -1693,8 +1693,6 @@ int jsopen_Polycode(duk_context *ctx) {
 			{"AttributeBinding__get_enabled", Polycode_AttributeBinding__get_enabled, 1},
 			{"AttributeBinding__set_enabled", Polycode_AttributeBinding__set_enabled, 2},
 			{"AttributeBinding__delete", Polycode_AttributeBinding__delete, 1},
-			{"ShaderBinding__get_resetAttributes", Polycode_ShaderBinding__get_resetAttributes, 1},
-			{"ShaderBinding__set_resetAttributes", Polycode_ShaderBinding__set_resetAttributes, 2},
 			{"ShaderBinding__get_targetShader", Polycode_ShaderBinding__get_targetShader, 1},
 			{"ShaderBinding__set_targetShader", Polycode_ShaderBinding__set_targetShader, 2},
 			{"ShaderBinding__get_accessMutex", Polycode_ShaderBinding__get_accessMutex, 1},

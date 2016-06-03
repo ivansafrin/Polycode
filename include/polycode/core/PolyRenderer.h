@@ -122,6 +122,7 @@ namespace Polycode {
 	
 	class _PolyExport RenderFrame : public PolyBase {
 	public:
+		~RenderFrame();
 		std::queue<RendererThreadJob> jobQueue;
 	};
 	
@@ -171,6 +172,8 @@ namespace Polycode {
 			unsigned int frameStart;
 			RenderThreadDebugInfo lastFrameDebugInfo;
 			RenderThreadDebugInfo currentDebugFrameInfo;
+		
+			std::vector<RenderFrame*> framesToDelete;
 		
 			Core *core;
 			CoreMutex *jobQueueMutex;

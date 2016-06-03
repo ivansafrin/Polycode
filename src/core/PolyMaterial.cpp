@@ -36,9 +36,8 @@ ShaderPass::ShaderPass() :
 	wireframe(false),
 	shaderBinding(NULL),
 	materialShaderBinding(NULL),
-	blendingMode(Renderer::BLEND_MODE_NONE)
-{
-	
+	blendingMode(Renderer::BLEND_MODE_NONE) {
+
 }
 
 ShaderPass::ShaderPass(Shader *shader) :
@@ -46,10 +45,21 @@ ShaderPass::ShaderPass(Shader *shader) :
 	wireframe(false),
 	shaderBinding(NULL),
 	materialShaderBinding(NULL),
-	blendingMode(Renderer::BLEND_MODE_NONE)
-{
-	
+	blendingMode(Renderer::BLEND_MODE_NONE) {
+
 }
+
+ShaderPass::ShaderPass(const ShaderPass &other) {
+	shader = other.shader;
+	wireframe = other.wireframe;
+	blendingMode = other.blendingMode;
+	shaderBinding = other.shaderBinding;
+	materialShaderBinding = other.materialShaderBinding;
+}
+
+ShaderPass::~ShaderPass() {
+}
+
 
 Material::Material(const String& name) : Resource(Resource::RESOURCE_MATERIAL) {
 	this->name = name;

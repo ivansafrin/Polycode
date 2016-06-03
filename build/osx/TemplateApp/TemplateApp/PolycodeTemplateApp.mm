@@ -71,7 +71,7 @@ bool PolycodeTemplateApp::Update() {
     for(int i=0; i < tests.size(); i++) {
         tests[i]->Roll(elapsed * 30.0);
     }
-    
+	/*
     if(tests.size() > 0) {
         SceneMesh *removing = tests[0];
         tests.erase(tests.begin());
@@ -89,10 +89,8 @@ bool PolycodeTemplateApp::Update() {
         test->setScale(0.1, 0.1);
         scene->addChild(test);
         tests.push_back(test);
-        
-        
     }
-    
+    */
     ++numFrames;
     counter += elapsed;
     if(counter >= 1.0) {
@@ -100,6 +98,6 @@ bool PolycodeTemplateApp::Update() {
         fpsLabel->setText("FPS:"+String::IntToString(numFrames)+" FRAME MS:"+String::IntToString(Services()->getRenderer()->getRenderThread()->getFrameInfo().timeTaken));
         numFrames = 0;
     }
-    
+	 
     return core->updateAndRender();
 }

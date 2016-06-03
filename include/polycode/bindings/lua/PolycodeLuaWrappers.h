@@ -16543,13 +16543,6 @@ static int Polycode_AttributeBinding_set_enabled(lua_State *L) {
 		return 0;
 	}
 
-static int Polycode_ShaderBinding_get_resetAttributes(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	ShaderBinding *inst = (ShaderBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	lua_pushboolean(L, inst->resetAttributes);
-	return 1;
-}
-
 static int Polycode_ShaderBinding_get_targetShader(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	ShaderBinding *inst = (ShaderBinding*) *((PolyBase**)lua_touserdata(L, 1));
@@ -16572,14 +16565,6 @@ static int Polycode_ShaderBinding_get_accessMutex(lua_State *L) {
 		*userdataPtr = (PolyBase*)inst->accessMutex;
 	}
 	return 1;
-}
-
-static int Polycode_ShaderBinding_set_resetAttributes(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	ShaderBinding *inst = (ShaderBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	bool param = lua_toboolean(L, 2) != 0;
-	inst->resetAttributes = param;
-	return 0;
 }
 
 static int Polycode_ShaderBinding_set_targetShader(lua_State *L) {

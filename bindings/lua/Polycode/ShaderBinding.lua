@@ -2,9 +2,7 @@ class "ShaderBinding"
 
 
 function ShaderBinding:__getvar(name)
-	if name == "resetAttributes" then
-		return Polycode.ShaderBinding_get_resetAttributes(self.__ptr)
-	elseif name == "targetShader" then
+	if name == "targetShader" then
 		local retVal = Polycode.ShaderBinding_get_targetShader(self.__ptr)
 		if retVal == nil then return nil end
 		local __c = _G["Shader"]("__skip_ptr__")
@@ -20,10 +18,7 @@ function ShaderBinding:__getvar(name)
 end
 
 function ShaderBinding:__setvar(name,value)
-	if name == "resetAttributes" then
-		Polycode.ShaderBinding_set_resetAttributes(self.__ptr, value)
-		return true
-	elseif name == "targetShader" then
+	if name == "targetShader" then
 		Polycode.ShaderBinding_set_targetShader(self.__ptr, value.__ptr)
 		return true
 	elseif name == "accessMutex" then

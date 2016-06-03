@@ -193,7 +193,6 @@ void SceneMesh::setMaterial(Material *material) {
 		shaderPass.shaderBinding = new ShaderBinding();
 		shaderPass.shaderBinding->targetShader = shaderPass.shader;
 		shaderPass.shaderBinding->addParamPointer(ProgramParam::PARAM_COLOR, "entityColor", &color);
-		shaderPass.shaderBinding->resetAttributes = true;
 		if(skeleton) {
 		 //	  shaderPass.attributeArrays.push_back(&skeletalVertexPositions);
 		 //	  shaderPass.attributeArrays.push_back(&skeletalVertexNormals);

@@ -1,18 +1,9 @@
 function ShaderBinding() {
 	Object.defineProperties(this, {
-		'resetAttributes': { enumerable: true, configurable: true, get: ShaderBinding.prototype.__get_resetAttributes, set: ShaderBinding.prototype.__set_resetAttributes},
 		'targetShader': { enumerable: true, configurable: true, get: ShaderBinding.prototype.__get_targetShader, set: ShaderBinding.prototype.__set_targetShader},
 		'accessMutex': { enumerable: true, configurable: true, get: ShaderBinding.prototype.__get_accessMutex, set: ShaderBinding.prototype.__set_accessMutex}
 	})
 }
-ShaderBinding.prototype.__get_resetAttributes = function() {
-	return Polycode.ShaderBinding__get_resetAttributes(this.__ptr)
-}
-
-ShaderBinding.prototype.__set_resetAttributes = function(val) {
-	Polycode.ShaderBinding__set_resetAttributes(this.__ptr, val)
-}
-
 ShaderBinding.prototype.__get_targetShader = function() {
 	var retVal = new Shader()
 	retVal.__ptr = 	Polycode.ShaderBinding__get_targetShader(this.__ptr)

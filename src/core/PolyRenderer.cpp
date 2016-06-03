@@ -29,6 +29,17 @@
 
 using namespace Polycode;
 
+RenderFrame::~RenderFrame() {
+	while(jobQueue.size() > 0) {
+		RendererThreadJob frameJob = jobQueue.front();
+		if(frameJob.jobType == RenderThread::JOB_PROCESS_DRAW_BUFFER)  {
+			GPUDrawBuffer *buffer = (GPUDrawBuffer*) frameJob.data;
+			delete buffer;
+		}
+		jobQueue.pop();
+	}
+}
+
 GraphicsInterface::GraphicsInterface() {
 }
 
@@ -68,31 +79,35 @@ void RenderThread::initGlobals() {
 }
 
 void RenderThread::updateRenderThread() {
-		jobQueueMutex->lock();
+	jobQueueMutex->lock();
 		
-		while(jobQueue.size() > 0) {
-			RendererThreadJob nextJob = jobQueue.front();
-			jobQueue.pop();
-			processJob(nextJob);
-		}
+	while(jobQueue.size() > 0) {
+		RendererThreadJob nextJob = jobQueue.front();
+		jobQueue.pop();
+		processJob(nextJob);
+	}
 		
-		RenderFrame *nextFrame = NULL;
-		if(frameQueue.size() > 0) {
-			nextFrame = frameQueue.front();
-			frameQueue.pop();
+	RenderFrame *nextFrame = NULL;
+	if(frameQueue.size() > 0) {
+		nextFrame = frameQueue.front();
+		frameQueue.pop();
+	}
+
+	jobQueueMutex->unlock();
+
+	if(nextFrame) {
+		while(nextFrame->jobQueue.size() > 0) {
+			RendererThreadJob frameJob = nextFrame->jobQueue.front();
+			nextFrame->jobQueue.pop();
+			processJob(frameJob);
 		}
-
-		jobQueueMutex->unlock();
-
-		if(nextFrame) {
-			while(nextFrame->jobQueue.size() > 0) {
-				RendererThreadJob frameJob = nextFrame->jobQueue.front();
-				nextFrame->jobQueue.pop();
-				processJob(frameJob);
-			}
-			delete nextFrame;
-		}
-
+		delete nextFrame;
+	}
+	
+	for(int i=0; i < framesToDelete.size(); i++) {
+		delete framesToDelete[i];
+	}
+	framesToDelete.clear();
 }
 
 void RenderThread::runThread() {
@@ -307,6 +322,8 @@ void RenderThread::unlockRenderMutex() {
 
 void RenderThread::clearFrameQueue() {
 	while(!frameQueue.empty()) {
+		RenderFrame *nextFrame = frameQueue.front();
+		framesToDelete.push_back(nextFrame);
 		frameQueue.pop();
 	}
 }
@@ -437,8 +454,9 @@ RenderThreadDebugInfo RenderThread::getFrameInfo() {
 void RenderThread::enqueueFrame(RenderFrame *frame) {
 	Services()->getCore()->lockMutex(jobQueueMutex);
 	frameQueue.push(frame);
-	if(frameQueue.size() > MAX_QUEUED_FRAMES) {
-		// drop frames if necessary
+	while(frameQueue.size() > MAX_QUEUED_FRAMES) {
+		RenderFrame *nextFrame = frameQueue.front();
+		framesToDelete.push_back(nextFrame);
 		frameQueue.pop();
 	}
 	Services()->getCore()->unlockMutex(jobQueueMutex);

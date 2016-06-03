@@ -127,7 +127,6 @@ void UIBox::redrawMesh() {
 	}
 	
 	boxMesh->addSubmesh(newGeometry);
-	shaderPasses[0].shaderBinding->resetAttributes = true;
 }
 
 void UIBox::setMaterial(Material *material) {
@@ -146,7 +145,6 @@ void UIBox::setMaterial(Material *material) {
 	shaderPasses.push_back(pass);
 	
 	shaderPasses[0].shaderBinding->addParamPointer(ProgramParam::PARAM_COLOR, "entityColor", &color);
-	shaderPasses[0].shaderBinding->resetAttributes = true;
 }
 
 void UIBox::Render(GPUDrawBuffer *buffer) {

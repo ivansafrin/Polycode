@@ -337,7 +337,6 @@ void UIRect::setMaterial(Material *material) {
 	shaderPasses.push_back(pass);
 	
 	shaderPasses[0].shaderBinding->addParamPointer(ProgramParam::PARAM_COLOR, "entityColor", &color);
-	shaderPasses[0].shaderBinding->resetAttributes = true;
 }
 
 Texture *UIRect::getTexture() {

@@ -254,7 +254,6 @@ namespace Polycode {
 			std::vector<RenderTargetBinding*> colorTargetBindings;
 			std::vector<RenderTargetBinding*> depthTargetBindings;
 		
-			bool resetAttributes;
 			Shader *targetShader;
 		
 			CoreMutex *accessMutex;

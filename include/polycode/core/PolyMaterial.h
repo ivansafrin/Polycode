@@ -38,7 +38,9 @@ namespace Polycode {
 	class _PolyExport ShaderPass {
 		public:
 			ShaderPass();
-			ShaderPass(Shader *shader);		   
+			ShaderPass(Shader *shader);
+			ShaderPass(const ShaderPass &other);
+			~ShaderPass();
 			Shader *shader;
 			bool wireframe;
 			unsigned short blendingMode;

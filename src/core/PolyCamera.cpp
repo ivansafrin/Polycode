@@ -365,7 +365,6 @@ void Camera::setPostFilter(Material *material) {
 		shaderPass.materialShaderBinding = shaderPass.shaderBinding;
 		shaderPass.shaderBinding = new ShaderBinding();
 		shaderPass.shaderBinding->targetShader = shaderPass.shader;
-		shaderPass.shaderBinding->resetAttributes = true;
 		
 		for(int j=0; j < materialBinding->getNumColorTargetBindings(); j++) {
 			RenderTargetBinding *colorBinding = materialBinding->getColorTargetBinding(j);

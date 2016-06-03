@@ -50,8 +50,8 @@ function Ray:Ray(...)
 	end
 end
 
-function Ray:boxIntersect(box, transformMatrix, near, far)
-	local retVal = Polycode.Ray_boxIntersect(self.__ptr, box.__ptr, transformMatrix.__ptr, near, far)
+function Ray:boxIntersect(box, transformMatrix, vnear, vfar)
+	local retVal = Polycode.Ray_boxIntersect(self.__ptr, box.__ptr, transformMatrix.__ptr, vnear, vfar)
 	return retVal
 end
 
