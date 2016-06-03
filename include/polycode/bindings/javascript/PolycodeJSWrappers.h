@@ -7762,9 +7762,9 @@ namespace Polycode {
 		Ray *inst = (Ray*)duk_to_pointer(context, 0);
 		Vector3 box = *(Vector3*)duk_to_pointer(context, 1);
 		Matrix4 transformMatrix = *(Matrix4*)duk_to_pointer(context, 2);
-		Number near = duk_to_number(context, 3);
-		Number far = duk_to_number(context, 4);
-		duk_push_number(context, inst->boxIntersect(box,transformMatrix,near,far));
+		Number vnear = duk_to_number(context, 3);
+		Number vfar = duk_to_number(context, 4);
+		duk_push_number(context, inst->boxIntersect(box,transformMatrix,vnear,vfar));
 		return 1;
 	}
 

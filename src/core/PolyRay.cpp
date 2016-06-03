@@ -133,7 +133,7 @@ bool Ray::closestPointsBetween(const Ray &ray2, Vector3 *point1, Vector3 *point2
 	return true;
 }
 
-Number Ray::boxIntersect(const Vector3 &box, const Matrix4 &transformMatrix, float near, float far) const {
+Number Ray::boxIntersect(const Vector3 &box, const Matrix4 &transformMatrix, float vnear, float vfar) const {
 
 	if(box.x == 0 || box.y == 0 || box.z == 0)
 		return -1.0;
@@ -171,7 +171,7 @@ Number Ray::boxIntersect(const Vector3 &box, const Matrix4 &transformMatrix, flo
 	if (tzmax < tmax)
 		tmax = tzmax;
 		
-	if( (tmin < far) && (tmax > near) ) {
+	if( (tmin < vfar) && (tmax > vnear) ) {
 		Vector3 hitpoint = r.origin + (r.direction * fabs(tmin));
 		hitpoint = transformMatrix * hitpoint;
 		return origin.distance(hitpoint);

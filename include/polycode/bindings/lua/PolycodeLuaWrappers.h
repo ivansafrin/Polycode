@@ -10660,19 +10660,19 @@ static int Polycode_Ray_set_inv_direction(lua_State *L) {
 		Vector3 box = *(Vector3*) *((PolyBase**)lua_touserdata(L, 2));
 		luaL_checktype(L, 3, LUA_TUSERDATA);
 		Matrix4 transformMatrix = *(Matrix4*) *((PolyBase**)lua_touserdata(L, 3));
-		Number near;
+		Number vnear;
 		if(lua_isnumber(L, 4)) {
-			near = lua_tonumber(L, 4);
+			vnear = lua_tonumber(L, 4);
 		} else {
-			near = 0.0;
+			vnear = 0.0;
 		}
-		Number far;
+		Number vfar;
 		if(lua_isnumber(L, 5)) {
-			far = lua_tonumber(L, 5);
+			vfar = lua_tonumber(L, 5);
 		} else {
-			far = 9999.0;
+			vfar = 9999.0;
 		}
-		lua_pushnumber(L, inst->boxIntersect(box, transformMatrix, near, far));
+		lua_pushnumber(L, inst->boxIntersect(box, transformMatrix, vnear, vfar));
 		return 1;
 	}
 	static int Polycode_Ray_planeIntersectPoint(lua_State *L) {

@@ -35,7 +35,7 @@ namespace Polycode {
 			Ray();
 			Ray(const Vector3 &origin, const Vector3 &direction);
 	
-			Number boxIntersect(const Vector3 &box, const Matrix4 &transformMatrix, float near = 0.0, float far = 9999.0) const;
+			Number boxIntersect(const Vector3 &box, const Matrix4 &transformMatrix, float vnear = 0.0, float vfar = 9999.0) const;
 			
 			Vector3 planeIntersectPoint(const Vector3 &planeNormal, Number planeDistance) const;
 			Vector3 planeIntersectPoint(const Vector3 &planeNormal, const Vector3 &planePosition) const;

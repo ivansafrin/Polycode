@@ -25,7 +25,7 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
 
 	// scene->setOverrideMaterial((Material*)globalPool->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
 
-	for (int i = 0; i < 3000; i++) {
+	for (int i = 0; i < 300; i++) {
 		test = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.5, 0.5);
 		test->setMaterialByName("Unlit");
 		test->getShaderPass(0).shaderBinding->loadTextureForParam("diffuse", "main_icon.png");
@@ -37,9 +37,9 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
 	}
 	Camera *camera = scene->getDefaultCamera();
 
-	fpsLabel = new SceneLabel("FPS:", 32, "main", Label::ANTIALIAS_FULL, 0.1);
+	fpsLabel = new SceneLabel("YO MOMMA!", 64, "main", Label::ANTIALIAS_FULL, 0.1);
 	scene->addChild(fpsLabel);
-	fpsLabel->setPositionX(-0.6);
+	//fpsLabel->setPositionX(-0.3);
 	
 	scene->getDefaultCamera()->setPostFilterByName("HDRProcessBloom");
 
@@ -76,7 +76,7 @@ bool PolycodeTemplateApp::Update() {
 	}
 
 	if (Services()->getRenderer()->getRenderThread()->getFrameInfo().timeTaken > 0) {
-		fpsLabel->setText("FPS:" + String::IntToString(1000 / Services()->getRenderer()->getRenderThread()->getFrameInfo().timeTaken));
+		//fpsLabel->setText("FPS:" + String::IntToString(1000 / Services()->getRenderer()->getRenderThread()->getFrameInfo().timeTaken));
 	}
 
 	return core->updateAndRender();
