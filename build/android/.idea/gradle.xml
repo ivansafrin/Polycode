@@ -10,6 +10,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/Polycode2DPhysics" />
+            <option value="$PROJECT_DIR$/Polycode3DPhysics" />
             <option value="$PROJECT_DIR$/PolycodeUI" />
             <option value="$PROJECT_DIR$/Polycore" />
             <option value="$PROJECT_DIR$/TemplateApp" />
@@ -19,6 +20,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/Polycode2DPhysics" />
+            <option value="$PROJECT_DIR$/Polycode3DPhysics" />
             <option value="$PROJECT_DIR$/PolycodeUI" />
             <option value="$PROJECT_DIR$/Polycore" />
             <option value="$PROJECT_DIR$/TemplateApp" />

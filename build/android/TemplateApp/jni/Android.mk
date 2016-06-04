@@ -18,6 +18,11 @@ LOCAL_SRC_FILES := ../../Polycode2DPhysics/obj/local/$(TARGET_ARCH_ABI)/libPolyc
 include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
+LOCAL_MODULE := Polycode3DPhysics
+LOCAL_SRC_FILES := ../../Polycode3DPhysics/obj/local/$(TARGET_ARCH_ABI)/libPolycode3DPhysics.a
+include $(PREBUILT_STATIC_LIBRARY)
+
+include $(CLEAR_VARS)
 LOCAL_MODULE := freetype
 LOCAL_SRC_FILES := $(LIBDIR)/libfreetype.a
 include $(PREBUILT_STATIC_LIBRARY)
@@ -70,7 +75,7 @@ include $(PREBUILT_SHARED_LIBRARY)
 include $(CLEAR_VARS)
 LOCAL_MODULE := TemplateApp
 LOCAL_LDLIBS := -landroid -lEGL -lGLESv2 -lOpenSLES -lz -llog
-LOCAL_STATIC_LIBRARIES := Polycore PolycodeUI Polycode2DPhysics freetype lua physfs box2d
+LOCAL_STATIC_LIBRARIES := Polycore PolycodeUI Polycode3DPhysics freetype lua physfs box2d BulletDynamics BulletCollision BulletSoftBody LinearMath
 LOCAL_SHARED_LIBRARIES := ogg vorbis
 LOCAL_CFLAGS += -I$(LOCAL_PATH)/../../../../include -DUSE_EGL -DSTRICT_OPENGLES2
 LOCAL_SRC_FILES := PolycodeTemplate.cpp PolycodeTemplateApp.cpp

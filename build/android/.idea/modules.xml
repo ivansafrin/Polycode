@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Polycode2DPhysics/Polycode2DPhysics.iml" filepath="$PROJECT_DIR$/Polycode2DPhysics/Polycode2DPhysics.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Polycode3DPhysics/Polycode3DPhysics.iml" filepath="$PROJECT_DIR$/Polycode3DPhysics/Polycode3DPhysics.iml" />
       <module fileurl="file://$PROJECT_DIR$/PolycodeUI/PolycodeUI.iml" filepath="$PROJECT_DIR$/PolycodeUI/PolycodeUI.iml" />
       <module fileurl="file://$PROJECT_DIR$/Polycore/Polycore.iml" filepath="$PROJECT_DIR$/Polycore/Polycore.iml" />
       <module fileurl="file://$PROJECT_DIR$/TemplateApp/TemplateApp.iml" filepath="$PROJECT_DIR$/TemplateApp/TemplateApp.iml" />

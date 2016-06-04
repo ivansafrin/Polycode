@@ -363,8 +363,8 @@ Number Sound::modulateSampleForListener(Number sample, unsigned int channel, con
 	Number distance = position.distance(this->position);
 	Number attenuate = 0.5 * pow(referenceDistance/distance, 2.0);
 	
-	attenuate = min(attenuate, 1.0);
-	attenuate = max(attenuate, 0.0);
+	attenuate = MIN(attenuate, 1.0);
+	attenuate = MAX(attenuate, 0.0);
 	ret *= attenuate;
 	return ret;
 }

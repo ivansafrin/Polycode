@@ -4,7 +4,7 @@
 
 #include "Polycode.h"
 #include "polycode/modules/ui/PolycodeUI.h"
-#include "polycode/modules/physics2D/Polycode2DPhysics.h"
+#include "polycode/modules/physics3D/Polycode3DPhysics.h"
 
 using namespace Polycode;
 
