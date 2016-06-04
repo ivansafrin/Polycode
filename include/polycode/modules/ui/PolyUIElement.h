@@ -125,6 +125,10 @@ namespace Polycode {
 			void setLabelColor(const Color &color);
 			Label *getLabel();
 			String getText();
+
+			void setColor(Color color);
+			void setColorInt(int r, int g, int b, int a);
+			void setColor(Number r, Number g, Number b, Number a);
 			
 			~UILabel();			
 		protected:

@@ -96,9 +96,10 @@ Sound::Sound(const String& fileName) :	referenceDistance(1), maxDistance(MAX_FLO
 	soundLoaded = false;
 	setIsPositional(false);
 	loadFile(fileName);
-	if(soundLoaded) {
-		Services()->getSoundManager()->registerSound(this);
-	}
+
+    if(soundLoaded) {
+        Services()->getSoundManager()->registerSound(this);
+    }
 }
 
 Sound::Sound(int size, const char *data, int channels, unsigned int freq, SoundFormat format) : referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), numSamples(-1), streamingSound(false), playing(false) , playbackOffset(0), streamingSource(NULL), frequencyAdjust(1.0) {
@@ -362,8 +363,8 @@ Number Sound::modulateSampleForListener(Number sample, unsigned int channel, con
 	Number distance = position.distance(this->position);
 	Number attenuate = 0.5 * pow(referenceDistance/distance, 2.0);
 	
-	attenuate = min(attenuate, 1.0);
-	attenuate = max(attenuate, 0.0);
+	attenuate = MIN(attenuate, 1.0);
+	attenuate = MAX(attenuate, 0.0);
 	ret *= attenuate;
 	return ret;
 }

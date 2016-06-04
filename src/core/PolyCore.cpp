@@ -317,7 +317,7 @@ namespace Polycode {
 		int sleepTimeMs = refreshInterval - ticksSinceLastFrame;
 		if(sleepTimeMs > 0) {
 #if PLATFORM == PLATFORM_WINDOWS
-			//Sleep(sleepTimeMs);
+			Sleep(sleepTimeMs);
 #else
 			usleep(sleepTimeMs * 1000);
 #endif
@@ -402,6 +402,10 @@ namespace Polycode {
 		mutex->unlock();
 	}
 	
+	CoreMotionEvent::CoreMotionEvent(){
+		eventType = "CoreMotionEvent";
+	}	
+
 	DummyCore::DummyCore(): Core(0, 0, false, false, 0, 0, 0, 0) {
 		fileProviders.push_back(new BasicFileProvider());
 	}

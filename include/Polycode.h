@@ -103,6 +103,8 @@
 		#else
 			#ifdef RPI_CORE
 				#include "polycode/core/PolyRPICore.h"
+			#elif defined(__ANDROID__)
+				#include "polycode/core/PolyAndroidCore.h"
 			#else
 				#ifdef EMSCRIPTEN
 					#include "polycode/core/PolyEmscriptenCore.h"

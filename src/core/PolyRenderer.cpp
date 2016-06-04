@@ -26,6 +26,8 @@
 #include "polycode/core/PolyCore.h"
 #include "polycode/core/PolyTexture.h"
 #include "polycode/core/PolyVector4.h"
+#include "polycode/core/PolyLogger.h"
+#include <unistd.h>
 
 using namespace Polycode;
 
@@ -81,22 +83,46 @@ void RenderThread::initGlobals() {
 void RenderThread::updateRenderThread() {
 	jobQueueMutex->lock();
 		
-	while(jobQueue.size() > 0) {
+	while (jobQueue.size() > 0) {
 		RendererThreadJob nextJob = jobQueue.front();
 		jobQueue.pop();
-		processJob(nextJob);
+#if PLATFORM == PLATFORM_ANDROID
+		if (!core->isWindowInitialized() && nextJob.jobType != JOB_REQUEST_CONTEXT_CHANGE) {
+			jobQueue.push(nextJob);
+			for (int i = 0; i < jobQueue.size() - 1; i++) {
+				RendererThreadJob fJob = jobQueue.front();
+				if (fJob.jobType != JOB_REQUEST_CONTEXT_CHANGE) {
+					jobQueue.push(fJob);
+				} else {
+					processJob(fJob);
+					i--;
+				}
+				jobQueue.pop();
+			}
+			break;
+		} else {
+#endif
+			processJob(nextJob);
+#if PLATFORM == PLATFORM_ANDROID
+		}
+#endif
 	}
-		
+
 	RenderFrame *nextFrame = NULL;
-	if(frameQueue.size() > 0) {
+	if (frameQueue.size() > 0) {
 		nextFrame = frameQueue.front();
 		frameQueue.pop();
 	}
 
 	jobQueueMutex->unlock();
 
-	if(nextFrame) {
-		while(nextFrame->jobQueue.size() > 0) {
+	if (nextFrame) {
+		while (nextFrame->jobQueue.size() > 0) {
+			#if PLATFORM == PLATFORM_ANDROID
+				if(!core->isWindowInitialized()){
+					break;
+				}
+			#endif
 			RendererThreadJob frameJob = nextFrame->jobQueue.front();
 			nextFrame->jobQueue.pop();
 			processJob(frameJob);
@@ -111,7 +137,7 @@ void RenderThread::updateRenderThread() {
 }
 
 void RenderThread::runThread() {
-	
+
 	initGlobals();
 	
 	while(threadRunning) {
@@ -330,6 +356,7 @@ void RenderThread::clearFrameQueue() {
 
 void RenderThread::processJob(const RendererThreadJob &job) {
 	lockRenderMutex();
+
 	switch(job.jobType) {
 		case JOB_REQUEST_CONTEXT_CHANGE:
 		{

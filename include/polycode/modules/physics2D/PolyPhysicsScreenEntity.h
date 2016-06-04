@@ -21,8 +21,8 @@ THE SOFTWARE.
 */
 
 #pragma once
-#include "PolyGlobals.h"
-#include "PolyVector2.h"
+#include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyVector2.h"
 #include "Box2D/Box2D.h"
 
 namespace Polycode {

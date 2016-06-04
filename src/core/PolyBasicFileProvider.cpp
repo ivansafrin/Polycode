@@ -3,7 +3,7 @@
 
 using namespace Polycode;
 
-BasicFileProvider::BasicFileProvider() {
+BasicFileProvider::BasicFileProvider() : CoreFileProvider() {
 	type = "folder";
 }
 

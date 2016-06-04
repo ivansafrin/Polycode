@@ -288,7 +288,7 @@ namespace Polycode {
 		InputEvent *evt = new InputEvent();
 		evt->touch = touch;
 		evt->touches = touches;
-		evt->timestamp = ticks;		
+		evt->timestamp = ticks;
 		dispatchEvent(evt, InputEvent::EVENT_TOUCHES_MOVED);
 		if(simulateMouseWithTouch) {
 			setMousePosition(touch.position.x, touch.position.y, ticks);

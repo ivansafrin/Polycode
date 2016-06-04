@@ -94,8 +94,9 @@ namespace Polycode {
 	
 	class CoreMotionEvent : public Event {
 		public:
-			Vector3 amount;
-	};
+			CoreMotionEvent();
+            Vector3 amount;
+    };
 
 	/**
 	* The main core of the framework. The core deals with system-level functions, such as window initialization and OS interaction. Each platform has its own implementation of this base class. NOTE: SOME OF THE FUNCTIONALITY IN THE CORE IS NOT FULLY IMPLEMENTED!!
@@ -151,6 +152,12 @@ namespace Polycode {
 		* @param y New cursor y position		
 		*/
 		virtual void warpCursor(int x, int y) {}
+		
+		/**
+		 * Opens / closes the on-screen keyboard on a mobile device.
+		 * @param open True to open false to close
+		 */
+		virtual void openOnScreenKeyboard(bool open){};
 		
 		/**
 		* Launches a Threaded class into its own thread. See the documentation for Threaded for information on how to crated threaded classes.
@@ -307,12 +314,11 @@ namespace Polycode {
 
 		virtual void handleVideoModeChange(VideoModeChangeInfo *modeInfo) = 0;
 		virtual void flushRenderContext() = 0;
-		virtual void prepareRenderContext() {}
-		
+		virtual void prepareRenderContext() {}		virtual bool isWindowInitialized() {return true;};
 		CoreFile *openFile(const Polycode::String& fileName, const Polycode::String& opts);
 		void closeFile(CoreFile *file);
 		
-		void addFileSource(const String &type, const String &source);
+		virtual void addFileSource(const String &type, const String &source);
 		void removeFileSource(const String &type, const String &source);
 		
 		std::vector<OSFileEntry> parseFolder(const Polycode::String& pathString, bool showHidden);
