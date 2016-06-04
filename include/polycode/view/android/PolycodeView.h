@@ -114,5 +114,4 @@ void* startApp(void* data);
 
 int JNIGetUnicodeChar(ANativeActivity* native_activity, int eventType, int keyCode, int metaState);
 void JNIAutoHideNavBar(ANativeActivity* native_activity);
-void GetAudioInfo(ANativeActivity* native_activity);
 void JNIWakeLock(ANativeActivity* native_activity, bool acquire);

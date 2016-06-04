@@ -93,7 +93,7 @@ AndroidCore::AndroidCore(PolycodeView *view, int xRes, int yRes, bool fullScreen
 	this->view = view;
 	core = this;
 	
-// 	services->getSoundManager()->setAudioInterface(new OpenSLAudioInterface());
+	services->getSoundManager()->setAudioInterface(new OpenSLAudioInterface());
 	extractResources();
 }
 
@@ -189,6 +189,68 @@ bool AndroidCore::systemUpdate() {
 
 void AndroidCore::setCursor(int cursorType) {
 
+}
+
+//adapted from https://groups.google.com/d/msg/android-ndk/Tk3g00wLKhk/TJQucoaE_asJ
+void AndroidCore::openOnScreenKeyboard(bool open){
+	// Attaches the current thread to the JVM. 
+	jint lResult; 
+	jint lFlags = 0; 
+
+	JavaVM* javaVM = view->native_activity->vm;
+	JNIEnv* jniEnv;
+	bool attached = false;
+
+	if(javaVM->GetEnv((void**)&jniEnv, JNI_VERSION_1_6) ==JNI_EDETACHED){
+		JavaVMAttachArgs attachArgs;
+		attachArgs.version = JNI_VERSION_1_6;
+		attachArgs.name = "NativeThread";
+		attachArgs.group = NULL;
+		
+		jint result = javaVM->AttachCurrentThread(&jniEnv, &attachArgs);
+		if(result == JNI_ERR){
+			return;
+		}
+		attached = true;
+	} 
+
+	// Retrieves Context.INPUT_METHOD_SERVICE. 
+	jclass ClassContext = jniEnv->FindClass("android/content/Context"); 
+	jfieldID FieldINPUT_METHOD_SERVICE = jniEnv->GetStaticFieldID(ClassContext, "INPUT_METHOD_SERVICE", "Ljava/lang/String;"); 
+	jobject INPUT_METHOD_SERVICE = jniEnv->GetStaticObjectField(ClassContext, FieldINPUT_METHOD_SERVICE); 
+
+	jclass ClassNativeActivity = jniEnv->FindClass("android/app/NativeActivity");
+	jobject lNativeActivity = view->native_activity->clazz;
+	
+	// Runs getSystemService(Context.INPUT_METHOD_SERVICE). 
+	jclass ClassInputMethodManager = jniEnv->FindClass("android/view/inputmethod/InputMethodManager");
+	jmethodID MethodGetSystemService = jniEnv->GetMethodID(ClassNativeActivity, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;"); 
+	jobject lInputMethodManager = jniEnv->CallObjectMethod(lNativeActivity, MethodGetSystemService, INPUT_METHOD_SERVICE); 
+
+	// Runs getWindow().getDecorView().
+	jmethodID MethodGetWindow = jniEnv->GetMethodID(ClassNativeActivity, "getWindow", "()Landroid/view/Window;"); 
+	jobject lWindow = jniEnv->CallObjectMethod(lNativeActivity, MethodGetWindow); 
+	jclass ClassWindow = jniEnv->FindClass("android/view/Window");
+	jmethodID MethodGetDecorView = jniEnv->GetMethodID(ClassWindow, "getDecorView", "()Landroid/view/View;");
+	jobject lDecorView = jniEnv->CallObjectMethod(lWindow, MethodGetDecorView);
+
+		// Runs lWindow.getViewToken() 
+	jclass ClassView = jniEnv->FindClass("android/view/View"); 
+	jmethodID MethodGetWindowToken = jniEnv->GetMethodID(ClassView, "getWindowToken", "()Landroid/os/IBinder;"); 
+	jobject lBinder = jniEnv->CallObjectMethod(lDecorView, MethodGetWindowToken); 
+
+	if (open) {
+		// Runs lInputMethodManager.showSoftInput(...). 
+		jmethodID MethodShowSoftInput = jniEnv->GetMethodID(ClassInputMethodManager, "showSoftInput", "(Landroid/view/View;I)Z"); 
+		jboolean lResult = jniEnv->CallBooleanMethod(lInputMethodManager, MethodShowSoftInput, lDecorView, lFlags);
+	} else { 
+		// lInputMethodManager.hideSoftInput(...). 
+		jmethodID MethodHideSoftInput = jniEnv->GetMethodID(ClassInputMethodManager, "hideSoftInputFromWindow", "(Landroid/os/IBinder;I)Z"); 
+		jboolean lRes = jniEnv->CallBooleanMethod(lInputMethodManager, MethodHideSoftInput, lBinder, lFlags); 
+	} 
+
+	// Finished with the JVM. 
+	javaVM->DetachCurrentThread(); 
 }
 
 void launchThread(Threaded *target) {
@@ -493,7 +555,7 @@ void AndroidCore::initKeyMap() {
 	for (int i=0; i<1024; ++i )
 		keyMap[i] = KEY_UNKNOWN;
 
-	keyMap[AKEYCODE_BACK] = KEY_BACKSPACE;
+	keyMap[AKEYCODE_BACK] = KEY_ESCAPE;
 	keyMap[AKEYCODE_TAB] = KEY_TAB;
 	keyMap[AKEYCODE_CLEAR] = KEY_CLEAR;
 	keyMap[AKEYCODE_ENTER] = KEY_RETURN;

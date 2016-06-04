@@ -10,11 +10,11 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     core = new POLYCODE_CORE(view, 800,480,false,false, 0,0,60, -1, true);
 
     core->addFileSource("archive", "default.pak");
-    Logger::log("defaultWD: %s", core->getDefaultWorkingDirectory().c_str());
     core->addFileSource("folder", core->getDefaultWorkingDirectory());
     ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
     globalPool->loadResourcesFromFolder("default", true);
 
+    CoreServices::getInstance()->getConfig()->loadConfig("Polycode", "UIThemes/dark_retina/theme.xml");
 
 	// Write your code here!
     srand(time(NULL));
@@ -40,11 +40,8 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
         scene->addChild(box);
     }*/
 
-    Logger::log("before sound");
-//    bgSound = new Sound("FightBG.wav");
+    bgSound = new Sound("FightBG.wav");
 //    bgSound->Play();
-
-
 
 //    sound1 = new Sound("hit.wav");
     //Logger::log("before Play");
@@ -64,14 +61,26 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     scene->addChild(fps);
     scene->addChild(test);
 
-    /*game = new Scene(Scene::SCENE_3D);
-    game->useClearColor = true;
-    game->getActiveCamera()->setPosition(0, 0, 10);
+    /*game = new Scene(Scene::SCENE_2D_TOPLEFT);
+    //game->useClearColor = true;
+    //game->getActiveCamera()->setPosition(0, 0, 10);
 
-    box = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 2, 2, 2);
+    /*box = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 2, 2, 2);
     box->setMaterialByName("UnlitUntextured");
     box->setColor(0.1, 1.0, 1.0, 1.0);
-    game->addChild(box);*/
+    game->addChild(box);
+
+    UILabel *uiLabel = new UILabel("Text");
+    game->addChild(uiLabel);
+
+    btn = new UIButton("Press me!", 80);
+    btn->setPosition(5, 70);
+    game->addChild(btn);
+    btn->addEventListener(this, UIEvent::CLICK_EVENT);
+
+    Services()->getInput()->simulateMouseWithTouch = true;
+
+    game->rootEntity.processInputEvents = true;*/
 
     Services()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
     Services()->getInput()->addEventListener(this, InputEvent::EVENT_TOUCHES_BEGAN);
@@ -85,15 +94,19 @@ void PolycodeTemplateApp::handleEvent(Event *event) {
     if(event->getEventType()=="InputEvent"){
         InputEvent *inputEvent = (InputEvent*) event;
         if(inputEvent->getEventCode() == InputEvent::EVENT_KEYDOWN){
+        //Logger::log("keyevent %d", inputEvent->getKey());
         switch(inputEvent->getKey()) {
+            case KEY_ESCAPE:
+                core->openOnScreenKeyboard(false);
+                break;
             case KEY_z:
-                sound1->Play(true);
+                //sound1->Play(true);
             break;
             case KEY_x:
-                sound2->Play();
+                //sound2->Play();
             break;
             case KEY_c:
-                sound3->Play();
+                //sound3->Play();
             break;
             }
         } else if (inputEvent->getEventCode() == InputEvent::EVENT_TOUCHES_BEGAN){
@@ -111,6 +124,12 @@ void PolycodeTemplateApp::handleEvent(Event *event) {
         if(motionEvent->getEventCode() == Core::EVENT_ACCELEROMETER_MOTION){
         } else if (motionEvent->getEventCode() == Core::EVENT_GYRO_ROTATION){
             test->Translate(motionEvent->amount.x*0.01, motionEvent->amount.y*0.01);
+        }
+    } else if(event->getEventType()=="UIEvent"){
+        UIEvent* uiEvent = (UIEvent*)event;
+        if(uiEvent->getDispatcher() == btn){
+        Logger::log("hit");
+            core->openOnScreenKeyboard(true);
         }
     }
 }

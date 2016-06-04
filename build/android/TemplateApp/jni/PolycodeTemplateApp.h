@@ -3,6 +3,8 @@
 //
 
 #include "Polycode.h"
+#include "polycode/modules/ui/PolycodeUI.h"
+#include "polycode/modules/physics2D/Polycode2DPhysics.h"
 
 using namespace Polycode;
 
@@ -33,4 +35,5 @@ private:
 
     Scene* game;
     ScenePrimitive* box;
+    UIButton* btn;
 };

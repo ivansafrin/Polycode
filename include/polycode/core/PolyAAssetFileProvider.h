@@ -37,12 +37,6 @@ namespace Polycode {
 		
 		AAsset *file;
 	};
-    
-	class _PolyExport AAssetDirClass : public PolyBase {
-	public:
-		AAssetDir* system;
-		String name;
-	};
 	
 	class _PolyExport AAssetFileProvider : public CoreFileProvider {
 		public:
@@ -56,7 +50,7 @@ namespace Polycode {
 			void addSource(const String &source);
 			void removeSource(const String &source);
 		
-			std::vector<AAssetDirClass> sourceFolders;
+			std::vector<String> sourceFolders;
 			
 			AAssetManager* manager;
 	};

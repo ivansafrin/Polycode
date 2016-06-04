@@ -161,7 +161,6 @@ AudioMixer::~AudioMixer() {
 
 void AudioMixer::mixIntoBuffer(int16_t *buffer, unsigned int numSamples) {
 	mixerMutex->lock();
-
 	if (sounds.size() == 0) {
 		memset(buffer, 0, sizeof(int16_t) * numSamples * POLY_NUM_CHANNELS);
 		mixerMutex->unlock();

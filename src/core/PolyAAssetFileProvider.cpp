@@ -32,16 +32,12 @@ AAssetFileProvider::AAssetFileProvider(AAssetManager* manager) : CoreFileProvide
 }
 
 void AAssetFileProvider::addSource(const String &source) {
-	AAssetDirClass dir;
-	dir.name = source;
-	dir.system = AAssetManager_openDir(manager, source.c_str());
-	sourceFolders.push_back(dir);
+	sourceFolders.push_back(source);
 }
 
 void AAssetFileProvider::removeSource(const String &source) {
 	for(int i=0; i < sourceFolders.size(); i++) {
-		if(sourceFolders[i].name == source) {
-			AAssetDir_close(sourceFolders[i].system);
+		if(sourceFolders[i] == source) {
 			sourceFolders.erase(sourceFolders.begin()+i);
 			return;
 		}
@@ -52,7 +48,7 @@ Polycode::CoreFile *AAssetFileProvider::openFile(const String &fileName, const S
 	Logger::log("openFile %s", fileName.c_str());
 	AAsset *file = NULL;
 	for(int i=0; i < sourceFolders.size(); i++) {
-		file = AAssetManager_open(manager, (sourceFolders[i].name+"/"+fileName).c_str(), AASSET_MODE_BUFFER);
+		file = AAssetManager_open(manager, (sourceFolders[i]+"/"+fileName).c_str(), AASSET_MODE_BUFFER);
 		if(file) {
 			break;
 		}

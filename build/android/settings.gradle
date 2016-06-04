@@ -1,1 +1,1 @@
-include ':Polycore', ':TemplateApp'
+include ':Polycore', ':TemplateApp', ':PolycodeUI', ':Polycode2DPhysics'

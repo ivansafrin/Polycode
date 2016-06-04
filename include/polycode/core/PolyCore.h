@@ -154,6 +154,12 @@ namespace Polycode {
 		virtual void warpCursor(int x, int y) {}
 		
 		/**
+		 * Opens / closes the on-screen keyboard on a mobile device.
+		 * @param open True to open false to close
+		 */
+		virtual void openOnScreenKeyboard(bool open){};
+		
+		/**
 		* Launches a Threaded class into its own thread. See the documentation for Threaded for information on how to crated threaded classes.
 		* @param target Target threaded class.
 		* @see Threaded

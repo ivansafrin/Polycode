@@ -86,6 +86,7 @@ namespace Polycode {
 		bool systemUpdate();
 		
 		void setCursor(int cursorType);
+		void openOnScreenKeyboard(bool open);
 		
 		void createThread(Threaded *target);
 		CoreMutex *createMutex();

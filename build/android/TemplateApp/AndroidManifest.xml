@@ -8,7 +8,7 @@
     <application android:label="TemplateApp">
         <activity
             android:name="org.polycode.templateapp.PolycodeActivity"
-            android:configChanges="keyboardHidden"
+            android:configChanges="keyboardHidden|keyboard"
             android:screenOrientation="landscape"
             android:label="TemplateApp">
 

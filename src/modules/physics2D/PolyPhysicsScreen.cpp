@@ -21,10 +21,10 @@ THE SOFTWARE.
 */
 
 
-#include "PolyPhysicsScreen.h"
-#include "PolyPhysicsScreenEntity.h"
-#include "PolyCoreServices.h"
-#include "PolyCore.h"
+#include "polycode/modules/physics2D/PolyPhysicsScreen.h"
+#include "polycode/modules/physics2D/PolyPhysicsScreenEntity.h"
+#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyCore.h"
 
 using namespace Polycode;
 

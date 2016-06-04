@@ -55,6 +55,7 @@ PolycodeView::PolycodeView(ANativeActivity* native, String title){
 	native_activity->callbacks->onInputQueueCreated		= onInputQueueCreated;
 	native_activity->callbacks->onInputQueueDestroyed	= onInputQueueDestroyed;
 	native_activity->callbacks->onSaveInstanceState		= onSaveInstanceState;
+	native_activity->callbacks->onConfigurationChanged	= onConfiguartionChanged;
 	
 	native_config = AConfiguration_new();
 	AConfiguration_fromAssetManager(native_config, native_activity->assetManager);
@@ -88,7 +89,6 @@ PolycodeView::PolycodeView(ANativeActivity* native, String title){
 	
 	firstWindowCreate = true;
 	
-	GetAudioInfo(native);
 }
 
 PolycodeView::~PolycodeView(){}
@@ -139,6 +139,7 @@ void onDestroy(ANativeActivity* activity){
 		if(result == JNI_ERR){
 			if(core)
 				core->Shutdown();
+			return;
 		}
 		attached = true;
 	}
@@ -241,7 +242,7 @@ void onLowMemory(ANativeActivity* activity){
 }
 
 static int inputLoop(int fd, int events, void* data){
-	Logger::log("inputLoop");
+// 	Logger::log("inputLoop");
 	AInputQueue* native_input = ((PolycodeView*)data)->native_input;
 	AndroidEvent event;
 	AInputEvent* aev;
@@ -267,7 +268,7 @@ static int inputLoop(int fd, int events, void* data){
 					event.eventCode = InputEvent::EVENT_KEYUP;
 					event.unicodeChar = JNIGetUnicodeChar(((PolycodeView*)data)->native_activity, AKEY_EVENT_ACTION_UP, kC, AKeyEvent_getMetaState(aev));
 				}
-
+				core->handleSystemEvent(event);
 			} else if(type == AINPUT_EVENT_TYPE_MOTION){
 				event.eventTime = AMotionEvent_getEventTime(aev);
 				int evSource = AInputEvent_getSource(aev);
@@ -557,58 +558,6 @@ void JNIWakeLock(ANativeActivity* native_activity, bool acquire){
 		}
 	}
 	
-	if(attached)
-		javaVM->DetachCurrentThread();
-}
-
-void GetAudioInfo(ANativeActivity* native_activity){
-	JavaVM* javaVM = native_activity->vm;
-	JNIEnv* jniEnv;
-	bool attached = false;
-	
-	if(javaVM->GetEnv((void**)&jniEnv, JNI_VERSION_1_6) ==JNI_EDETACHED){
-		JavaVMAttachArgs attachArgs;
-		attachArgs.version = JNI_VERSION_1_6;
-		attachArgs.name = "NativeThread";
-		attachArgs.group = NULL;
-		
-		jint result = javaVM->AttachCurrentThread(&jniEnv, &attachArgs);
-		if(result == JNI_ERR){
-			return;
-		}
-		attached = true;
-	}
-
-	jclass classNativeActivity = jniEnv->FindClass("android/app/NativeActivity");
-	jclass classAudioManager = jniEnv->FindClass("android/os/AudioManager");
-	
-	jmethodID getSystemServiceID = jniEnv->GetMethodID(classNativeActivity, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;");
-	jstring AUDIO_SERVICE = jniEnv->NewStringUTF("audio");
-	jobject AudioManager = jniEnv->CallObjectMethod(native_activity->clazz, getSystemServiceID, AUDIO_SERVICE);
-	
-	jmethodID getProperty = jniEnv->GetMethodID(classAudioManager, "getProperty", "(Ljava/lang/String;)Landroid/os/AudioManager;");
-	
-	jobject fpBID = jniEnv->GetStaticObjectField(classAudioManager, "PROPERTY_OUTPUT_FRAMES_PER_BUFFER", "Ljava/lang/String;");
-	jobject srID = jniEnv->GetStaticObjectField(classAudioManager, "PROPERTY_OUTPUT_SAMPLE_RATE", "Ljava/lang/String;");
-	
-	jobject fpBO = jniEnv->CallObjectMethod(AudioManager, getProperty, fpBID);
-	jobject srO = jniEnv->CallObjectMethod(AudioManager, getProperty, fpBID);
-	
-	const char *nativeString = (*jniEnv)->GetStringUTFChars(jniEnv, fpBO, 0);
-	int fpB = atoi(nativeString);
-	(*jniEnv)->ReleaseStringUTFChars(jniEnv, fpBO, nativeString);
-	
-	nativeString = (*jniEnv)->GetStringUTFChars(jniEnv, srO, 0);
-	int sr = atoi(nativeString);
-	(*jniEnv)->ReleaseStringUTFChars(jniEnv, srO, nativeString);
-	
-	Logger::log("fpB: %d, sr: %d", fpB, sr);
-	
-// 	jniEnv->DeleteLocalRef(jWakeLockTag);
-// 	jniEnv->DeleteLocalRef(POWER_SERVICE);
-	
-// 	((PolycodeView*)native_activity->instance)->WakeLock = jniEnv->NewGlobalRef(WakeLock);
-
 	if(attached)
 		javaVM->DetachCurrentThread();
 }

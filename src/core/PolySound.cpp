@@ -95,11 +95,11 @@ long custom_tellfunc(void *datasource) {
 Sound::Sound(const String& fileName) :	referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), numSamples(-1), streamingSound(false), playing(false), playbackOffset(0), streamingSource(NULL), frequencyAdjust(1.0) {
 	soundLoaded = false;
 	setIsPositional(false);
-	Logger::log("sound before load");
 	loadFile(fileName);
-	if(soundLoaded) {
-		Services()->getSoundManager()->registerSound(this);
-	}
+
+    if(soundLoaded) {
+        Services()->getSoundManager()->registerSound(this);
+    }
 }
 
 Sound::Sound(int size, const char *data, int channels, unsigned int freq, SoundFormat format) : referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), numSamples(-1), streamingSound(false), playing(false) , playbackOffset(0), streamingSource(NULL), frequencyAdjust(1.0) {
