@@ -28,11 +28,11 @@ LIBDIR=../../lib/linux
 OPTFLAGS=-O2
 DEBUGFLAGS=-g -DDEBUG
 
-LDFLAGSTEMPLATE=-L$(LIBDIR) $(OPTFLAGS) -pthread -lPolycore -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lGLEW -lGL -lX11 -lrt -llua -ldl
-DLDFLAGSTEMPLATE=-L$(LIBDIR) -pthread -lPolycored -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lGLEW -lGL -lX11 -lrt -llua -ldl
+LDFLAGSTEMPLATE=-L$(LIBDIR) $(OPTFLAGS) -pthread -lPolycore -lfreetype -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lGLEW -lGL -lX11 -lrt -llua -ldl
+DLDFLAGSTEMPLATE=-L$(LIBDIR) -pthread -lPolycored -lfreetype -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lGLEW -lGL -lX11 -lrt -llua -ldl
 
-LDFLAGSSTUDIO=-L$(LIBDIR) $(OPTFLAGS) -pthread -lPolycore -lPolycodeUI -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lGLEW -lGL -lX11 -lrt -llua -ldl
-DLDFLAGSSTUDIO=-L$(LIBDIR) -pthread -lPolycored -lPolycodeUId -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lGLEW -lGL -lX11 -lrt -llua -ldl
+LDFLAGSSTUDIO=-L$(LIBDIR) $(OPTFLAGS) -pthread -lPolycore -lPolycodeUI -lfreetype -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lGLEW -lGL -lX11 -lrt -llua -ldl
+DLDFLAGSSTUDIO=-L$(LIBDIR) -pthread -lPolycored -lPolycodeUId -lfreetype -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lGLEW -lGL -lX11 -lrt -llua -ldl
 
 default: setup core
 
@@ -94,6 +94,7 @@ studio: core ui $(OBJSTUDIO)
 	@echo "\033[1;32mCopy Assets to: \033[0m[\033[1;33mStudio\033[0m]"
 	@cp -r $(ASSETDIR)/ide/* Studio
 	@cp $(ASSETDIR)/default/default.pak Studio
+	@cp $(ASSETDIR)/icons/sdl_icon.bmp Studio/icon.bmp
 
 studio_debug: core_debug ui_debug $(DOBJSTUDIO)
 	@echo "\033[1;32mLinking \033[0m[\033[1;33mStudio/Polycoded\033[0m]"
@@ -101,6 +102,7 @@ studio_debug: core_debug ui_debug $(DOBJSTUDIO)
 	@echo "\033[1;32mCopy Assets to: \033[0m[\033[1;33mStudio\033[0m]"
 	@cp -r $(ASSETDIR)/ide/* Studio
 	@cp $(ASSETDIR)/default/default.pak Studio
+	@cp $(ASSETDIR)/icons/sdl_icon.bmp Studio/icon.bmp
 
 clean:
 	rm -f $(OBJCORE) $(OBJUI) $(OBJTEMPLATE) $(OBJSTUDIO) $(DOBJCORE) $(DOBJUI) $(DOBJTEMPLATE) $(DOBJSTUDIO) $(LIBDIR)/libPolycore.a Studio/Polycode $(LIBDIR)/libPolycodeUI.a TemplateApp/PolycodeTemplate $(LIBDIR)/libPolycored.a Studio/Polycoded $(LIBDIR)/libPolycodeUId.a TemplateApp/PolycodeTemplated
