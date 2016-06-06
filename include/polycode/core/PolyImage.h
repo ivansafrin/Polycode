@@ -275,8 +275,10 @@ namespace Polycode {
 		
 			static const int IMAGE_RGB = 0;
 			static const int IMAGE_RGBA = 1;
+#ifndef NO_FP16
 			static const int IMAGE_FP16 = 2;
-		
+#endif
+			
 		protected:
 		
 			bool loadHDR(const String &fileName);

@@ -77,6 +77,6 @@ LOCAL_MODULE := TemplateApp
 LOCAL_LDLIBS := -landroid -lEGL -lGLESv2 -lOpenSLES -lz -llog
 LOCAL_STATIC_LIBRARIES := Polycore PolycodeUI Polycode3DPhysics freetype lua physfs box2d BulletDynamics BulletCollision BulletSoftBody LinearMath
 LOCAL_SHARED_LIBRARIES := ogg vorbis
-LOCAL_CFLAGS += -I$(LOCAL_PATH)/../../../../include -DUSE_EGL -DSTRICT_OPENGLES2
+LOCAL_CFLAGS += -I$(LOCAL_PATH)/../../../../include -DUSE_EGL -DSTRICT_OPENGLES2 -DNO_FP16
 LOCAL_SRC_FILES := PolycodeTemplate.cpp PolycodeTemplateApp.cpp
 include $(BUILD_SHARED_LIBRARY)

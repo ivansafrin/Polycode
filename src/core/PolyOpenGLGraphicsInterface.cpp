@@ -485,13 +485,15 @@ void OpenGLGraphicsInterface::createRenderBuffer(RenderBuffer *renderBuffer) {
 		renderBuffer->depthTexture->type = renderBuffer->colorTexture->type;
 		renderBuffer->depthTexture->filteringMode = Texture::FILTERING_LINEAR;
 		createTexture(&*renderBuffer->depthTexture);
-		
+#ifndef NO_FP16
 		if(renderBuffer->colorTexture->type == Image::IMAGE_FP16) {
 			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, renderBuffer->getWidth(), renderBuffer->getHeight());
-			
 		} else {
+#endif
 			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, renderBuffer->getWidth(), renderBuffer->getHeight());
+#ifndef NO_FP16
 		}
+#endif
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, *((GLuint*)renderBuffer->depthTexture->platformData), 0);
 	}
 	
@@ -553,6 +555,7 @@ void OpenGLGraphicsInterface::createTexture(Texture *texture) {
 			glTextureFormat = GL_RGB;
 			pixelType = GL_UNSIGNED_BYTE;
 			break;
+#ifndef NO_FP16
 		case Image::IMAGE_FP16:
 #ifdef BGRA_TEXTURE_FORMAT
 			glTextureType = GL_BGR;
@@ -568,6 +571,7 @@ void OpenGLGraphicsInterface::createTexture(Texture *texture) {
 #endif
 			pixelType = GL_FLOAT;
 			break;
+#endif
 		default:
 #ifdef BGRA_TEXTURE_FORMAT
 			glTextureType = GL_BGRA;
@@ -581,15 +585,17 @@ void OpenGLGraphicsInterface::createTexture(Texture *texture) {
 	
 	if(texture->depthTexture) {
 		glTextureType = GL_DEPTH_COMPONENT;
-		
+#ifndef NO_FP16
 		if(texture->type == Image::IMAGE_FP16) {
 			pixelType = GL_FLOAT;
 			glTextureFormat = GL_DEPTH_COMPONENT16;
 		} else {
+#endif
 			pixelType = GL_UNSIGNED_BYTE;
 			glTextureFormat = GL_DEPTH_COMPONENT;
+#ifndef NO_FP16
 		}
-		
+#endif		
 	  //  glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_LUMINANCE);
 	}
 	
