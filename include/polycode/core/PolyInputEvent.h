@@ -112,14 +112,13 @@ namespace Polycode {
 		*/		
 		PolyKEY key;
 		
-		
 		wchar_t getCharCode();
 		
 		int keyCode() { return key; }
 		
 		/**
 		* If this is a key press event, this will contain the unicode character that's being typed.
-		*/				
+		*/
 		wchar_t charCode;
 		int timestamp;
 		

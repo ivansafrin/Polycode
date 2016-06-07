@@ -20,7 +20,7 @@ SRCSTUDIO=Studio/main.cpp $(SRCDIR)/ide/EditorGrid.cpp $(SRCDIR)/ide/EntityEdito
 OBJSTUDIO=$(SRCSTUDIO:.cpp=.io)
 DOBJSTUDIO=$(SRCSTUDIO:.cpp=.dio)
 
-CFLAGS=-I../../include -DUSE_X11 -std=c++11
+CFLAGS=-I../../include -std=c++11
 CFLAGSSTUDIO=$(CFLAGS) -DUSE_POLYCODEUI_FILE_DIALOGS -DUSE_POLYCODEUI_MENUBAR
 
 LIBDIR=../../lib/linux
@@ -28,11 +28,11 @@ LIBDIR=../../lib/linux
 OPTFLAGS=-O2
 DEBUGFLAGS=-g -DDEBUG
 
-LDFLAGSTEMPLATE=-L$(LIBDIR) $(OPTFLAGS) -pthread -lPolycore -lfreetype -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lGLEW -lGL -lX11 -lrt -llua -ldl
-DLDFLAGSTEMPLATE=-L$(LIBDIR) -pthread -lPolycored -lfreetype -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lGLEW -lGL -lX11 -lrt -llua -ldl
+LDFLAGSTEMPLATE=-L$(LIBDIR) $(OPTFLAGS) -pthread -lPolycore -lfreetype -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL2 -lGLEW -lGL -lX11 -lrt -llua -ldl
+DLDFLAGSTEMPLATE=-L$(LIBDIR) -pthread -lPolycored -lfreetype -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL2 -lGLEW -lGL -lX11 -lrt -llua -ldl
 
-LDFLAGSSTUDIO=-L$(LIBDIR) $(OPTFLAGS) -pthread -lPolycore -lPolycodeUI -lfreetype -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lGLEW -lGL -lX11 -lrt -llua -ldl
-DLDFLAGSSTUDIO=-L$(LIBDIR) -pthread -lPolycored -lPolycodeUId -lfreetype -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lGLEW -lGL -lX11 -lrt -llua -ldl
+LDFLAGSSTUDIO=-L$(LIBDIR) $(OPTFLAGS) -pthread -lPolycore -lPolycodeUI -lfreetype -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL2 -lGLEW -lGL -lX11 -lrt -llua -ldl
+DLDFLAGSSTUDIO=-L$(LIBDIR) -pthread -lPolycored -lPolycodeUId -lfreetype -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL2 -lGLEW -lGL -lX11 -lrt -llua -ldl
 
 default: setup core
 

@@ -25,7 +25,7 @@
 #include "PolyGlobals.h"
 #include "PolyCore.h"
 #include <vector>
-// #include <SDL2/SDL.h>
+#include <SDL2/SDL.h>
 
 #include "polycode/core/PolyPAAudioInterface.h"
 
@@ -59,7 +59,7 @@ namespace Polycode {
 		void flushRenderContext();
 		
 		void handleVideoModeChange(VideoModeChangeInfo *modeInfo);
-//		void setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport = true);
+
 		void createThread(Threaded *target);
 		std::vector<Rectangle> getVideoModes();
 		
@@ -67,8 +67,7 @@ namespace Polycode {
 				
 		void setCursor(int cursorType);
 		void warpCursor(int x, int y);
-		//void lockMutex(CoreMutex *mutex);
-		//void unlockMutex(CoreMutex *mutex);
+
 		CoreMutex *createMutex();
 		void copyStringToClipboard(const String& str);
 		String getClipboardString();
@@ -78,14 +77,20 @@ namespace Polycode {
 		void removeDiskItem(const String& itemPath);
 		String openFolderPicker();
 		std::vector<String> openFilePicker(std::vector<CoreFileExtension> extensions, bool allowMultiple);
-				String saveFilePicker(std::vector<CoreFileExtension> extensions);
+		String saveFilePicker(std::vector<CoreFileExtension> extensions);
 		void resizeTo(int xRes, int yRes);
 
 		String executeExternalCommand(String command, String args, String inDirectory="");
 		void openURL(String url);
+		
+		Number getBackingXRes();
+		Number getBackingYRes();
 
 	private:
 		bool checkSpecialKeyEvents(PolyKEY key);
+		
+		int backingX;
+		int backingY;
 		
 		uint32_t flags;
 		bool resizableWindow;
@@ -94,5 +99,8 @@ namespace Polycode {
 		
 		int lastMouseX;
 		int lastMouseY;
+		
+		SDL_GLContext sdlContext;
+		SDL_Window* sdlWindow;
 	};
 }
