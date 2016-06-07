@@ -33,6 +33,7 @@
 #include "polycode/core/PolyPhysFSFileProvider.h"
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_syswm.h>
 #include <stdio.h>
 #include <limits.h>
 #include <dirent.h>
@@ -44,6 +45,21 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <pwd.h>
+
+#ifdef USE_X11
+// X11 cursor
+#include <X11/cursorfont.h>
+
+namespace {
+	Display* XDisplay = nullptr;
+	Window XWindow;
+	
+	void set_cursor(int cursorType);
+	void free_cursors();
+} // namespace
+// end X11 cursor
+
+#endif
 
 using namespace Polycode;
 using std::vector;
@@ -65,6 +81,7 @@ long getThreadID() {
 void Core::getScreenInfo(int *width, int *height, int *hz) {
 	SDL_DisplayMode current;
 
+	SDL_Init(SDL_INIT_VIDEO);
 	SDL_GetCurrentDisplayMode(0, &current);
 
 	if (width) *width = current.w;
@@ -73,7 +90,7 @@ void Core::getScreenInfo(int *width, int *height, int *hz) {
 }
 
 SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex, bool retinaSupport) : Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
-  
+ 
 	this->resizableWindow = view->resizable;
 
 	fileProviders.push_back(new BasicFileProvider());
@@ -94,10 +111,7 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 	} else {
 		setenv("SDL_VIDEO_CENTERED", "1", 1);
 	}
-	
-	sdlContext = nullptr;
-	sdlWindow = nullptr;
-	
+		
 	int sdlerror = SDL_Init(SDL_INIT_VIDEO|SDL_INIT_JOYSTICK);
 	if(sdlerror < 0) {
 	  Logger::log("SDL_Init failed! Code: %d, %s\n", sdlerror, SDL_GetError());
@@ -125,6 +139,7 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 	
 	lastMouseX = 0;
 	lastMouseY = 0;
+
 }
 
 
@@ -174,16 +189,13 @@ void SDLCore::handleVideoModeChange(VideoModeChangeInfo* modeInfo){
 		SDL_GL_SetSwapInterval(0);
 	}
 	
-	if(!sdlWindow) {
+	if(!sdlWindow){
 		sdlWindow = SDL_CreateWindow(windowTitle->c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, xRes, yRes, flags);
 		sdlContext = SDL_GL_CreateContext(sdlWindow);
 		SDL_Surface* icon = SDL_LoadBMP("icon.bmp");
 		if(icon){
 			SDL_SetWindowIcon(sdlWindow, icon);
-		} else {
-			Logger::log("icon error: %s\n",SDL_GetError());
 		}
-		
 	} else {
 		SDL_SetWindowSize(sdlWindow, xRes, yRes);
 	}
@@ -206,8 +218,21 @@ void SDLCore::handleVideoModeChange(VideoModeChangeInfo* modeInfo){
 	  Logger::log("glewInit failed! code: %d, %s\n", glewcode, glewGetErrorString(glewcode));
 	}
 	
-	//setVSync(modeInfo->vSync);
 	renderer->setAnisotropyAmount(modeInfo->anisotropyLevel);
+
+#ifdef USE_X11
+	if(!XWindow){
+		SDL_SysWMinfo info;
+		SDL_VERSION(&info.version);
+		
+		if ( SDL_GetWindowWMInfo(sdlWindow, &info) == SDL_TRUE ){
+			if ( info.subsystem == SDL_SYSWM_X11 ){
+				XDisplay = info.info.x11.display;
+				XWindow = info.info.x11.window;
+			}
+		}
+	}
+#endif
 }
 
 vector<Polycode::Rectangle> SDLCore::getVideoModes() {
@@ -226,9 +251,6 @@ vector<Polycode::Rectangle> SDLCore::getVideoModes() {
 }
 
 SDLCore::~SDLCore() {
-#ifdef USE_X11
-	free_cursors();
-#endif // USE_X11
 	SDL_GL_DeleteContext(sdlContext);
 	SDL_DestroyWindow(sdlWindow);
 	SDL_Quit();
@@ -571,3 +593,72 @@ Number SDLCore::getBackingXRes() {
 Number SDLCore::getBackingYRes() {
 	return backingY;
 }
+
+#ifdef USE_X11
+// X11 cursor
+
+namespace {
+	
+	
+// WARNING: These functions rely on the SDL_Display and SDL_Window previously initialized by init_scrap
+
+const int CURSOR_COUNT = 7;
+Cursor defined_cursors[CURSOR_COUNT] = {0};
+
+void set_cursor(int cursorType) {
+	Cursor cursor = 0;
+	
+	if(cursorType >= 0 && cursorType < CURSOR_COUNT) {
+		cursor = defined_cursors[cursorType];
+		if(!cursor) {
+			switch(cursorType) {
+				case Polycode::Core::CURSOR_TEXT:
+					cursor = XCreateFontCursor (XDisplay, XC_xterm);
+				break;
+				case Polycode::Core::CURSOR_POINTER:
+					cursor = XCreateFontCursor (XDisplay, XC_hand1);
+				break;
+				case Polycode::Core::CURSOR_CROSSHAIR:
+					cursor = XCreateFontCursor (XDisplay, XC_crosshair);
+				break;
+				case Polycode::Core::CURSOR_RESIZE_LEFT_RIGHT:
+					cursor = XCreateFontCursor (XDisplay, XC_sb_h_double_arrow);
+				break;
+				case Polycode::Core::CURSOR_RESIZE_UP_DOWN:
+					cursor = XCreateFontCursor (XDisplay, XC_sb_v_double_arrow);
+				break;
+				case Polycode::Core::CURSOR_OPEN_HAND:
+					cursor = XCreateFontCursor (XDisplay, XC_fleur);
+				break;
+				case Polycode::Core::CURSOR_ARROW:
+					cursor = 0;
+				break;
+			}
+
+			defined_cursors[cursorType] = cursor;
+		}
+	}
+
+	if(!cursor) {
+		// Restore the normal cursor.
+		XUndefineCursor(XDisplay, XWindow);
+	} else {
+		XDefineCursor(XDisplay, XWindow, cursor);
+	}
+	
+	XFlush(XDisplay);
+}
+
+void free_cursors() {
+	XUndefineCursor(XDisplay, XWindow);
+	for(int i = 0; i < CURSOR_COUNT; i++) {
+		if(defined_cursors[i]) {
+			XFreeCursor(XDisplay, defined_cursors[i]);
+			defined_cursors[i] = 0;
+		}
+	}
+}
+} // namespace
+// end X11 cursor
+
+#endif // USE_X11

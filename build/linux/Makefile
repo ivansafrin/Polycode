@@ -29,7 +29,7 @@ SRCSTUDIO = Studio/main.cpp $(SRCDIR)/ide/EditorGrid.cpp $(SRCDIR)/ide/EntityEdi
 OBJSTUDIO = $(SRCSTUDIO:.cpp=.io)
 DOBJSTUDIO = $(SRCSTUDIO:.cpp=.dio)
 
-CFLAGS = -I../../include -std=c++11
+CFLAGS = -I../../include -std=c++11 -DUSE_X11
 CFLAGSSTUDIO = $(CFLAGS) -DUSE_POLYCODEUI_FILE_DIALOGS -DUSE_POLYCODEUI_MENUBAR
 
 OPTFLAGS = -O2
