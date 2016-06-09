@@ -87,7 +87,11 @@ namespace Polycode {
 		Number getBackingYRes();
 
 	private:
+		void initKeymap();
+		PolyKEY mapKey(SDL_Scancode key);
 		bool checkSpecialKeyEvents(PolyKEY key);
+		
+		PolyKEY keyMap[512];
 		
 		int backingX;
 		int backingY;

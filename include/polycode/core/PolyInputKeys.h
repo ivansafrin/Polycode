@@ -24,7 +24,7 @@ THE SOFTWARE.
 
 namespace Polycode {
 
-	// copied from SDL for conveniece :)
+	// copied from SDL 1 for conveniece :)
 
 	/**
 	* Keys values.

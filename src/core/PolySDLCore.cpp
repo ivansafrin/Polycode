@@ -104,6 +104,8 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 	const char *homedir = pw->pw_dir;
 	userHomeDirectory = String(homedir);
 
+	initKeymap();
+	
 	windowTitle = (String*)view->windowData;
 	
 	if(resizableWindow) {
@@ -323,6 +325,135 @@ void SDLCore::captureMouse(bool newval) {
 	Core::captureMouse(newval);
 }
 
+void SDLCore::initKeymap(){
+	
+	for (int i=0; i<512; ++i )
+		keyMap[i] = KEY_UNKNOWN;
+
+	keyMap[SDL_SCANCODE_BACKSPACE] = KEY_BACKSPACE;
+	keyMap[SDL_SCANCODE_TAB] = KEY_TAB;
+	keyMap[SDL_SCANCODE_CLEAR] = KEY_CLEAR;
+	keyMap[SDL_SCANCODE_RETURN] = KEY_RETURN;
+	keyMap[SDL_SCANCODE_PAUSE] = KEY_PAUSE;
+	keyMap[SDL_SCANCODE_ESCAPE] = KEY_ESCAPE;
+	keyMap[SDL_SCANCODE_SPACE] = KEY_SPACE;
+	keyMap[SDL_SCANCODE_APOSTROPHE] = KEY_QUOTE;
+	keyMap[SDL_SCANCODE_COMMA] = KEY_COMMA;
+	keyMap[SDL_SCANCODE_MINUS] = KEY_MINUS;
+	keyMap[SDL_SCANCODE_PERIOD] = KEY_PERIOD;
+	keyMap[SDL_SCANCODE_SLASH] = KEY_SLASH;
+	keyMap[SDL_SCANCODE_0] = KEY_0;
+	keyMap[SDL_SCANCODE_1] = KEY_1;
+	keyMap[SDL_SCANCODE_2] = KEY_2;
+	keyMap[SDL_SCANCODE_3] = KEY_3;
+	keyMap[SDL_SCANCODE_4] = KEY_4;
+	keyMap[SDL_SCANCODE_5] = KEY_5;
+	keyMap[SDL_SCANCODE_6] = KEY_6;
+	keyMap[SDL_SCANCODE_7] = KEY_7;
+	keyMap[SDL_SCANCODE_8] = KEY_8;
+	keyMap[SDL_SCANCODE_9] = KEY_9;
+	keyMap[SDL_SCANCODE_SEMICOLON] = KEY_SEMICOLON;
+	keyMap[SDL_SCANCODE_EQUALS] = KEY_EQUALS;
+	keyMap[SDL_SCANCODE_RIGHTBRACKET] = KEY_LEFTBRACKET;
+	keyMap[SDL_SCANCODE_BACKSLASH] = KEY_BACKSLASH;
+	keyMap[SDL_SCANCODE_NONUSBACKSLASH] = KEY_LESS;
+	keyMap[SDL_SCANCODE_RIGHTBRACKET] = KEY_RIGHTBRACKET;
+	keyMap[SDL_SCANCODE_GRAVE] = KEY_BACKQUOTE;
+// 	keyMap[SDL_SCANCODE_BACKTICK] = KEY_BACKQUOTE;
+	keyMap[SDL_SCANCODE_A] = KEY_a;
+	keyMap[SDL_SCANCODE_B] = KEY_b;
+	keyMap[SDL_SCANCODE_C] = KEY_c;
+	keyMap[SDL_SCANCODE_D] = KEY_d;
+	keyMap[SDL_SCANCODE_E] = KEY_e;
+	keyMap[SDL_SCANCODE_F] = KEY_f;
+	keyMap[SDL_SCANCODE_G] = KEY_g;
+	keyMap[SDL_SCANCODE_H] = KEY_h;
+	keyMap[SDL_SCANCODE_I] = KEY_i;
+	keyMap[SDL_SCANCODE_J] = KEY_j;
+	keyMap[SDL_SCANCODE_K] = KEY_k;
+	keyMap[SDL_SCANCODE_L] = KEY_l;
+	keyMap[SDL_SCANCODE_M] = KEY_m;
+	keyMap[SDL_SCANCODE_N] = KEY_n;
+	keyMap[SDL_SCANCODE_O] = KEY_o;
+	keyMap[SDL_SCANCODE_P] = KEY_p;
+	keyMap[SDL_SCANCODE_Q] = KEY_q;
+	keyMap[SDL_SCANCODE_R] = KEY_r;
+	keyMap[SDL_SCANCODE_S] = KEY_s;
+	keyMap[SDL_SCANCODE_T] = KEY_t;
+	keyMap[SDL_SCANCODE_U] = KEY_u;
+	keyMap[SDL_SCANCODE_V] = KEY_v;
+	keyMap[SDL_SCANCODE_W] = KEY_w;
+	keyMap[SDL_SCANCODE_X] = KEY_x;
+	keyMap[SDL_SCANCODE_Y] = KEY_y;
+	keyMap[SDL_SCANCODE_Z] = KEY_z;
+	keyMap[SDL_SCANCODE_DELETE] = KEY_DELETE;
+
+	keyMap[SDL_SCANCODE_KP_0] = KEY_KP0;
+	keyMap[SDL_SCANCODE_KP_1] = KEY_KP1;
+	keyMap[SDL_SCANCODE_KP_2] = KEY_KP2;
+	keyMap[SDL_SCANCODE_KP_3] = KEY_KP3;
+	keyMap[SDL_SCANCODE_KP_4] = KEY_KP4;
+	keyMap[SDL_SCANCODE_KP_5] = KEY_KP5;
+	keyMap[SDL_SCANCODE_KP_6] = KEY_KP6;
+	keyMap[SDL_SCANCODE_KP_7] = KEY_KP7;
+	keyMap[SDL_SCANCODE_KP_8] = KEY_KP8;
+	keyMap[SDL_SCANCODE_KP_9] = KEY_KP9;
+	keyMap[SDL_SCANCODE_KP_DECIMAL] = KEY_KP_PERIOD;
+	keyMap[SDL_SCANCODE_KP_DIVIDE] = KEY_KP_DIVIDE;
+	keyMap[SDL_SCANCODE_KP_MULTIPLY] = KEY_KP_MULTIPLY;
+	keyMap[SDL_SCANCODE_KP_MINUS] = KEY_KP_MINUS;
+	keyMap[SDL_SCANCODE_KP_PLUS] = KEY_KP_PLUS;
+
+	keyMap[SDL_SCANCODE_UP] = KEY_UP;
+	keyMap[SDL_SCANCODE_DOWN] = KEY_DOWN;
+	keyMap[SDL_SCANCODE_RIGHT] = KEY_RIGHT;
+	keyMap[SDL_SCANCODE_LEFT] = KEY_LEFT;
+	keyMap[SDL_SCANCODE_INSERT] = KEY_INSERT;
+	keyMap[SDL_SCANCODE_HOME] = KEY_HOME;
+	keyMap[SDL_SCANCODE_END] = KEY_END;
+	keyMap[SDL_SCANCODE_PAGEUP] = KEY_PAGEUP;
+	keyMap[SDL_SCANCODE_PAGEDOWN] = KEY_PAGEDOWN;
+
+	keyMap[SDL_SCANCODE_F1] = KEY_F1;
+	keyMap[SDL_SCANCODE_F2] = KEY_F2;
+	keyMap[SDL_SCANCODE_F3] = KEY_F3;
+	keyMap[SDL_SCANCODE_F4] = KEY_F4;
+	keyMap[SDL_SCANCODE_F5] = KEY_F5;
+	keyMap[SDL_SCANCODE_F6] = KEY_F6;
+	keyMap[SDL_SCANCODE_F7] = KEY_F7;
+	keyMap[SDL_SCANCODE_F8] = KEY_F8;
+	keyMap[SDL_SCANCODE_F9] = KEY_F9;
+	keyMap[SDL_SCANCODE_F10] = KEY_F10;
+	keyMap[SDL_SCANCODE_F11] = KEY_F11;
+	keyMap[SDL_SCANCODE_F12] = KEY_F12;
+	keyMap[SDL_SCANCODE_F13] = KEY_F13;
+	keyMap[SDL_SCANCODE_F14] = KEY_F14;
+	keyMap[SDL_SCANCODE_F15] = KEY_F15;
+
+	keyMap[131] = KEY_NUMLOCK;
+	keyMap[130] = KEY_CAPSLOCK;
+	keyMap[132] = KEY_SCROLLOCK;
+	keyMap[SDL_SCANCODE_RSHIFT] = KEY_RSHIFT;
+	keyMap[SDL_SCANCODE_LSHIFT] = KEY_LSHIFT;
+	keyMap[SDL_SCANCODE_RCTRL] = KEY_RCTRL;
+	keyMap[SDL_SCANCODE_LCTRL] = KEY_LCTRL;
+	keyMap[SDL_SCANCODE_RALT] = KEY_RALT;
+	keyMap[SDL_SCANCODE_LALT] = KEY_LALT;
+	keyMap[SDL_SCANCODE_RGUI] = KEY_RSUPER;
+	keyMap[SDL_SCANCODE_LGUI] = KEY_LSUPER;
+
+	keyMap[SDL_SCANCODE_HELP] = KEY_HELP;
+	keyMap[SDL_SCANCODE_PRINTSCREEN] = KEY_PRINT;
+	keyMap[SDL_SCANCODE_CANCEL] = KEY_BREAK;
+	keyMap[SDL_SCANCODE_MENU] = KEY_MENU;
+}
+
+
+PolyKEY SDLCore::mapKey(SDL_Scancode key){
+	return keyMap[key];
+}
+
+
 bool SDLCore::checkSpecialKeyEvents(PolyKEY key) {
 	
 	if(key == KEY_a && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
@@ -426,12 +557,12 @@ bool SDLCore::systemUpdate() {
 					input->joystickButtonUp(event.jbutton.button, event.jbutton.which);
 				break;
 				case SDL_KEYDOWN:
-					if(!checkSpecialKeyEvents((PolyKEY)(event.key.keysym.sym))) {
-						input->setKeyState((PolyKEY)(event.key.keysym.sym), event.key.keysym.sym, true, getTicks());
+					if(!checkSpecialKeyEvents(mapKey(event.key.keysym.scancode))) {
+						input->setKeyState(mapKey(event.key.keysym.scancode), event.key.keysym.sym, true, getTicks());
 					}
 				break;
 				case SDL_KEYUP:
-					input->setKeyState((PolyKEY)(event.key.keysym.sym), event.key.keysym.sym, false, getTicks());
+					input->setKeyState(mapKey(event.key.keysym.scancode), event.key.keysym.sym, false, getTicks());
 				break;
 				case SDL_MOUSEWHEEL:
 					if(event.wheel.y > 0) {
@@ -598,9 +729,6 @@ Number SDLCore::getBackingYRes() {
 // X11 cursor
 
 namespace {
-	
-	
-// WARNING: These functions rely on the SDL_Display and SDL_Window previously initialized by init_scrap
 
 const int CURSOR_COUNT = 7;
 Cursor defined_cursors[CURSOR_COUNT] = {0};
