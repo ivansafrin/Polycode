@@ -128,7 +128,7 @@ namespace Polycode {
 		std::vector<TouchInfo> touches;
 		int touchType;
 		PolyKEY keyCode;
-		wchar_t unicodeChar;		
+		String text;
 		char mouseButton;	
 		static const int EVENTBASE_PLATFORMEVENT = 0x300;
 		static const int INPUT_EVENT = EVENTBASE_PLATFORMEVENT+0;
@@ -197,7 +197,7 @@ public:
 		void Render();
 		void setVSync(bool vSyncVal);
 
-		void handleKeyDown(LPARAM lParam, WPARAM wParam, wchar_t unicodeChar);
+		void handleKeyDown(LPARAM lParam, WPARAM wParam);
 		void handleKeyUp(LPARAM lParam, WPARAM wParam);
 		void handleMouseMove(LPARAM lParam, WPARAM wParam);
 		void handleMouseWheel(LPARAM lParam, WPARAM wParam);
@@ -205,6 +205,7 @@ public:
 		void handleMouseUp(int mouseCode,LPARAM lParam, WPARAM wParam);
 		void handleTouchEvent(LPARAM lParam, WPARAM wParam);
 		void handlePointerUpdate(LPARAM lParam, WPARAM wParam);
+		void handleTextInput(LPARAM lParam, WPARAM wParam);
 
 		void handleVideoModeChange(VideoModeChangeInfo *modeInfo);
 

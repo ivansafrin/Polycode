@@ -228,18 +228,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				m.wParam = wParam;
 				m.lParam = lParam;
 				m.time = 0;
-				if ( PeekMessage(&m, hWnd, 0, WM_USER, PM_NOREMOVE) && (m.message == WM_CHAR) ) {
-					GetMessage(&m, hWnd, 0, WM_USER);
-						unicodeChar = (wchar_t)m.wParam;
-				}
 
-			core->handleKeyDown(lParam,wParam, unicodeChar);
+			core->handleKeyDown(lParam,wParam);
 		}
 	break;
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
 		if(core)
 			core->handleKeyUp(lParam,wParam);
+	break;
+	//case WM_UNICHAR:
+	//	if (wParam == UNICODE_NOCHAR)
+	//		break;
+	case WM_CHAR:
+		core->handleTextInput(lParam, wParam);
 	break;
 	case WM_CLOSE:
 	{

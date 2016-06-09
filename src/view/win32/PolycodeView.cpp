@@ -127,19 +127,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
 		if(core) {
-				wchar_t unicodeChar = 0;
-				MSG m;
-				m.hwnd = hWnd;
-				m.message = message;
-				m.wParam = wParam;
-				m.lParam = lParam;
-				m.time = 0;
-				if ( PeekMessage(&m, hWnd, 0, WM_USER, PM_NOREMOVE) && (m.message == WM_CHAR) ) {
-					GetMessage(&m, hWnd, 0, WM_USER);
-						unicodeChar = (wchar_t)m.wParam;
-				}
+			wchar_t unicodeChar = 0;
+			MSG m;
+			m.hwnd = hWnd;
+			m.message = message;
+			m.wParam = wParam;
+			m.lParam = lParam;
+			m.time = 0;
 
-			core->handleKeyDown(lParam,wParam, unicodeChar);
+			core->handleKeyDown(lParam,wParam);
 		}
 	break;
 	case WM_KEYUP:
@@ -147,6 +143,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if(core)
 			core->handleKeyUp(lParam,wParam);
 	break;
+	//case WM_UNICHAR:
+	//	if (wParam == UNICODE_NOCHAR)
+	//		break;
+	case WM_CHAR:
+		core->handleTextInput(lParam, wParam);
+		break;
 	case WM_CLOSE:
 		if(core)
 			core->Shutdown();
