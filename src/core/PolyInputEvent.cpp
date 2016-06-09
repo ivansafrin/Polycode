@@ -37,23 +37,11 @@ InputEvent::InputEvent(Vector2 mousePosition, int timestamp) : Event() {
 	eventType = "InputEvent";
 }
 
-InputEvent::InputEvent(PolyKEY key, wchar_t charCode, int timestamp) : Event() {
+InputEvent::InputEvent(PolyKEY key, int timestamp) : Event() {
 	this->key = key;
-	this->charCode = charCode;
 	this->timestamp = timestamp;
 	eventType = "InputEvent";	
 }
-	
-wchar_t InputEvent::getCharCode() {
-	return charCode;
-}
-
-/*
-InputEvent::InputEvent(PolyKEY key, int timestamp)	: Event() {
-	this->key = key;
-	this->timestamp = timestamp;	
-}
-*/
 
 InputEvent::~InputEvent() {
 

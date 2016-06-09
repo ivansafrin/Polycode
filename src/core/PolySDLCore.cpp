@@ -247,7 +247,7 @@ vector<Polycode::Rectangle> SDLCore::getVideoModes() {
 		res.w = modes.w;
 		res.h = modes.h;
 		retVector.push_back(res);
-	}	
+	}
 	
 	return retVector;
 }
@@ -502,7 +502,7 @@ void SDLCore::flushRenderContext(){
 bool SDLCore::systemUpdate() {
 	if(!running)
 		return false;
-	doSleep();	
+	doSleep();
 	
 	updateCore();
 	
@@ -558,11 +558,11 @@ bool SDLCore::systemUpdate() {
 				break;
 				case SDL_KEYDOWN:
 					if(!checkSpecialKeyEvents(mapKey(event.key.keysym.scancode))) {
-						input->setKeyState(mapKey(event.key.keysym.scancode), event.key.keysym.sym, true, getTicks());
+						input->setKeyState(mapKey(event.key.keysym.scancode), true, getTicks());
 					}
 				break;
 				case SDL_KEYUP:
-					input->setKeyState(mapKey(event.key.keysym.scancode), event.key.keysym.sym, false, getTicks());
+					input->setKeyState(mapKey(event.key.keysym.scancode), false, getTicks());
 				break;
 				case SDL_MOUSEWHEEL:
 					if(event.wheel.y > 0) {
@@ -602,6 +602,9 @@ bool SDLCore::systemUpdate() {
 					input->setMousePosition(event.motion.x, event.motion.y, getTicks());
 					lastMouseY = event.motion.y;
 					lastMouseX = event.motion.x;
+				break;
+				case SDL_TEXTINPUT:
+					input->textInput(String(event.text.text));
 				break;
 				default:
 					break;

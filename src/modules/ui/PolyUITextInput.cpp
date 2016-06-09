@@ -237,6 +237,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height, int custom
 	indentSpacing = 4;
 	indentType = INDENT_TAB;
 	
+	core->getInput()->addEventListenerUnique(this, InputEvent::EVENT_TEXTINPUT);
 	core->getInput()->addEventListenerUnique(this, InputEvent::EVENT_KEYDOWN);
 	core->getInput()->addEventListenerUnique(this, InputEvent::EVENT_MOUSEUP);
 }
@@ -1717,7 +1718,7 @@ bool UITextInput::isNumberOrCharacter(wchar_t charCode) {
 	return false;
 }
 
-void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
+void UITextInput::onKeyDown(PolyKEY key) {
 	
 	if(!hasFocus)
 		return;
@@ -2059,28 +2060,6 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 	String ctext = lines[actualLineOffset].text;
 	
 	bool _changedText = false;
-		
-	if(((charCode > 31 && charCode < 127) || charCode > 127) && key != KEY_DELETE && key != KEY_HOME && key != KEY_END) {
-		
-		if(!isNumberOnly || (isNumberOnly && ((charCode > 47 && charCode < 58) || (charCode == '.' || charCode == '-')))) {
-			if(!isNumberOrCharacter(charCode)) { 
-				saveUndoState();
-			} else if (!isTypingWord) {
-				saveUndoState();
-				isTypingWord = 1;
-			}
-			if(hasSelection)
-				deleteSelection();
-			ctext = lines[actualLineOffset].text;
-			String text2 = ctext.substr(actualCaretPosition, ctext.length()-actualCaretPosition);
-			ctext = ctext.substr(0,actualCaretPosition);
-			ctext += charCode + text2;
-			actualCaretPosition++;
-			_changedText = true;
-			
-			showCurrentLineIfOffscreen();
-		}
-	}
 	
 	if(key == KEY_TAB && multiLine) {
 		saveUndoState();
@@ -2174,6 +2153,38 @@ void UITextInput::onKeyDown(PolyKEY key, wchar_t charCode) {
 		changedText(actualLineOffset, actualLineOffset);
 	}
 	updateCaretPosition();
+}
+
+void UITextInput::onTextInput(String newText){
+	if(!hasFocus)
+		return;
+	
+	if(!isNumberOnly || (isNumberOnly && newText.isNumber())) {
+		String ctext = lines[actualLineOffset].text;
+		//if(!isNumberOrCharacter(charCode)) { 
+			/*saveUndoState();
+		} else */
+		if (!isTypingWord) {
+			saveUndoState();
+			isTypingWord = 1;
+		}
+		
+		if(hasSelection)
+			deleteSelection();
+		
+		ctext = lines[actualLineOffset].text;
+		String text2 = ctext.substr(actualCaretPosition, ctext.length()-actualCaretPosition);
+		ctext = ctext.substr(0,actualCaretPosition);
+		ctext += newText + text2;
+		actualCaretPosition+=newText.length();
+		
+		showCurrentLineIfOffscreen();
+		
+		lines[actualLineOffset].text = ctext;
+		changedText(actualLineOffset, actualLineOffset);
+		updateCaretPosition();
+	}
+	
 }
 
 void UITextInput::Update() {
@@ -2518,9 +2529,13 @@ void UITextInput::readjustBuffer(int lineStart, int lineEnd) {
 void UITextInput::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == core->getInput()) {
+		if(event->getEventCode() == InputEvent::EVENT_TEXTINPUT){
+			InputEvent *inputEvent = (InputEvent*) event;
+			onTextInput(inputEvent->text);
+		}
 		if(event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
 			InputEvent *inputEvent = (InputEvent*) event;
-			onKeyDown(inputEvent->key, inputEvent->charCode);
+			onKeyDown(inputEvent->key);
 		}
 		if (event->getEventCode() == InputEvent::EVENT_MOUSEUP) {
 			draggingSelection = false;

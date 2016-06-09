@@ -157,13 +157,15 @@ namespace Polycode {
 		void mouseWheelDown(int ticks);
 		void setMouseButtonState(int mouseButton, bool state, int ticks);
 		void setMousePosition(int x, int y, int ticks);
-		void setKeyState(PolyKEY keyCode, wchar_t code, bool newState, int ticks);
+		void setKeyState(PolyKEY keyCode, bool newState, int ticks);
 		void setDeltaPosition(int x, int y);
 		
 		void touchesBegan(TouchInfo touch, std::vector<TouchInfo> touches, int ticks);
 		void touchesMoved(TouchInfo touch, std::vector<TouchInfo> touches, int ticks);
 		void touchesEnded(TouchInfo touch, std::vector<TouchInfo> touches, int ticks);
-				
+		
+		void textInput(String text);
+		
 		static InputEvent *createEvent(Event *event){ return (InputEvent*)event; }
 		
 		/**

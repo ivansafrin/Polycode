@@ -128,4 +128,4 @@ studio_debug: core_debug ui_debug $(DOBJSTUDIO)
 	@cp $(ASSETDIR)/icons/sdl_icon.bmp Studio/icon.bmp
 
 clean:
-	rm -f $(OBJCORE) $(OBJUI) $(OBJTEMPLATE) $(OBJSTUDIO) $(DOBJCORE) $(DOBJUI) $(DOBJTEMPLATE) $(DOBJSTUDIO) $(LIBDIR)/libPolycore.a Studio/Polycode $(LIBDIR)/libPolycodeUI.a TemplateApp/PolycodeTemplate $(LIBDIR)/libPolycored.a Studio/Polycoded $(LIBDIR)/libPolycodeUId.a TemplateApp/PolycodeTemplated
+	rm -f $(OBJCORE) $(OBJUI) $(OBJTEMPLATE) $(OBJSTUDIO) $(DOBJCORE) $(DOBJUI) $(DOBJTEMPLATE) $(DOBJSTUDIO) $(OBJPHYSICS2D) $(DOBJPHYSICS2D) $(OBJPHYSICS3D) $(DOBJPHYSICS3D) $(LIBDIR)/libPolycore.a Studio/Polycode $(LIBDIR)/libPolycodeUI.a $(LIBDIR)/libPolycode3DPhysics.a $(LIBDIR)/libPolycode2DPhysics.a TemplateApp/PolycodeTemplate $(LIBDIR)/libPolycored.a Studio/Polycoded $(LIBDIR)/libPolycodeUId.a $(LIBDIR)/libPolycode3DPhysicsd.a $(LIBDIR)/libPolycode2DPhysicsd.a TemplateApp/PolycodeTemplated

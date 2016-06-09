@@ -57,8 +57,7 @@ namespace Polycode {
 		public:
 			InputEvent();
 			InputEvent(Vector2 mousePosition,int timestamp);
-//			InputEvent(PolyKEY key, int timestamp);
-			InputEvent(PolyKEY key, wchar_t charCode, int timestamp);			
+			InputEvent(PolyKEY key, int timestamp);			
 			virtual ~InputEvent();
 		
 			// ----------------------------------------------------------------------------------------------------------------
@@ -89,6 +88,8 @@ namespace Polycode {
 		static const int EVENT_TOUCHES_BEGAN = EVENTBASE_INPUTEVENT+20;
 		static const int EVENT_TOUCHES_MOVED = EVENTBASE_INPUTEVENT+21;
 		static const int EVENT_TOUCHES_ENDED = EVENTBASE_INPUTEVENT+22;
+		
+		static const int EVENT_TEXTINPUT = EVENTBASE_INPUTEVENT+23;
 
 		//@}
 		// ----------------------------------------------------------------------------------------------------------------
@@ -112,15 +113,14 @@ namespace Polycode {
 		*/		
 		PolyKEY key;
 		
-		wchar_t getCharCode();
-		
 		int keyCode() { return key; }
 		
-		/**
-		* If this is a key press event, this will contain the unicode character that's being typed.
-		*/
-		wchar_t charCode;
 		int timestamp;
+		
+		/**
+		 * If this is a text input event, this will contain the text with all modifiers applied. (will usually be only 1 character)
+		 */
+		String text;
 		
 		std::vector<TouchInfo> touches;
 		TouchInfo touch;
