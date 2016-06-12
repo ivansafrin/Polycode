@@ -28,8 +28,8 @@ LIBDIR=../../lib/emscripten
 OPTFLAGS=-O2 -std=c++11
 DEBUGFLAGS=-g -DDEBUG
 
-OPTFLAGS += -s ERROR_ON_UNDEFINED_SYMBOLS=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=8 -DSTRICT_OPENGLES2 -DNO_OGG -DNO_LUA -DNO_FREETYPE -DNO_PHYSFS -DNO_PAUDIO
-OPTAPPFLAGS= -s ALLOW_MEMORY_GROWTH=1 ../../lib/emscripten/freetype.bc ../../lib/emscripten/libPolycore.bc 
+OPTFLAGS += -s USE_SDL=2 -s ERROR_ON_UNDEFINED_SYMBOLS=1 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=8 -DSTRICT_OPENGLES2 -DNO_OGG -DNO_LUA -DNO_FREETYPE -DNO_PHYSFS -DNO_PAUDIO
+OPTAPPFLAGS= -s USE_SDL=2 -s ALLOW_MEMORY_GROWTH=1 ../../lib/emscripten/freetype.bc ../../lib/emscripten/libPolycore.bc 
 
 LDFLAGSTEMPLATE=-L$(LIBDIR) $(OPTFLAGS) -pthread -lrt -lPolycore -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lGLEW -lGL -llua -ldl
 DLDFLAGSTEMPLATE=-L$(LIBDIR) -pthread -lrt -lPolycored -lfreetype -lpng -lphysfs -lvorbisfile -lvorbis -logg -lportaudio -lasound -lz -lSDL -lGLEW -lGL -llua -ldl
