@@ -27,7 +27,7 @@
 #include <vector>
 #include <pthread.h>
 #include <time.h>
-// #include <SDL2/SDL.h>
+#include <SDL2/SDL.h>
 
 #ifndef NO_PAUDIO
 	#include "polycode/core/PolyPAAudioInterface.h"
@@ -91,9 +91,14 @@ namespace Polycode {
 		String executeExternalCommand(String command, String args, String inDirectory="");
 		void openURL(String url);
 
+		Number getBackingXRes();
+		Number getBackingYRes();
 	private:
 		bool checkSpecialKeyEvents(PolyKEY key);
-		
+
+		int backingX;
+		int backingY;
+
 		uint32_t flags;
 		bool resizableWindow;
 		
@@ -102,5 +107,8 @@ namespace Polycode {
 
 		int lastMouseX;
 		int lastMouseY;
+
+		SDL_GLContext sdlContext;
+		SDL_Window* sdlWindow;
 	};
 }

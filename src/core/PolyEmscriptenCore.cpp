@@ -34,8 +34,7 @@
 	#include "polycode/core/PolyPhysFSFileProvider.h"
 #endif
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_syswm.h>
+#include <SDL2/SDL.h>
 #include <stdio.h>
 #include <limits.h>
 #include <dirent.h>
@@ -66,11 +65,13 @@ long getThreadID() {
 }
 
 void Core::getScreenInfo(int *width, int *height, int *hz) {
-	SDL_Init(SDL_INIT_VIDEO); // Or GetVideoInfo will not work
-	const SDL_VideoInfo *video = SDL_GetVideoInfo();
-	if (width) *width = video->current_w;
-	if (height) *height = video->current_h;
-	if (hz) *hz = 0;
+	SDL_DisplayMode current;
+
+	SDL_GetCurrentDisplayMode(0, &current);
+
+	if (width) *width = current.w;
+	if (height) *height = current.h;
+	if (hz) *hz = current.refresh_rate;
 }
 
 EmscriptenCore::EmscriptenCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex, bool retinaSupport) : Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
@@ -96,15 +97,13 @@ EmscriptenCore::EmscriptenCore(PolycodeView *view, int _xRes, int _yRes, bool fu
 	} else {
 		setenv("SDL_VIDEO_CENTERED", "1", 1);
 	}
+
+	sdlContext = nullptr;
+	sdlWindow = nullptr;
 	
 	int sdlerror = SDL_Init(SDL_INIT_VIDEO|SDL_INIT_JOYSTICK);
 	if(sdlerror < 0) {
 	  Logger::log("SDL_Init failed! Code: %d, %s\n", sdlerror, SDL_GetError());
-	}
-	
-	SDL_Surface* icon = SDL_LoadBMP("icon.bmp");
-	if(icon){
-		SDL_WM_SetIcon(icon, NULL);
 	}
 	
 	eventMutex = createMutex();
@@ -118,12 +117,7 @@ EmscriptenCore::EmscriptenCore(PolycodeView *view, int _xRes, int _yRes, bool fu
 	renderer->setGraphicsInterface(this, renderInterface);
 	services->setRenderer(renderer);
 	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
-	
-	SDL_WM_SetCaption(windowTitle->c_str(), windowTitle->c_str());
-	
-	SDL_EnableUNICODE(1);
-	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
-	
+
 	SDL_JoystickEventState(SDL_ENABLE);
 	
 	int numJoysticks = SDL_NumJoysticks();
@@ -141,13 +135,6 @@ EmscriptenCore::EmscriptenCore(PolycodeView *view, int _xRes, int _yRes, bool fu
 
 	lastMouseX = 0;
 	lastMouseY = 0;
-
-#ifdef USE_X11
-	// Start listening to clipboard events.
-	// (Yes on X11 you need to actively listen to
-	//	clipboard events and respond to them)
-	init_scrap();
-#endif // USE_X11
 }
 
 void EmscriptenCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport) {
@@ -182,31 +169,53 @@ void EmscriptenCore::handleVideoModeChange(VideoModeChangeInfo* modeInfo){
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
 	}
 	
-	flags = SDL_OPENGL;
+	flags = SDL_WINDOW_OPENGL;
 
 	if(fullScreen) {
-		flags |= SDL_FULLSCREEN;
+		flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 	}
 
 	if(resizableWindow) {
-		flags |= SDL_RESIZABLE;
+		flags |= SDL_WINDOW_RESIZABLE;
 	}
 	
-//	if(modeInfo->retinaSupport) {
-//		flags |= SDL_WINDOW_ALLOW_HIGHDPI;
-//	}
-/*
-	if(vSync) {
-		flags |= SDL_DOUBLEBUF;
-		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-		SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
-	} else {
-		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
- -		SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 0);
+	if(modeInfo->retinaSupport) {
+		flags |= SDL_WINDOW_ALLOW_HIGHDPI;
 	}
-*/
 
-	SDL_SetVideoMode(xRes, yRes, 0, flags);
+	if(vSync) {
+		if(SDL_GL_SetSwapInterval(-1) == -1) {
+			SDL_GL_SetSwapInterval(1);
+		}
+	} else {
+		SDL_GL_SetSwapInterval(0);
+	}
+
+	if(!sdlWindow) {
+		sdlWindow = SDL_CreateWindow(windowTitle->c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, xRes, yRes, flags);
+		sdlContext = SDL_GL_CreateContext(sdlWindow);
+		SDL_Surface* icon = SDL_LoadBMP("icon.bmp");
+		if(icon){
+			SDL_SetWindowIcon(sdlWindow, icon);
+		} else {
+			Logger::log("icon error: %s\n",SDL_GetError());
+		}
+	} else {
+		SDL_SetWindowSize(sdlWindow, xRes, yRes);
+	}
+
+	int x, y;
+	SDL_GL_GetDrawableSize(sdlWindow, &x, &y);
+	if(x >= xRes){
+		backingX = x;
+	} else {
+		backingX = xRes;
+	}
+	if(y >= yRes) {
+		backingY = y;
+	} else {
+		backingY = yRes;
+	}
 
 	/*
 	int glewcode = glewInit();
@@ -222,13 +231,13 @@ void EmscriptenCore::handleVideoModeChange(VideoModeChangeInfo* modeInfo){
 
 vector<Polycode::Rectangle> EmscriptenCore::getVideoModes() {
 	vector<Polycode::Rectangle> retVector;
-	
-	SDL_Rect **modes;
-	modes=SDL_ListModes(NULL, SDL_FULLSCREEN);
-	for(int i=0;modes[i];++i) {
+
+	SDL_DisplayMode modes;
+	for(int i=0;i<SDL_GetNumDisplayModes(0);++i) {
+		SDL_GetDisplayMode(0, i, &modes);
 		Rectangle res;
-		res.w = modes[i]->w;
-		res.h = modes[i]->h;
+		res.w = modes.w;
+		res.h = modes.h;
 		retVector.push_back(res);
 	}	
 	
@@ -236,10 +245,12 @@ vector<Polycode::Rectangle> EmscriptenCore::getVideoModes() {
 }
 
 EmscriptenCore::~EmscriptenCore() {
+	SDL_GL_DeleteContext(sdlContext);
+	SDL_DestroyWindow(sdlWindow);
 	SDL_Quit();
 }
 
-void EmscriptenCore::openURL(String url) {
+void EmscriptenCore::openURL(String url) { // TODO
 	int childExitStatus;
 	pid_t pid = fork();
 	if (pid == 0) {
@@ -304,9 +315,9 @@ void EmscriptenCore::enableMouse(bool newval) {
 
 void EmscriptenCore::captureMouse(bool newval) {
 	if(newval) {
-		SDL_WM_GrabInput(SDL_GRAB_ON);
+		SDL_SetWindowGrab(sdlWindow, SDL_TRUE);
 	} else {
-		SDL_WM_GrabInput(SDL_GRAB_OFF);
+		SDL_SetWindowGrab(sdlWindow, SDL_FALSE);
 	}
 	Core::captureMouse(newval);
 }
@@ -354,7 +365,7 @@ void EmscriptenCore::Render() {
 }
 
 void EmscriptenCore::flushRenderContext(){
-	SDL_GL_SwapBuffers();
+	SDL_GL_SwapWindow(sdlWindow);
 }
 
 bool EmscriptenCore::systemUpdate() {
@@ -370,24 +381,38 @@ bool EmscriptenCore::systemUpdate() {
 				case SDL_QUIT:
 					running = false;
 				break;
-				case SDL_VIDEORESIZE:
-					if(resizableWindow) {
-						unsetenv("SDL_VIDEO_CENTERED");
-					} else {
-						setenv("SDL_VIDEO_CENTERED", "1", 1);
-					}
-					this->xRes = event.resize.w;
-					this->yRes = event.resize.h;
-					SDL_SetVideoMode(xRes, yRes, 0, flags);
-					dispatchEvent(new Event(), EVENT_CORE_RESIZE);	
-				break;
-				case SDL_ACTIVEEVENT:
-					if(event.active.state == SDL_APPINPUTFOCUS){
-						if(event.active.gain == 1){
+				case SDL_WINDOWEVENT:
+					switch (event.window.event) {
+						case SDL_WINDOWEVENT_RESIZED:
+							if (resizableWindow) {
+								unsetenv("SDL_VIDEO_CENTERED");
+							} else {
+								setenv("SDL_VIDEO_CENTERED", "1", 1);
+							}
+							this->xRes = event.window.data1;
+							this->yRes = event.window.data2;
+
+							SDL_SetWindowSize(sdlWindow, xRes, yRes);
+							int x, y;
+							SDL_GL_GetDrawableSize(sdlWindow, &x, &y);
+							if (x >= xRes) {
+								backingX = x;
+							} else {
+								backingX = xRes;
+							}
+							if (y >= yRes) {
+								backingY = y;
+							} else {
+								backingY = yRes;
+							}
+							dispatchEvent(new Event(), EVENT_CORE_RESIZE);
+							break;
+						case SDL_WINDOWEVENT_FOCUS_GAINED:
 							gainFocus();
-						} else {
+							break;
+						case SDL_WINDOWEVENT_FOCUS_LOST:
 							loseFocus();
-						}
+							break;
 					}
 				break;
 				case SDL_JOYAXISMOTION:
@@ -401,29 +426,29 @@ bool EmscriptenCore::systemUpdate() {
 				break;
 				case SDL_KEYDOWN:
 					if(!checkSpecialKeyEvents((PolyKEY)(event.key.keysym.sym))) {
-						input->setKeyState((PolyKEY)(event.key.keysym.sym), event.key.keysym.unicode, true, getTicks());
-					}
+						input->setKeyState((PolyKEY)(event.key.keysym.sym), event.key.keysym.sym, true, getTicks()); 					}
 				break;
 				case SDL_KEYUP:
-					input->setKeyState((PolyKEY)(event.key.keysym.sym), event.key.keysym.unicode, false, getTicks());
+					input->setKeyState((PolyKEY)(event.key.keysym.sym), event.key.keysym.sym, false, getTicks());
+				break;
+				case SDL_MOUSEWHEEL:
+					if(event.wheel.y > 0) {
+						input->mouseWheelUp(getTicks());
+					} else if(event.wheel.y < 0) {
+						input->mouseWheelDown(getTicks());
+					}
 				break;
 				case SDL_MOUSEBUTTONDOWN:
-					if(event.button.button == SDL_BUTTON_WHEELUP){
-						input->mouseWheelUp(getTicks());
-					} else if (event.button.button == SDL_BUTTON_WHEELDOWN){
-						input->mouseWheelDown(getTicks());
-					} else {
-						switch(event.button.button) {
-							case SDL_BUTTON_LEFT:
-								input->setMouseButtonState(CoreInput::MOUSE_BUTTON1, true, getTicks());
+					switch (event.button.button) {
+						case SDL_BUTTON_LEFT:
+							input->setMouseButtonState(CoreInput::MOUSE_BUTTON1, true, getTicks());
 							break;
-							case SDL_BUTTON_RIGHT:
-								input->setMouseButtonState(CoreInput::MOUSE_BUTTON2, true, getTicks());
+						case SDL_BUTTON_RIGHT:
+							input->setMouseButtonState(CoreInput::MOUSE_BUTTON2, true, getTicks());
 							break;
-							case SDL_BUTTON_MIDDLE:
-								input->setMouseButtonState(CoreInput::MOUSE_BUTTON3, true, getTicks());
+						case SDL_BUTTON_MIDDLE:
+							input->setMouseButtonState(CoreInput::MOUSE_BUTTON3, true, getTicks());
 							break;
-						}
 					}
 				break;
 				case SDL_MOUSEBUTTONUP:
@@ -456,7 +481,7 @@ void EmscriptenCore::setCursor(int cursorType) {
 }
 
 void EmscriptenCore::warpCursor(int x, int y) {
-	SDL_WarpMouse(x, y);
+	SDL_WarpMouseInWindow(sdlWindow, x, y);
 	lastMouseX = x;
 	lastMouseY = y;
 }
@@ -479,10 +504,18 @@ CoreMutex *EmscriptenCore::createMutex() {
 }
 
 void EmscriptenCore::copyStringToClipboard(const String& str) {
-//	SDL_SetClipboardText(str.c_str());
+	SDL_SetClipboardText(str.c_str());
 }
 
 String EmscriptenCore::getClipboardString() {
+	String rval;
+	if(SDL_HasClipboardText() ==SDL_TRUE){
+		rval=SDL_GetClipboardText();
+	} else {
+		rval="";
+	}
+
+	return rval;
 }
 
 void EmscriptenCore::createFolder(const String& folderPath) {
@@ -558,4 +591,12 @@ bool EmscriptenCore::systemParseFolder(const String& pathString, bool showHidden
 		closedir(d);
 	}
 	return true;
+}
+
+Number EmscriptenCore::getBackingXRes() {
+	return backingX;
+}
+
+Number EmscriptenCore::getBackingYRes() {
+	return backingY;
 }
