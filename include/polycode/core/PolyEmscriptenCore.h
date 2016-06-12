@@ -31,6 +31,8 @@
 
 #ifndef NO_PAUDIO
 	#include "polycode/core/PolyPAAudioInterface.h"
+#else
+	#include "polycode/core/PolySDLAudioInterface.h"
 #endif
 
 #define POLYCODE_CORE EmscriptenCore
