@@ -135,7 +135,9 @@ EmscriptenCore::EmscriptenCore(PolycodeView *view, int _xRes, int _yRes, bool fu
 
 #ifndef NO_PAUDIO
 	services->getSoundManager()->setAudioInterface(new PAAudioInterface());
-#endif 
+#else
+	services->getSoundManager()->setAudioInterface(new SDLAudioInterface());
+#endif
 
 	lastMouseX = 0;
 	lastMouseY = 0;
