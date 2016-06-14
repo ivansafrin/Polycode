@@ -235,6 +235,7 @@ void UIRect::setImageCoordinates(Number x, Number y, Number width, Number height
 	
 	rectMeshGeometry.vertexPositionArray.data.clear();
 	rectMeshGeometry.vertexTexCoordArray.data.clear();
+	rectMeshGeometry.indexArray.data.clear();
 	
 	rectMeshGeometry.addVertex(-whalf,-hhalf,0);
 	rectMeshGeometry.addTexCoord(xFloat, (1.0-yFloat) - hFloat);
@@ -363,7 +364,6 @@ void UIRect::Render(GPUDrawBuffer *buffer) {
 	drawCall.submesh = rectMesh->getSubmeshPointer(0);
 	drawCall.material = material;
 	drawCall.shaderPasses = shaderPasses;
-	
 	buffer->drawCalls.push_back(drawCall);
 }
 
@@ -383,6 +383,7 @@ void UIRect::Resize(Number width, Number height) {
 	rectMeshGeometry.addVertex(-whalf+width,-hhalf+height,0);
 	rectMeshGeometry.addVertex(-whalf,-hhalf+height,0);
 	
+	rectMeshGeometry.indexArray.data.clear();
 	rectMeshGeometry.addIndexedFace(0, 1, 2);
 	rectMeshGeometry.addIndexedFace(0, 2, 3);
 	

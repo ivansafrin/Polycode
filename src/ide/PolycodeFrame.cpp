@@ -1384,7 +1384,7 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 	
 	modalBlocker = new UIRect(10,10);
 	modalBlocker->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
-	modalBlocker->setColor(0,0,0,0.1);
+	modalBlocker->setColor(0,0,0,0.6);
 	modalBlocker->setAnchorPoint(-1.0, -1.0, 0.0);
 	modalBlocker->enabled = false;	
 	modalBlocker->blockMouseInput = true;

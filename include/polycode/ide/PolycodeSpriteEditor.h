@@ -87,7 +87,7 @@ class SpriteSheetEditor : public UIElement {
 	
 		void Update();
 	
-		void Render();
+		void Render(GPUDrawBuffer *buffer);
 	
 		void deleteSelectedFrames();
 	

@@ -35,6 +35,7 @@ SpriteSheetEditor::SpriteSheetEditor(SpriteSet *sprite) : UIElement() {
 	zoomScale = 1.0;
 	drawCall.options.enableScissor = true;
 	
+	Texture::clampDefault = false;
 	previewBg = new UIImage("main/grid_dark.png");
 	addChild(previewBg);
 	previewBg->processInputEvents = true;
@@ -321,6 +322,7 @@ void SpriteSheetEditor::handleEvent(Event *event) {
 		
 		dispatchEvent(new Event(),Event::CHANGE_EVENT);
 	} else if(event->getDispatcher() == bgSelector) {
+		Texture::clampDefault = false;
 		switch(bgSelector->getSelectedIndex()) {
 			case 0:
 				previewBg->loadTexture("main/grid_dark.png");
@@ -666,7 +668,9 @@ void SpriteSheetEditor::Resize(Number width, Number height) {
 	UIElement::Resize(width, height);
 }
 
-void SpriteSheetEditor::Render() {
+void SpriteSheetEditor::Render(GPUDrawBuffer *buffer) {
+	
+	
 	if(sprite->getNumFrames() > 0 && selectedIDs.size() == 1) {
 		
 		transformGrips->visible = true;
@@ -1223,12 +1227,8 @@ void SpriteStateEditBar::refreshBar() {
 		meshTicksGeometry.addVertexWithUV(frameOffset+frameSize-frameGapSize, 0.0, 0.0, 1.0, 0.0);
 		meshTicksGeometry.addColor(vertexColor);
 		
-		
-		meshTicksGeometry.addIndexedFace(offset+0,offset+1);
-		meshTicksGeometry.addIndexedFace(offset+1,offset+2);
-		meshTicksGeometry.addIndexedFace(offset+2,offset+3);
-		meshTicksGeometry.addIndexedFace(offset+3,offset+0);
-		
+		meshTicksGeometry.addIndexedFace(offset+0,offset+1, offset+2);
+		meshTicksGeometry.addIndexedFace(offset+0,offset+2, offset+3);
 		// draw icons
 		
 		Number imageAspectRatio = ((Number)spriteSet->getTexture()->getWidth()) / ((Number)spriteSet->getTexture()->getHeight());
@@ -1250,11 +1250,8 @@ void SpriteStateEditBar::refreshBar() {
 			meshGeometry.addVertexWithUV(frameOffset+iconFrameWidth+iconOffset, -frameTickHeight-frameTickGap-iconFrameHeight-iconOffset, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0- frame.coordinates.y  - frame.coordinates.h);
 			meshGeometry.addVertexWithUV(frameOffset+iconFrameWidth+iconOffset, -frameTickHeight-frameTickGap-iconOffset, 0.0, frame.coordinates.x+frame.coordinates.w, 1.0-frame.coordinates.y);
 			
-			meshGeometry.addIndexedFace(offsetIcon+0,offsetIcon+1);
-			meshGeometry.addIndexedFace(offsetIcon+1,offsetIcon+2);
-			meshGeometry.addIndexedFace(offsetIcon+2,offsetIcon+3);
-			meshGeometry.addIndexedFace(offsetIcon+3,offsetIcon+0);
-			
+			meshGeometry.addIndexedFace(offsetIcon+0,offsetIcon+1, offsetIcon+2);
+			meshGeometry.addIndexedFace(offsetIcon+0,offsetIcon+2, offsetIcon+3);
 			offsetIcon += 4;
 		}
 		
@@ -1279,11 +1276,8 @@ void SpriteStateEditBar::refreshBar() {
 		meshBgGeometry.addColor(bgFrameColor);
 
 		
-		meshBgGeometry.addIndexedFace(offset+0,offset+1);
-		meshBgGeometry.addIndexedFace(offset+1,offset+2);
-		meshBgGeometry.addIndexedFace(offset+2,offset+3);
-		meshBgGeometry.addIndexedFace(offset+3,offset+0);
-		
+		meshBgGeometry.addIndexedFace(offset+0, offset+1, offset+2);
+		meshBgGeometry.addIndexedFace(offset+0, offset+2, offset+3);
 		
 		Number gripWidth = 8;
 		Number gripHeight = 24;
@@ -1296,10 +1290,8 @@ void SpriteStateEditBar::refreshBar() {
 			meshGripsGeometry.addVertexWithUV(frameOffset+frameSize-gapSize, -frameTickHeight-frameTickGap-gripHeight-gripOffset, 0.0, 1.0, 1.0);
 			meshGripsGeometry.addVertexWithUV(frameOffset+frameSize-gapSize, -frameTickHeight-frameTickGap-gripOffset, 0.0, 1.0, 0.0);
 			
-			meshGripsGeometry.addIndexedFace(offsetGrip+0,offsetGrip+1);
-			meshGripsGeometry.addIndexedFace(offsetGrip+1,offsetGrip+2);
-			meshGripsGeometry.addIndexedFace(offsetGrip+2,offsetGrip+3);
-			meshGripsGeometry.addIndexedFace(offsetGrip+3,offsetGrip+0);
+			meshGripsGeometry.addIndexedFace(offsetGrip+0, offsetGrip+1, offsetGrip+2);
+			meshGripsGeometry.addIndexedFace(offsetGrip+0, offsetGrip+2, offsetGrip+3);
 			
 			offsetGrip += 4;
 		}
@@ -1352,20 +1344,24 @@ SpriteStateEditBar::SpriteStateEditBar(SpriteSet *spriteSet) : UIElement() {
 	barBase = new UIElement();
 	
 	barMeshBg = new SceneMesh();
+	barMeshBg->setMaterialByName("UnlitVertexColor");
 	barBase->addChild(barMeshBg);
 	barMeshBg->getShaderPass(0).shaderBinding->loadTextureForParam("diffuse", "spriteEditor/sprite_frame_bg.png");
 	barMeshBg->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	
 	barMesh = new SceneMesh();
+	barMesh->setMaterialByName("Unlit");
 	barBase->addChild(barMesh);
 	barMesh->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	
 	frameTicksMesh = new SceneMesh();
+	frameTicksMesh->setMaterialByName("UnlitUntexturedVertexColor");
 	barBase->addChild(frameTicksMesh);
 	
 	frameGripsMesh = new SceneMesh();
 	barBase->addChild(frameGripsMesh);
 	frameGripsMesh->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+	frameGripsMesh->setMaterialByName("Unlit");
 	frameGripsMesh->getShaderPass(0).shaderBinding->loadTextureForParam("diffuse", "spriteEditor/frame_grip.png");
 	
 	this->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_UP);

@@ -17,6 +17,10 @@
 			<vp source="default/Unlit.vert"/>
 			<fp source="default/Unlit.frag"/>
 		</shader>
+		<shader type="glsl" name="UnlitVertexColor" numPointLights="0" numSpotLights="0">		
+			<vp source="default/UnlitVertexColor.vert"/>
+			<fp source="default/UnlitVertexColor.frag"/>
+		</shader>		
 		<shader type="glsl" name="UnlitPointUntextured" numPointLights="0" numSpotLights="0">		
 			<vp source="default/UnlitPoint.vert"/>
 			<fp source="default/UnlitUntextured.frag"/>
@@ -132,6 +136,13 @@
 		</material>
 		<material name="UnlitUntexturedVertexColor">
 			<shader name="UnlitUntexturedVertexColor">
+				<params>
+					<param name="entityColor" value="1.0 1.0 1.0 1.0" />
+				</params>					
+			</shader>
+		</material>		
+		<material name="UnlitVertexColor">
+			<shader name="UnlitVertexColor">
 				<params>
 					<param name="entityColor" value="1.0 1.0 1.0 1.0" />
 				</params>					
