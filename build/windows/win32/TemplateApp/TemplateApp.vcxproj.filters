@@ -18,18 +18,12 @@
     <ClCompile Include="PolycodeTemplateApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\view\win32\PolycodeView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TemplateApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PolycodeTemplateApp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\polycode\view\win32\PolycodeView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

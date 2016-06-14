@@ -176,14 +176,12 @@
     <ClCompile Include="..\..\..\..\src\core\PolyEventDispatcher.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyEventHandler.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyFont.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyFontGlyphSheet.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyGPUDrawBuffer.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyImage.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyInputEvent.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyLabel.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyLogger.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyMaterial.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyMaterialManager.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyMatrix4.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyMesh.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyObject.cpp" />
@@ -203,7 +201,6 @@
     <ClCompile Include="..\..\..\..\src\core\PolyResourceManager.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyScene.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolySceneEntityInstance.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolySceneImage.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolySceneLabel.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolySceneLight.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolySceneLine.cpp" />
@@ -237,6 +234,7 @@
     <ClCompile Include="..\..\..\..\src\core\tinyxmlerror.cpp" />
     <ClCompile Include="..\..\..\..\src\core\tinyxmlparser.cpp" />
     <ClCompile Include="..\..\..\..\src\duktape\duktape.cpp" />
+    <ClCompile Include="..\..\..\..\src\view\win32\PolycodeView.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\Polycode.h" />
@@ -258,7 +256,6 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyEventDispatcher.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyEventHandler.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyFont.h" />
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyFontGlyphSheet.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyGlobals.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyGPUDrawBuffer.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyImage.h" />
@@ -267,7 +264,6 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyLabel.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyLogger.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyMaterial.h" />
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyMaterialManager.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyMatrix4.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyMesh.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyObject.h" />
@@ -287,7 +283,6 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyResourceManager.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyScene.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneEntityInstance.h" />
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneImage.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneLabel.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneLight.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneLine.h" />
@@ -315,6 +310,7 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyVector3.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyVector4.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyWinCore.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\view\win32\PolycodeView.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
