@@ -173,12 +173,10 @@ if not exist "$(TargetDir)glew32.dll" copy "..\..\..\..\lib\win32\$(PlatformTarg
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\view\win32\PolycodeView.cpp" />
     <ClCompile Include="PolycodeTemplateApp.cpp" />
     <ClCompile Include="TemplateApp.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\include\polycode\view\win32\PolycodeView.h" />
     <ClInclude Include="PolycodeTemplateApp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
