@@ -49,6 +49,10 @@ function RenderThread:processJob(job)
 	local retVal = Polycode.RenderThread_processJob(self.__ptr, job.__ptr)
 end
 
+function RenderThread:clearFrameQueue()
+	local retVal =  Polycode.RenderThread_clearFrameQueue(self.__ptr)
+end
+
 function RenderThread:getShaderBinding()
 	local retVal =  Polycode.RenderThread_getShaderBinding(self.__ptr)
 	if retVal == nil then return nil end

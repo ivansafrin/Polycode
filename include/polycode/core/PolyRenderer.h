@@ -139,6 +139,8 @@ namespace Polycode {
 			void enqueueJob(int jobType, void *data, void *data2=NULL);
 			void processJob(const RendererThreadJob &job);
 		
+			void clearFrameQueue();
+		
 			ShaderBinding *getShaderBinding();
 		
 			void processDrawBufferLights(GPUDrawBuffer *buffer);

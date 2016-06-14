@@ -31,6 +31,10 @@ RenderThread.prototype.processJob = function(job) {
 	Polycode.RenderThread_processJob(this.__ptr, job)
 }
 
+RenderThread.prototype.clearFrameQueue = function() {
+	Polycode.RenderThread_clearFrameQueue(this.__ptr)
+}
+
 RenderThread.prototype.getShaderBinding = function() {
 	var retVal = new ShaderBinding()
 	retVal.__ptr = Polycode.RenderThread_getShaderBinding(this.__ptr)

@@ -423,10 +423,9 @@ void ShaderEditorPane::handleEvent(Event *event) {
 		}		
 		
 		if(event->getDispatcher() == vertexProgramProp) {
-			ShaderProgram* vpProgram = (ShaderProgram*)vertexProgramProp->comboEntry->getSelectedItem()->data;
+			std::shared_ptr<ShaderProgram> vpProgram = std::static_pointer_cast<ShaderProgram>(vertexProgramProp->comboEntry->getSelectedItem()->sharedData);
 			if(vpProgram) {
-				// SMARTPTR_TODO
-				//currentShader->vertexProgram = vpProgram;
+				currentShader->vertexProgram = vpProgram;
 				dispatchEvent(new Event(), Event::CHANGE_EVENT);
 			} else {
 				globalFrame->assetBrowser->addEventListener(this, UIEvent::OK_EVENT);
@@ -438,10 +437,9 @@ void ShaderEditorPane::handleEvent(Event *event) {
 		}		
 
 		if(event->getDispatcher() == fragmentProgramProp) {
-			ShaderProgram* fpProgram = (ShaderProgram*)fragmentProgramProp->comboEntry->getSelectedItem()->data;
+			std::shared_ptr<ShaderProgram> fpProgram = std::static_pointer_cast<ShaderProgram>(fragmentProgramProp->comboEntry->getSelectedItem()->sharedData);
 			if(fpProgram) {
-				// SMARTPTR_TODO
-				//currentShader->fragmentProgram = fpProgram;
+				currentShader->fragmentProgram = fpProgram;
 				dispatchEvent(new Event(), Event::CHANGE_EVENT);
 			} else {
 				globalFrame->assetBrowser->addEventListener(this, UIEvent::OK_EVENT);
@@ -487,25 +485,24 @@ void ShaderEditorPane::reloadPrograms() {
 	vertexProgramProp->comboEntry->addComboItem("Custom...", NULL);
 	fragmentProgramProp->comboEntry->addComboItem("Custom...", NULL);	
 		
-	std::vector<std::shared_ptr<Resource> > programs = CoreServices::getInstance()->getResourceManager()->getResources(Resource::RESOURCE_PROGRAM);
+	std::vector<std::shared_ptr<Resource> > programResources = CoreServices::getInstance()->getResourceManager()->getResources(Resource::RESOURCE_PROGRAM);
 	
-	// RENDERER_TODO
-	/*
-	for(int i=0; i < programs.size(); i++) {
-		ShaderProgram* program = (ShaderProgram*) programs[i];
+
+	for(auto resource:programResources) {
+		std::shared_ptr<ShaderProgram> program = std::static_pointer_cast<ShaderProgram>(resource);
 		if(program->type == ShaderProgram::TYPE_VERT) {
-			vertexProgramProp->comboEntry->addComboItem(program->getResourceName(), (void*)program);
-			if(program == currentShader->vp) {
+			vertexProgramProp->comboEntry->addComboItemWithSharedData(program->getResourceName(), program);
+			if(program == currentShader->vertexProgram) {
 				vertexProgramProp->comboEntry->setSelectedIndex(vertexProgramProp->comboEntry->getNumItems()-1);
 			}
 		} else if(program->type == ShaderProgram::TYPE_FRAG) {
-			fragmentProgramProp->comboEntry->addComboItem(program->getResourceName(), (void*)program);		
-			if(program == currentShader->fp) {
+			fragmentProgramProp->comboEntry->addComboItemWithSharedData(program->getResourceName(), program);
+			if(program == currentShader->fragmentProgram) {
 				fragmentProgramProp->comboEntry->setSelectedIndex(fragmentProgramProp->comboEntry->getNumItems()-1);
-			}			
+			}
 		}
-	}	
-	 */
+	}
+
 }
 
 void ShaderEditorPane::setShader(std::shared_ptr<Shader> shader) {
@@ -516,23 +513,20 @@ void ShaderEditorPane::setShader(std::shared_ptr<Shader> shader) {
 	reloadPrograms();
 		
 	nameProp->set(shader->getName());
-	
-	// RENDERER_TODO
-	/*
 	for(int i=0; i < vertexProgramProp->comboEntry->getNumItems(); i++) {
-		ShaderProgram* program = (ShaderProgram*) vertexProgramProp->comboEntry->getItemAtIndex(i)->data;
-		if(program == shader->vp) {
+		std::shared_ptr<ShaderProgram> program = std::static_pointer_cast<ShaderProgram>(vertexProgramProp->comboEntry->getItemAtIndex(i)->sharedData);
+		if(program == shader->vertexProgram) {
 			vertexProgramProp->comboEntry->setSelectedIndex(i);
 		}
 	}
 
 	for(int i=0; i < fragmentProgramProp->comboEntry->getNumItems(); i++) {
-		ShaderProgram* program = (ShaderProgram*) fragmentProgramProp->comboEntry->getItemAtIndex(i)->data;
-		if(program == shader->fp) {
+		std::shared_ptr<ShaderProgram> program = std::static_pointer_cast<ShaderProgram>(fragmentProgramProp->comboEntry->getItemAtIndex(i)->sharedData);
+		if(program == shader->fragmentProgram) {
 			fragmentProgramProp->comboEntry->setSelectedIndex(i);
 		}
 	}
-	*/
+	
 	screenShaderProp->set(shader->screenShader);
 	
 	pointLightsProp->set(shader->numPointLights);
@@ -905,15 +899,16 @@ MaterialEditorPane::MaterialEditorPane() : UIElement() {
 
 void MaterialEditorPane::reloadShaders() {
 	shaderProp->comboEntry->clearItems();
-	// SMARTPTR_TODO
-	/*
-	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
-	for(int i=0; i < materialManager->getNumShaders(); i++) {
-		if(!materialManager->getShaderByIndex(i)->screenShader) {
-			shaderProp->comboEntry->addComboItem(materialManager->getShaderByIndex(i)->getName(), (void*)materialManager->getShaderByIndex(i));
+	
+	ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
+	std::vector<std::shared_ptr<Resource> > shaderResources = globalPool->getResources(Resource::RESOURCE_SHADER);
+	
+	for(auto resource:shaderResources) {
+		std::shared_ptr<Shader> shader = std::static_pointer_cast<Shader>(resource);
+		if(!shader->screenShader) {
+			shaderProp->comboEntry->addComboItemWithSharedData(shader->getName(), shader);
 		}
 	}
-	 */
 }
 
 void MaterialEditorPane::Resize(Number width, Number height) {
@@ -945,8 +940,7 @@ void MaterialEditorPane::handleEvent(Event *event) {
 		}
 	} else if(event->getDispatcher() == shaderProp) {
 		
-		// SHAREDPTR_TODO:
-		std::shared_ptr<Shader> selectedShader; // = std::static_pointer_cast<Shader>(shaderProp->comboEntry->getSelectedItem()->data);
+		std::shared_ptr<Shader> selectedShader = std::static_pointer_cast<Shader>(shaderProp->comboEntry->getSelectedItem()->sharedData);
 		if(selectedShader) {			
 			if(currentMaterial->getShader(0) != selectedShader) {
 				currentMaterial->clearShaders();
@@ -1000,8 +994,7 @@ void MaterialEditorPane::setMaterial(std::shared_ptr<Material> material) {
 	
 	if(currentMaterial->getShader(0)) { 
 	for(int i=0; i < shaderProp->comboEntry->getNumItems(); i++) {
-		// SHAREDPTR_TODO:
-		std::shared_ptr<Shader> shader;// = (Shader*)shaderProp->comboEntry->getItemAtIndex(i)->data;
+		std::shared_ptr<Shader> shader = std::static_pointer_cast<Shader>(shaderProp->comboEntry->getItemAtIndex(i)->sharedData);
 		if(shader) {
 			if(currentMaterial->getShader(0)->getName() == shader->getName()) {
 				shaderProp->set(i);
@@ -1374,38 +1367,6 @@ void PolycodeMaterialEditor::saveMaterials(ObjectEntry *materialsEntry, std::vec
 					}
 				}
 				
-				// RENDERER_TODO
-				/*
-				for(int j=0; j < shader->expectedTextures.size(); j++) {
-					Texture *texture = shaderBinding->getTexture(shader->expectedTextures[j]);
-					
-					bool inRenderBinding = false;
-					
-					for(int b=0; b < shaderBinding->getNumRenderTargetBindings(); b++) {
-						RenderTargetBinding *_binding = shaderBinding->getRenderTargetBinding(b);
-						if(_binding->name == shader->expectedTextures[j]) {
-							inRenderBinding = true;
-						}
-					}
-					
-					if(texture && !inRenderBinding) {
-						String texturePath = texture->getResourcePath();
-						texturePath = texturePath.replace(parentProject->getRootFolder()+"/", "");				
-						ObjectEntry *textureEntry = texturesEntry->addChild("texture", texturePath);
-						textureEntry->addChild("name", shader->expectedTextures[j]);
-					}
-				}
-				
-				for(int j=0; j < shader->expectedCubemaps.size(); j++) {
-					Cubemap *cubemap = shaderBinding->getCubemap(shader->expectedCubemaps[j]);
-					if(cubemap) {
-						String cubemapName = cubemap->getResourceName();
-						ObjectEntry *cubemapEntry = texturesEntry->addChild("cubemap", cubemapName);
-						cubemapEntry->addChild("name", shader->expectedCubemaps[j]);
-					}
-				}
-				*/
-				
 				if(shader->expectedParams.size() > 0 || shader->expectedParams.size() > 0) {
 					ObjectEntry *paramsEntry = shaderEntry->addChild("params");
 					
@@ -1520,17 +1481,22 @@ void PolycodeMaterialEditor::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == materialBrowser->newShaderButton && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {
 		
-			// SHAREDPTR_TODO:
-		std::shared_ptr<Shader> newShader;// = std::make_shared<Shader>("Untitled", "default/Unlit.vert", "default/Unlit.frag", false);
-			newShader->setName("Untitled");
-			resourcePool->addResource(newShader);
-			if(newShader) {
-				materialBrowser->addShader(newShader)->setSelected();
-				shaders.push_back(newShader);
-				setHasChanges(true);	
-			} else {
-				printf("Error creating shader!\n");
-			}
+		ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
+		std::shared_ptr<ShaderProgram> vertexProgram = std::static_pointer_cast<ShaderProgram>(globalPool->getResourceByPath("default/Unlit.vert"));
+		std::shared_ptr<ShaderProgram> fragmentProgram = std::static_pointer_cast<ShaderProgram>(globalPool->getResourceByPath("default/Unlit.frag"));
+		
+		
+		std::shared_ptr<Shader> newShader = std::make_shared<Shader>(vertexProgram, fragmentProgram);
+		newShader->setName("Untitled");
+		
+		resourcePool->addResource(newShader);
+		if(newShader) {
+			materialBrowser->addShader(newShader)->setSelected();
+			shaders.push_back(newShader);
+			setHasChanges(true);
+		} else {
+			printf("Error creating shader!\n");
+		}
 	}	
 
 	if(event->getDispatcher() == materialBrowser->newCubemapButton && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::CLICK_EVENT) {

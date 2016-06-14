@@ -196,6 +196,7 @@ namespace Polycode {
 		this->xRes = xRes;
 		this->yRes = yRes;
 		coreResized = true;
+		renderer->getRenderThread()->clearFrameQueue();
 		Render();
 	}
 	

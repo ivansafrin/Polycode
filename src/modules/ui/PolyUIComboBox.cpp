@@ -136,6 +136,13 @@ int UIComboBox::addComboItem(String itemName, void *data) {
 	return items.size()-1;
 }
 
+
+int UIComboBox::addComboItemWithSharedData(String itemName, std::shared_ptr<void> data) {
+	int index = addComboItem(itemName, NULL);
+	items[index]->sharedData = data;
+	return index;
+}
+
 int UIComboBox::addComboItem(String itemName) {
 	return addComboItem(itemName, NULL);
 }

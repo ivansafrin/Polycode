@@ -7698,6 +7698,12 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_RenderThread_clearFrameQueue(duk_context *context) {
+		RenderThread *inst = (RenderThread*)duk_to_pointer(context, 0);
+		inst->clearFrameQueue();
+		return 0;
+	}
+
 	duk_ret_t Polycode_RenderThread_getShaderBinding(duk_context *context) {
 		RenderThread *inst = (RenderThread*)duk_to_pointer(context, 0);
 		PolyBase *ptrRetVal = (PolyBase*)inst->getShaderBinding();

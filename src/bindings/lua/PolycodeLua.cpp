@@ -1162,6 +1162,7 @@ int luaopen_Polycode(lua_State *L) {
 		{"RenderThread_enqueueFrame", Polycode_RenderThread_enqueueFrame},
 		{"RenderThread_enqueueJob", Polycode_RenderThread_enqueueJob},
 		{"RenderThread_processJob", Polycode_RenderThread_processJob},
+		{"RenderThread_clearFrameQueue", Polycode_RenderThread_clearFrameQueue},
 		{"RenderThread_getShaderBinding", Polycode_RenderThread_getShaderBinding},
 		{"RenderThread_processDrawBufferLights", Polycode_RenderThread_processDrawBufferLights},
 		{"RenderThread_processDrawBuffer", Polycode_RenderThread_processDrawBuffer},

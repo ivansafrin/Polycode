@@ -1103,6 +1103,7 @@ int jsopen_Polycode(duk_context *ctx) {
 			{"RenderThread_enqueueFrame", Polycode_RenderThread_enqueueFrame, 2},
 			{"RenderThread_enqueueJob", Polycode_RenderThread_enqueueJob, 4},
 			{"RenderThread_processJob", Polycode_RenderThread_processJob, 2},
+			{"RenderThread_clearFrameQueue", Polycode_RenderThread_clearFrameQueue, 1},
 			{"RenderThread_getShaderBinding", Polycode_RenderThread_getShaderBinding, 1},
 			{"RenderThread_processDrawBufferLights", Polycode_RenderThread_processDrawBufferLights, 2},
 			{"RenderThread_processDrawBuffer", Polycode_RenderThread_processDrawBuffer, 2},

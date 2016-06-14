@@ -30,6 +30,7 @@
 #include "polycode/modules/ui/PolyUIMenu.h"
 #include "polycode/modules/ui/PolyUIElement.h"
 #include "polycode/core/PolyFont.h"
+#include <memory>
 
 namespace Polycode {
 
@@ -39,6 +40,7 @@ namespace Polycode {
 			virtual ~UIComboBoxItem();
 			
 			void *data;
+			std::shared_ptr<void> sharedData;
 			String label;
 	};
 
@@ -53,7 +55,8 @@ namespace Polycode {
 			
 			int addComboItem(String itemName);			
 			int addComboItem(String itemName, void *data);
-						
+			int addComboItemWithSharedData(String itemName, std::shared_ptr<void> data);
+		
 			int getSelectedIndex();
 			UIComboBoxItem *getSelectedItem();
 			void setSelectedIndex(unsigned int newIndex, bool suppressChangeEvent = false);

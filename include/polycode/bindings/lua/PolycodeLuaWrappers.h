@@ -10462,6 +10462,12 @@ static int Polycode_RendererThreadJob_set_jobType(lua_State *L) {
 		inst->processJob(job);
 		return 0;
 	}
+	static int Polycode_RenderThread_clearFrameQueue(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		RenderThread *inst = (RenderThread*) *((PolyBase**)lua_touserdata(L, 1));
+		inst->clearFrameQueue();
+		return 0;
+	}
 	static int Polycode_RenderThread_getShaderBinding(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		RenderThread *inst = (RenderThread*) *((PolyBase**)lua_touserdata(L, 1));

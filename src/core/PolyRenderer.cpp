@@ -199,6 +199,14 @@ void RenderThread::processDrawBufferLights(GPUDrawBuffer *buffer) {
 	}
 }
 
+void RenderThread::clearFrameQueue() {
+	jobQueueMutex->lock();
+	while(frameQueue.size()) {
+		frameQueue.pop();
+	}
+	jobQueueMutex->unlock();
+}
+
 void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
 	
 	++currentDebugFrameInfo.buffersProcessed;
