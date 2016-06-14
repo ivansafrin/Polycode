@@ -13,7 +13,6 @@ function LightInfo() {
 		'spotlightCutoff': { enumerable: true, configurable: true, get: LightInfo.prototype.__get_spotlightCutoff, set: LightInfo.prototype.__set_spotlightCutoff},
 		'spotlightExponent': { enumerable: true, configurable: true, get: LightInfo.prototype.__get_spotlightExponent, set: LightInfo.prototype.__set_spotlightExponent},
 		'shadowsEnabled': { enumerable: true, configurable: true, get: LightInfo.prototype.__get_shadowsEnabled, set: LightInfo.prototype.__set_shadowsEnabled},
-		'shadowMapTexture': { enumerable: true, configurable: true, get: LightInfo.prototype.__get_shadowMapTexture, set: LightInfo.prototype.__set_shadowMapTexture},
 		'lightViewMatrix': { enumerable: true, configurable: true, get: LightInfo.prototype.__get_lightViewMatrix, set: LightInfo.prototype.__set_lightViewMatrix}
 	})
 }
@@ -127,16 +126,6 @@ LightInfo.prototype.__get_shadowsEnabled = function() {
 
 LightInfo.prototype.__set_shadowsEnabled = function(val) {
 	Polycode.LightInfo__set_shadowsEnabled(this.__ptr, val)
-}
-
-LightInfo.prototype.__get_shadowMapTexture = function() {
-	var retVal = new Texture()
-	retVal.__ptr = 	Polycode.LightInfo__get_shadowMapTexture(this.__ptr)
-	return retVal
-}
-
-LightInfo.prototype.__set_shadowMapTexture = function(val) {
-	Polycode.LightInfo__set_shadowMapTexture(this.__ptr, val.__ptr)
 }
 
 LightInfo.prototype.__get_lightViewMatrix = function() {

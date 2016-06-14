@@ -288,30 +288,31 @@ void UIRect::initRect(Number width, Number height) {
 	
 	rectMesh->addSubmesh(rectMeshGeometry);
 	
-	setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured"));
+	setMaterial(std::static_pointer_cast<Material>(Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured")));
 	
 	if(texture) {
-		setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
+		setMaterial(std::static_pointer_cast<Material>(Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit")));
 		shaderPasses[0].shaderBinding->setTextureForParam("diffuse", texture);
 	}
 }
 
 UIRect::~UIRect() {
 	delete rectMesh;
-	Services()->getRenderer()->destroyShaderBinding(shaderPasses[0].shaderBinding);
 }
 
 void UIRect::loadTexture(String fileName) {
 
-	material =	(Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit");
+	ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
 	
-	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
-	texture = materialManager->createTextureFromFile(fileName, materialManager->clampDefault, false);
+	material =	std::static_pointer_cast<Material>(pool->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
+	texture = std::static_pointer_cast<Texture>(pool->loadResource(fileName));
 	
 	if(!texture) {
-		setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured"));
+		setMaterial(std::static_pointer_cast<Material>(pool->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured")));
+
 	} else {
-		setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
+		setMaterial(std::static_pointer_cast<Material>(pool->getResource(Resource::RESOURCE_MATERIAL, "Unlit")));
+
 	}
 	
 	if(shaderPasses.size() > 0) {
@@ -319,12 +320,12 @@ void UIRect::loadTexture(String fileName) {
 	}
 }
 
-void UIRect::setTexture(Texture *texture) {
+void UIRect::setTexture(std::shared_ptr<Texture> texture) {
 	
 	if(!texture) {
-		setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured"));
+		setMaterial(std::static_pointer_cast<Material>(Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured")));
 	} else {
-		setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
+		setMaterial(std::static_pointer_cast<Material>(Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit")));
 	}
 	
 	this->texture = texture;
@@ -333,17 +334,13 @@ void UIRect::setTexture(Texture *texture) {
 	}
 }
 
-void UIRect::setMaterial(Material *material) {
-	
-	for(int i=0; i < shaderPasses.size(); i++) {
-		Services()->getRenderer()->destroyShaderBinding(shaderPasses[i].shaderBinding);
-	}
+void UIRect::setMaterial(std::shared_ptr<Material> material) {
 	shaderPasses.clear();
 	
 	this->material = material;
 	
 	ShaderPass pass;
-	pass.shaderBinding = new ShaderBinding();
+	pass.shaderBinding = std::make_shared<ShaderBinding>();
 	pass.shaderBinding->targetShader = pass.shader;
 	pass.shader = material->getShaderPass(0).shader;
 	shaderPasses.push_back(pass);
@@ -351,7 +348,7 @@ void UIRect::setMaterial(Material *material) {
 	shaderPasses[0].shaderBinding->addParamPointer(ProgramParam::PARAM_COLOR, "entityColor", &color);
 }
 
-Texture *UIRect::getTexture() {
+std::shared_ptr<Texture> UIRect::getTexture() {
 	return texture;
 }
 

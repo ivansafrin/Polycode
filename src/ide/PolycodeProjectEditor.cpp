@@ -69,7 +69,7 @@ void ProjectFontEntry::handleEvent(Event *event) {
 	ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
 	
 	if(event->getDispatcher() == fontNameInput && event->getEventCode() == UIEvent::CHANGE_EVENT && event->getEventType() == "UIEvent") {
-		Font *font = (Font*) globalPool->getResourceByPath(fontPath);
+		std::shared_ptr<Font> font = std::static_pointer_cast<Font>(globalPool->getResourceByPath(fontPath));
 		if(font) {
 			font->setResourceName(fontNameInput->getText());
 		}
@@ -77,7 +77,7 @@ void ProjectFontEntry::handleEvent(Event *event) {
 	
 	if(event->getDispatcher() == removeButton && event->getEventCode() == UIEvent::CLICK_EVENT && event->getEventType() == "UIEvent") {
 		
-		Font *font = (Font*) globalPool->getResourceByPath(fontPath);
+		std::shared_ptr<Font> font = std::static_pointer_cast<Font>(globalPool->getResourceByPath(fontPath));
 		if(font) {
 			globalPool->removeResource(font);
 			font->setResourceName(fontNameInput->getText());

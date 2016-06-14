@@ -51,10 +51,6 @@ RenderThread.prototype.getFrameInfo = function() {
 	return retVal
 }
 
-RenderThread.prototype.clearFrameQueue = function() {
-	Polycode.RenderThread_clearFrameQueue(this.__ptr)
-}
-
 RenderThread.prototype.initGlobals = function() {
 	Polycode.RenderThread_initGlobals(this.__ptr)
 }

@@ -59,7 +59,7 @@ ColorRange::ColorRange(Color color, unsigned int rangeStart, unsigned int rangeE
 }
 
 
-Label::Label(Font *font, const String& text, int size, int antiAliasMode, bool premultiplyAlpha, const Color &backgroundColor, const Color &foregroundColor) : Image(), backgroundColor(backgroundColor), foregroundColor(foregroundColor), _optionsChanged(false) {
+Label::Label(std::shared_ptr<Font> font, const String& text, int size, int antiAliasMode, bool premultiplyAlpha, const Color &backgroundColor, const Color &foregroundColor) : Image(), backgroundColor(backgroundColor), foregroundColor(foregroundColor), _optionsChanged(false) {
 		setPixelType(Image::IMAGE_RGBA);
 		this->font = font;
 		this->size = size;
@@ -188,11 +188,11 @@ Number Label::getTextHeight() const {
 	return height;
 }
 
-Font *Label::getFont() const {
+std::shared_ptr<Font> Label::getFont() const {
 	return font;
 }
 
-void Label::setFont(Font *newFont) {
+void Label::setFont(std::shared_ptr<Font> newFont) {
 	if(!newFont)
 		return;
 	font = newFont;

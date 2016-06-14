@@ -65,20 +65,24 @@ ResourcePool.prototype.loadResourcesFromFolder = function(folder,recursive) {
 	Polycode.ResourcePool_loadResourcesFromFolder(this.__ptr, folder,recursive)
 }
 
+ResourcePool.prototype.loadResourcesFromMaterialFile = function(path) {
+	Polycode.ResourcePool_loadResourcesFromMaterialFile(this.__ptr, path)
+}
+
 ResourcePool.prototype.loadResource = function(path) {
-	var retVal = new Resource()
+	var retVal = new shared_ptr<Resource>()
 	retVal.__ptr = Polycode.ResourcePool_loadResource(this.__ptr, path)
 	return retVal
 }
 
 ResourcePool.prototype.loadResourceWithName = function(path,name) {
-	var retVal = new Resource()
+	var retVal = new shared_ptr<Resource>()
 	retVal.__ptr = Polycode.ResourcePool_loadResourceWithName(this.__ptr, path,name)
 	return retVal
 }
 
 ResourcePool.prototype.getResource = function(resourceType,resourceName) {
-	var retVal = new Resource()
+	var retVal = new shared_ptr<Resource>()
 	retVal.__ptr = Polycode.ResourcePool_getResource(this.__ptr, resourceType,resourceName)
 	return retVal
 }
@@ -92,7 +96,7 @@ ResourcePool.prototype.setName = function(name) {
 }
 
 ResourcePool.prototype.getResourceByPath = function(resourcePath) {
-	var retVal = new Resource()
+	var retVal = new shared_ptr<Resource>()
 	retVal.__ptr = Polycode.ResourcePool_getResourceByPath(this.__ptr, resourcePath)
 	return retVal
 }

@@ -72,8 +72,16 @@ THE SOFTWARE.
 #endif
 
 namespace Polycode {
+	
+	class ShaderPlatformData {
+		public:
+			GLuint shaderID;
+			GLuint vertexProgramID;
+			GLuint fragmentProgramID;
+			std::vector<GLuint*> expectedData;
+	};
+	
 	class _PolyExport OpenGLGraphicsInterface : public GraphicsInterface {
-		
 	public:
 		
 		OpenGLGraphicsInterface();
@@ -82,7 +90,6 @@ namespace Polycode {
 		// implementation
 		
 		void createTexture(Texture *texture);
-		void destroyTexture(Texture *texture);
 		
 		void setViewport(unsigned int x,unsigned  int y,unsigned  int width, unsigned height);
 		void clearBuffers(const Color &clearColor, bool colorBuffer, bool depthBuffer, bool stencilBuffer);
@@ -92,22 +99,23 @@ namespace Polycode {
 		void useShader(Shader *shader);
 		
 		void createProgram(ShaderProgram *program);
-		void destroyProgram(ShaderProgram *program);
-		
 		void createShader(Shader *shader);
-		void destroyShader(Shader *shader);
 		
 		void beginDrawCall();
 		void endDrawCall();
 		void setBlendingMode(unsigned int blendingMode);
 		
 		void createRenderBuffer(RenderBuffer *renderBuffer);
-		void destroyRenderBuffer(RenderBuffer *renderBuffer);
 		void bindRenderBuffer(RenderBuffer *renderBuffer);
 		
 		void createSubmeshBuffers(MeshGeometry *submesh);
-		void destroySubmeshBufferData(void *platformData);
 		void drawSubmeshBuffers(MeshGeometry *submesh, Shader *shader);
+		
+		void destroySubmeshBufferData(void *platformData);
+		void destroyProgramData(void *platformData);
+		void destroyShaderData(void *platformData);
+		void destroyTextureData(void *platformData);
+		void destroyRenderBufferData(void *platformData);
 		
 		void drawIndices(int type, IndexDataArray *indexArray);
 		void drawArrays(int type, unsigned int vertexCount);

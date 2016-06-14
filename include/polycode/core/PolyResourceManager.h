@@ -25,7 +25,7 @@ THE SOFTWARE.
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyEventDispatcher.h"
 #include <vector>
-
+#include "tinyxml.h"
 #define generic GenericFreetypeLibrary
 #include "ft2build.h"
 #include FT_FREETYPE_H
@@ -40,14 +40,18 @@ extern "C" {
 	#include "duktape.h"
 }
 
+#include <memory>
+
 #define RESOURCE_CHECK_INTERVAL 2000
 
 namespace Polycode {
 
 	class Resource;
-	class PolycodeShaderModule;
 	class String;
 	class ResourceLoader;
+	class Shader;
+	class Cubemap;
+	class Material;
 	
 	class _PolyExport ResourcePool : public EventDispatcher {
 		public:
@@ -56,23 +60,24 @@ namespace Polycode {
 		
 			void setFallbackPool(ResourcePool *pool);
 		
-			void addResource(Resource *resource);
-			void removeResource(Resource *resource);
-			bool hasResource(Resource *resource);
+			void addResource(std::shared_ptr<Resource> resource);
+			void removeResource(std::shared_ptr<Resource> resource);
+			bool hasResource(std::shared_ptr<Resource> resource);
 		
 			void loadResourcesFromFolder(const String &folder, bool recursive);
+			void loadResourcesFromMaterialFile(const String &path);
 		
-			Resource *loadResource(const String &path);
-			Resource *loadResourceWithName(const String &path, const String &name);
+			std::shared_ptr<Resource> loadResource(const String &path);
+			std::shared_ptr<Resource> loadResourceWithName(const String &path, const String &name);
 		
-			Resource *getResource(int resourceType, const String& resourceName) const;
+			std::shared_ptr<Resource> getResource(int resourceType, const String& resourceName) const;
 			String getName();
 			void setName(const String &name);
 		
-			Resource *getResourceByPath(const String& resourcePath) const;
+			std::shared_ptr<Resource> getResourceByPath(const String& resourcePath) const;
 			void Update(int elapsed);
 		
-			std::vector<Resource *> getResources(int resourceType);
+			std::vector<std::shared_ptr<Resource> > getResources(int resourceType);
 		
 			void checkForChangedFiles();
 		
@@ -88,10 +93,17 @@ namespace Polycode {
 		
 			void loadResourcesFromFolderWithLoader(const String &folder, bool recursive, ResourceLoader *loader, const String &containingFolder);
 		
+			void loadShadersFromFile(const String &fileName);
+			std::shared_ptr<Shader> createShaderFromXMLNode(TiXmlNode *node);
+			std::shared_ptr<Cubemap> cubemapFromXMLNode(TiXmlNode *node);
+			void loadCubemapsFromFile(const String &fileName);
+			void loadMaterialsFromFile(const String &fileName);
+			std::shared_ptr<Material> materialFromXMLNode(TiXmlNode *node);
+
 			ResourcePool *fallbackPool;
 			String name;
 			int ticksSinceCheck;
-			std::vector <Resource*> resources;
+			std::vector <std::shared_ptr<Resource> > resources;
 		
 	};
 	
@@ -99,33 +111,33 @@ namespace Polycode {
 		public:
 			virtual ~ResourceLoader() {}
 			bool canHandleExtension(const String &extension);
-			virtual Resource *loadResource(const String &path, ResourcePool *targetPool) = 0;
+			virtual std::shared_ptr<Resource> loadResource(const String &path, ResourcePool *targetPool) = 0;
 			std::vector<String> extensions;
 	};
 	
 	class _PolyExport TextureResourceLoader : public ResourceLoader {
 		public:
 			TextureResourceLoader();
-			Resource *loadResource(const String &path, ResourcePool *targetPool);
+			std::shared_ptr<Resource> loadResource(const String &path, ResourcePool *targetPool);
 	};
 	
 	class _PolyExport ProgramResourceLoader : public ResourceLoader {
 	public:
 		ProgramResourceLoader();
-		Resource *loadResource(const String &path, ResourcePool *targetPool);
+		std::shared_ptr<Resource> loadResource(const String &path, ResourcePool *targetPool);
 	};
 
 	class _PolyExport MaterialResourceLoader : public ResourceLoader {
 	public:
 			MaterialResourceLoader();
-			Resource *loadResource(const String &path, ResourcePool *targetPool);
+			std::shared_ptr<Resource> loadResource(const String &path, ResourcePool *targetPool);
 	};
 	
 	class _PolyExport FontResourceLoader : public ResourceLoader {
 	public:
 		FontResourceLoader();
 		~FontResourceLoader();
-		Resource *loadResource(const String &path, ResourcePool *targetPool);
+		std::shared_ptr<Resource> loadResource(const String &path, ResourcePool *targetPool);
 	private:
 		FT_Library FTLibrary;
 	};
@@ -140,7 +152,7 @@ namespace Polycode {
 	public:
 		ScriptResourceLoader();
 		~ScriptResourceLoader();
-		Resource *loadResource(const String &path, ResourcePool *targetPool);
+		std::shared_ptr<Resource> loadResource(const String &path, ResourcePool *targetPool);
 	private:
 		
 		void initJavascript();
@@ -155,7 +167,7 @@ namespace Polycode {
 	class _PolyExport MeshResourceLoader : public ResourceLoader {
 	public:
 		MeshResourceLoader();
-		Resource *loadResource(const String &path, ResourcePool *targetPool);
+		std::shared_ptr<Resource> loadResource(const String &path, ResourcePool *targetPool);
 	};
 	
 	/**
@@ -179,9 +191,9 @@ namespace Polycode {
 			void addResourcePool(ResourcePool *pool);
 			void removeResourcePool(ResourcePool *pool);
 		
-			std::vector<Resource*> getResources(int resourceType);
+			std::vector<std::shared_ptr<Resource> > getResources(int resourceType);
 		
-			void removeResource(Resource *resource);
+			void removeResource(std::shared_ptr<Resource> resource);
 		
 			void subscribeToResourcePool(ResourcePool *pool);
 			void unsubscibeFromResourcePool(ResourcePool *pool);

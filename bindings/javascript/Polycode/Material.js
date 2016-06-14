@@ -38,24 +38,12 @@ Material.prototype.addShaderPassAtIndex = function(pass,shaderIndex) {
 	Polycode.Material_addShaderPassAtIndex(this.__ptr, pass,shaderIndex)
 }
 
-Material.prototype.addShader = function(shader,shaderBinding) {
-	Polycode.Material_addShader(this.__ptr, shader,shaderBinding)
-}
-
-Material.prototype.addShaderAtIndex = function(shader,shaderBinding,shaderIndex) {
-	Polycode.Material_addShaderAtIndex(this.__ptr, shader,shaderBinding,shaderIndex)
-}
-
 Material.prototype.getNumShaderPasses = function() {
 	return Polycode.Material_getNumShaderPasses(this.__ptr)
 }
 
 Material.prototype.removeShaderPass = function(shaderIndex) {
 	Polycode.Material_removeShaderPass(this.__ptr, shaderIndex)
-}
-
-Material.prototype.recreateExpectedShaderParams = function() {
-	Polycode.Material_recreateExpectedShaderParams(this.__ptr)
 }
 
 Material.prototype.addShaderRenderTarget = function(newTarget) {
@@ -95,13 +83,13 @@ Material.prototype.getShaderPass = function(index) {
 }
 
 Material.prototype.getShaderBinding = function(index) {
-	var retVal = new ShaderBinding()
+	var retVal = new shared_ptr<ShaderBinding>()
 	retVal.__ptr = Polycode.Material_getShaderBinding(this.__ptr, index)
 	return retVal
 }
 
 Material.prototype.getShader = function(index) {
-	var retVal = new Shader()
+	var retVal = new shared_ptr<Shader>()
 	retVal.__ptr = Polycode.Material_getShader(this.__ptr, index)
 	return retVal
 }

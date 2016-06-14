@@ -23,6 +23,7 @@ THE SOFTWARE.
 #pragma once
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyImage.h"
+#include <memory>
 
 namespace Polycode {
 
@@ -52,10 +53,7 @@ namespace Polycode {
 			/**
 			* Returns the actual render texture.
 			*/
-			Texture *getTargetTexture();
-			
-			Texture *getFilterColorBufferTexture();
-			Texture *getFilterZBufferTexture();
+			std::shared_ptr<Texture> getTargetTexture();
 		
 			void Render();
 		
@@ -79,7 +77,7 @@ namespace Polycode {
 			bool floatingPoint;
 		
 			Renderer *renderer;
-			RenderBuffer *targetFramebuffer;
+			std::shared_ptr<RenderBuffer> targetFramebuffer;
 		
 			Scene *targetScene;
 			Camera *targetCamera;

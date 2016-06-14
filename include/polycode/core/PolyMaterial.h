@@ -24,8 +24,10 @@ THE SOFTWARE.
 #include "polycode/core/PolyString.h"
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyResource.h"
+#include "polycode/core/PolyResourceManager.h"
 #include "polycode/core/PolyColor.h"
 #include <vector>
+#include <memory>
 
 namespace Polycode {
 	
@@ -41,11 +43,11 @@ namespace Polycode {
 			ShaderPass(Shader *shader);
 			ShaderPass(const ShaderPass &other);
 			~ShaderPass();
-			Shader *shader;
+			std::shared_ptr<Shader> shader;
 			bool wireframe;
 			unsigned short blendingMode;
-			ShaderBinding* shaderBinding;
-			ShaderBinding* materialShaderBinding;
+			std::shared_ptr<ShaderBinding> shaderBinding;
+			std::shared_ptr<ShaderBinding> materialShaderBinding;
 	};
 
 	class _PolyExport Material : public Resource {
@@ -54,32 +56,22 @@ namespace Polycode {
 			virtual ~Material();
 
 			void addShaderPass(const ShaderPass &pass);
-			void addShaderPassAtIndex(const ShaderPass &pass, unsigned int shaderIndex);
-		
-			/* DEPRECATED! Use addShaderPass! */
-			void addShader(Shader *shader,ShaderBinding *shaderBinding);
-			/* DEPRECATED! Use addShaderPassAtIndex! */
-			void addShaderAtIndex(Shader *shader,ShaderBinding *shaderBinding, int shaderIndex);			
+			void addShaderPassAtIndex(const ShaderPass &pass, unsigned int shaderIndex);	
 			unsigned int getNumShaderPasses() const;
-			
 		
 			void removeShaderPass(int shaderIndex);
-			
-			void recreateExpectedShaderParams();
-		
+
 			void addShaderRenderTarget(ShaderRenderTarget *newTarget);
 			int getNumShaderRenderTargets();
 			ShaderRenderTarget *getShaderRenderTarget(unsigned int index);
 			void removeShaderRenderTarget(int index);
-			void recreateRenderTarget(ShaderRenderTarget *renderTarget);	
+			void recreateRenderTarget(ShaderRenderTarget *renderTarget);
 			void recreateRenderTargets();
-			
-			void handleEvent(Event *event);
 						
 			const String& getName() const;
 			ShaderPass getShaderPass(unsigned int index) const;
-			ShaderBinding *getShaderBinding(unsigned int index) const;
-			Shader *getShader(unsigned int index) const;
+			std::shared_ptr<ShaderBinding> getShaderBinding(unsigned int index) const;
+			std::shared_ptr<Shader> getShader(unsigned int index) const;
 		
 			void loadMaterial(const String& fileName);
 			
@@ -88,9 +80,6 @@ namespace Polycode {
 			void clearShaders();
 							
 			bool fp16RenderTargets;
-			
-			void *shaderModule;
-			
 			int blendingMode;
 			bool screenMaterial;
 			

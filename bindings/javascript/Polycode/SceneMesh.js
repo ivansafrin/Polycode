@@ -3,8 +3,6 @@ function SceneMesh() {
 		'lineWidth': { enumerable: true, configurable: true, get: SceneMesh.prototype.__get_lineWidth, set: SceneMesh.prototype.__set_lineWidth},
 		'lineSmooth': { enumerable: true, configurable: true, get: SceneMesh.prototype.__get_lineSmooth, set: SceneMesh.prototype.__set_lineSmooth},
 		'pointSmooth': { enumerable: true, configurable: true, get: SceneMesh.prototype.__get_pointSmooth, set: SceneMesh.prototype.__set_pointSmooth},
-		'ownsMesh': { enumerable: true, configurable: true, get: SceneMesh.prototype.__get_ownsMesh, set: SceneMesh.prototype.__set_ownsMesh},
-		'ownsSkeleton': { enumerable: true, configurable: true, get: SceneMesh.prototype.__get_ownsSkeleton, set: SceneMesh.prototype.__set_ownsSkeleton},
 		'useGeometryHitDetection': { enumerable: true, configurable: true, get: SceneMesh.prototype.__get_useGeometryHitDetection, set: SceneMesh.prototype.__set_useGeometryHitDetection},
 		'alphaTest': { enumerable: true, configurable: true, get: SceneMesh.prototype.__get_alphaTest, set: SceneMesh.prototype.__set_alphaTest},
 		'backfaceCulled': { enumerable: true, configurable: true, get: SceneMesh.prototype.__get_backfaceCulled, set: SceneMesh.prototype.__set_backfaceCulled},
@@ -33,22 +31,6 @@ SceneMesh.prototype.__get_pointSmooth = function() {
 
 SceneMesh.prototype.__set_pointSmooth = function(val) {
 	Polycode.SceneMesh__set_pointSmooth(this.__ptr, val)
-}
-
-SceneMesh.prototype.__get_ownsMesh = function() {
-	return Polycode.SceneMesh__get_ownsMesh(this.__ptr)
-}
-
-SceneMesh.prototype.__set_ownsMesh = function(val) {
-	Polycode.SceneMesh__set_ownsMesh(this.__ptr, val)
-}
-
-SceneMesh.prototype.__get_ownsSkeleton = function() {
-	return Polycode.SceneMesh__get_ownsSkeleton(this.__ptr)
-}
-
-SceneMesh.prototype.__set_ownsSkeleton = function(val) {
-	Polycode.SceneMesh__set_ownsSkeleton(this.__ptr, val)
 }
 
 SceneMesh.prototype.__get_useGeometryHitDetection = function() {
@@ -107,19 +89,19 @@ SceneMesh.prototype.removeShaderPass = function(shaderIndex) {
 }
 
 SceneMesh.prototype.getMesh = function() {
-	var retVal = new Mesh()
+	var retVal = new shared_ptr<Mesh>()
 	retVal.__ptr = Polycode.SceneMesh_getMesh(this.__ptr)
 	return retVal
 }
 
 SceneMesh.prototype.getMaterial = function() {
-	var retVal = new Material()
+	var retVal = new shared_ptr<Material>()
 	retVal.__ptr = Polycode.SceneMesh_getMaterial(this.__ptr)
 	return retVal
 }
 
 SceneMesh.prototype.loadSkeleton = function(fileName) {
-	var retVal = new Skeleton()
+	var retVal = new shared_ptr<Skeleton>()
 	retVal.__ptr = Polycode.SceneMesh_loadSkeleton(this.__ptr, fileName)
 	return retVal
 }
@@ -145,7 +127,7 @@ SceneMesh.prototype.setSkeleton = function(skeleton) {
 }
 
 SceneMesh.prototype.getSkeleton = function() {
-	var retVal = new Skeleton()
+	var retVal = new shared_ptr<Skeleton>()
 	retVal.__ptr = Polycode.SceneMesh_getSkeleton(this.__ptr)
 	return retVal
 }

@@ -121,7 +121,7 @@ end
 function SceneEntityInstance:getResourceEntry()
 	local retVal =  Polycode.SceneEntityInstance_getResourceEntry(self.__ptr)
 	if retVal == nil then return nil end
-	local __c = _G["SceneEntityInstanceResourceEntry"]("__skip_ptr__")
+	local __c = _G["shared_ptr<SceneEntityInstanceResourceEntry>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end

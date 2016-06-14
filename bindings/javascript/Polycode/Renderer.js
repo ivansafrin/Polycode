@@ -17,32 +17,6 @@ Renderer.prototype.getRenderThread = function() {
 	return retVal
 }
 
-Renderer.prototype.createCubemap = function(t0,t1,t2,t3,t4,t5) {
-	var retVal = new Cubemap()
-	retVal.__ptr = Polycode.Renderer_createCubemap(this.__ptr, t0,t1,t2,t3,t4,t5)
-	return retVal
-}
-
-Renderer.prototype.createTexture = function(width,height,textureData,clamp,createMipmaps,type,filteringMode,anisotropy,framebufferTexture) {
-	var retVal = new Texture()
-	retVal.__ptr = Polycode.Renderer_createTexture(this.__ptr, width,height,textureData,clamp,createMipmaps,type,filteringMode,anisotropy,framebufferTexture)
-	return retVal
-}
-
-Renderer.prototype.createRenderBuffer = function(width,height,attachDepthBuffer,floatingPoint) {
-	var retVal = new RenderBuffer()
-	retVal.__ptr = Polycode.Renderer_createRenderBuffer(this.__ptr, width,height,attachDepthBuffer,floatingPoint)
-	return retVal
-}
-
-Renderer.prototype.destroyRenderBuffer = function(buffer) {
-	Polycode.Renderer_destroyRenderBuffer(this.__ptr, buffer)
-}
-
-Renderer.prototype.destroyTexture = function(texture) {
-	Polycode.Renderer_destroyTexture(this.__ptr, texture)
-}
-
 Renderer.prototype.processDrawBuffer = function(buffer) {
 	Polycode.Renderer_processDrawBuffer(this.__ptr, buffer)
 }
@@ -59,40 +33,28 @@ Renderer.prototype.getBackingResolutionScaleY = function() {
 	return Polycode.Renderer_getBackingResolutionScaleY(this.__ptr)
 }
 
-Renderer.prototype.createProgram = function(fileName) {
-	var retVal = new ShaderProgram()
-	retVal.__ptr = Polycode.Renderer_createProgram(this.__ptr, fileName)
-	return retVal
-}
-
-Renderer.prototype.createShader = function(vertexProgram,fragmentProgram) {
-	var retVal = new Shader()
-	retVal.__ptr = Polycode.Renderer_createShader(this.__ptr, vertexProgram,fragmentProgram)
-	return retVal
-}
-
 Renderer.prototype.enqueueFrameJob = function(jobType,data) {
 	Polycode.Renderer_enqueueFrameJob(this.__ptr, jobType,data)
 }
 
-Renderer.prototype.destroyProgram = function(program) {
-	Polycode.Renderer_destroyProgram(this.__ptr, program)
+Renderer.prototype.destroyRenderBufferPlatformData = function(platformData) {
+	Polycode.Renderer_destroyRenderBufferPlatformData(this.__ptr, platformData)
 }
 
-Renderer.prototype.destroyShader = function(shader) {
-	Polycode.Renderer_destroyShader(this.__ptr, shader)
+Renderer.prototype.destroyTexturePlatformData = function(platformData) {
+	Polycode.Renderer_destroyTexturePlatformData(this.__ptr, platformData)
+}
+
+Renderer.prototype.destroyProgramPlatformData = function(platformData) {
+	Polycode.Renderer_destroyProgramPlatformData(this.__ptr, platformData)
+}
+
+Renderer.prototype.destroyShaderPlatformData = function(platformData) {
+	Polycode.Renderer_destroyShaderPlatformData(this.__ptr, platformData)
 }
 
 Renderer.prototype.destroySubmeshPlatformData = function(platformData) {
 	Polycode.Renderer_destroySubmeshPlatformData(this.__ptr, platformData)
-}
-
-Renderer.prototype.destroyShaderBinding = function(binding) {
-	Polycode.Renderer_destroyShaderBinding(this.__ptr, binding)
-}
-
-Renderer.prototype.destroyShaderParam = function(param) {
-	Polycode.Renderer_destroyShaderParam(this.__ptr, param)
 }
 
 Renderer.prototype.setTextureParam = function(param,texture) {

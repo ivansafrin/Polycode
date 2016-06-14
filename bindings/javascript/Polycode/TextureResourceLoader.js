@@ -8,7 +8,7 @@ Duktape.fin(TextureResourceLoader.prototype, function (x) {
 })
 
 TextureResourceLoader.prototype.loadResource = function(path,targetPool) {
-	var retVal = new Resource()
+	var retVal = new shared_ptr<Resource>()
 	retVal.__ptr = Polycode.TextureResourceLoader_loadResource(this.__ptr, path,targetPool)
 	return retVal
 }

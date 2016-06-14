@@ -10,10 +10,6 @@ function SceneMesh:__getvar(name)
 		return Polycode.SceneMesh_get_lineSmooth(self.__ptr)
 	elseif name == "pointSmooth" then
 		return Polycode.SceneMesh_get_pointSmooth(self.__ptr)
-	elseif name == "ownsMesh" then
-		return Polycode.SceneMesh_get_ownsMesh(self.__ptr)
-	elseif name == "ownsSkeleton" then
-		return Polycode.SceneMesh_get_ownsSkeleton(self.__ptr)
 	elseif name == "useGeometryHitDetection" then
 		return Polycode.SceneMesh_get_useGeometryHitDetection(self.__ptr)
 	elseif name == "alphaTest" then
@@ -37,12 +33,6 @@ function SceneMesh:__setvar(name,value)
 		return true
 	elseif name == "pointSmooth" then
 		Polycode.SceneMesh_set_pointSmooth(self.__ptr, value)
-		return true
-	elseif name == "ownsMesh" then
-		Polycode.SceneMesh_set_ownsMesh(self.__ptr, value)
-		return true
-	elseif name == "ownsSkeleton" then
-		Polycode.SceneMesh_set_ownsSkeleton(self.__ptr, value)
 		return true
 	elseif name == "useGeometryHitDetection" then
 		Polycode.SceneMesh_set_useGeometryHitDetection(self.__ptr, value)
@@ -119,7 +109,7 @@ end
 function SceneMesh:getMesh()
 	local retVal =  Polycode.SceneMesh_getMesh(self.__ptr)
 	if retVal == nil then return nil end
-	local __c = _G["Mesh"]("__skip_ptr__")
+	local __c = _G["shared_ptr<Mesh>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end
@@ -127,7 +117,7 @@ end
 function SceneMesh:getMaterial()
 	local retVal =  Polycode.SceneMesh_getMaterial(self.__ptr)
 	if retVal == nil then return nil end
-	local __c = _G["Material"]("__skip_ptr__")
+	local __c = _G["shared_ptr<Material>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end
@@ -135,7 +125,7 @@ end
 function SceneMesh:loadSkeleton(fileName)
 	local retVal = Polycode.SceneMesh_loadSkeleton(self.__ptr, fileName)
 	if retVal == nil then return nil end
-	local __c = _G["Skeleton"]("__skip_ptr__")
+	local __c = _G["shared_ptr<Skeleton>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end
@@ -163,7 +153,7 @@ end
 function SceneMesh:getSkeleton()
 	local retVal =  Polycode.SceneMesh_getSkeleton(self.__ptr)
 	if retVal == nil then return nil end
-	local __c = _G["Skeleton"]("__skip_ptr__")
+	local __c = _G["shared_ptr<Skeleton>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end

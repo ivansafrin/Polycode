@@ -24,7 +24,6 @@
 #include "polycode/view/linux/PolycodeView.h"
 #include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyCoreInput.h"
-#include "polycode/core/PolyMaterialManager.h"
 #include "polycode/core/PolyThreaded.h"
 #include "polycode/core/PolyLogger.h"
 
@@ -149,9 +148,6 @@ EmscriptenCore::EmscriptenCore(PolycodeView *view, int _xRes, int _yRes, bool fu
 }
 
 void EmscriptenCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport) {
-	//renderer->Resize(xRes, yRes);
-	//CoreServices::getInstance()->getMaterialManager()->reloadProgramsAndTextures();
-	//dispatchEvent(new Event(), EVENT_CORE_RESIZE);
 	Core::setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
 }
 

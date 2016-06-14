@@ -1,19 +1,8 @@
 function ShaderBinding() {
 	Object.defineProperties(this, {
-		'targetShader': { enumerable: true, configurable: true, get: ShaderBinding.prototype.__get_targetShader, set: ShaderBinding.prototype.__set_targetShader},
 		'accessMutex': { enumerable: true, configurable: true, get: ShaderBinding.prototype.__get_accessMutex, set: ShaderBinding.prototype.__set_accessMutex}
 	})
 }
-ShaderBinding.prototype.__get_targetShader = function() {
-	var retVal = new Shader()
-	retVal.__ptr = 	Polycode.ShaderBinding__get_targetShader(this.__ptr)
-	return retVal
-}
-
-ShaderBinding.prototype.__set_targetShader = function(val) {
-	Polycode.ShaderBinding__set_targetShader(this.__ptr, val.__ptr)
-}
-
 ShaderBinding.prototype.__get_accessMutex = function() {
 	var retVal = new CoreMutex()
 	retVal.__ptr = 	Polycode.ShaderBinding__get_accessMutex(this.__ptr)
@@ -36,14 +25,20 @@ ShaderBinding.prototype.copyTo = function(targetBinding) {
 }
 
 ShaderBinding.prototype.addParam = function(type,name) {
-	var retVal = new LocalShaderParam()
+	var retVal = new shared_ptr<LocalShaderParam>()
 	retVal.__ptr = Polycode.ShaderBinding_addParam(this.__ptr, type,name)
 	return retVal
 }
 
 ShaderBinding.prototype.addParamPointer = function(type,name,ptr) {
-	var retVal = new LocalShaderParam()
+	var retVal = new shared_ptr<LocalShaderParam>()
 	retVal.__ptr = Polycode.ShaderBinding_addParamPointer(this.__ptr, type,name,ptr)
+	return retVal
+}
+
+ShaderBinding.prototype.addParamFromData = function(name,data) {
+	var retVal = new shared_ptr<LocalShaderParam>()
+	retVal.__ptr = Polycode.ShaderBinding_addParamFromData(this.__ptr, name,data)
 	return retVal
 }
 
@@ -52,13 +47,13 @@ ShaderBinding.prototype.getNumLocalParams = function() {
 }
 
 ShaderBinding.prototype.getLocalParam = function(index) {
-	var retVal = new LocalShaderParam()
+	var retVal = new shared_ptr<LocalShaderParam>()
 	retVal.__ptr = Polycode.ShaderBinding_getLocalParam(this.__ptr, index)
 	return retVal
 }
 
 ShaderBinding.prototype.getLocalParamByName = function(name) {
-	var retVal = new LocalShaderParam()
+	var retVal = new shared_ptr<LocalShaderParam>()
 	retVal.__ptr = Polycode.ShaderBinding_getLocalParamByName(this.__ptr, name)
 	return retVal
 }
@@ -68,7 +63,7 @@ ShaderBinding.prototype.removeParam = function(name) {
 }
 
 ShaderBinding.prototype.loadTextureForParam = function(paramName,fileName) {
-	var retVal = new Texture()
+	var retVal = new shared_ptr<Texture>()
 	retVal.__ptr = Polycode.ShaderBinding_loadTextureForParam(this.__ptr, paramName,fileName)
 	return retVal
 }

@@ -12,14 +12,8 @@ SpriteSet.prototype.setTexture = function(texture) {
 }
 
 SpriteSet.prototype.getTexture = function() {
-	var retVal = new Texture()
+	var retVal = new shared_ptr<Texture>()
 	retVal.__ptr = Polycode.SpriteSet_getTexture(this.__ptr)
-	return retVal
-}
-
-SpriteSet.prototype.loadTexture = function(imageFileName) {
-	var retVal = new Texture()
-	retVal.__ptr = Polycode.SpriteSet_loadTexture(this.__ptr, imageFileName)
 	return retVal
 }
 
@@ -32,7 +26,7 @@ SpriteSet.prototype.getNumSpriteEntries = function() {
 }
 
 SpriteSet.prototype.getSpriteEntry = function(index) {
-	var retVal = new Sprite()
+	var retVal = new shared_ptr<Sprite>()
 	retVal.__ptr = Polycode.SpriteSet_getSpriteEntry(this.__ptr, index)
 	return retVal
 }
@@ -86,7 +80,7 @@ SpriteSet.prototype.createFramesFromIslands = function(minDistance,defaultAnchor
 }
 
 SpriteSet.prototype.getSpriteByName = function(spriteName) {
-	var retVal = new Sprite()
+	var retVal = new shared_ptr<Sprite>()
 	retVal.__ptr = Polycode.SpriteSet_getSpriteByName(this.__ptr, spriteName)
 	return retVal
 }

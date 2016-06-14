@@ -79,7 +79,7 @@ void Scene::initScene(int sceneType, bool virtualScene) {
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_DOWN);	
 }
 
-void Scene::setOverrideMaterial(Material *material) {
+void Scene::setOverrideMaterial(std::shared_ptr<Material> material) {
 	overrideMaterial = material;
 }
 
@@ -207,7 +207,7 @@ void Scene::setEntityVisibility(Entity *entity, Camera *camera) {
 	}
 }
 
-void Scene::Render(Camera *targetCamera, RenderBuffer *targetFramebuffer, Material *overrideMaterial, bool sendLights) {
+void Scene::Render(Camera *targetCamera, std::shared_ptr<RenderBuffer> targetFramebuffer, std::shared_ptr<Material> overrideMaterial, bool sendLights) {
 	if(!targetCamera && !activeCamera)
 		return;
 	

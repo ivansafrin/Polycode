@@ -36,7 +36,6 @@ Resource::Resource(int type) : EventDispatcher() {
 }
 
 Resource::~Resource() {
-	CoreServices::getInstance()->getResourceManager()->removeResource(this);
 }
 
 void Resource::reloadResource() {

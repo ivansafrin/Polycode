@@ -122,9 +122,9 @@ namespace Polycode {
 		bool isEnabled();		
 		void setEnabled(bool enabled);
 		
-		void Render(Camera *targetCamera, RenderBuffer *targetFramebuffer, Material *overrideMaterial, bool sendLights);
+		void Render(Camera *targetCamera, std::shared_ptr<RenderBuffer> targetFramebuffer, std::shared_ptr<Material> overrideMaterial, bool sendLights);
 		
-		void setOverrideMaterial(Material *material);
+		void setOverrideMaterial(std::shared_ptr<Material> material);
 		
 		void handleEvent(Event *event);
 		
@@ -212,7 +212,7 @@ namespace Polycode {
 		Camera *defaultCamera;
 		Camera *activeCamera;
 		
-		Material *overrideMaterial;
+		std::shared_ptr<Material> overrideMaterial;
 		
 		Core *core;
 		

@@ -1243,7 +1243,9 @@ MaterialProp::MaterialProp(const String &caption) : PropProp(caption, "Material"
 	previewBg->backfaceCulled = false;
 	
 	previewBg->setMaterialByName("Unlit");
-	Texture *tex = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile("materialEditor/material_grid.png");
+	
+	ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
+	std::shared_ptr<Texture> tex = std::static_pointer_cast<Texture>(pool->loadResource("materialEditor/material_grid.png"));
 	if(previewBg->getNumShaderPasses()) {
 		previewBg->getShaderPass(0).shaderBinding->setTextureForParam("diffuse", tex);
 	}
@@ -1289,9 +1291,9 @@ void MaterialProp::handleEvent(Event *event) {
 	
 	if(event->getDispatcher() == globalFrame->assetBrowser && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
 		
-			Resource *selectedResource = globalFrame->assetBrowser->getSelectedResource();
+			std::shared_ptr<Resource> selectedResource = globalFrame->assetBrowser->getSelectedResource();
 			if(selectedResource) {
-				Material *material = (Material*) selectedResource;
+				std::shared_ptr<Material> material = static_pointer_cast<Material>(selectedResource);
 				set(material);
 				dispatchEvent(new Event(), Event::CHANGE_EVENT);
 				globalFrame->assetBrowser->removeAllHandlersForListener(this);
@@ -1316,7 +1318,7 @@ void MaterialProp::handleEvent(Event *event) {
 	}
 }
 
-void MaterialProp::set(Material *material) {
+void MaterialProp::set(std::shared_ptr<Material> material) {
 	currentMaterial = material;
 	previewPrimitive->setMaterial(material);
 	if(material) {
@@ -1324,7 +1326,7 @@ void MaterialProp::set(Material *material) {
 	}
 }
 
-Material *MaterialProp::get() {
+std::shared_ptr<Material> MaterialProp::get() {
 	return currentMaterial;
 }
 
@@ -1364,15 +1366,17 @@ TextureProp::~TextureProp() {
 }
 
 void TextureProp::setPropData(PolycodeEditorPropActionData* data) {
-	set(CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(data->stringVal));
+	ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
+	set(std::static_pointer_cast<Texture>(pool->loadResource(data->stringVal)));
 	dispatchEvent(new Event(), Event::CHANGE_EVENT);
 }
 
 void TextureProp::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == globalFrame->assetBrowser && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
-		String texturePath = globalFrame->assetBrowser->getSelectedAssetPath();				
-		set(CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(texturePath));		
+		String texturePath = globalFrame->assetBrowser->getSelectedAssetPath();
+		ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
+		set(std::static_pointer_cast<Texture>(pool->loadResource(texturePath)));
 		globalFrame->assetBrowser->removeAllHandlersForListener(this);
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
 		dispatchEvent(new PropEvent(this, NULL, PropDataString(lastData), PropDataString(currentData)), PropEvent::EVENT_PROP_CHANGE);
@@ -1393,7 +1397,7 @@ void TextureProp::handleEvent(Event *event) {
 	}
 }
 
-void TextureProp::set(Texture *texture) {
+void TextureProp::set(std::shared_ptr<Texture> texture) {
 	previewShape->setTexture(texture);
 	
 	if(!texture) {
@@ -1409,7 +1413,7 @@ void TextureProp::set(Texture *texture) {
 	
 }
 
-Texture* TextureProp::get() {
+std::shared_ptr<Texture> TextureProp::get() {
 	return previewShape->getTexture();
 }
 
@@ -1442,10 +1446,10 @@ void SceneSpriteProp::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == globalFrame->assetBrowser && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
 		
-		Resource *selectedResource = globalFrame->assetBrowser->getSelectedResource();
+		std::shared_ptr<Resource> selectedResource = globalFrame->assetBrowser->getSelectedResource();
 		
 		if(selectedResource) {
-			sprite = (Sprite*) selectedResource;
+			sprite = std::static_pointer_cast<Sprite>(selectedResource);
 			previewSprite->setSprite(sprite);
 			
 			if(sprite->getNumStates() > 0) {
@@ -1487,7 +1491,7 @@ void SceneSpriteProp::setPropData(PolycodeEditorPropActionData* data) {
 //	dispatchEvent(new Event(), Event::CHANGE_EVENT);
 }
 
-void SceneSpriteProp::set(Sprite *sprite) {
+void SceneSpriteProp::set(std::shared_ptr<Sprite> sprite) {
 
 	this->sprite = sprite;
 	
@@ -1520,7 +1524,7 @@ void SceneSpriteProp::set(Sprite *sprite) {
 	previewSprite->setScale(spriteScale, spriteScale, 1.0);
 }
 
-Sprite *SceneSpriteProp::get() {
+std::shared_ptr<Sprite> SceneSpriteProp::get() {
 	return sprite;
 }
 
@@ -1589,7 +1593,7 @@ String SceneEntityInstanceProp::get() {
 	return previewInstance->getFileName();
 }
 
-ShaderPassProp::ShaderPassProp(Material *material, int shaderIndex) : PropProp("", "ShaderPassProp") {
+ShaderPassProp::ShaderPassProp(std::shared_ptr<Material> material, int shaderIndex) : PropProp("", "ShaderPassProp") {
 	this->material = material;
 	this->shader = material->getShader(shaderIndex);
 	this->shaderIndex = shaderIndex;
@@ -1603,6 +1607,8 @@ ShaderPassProp::ShaderPassProp(Material *material, int shaderIndex) : PropProp("
 	shaderComboBox->addEventListener(this, UIEvent::CHANGE_EVENT);
 	propContents->addFocusChild(shaderComboBox);
 	
+	// SMARTPTR_TODO:
+	/*
 	int index = 0;
 	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
 	for(int i=0; i < materialManager->getNumShaders(); i++) {
@@ -1614,7 +1620,7 @@ ShaderPassProp::ShaderPassProp(Material *material, int shaderIndex) : PropProp("
 			index++;
 		}
 	}	
-	
+	*/
 	
 	editButton = new UIButton("Options", 30);
 	editButton->addEventListener(this, UIEvent::CLICK_EVENT);
@@ -1632,12 +1638,16 @@ void ShaderPassProp::handleEvent(Event *event) {
 	} else if(event->getDispatcher() == editButton && event->getEventCode() == UIEvent::CLICK_EVENT) {
 		dispatchEvent(new Event(), Event::SELECT_EVENT);		
 	} else if(event->getDispatcher() == shaderComboBox) {
-		Shader *selectedShader = (Shader*)shaderComboBox->getSelectedItem()->data;
+		// SMARTPTR_TODO:
+		std::shared_ptr<Shader> selectedShader; // = (Shader*)shaderComboBox->getSelectedItem()->data;
 		if(selectedShader) {
 			if(material->getShader(shaderIndex) != selectedShader) {
 				material->removeShaderPass(shaderIndex);
-				ShaderBinding *newShaderBinding = new ShaderBinding();
-				material->addShaderAtIndex(selectedShader, newShaderBinding, shaderIndex);
+				std::shared_ptr<ShaderBinding> newShaderBinding = std::make_shared<ShaderBinding>();
+				ShaderPass newPass;
+				newPass.shader = selectedShader;
+				newPass.shaderBinding = newShaderBinding;
+				material->addShaderPassAtIndex(newPass, shaderIndex);
 				dispatchEvent(new Event(), Event::CHANGE_EVENT);
 			}
 		}
@@ -1653,7 +1663,7 @@ void ShaderPassProp::setPropWidth(Number width) {
 	editButton->Resize(floor(adjustedWidth * 0.25), editButton->getHeight());
 }
 
-TargetBindingProp::TargetBindingProp(Shader *shader, Material *material, ShaderBinding *binding, RenderTargetBinding *targetBinding) : PropProp("", "TargetBindingProp") {
+TargetBindingProp::TargetBindingProp(std::shared_ptr<Shader> shader, std::shared_ptr<Material> material, std::shared_ptr<ShaderBinding> binding, RenderTargetBinding *targetBinding) : PropProp("", "TargetBindingProp") {
 	this->targetBinding = targetBinding;
 	this->material = material;
 	this->shader = shader;
@@ -1685,14 +1695,6 @@ TargetBindingProp::TargetBindingProp(Shader *shader, Material *material, ShaderB
 	targetComboBox->addEventListener(this, UIEvent::CHANGE_EVENT);
 	propContents->addFocusChild(targetComboBox);
 	
-	textureComboBox = new UIComboBox(globalMenu, 100);	
-	for(int i=0; i < shader->expectedTextures.size(); i++) {
-		textureComboBox->addComboItem(shader->expectedTextures[i]);
-		if(shader->expectedTextures[i] == targetBinding->name) {
-			textureComboBox->setSelectedIndex(i);
-		}
-	}
-		
 	textureComboBox->addEventListener(this, UIEvent::CHANGE_EVENT);
 	propContents->addFocusChild(textureComboBox);
 	
@@ -1789,7 +1791,7 @@ void TargetBindingProp::setPropWidth(Number width) {
 
 }
 
-RenderTargetProp::RenderTargetProp(ShaderRenderTarget *renderTarget, Material *material) : PropProp("", "RenderTargetProp") {
+RenderTargetProp::RenderTargetProp(ShaderRenderTarget *renderTarget, std::shared_ptr<Material> material) : PropProp("", "RenderTargetProp") {
 
 	this->material = material;
 	this->renderTarget = renderTarget;
@@ -1907,7 +1909,7 @@ ShaderPassesSheet::~ShaderPassesSheet() {
 
 }
 
-void ShaderPassesSheet::setMaterial(Material *material) {
+void ShaderPassesSheet::setMaterial(std::shared_ptr<Material> material) {
 	this->material = material;
 	refreshPasses();
 }
@@ -1953,10 +1955,13 @@ void ShaderPassesSheet::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == addButton->getButton()) {
 	
-		Shader *defaultShader = (Shader*)resourcePool->getResource(Resource::RESOURCE_SHADER, "PassThrough");
+		std::shared_ptr<Shader> defaultShader = std::static_pointer_cast<Shader>(resourcePool->getResource(Resource::RESOURCE_SHADER, "PassThrough"));
 		if(defaultShader) { 
-			ShaderBinding *newShaderBinding = new ShaderBinding();
-			material->addShader(defaultShader, newShaderBinding);
+			std::shared_ptr<ShaderBinding> newShaderBinding = std::make_shared<ShaderBinding>();
+			ShaderPass shaderPass;
+			shaderPass.shader = defaultShader;
+			shaderPass.shaderBinding  = newShaderBinding;
+			material->addShaderPass(shaderPass);
 		}
 		refreshPasses();
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);		
@@ -1995,7 +2000,7 @@ TargetBindingsSheet::~TargetBindingsSheet() {
 
 }
 
-void TargetBindingsSheet::setShader(Shader *shader, Material *material, ShaderBinding *binding) {
+void TargetBindingsSheet::setShader(std::shared_ptr<Shader> shader, std::shared_ptr<Material> material, std::shared_ptr<ShaderBinding> binding) {
 	this->shader = shader;
 	this->material = material;		
 	this->binding = binding;
@@ -2295,7 +2300,7 @@ void ShaderOptionsSheet::handleEvent(Event *event) {
 		for(int i=0 ; i < props.size(); i++) {
 			if(event->getDispatcher() == props[i]) {
 				
-				LocalShaderParam *param = binding->getLocalParamByName(props[i]->label->getText());
+				std::shared_ptr<LocalShaderParam> param = binding->getLocalParamByName(props[i]->label->getText());
 				
 				if(props[i]->propType == "Number") {
 					if(!param){
@@ -2350,8 +2355,8 @@ void ShaderOptionsSheet::setOptionsFromParams(std::vector<ProgramParam> &params)
 					TextureProp *textureProp = new TextureProp(paramName);
 					addProp(textureProp);
 					
-					LocalShaderParam *param = binding->getLocalParamByName(params[i].name);
-					Texture *texture = NULL;
+					std::shared_ptr<LocalShaderParam> param = binding->getLocalParamByName(params[i].name);
+					std::shared_ptr<Texture> texture = NULL;
 					if(param) {
 						texture = param->getTexture();
 					}
@@ -2366,7 +2371,7 @@ void ShaderOptionsSheet::setOptionsFromParams(std::vector<ProgramParam> &params)
 					NumberProp *numberProp = new NumberProp(paramName, this);
 					addProp(numberProp);
 											
-					LocalShaderParam *param = binding->getLocalParamByName(params[i].name);
+					std::shared_ptr<LocalShaderParam> param = binding->getLocalParamByName(params[i].name);
 					Number numberValue = 0.0;
 					if(param) {
 						numberValue = param->getNumber();
@@ -2379,7 +2384,7 @@ void ShaderOptionsSheet::setOptionsFromParams(std::vector<ProgramParam> &params)
 				{
 					String paramName = params[i].name;
 
-					LocalShaderParam *param = binding->getLocalParamByName(params[i].name);
+					std::shared_ptr<LocalShaderParam> param = binding->getLocalParamByName(params[i].name);
 
 					ColorProp *colorProp = new ColorProp(paramName);
 					addProp(colorProp);
@@ -2398,7 +2403,7 @@ void ShaderOptionsSheet::setOptionsFromParams(std::vector<ProgramParam> &params)
 	}
 }
 
-void ShaderOptionsSheet::setShader(Shader *shader, Material *material, ShaderBinding *binding) {
+void ShaderOptionsSheet::setShader(std::shared_ptr<Shader> shader, std::shared_ptr<Material> material, std::shared_ptr<ShaderBinding> binding) {
 	
 	clearShader();
 	this->shader = shader;
@@ -3141,7 +3146,7 @@ void MaterialPropSheet::handleEvent(Event *event) {
 	}
 		
 	if(event->getDispatcher() == materialProp  && event->getEventCode() == Event::CHANGE_EVENT) {
-		Material *newMaterial = materialProp->get();
+		std::shared_ptr<Material> newMaterial = materialProp->get();
 		if(sceneMesh->getMaterial() != newMaterial) {
 			sceneMesh->setMaterial(newMaterial);
 			dispatchEvent(new Event(), Event::CHANGE_EVENT);
@@ -3511,7 +3516,7 @@ void SceneSpriteSheet::handleEvent(Event *event) {
 			sprite->setSpriteState(spriteProp->get()->getState(0), 0, false);
 		}
 
-		Sprite *spriteEntry = sprite->getCurrentSprite();
+		std::shared_ptr<Sprite> spriteEntry = sprite->getCurrentSprite();
 		for(int i=0; i < spriteEntry->getNumStates(); i++) {
 			defaultStateProp->comboEntry->addComboItem(spriteEntry->getState(i)->getName());
 			
@@ -3534,7 +3539,7 @@ void SceneSpriteSheet::setSprite(SceneSprite *sprite) {
 			spriteProp->set(sprite->getCurrentSprite());
 			defaultStateProp->comboEntry->clearItems();
 		
-			Sprite *spriteEntry = sprite->getCurrentSprite();
+			std::shared_ptr<Sprite> spriteEntry = sprite->getCurrentSprite();
 			for(int i=0; i < spriteEntry->getNumStates(); i++) {
 				defaultStateProp->comboEntry->addComboItem(spriteEntry->getState(i)->getName());
 				
@@ -3629,7 +3634,7 @@ void SceneLabelSheet::refreshFonts() {
 	
 	font->comboEntry->clearItems();
 	
-	std::vector<Resource*> fonts = pool->getResources(Resource::RESOURCE_FONT);
+	std::vector<std::shared_ptr<Resource> > fonts = pool->getResources(Resource::RESOURCE_FONT);
 	
 	for(int i=0; i < fonts.size(); i++) {
 		if(fonts[i]->getResourceName() != "section") {
@@ -3680,7 +3685,7 @@ void SceneLabelSheet::handleEvent(Event *event) {
 	if(event->getDispatcher() == font) {
 		String fontName = font->comboEntry->getSelectedItem()->label;		 
 		ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
-		Font *font = (Font*)pool->getResource(Resource::RESOURCE_FONT, fontName);
+		std::shared_ptr<Font> font = std::static_pointer_cast<Font>(pool->getResource(Resource::RESOURCE_FONT, fontName));
 		label->getLabel()->setFont(font);
 		label->setText(caption->get());
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
@@ -3852,13 +3857,11 @@ void LinkedMaterialsSheet::handleEvent(Event *event) {
 		if(!newPool) {
 			String extension = resourcePath.substr(resourcePath.find_last_of(".")+1, resourcePath.length());
 
-			if(extension == "mat") {
-				
+			if(extension == "mat") {				
 				newPool = new ResourcePool(resourcePath,  CoreServices::getInstance()->getResourceManager()->getGlobalPool());
 				newPool->reloadResourcesOnModify = true;
 				newPool->deleteOnUnsubscribe = true;
-				
-				CoreServices::getInstance()->getMaterialManager()->loadMaterialLibraryIntoPool(newPool, fullResourcePath);
+				newPool->loadResourcesFromMaterialFile(fullResourcePath);
 			} else if( extension == "sprites") {
 				SpriteSet *spriteSet = new SpriteSet(resourcePath,	CoreServices::getInstance()->getResourceManager()->getGlobalPool());
 				spriteSet->reloadResourcesOnModify = true;

@@ -99,7 +99,7 @@ EditorGrid::EditorGrid() : Entity() {
 	grid = NULL;
 	gridMode = GRID_MODE_3D;
 	
-	Mesh *gridMesh = new Mesh();
+	std::shared_ptr<Mesh> gridMesh = std::make_shared<Mesh>();
 	
 	grid = new SceneMesh(gridMesh);
 	grid->setForceMaterial(true);

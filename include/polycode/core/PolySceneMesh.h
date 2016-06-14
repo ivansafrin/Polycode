@@ -51,14 +51,14 @@ namespace Polycode {
 			/**
 			* Construct scene mesh from an existing Mesh instance.
 			*/
-			explicit SceneMesh(Mesh *mesh);
+			explicit SceneMesh(std::shared_ptr<Mesh> mesh);
 		
 			SceneMesh();
 			
 			/**
 			* Construct scene mesh from an existing Mesh instance.
 			*/			
-			static SceneMesh *SceneMeshFromMesh(Mesh *mesh);
+			static SceneMesh *SceneMeshFromMesh(std::shared_ptr<Mesh> mesh);
 			
 			virtual ~SceneMesh();
 			
@@ -73,18 +73,18 @@ namespace Polycode {
 			/**
 			* Returns the Mesh instance of the actual mesh.
 			*/
-			Mesh *getMesh();
+			std::shared_ptr<Mesh> getMesh();
 			
 			/**
 			* Returns the material applied.
 			*/							
-			Material *getMaterial();
+			std::shared_ptr<Material> getMaterial();
 			
 			/**
 			* Loads a skeleton from a file and applies it to the scene mesh.
 			* @param fileName Filename to load the skeleton from.
 			*/
-			Skeleton *loadSkeleton(const String& fileName);
+			std::shared_ptr<Skeleton> loadSkeleton(const String& fileName);
 
 			/**
 			* Clears the currently applied material
@@ -95,7 +95,7 @@ namespace Polycode {
 			* Set material from existing Material instance.
 			* @param material Material to apply.
 			*/												
-			void setMaterial(Material *material);
+			void setMaterial(std::shared_ptr<Material> material);
 			
 			/**
 			* Set material by name. You can create materials in material files and name them there, then use this to set a material by name to a scene mesh.
@@ -107,18 +107,18 @@ namespace Polycode {
 			* Set the mesh this scene mesh renders.
 			* @param mesh Set a new mesh to render.
 			*/															
-			void setMesh(Mesh *mesh);
+			void setMesh(std::shared_ptr<Mesh> mesh);
 		
 			/**
 			* Sets a skeleton from an existing skeleton instance.
 			* @param skeleton Skeleton to set to this mesh.
 			*/
-			void setSkeleton(Skeleton *skeleton);
+			void setSkeleton(std::shared_ptr<Skeleton> skeleton);
 			
 			/**
 			* Returns the skeleton applied to this scene mesh.
 			*/
-			Skeleton *getSkeleton();
+			std::shared_ptr<Skeleton> getSkeleton();
 		
 			void applySkeletonLocally();
 			
@@ -135,12 +135,12 @@ namespace Polycode {
 			/**
 			 * Sets the filename path of the mesh.
 			 */
-			void setFilename(String fileName);
+			void setFilename(const String &fileName);
 		
 			/**
 			 * Loads mesh from file. Deletes current mesh if ownsMesh is set to true.
 			 */
-			void loadFromFile(String fileName);
+			void loadFromFile(const String &fileName);
 		
 			/**
 			 * Line width for line-based meshes.
@@ -156,16 +156,6 @@ namespace Polycode {
 			 * If setto true, will antialias points in a point-based mesh. Defaults to false.
 			 */
 			bool pointSmooth;
-			
-			/**
-			* If true, will delete its Mesh upon destruction or mesh loading. (defaults to true)
-			*/ 
-			bool ownsMesh;
-
-			/**
-			* If true, will delete its Skeleton upon destruction. (defaults to true)
-			*/			
-			bool ownsSkeleton;
 			
 			/**
 			 * If set to true, will check against actual geometry polygons on ray hit detection. Defaults to false.
@@ -197,16 +187,15 @@ namespace Polycode {
 		protected:
 		
 			bool useVertexBuffer;
-			Mesh *mesh;
-			Material *material;
-			Skeleton *skeleton;
+			std::shared_ptr<Mesh> mesh;
+			std::shared_ptr<Material> material;
+			std::shared_ptr<Skeleton> skeleton;
 		
 			std::vector<ShaderPass> shaderPasses;
 		
 			String fileName;
 			std::vector<Matrix4> materialBoneMatrices;
-					
-		
+
 			VertexDataArray skeletalVertexPositions;
 			VertexDataArray skeletalVertexNormals;
 		

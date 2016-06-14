@@ -115,6 +115,10 @@ function Core:warpCursor(x, y)
 	local retVal = Polycode.Core_warpCursor(self.__ptr, x, y)
 end
 
+function Core:openOnScreenKeyboard(open)
+	local retVal = Polycode.Core_openOnScreenKeyboard(self.__ptr, open)
+end
+
 function Core:createThread(target)
 	local retVal = Polycode.Core_createThread(self.__ptr, target.__ptr)
 end
@@ -264,6 +268,11 @@ end
 
 function Core:prepareRenderContext()
 	local retVal =  Polycode.Core_prepareRenderContext(self.__ptr)
+end
+
+function Core:isWindowInitialized()
+	local retVal =  Polycode.Core_isWindowInitialized(self.__ptr)
+	return retVal
 end
 
 function Core:openFile(fileName, opts)

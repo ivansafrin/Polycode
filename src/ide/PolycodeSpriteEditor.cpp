@@ -223,8 +223,8 @@ bool SpriteSheetEditor::hasSelectedID(unsigned int frameID) {
 }
 
 void SpriteSheetEditor::Update() {
-	Mesh *mesh = frameVisualizerMesh->getMesh();
-	Mesh *meshSelected = frameVisualizerMeshSelected->getMesh();
+	std::shared_ptr<Mesh> mesh = frameVisualizerMesh->getMesh();
+	std::shared_ptr<Mesh> meshSelected = frameVisualizerMeshSelected->getMesh();
 	
 	mesh->clearMesh();
 	meshSelected->clearMesh();
@@ -364,7 +364,6 @@ void SpriteSheetEditor::handleEvent(Event *event) {
 	} else if(event->getDispatcher() == globalFrame->assetBrowser) {
 		String newImagePath = globalFrame->assetBrowser->getSelectedAssetPath();
 		
-		
 		PolycodeSpriteEditorActionData *beforeData = new PolycodeSpriteEditorActionData();
 		beforeData->name = sprite->getTexture()->getResourcePath();
 		
@@ -373,8 +372,9 @@ void SpriteSheetEditor::handleEvent(Event *event) {
 		data->reverse = false;
 		editor->didAction("changed_image", beforeData, data);
 		
+		ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
 		
-		sprite->loadTexture(globalFrame->assetBrowser->getSelectedAssetPath());
+		sprite->setTexture(std::static_pointer_cast<Texture>(pool->loadResource(globalFrame->assetBrowser->getSelectedAssetPath())));
 		previewImage->setTexture(sprite->getTexture());
 		
 		globalFrame->assetBrowser->removeAllHandlersForListener(this);
@@ -740,7 +740,7 @@ void SpriteBrowser::handleEvent(Event *event) {
 		if(event->getEventCode() == UIEvent::OK_EVENT) {
 			if(globalFrame->textInputPopup->action == "newSprite") {
 				
-				Sprite *newEntry = new Sprite(globalFrame->textInputPopup->getValue());
+				std::shared_ptr<Sprite> newEntry = std::make_shared<Sprite>(globalFrame->textInputPopup->getValue());
 				
 				SpriteState *defaultState = new SpriteState(spriteSet, "default");
 				newEntry->addSpriteState(defaultState);
@@ -820,22 +820,22 @@ void SpriteBrowser::handleEvent(Event *event) {
 			}
 		}
 	} else if(event->getDispatcher() == spriteTreeView->getRootNode()) {
-		selectedEntry = (Sprite*) spriteTreeView->getRootNode()->getSelectedNode()->getUserData();
+		selectedEntry = std::static_pointer_cast<Sprite>(spriteTreeView->getRootNode()->getSelectedNode()->getSharedUserData());
 		if(selectedEntry) {
 			dispatchEvent(new Event(), Event::CHANGE_EVENT);
 		}
 	}
 }
 
-Sprite *SpriteBrowser::getSelectedSpriteEntry() {
+std::shared_ptr<Sprite> SpriteBrowser::getSelectedSpriteEntry() {
 	return selectedEntry;
 }
 
 void SpriteBrowser::refreshSprites() {
 	spriteTreeView->getRootNode()->clearTree();
 	for(int i=0; i < spriteSet->getNumSpriteEntries(); i++) {
-		Sprite *spriteEntry = spriteSet->getSpriteEntry(i);
-		UITree *treeNode = spriteTreeView->getRootNode()->addTreeChild("treeIcons/sprite.png", spriteEntry->getName(), (void*)spriteEntry);
+		std::shared_ptr<Sprite> spriteEntry = spriteSet->getSpriteEntry(i);
+		UITree *treeNode = spriteTreeView->getRootNode()->addTreeChildShared("treeIcons/sprite.png", spriteEntry->getName(), spriteEntry);
 		if(spriteEntry == selectedEntry) {
 			treeNode->setSelected();
 		}
@@ -1140,19 +1140,19 @@ void SpriteStateEditBar::refreshBar() {
 	
 	barMesh->getShaderPass(0).shaderBinding->setTextureForParam("diffuse", spriteSet->getTexture());
 	
-	Mesh *mesh = barMesh->getMesh();
+	std::shared_ptr<Mesh> mesh = barMesh->getMesh();
 	mesh->clearMesh();
 	MeshGeometry meshGeometry;
 	
-	Mesh *meshBg = barMeshBg->getMesh();
+	std::shared_ptr<Mesh> meshBg = barMeshBg->getMesh();
 	meshBg->clearMesh();
 	MeshGeometry meshBgGeometry;
 	
-	Mesh *meshTicks = frameTicksMesh->getMesh();
+	std::shared_ptr<Mesh> meshTicks = frameTicksMesh->getMesh();
 	meshTicks->clearMesh();
 	MeshGeometry meshTicksGeometry;
 	
-	Mesh *meshGrips = frameGripsMesh->getMesh();
+	std::shared_ptr<Mesh> meshGrips = frameGripsMesh->getMesh();
 	meshGrips->clearMesh();
 	MeshGeometry meshGripsGeometry;
 	
@@ -1307,6 +1307,11 @@ void SpriteStateEditBar::refreshBar() {
 		offset += 4;
 		
 	}
+	
+	meshGeometry.indexedMesh = true;
+	meshBgGeometry.indexedMesh = true;
+	meshGripsGeometry.indexedMesh = true;
+	meshTicksGeometry.indexedMesh = true;
 	
 	mesh->addSubmesh(meshGeometry);
 	meshBg->addSubmesh(meshBgGeometry);
@@ -1771,7 +1776,7 @@ SpriteStateBrowser *SpriteStateEditor::getStateBrowser() {
 	return stateBrowser;
 }
 
-void SpriteStateEditor::setSpriteEntry(Sprite *entry) {
+void SpriteStateEditor::setSpriteEntry(std::shared_ptr<Sprite> entry) {
 	
 	if(!entry) {
 		visible = false;
@@ -1991,7 +1996,7 @@ void SpritePreview::Update() {
 //	  
 	//boundingBoxPreview->setPrimitiveOptions(ScenePrimitive::TYPE_VPLANE, sprite->getLocalBoundingBox().x, sprite->getLocalBoundingBox().y);
 	
-	Mesh *bbBoxMesh = boundingBoxPreview->getMesh();
+	std::shared_ptr<Mesh> bbBoxMesh = boundingBoxPreview->getMesh();
 	bbBoxMesh->clearMesh();
 	
 	MeshGeometry bBoxMeshGeometry;
@@ -2051,7 +2056,7 @@ PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
 
 void PolycodeSpriteEditor::handleEvent(Event *event) {
 	if(event->getDispatcher() == spriteBrowser) {
-		Sprite *selectedSprite = spriteBrowser->getSelectedSpriteEntry();
+		std::shared_ptr<Sprite> selectedSprite = spriteBrowser->getSelectedSpriteEntry();
 		spritePreview->getSceneSprite()->setSprite(selectedSprite);
 		stateEditor->setSpriteEntry(selectedSprite);
 	} else if(event->getDispatcher() == addFramesButton) {
@@ -2256,7 +2261,7 @@ void PolycodeSpriteEditor::doAction(String actionName, PolycodeEditorActionData 
 			sprite->addSpriteFrame(spriteData->spriteFrames[i]);
 		}
 	} else if(actionName == "changed_image") {
-		spriteSheetEditor->sprite->loadTexture(spriteData->name);
+		spriteSheetEditor->sprite->setTexture(sprite->getTexture());
 		spriteSheetEditor->previewImage->setTexture(sprite->getTexture());
 		
 	} else if(actionName == "changed_state_info") {
@@ -2294,7 +2299,7 @@ void PolycodeSpriteEditor::saveFile() {
 	
 	ObjectEntry *spritesEntry = fileObject.root.addChild("sprites");
 	for(int i=0; i < sprite->getNumSpriteEntries(); i++) {
-		Sprite *spriteEntry = sprite->getSpriteEntry(i);
+		std::shared_ptr<Sprite> spriteEntry = sprite->getSpriteEntry(i);
 		ObjectEntry *spriteEntryEntry = spritesEntry->addChild("sprite");
 		spriteEntryEntry->addChild("name", spriteEntry->getName());
 

@@ -52,20 +52,22 @@ namespace Polycode {
 			virtual void setAttributeInShader(Shader *shader, ProgramAttribute *attribute, AttributeBinding *attributeBinding) = 0;
 			virtual void disableAttribute(Shader *shader, const ProgramAttribute &attribute) = 0;
 			virtual void createTexture(Texture *texture) = 0;
-			virtual void destroyTexture(Texture *texture) = 0;
 		
 			virtual void setViewport(unsigned int x,unsigned  int y,unsigned  int width, unsigned height) = 0;
 			virtual void clearBuffers(const Color &clearColor, bool colorBuffer, bool depthBuffer, bool stencilBuffer) = 0;
 			virtual void createProgram(ShaderProgram *program) = 0;
-			virtual void destroyProgram(ShaderProgram *program) = 0;
 
-			virtual void destroyShader(Shader *shader) = 0;
 			virtual void createShader(Shader *shader) = 0;
 			virtual void useShader(Shader *shader) = 0;
 
 			virtual void createSubmeshBuffers(MeshGeometry *submesh) = 0;
-			virtual void destroySubmeshBufferData(void *platformData) = 0;
 			virtual void drawSubmeshBuffers(MeshGeometry *submesh, Shader *shader) = 0;
+		
+			virtual void destroySubmeshBufferData(void *platformData) = 0;
+			virtual void destroyProgramData(void *platformData) = 0;
+			virtual void destroyShaderData(void *platformData) = 0;
+			virtual void destroyTextureData(void *platformData) = 0;
+			virtual void destroyRenderBufferData(void *platformData) = 0;
 		
 			virtual void enableDepthTest(bool val) = 0;
 			virtual void enableDepthWrite(bool val) = 0;
@@ -79,7 +81,6 @@ namespace Polycode {
 			virtual void setWireframeMode(bool val) = 0;
 		
 			virtual void createRenderBuffer(RenderBuffer *renderBuffer) = 0;
-			virtual void destroyRenderBuffer(RenderBuffer *renderBuffer) = 0;
 			virtual void bindRenderBuffer(RenderBuffer *buffer) = 0;
 		
 			virtual void beginDrawCall() = 0;
@@ -102,22 +103,22 @@ namespace Polycode {
 
 	class LightInfoBinding {
 		public:
-			LocalShaderParam *position;
-			LocalShaderParam *direction;
-			LocalShaderParam *specular;
-			LocalShaderParam *diffuse;
-			LocalShaderParam *spotExponent;
-			LocalShaderParam *spotCosCutoff;
-			LocalShaderParam *constantAttenuation;
-			LocalShaderParam *linearAttenuation;
-			LocalShaderParam *quadraticAttenuation;
-			LocalShaderParam *shadowEnabled;
+			std::shared_ptr<LocalShaderParam> position;
+			std::shared_ptr<LocalShaderParam> direction;
+			std::shared_ptr<LocalShaderParam> specular;
+			std::shared_ptr<LocalShaderParam> diffuse;
+			std::shared_ptr<LocalShaderParam> spotExponent;
+			std::shared_ptr<LocalShaderParam> spotCosCutoff;
+			std::shared_ptr<LocalShaderParam> constantAttenuation;
+			std::shared_ptr<LocalShaderParam> linearAttenuation;
+			std::shared_ptr<LocalShaderParam> quadraticAttenuation;
+			std::shared_ptr<LocalShaderParam> shadowEnabled;
 	};
 	
 	class LightShadowInfoBinding {
 	public:
-		LocalShaderParam *shadowMatrix;
-		LocalShaderParam *shadowBuffer;
+		std::shared_ptr<LocalShaderParam> shadowMatrix;
+		std::shared_ptr<LocalShaderParam> shadowBuffer;
 	};
 	
 	class _PolyExport RenderFrame : public PolyBase {
@@ -131,7 +132,8 @@ namespace Polycode {
 			RenderThread();
 			 void setGraphicsInterface(Core *core, GraphicsInterface *graphicsInterface);
 			virtual void runThread();
-		void updateRenderThread();	 
+		
+			void updateRenderThread();
 			void enqueueFrame(RenderFrame *frame);
 		
 			void enqueueJob(int jobType, void *data, void *data2=NULL);
@@ -142,30 +144,22 @@ namespace Polycode {
 			void processDrawBufferLights(GPUDrawBuffer *buffer);
 			void processDrawBuffer(GPUDrawBuffer *buffer);
 			RenderThreadDebugInfo getFrameInfo();
-		
-			void clearFrameQueue();
-		
+				
 			void initGlobals();
 		
 			void lockRenderMutex();
 			void unlockRenderMutex();
 		
 			static const int JOB_REQUEST_CONTEXT_CHANGE = 0;
-			static const int JOB_CREATE_TEXTURE = 1;
 			static const int JOB_PROCESS_DRAW_BUFFER = 2;
 			static const int JOB_END_FRAME = 3;
-			static const int JOB_CREATE_PROGRAM = 4;
-			static const int JOB_CREATE_SHADER = 5;
 			static const int JOB_BEGIN_FRAME = 6;
 			static const int JOB_DESTROY_TEXTURE = 8;
 			static const int JOB_DESTROY_SHADER = 9;
 			static const int JOB_DESTROY_PROGRAM = 10;
 			static const int JOB_DESTROY_SUBMESH_BUFFER = 11;
-			static const int JOB_CREATE_RENDER_BUFFER = 12;
 			static const int JOB_DESTROY_RENDER_BUFFER = 13;
 			static const int JOB_SET_TEXTURE_PARAM = 14;
-			static const int JOB_DESTROY_SHADER_BINDING = 16;
-			static const int JOB_DESTROY_SHADER_PARAM = 17;
 		
 		protected:
 		
@@ -184,9 +178,9 @@ namespace Polycode {
 			GraphicsInterface *graphicsInterface;
 		
 			ShaderBinding *rendererShaderBinding;
-			LocalShaderParam *projectionMatrixParam;
-			LocalShaderParam *viewMatrixParam;
-			LocalShaderParam *modelMatrixParam;
+			std::shared_ptr<LocalShaderParam> projectionMatrixParam;
+			std::shared_ptr<LocalShaderParam>  viewMatrixParam;
+			std::shared_ptr<LocalShaderParam>  modelMatrixParam;
 		
 			LightInfoBinding lights[RENDERER_MAX_LIGHTS];
 			LightShadowInfoBinding lightShadows[RENDERER_MAX_LIGHT_SHADOWS];
@@ -201,30 +195,19 @@ namespace Polycode {
 		
 		RenderThread *getRenderThread();
 
-		Cubemap *createCubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4, Texture *t5);
-		Texture *createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type, unsigned int filteringMode, unsigned int anisotropy, bool framebufferTexture);
-		
-		RenderBuffer *createRenderBuffer(unsigned int width, unsigned int height, bool attachDepthBuffer, bool floatingPoint);
-		void destroyRenderBuffer(RenderBuffer *buffer);
-		
-		void destroyTexture(Texture *texture);
-
 		void processDrawBuffer(GPUDrawBuffer *buffer);
 		
 		void setBackingResolutionScale(Number xScale, Number yScale);
 		Number getBackingResolutionScaleX();
 		Number getBackingResolutionScaleY();
-		ShaderProgram *createProgram(const String &fileName);
-		Shader *createShader(ShaderProgram *vertexProgram, ShaderProgram *fragmentProgram);
 		
 		void enqueueFrameJob(int jobType, void *data);
 		
-		void destroyProgram(ShaderProgram *program);
-		void destroyShader(Shader *shader);
+		void destroyRenderBufferPlatformData(void *platformData);
+		void destroyTexturePlatformData(void *platformData);
+		void destroyProgramPlatformData(void *platformData);
+		void destroyShaderPlatformData(void *platformData);
 		void destroySubmeshPlatformData(void *platformData);
-		
-		void destroyShaderBinding(ShaderBinding *binding);
-		void destroyShaderParam(LocalShaderParam *param);
 		
 		void setTextureParam(LocalShaderParam *param, Texture *texture);
 		

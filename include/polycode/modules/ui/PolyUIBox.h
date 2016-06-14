@@ -22,8 +22,8 @@
 
 #pragma once
 #include "polycode/core/PolyGlobals.h"
-#include "polycode/core/PolySceneImage.h"
 #include "polycode/modules/ui/PolyUIElement.h"
+#include <memory>
 
 namespace Polycode {
 	
@@ -34,7 +34,7 @@ namespace Polycode {
 		UIBox(String imageFile, Number t, Number r, Number b, Number l, Number boxWidth, Number boxHeight);
 		virtual ~UIBox();
 									
-		void setMaterial(Material *material);
+		void setMaterial(std::shared_ptr<Material> material);
 		void redrawMesh();
 		void Render(GPUDrawBuffer *buffer);
 		
@@ -51,10 +51,8 @@ namespace Polycode {
 		Number imageHeight;
 		Number uiScale;
 		
-		Texture *texture;
-		
 		Mesh *boxMesh;
-		Material *material;
+		std::shared_ptr<Material> material;
 		std::vector<ShaderPass> shaderPasses;
 	};
 }

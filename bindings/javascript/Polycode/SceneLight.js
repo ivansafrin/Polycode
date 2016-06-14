@@ -34,7 +34,7 @@ SceneLight.prototype.renderDepthMap = function(scene) {
 }
 
 SceneLight.prototype.getZBufferTexture = function() {
-	var retVal = new Texture()
+	var retVal = new shared_ptr<Texture>()
 	retVal.__ptr = Polycode.SceneLight_getZBufferTexture(this.__ptr)
 	return retVal
 }

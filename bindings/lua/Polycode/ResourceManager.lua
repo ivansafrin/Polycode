@@ -80,7 +80,7 @@ function ResourceManager:getResources(resourceType)
 	local retVal = Polycode.ResourceManager_getResources(self.__ptr, resourceType)
 	if retVal == nil then return nil end
 	for i=1,count(retVal) do
-		local __c  = _G["Resource"]("__skip_ptr__")
+		local __c  = _G["shared_ptr<Resource"]("__skip_ptr__")
 		__c.__ptr = retVal[i]
 		retVal[i] = __c
 	end

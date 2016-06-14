@@ -24,8 +24,10 @@
 #include "polycode/core/PolyMatrix4.h"
 #include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyRenderer.h"
+#include "polycode/core/PolyTexture.h"
 #include "polycode/core/PolyCore.h"
 #include <stdlib.h>
+#include <sstream>
 
 using namespace Polycode;
 
@@ -75,7 +77,7 @@ void *ProgramParam::createParamData(int type) {
 		break;
 		case PARAM_TEXTURE:
 		{
-			Texture *val = Services()->getMaterialManager()->getTextureByResourcePath("default/default.png");
+			Texture *val = NULL;
 			return (void*)val;
 		}
 		break;
@@ -97,7 +99,9 @@ ShaderProgram::ShaderProgram(const String &fileName) : Resource(Resource::RESOUR
 }
 
 ShaderProgram::~ShaderProgram() {
-
+	if(platformData) {
+		Services()->getRenderer()->destroyProgramPlatformData(platformData);
+	}
 }
 
 void ShaderProgram::reloadResource() {
@@ -112,9 +116,6 @@ ShaderBinding::ShaderBinding() : targetShader(NULL) {
 
 ShaderBinding::~ShaderBinding() {
 	accessMutex->lock();
-	for(int i=0; i < localParams.size(); i++) {
-		delete localParams[i]; //Services()->getRenderer()->destroyShaderParam(localParams[i]);
-	}	
 	for(int i=0; i < renderTargetBindings.size(); i++) {
 		delete renderTargetBindings[i];
 	}
@@ -134,15 +135,15 @@ AttributeBinding *ShaderBinding::getAttributeBinding(unsigned int index) {
 	return attributes[index];
 }
 
-LocalShaderParam *ShaderBinding::getLocalParam(unsigned int index) {
+std::shared_ptr<LocalShaderParam> ShaderBinding::getLocalParam(unsigned int index) {
 	return localParams[index];
 }
 
-LocalShaderParam *ShaderBinding::getLocalParamByName(const String& name) {
+std::shared_ptr<LocalShaderParam> ShaderBinding::getLocalParamByName(const String& name) {
 	accessMutex->lock();
 	for(int i=0; i < localParams.size(); i++) {
 		if(localParams[i]->name == name) {
-			LocalShaderParam *retParam = localParams[i];
+			std::shared_ptr<LocalShaderParam> retParam = localParams[i];
 			accessMutex->unlock();
 			return retParam;
 		}
@@ -160,10 +161,9 @@ AttributeBinding *ShaderBinding::getAttributeBindingByName(const String &name) {
 	return NULL;
 }
 
-
-LocalShaderParam *ShaderBinding::addParam(int type, const String& name) {
+std::shared_ptr<LocalShaderParam> ShaderBinding::addParam(int type, const String& name) {
 	void *defaultData = ProgramParam::createParamData(type);
-	LocalShaderParam *newParam = new LocalShaderParam();
+	std::shared_ptr<LocalShaderParam> newParam = std::make_shared<LocalShaderParam>();
 	newParam->data = defaultData;
 	newParam->name = name;
 	newParam->type = type;
@@ -180,8 +180,53 @@ LocalShaderParam *ShaderBinding::addParam(int type, const String& name) {
 	return newParam;
 }
 
-LocalShaderParam *ShaderBinding::addParamPointer(int type, const String& name, void *ptr) {
-	LocalShaderParam *newParam = new LocalShaderParam();
+std::shared_ptr<LocalShaderParam> ShaderBinding::addParamFromData(const String &name, const Polycode::String &data) {
+	std::shared_ptr<LocalShaderParam> param = std::make_shared<LocalShaderParam>();
+	std::istringstream stream(data.contents);
+	
+	Number n1 ,n2,n3,n4;
+	int type = ProgramParam::PARAM_UNKNOWN;
+	
+	if (stream >> n1) {
+		if (stream >> n2) {
+			if (stream >> n3) {
+				if (stream >> n4) {
+					type = ProgramParam::PARAM_COLOR;
+				} else {
+					type = ProgramParam::PARAM_VECTOR3;
+				}
+			} else {
+				type = ProgramParam::PARAM_VECTOR2;
+			}
+		} else {
+			type = ProgramParam::PARAM_NUMBER;
+		}
+	} else {
+		type = ProgramParam::PARAM_TEXTURE;
+	}
+	
+	void *defaultData = ProgramParam::createParamData(type);
+	std::shared_ptr<LocalShaderParam> newParam = std::make_shared<LocalShaderParam>();
+	newParam->data = defaultData;
+	newParam->name = name;
+	newParam->type = type;
+	newParam->param = NULL;
+	
+	if(type == ProgramParam::PARAM_TEXTURE || type == ProgramParam::PARAM_CUBEMAP) {
+		newParam->ownsPointer = false;
+	}
+	
+	newParam->setParamValueFromString(type, data);
+	
+	accessMutex->lock();
+	localParams.push_back(newParam);
+	accessMutex->unlock();
+	
+	return newParam;
+}
+
+std::shared_ptr<LocalShaderParam> ShaderBinding::addParamPointer(int type, const String& name, void *ptr) {
+	std::shared_ptr<LocalShaderParam> newParam = std::make_shared<LocalShaderParam>();
 	newParam->name = name;
 	newParam->data = ptr;
 	newParam->type = type;
@@ -249,7 +294,7 @@ void ShaderBinding::removeRenderTargetBinding(RenderTargetBinding *binding) {
 void ShaderBinding::copyTo(ShaderBinding *targetBinding) {
 	targetBinding->accessMutex->lock();
 	for(int i=0; i < localParams.size(); i++) {
-		LocalShaderParam *copyParam = localParams[i]->Copy();
+		std::shared_ptr<LocalShaderParam> copyParam = localParams[i]->Copy();
 		targetBinding->localParams.push_back(copyParam);
 	}
    targetBinding->accessMutex->unlock();
@@ -295,26 +340,27 @@ RenderTargetBinding *ShaderBinding::getDepthTargetBinding(unsigned int index) {
 	return depthTargetBindings[index];
 }
 
-Texture *ShaderBinding::loadTextureForParam(const String &paramName, const String &fileName) {
-	Texture *texture = Services()->getMaterialManager()->createTextureFromFile(fileName);
+std::shared_ptr<Texture> ShaderBinding::loadTextureForParam(const String &paramName, const String &fileName) {
+	ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
+	std::shared_ptr<Texture> texture = std::static_pointer_cast<Texture>(globalPool->loadResource(fileName));
 	setTextureForParam(paramName, texture);
 	return texture;
 }
 
-void ShaderBinding::setTextureForParam(const String &paramName, Texture *texture) {
+void ShaderBinding::setTextureForParam(const String &paramName, std::shared_ptr<Texture> texture) {
 	if(!texture) {
 		removeParam(paramName);
 		return;
 	}
-	LocalShaderParam *textureParam = getLocalParamByName(paramName);
+	std::shared_ptr<LocalShaderParam> textureParam = getLocalParamByName(paramName);
 	if(!textureParam) {
 		textureParam = addParam(ProgramParam::PARAM_TEXTURE, paramName);
 	}
 	textureParam->setTexture(texture);
 }
 
-void ShaderBinding::setCubemapForParam(const String &paramName, Cubemap *cubemap) {
-	LocalShaderParam *textureParam = getLocalParamByName(paramName);
+void ShaderBinding::setCubemapForParam(const String &paramName, std::shared_ptr<Cubemap> cubemap) {
+	std::shared_ptr<LocalShaderParam> textureParam = getLocalParamByName(paramName);
 	if(!textureParam) {
 		textureParam = addParam(ProgramParam::PARAM_CUBEMAP, paramName);
 	}
@@ -324,13 +370,19 @@ void ShaderBinding::setCubemapForParam(const String &paramName, Cubemap *cubemap
 void ShaderBinding::removeParam(const String &name) {
 	for(int i=0; i < localParams.size(); i++) {
 		if(localParams[i]->name == name) {
-			Services()->getRenderer()->destroyShaderParam(localParams[i]);
 			accessMutex->lock();
 			localParams.erase(localParams.begin()+i);
 			accessMutex->unlock();
 			return;
 		}
 	}
+}
+
+Shader::Shader(std::shared_ptr<ShaderProgram> vp, std::shared_ptr<ShaderProgram> fp) : Resource(Resource::RESOURCE_SHADER) {
+	numSpotLights = 0;
+	numPointLights = 0;
+	vertexProgram = vp;
+	fragmentProgram = fp;
 }
 
 Shader::Shader() : Resource(Resource::RESOURCE_SHADER) {
@@ -369,7 +421,9 @@ int Shader::getExpectedParamType(String name) {
 }
 
 Shader::~Shader() {
-
+	if(platformData) {
+		Services()->getRenderer()->destroyShaderPlatformData(platformData);
+	}
 }
 
 int Shader::getType() const {
@@ -460,20 +514,22 @@ LocalShaderParam::LocalShaderParam() {
 	ownsPointer = true;
 }
 
-void LocalShaderParam::setTexture(Texture *texture) {
-	Services()->getRenderer()->setTextureParam(this, texture);
+void LocalShaderParam::setTexture(std::shared_ptr<Texture> texture) {
+	Services()->getRenderer()->setTextureParam(this, &*texture);
+	texturePtr = texture;
 }
 
-Texture *LocalShaderParam::getTexture() {
-	return (Texture*) data;
+std::shared_ptr<Texture> LocalShaderParam::getTexture() {
+	return texturePtr;
 }
 
-void LocalShaderParam::setCubemap(Cubemap *cubemap) {
-	data = (void*) cubemap;
+void LocalShaderParam::setCubemap(std::shared_ptr<Cubemap> cubemap) {
+	data = (void*) &*cubemap;
+	cubemapPtr = cubemap;
 }
 
-Cubemap *LocalShaderParam::getCubemap() {
-	return (Cubemap*) data;
+std::shared_ptr<Cubemap> LocalShaderParam::getCubemap() {
+	return cubemapPtr;
 }
 
 LocalShaderParam::~LocalShaderParam() {
@@ -498,8 +554,8 @@ LocalShaderParam::~LocalShaderParam() {
 	}
 }
 
-LocalShaderParam *LocalShaderParam::Copy() {
-	LocalShaderParam *copyParam = new LocalShaderParam();
+std::shared_ptr<LocalShaderParam> LocalShaderParam::Copy() {
+	std::shared_ptr<LocalShaderParam> copyParam = std::make_shared<LocalShaderParam>();
 	copyParam->name = name;
 	copyParam->type = type;
 	copyParam->data = ProgramParam::createParamData(type);
@@ -586,7 +642,8 @@ void LocalShaderParam::setParamValueFromString(int type, String pvalue) {
 			}
 			break;
 			case ProgramParam::PARAM_TEXTURE:
-				Texture *texture = Services()->getMaterialManager()->createTextureFromFile(pvalue);
+				ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
+				std::shared_ptr<Texture> texture = std::static_pointer_cast<Texture>(globalPool->loadResource(pvalue));
 				setTexture(texture);
 			break;
 		}

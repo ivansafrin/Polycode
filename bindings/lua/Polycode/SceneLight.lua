@@ -65,7 +65,7 @@ end
 function SceneLight:getZBufferTexture()
 	local retVal =  Polycode.SceneLight_getZBufferTexture(self.__ptr)
 	if retVal == nil then return nil end
-	local __c = _G["Texture"]("__skip_ptr__")
+	local __c = _G["shared_ptr<Texture>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end

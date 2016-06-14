@@ -1,8 +1,7 @@
 function GPUDrawCall() {
 	Object.defineProperties(this, {
 		'options': { enumerable: true, configurable: true, get: GPUDrawCall.prototype.__get_options, set: GPUDrawCall.prototype.__set_options},
-		'modelMatrix': { enumerable: true, configurable: true, get: GPUDrawCall.prototype.__get_modelMatrix, set: GPUDrawCall.prototype.__set_modelMatrix},
-		'material': { enumerable: true, configurable: true, get: GPUDrawCall.prototype.__get_material, set: GPUDrawCall.prototype.__set_material}
+		'modelMatrix': { enumerable: true, configurable: true, get: GPUDrawCall.prototype.__get_modelMatrix, set: GPUDrawCall.prototype.__set_modelMatrix}
 	})
 }
 GPUDrawCall.prototype.__get_options = function() {
@@ -23,16 +22,6 @@ GPUDrawCall.prototype.__get_modelMatrix = function() {
 
 GPUDrawCall.prototype.__set_modelMatrix = function(val) {
 	Polycode.GPUDrawCall__set_modelMatrix(this.__ptr, val.__ptr)
-}
-
-GPUDrawCall.prototype.__get_material = function() {
-	var retVal = new Material()
-	retVal.__ptr = 	Polycode.GPUDrawCall__get_material(this.__ptr)
-	return retVal
-}
-
-GPUDrawCall.prototype.__set_material = function(val) {
-	Polycode.GPUDrawCall__set_material(this.__ptr, val.__ptr)
 }
 
 Duktape.fin(GPUDrawCall.prototype, function (x) {

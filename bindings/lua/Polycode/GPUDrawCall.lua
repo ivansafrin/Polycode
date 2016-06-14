@@ -14,12 +14,6 @@ function GPUDrawCall:__getvar(name)
 		local __c = _G["Matrix4"]("__skip_ptr__")
 		__c.__ptr = retVal
 		return __c
-	elseif name == "material" then
-		local retVal = Polycode.GPUDrawCall_get_material(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["Material"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
 	end
 end
 
@@ -29,9 +23,6 @@ function GPUDrawCall:__setvar(name,value)
 		return true
 	elseif name == "modelMatrix" then
 		Polycode.GPUDrawCall_set_modelMatrix(self.__ptr, value.__ptr)
-		return true
-	elseif name == "material" then
-		Polycode.GPUDrawCall_set_material(self.__ptr, value.__ptr)
 		return true
 	end
 	return false

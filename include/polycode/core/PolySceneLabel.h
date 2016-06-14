@@ -23,6 +23,7 @@ THE SOFTWARE.
 #pragma once
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyScenePrimitive.h"
+#include <memory>
 
 namespace Polycode {
 	
@@ -74,7 +75,7 @@ namespace Polycode {
 						
 		protected:
 			
-				 
+			std::shared_ptr<Texture> texture;
 			Number actualHeight;
 			Number labelScale;
 			Label *label;

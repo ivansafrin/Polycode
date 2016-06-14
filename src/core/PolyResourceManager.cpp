@@ -23,7 +23,6 @@
 #include "polycode/core/PolyResourceManager.h"
 #include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyCubemap.h"
-#include "polycode/core/PolyMaterialManager.h"
 #include "polycode/core/PolyLogger.h"
 #include "polycode/core/PolyMaterial.h"
 #include "polycode/core/PolyShader.h"
@@ -56,28 +55,7 @@ ResourcePool::ResourcePool(const String &name, ResourcePool *fallbackPool) {
 }
 
 ResourcePool::~ResourcePool() {
-	
 	CoreServices::getInstance()->getResourceManager()->removeResourcePool(this);
-	
-	for(int i=0; i < resources.size(); i++) {
-		if(resources[i]->getResourceType() == Resource::RESOURCE_MATERIAL) {
-			delete resources[i];
-		}
-	}
-	
-	for(int i=0; i < resources.size(); i++) {
-		if(resources[i]->getResourceType() == Resource::RESOURCE_SHADER) {
-			delete resources[i];
-		}
-	}
-	
-	for(int i=0; i < resources.size(); i++) {
-		if(resources[i]->getResourceType() == Resource::RESOURCE_PROGRAM) {
-			delete resources[i];
-		}
-	}
-	
-	resources.clear();
 }
 
 String ResourcePool::getName() {
@@ -88,7 +66,7 @@ void ResourcePool::setName(const String &name) {
 	this->name = name;
 }
 
-void ResourcePool::removeResource(Resource *resource) {
+void ResourcePool::removeResource(std::shared_ptr<Resource> resource) {
 	for(int i=0;i<resources.size();i++) {
 		if(resources[i] == resource) {
 			resources.erase(resources.begin()+i);
@@ -97,7 +75,7 @@ void ResourcePool::removeResource(Resource *resource) {
 	}
 }
 
-bool ResourcePool::hasResource(Resource *resource) {
+bool ResourcePool::hasResource(std::shared_ptr<Resource> resource) {
 	for(int i=0; i < resources.size(); i++) {
 		if(resources[i] == resource) {
 			return true;
@@ -106,7 +84,7 @@ bool ResourcePool::hasResource(Resource *resource) {
 	return false;
 }
 
-void ResourcePool::addResource(Resource *resource) {
+void ResourcePool::addResource(std::shared_ptr<Resource> resource) {
 	resource->addEventListener(this, Event::RESOURCE_CHANGE_EVENT);
 	resources.push_back(resource);
 	
@@ -138,10 +116,354 @@ TextureResourceLoader::TextureResourceLoader() {
 	extensions.push_back("psd");
 }
 
-Resource *TextureResourceLoader::loadResource(const String &path,  ResourcePool *targetPool) {
-	MaterialManager *materialManager = Services()->getMaterialManager();
-	Texture *texture = materialManager->createTextureFromFile(path, materialManager->clampDefault, materialManager->mipmapsDefault);
+std::shared_ptr<Resource> TextureResourceLoader::loadResource(const String &path,  ResourcePool *targetPool) {
+	Image *image = new Image(path);
+	std::shared_ptr<Texture> texture = std::make_shared<Texture>(image, Texture::clampDefault, Texture::mipmapsDefault);
+	delete image;
 	return texture;
+}
+
+std::shared_ptr<Shader> ResourcePool::createShaderFromXMLNode(TiXmlNode *node) {
+	TiXmlElement *nodeElement = node->ToElement();
+	if (!nodeElement) return nullptr; // Skip comment nodes
+
+	TiXmlNode* pChild;
+	std::shared_ptr<Shader> retShader;
+	std::shared_ptr<ShaderProgram> vp;
+	std::shared_ptr<ShaderProgram> fp;
+
+	for (pChild = node->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
+		TiXmlElement *pChildElement = pChild->ToElement();
+		if (!pChildElement) continue; // Skip comment nodes
+
+		if (strcmp(pChild->Value(), "vp") == 0) {
+			String vpFileName = String(pChildElement->Attribute("source"));
+			vp = std::static_pointer_cast<ShaderProgram>(loadResource(vpFileName));
+		}
+		if (strcmp(pChild->Value(), "fp") == 0) {
+			String fpFileName = String(pChildElement->Attribute("source"));
+			fp = std::static_pointer_cast<ShaderProgram>(loadResource(fpFileName));
+		}
+
+	}
+	if (vp != NULL && fp != NULL) {
+		retShader = std::make_shared<Shader>(fp, vp);
+		retShader->setName(String(nodeElement->Attribute("name")));
+	}
+
+	if (!retShader) {
+		return NULL;
+	}
+
+	int numPointLights = 0;
+	int numSpotLights = 0;
+
+	if (nodeElement->Attribute("numPointLights")) {
+		numPointLights = atoi(nodeElement->Attribute("numPointLights"));
+	}
+	if (nodeElement->Attribute("numSpotLights")) {
+		numSpotLights = atoi(nodeElement->Attribute("numSpotLights"));
+	}
+
+	retShader->screenShader = false;
+
+	if (nodeElement->Attribute("screen")) {
+		if (String(nodeElement->Attribute("screen")) == "true") {
+			retShader->screenShader = true;
+		}
+	}
+
+	if (retShader) {
+		retShader->numPointLights = numPointLights;
+		retShader->numSpotLights = numSpotLights;
+	}
+
+	return retShader;
+}
+
+
+void ResourcePool::loadShadersFromFile(const String &fileName) {
+	std::vector<Shader*> retVector;
+	TiXmlDocument doc(fileName.c_str());
+	doc.LoadFile();
+	if (doc.Error()) {
+		Logger::log("XML Error: %s\n", doc.ErrorDesc());
+	}
+	else {
+		TiXmlElement *mElem = doc.RootElement()->FirstChildElement("shaders");
+		if (mElem) {
+			TiXmlNode* pChild;
+			for (pChild = mElem->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
+				std::shared_ptr<Shader> newShader = createShaderFromXMLNode(pChild);
+				if (newShader != NULL) {
+					Logger::log("Adding shader %s\n", newShader->getName().c_str());
+					newShader->setResourceName(newShader->getName());
+					addResource(newShader);
+				}
+			}
+		}
+	}
+}
+
+std::shared_ptr<Cubemap> ResourcePool::cubemapFromXMLNode(TiXmlNode *node) {
+	TiXmlElement *nodeElement = node->ToElement();
+	if (!nodeElement) return NULL; // Skip comment nodes
+
+	std::shared_ptr<Cubemap> newCubemap;
+
+	String name = nodeElement->Attribute("name");
+	String xPos = nodeElement->Attribute("xPos");
+	String xNeg = nodeElement->Attribute("xNeg");
+	String yPos = nodeElement->Attribute("yPos");
+	String yNeg = nodeElement->Attribute("yNeg");
+	String zPos = nodeElement->Attribute("zPos");
+	String zNeg = nodeElement->Attribute("zNeg");
+
+	newCubemap = std::make_shared<Cubemap>(
+		std::static_pointer_cast<Texture>(loadResource(xPos)),
+		std::static_pointer_cast<Texture>(loadResource(xNeg)),
+		std::static_pointer_cast<Texture>(loadResource(yPos)),
+		std::static_pointer_cast<Texture>(loadResource(yNeg)),
+		std::static_pointer_cast<Texture>(loadResource(zPos)),
+		std::static_pointer_cast<Texture>(loadResource(zNeg))
+		);
+	newCubemap->setResourceName(name);
+	return newCubemap;
+}
+
+void ResourcePool::loadCubemapsFromFile(const String &fileName) {
+	TiXmlDocument doc(fileName.c_str());
+	doc.LoadFile();
+
+	if (doc.Error()) {
+		Logger::log("XML Error: %s\n", doc.ErrorDesc());
+	}
+	else {
+		TiXmlElement *mElem = doc.RootElement()->FirstChildElement("cubemaps");
+		if (mElem) {
+			TiXmlNode* pChild;
+			for (pChild = mElem->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
+				std::shared_ptr<Cubemap> newCubemap = cubemapFromXMLNode(pChild);
+				if (newCubemap) {
+					addResource(newCubemap);
+				}
+			}
+		}
+	}
+}
+
+std::shared_ptr<Material> ResourcePool::materialFromXMLNode(TiXmlNode *node) {
+	TiXmlElement *nodeElement = node->ToElement();
+	if (!nodeElement) return NULL; // Skip comment nodes
+
+	String mname = nodeElement->Attribute("name");
+	TiXmlNode* pChild, *pChild2, *pChild3;
+
+	vector<ShaderPass> shaderPasses;
+	vector<ShaderRenderTarget*> renderTargets;
+
+	std::shared_ptr<Material> newMaterial = std::make_shared<Material>(mname);
+
+	newMaterial->setResourceName(mname);
+
+	if (nodeElement->Attribute("screen")) {
+		if (String(nodeElement->Attribute("screen")) == "true") {
+			newMaterial->screenMaterial = true;
+		}
+	}
+
+	if (nodeElement->Attribute("blendingMode")) {
+		newMaterial->blendingMode = atoi(nodeElement->Attribute("blendingMode"));
+	}
+
+	for (pChild3 = node->FirstChild(); pChild3 != 0; pChild3 = pChild3->NextSibling()) {
+		TiXmlElement *pChild3Element = pChild3->ToElement();
+		if (!pChild3Element) continue; // Skip comment nodes
+
+		if (strcmp(pChild3->Value(), "rendertargets") == 0) {
+
+			if (pChild3Element->Attribute("type")) {
+				if (strcmp(pChild3Element->Attribute("type"), "rgba_fp16") == 0) {
+					newMaterial->fp16RenderTargets = true;
+				}
+			}
+
+			for (pChild = pChild3->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
+				TiXmlElement *pChildElement = pChild->ToElement();
+				if (!pChildElement) continue; // Skip comment nodes
+
+				if (strcmp(pChild->Value(), "rendertarget") == 0) {
+					ShaderRenderTarget *newTarget = new ShaderRenderTarget;
+					newTarget->id = pChildElement->Attribute("id");
+
+					newTarget->width = CoreServices::getInstance()->getCore()->getXRes();
+					newTarget->height = CoreServices::getInstance()->getCore()->getYRes();
+
+					newTarget->sizeMode = ShaderRenderTarget::SIZE_MODE_PIXELS;
+					if (pChildElement->Attribute("width") && pChildElement->Attribute("height")) {
+						newTarget->width = atof(pChildElement->Attribute("width"));
+						newTarget->height = atof(pChildElement->Attribute("height"));
+						if (pChildElement->Attribute("sizeMode")) {
+							if (strcmp(pChildElement->Attribute("sizeMode"), "normalized") == 0) {
+								newTarget->sizeMode = ShaderRenderTarget::SIZE_MODE_NORMALIZED;
+								if (newTarget->width > 1.0f)
+									newTarget->width = 1.0f;
+								if (newTarget->height > 1.0f)
+									newTarget->height = 1.0f;
+							}
+						}
+					}
+
+					newTarget->normalizedWidth = -1;
+					newTarget->normalizedHeight = -1;
+					newMaterial->recreateRenderTarget(newTarget);
+					renderTargets.push_back(newTarget);
+				}
+			}
+		}
+	}
+
+	for (pChild3 = node->FirstChild(); pChild3 != 0; pChild3 = pChild3->NextSibling()) {
+		TiXmlElement *pChild3Element = pChild3->ToElement();
+		if (!pChild3Element) continue; // Skip comment nodes
+
+		if (strcmp(pChild3->Value(), "shader") == 0) {
+			ShaderPass shaderPass;
+
+			TiXmlElement *snodeElement = pChild3->ToElement();
+			if (snodeElement) {
+				shaderPass.shader = std::static_pointer_cast<Shader>(getResource(Resource::RESOURCE_SHADER, snodeElement->Attribute("name")));
+			}
+
+			TiXmlElement *nodeElement = pChild3->ToElement();
+			if (nodeElement->Attribute("wireframe")) {
+				shaderPass.wireframe = String(nodeElement->Attribute("wireframe")) == "true";
+			}
+
+			if (shaderPass.shader) {
+				shaderPass.shaderBinding = std::make_shared<ShaderBinding>();
+				shaderPasses.push_back(shaderPass);
+				for (pChild = pChild3->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
+					TiXmlElement *pChildElement = pChild->ToElement();
+					if (!pChildElement) continue; // Skip comment nodes
+
+					if (strcmp(pChild->Value(), "params") == 0) {
+						for (pChild2 = pChild->FirstChild(); pChild2 != 0; pChild2 = pChild2->NextSibling()) {
+							TiXmlElement *pChild2Element = pChild2->ToElement();
+							if (!pChild2Element) continue; // Skip comment nodes
+
+							if (strcmp(pChild2->Value(), "param") == 0) {
+								String pname = pChild2Element->Attribute("name");
+
+								String pvalue = pChild2Element->Attribute("value");
+								int type = shaderPass.shader->getExpectedParamType(pname);
+								std::shared_ptr<LocalShaderParam> param = shaderPass.shaderBinding->addParamFromData(pname, pvalue);
+							}
+						}
+					}
+					if (strcmp(pChild->Value(), "targettextures") == 0) {
+						for (pChild2 = pChild->FirstChild(); pChild2 != 0; pChild2 = pChild2->NextSibling()) {
+							TiXmlElement *pChild2Element = pChild2->ToElement();
+							if (!pChild2Element) continue; // Skip comment nodes
+
+							if (strcmp(pChild2->Value(), "targettexture") == 0) {
+
+								RenderTargetBinding* newBinding = new RenderTargetBinding;
+								newBinding->id = pChild2Element->Attribute("id");
+
+								newBinding->name = "";
+								if (pChild2Element->Attribute("name")) {
+									newBinding->name = pChild2Element->Attribute("name");
+								}
+								String mode = pChild2Element->Attribute("mode");
+								if (strcmp(mode.c_str(), "in") == 0) {
+									newBinding->mode = RenderTargetBinding::MODE_IN;
+								}
+								else if (strcmp(mode.c_str(), "color") == 0) {
+									newBinding->mode = RenderTargetBinding::MODE_COLOR;
+								}
+								else if (strcmp(mode.c_str(), "depth") == 0) {
+									newBinding->mode = RenderTargetBinding::MODE_DEPTH;
+								}
+								else {
+									newBinding->mode = RenderTargetBinding::MODE_OUT;
+								}
+
+								shaderPass.shaderBinding->addRenderTargetBinding(newBinding);
+
+								for (int l = 0; l < renderTargets.size(); l++) {
+									if (renderTargets[l]->id == newBinding->id) {
+										printf("Assigning texture to %s\n", newBinding->id.c_str());
+										newBinding->buffer = renderTargets[l]->buffer;
+									}
+								}
+							}
+						}
+					}
+					if (strcmp(pChild->Value(), "textures") == 0) {
+						for (pChild2 = pChild->FirstChild(); pChild2 != 0; pChild2 = pChild2->NextSibling()) {
+							TiXmlElement *pChild2Element = pChild2->ToElement();
+							if (!pChild2Element) continue; // Skip comment nodes
+
+							if (strcmp(pChild2->Value(), "texture") == 0) {
+								String tname = "";
+								if (pChild2Element->Attribute("name")) {
+									tname = pChild2Element->Attribute("name");
+								}
+								std::shared_ptr<Texture> texture = std::static_pointer_cast<Texture>(loadResource(pChild2Element->GetText()));
+								shaderPass.shaderBinding->setTextureForParam(tname, texture);
+							}
+
+							if (strcmp(pChild2->Value(), "cubemap") == 0) {
+								String tname = "";
+								if (pChild2Element->Attribute("name")) {
+									tname = pChild2Element->Attribute("name");
+								}
+								// RENDERER_TODO
+								//newShaderBinding->addCubemap(tname, (Cubemap*)resourcePool->getResource(Resource::RESOURCE_CUBEMAP, pChild2Element->GetText()));
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+	for (int i = 0; i< shaderPasses.size(); i++) {
+		newMaterial->addShaderPass(shaderPasses[i]);
+	}
+
+	return newMaterial;
+}
+
+void ResourcePool::loadMaterialsFromFile(const String &fileName) {
+	std::vector<Material*> retVector;
+
+	TiXmlDocument doc(fileName.c_str());
+	doc.LoadFile();
+
+	if (doc.Error()) {
+		Logger::log("XML Error: %s\n", doc.ErrorDesc());
+	}
+	else {
+		TiXmlElement *mElem = doc.RootElement()->FirstChildElement("materials");
+		if (mElem) {
+			TiXmlNode* pChild;
+			for (pChild = mElem->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) {
+				std::shared_ptr<Material> newMaterial = materialFromXMLNode(pChild);
+				if (newMaterial) {
+					addResource(newMaterial);
+				}
+			}
+		}
+	}
+}
+
+void ResourcePool::loadResourcesFromMaterialFile(const String &path) {
+	loadShadersFromFile(path);
+	loadCubemapsFromFile(path);
+	loadMaterialsFromFile(path);
 }
 
 void ResourcePool::loadResourcesFromFolderWithLoader(const String &folder, bool recursive, ResourceLoader *loader, const String &containingFolder) {
@@ -151,7 +473,7 @@ void ResourcePool::loadResourcesFromFolderWithLoader(const String &folder, bool 
 	
 	for(int i=0; i < resourceDir.size(); i++) {
 		if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
-			Resource *newResource = NULL;
+			std::shared_ptr<Resource> newResource;
 			if(loader->canHandleExtension(resourceDir[i].extension)) {
 				newResource = loader->loadResource(resourceDir[i].fullPath, this);
 			}
@@ -170,9 +492,9 @@ void ResourcePool::loadResourcesFromFolderWithLoader(const String &folder, bool 
 	}
 }
 
-Resource *ResourcePool::loadResource(const String &path) {
+std::shared_ptr<Resource> ResourcePool::loadResource(const String &path) {
 	
-	Resource *newResource = getResourceByPath(path);
+	std::shared_ptr<Resource> newResource = getResourceByPath(path);
 	if(newResource) {
 		return newResource;
 	}
@@ -193,9 +515,8 @@ Resource *ResourcePool::loadResource(const String &path) {
 	return newResource;
 }
 
-Resource *ResourcePool::loadResourceWithName(const String &path, const String &name) {
-	
-	Resource *newResource = getResourceByPath(path);
+std::shared_ptr<Resource> ResourcePool::loadResourceWithName(const String &path, const String &name) {
+	std::shared_ptr<Resource> newResource = getResourceByPath(path);
 	if(newResource) {
 		return newResource;
 	}
@@ -224,7 +545,7 @@ void ResourcePool::loadResourcesFromFolder(const String &folder, bool recursive)
 }
 
 
-Resource *ResourcePool::getResourceByPath(const String& resourcePath) const {
+std::shared_ptr<Resource> ResourcePool::getResourceByPath(const String& resourcePath) const {
 	for(int i =0; i < resources.size(); i++) {
 		if(resources[i]->getResourcePath() == resourcePath) {
 			return resources[i];
@@ -234,22 +555,21 @@ Resource *ResourcePool::getResourceByPath(const String& resourcePath) const {
 	if(fallbackPool) {
 		return fallbackPool->getResourceByPath(resourcePath);
 	} else {
-		return NULL;
+		return nullptr;
 	}
 }
 
-std::vector<Resource*> ResourcePool::getResources(int resourceType) {
-	std::vector<Resource*> result;
+std::vector<std::shared_ptr<Resource> > ResourcePool::getResources(int resourceType) {
+	std::vector<std::shared_ptr<Resource> > result;
 	for(int i =0; i < resources.size(); i++) {
 		if(resources[i]->getResourceType() == resourceType) {
 			result.push_back(resources[i]);
 		}
 	}
-	
 	return result;
 }
 
-Resource *ResourcePool::getResource(int resourceType, const String& resourceName) const {
+std::shared_ptr<Resource> ResourcePool::getResource(int resourceType, const String& resourceName) const {
 
 	for(int i =0; i < resources.size(); i++) {
 		if(resources[i]->getResourceName() == resourceName && resources[i]->getResourceType() == resourceType) {
@@ -354,14 +674,13 @@ ResourceLoader *ResourceManager::getResourceLoaderAtIndex(unsigned int index) {
 	}
 }
 
-
 MaterialResourceLoader::MaterialResourceLoader() {
 	extensions.push_back("mat");
 }
 
-Resource *MaterialResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
-	Services()->getMaterialManager()->loadMaterialLibraryIntoPool(targetPool, path);
-	return NULL;
+std::shared_ptr<Resource> MaterialResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
+	targetPool->loadResourcesFromMaterialFile(path);
+	return nullptr;
 }
 
 ProgramResourceLoader::ProgramResourceLoader() {
@@ -369,8 +688,14 @@ ProgramResourceLoader::ProgramResourceLoader() {
 	extensions.push_back("vert");
 }
 
-Resource *ProgramResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
-	ShaderProgram *newProgram = Services()->getMaterialManager()->createProgramFromFile(path);
+std::shared_ptr<Resource> ProgramResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
+	std::shared_ptr<ShaderProgram> newProgram = std::make_shared<ShaderProgram>(path);
+	OSFileEntry fileEntry(path, OSFileEntry::TYPE_FILE);
+	if(fileEntry.extension == "vert") {
+		newProgram->type = ShaderProgram::TYPE_VERT;
+	} else {
+		newProgram->type = ShaderProgram::TYPE_FRAG;
+	}
 	return newProgram;
 }
 
@@ -592,21 +917,22 @@ ScriptResourceLoader::~ScriptResourceLoader() {
 	duk_destroy_heap(duktapeContext);
 }
 
-Resource *ScriptResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
+std::shared_ptr<Resource> ScriptResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
 	OSFileEntry entry(path, OSFileEntry::TYPE_FILE);
-	Script *newScript = NULL;
+	std::shared_ptr<Script> newScript;
+
 	if(entry.extension == "lua") {
 #ifndef NO_LUA
 		if(!luaState) {
 			initLua();
 		}
-		newScript = new LuaScript(luaState, path);
+		newScript = std::make_shared<LuaScript>(luaState, path);
 #endif
 	} else if(entry.extension == "js") {
 		if(!duktapeContext) {
 			initJavascript();
 		}
-		newScript = new JSScript(duktapeContext, path);
+		newScript = std::make_shared<JSScript>(duktapeContext, path);
 	}
 	return newScript;
 }
@@ -626,15 +952,15 @@ MeshResourceLoader::MeshResourceLoader() {
 	extensions.push_back("mesh");
 }
 
-Resource *MeshResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
-	Mesh *mesh = new Mesh(path);
+std::shared_ptr<Resource> MeshResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
+	std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(path);
 	return mesh;
 }
 
 
-Resource *FontResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
+std::shared_ptr<Resource> FontResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
 	OSFileEntry entry = OSFileEntry(path, OSFileEntry::TYPE_FILE);
-	Font *font = new Font(path, FTLibrary);
+	std::shared_ptr<Font> font = std::make_shared<Font>(path, FTLibrary);
 	font->setResourceName(entry.nameWithoutExtension);
 	return font;
 }
@@ -656,7 +982,7 @@ void ResourceManager::Update(int elapsed) {
 	}
 }
 
-void ResourceManager::removeResource(Resource *resource) {
+void ResourceManager::removeResource(std::shared_ptr<Resource> resource) {
 	globalPool->removeResource(resource);
 	for(int i=0; i < pools.size(); i++) {
 		pools[i]->removeResource(resource);
@@ -698,10 +1024,10 @@ void ResourceManager::unsubscibeFromResourcePool(ResourcePool *pool) {
 	}
 }
 
-std::vector<Resource*> ResourceManager::getResources(int resourceType) {
-	std::vector<Resource*> result;
+std::vector<std::shared_ptr<Resource> > ResourceManager::getResources(int resourceType) {
+	std::vector<std::shared_ptr<Resource> > result;
 
-	std::vector<Resource*> subresult = globalPool->getResources(resourceType);
+	std::vector<std::shared_ptr<Resource> > subresult = globalPool->getResources(resourceType);
 	result.insert(result.end(), subresult.begin(), subresult.end());
 	
 	for(int i =0; i < pools.size(); i++) {

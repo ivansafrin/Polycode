@@ -27,7 +27,10 @@
 #include "polycode/core/PolyTexture.h"
 #include "polycode/core/PolyVector4.h"
 #include "polycode/core/PolyLogger.h"
-#include <unistd.h>
+#if PLATFORM == PLATFORM_ANDROID
+	#include <unistd.h>
+#endif
+
 
 using namespace Polycode;
 
@@ -173,7 +176,7 @@ void RenderThread::processDrawBufferLights(GPUDrawBuffer *buffer) {
 			
 			if(buffer->lights[i].shadowsEnabled) {
 				lightShadows[lightShadowIndex].shadowMatrix->setMatrix4(buffer->lights[i].lightViewMatrix);
-				lightShadows[lightShadowIndex].shadowBuffer->data = (void*) buffer->lights[i].shadowMapTexture;
+				lightShadows[lightShadowIndex].shadowBuffer->data = (void*) &*buffer->lights[i].shadowMapTexture;
 				
 				lights[i].shadowEnabled->setNumber(1.0);
 				
@@ -201,7 +204,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
 	++currentDebugFrameInfo.buffersProcessed;
 	
 	if(buffer->targetFramebuffer) {
-		graphicsInterface->bindRenderBuffer(buffer->targetFramebuffer);
+		graphicsInterface->bindRenderBuffer(&*buffer->targetFramebuffer);
 	}
 	
 	graphicsInterface->setViewport(buffer->viewport.x, buffer->viewport.y, buffer->viewport.w, buffer->viewport.h);
@@ -239,9 +242,9 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
 		
 		modelMatrixParam->setMatrix4(buffer->drawCalls[i].modelMatrix);
 		
-		Material *material = buffer->drawCalls[i].material;
+		Material *material = &*buffer->drawCalls[i].material;
 		if(buffer->globalMaterial && !buffer->drawCalls[i].options.forceMaterial) {
-			material = buffer->globalMaterial;
+			material = &*buffer->globalMaterial;
 		}
 		
 		if(material) {
@@ -262,14 +265,14 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
 
 				shaderPass = buffer->drawCalls[i].shaderPasses[s];
 				
-				ShaderBinding *localShaderBinding = buffer->drawCalls[i].shaderPasses[s].shaderBinding;
-				ShaderBinding *materialShaderBinding = shaderPass.materialShaderBinding;
+				ShaderBinding *localShaderBinding = &*buffer->drawCalls[i].shaderPasses[s].shaderBinding;
+				ShaderBinding *materialShaderBinding = &*shaderPass.materialShaderBinding;
 				
 				
 				if(buffer->globalMaterial && !buffer->drawCalls[i].options.forceMaterial) {
 					if(s < buffer->globalMaterial->getNumShaderPasses()) {
 						shaderPass = buffer->globalMaterial->getShaderPass(s);
-						localShaderBinding = shaderPass.shaderBinding;
+						localShaderBinding = &*shaderPass.shaderBinding;
 					}
 				}
 				
@@ -277,13 +280,31 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
 					continue;
 				}
 				
-				graphicsInterface->useShader(shaderPass.shader);
+				
+				if(shaderPass.shader) {
+					if(!shaderPass.shader->platformData) {
+						graphicsInterface->createShader(&*shaderPass.shader);
+						// set renderer global params
+						for(int p=0; p < rendererShaderBinding->getNumLocalParams(); p++) {
+							LocalShaderParam *localParam = &*rendererShaderBinding->getLocalParam(p);
+							if(localParam) {
+								ProgramParam *paramPtr = shaderPass.shader->getParamPointer(localParam->name);
+								if(paramPtr) {
+									paramPtr->globalParam = localParam;
+								}
+							}
+						}
+						shaderPass.shader->reloadResource();
+					}
+				}
+				
+				graphicsInterface->useShader(&*shaderPass.shader);
 				graphicsInterface->setWireframeMode(shaderPass.wireframe);
 
 				// set global params
 				for(int p=0; p < shaderPass.shader->expectedParams.size(); p++) {
 					if(shaderPass.shader->expectedParams[p].globalParam) {
-						graphicsInterface->setParamInShader(shaderPass.shader, &shaderPass.shader->expectedParams[p], shaderPass.shader->expectedParams[p].globalParam);
+						graphicsInterface->setParamInShader(&*shaderPass.shader, &shaderPass.shader->expectedParams[p], shaderPass.shader->expectedParams[p].globalParam);
 					}
 				}
 				
@@ -293,13 +314,15 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
 				}
 				if(materialShaderBinding) {
 					for(int p=0; p < materialShaderBinding->getNumLocalParams(); p++) {						   
-						LocalShaderParam *localParam = materialShaderBinding->getLocalParam(p);
+						LocalShaderParam *localParam = &*materialShaderBinding->getLocalParam(p);
 						if(localParam) {
 							if(!localParam->param) {
 								localParam->param = shaderPass.shader->getParamPointer(localParam->name);
 							}
 							if(localParam->param) {
-								graphicsInterface->setParamInShader(shaderPass.shader, localParam->param, localParam);
+								graphicsInterface->setParamInShader(&*shaderPass.shader, localParam->param, localParam);
+								Color c = localParam->getColor();
+								
 							}
 						}
 					}
@@ -310,13 +333,13 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
 				
 				localShaderBinding->accessMutex->lock();
 				for(int p=0; p < localShaderBinding->getNumLocalParams(); p++) {
-					LocalShaderParam *localParam = localShaderBinding->getLocalParam(p);
+					LocalShaderParam *localParam = &*localShaderBinding->getLocalParam(p);
 					if(localParam) {
 						if(!localParam->param) {
 							localParam->param = shaderPass.shader->getParamPointer(localParam->name);
 						}
 						if(localParam->param) {
-							graphicsInterface->setParamInShader(shaderPass.shader, localParam->param, localParam);
+							graphicsInterface->setParamInShader(&*shaderPass.shader, localParam->param, localParam);
 						}
 					}
 				}
@@ -326,7 +349,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
 					graphicsInterface->createSubmeshBuffers(&*buffer->drawCalls[i].submesh);
 					buffer->drawCalls[i].submesh->dataChanged = false;
 				}
-				graphicsInterface->drawSubmeshBuffers(&*buffer->drawCalls[i].submesh, shaderPass.shader);
+				graphicsInterface->drawSubmeshBuffers(&*buffer->drawCalls[i].submesh, &*shaderPass.shader);
 				graphicsInterface->endDrawCall();
 			}
 		}
@@ -346,14 +369,6 @@ void RenderThread::unlockRenderMutex() {
 	Services()->getCore()->unlockMutex(renderMutex);
 }
 
-void RenderThread::clearFrameQueue() {
-	while(!frameQueue.empty()) {
-		RenderFrame *nextFrame = frameQueue.front();
-		framesToDelete.push_back(nextFrame);
-		frameQueue.pop();
-	}
-}
-
 void RenderThread::processJob(const RendererThreadJob &job) {
 	lockRenderMutex();
 
@@ -365,45 +380,24 @@ void RenderThread::processJob(const RendererThreadJob &job) {
 			delete modeInfo;
 		}
 		break;
-		case JOB_CREATE_TEXTURE:
-		{
-			Texture *texture = (Texture*) job.data;
-			graphicsInterface->createTexture(texture);
-		}
-		break;
 		case JOB_DESTROY_TEXTURE:
 		{
-			Texture *texture = (Texture*) job.data;
-			graphicsInterface->destroyTexture(texture);
-			clearFrameQueue();
-		}
-		break;
-		case JOB_CREATE_RENDER_BUFFER:
-		{
-			RenderBuffer *buffer = (RenderBuffer*) job.data;
-			graphicsInterface->createRenderBuffer(buffer);
+			graphicsInterface->destroyTextureData(job.data);
 		}
 		break;
 		case JOB_DESTROY_RENDER_BUFFER:
 		{
-			RenderBuffer *buffer = (RenderBuffer*) job.data;
-			graphicsInterface->destroyRenderBuffer(buffer);
-			clearFrameQueue();
+			graphicsInterface->destroyRenderBufferData(job.data);
 		}
 		break;
-		case JOB_DESTROY_SHADER_BINDING:
+		case JOB_DESTROY_SHADER:
 		{
-			ShaderBinding *binding = (ShaderBinding*) job.data;
-			delete binding;
-			clearFrameQueue();
+			graphicsInterface->destroyShaderData(job.data);
 		}
 		break;
-		case JOB_DESTROY_SHADER_PARAM:
+		case JOB_DESTROY_PROGRAM:
 		{
-			LocalShaderParam *param = (LocalShaderParam*) job.data;
-			delete param;
-			clearFrameQueue();
-
+			graphicsInterface->destroyProgramData(job.data);
 		}
 		break;
 		case JOB_PROCESS_DRAW_BUFFER:
@@ -429,35 +423,11 @@ void RenderThread::processJob(const RendererThreadJob &job) {
 			lastFrameDebugInfo = currentDebugFrameInfo;
 		}
 		break;
-		case JOB_CREATE_PROGRAM:
-		{
-			ShaderProgram *program = (ShaderProgram*) job.data;
-			graphicsInterface->createProgram(program);
-		}
-		break;
 		case JOB_SET_TEXTURE_PARAM:
 		{
 			LocalShaderParam *param = (LocalShaderParam*) job.data;
 			Texture *texture = (Texture*) job.data2;
 			param->data = (void*) texture;
-		}
-		break;
-		case JOB_CREATE_SHADER:
-		{
-			Shader *shader = (Shader*) job.data;
-			graphicsInterface->createShader(shader);
-			
-			// set renderer global params
-			for(int p=0; p < rendererShaderBinding->getNumLocalParams(); p++) {
-				LocalShaderParam *localParam = rendererShaderBinding->getLocalParam(p);
-				if(localParam) {
-					ProgramParam *paramPtr = shader->getParamPointer(localParam->name);
-					if(paramPtr) {
-						paramPtr->globalParam = localParam;
-					}
-				}
-			}
-			shader->reloadResource();
 		}
 		break;
 		case JOB_DESTROY_SUBMESH_BUFFER:
@@ -552,10 +522,6 @@ void Renderer::setAnisotropyAmount(Number amount) {
 	anisotropy = amount;
 }
 
-Cubemap *Renderer::createCubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4, Texture *t5) {
-	return NULL;
-}
-
 void Renderer::processDrawBuffer(GPUDrawBuffer *buffer) {
 	buffer->backingResolutionScale.x = backingResolutionScaleX;
 	buffer->backingResolutionScale.y = backingResolutionScaleY;
@@ -580,69 +546,25 @@ void Renderer::endFrame() {
 	currentFrame = NULL;
 }
 
-Texture *Renderer::createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type, unsigned int filteringMode, unsigned int anisotropy, bool framebufferTexture) {
-	Texture *texture = new Texture(width, height, textureData, clamp, createMipmaps, type, framebufferTexture);
-	texture->filteringMode = filteringMode;
-	texture->anisotropy = anisotropy;
-	renderThread->enqueueJob(RenderThread::JOB_CREATE_TEXTURE, (void*)texture);
-	return texture;
+void Renderer::destroyRenderBufferPlatformData(void *platformData) {
+	renderThread->enqueueJob(RenderThread::JOB_DESTROY_RENDER_BUFFER, platformData);
 }
 
-RenderBuffer *Renderer::createRenderBuffer(unsigned int width, unsigned int height, bool attachDepthBuffer, bool floatingPoint) {
-	RenderBuffer *buffer = new RenderBuffer(width, height, attachDepthBuffer, floatingPoint);
-	renderThread->enqueueJob(RenderThread::JOB_CREATE_RENDER_BUFFER, (void*)buffer);
-	return buffer;
+void Renderer::destroyTexturePlatformData(void *platformData) {
+	renderThread->enqueueJob(RenderThread::JOB_DESTROY_TEXTURE, platformData);
 }
 
-void Renderer::destroyRenderBuffer(RenderBuffer *buffer) {
-	renderThread->enqueueJob(RenderThread::JOB_DESTROY_RENDER_BUFFER, (void*)buffer);
-}
-
-Shader *Renderer::createShader(ShaderProgram *vertexProgram, ShaderProgram *fragmentProgram) {
-	Shader *shader = new Shader();
-	shader->vertexProgram = vertexProgram;
-	shader->fragmentProgram = fragmentProgram;
-	renderThread->enqueueJob(RenderThread::JOB_CREATE_SHADER, (void*)shader);
-	return shader;
-}
-
-ShaderProgram *Renderer::createProgram(const String &fileName) {
-	ShaderProgram *program = new ShaderProgram(fileName);
-	
-	OSFileEntry fileEntry(program->getResourcePath(), OSFileEntry::TYPE_FILE);
-	
-	if(fileEntry.extension == "vert" ) {
-		program->type = ShaderProgram::TYPE_VERT;
-	} else {
-		program->type = ShaderProgram::TYPE_FRAG;
-	}
-	
-	renderThread->enqueueJob(RenderThread::JOB_CREATE_PROGRAM, (void*)program);
-	return program;
-}
-
-void Renderer::destroyTexture(Texture *texture) {
-	renderThread->enqueueJob(RenderThread::JOB_DESTROY_TEXTURE, (void*)texture);
-}
-
-void Renderer::destroyProgram(ShaderProgram *program) {
-	renderThread->enqueueJob(RenderThread::JOB_DESTROY_PROGRAM, (void*)program);
+void Renderer::destroyProgramPlatformData(void *platformData) {
+	renderThread->enqueueJob(RenderThread::JOB_DESTROY_PROGRAM, platformData);
 }
 
 void Renderer::setTextureParam(LocalShaderParam *param, Texture *texture) {
 	renderThread->enqueueJob(RenderThread::JOB_SET_TEXTURE_PARAM, (void*)param, (void*)texture);
 }
 
-void Renderer::destroyShaderBinding(ShaderBinding *binding) {
-	renderThread->enqueueJob(RenderThread::JOB_DESTROY_SHADER_BINDING, (void*)binding);
-}
 
-void Renderer::destroyShaderParam(LocalShaderParam *param) {
-	renderThread->enqueueJob(RenderThread::JOB_DESTROY_SHADER_PARAM, (void*)param);
-}
-
-void Renderer::destroyShader(Shader *shader) {
-	renderThread->enqueueJob(RenderThread::JOB_DESTROY_SHADER, (void*)shader);
+void Renderer::destroyShaderPlatformData(void *platformData) {
+	renderThread->enqueueJob(RenderThread::JOB_DESTROY_SHADER, platformData);
 }
 
 void Renderer::destroySubmeshPlatformData(void *platformData) {

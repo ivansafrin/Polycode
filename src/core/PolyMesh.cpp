@@ -115,8 +115,7 @@ MeshGeometry::~MeshGeometry() {
 	}
 	if(customVertexArray4.platformData) {
 		Services()->getRenderer()->destroySubmeshPlatformData(customVertexArray4.platformData);
-	}
-	
+	}	
 }
 
 void MeshGeometry::clearMesh() {

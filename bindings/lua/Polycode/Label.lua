@@ -90,7 +90,7 @@ end
 function Label:getFont()
 	local retVal =  Polycode.Label_getFont(self.__ptr)
 	if retVal == nil then return nil end
-	local __c = _G["Font"]("__skip_ptr__")
+	local __c = _G["shared_ptr<Font>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end

@@ -125,7 +125,7 @@ Camera.prototype.removePostFilter = function() {
 }
 
 Camera.prototype.getScreenShaderMaterial = function() {
-	var retVal = new Material()
+	var retVal = new shared_ptr<Material>()
 	retVal.__ptr = Polycode.Camera_getScreenShaderMaterial(this.__ptr)
 	return retVal
 }

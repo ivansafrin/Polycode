@@ -22,7 +22,6 @@
 
 #pragma once
 #include "polycode/core/PolyGlobals.h"
-#include "polycode/core/PolySceneImage.h"
 #include "polycode/core/PolySceneLabel.h"
 #include "polycode/core/PolyScenePrimitive.h"
 #include "polycode/core/PolyEntity.h"

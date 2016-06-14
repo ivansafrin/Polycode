@@ -2,13 +2,7 @@ class "GPUDrawBuffer"
 
 
 function GPUDrawBuffer:__getvar(name)
-	if name == "targetFramebuffer" then
-		local retVal = Polycode.GPUDrawBuffer_get_targetFramebuffer(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["RenderBuffer"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
-	elseif name == "projectionMatrix" then
+	if name == "projectionMatrix" then
 		local retVal = Polycode.GPUDrawBuffer_get_projectionMatrix(self.__ptr)
 		if retVal == nil then return nil end
 		local __c = _G["Matrix4"]("__skip_ptr__")
@@ -42,12 +36,6 @@ function GPUDrawBuffer:__getvar(name)
 		local __c = _G["Vector2"]("__skip_ptr__")
 		__c.__ptr = retVal
 		return __c
-	elseif name == "globalMaterial" then
-		local retVal = Polycode.GPUDrawBuffer_get_globalMaterial(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["Material"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
 	elseif name == "viewport" then
 		local retVal = Polycode.GPUDrawBuffer_get_viewport(self.__ptr)
 		if retVal == nil then return nil end
@@ -58,10 +46,7 @@ function GPUDrawBuffer:__getvar(name)
 end
 
 function GPUDrawBuffer:__setvar(name,value)
-	if name == "targetFramebuffer" then
-		Polycode.GPUDrawBuffer_set_targetFramebuffer(self.__ptr, value.__ptr)
-		return true
-	elseif name == "projectionMatrix" then
+	if name == "projectionMatrix" then
 		Polycode.GPUDrawBuffer_set_projectionMatrix(self.__ptr, value.__ptr)
 		return true
 	elseif name == "viewMatrix" then
@@ -81,9 +66,6 @@ function GPUDrawBuffer:__setvar(name,value)
 		return true
 	elseif name == "backingResolutionScale" then
 		Polycode.GPUDrawBuffer_set_backingResolutionScale(self.__ptr, value.__ptr)
-		return true
-	elseif name == "globalMaterial" then
-		Polycode.GPUDrawBuffer_set_globalMaterial(self.__ptr, value.__ptr)
 		return true
 	elseif name == "viewport" then
 		Polycode.GPUDrawBuffer_set_viewport(self.__ptr, value.__ptr)

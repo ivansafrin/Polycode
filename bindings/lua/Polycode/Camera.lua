@@ -172,7 +172,7 @@ end
 function Camera:getScreenShaderMaterial()
 	local retVal =  Polycode.Camera_getScreenShaderMaterial(self.__ptr)
 	if retVal == nil then return nil end
-	local __c = _G["Material"]("__skip_ptr__")
+	local __c = _G["shared_ptr<Material>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end

@@ -23,8 +23,8 @@ THE SOFTWARE.
 #pragma once
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyString.h"
+#include "polycode/core/PolyRectangle.h"
 #include "polycode/core/PolyEventDispatcher.h"
-#include "polycode/core/PolyMaterialManager.h"
 #include <map>
 
 namespace Polycode {
@@ -86,15 +86,7 @@ namespace Polycode {
 			 */
 			CoreInput *getInput();
 			
-			void handleEvent(Event *event);
-
-			/**
-			* Returns the material manager. The material manager is responsible for loading and managing textures, shaders and materials.
-			* @return Material manager.
-			* @see MaterialManager
-			*/
-			MaterialManager *getMaterialManager();
-			
+			void handleEvent(Event *event);		
 			
 			/**
 			* Returns the scene manager. The screen manager is responsible for maintaining and rendering 3D scenes.
@@ -160,7 +152,6 @@ namespace Polycode {
 					
 			Core *core;
 			Config *config;
-			MaterialManager *materialManager;
 			SceneManager *sceneManager;
 			Logger *logger;
 			TimerManager *timerManager;

@@ -76,7 +76,7 @@ SceneEntityInstance.prototype.unlinkResourcePool = function(pool) {
 }
 
 SceneEntityInstance.prototype.getResourceEntry = function() {
-	var retVal = new SceneEntityInstanceResourceEntry()
+	var retVal = new shared_ptr<SceneEntityInstanceResourceEntry>()
 	retVal.__ptr = Polycode.SceneEntityInstance_getResourceEntry(this.__ptr)
 	return retVal
 }

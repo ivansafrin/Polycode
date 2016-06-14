@@ -26,7 +26,6 @@
 #include "polycode/core/PolyInputEvent.h"
 #include "polycode/core/PolyLogger.h"
 #include "polycode/core/PolyResourceManager.h"
-#include "polycode/core/PolyMaterialManager.h"
 #include "polycode/core/PolyRenderer.h"
 #include "polycode/core/PolyConfig.h"
 #include "polycode/core/PolySceneManager.h"
@@ -66,10 +65,6 @@ CoreServices* CoreServices::getInstance() {
 	return overrideInstance;
 }
 
-MaterialManager *CoreServices::getMaterialManager() {
-	return materialManager;
-}
-
 TimerManager *CoreServices::getTimerManager() {
 	return timerManager;
 }
@@ -88,7 +83,6 @@ CoreServices::CoreServices() : EventDispatcher() {
 	logger = Logger::getInstance();
 	resourceManager = new ResourceManager();	
 	config = new Config();
-	materialManager = new MaterialManager();	
 	sceneManager = new SceneManager();
 	timerManager = new TimerManager();
 	tweenManager = new TweenManager();
@@ -96,7 +90,6 @@ CoreServices::CoreServices() : EventDispatcher() {
 }
 
 CoreServices::~CoreServices() {
-	delete materialManager;
 	delete sceneManager;
 	delete timerManager;
 	delete tweenManager;
@@ -149,8 +142,7 @@ void CoreServices::fixedUpdate() {
 void CoreServices::Update(int elapsed) {
 	resourceManager->Update(elapsed);
 	timerManager->Update(); 
-	tweenManager->Update(elapsed);	
-	materialManager->Update(elapsed);		
+	tweenManager->Update(elapsed);		
 	sceneManager->Update();
 	soundManager->Update();
 }

@@ -31,21 +31,19 @@
 #include "polycode/core/PolyShader.h"
 #include "polycode/core/PolySkeleton.h"
 #include "polycode/core/PolyResourceManager.h"
-#include "polycode/core/PolyMaterialManager.h"
+#include <memory>
 
 using namespace Polycode;
 
-SceneMesh *SceneMesh::SceneMeshFromMesh(Mesh *mesh) {
+SceneMesh *SceneMesh::SceneMeshFromMesh(std::shared_ptr<Mesh> mesh) {
 	return new SceneMesh(mesh);
 }
 
 SceneMesh::SceneMesh() : material(NULL), skeleton(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) { 
-	mesh = new Mesh();
+	mesh = std::make_shared<Mesh>();
 	setLocalBoundingBox(mesh->calculateBBox());
 	useVertexBuffer = false;
 	lineSmooth = false;
-	ownsMesh = true;
-	ownsSkeleton = true;
 	lineWidth = 1.0;
 	useGeometryHitDetection = false;
 	backfaceCulled = true;
@@ -59,7 +57,6 @@ SceneMesh::SceneMesh(const String& fileName) : material(NULL), skeleton(NULL), m
 	loadFromFile(fileName);
 	useVertexBuffer = false;
 	lineSmooth = false;
-	ownsSkeleton = true;
 	lineWidth = 1.0;
 	pointSmooth = false;
 	useGeometryHitDetection = false;
@@ -69,13 +66,11 @@ SceneMesh::SceneMesh(const String& fileName) : material(NULL), skeleton(NULL), m
 	setMaterialByName("UnlitUntextured");
 }
 
-SceneMesh::SceneMesh(Mesh *mesh) : material(NULL), skeleton(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
+SceneMesh::SceneMesh(std::shared_ptr<Mesh> mesh) : material(NULL), skeleton(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
 	this->mesh = mesh;
 	setLocalBoundingBox(mesh->calculateBBox());
 	useVertexBuffer = false;
 	lineSmooth = false;
-	ownsMesh = true;
-	ownsSkeleton = true;	
 	lineWidth = 1.0;
 	pointSmooth = false;
 	useGeometryHitDetection = false;
@@ -85,22 +80,13 @@ SceneMesh::SceneMesh(Mesh *mesh) : material(NULL), skeleton(NULL), skeletalVerte
 	setMaterialByName("UnlitUntextured");
 }
 
-void SceneMesh::setMesh(Mesh *mesh) {
+void SceneMesh::setMesh(std::shared_ptr<Mesh> mesh) {
 	this->mesh = mesh;
 	setLocalBoundingBox(mesh->calculateBBox());
 	useVertexBuffer = false;
 }
 
 SceneMesh::~SceneMesh() {
-	if(ownsSkeleton)
-		delete skeleton;
-	if(ownsMesh) {
-		delete mesh;
-	}
-	
-	for(int i=0; i < shaderPasses.size(); i++)	{
-		Services()->getRenderer()->destroyShaderBinding(shaderPasses[i].shaderBinding);
-	}
 }
 
 Entity *SceneMesh::Clone(bool deepClone, bool ignoreEditorOnly) const {
@@ -124,36 +110,27 @@ void SceneMesh::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly)
 	_clone->lineWidth = lineWidth;
 	_clone->lineSmooth = lineSmooth;
 	_clone->pointSmooth = pointSmooth;
-	_clone->ownsMesh = ownsMesh;
 	_clone->alphaTest = alphaTest;
 	_clone->backfaceCulled = backfaceCulled;
-	_clone->ownsSkeleton = ownsSkeleton;
 	_clone->useGeometryHitDetection = useGeometryHitDetection;
 	_clone->setFilename(fileName);
-	
-	Mesh *newMesh = mesh->Copy();
-	_clone->setMesh(newMesh);
-	
+	_clone->setMesh(mesh);
 	_clone->setMaterial(material);
 	if(material) {
 		
 		for(int i=0; i < shaderPasses.size(); i++) {
-			shaderPasses[i].shaderBinding->copyTo(_clone->getShaderPass(i).shaderBinding);
+			shaderPasses[i].shaderBinding->copyTo(&*_clone->getShaderPass(i).shaderBinding);
 		}
 	}
 }
 
-void SceneMesh::setFilename(String fileName) {
+void SceneMesh::setFilename(const String &fileName) {
 	this->fileName = fileName;
 }
 
-void SceneMesh::loadFromFile(String fileName) {
-	if(mesh && ownsMesh) {
-		delete mesh;
-	}
+void SceneMesh::loadFromFile(const String &fileName) {
 	ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
-	mesh = (Mesh*) pool->loadResourceWithName(fileName, fileName);
-	ownsMesh = false;
+	mesh = std::static_pointer_cast<Mesh>(pool->loadResourceWithName(fileName, fileName));
 	setLocalBoundingBox(mesh->calculateBBox());
 	this->fileName = fileName;
 }
@@ -162,19 +139,16 @@ String SceneMesh::getFilename() {
 	return fileName;
 }
 
-Mesh *SceneMesh::getMesh() {
+std::shared_ptr<Mesh> SceneMesh::getMesh() {
 	return mesh;
 }
 
 void SceneMesh::clearMaterial() {
-	for(int i=0; i < shaderPasses.size(); i++)	{
-		Services()->getRenderer()->destroyShaderBinding(shaderPasses[i].shaderBinding);
-	}
 	shaderPasses.clear();
-	this->material = NULL;
+	this->material = nullptr;
 }
 
-void SceneMesh::setMaterial(Material *material) {
+void SceneMesh::setMaterial(std::shared_ptr<Material> material) {
 
 	if(this->material)
 		clearMaterial();
@@ -190,7 +164,7 @@ void SceneMesh::setMaterial(Material *material) {
 	for(int i=0; i < material->getNumShaderPasses(); i++)  {
 		ShaderPass shaderPass = material->getShaderPass(i);
 		shaderPass.materialShaderBinding = shaderPass.shaderBinding;
-		shaderPass.shaderBinding = new ShaderBinding();
+		shaderPass.shaderBinding = std::make_shared<ShaderBinding>();
 		shaderPass.shaderBinding->targetShader = shaderPass.shader;
 		shaderPass.shaderBinding->addParamPointer(ProgramParam::PARAM_COLOR, "entityColor", &color);
 		if(skeleton) {
@@ -202,11 +176,11 @@ void SceneMesh::setMaterial(Material *material) {
 }
 
 void SceneMesh::setMaterialByName(const String& materialName, ResourcePool *resourcePool) {
-	Material *material;
+	std::shared_ptr<Material> material;
 	if(resourcePool) {
-		material =	(Material*)resourcePool->getResource(Resource::RESOURCE_MATERIAL, materialName);		
+		material =	std::static_pointer_cast<Material>(resourcePool->getResource(Resource::RESOURCE_MATERIAL, materialName));		
 	} else {
-		material =	(Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, materialName);
+		material = std::static_pointer_cast<Material>(Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, materialName));
 		
 	}
 	setMaterial(material);
@@ -228,14 +202,14 @@ void SceneMesh::addShaderPass(ShaderPass pass) {
 	shaderPasses.push_back(pass);
 }
 
-Skeleton *SceneMesh::loadSkeleton(const String& fileName) {
-	skeleton = new Skeleton(fileName);
-	addChild(skeleton);
+std::shared_ptr<Skeleton> SceneMesh::loadSkeleton(const String& fileName) {
+	skeleton = std::make_shared<Skeleton>(fileName);
+	addChild(&*skeleton);
 	setSkeleton(skeleton);
 	return skeleton;
 }
 
-void SceneMesh::setSkeleton(Skeleton *skeleton) {
+void SceneMesh::setSkeleton(std::shared_ptr<Skeleton> skeleton) {
 	this->skeleton = skeleton;
 }
 
@@ -243,11 +217,11 @@ void SceneMesh::setLineWidth(Number newWidth) {
 	lineWidth = newWidth;
 }
 
-Material *SceneMesh::getMaterial() {
+std::shared_ptr<Material> SceneMesh::getMaterial() {
 	return material;
 }
 
-Skeleton *SceneMesh::getSkeleton() {
+std::shared_ptr<Skeleton> SceneMesh::getSkeleton() {
 	return skeleton;
 }
 
@@ -292,7 +266,6 @@ bool SceneMesh::customHitDetection(const Ray &ray) {
 
 void SceneMesh::removeShaderPass(int shaderIndex) {
 	if(shaderIndex >= 0 && shaderIndex < shaderPasses.size()) {
-		Services()->getRenderer()->destroyShaderBinding(shaderPasses[shaderIndex].shaderBinding);
 		shaderPasses.erase(shaderPasses.begin() + shaderIndex);
 	}
 }

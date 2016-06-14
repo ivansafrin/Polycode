@@ -31,7 +31,6 @@ extern "C" {
 #include "polycode/core/PolyInputKeys.h"
 #include "polycode/core/PolyLabel.h"
 #include "polycode/core/PolyMaterial.h"
-#include "polycode/core/PolyMaterialManager.h"
 #include "polycode/core/PolyMatrix4.h"
 #include "polycode/core/PolyMesh.h"
 #include "polycode/core/PolyObject.h"
@@ -50,7 +49,6 @@ extern "C" {
 #include "polycode/core/PolyResourceManager.h"
 #include "polycode/core/PolyScene.h"
 #include "polycode/core/PolySceneEntityInstance.h"
-#include "polycode/core/PolySceneImage.h"
 #include "polycode/core/PolySceneLabel.h"
 #include "polycode/core/PolySceneLight.h"
 #include "polycode/core/PolySceneLine.h"
@@ -988,7 +986,7 @@ static int Polycode_Camera_set_cameraShift(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Camera *inst = (Camera*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		RenderBuffer* targetBuffer = (RenderBuffer*) *((PolyBase**)lua_touserdata(L, 2));
+		shared_ptr<RenderBuffer> targetBuffer = *(shared_ptr<RenderBuffer>*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->drawFilter(targetBuffer);
 		return 0;
 	}
@@ -996,7 +994,7 @@ static int Polycode_Camera_set_cameraShift(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Camera *inst = (Camera*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Material* material = (Material*) *((PolyBase**)lua_touserdata(L, 2));
+		shared_ptr<Material> material = *(shared_ptr<Material>*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->setPostFilter(material);
 		return 0;
 	}
@@ -1017,13 +1015,12 @@ static int Polycode_Camera_set_cameraShift(lua_State *L) {
 	static int Polycode_Camera_getScreenShaderMaterial(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Camera *inst = (Camera*) *((PolyBase**)lua_touserdata(L, 1));
-		PolyBase *ptrRetVal = (PolyBase*)inst->getScreenShaderMaterial();
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Material> *retInst = new shared_ptr<Material>();
+		*retInst = inst->getScreenShaderMaterial();
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Material>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_Camera_Clone(lua_State *L) {
@@ -1802,6 +1799,14 @@ static int Polycode_Core_set_deviceAttitude(lua_State *L) {
 		inst->warpCursor(x, y);
 		return 0;
 	}
+	static int Polycode_Core_openOnScreenKeyboard(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		Core *inst = (Core*) *((PolyBase**)lua_touserdata(L, 1));
+		luaL_checktype(L, 2, LUA_TBOOLEAN);
+		bool open = lua_toboolean(L, 2) != 0;
+		inst->openOnScreenKeyboard(open);
+		return 0;
+	}
 	static int Polycode_Core_createThread(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Core *inst = (Core*) *((PolyBase**)lua_touserdata(L, 1));
@@ -2038,6 +2043,12 @@ static int Polycode_Core_set_deviceAttitude(lua_State *L) {
 		Core *inst = (Core*) *((PolyBase**)lua_touserdata(L, 1));
 		inst->prepareRenderContext();
 		return 0;
+	}
+	static int Polycode_Core_isWindowInitialized(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		Core *inst = (Core*) *((PolyBase**)lua_touserdata(L, 1));
+		lua_pushboolean(L, inst->isWindowInitialized());
+		return 1;
 	}
 	static int Polycode_Core_openFile(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
@@ -2752,6 +2763,14 @@ static int Polycode_CoreMotionEvent_set_amount(lua_State *L) {
 	return 0;
 }
 
+	static int Polycode_CoreMotionEvent(lua_State *L) {
+		CoreMotionEvent *inst = new CoreMotionEvent();
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		*userdataPtr = (PolyBase*)inst;
+		luaL_getmetatable(L, "Polycode.CoreMotionEvent");
+		lua_setmetatable(L, -2);
+		return 1;
+	}
 	static int Polycode_delete_CoreMotionEvent(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		PolyBase **inst = (PolyBase**)lua_touserdata(L, 1);
@@ -3449,18 +3468,6 @@ static int Polycode_JoystickInfo_set_deviceIndex(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		CoreServices *inst = (CoreServices*) *((PolyBase**)lua_touserdata(L, 1));
 		PolyBase *ptrRetVal = (PolyBase*)inst->getInput();
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_CoreServices_getMaterialManager(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		CoreServices *inst = (CoreServices*) *((PolyBase**)lua_touserdata(L, 1));
-		PolyBase *ptrRetVal = (PolyBase*)inst->getMaterialManager();
 		if(ptrRetVal == NULL) {
 			lua_pushnil(L);
 		} else {
@@ -5649,18 +5656,6 @@ static int Polycode_LightInfo_get_shadowsEnabled(lua_State *L) {
 	return 1;
 }
 
-static int Polycode_LightInfo_get_shadowMapTexture(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightInfo *inst = (LightInfo*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->shadowMapTexture) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->shadowMapTexture;
-	}
-	return 1;
-}
-
 static int Polycode_LightInfo_get_lightViewMatrix(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	LightInfo *inst = (LightInfo*) *((PolyBase**)lua_touserdata(L, 1));
@@ -5777,15 +5772,6 @@ static int Polycode_LightInfo_set_shadowsEnabled(lua_State *L) {
 	return 0;
 }
 
-static int Polycode_LightInfo_set_shadowMapTexture(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightInfo *inst = (LightInfo*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	Texture* *argInst = (Texture**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->shadowMapTexture = *argInst;
-	return 0;
-}
-
 static int Polycode_LightInfo_set_lightViewMatrix(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	LightInfo *inst = (LightInfo*) *((PolyBase**)lua_touserdata(L, 1));
@@ -5819,18 +5805,6 @@ static int Polycode_GPUDrawCall_get_modelMatrix(lua_State *L) {
 	return 1;
 }
 
-static int Polycode_GPUDrawCall_get_material(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	GPUDrawCall *inst = (GPUDrawCall*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->material) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->material;
-	}
-	return 1;
-}
-
 static int Polycode_GPUDrawCall_set_options(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	GPUDrawCall *inst = (GPUDrawCall*) *((PolyBase**)lua_touserdata(L, 1));
@@ -5846,15 +5820,6 @@ static int Polycode_GPUDrawCall_set_modelMatrix(lua_State *L) {
 	luaL_checktype(L, 2, LUA_TUSERDATA);
 	Matrix4 *argInst = (Matrix4*) *((PolyBase**)lua_touserdata(L, 2));
 	inst->modelMatrix = *argInst;
-	return 0;
-}
-
-static int Polycode_GPUDrawCall_set_material(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	GPUDrawCall *inst = (GPUDrawCall*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	Material* *argInst = (Material**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->material = *argInst;
 	return 0;
 }
 
@@ -6043,18 +6008,6 @@ static int Polycode_GPUDrawOptions_set_drawColor(lua_State *L) {
 		return 0;
 	}
 
-static int Polycode_GPUDrawBuffer_get_targetFramebuffer(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	GPUDrawBuffer *inst = (GPUDrawBuffer*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->targetFramebuffer) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->targetFramebuffer;
-	}
-	return 1;
-}
-
 static int Polycode_GPUDrawBuffer_get_projectionMatrix(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	GPUDrawBuffer *inst = (GPUDrawBuffer*) *((PolyBase**)lua_touserdata(L, 1));
@@ -6109,33 +6062,12 @@ static int Polycode_GPUDrawBuffer_get_backingResolutionScale(lua_State *L) {
 	return 1;
 }
 
-static int Polycode_GPUDrawBuffer_get_globalMaterial(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	GPUDrawBuffer *inst = (GPUDrawBuffer*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->globalMaterial) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->globalMaterial;
-	}
-	return 1;
-}
-
 static int Polycode_GPUDrawBuffer_get_viewport(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	GPUDrawBuffer *inst = (GPUDrawBuffer*) *((PolyBase**)lua_touserdata(L, 1));
 	PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
 	*userdataPtr = (PolyBase*)&inst->viewport;
 	return 1;
-}
-
-static int Polycode_GPUDrawBuffer_set_targetFramebuffer(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	GPUDrawBuffer *inst = (GPUDrawBuffer*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	RenderBuffer* *argInst = (RenderBuffer**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->targetFramebuffer = *argInst;
-	return 0;
 }
 
 static int Polycode_GPUDrawBuffer_set_projectionMatrix(lua_State *L) {
@@ -6196,15 +6128,6 @@ static int Polycode_GPUDrawBuffer_set_backingResolutionScale(lua_State *L) {
 	luaL_checktype(L, 2, LUA_TUSERDATA);
 	Vector2 *argInst = (Vector2*) *((PolyBase**)lua_touserdata(L, 2));
 	inst->backingResolutionScale = *argInst;
-	return 0;
-}
-
-static int Polycode_GPUDrawBuffer_set_globalMaterial(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	GPUDrawBuffer *inst = (GPUDrawBuffer*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	Material* *argInst = (Material**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->globalMaterial = *argInst;
 	return 0;
 }
 
@@ -7057,7 +6980,7 @@ static int Polycode_ColorRange_set_rangeEnd(lua_State *L) {
 
 	static int Polycode_Label(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Font* font = (Font*) *((PolyBase**)lua_touserdata(L, 1));
+		shared_ptr<Font> font = *(shared_ptr<Font>*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TSTRING);
 		String text = String(lua_tostring(L, 2));
 		luaL_checktype(L, 3, LUA_TNUMBER);
@@ -7172,20 +7095,19 @@ static int Polycode_ColorRange_set_rangeEnd(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Label *inst = (Label*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Font* newFont = (Font*) *((PolyBase**)lua_touserdata(L, 2));
+		shared_ptr<Font> newFont = *(shared_ptr<Font>*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->setFont(newFont);
 		return 0;
 	}
 	static int Polycode_Label_getFont(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Label *inst = (Label*) *((PolyBase**)lua_touserdata(L, 1));
-		PolyBase *ptrRetVal = (PolyBase*)inst->getFont();
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Font> *retInst = new shared_ptr<Font>();
+		*retInst = inst->getFont();
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Font>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_Label_setSize(lua_State *L) {
@@ -7357,28 +7279,6 @@ static int Polycode_Material_set_screenMaterial(lua_State *L) {
 		inst->addShaderPassAtIndex(pass, shaderIndex);
 		return 0;
 	}
-	static int Polycode_Material_addShader(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Material *inst = (Material*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Shader* shader = (Shader*) *((PolyBase**)lua_touserdata(L, 2));
-		luaL_checktype(L, 3, LUA_TUSERDATA);
-		ShaderBinding* shaderBinding = (ShaderBinding*) *((PolyBase**)lua_touserdata(L, 3));
-		inst->addShader(shader, shaderBinding);
-		return 0;
-	}
-	static int Polycode_Material_addShaderAtIndex(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Material *inst = (Material*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Shader* shader = (Shader*) *((PolyBase**)lua_touserdata(L, 2));
-		luaL_checktype(L, 3, LUA_TUSERDATA);
-		ShaderBinding* shaderBinding = (ShaderBinding*) *((PolyBase**)lua_touserdata(L, 3));
-		luaL_checktype(L, 4, LUA_TNUMBER);
-		int shaderIndex = lua_tointeger(L, 4);
-		inst->addShaderAtIndex(shader, shaderBinding, shaderIndex);
-		return 0;
-	}
 	static int Polycode_Material_getNumShaderPasses(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Material *inst = (Material*) *((PolyBase**)lua_touserdata(L, 1));
@@ -7391,12 +7291,6 @@ static int Polycode_Material_set_screenMaterial(lua_State *L) {
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		int shaderIndex = lua_tointeger(L, 2);
 		inst->removeShaderPass(shaderIndex);
-		return 0;
-	}
-	static int Polycode_Material_recreateExpectedShaderParams(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Material *inst = (Material*) *((PolyBase**)lua_touserdata(L, 1));
-		inst->recreateExpectedShaderParams();
 		return 0;
 	}
 	static int Polycode_Material_addShaderRenderTarget(lua_State *L) {
@@ -7473,13 +7367,12 @@ static int Polycode_Material_set_screenMaterial(lua_State *L) {
 		Material *inst = (Material*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		int index = lua_tointeger(L, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getShaderBinding(index);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<ShaderBinding> *retInst = new shared_ptr<ShaderBinding>();
+		*retInst = inst->getShaderBinding(index);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<ShaderBinding>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_Material_getShader(lua_State *L) {
@@ -7487,13 +7380,12 @@ static int Polycode_Material_set_screenMaterial(lua_State *L) {
 		Material *inst = (Material*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		int index = lua_tointeger(L, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getShader(index);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Shader> *retInst = new shared_ptr<Shader>();
+		*retInst = inst->getShader(index);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Shader>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_Material_loadMaterial(lua_State *L) {
@@ -7526,18 +7418,6 @@ static int Polycode_Material_set_screenMaterial(lua_State *L) {
 		return 0;
 	}
 
-static int Polycode_ShaderPass_get_shader(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	ShaderPass *inst = (ShaderPass*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->shader) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->shader;
-	}
-	return 1;
-}
-
 static int Polycode_ShaderPass_get_wireframe(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	ShaderPass *inst = (ShaderPass*) *((PolyBase**)lua_touserdata(L, 1));
@@ -7550,39 +7430,6 @@ static int Polycode_ShaderPass_get_blendingMode(lua_State *L) {
 	ShaderPass *inst = (ShaderPass*) *((PolyBase**)lua_touserdata(L, 1));
 	lua_pushinteger(L, inst->blendingMode);
 	return 1;
-}
-
-static int Polycode_ShaderPass_get_shaderBinding(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	ShaderPass *inst = (ShaderPass*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->shaderBinding) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->shaderBinding;
-	}
-	return 1;
-}
-
-static int Polycode_ShaderPass_get_materialShaderBinding(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	ShaderPass *inst = (ShaderPass*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->materialShaderBinding) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->materialShaderBinding;
-	}
-	return 1;
-}
-
-static int Polycode_ShaderPass_set_shader(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	ShaderPass *inst = (ShaderPass*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	Shader* *argInst = (Shader**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->shader = *argInst;
-	return 0;
 }
 
 static int Polycode_ShaderPass_set_wireframe(lua_State *L) {
@@ -7601,24 +7448,6 @@ static int Polycode_ShaderPass_set_blendingMode(lua_State *L) {
 	return 0;
 }
 
-static int Polycode_ShaderPass_set_shaderBinding(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	ShaderPass *inst = (ShaderPass*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	ShaderBinding* *argInst = (ShaderBinding**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->shaderBinding = *argInst;
-	return 0;
-}
-
-static int Polycode_ShaderPass_set_materialShaderBinding(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	ShaderPass *inst = (ShaderPass*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	ShaderBinding* *argInst = (ShaderBinding**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->materialShaderBinding = *argInst;
-	return 0;
-}
-
 	static int Polycode_ShaderPass(lua_State *L) {
 		ShaderPass *inst = new ShaderPass();
 		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
@@ -7631,490 +7460,6 @@ static int Polycode_ShaderPass_set_materialShaderBinding(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		PolyBase **inst = (PolyBase**)lua_touserdata(L, 1);
 		delete ((ShaderPass*) *inst);
-		*inst = NULL;
-		return 0;
-	}
-
-static int Polycode_MaterialManager_get_premultiplyAlphaOnLoad(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-	lua_pushboolean(L, inst->premultiplyAlphaOnLoad);
-	return 1;
-}
-
-static int Polycode_MaterialManager_get_clampDefault(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-	lua_pushboolean(L, inst->clampDefault);
-	return 1;
-}
-
-static int Polycode_MaterialManager_get_mipmapsDefault(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-	lua_pushboolean(L, inst->mipmapsDefault);
-	return 1;
-}
-
-static int Polycode_MaterialManager_get_keepTextureData(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-	lua_pushboolean(L, inst->keepTextureData);
-	return 1;
-}
-
-static int Polycode_MaterialManager_set_premultiplyAlphaOnLoad(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-	bool param = lua_toboolean(L, 2) != 0;
-	inst->premultiplyAlphaOnLoad = param;
-	return 0;
-}
-
-static int Polycode_MaterialManager_set_clampDefault(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-	bool param = lua_toboolean(L, 2) != 0;
-	inst->clampDefault = param;
-	return 0;
-}
-
-static int Polycode_MaterialManager_set_mipmapsDefault(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-	bool param = lua_toboolean(L, 2) != 0;
-	inst->mipmapsDefault = param;
-	return 0;
-}
-
-static int Polycode_MaterialManager_set_keepTextureData(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-	bool param = lua_toboolean(L, 2) != 0;
-	inst->keepTextureData = param;
-	return 0;
-}
-
-	static int Polycode_MaterialManager(lua_State *L) {
-		MaterialManager *inst = new MaterialManager();
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst;
-		luaL_getmetatable(L, "Polycode.MaterialManager");
-		lua_setmetatable(L, -2);
-		return 1;
-	}
-	static int Polycode_MaterialManager_Update(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TNUMBER);
-		int elapsed = lua_tointeger(L, 2);
-		inst->Update(elapsed);
-		return 0;
-	}
-	static int Polycode_MaterialManager_createTexture(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TNUMBER);
-		int width = lua_tointeger(L, 2);
-		luaL_checktype(L, 3, LUA_TNUMBER);
-		int height = lua_tointeger(L, 3);
-		luaL_checktype(L, 4, LUA_TUSERDATA);
-		char* imageData = (char*) *((PolyBase**)lua_touserdata(L, 4));
-		bool clamp;
-		if(lua_isboolean(L, 5)) {
-			clamp = lua_toboolean(L, 5) != 0;
-		} else {
-			clamp = true;
-		}
-		bool createMipmaps;
-		if(lua_isboolean(L, 6)) {
-			createMipmaps = lua_toboolean(L, 6) != 0;
-		} else {
-			createMipmaps = false;
-		}
-		int type;
-		if(lua_isnumber(L, 7)) {
-			type = lua_tointeger(L, 7);
-		} else {
-			type = Image :: IMAGE_RGBA;
-		}
-		PolyBase *ptrRetVal = (PolyBase*)inst->createTexture(width, height, imageData, clamp, createMipmaps, type);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_MaterialManager_createNewTexture(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TNUMBER);
-		int width = lua_tointeger(L, 2);
-		luaL_checktype(L, 3, LUA_TNUMBER);
-		int height = lua_tointeger(L, 3);
-		bool clamp;
-		if(lua_isboolean(L, 4)) {
-			clamp = lua_toboolean(L, 4) != 0;
-		} else {
-			clamp = true;
-		}
-		bool createMipmaps;
-		if(lua_isboolean(L, 5)) {
-			createMipmaps = lua_toboolean(L, 5) != 0;
-		} else {
-			createMipmaps = false;
-		}
-		int type;
-		if(lua_isnumber(L, 6)) {
-			type = lua_tointeger(L, 6);
-		} else {
-			type = Image :: IMAGE_RGBA;
-		}
-		PolyBase *ptrRetVal = (PolyBase*)inst->createNewTexture(width, height, clamp, createMipmaps, type);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_MaterialManager_createTextureFromImage(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Image* image = (Image*) *((PolyBase**)lua_touserdata(L, 2));
-		bool clamp;
-		if(lua_isboolean(L, 3)) {
-			clamp = lua_toboolean(L, 3) != 0;
-		} else {
-			clamp = true;
-		}
-		bool createMipmaps;
-		if(lua_isboolean(L, 4)) {
-			createMipmaps = lua_toboolean(L, 4) != 0;
-		} else {
-			createMipmaps = false;
-		}
-		PolyBase *ptrRetVal = (PolyBase*)inst->createTextureFromImage(image, clamp, createMipmaps);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_MaterialManager_createTextureFromFile(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TSTRING);
-		String fileName = String(lua_tostring(L, 2));
-		bool clamp;
-		if(lua_isboolean(L, 3)) {
-			clamp = lua_toboolean(L, 3) != 0;
-		} else {
-			clamp = true;
-		}
-		bool createMipmaps;
-		if(lua_isboolean(L, 4)) {
-			createMipmaps = lua_toboolean(L, 4) != 0;
-		} else {
-			createMipmaps = false;
-		}
-		ResourcePool* resourcePool;
-		if(lua_isuserdata(L, 5)) {
-			resourcePool = (ResourcePool*) *((PolyBase**)lua_touserdata(L, 5));
-		} else {
-			resourcePool = NULL;
-		}
-		PolyBase *ptrRetVal = (PolyBase*)inst->createTextureFromFile(fileName, clamp, createMipmaps, resourcePool);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_MaterialManager_deleteTexture(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Texture* texture = (Texture*) *((PolyBase**)lua_touserdata(L, 2));
-		inst->deleteTexture(texture);
-		return 0;
-	}
-	static int Polycode_MaterialManager_reloadTextures(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		inst->reloadTextures();
-		return 0;
-	}
-	static int Polycode_MaterialManager_reloadProgramsAndTextures(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		inst->reloadProgramsAndTextures();
-		return 0;
-	}
-	static int Polycode_MaterialManager_reloadPrograms(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		inst->reloadPrograms();
-		return 0;
-	}
-	static int Polycode_MaterialManager_getTextureByResourcePath(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TSTRING);
-		String resourcePath = String(lua_tostring(L, 2));
-		PolyBase *ptrRetVal = (PolyBase*)inst->getTextureByResourcePath(resourcePath);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_MaterialManager_createProgramFromFile(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TSTRING);
-		String programPath = String(lua_tostring(L, 2));
-		PolyBase *ptrRetVal = (PolyBase*)inst->createProgramFromFile(programPath);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_MaterialManager_loadMaterialLibraryIntoPool(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		ResourcePool* pool = (ResourcePool*) *((PolyBase**)lua_touserdata(L, 2));
-		luaL_checktype(L, 3, LUA_TSTRING);
-		String materialFile = String(lua_tostring(L, 3));
-		inst->loadMaterialLibraryIntoPool(pool, materialFile);
-		return 0;
-	}
-	static int Polycode_MaterialManager_cubemapFromXMLNode(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		TiXmlNode* node = (TiXmlNode*) *((PolyBase**)lua_touserdata(L, 2));
-		PolyBase *ptrRetVal = (PolyBase*)inst->cubemapFromXMLNode(node);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_MaterialManager_materialFromXMLNode(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		ResourcePool* resourcePool = (ResourcePool*) *((PolyBase**)lua_touserdata(L, 2));
-		luaL_checktype(L, 3, LUA_TUSERDATA);
-		TiXmlNode* node = (TiXmlNode*) *((PolyBase**)lua_touserdata(L, 3));
-		PolyBase *ptrRetVal = (PolyBase*)inst->materialFromXMLNode(resourcePool, node);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_MaterialManager_createMaterial(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		ResourcePool* resourcePool = (ResourcePool*) *((PolyBase**)lua_touserdata(L, 2));
-		luaL_checktype(L, 3, LUA_TSTRING);
-		String materialName = String(lua_tostring(L, 3));
-		luaL_checktype(L, 4, LUA_TSTRING);
-		String shaderName = String(lua_tostring(L, 4));
-		PolyBase *ptrRetVal = (PolyBase*)inst->createMaterial(resourcePool, materialName, shaderName);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_MaterialManager_setShaderFromXMLNode(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		ResourcePool* resourcePool = (ResourcePool*) *((PolyBase**)lua_touserdata(L, 2));
-		luaL_checktype(L, 3, LUA_TUSERDATA);
-		TiXmlNode* node = (TiXmlNode*) *((PolyBase**)lua_touserdata(L, 3));
-		PolyBase *ptrRetVal = (PolyBase*)inst->setShaderFromXMLNode(resourcePool, node);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_MaterialManager_createShaderFromXMLNode(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		ResourcePool* resourcePool = (ResourcePool*) *((PolyBase**)lua_touserdata(L, 2));
-		luaL_checktype(L, 3, LUA_TUSERDATA);
-		TiXmlNode* node = (TiXmlNode*) *((PolyBase**)lua_touserdata(L, 3));
-		PolyBase *ptrRetVal = (PolyBase*)inst->createShaderFromXMLNode(resourcePool, node);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_MaterialManager_createShader(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		ResourcePool* resourcePool = (ResourcePool*) *((PolyBase**)lua_touserdata(L, 2));
-		luaL_checktype(L, 3, LUA_TSTRING);
-		String shaderType = String(lua_tostring(L, 3));
-		luaL_checktype(L, 4, LUA_TSTRING);
-		String name = String(lua_tostring(L, 4));
-		luaL_checktype(L, 5, LUA_TSTRING);
-		String vpName = String(lua_tostring(L, 5));
-		luaL_checktype(L, 6, LUA_TSTRING);
-		String fpName = String(lua_tostring(L, 6));
-		luaL_checktype(L, 7, LUA_TBOOLEAN);
-		bool screenShader = lua_toboolean(L, 7) != 0;
-		PolyBase *ptrRetVal = (PolyBase*)inst->createShader(resourcePool, shaderType, name, vpName, fpName, screenShader);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_MaterialManager_loadMaterialsFromFile(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		ResourcePool* resourcePool = (ResourcePool*) *((PolyBase**)lua_touserdata(L, 2));
-		luaL_checktype(L, 3, LUA_TSTRING);
-		String fileName = String(lua_tostring(L, 3));
-		std::vector<Material*> retVector = inst->loadMaterialsFromFile(resourcePool, fileName);
-		lua_newtable(L);
-		for(int i=0; i < retVector.size(); i++) {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = (PolyBase*)retVector[i];
-			lua_rawseti(L, -2, i+1);
-		}
-		return 1;
-	}
-	static int Polycode_MaterialManager_loadShadersFromFile(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		ResourcePool* resourcePool = (ResourcePool*) *((PolyBase**)lua_touserdata(L, 2));
-		luaL_checktype(L, 3, LUA_TSTRING);
-		String fileName = String(lua_tostring(L, 3));
-		std::vector<Shader*> retVector = inst->loadShadersFromFile(resourcePool, fileName);
-		lua_newtable(L);
-		for(int i=0; i < retVector.size(); i++) {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = (PolyBase*)retVector[i];
-			lua_rawseti(L, -2, i+1);
-		}
-		return 1;
-	}
-	static int Polycode_MaterialManager_loadCubemapsFromFile(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TSTRING);
-		String fileName = String(lua_tostring(L, 2));
-		std::vector<Cubemap*> retVector = inst->loadCubemapsFromFile(fileName);
-		lua_newtable(L);
-		for(int i=0; i < retVector.size(); i++) {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = (PolyBase*)retVector[i];
-			lua_rawseti(L, -2, i+1);
-		}
-		return 1;
-	}
-	static int Polycode_MaterialManager_setAnisotropyAmount(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TNUMBER);
-		int anisotropy = lua_tointeger(L, 2);
-		inst->setAnisotropyAmount(anisotropy);
-		return 0;
-	}
-	static int Polycode_MaterialManager_setTextureFilteringMode(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TNUMBER);
-		int textureFilteringMode = lua_tointeger(L, 2);
-		inst->setTextureFilteringMode(textureFilteringMode);
-		return 0;
-	}
-	static int Polycode_MaterialManager_getTextureFilteringMode(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		lua_pushinteger(L, inst->getTextureFilteringMode());
-		return 1;
-	}
-	static int Polycode_MaterialManager_addMaterial(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Material* material = (Material*) *((PolyBase**)lua_touserdata(L, 2));
-		inst->addMaterial(material);
-		return 0;
-	}
-	static int Polycode_MaterialManager_addShader(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Shader* shader = (Shader*) *((PolyBase**)lua_touserdata(L, 2));
-		inst->addShader(shader);
-		return 0;
-	}
-	static int Polycode_MaterialManager_getNumShaders(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		lua_pushinteger(L, inst->getNumShaders());
-		return 1;
-	}
-	static int Polycode_MaterialManager_getShaderByIndex(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		MaterialManager *inst = (MaterialManager*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TNUMBER);
-		int index = lua_tointeger(L, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getShaderByIndex(index);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_delete_MaterialManager(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		PolyBase **inst = (PolyBase**)lua_touserdata(L, 1);
-		delete ((MaterialManager*) *inst);
 		*inst = NULL;
 		return 0;
 	}
@@ -9414,6 +8759,65 @@ static int Polycode_BinaryObjectReader_set_success(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		PolyBase **inst = (PolyBase**)lua_touserdata(L, 1);
 		delete ((BinaryObjectWriter*) *inst);
+		*inst = NULL;
+		return 0;
+	}
+
+static int Polycode_ShaderPlatformData_get_shaderID(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	ShaderPlatformData *inst = (ShaderPlatformData*) *((PolyBase**)lua_touserdata(L, 1));
+	PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+	*userdataPtr = (PolyBase*)&inst->shaderID;
+	return 1;
+}
+
+static int Polycode_ShaderPlatformData_get_vertexProgramID(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	ShaderPlatformData *inst = (ShaderPlatformData*) *((PolyBase**)lua_touserdata(L, 1));
+	PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+	*userdataPtr = (PolyBase*)&inst->vertexProgramID;
+	return 1;
+}
+
+static int Polycode_ShaderPlatformData_get_fragmentProgramID(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	ShaderPlatformData *inst = (ShaderPlatformData*) *((PolyBase**)lua_touserdata(L, 1));
+	PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+	*userdataPtr = (PolyBase*)&inst->fragmentProgramID;
+	return 1;
+}
+
+static int Polycode_ShaderPlatformData_set_shaderID(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	ShaderPlatformData *inst = (ShaderPlatformData*) *((PolyBase**)lua_touserdata(L, 1));
+	luaL_checktype(L, 2, LUA_TUSERDATA);
+	GLuint *argInst = (GLuint*) *((PolyBase**)lua_touserdata(L, 2));
+	inst->shaderID = *argInst;
+	return 0;
+}
+
+static int Polycode_ShaderPlatformData_set_vertexProgramID(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	ShaderPlatformData *inst = (ShaderPlatformData*) *((PolyBase**)lua_touserdata(L, 1));
+	luaL_checktype(L, 2, LUA_TUSERDATA);
+	GLuint *argInst = (GLuint*) *((PolyBase**)lua_touserdata(L, 2));
+	inst->vertexProgramID = *argInst;
+	return 0;
+}
+
+static int Polycode_ShaderPlatformData_set_fragmentProgramID(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	ShaderPlatformData *inst = (ShaderPlatformData*) *((PolyBase**)lua_touserdata(L, 1));
+	luaL_checktype(L, 2, LUA_TUSERDATA);
+	GLuint *argInst = (GLuint*) *((PolyBase**)lua_touserdata(L, 2));
+	inst->fragmentProgramID = *argInst;
+	return 0;
+}
+
+	static int Polycode_delete_ShaderPlatformData(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		PolyBase **inst = (PolyBase**)lua_touserdata(L, 1);
+		delete ((ShaderPlatformData*) *inst);
 		*inst = NULL;
 		return 0;
 	}
@@ -10941,48 +10345,6 @@ static int Polycode_RenderDataArray_set_customArrayName(lua_State *L) {
 		return 0;
 	}
 
-static int Polycode_LightShadowInfoBinding_get_shadowMatrix(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightShadowInfoBinding *inst = (LightShadowInfoBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->shadowMatrix) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->shadowMatrix;
-	}
-	return 1;
-}
-
-static int Polycode_LightShadowInfoBinding_get_shadowBuffer(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightShadowInfoBinding *inst = (LightShadowInfoBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->shadowBuffer) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->shadowBuffer;
-	}
-	return 1;
-}
-
-static int Polycode_LightShadowInfoBinding_set_shadowMatrix(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightShadowInfoBinding *inst = (LightShadowInfoBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	LocalShaderParam* *argInst = (LocalShaderParam**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->shadowMatrix = *argInst;
-	return 0;
-}
-
-static int Polycode_LightShadowInfoBinding_set_shadowBuffer(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightShadowInfoBinding *inst = (LightShadowInfoBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	LocalShaderParam* *argInst = (LocalShaderParam**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->shadowBuffer = *argInst;
-	return 0;
-}
-
 	static int Polycode_delete_LightShadowInfoBinding(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		PolyBase **inst = (PolyBase**)lua_touserdata(L, 1);
@@ -10990,216 +10352,6 @@ static int Polycode_LightShadowInfoBinding_set_shadowBuffer(lua_State *L) {
 		*inst = NULL;
 		return 0;
 	}
-
-static int Polycode_LightInfoBinding_get_position(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightInfoBinding *inst = (LightInfoBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->position) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->position;
-	}
-	return 1;
-}
-
-static int Polycode_LightInfoBinding_get_direction(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightInfoBinding *inst = (LightInfoBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->direction) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->direction;
-	}
-	return 1;
-}
-
-static int Polycode_LightInfoBinding_get_specular(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightInfoBinding *inst = (LightInfoBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->specular) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->specular;
-	}
-	return 1;
-}
-
-static int Polycode_LightInfoBinding_get_diffuse(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightInfoBinding *inst = (LightInfoBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->diffuse) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->diffuse;
-	}
-	return 1;
-}
-
-static int Polycode_LightInfoBinding_get_spotExponent(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightInfoBinding *inst = (LightInfoBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->spotExponent) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->spotExponent;
-	}
-	return 1;
-}
-
-static int Polycode_LightInfoBinding_get_spotCosCutoff(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightInfoBinding *inst = (LightInfoBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->spotCosCutoff) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->spotCosCutoff;
-	}
-	return 1;
-}
-
-static int Polycode_LightInfoBinding_get_constantAttenuation(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightInfoBinding *inst = (LightInfoBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->constantAttenuation) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->constantAttenuation;
-	}
-	return 1;
-}
-
-static int Polycode_LightInfoBinding_get_linearAttenuation(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightInfoBinding *inst = (LightInfoBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->linearAttenuation) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->linearAttenuation;
-	}
-	return 1;
-}
-
-static int Polycode_LightInfoBinding_get_quadraticAttenuation(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightInfoBinding *inst = (LightInfoBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->quadraticAttenuation) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->quadraticAttenuation;
-	}
-	return 1;
-}
-
-static int Polycode_LightInfoBinding_get_shadowEnabled(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightInfoBinding *inst = (LightInfoBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->shadowEnabled) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->shadowEnabled;
-	}
-	return 1;
-}
-
-static int Polycode_LightInfoBinding_set_position(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightInfoBinding *inst = (LightInfoBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	LocalShaderParam* *argInst = (LocalShaderParam**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->position = *argInst;
-	return 0;
-}
-
-static int Polycode_LightInfoBinding_set_direction(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightInfoBinding *inst = (LightInfoBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	LocalShaderParam* *argInst = (LocalShaderParam**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->direction = *argInst;
-	return 0;
-}
-
-static int Polycode_LightInfoBinding_set_specular(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightInfoBinding *inst = (LightInfoBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	LocalShaderParam* *argInst = (LocalShaderParam**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->specular = *argInst;
-	return 0;
-}
-
-static int Polycode_LightInfoBinding_set_diffuse(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightInfoBinding *inst = (LightInfoBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	LocalShaderParam* *argInst = (LocalShaderParam**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->diffuse = *argInst;
-	return 0;
-}
-
-static int Polycode_LightInfoBinding_set_spotExponent(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightInfoBinding *inst = (LightInfoBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	LocalShaderParam* *argInst = (LocalShaderParam**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->spotExponent = *argInst;
-	return 0;
-}
-
-static int Polycode_LightInfoBinding_set_spotCosCutoff(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightInfoBinding *inst = (LightInfoBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	LocalShaderParam* *argInst = (LocalShaderParam**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->spotCosCutoff = *argInst;
-	return 0;
-}
-
-static int Polycode_LightInfoBinding_set_constantAttenuation(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightInfoBinding *inst = (LightInfoBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	LocalShaderParam* *argInst = (LocalShaderParam**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->constantAttenuation = *argInst;
-	return 0;
-}
-
-static int Polycode_LightInfoBinding_set_linearAttenuation(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightInfoBinding *inst = (LightInfoBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	LocalShaderParam* *argInst = (LocalShaderParam**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->linearAttenuation = *argInst;
-	return 0;
-}
-
-static int Polycode_LightInfoBinding_set_quadraticAttenuation(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightInfoBinding *inst = (LightInfoBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	LocalShaderParam* *argInst = (LocalShaderParam**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->quadraticAttenuation = *argInst;
-	return 0;
-}
-
-static int Polycode_LightInfoBinding_set_shadowEnabled(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	LightInfoBinding *inst = (LightInfoBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	LocalShaderParam* *argInst = (LocalShaderParam**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->shadowEnabled = *argInst;
-	return 0;
-}
 
 	static int Polycode_delete_LightInfoBinding(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
@@ -11209,6 +10361,14 @@ static int Polycode_LightInfoBinding_set_shadowEnabled(lua_State *L) {
 		return 0;
 	}
 
+	static int Polycode_RenderFrame(lua_State *L) {
+		RenderFrame *inst = new RenderFrame();
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		*userdataPtr = (PolyBase*)inst;
+		luaL_getmetatable(L, "Polycode.RenderFrame");
+		lua_setmetatable(L, -2);
+		return 1;
+	}
 	static int Polycode_delete_RenderFrame(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		PolyBase **inst = (PolyBase**)lua_touserdata(L, 1);
@@ -11341,12 +10501,6 @@ static int Polycode_RendererThreadJob_set_jobType(lua_State *L) {
 		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
-	static int Polycode_RenderThread_clearFrameQueue(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		RenderThread *inst = (RenderThread*) *((PolyBase**)lua_touserdata(L, 1));
-		inst->clearFrameQueue();
-		return 0;
-	}
 	static int Polycode_RenderThread_initGlobals(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		RenderThread *inst = (RenderThread*) *((PolyBase**)lua_touserdata(L, 1));
@@ -11448,96 +10602,6 @@ static int Polycode_RenderThreadDebugInfo_set_timeTaken(lua_State *L) {
 		}
 		return 1;
 	}
-	static int Polycode_Renderer_createCubemap(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Renderer *inst = (Renderer*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Texture* t0 = (Texture*) *((PolyBase**)lua_touserdata(L, 2));
-		luaL_checktype(L, 3, LUA_TUSERDATA);
-		Texture* t1 = (Texture*) *((PolyBase**)lua_touserdata(L, 3));
-		luaL_checktype(L, 4, LUA_TUSERDATA);
-		Texture* t2 = (Texture*) *((PolyBase**)lua_touserdata(L, 4));
-		luaL_checktype(L, 5, LUA_TUSERDATA);
-		Texture* t3 = (Texture*) *((PolyBase**)lua_touserdata(L, 5));
-		luaL_checktype(L, 6, LUA_TUSERDATA);
-		Texture* t4 = (Texture*) *((PolyBase**)lua_touserdata(L, 6));
-		luaL_checktype(L, 7, LUA_TUSERDATA);
-		Texture* t5 = (Texture*) *((PolyBase**)lua_touserdata(L, 7));
-		PolyBase *ptrRetVal = (PolyBase*)inst->createCubemap(t0, t1, t2, t3, t4, t5);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_Renderer_createTexture(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Renderer *inst = (Renderer*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TNUMBER);
-		int width = lua_tointeger(L, 2);
-		luaL_checktype(L, 3, LUA_TNUMBER);
-		int height = lua_tointeger(L, 3);
-		luaL_checktype(L, 4, LUA_TUSERDATA);
-		char* textureData = (char*) *((PolyBase**)lua_touserdata(L, 4));
-		luaL_checktype(L, 5, LUA_TBOOLEAN);
-		bool clamp = lua_toboolean(L, 5) != 0;
-		luaL_checktype(L, 6, LUA_TBOOLEAN);
-		bool createMipmaps = lua_toboolean(L, 6) != 0;
-		luaL_checktype(L, 7, LUA_TNUMBER);
-		int type = lua_tointeger(L, 7);
-		luaL_checktype(L, 8, LUA_TNUMBER);
-		int filteringMode = lua_tointeger(L, 8);
-		luaL_checktype(L, 9, LUA_TNUMBER);
-		int anisotropy = lua_tointeger(L, 9);
-		luaL_checktype(L, 10, LUA_TBOOLEAN);
-		bool framebufferTexture = lua_toboolean(L, 10) != 0;
-		PolyBase *ptrRetVal = (PolyBase*)inst->createTexture(width, height, textureData, clamp, createMipmaps, type, filteringMode, anisotropy, framebufferTexture);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_Renderer_createRenderBuffer(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Renderer *inst = (Renderer*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TNUMBER);
-		int width = lua_tointeger(L, 2);
-		luaL_checktype(L, 3, LUA_TNUMBER);
-		int height = lua_tointeger(L, 3);
-		luaL_checktype(L, 4, LUA_TBOOLEAN);
-		bool attachDepthBuffer = lua_toboolean(L, 4) != 0;
-		luaL_checktype(L, 5, LUA_TBOOLEAN);
-		bool floatingPoint = lua_toboolean(L, 5) != 0;
-		PolyBase *ptrRetVal = (PolyBase*)inst->createRenderBuffer(width, height, attachDepthBuffer, floatingPoint);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_Renderer_destroyRenderBuffer(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Renderer *inst = (Renderer*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		RenderBuffer* buffer = (RenderBuffer*) *((PolyBase**)lua_touserdata(L, 2));
-		inst->destroyRenderBuffer(buffer);
-		return 0;
-	}
-	static int Polycode_Renderer_destroyTexture(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Renderer *inst = (Renderer*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Texture* texture = (Texture*) *((PolyBase**)lua_touserdata(L, 2));
-		inst->destroyTexture(texture);
-		return 0;
-	}
 	static int Polycode_Renderer_processDrawBuffer(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Renderer *inst = (Renderer*) *((PolyBase**)lua_touserdata(L, 1));
@@ -11568,36 +10632,6 @@ static int Polycode_RenderThreadDebugInfo_set_timeTaken(lua_State *L) {
 		lua_pushnumber(L, inst->getBackingResolutionScaleY());
 		return 1;
 	}
-	static int Polycode_Renderer_createProgram(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Renderer *inst = (Renderer*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TSTRING);
-		String fileName = String(lua_tostring(L, 2));
-		PolyBase *ptrRetVal = (PolyBase*)inst->createProgram(fileName);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_Renderer_createShader(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Renderer *inst = (Renderer*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		ShaderProgram* vertexProgram = (ShaderProgram*) *((PolyBase**)lua_touserdata(L, 2));
-		luaL_checktype(L, 3, LUA_TUSERDATA);
-		ShaderProgram* fragmentProgram = (ShaderProgram*) *((PolyBase**)lua_touserdata(L, 3));
-		PolyBase *ptrRetVal = (PolyBase*)inst->createShader(vertexProgram, fragmentProgram);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
 	static int Polycode_Renderer_enqueueFrameJob(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Renderer *inst = (Renderer*) *((PolyBase**)lua_touserdata(L, 1));
@@ -11608,20 +10642,36 @@ static int Polycode_RenderThreadDebugInfo_set_timeTaken(lua_State *L) {
 		inst->enqueueFrameJob(jobType, data);
 		return 0;
 	}
-	static int Polycode_Renderer_destroyProgram(lua_State *L) {
+	static int Polycode_Renderer_destroyRenderBufferPlatformData(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Renderer *inst = (Renderer*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		ShaderProgram* program = (ShaderProgram*) *((PolyBase**)lua_touserdata(L, 2));
-		inst->destroyProgram(program);
+		void* platformData = (void*) *((PolyBase**)lua_touserdata(L, 2));
+		inst->destroyRenderBufferPlatformData(platformData);
 		return 0;
 	}
-	static int Polycode_Renderer_destroyShader(lua_State *L) {
+	static int Polycode_Renderer_destroyTexturePlatformData(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Renderer *inst = (Renderer*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Shader* shader = (Shader*) *((PolyBase**)lua_touserdata(L, 2));
-		inst->destroyShader(shader);
+		void* platformData = (void*) *((PolyBase**)lua_touserdata(L, 2));
+		inst->destroyTexturePlatformData(platformData);
+		return 0;
+	}
+	static int Polycode_Renderer_destroyProgramPlatformData(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		Renderer *inst = (Renderer*) *((PolyBase**)lua_touserdata(L, 1));
+		luaL_checktype(L, 2, LUA_TUSERDATA);
+		void* platformData = (void*) *((PolyBase**)lua_touserdata(L, 2));
+		inst->destroyProgramPlatformData(platformData);
+		return 0;
+	}
+	static int Polycode_Renderer_destroyShaderPlatformData(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		Renderer *inst = (Renderer*) *((PolyBase**)lua_touserdata(L, 1));
+		luaL_checktype(L, 2, LUA_TUSERDATA);
+		void* platformData = (void*) *((PolyBase**)lua_touserdata(L, 2));
+		inst->destroyShaderPlatformData(platformData);
 		return 0;
 	}
 	static int Polycode_Renderer_destroySubmeshPlatformData(lua_State *L) {
@@ -11630,22 +10680,6 @@ static int Polycode_RenderThreadDebugInfo_set_timeTaken(lua_State *L) {
 		luaL_checktype(L, 2, LUA_TUSERDATA);
 		void* platformData = (void*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->destroySubmeshPlatformData(platformData);
-		return 0;
-	}
-	static int Polycode_Renderer_destroyShaderBinding(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Renderer *inst = (Renderer*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		ShaderBinding* binding = (ShaderBinding*) *((PolyBase**)lua_touserdata(L, 2));
-		inst->destroyShaderBinding(binding);
-		return 0;
-	}
-	static int Polycode_Renderer_destroyShaderParam(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Renderer *inst = (Renderer*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		LocalShaderParam* param = (LocalShaderParam*) *((PolyBase**)lua_touserdata(L, 2));
-		inst->destroyShaderParam(param);
 		return 0;
 	}
 	static int Polycode_Renderer_setTextureParam(lua_State *L) {
@@ -11831,13 +10865,12 @@ static int Polycode_Resource_set_resourceFileTime(lua_State *L) {
 		String path = String(lua_tostring(L, 2));
 		luaL_checktype(L, 3, LUA_TUSERDATA);
 		ResourcePool* targetPool = (ResourcePool*) *((PolyBase**)lua_touserdata(L, 3));
-		PolyBase *ptrRetVal = (PolyBase*)inst->loadResource(path, targetPool);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
+		*retInst = inst->loadResource(path, targetPool);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Resource>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_delete_ScriptResourceLoader(lua_State *L) {
@@ -11932,7 +10965,7 @@ static int Polycode_ResourcePool_set_deleteOnUnsubscribe(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		ResourcePool *inst = (ResourcePool*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Resource* resource = (Resource*) *((PolyBase**)lua_touserdata(L, 2));
+		shared_ptr<Resource> resource = *(shared_ptr<Resource>*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->addResource(resource);
 		return 0;
 	}
@@ -11940,7 +10973,7 @@ static int Polycode_ResourcePool_set_deleteOnUnsubscribe(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		ResourcePool *inst = (ResourcePool*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Resource* resource = (Resource*) *((PolyBase**)lua_touserdata(L, 2));
+		shared_ptr<Resource> resource = *(shared_ptr<Resource>*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->removeResource(resource);
 		return 0;
 	}
@@ -11948,7 +10981,7 @@ static int Polycode_ResourcePool_set_deleteOnUnsubscribe(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		ResourcePool *inst = (ResourcePool*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Resource* resource = (Resource*) *((PolyBase**)lua_touserdata(L, 2));
+		shared_ptr<Resource> resource = *(shared_ptr<Resource>*) *((PolyBase**)lua_touserdata(L, 2));
 		lua_pushboolean(L, inst->hasResource(resource));
 		return 1;
 	}
@@ -11962,18 +10995,25 @@ static int Polycode_ResourcePool_set_deleteOnUnsubscribe(lua_State *L) {
 		inst->loadResourcesFromFolder(folder, recursive);
 		return 0;
 	}
+	static int Polycode_ResourcePool_loadResourcesFromMaterialFile(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		ResourcePool *inst = (ResourcePool*) *((PolyBase**)lua_touserdata(L, 1));
+		luaL_checktype(L, 2, LUA_TSTRING);
+		String path = String(lua_tostring(L, 2));
+		inst->loadResourcesFromMaterialFile(path);
+		return 0;
+	}
 	static int Polycode_ResourcePool_loadResource(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		ResourcePool *inst = (ResourcePool*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TSTRING);
 		String path = String(lua_tostring(L, 2));
-		PolyBase *ptrRetVal = (PolyBase*)inst->loadResource(path);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
+		*retInst = inst->loadResource(path);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Resource>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_ResourcePool_loadResourceWithName(lua_State *L) {
@@ -11983,13 +11023,12 @@ static int Polycode_ResourcePool_set_deleteOnUnsubscribe(lua_State *L) {
 		String path = String(lua_tostring(L, 2));
 		luaL_checktype(L, 3, LUA_TSTRING);
 		String name = String(lua_tostring(L, 3));
-		PolyBase *ptrRetVal = (PolyBase*)inst->loadResourceWithName(path, name);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
+		*retInst = inst->loadResourceWithName(path, name);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Resource>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_ResourcePool_getResource(lua_State *L) {
@@ -11999,13 +11038,12 @@ static int Polycode_ResourcePool_set_deleteOnUnsubscribe(lua_State *L) {
 		int resourceType = lua_tointeger(L, 2);
 		luaL_checktype(L, 3, LUA_TSTRING);
 		String resourceName = String(lua_tostring(L, 3));
-		PolyBase *ptrRetVal = (PolyBase*)inst->getResource(resourceType, resourceName);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
+		*retInst = inst->getResource(resourceType, resourceName);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Resource>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_ResourcePool_getName(lua_State *L) {
@@ -12027,13 +11065,12 @@ static int Polycode_ResourcePool_set_deleteOnUnsubscribe(lua_State *L) {
 		ResourcePool *inst = (ResourcePool*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TSTRING);
 		String resourcePath = String(lua_tostring(L, 2));
-		PolyBase *ptrRetVal = (PolyBase*)inst->getResourceByPath(resourcePath);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
+		*retInst = inst->getResourceByPath(resourcePath);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Resource>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_ResourcePool_Update(lua_State *L) {
@@ -12049,14 +11086,7 @@ static int Polycode_ResourcePool_set_deleteOnUnsubscribe(lua_State *L) {
 		ResourcePool *inst = (ResourcePool*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		int resourceType = lua_tointeger(L, 2);
-		std::vector<Resource*> retVector = inst->getResources(resourceType);
-		lua_newtable(L);
-		for(int i=0; i < retVector.size(); i++) {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = (PolyBase*)retVector[i];
-			lua_rawseti(L, -2, i+1);
-		}
-		return 1;
+		return 0;
 	}
 	static int Polycode_ResourcePool_checkForChangedFiles(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
@@ -12177,20 +11207,13 @@ static int Polycode_ResourcePool_set_deleteOnUnsubscribe(lua_State *L) {
 		ResourceManager *inst = (ResourceManager*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		int resourceType = lua_tointeger(L, 2);
-		std::vector<Resource*> retVector = inst->getResources(resourceType);
-		lua_newtable(L);
-		for(int i=0; i < retVector.size(); i++) {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = (PolyBase*)retVector[i];
-			lua_rawseti(L, -2, i+1);
-		}
-		return 1;
+		return 0;
 	}
 	static int Polycode_ResourceManager_removeResource(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		ResourceManager *inst = (ResourceManager*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Resource* resource = (Resource*) *((PolyBase**)lua_touserdata(L, 2));
+		shared_ptr<Resource> resource = *(shared_ptr<Resource>*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->removeResource(resource);
 		return 0;
 	}
@@ -12241,13 +11264,12 @@ static int Polycode_ResourcePool_set_deleteOnUnsubscribe(lua_State *L) {
 		String path = String(lua_tostring(L, 2));
 		luaL_checktype(L, 3, LUA_TUSERDATA);
 		ResourcePool* targetPool = (ResourcePool*) *((PolyBase**)lua_touserdata(L, 3));
-		PolyBase *ptrRetVal = (PolyBase*)inst->loadResource(path, targetPool);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
+		*retInst = inst->loadResource(path, targetPool);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Resource>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_delete_FontResourceLoader(lua_State *L) {
@@ -12273,13 +11295,12 @@ static int Polycode_ResourcePool_set_deleteOnUnsubscribe(lua_State *L) {
 		String path = String(lua_tostring(L, 2));
 		luaL_checktype(L, 3, LUA_TUSERDATA);
 		ResourcePool* targetPool = (ResourcePool*) *((PolyBase**)lua_touserdata(L, 3));
-		PolyBase *ptrRetVal = (PolyBase*)inst->loadResource(path, targetPool);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
+		*retInst = inst->loadResource(path, targetPool);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Resource>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_delete_ProgramResourceLoader(lua_State *L) {
@@ -12343,13 +11364,12 @@ static int Polycode_DebugBackTraceEntry_set_lineNumber(lua_State *L) {
 		String path = String(lua_tostring(L, 2));
 		luaL_checktype(L, 3, LUA_TUSERDATA);
 		ResourcePool* targetPool = (ResourcePool*) *((PolyBase**)lua_touserdata(L, 3));
-		PolyBase *ptrRetVal = (PolyBase*)inst->loadResource(path, targetPool);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
+		*retInst = inst->loadResource(path, targetPool);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Resource>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_delete_MeshResourceLoader(lua_State *L) {
@@ -12375,13 +11395,12 @@ static int Polycode_DebugBackTraceEntry_set_lineNumber(lua_State *L) {
 		String path = String(lua_tostring(L, 2));
 		luaL_checktype(L, 3, LUA_TUSERDATA);
 		ResourcePool* targetPool = (ResourcePool*) *((PolyBase**)lua_touserdata(L, 3));
-		PolyBase *ptrRetVal = (PolyBase*)inst->loadResource(path, targetPool);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
+		*retInst = inst->loadResource(path, targetPool);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Resource>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_delete_MaterialResourceLoader(lua_State *L) {
@@ -12407,13 +11426,12 @@ static int Polycode_DebugBackTraceEntry_set_lineNumber(lua_State *L) {
 		String path = String(lua_tostring(L, 2));
 		luaL_checktype(L, 3, LUA_TUSERDATA);
 		ResourcePool* targetPool = (ResourcePool*) *((PolyBase**)lua_touserdata(L, 3));
-		PolyBase *ptrRetVal = (PolyBase*)inst->loadResource(path, targetPool);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
+		*retInst = inst->loadResource(path, targetPool);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Resource>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_delete_TextureResourceLoader(lua_State *L) {
@@ -12749,9 +11767,9 @@ static int Polycode_Scene_set_constrainPickingToViewport(lua_State *L) {
 		luaL_checktype(L, 2, LUA_TUSERDATA);
 		Camera* targetCamera = (Camera*) *((PolyBase**)lua_touserdata(L, 2));
 		luaL_checktype(L, 3, LUA_TUSERDATA);
-		RenderBuffer* targetFramebuffer = (RenderBuffer*) *((PolyBase**)lua_touserdata(L, 3));
+		shared_ptr<RenderBuffer> targetFramebuffer = *(shared_ptr<RenderBuffer>*) *((PolyBase**)lua_touserdata(L, 3));
 		luaL_checktype(L, 4, LUA_TUSERDATA);
-		Material* overrideMaterial = (Material*) *((PolyBase**)lua_touserdata(L, 4));
+		shared_ptr<Material> overrideMaterial = *(shared_ptr<Material>*) *((PolyBase**)lua_touserdata(L, 4));
 		luaL_checktype(L, 5, LUA_TBOOLEAN);
 		bool sendLights = lua_toboolean(L, 5) != 0;
 		inst->Render(targetCamera, targetFramebuffer, overrideMaterial, sendLights);
@@ -12761,7 +11779,7 @@ static int Polycode_Scene_set_constrainPickingToViewport(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Scene *inst = (Scene*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Material* material = (Material*) *((PolyBase**)lua_touserdata(L, 2));
+		shared_ptr<Material> material = *(shared_ptr<Material>*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->setOverrideMaterial(material);
 		return 0;
 	}
@@ -13061,13 +12079,12 @@ static int Polycode_SceneEntityInstance_set_fileName(lua_State *L) {
 	static int Polycode_SceneEntityInstance_getResourceEntry(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		SceneEntityInstance *inst = (SceneEntityInstance*) *((PolyBase**)lua_touserdata(L, 1));
-		PolyBase *ptrRetVal = (PolyBase*)inst->getResourceEntry();
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<SceneEntityInstanceResourceEntry> *retInst = new shared_ptr<SceneEntityInstanceResourceEntry>();
+		*retInst = inst->getResourceEntry();
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<SceneEntityInstanceResourceEntry>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_SceneEntityInstance_getTopLevelResourcePool(lua_State *L) {
@@ -13238,114 +12255,6 @@ static int Polycode_SceneEntityInstanceLayer_set_instance(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		PolyBase **inst = (PolyBase**)lua_touserdata(L, 1);
 		delete ((SceneEntityInstanceLayer*) *inst);
-		*inst = NULL;
-		return 0;
-	}
-
-	static int Polycode_SceneImage(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TSTRING);
-		String fileName = String(lua_tostring(L, 1));
-		SceneImage *inst = new SceneImage(fileName);
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst;
-		luaL_getmetatable(L, "Polycode.SceneImage");
-		lua_setmetatable(L, -2);
-		return 1;
-	}
-	static int Polycode_SceneImage_SceneImageWithImage(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Image* image = (Image*) *((PolyBase**)lua_touserdata(L, 1));
-		PolyBase *ptrRetVal = (PolyBase*)SceneImage::SceneImageWithImage(image);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_SceneImage_SceneImageWithTexture(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Texture* texture = (Texture*) *((PolyBase**)lua_touserdata(L, 1));
-		PolyBase *ptrRetVal = (PolyBase*)SceneImage::SceneImageWithTexture(texture);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_SceneImage_Clone(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		SceneImage *inst = (SceneImage*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TBOOLEAN);
-		bool deepClone = lua_toboolean(L, 2) != 0;
-		luaL_checktype(L, 3, LUA_TBOOLEAN);
-		bool ignoreEditorOnly = lua_toboolean(L, 3) != 0;
-		PolyBase *ptrRetVal = (PolyBase*)inst->Clone(deepClone, ignoreEditorOnly);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_SceneImage_applyClone(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		SceneImage *inst = (SceneImage*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Entity* clone = (Entity*) *((PolyBase**)lua_touserdata(L, 2));
-		luaL_checktype(L, 3, LUA_TBOOLEAN);
-		bool deepClone = lua_toboolean(L, 3) != 0;
-		luaL_checktype(L, 4, LUA_TBOOLEAN);
-		bool ignoreEditorOnly = lua_toboolean(L, 4) != 0;
-		inst->applyClone(clone, deepClone, ignoreEditorOnly);
-		return 0;
-	}
-	static int Polycode_SceneImage_setImageCoordinates(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		SceneImage *inst = (SceneImage*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TNUMBER);
-		Number x = lua_tonumber(L, 2);
-		luaL_checktype(L, 3, LUA_TNUMBER);
-		Number y = lua_tonumber(L, 3);
-		luaL_checktype(L, 4, LUA_TNUMBER);
-		Number width = lua_tonumber(L, 4);
-		luaL_checktype(L, 5, LUA_TNUMBER);
-		Number height = lua_tonumber(L, 5);
-		Number realWidth;
-		if(lua_isnumber(L, 6)) {
-			realWidth = lua_tonumber(L, 6);
-		} else {
-			realWidth = - 1;
-		}
-		Number realHeight;
-		if(lua_isnumber(L, 7)) {
-			realHeight = lua_tonumber(L, 7);
-		} else {
-			realHeight = - 1;
-		}
-		inst->setImageCoordinates(x, y, width, height, realWidth, realHeight);
-		return 0;
-	}
-	static int Polycode_SceneImage_getImageWidth(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		SceneImage *inst = (SceneImage*) *((PolyBase**)lua_touserdata(L, 1));
-		lua_pushnumber(L, inst->getImageWidth());
-		return 1;
-	}
-	static int Polycode_SceneImage_getImageHeight(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		SceneImage *inst = (SceneImage*) *((PolyBase**)lua_touserdata(L, 1));
-		lua_pushnumber(L, inst->getImageHeight());
-		return 1;
-	}
-	static int Polycode_delete_SceneImage(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		PolyBase **inst = (PolyBase**)lua_touserdata(L, 1);
-		delete ((SceneImage*) *inst);
 		*inst = NULL;
 		return 0;
 	}
@@ -13596,13 +12505,12 @@ static int Polycode_SceneLabel_set_positionAtBaseline(lua_State *L) {
 	static int Polycode_SceneLight_getZBufferTexture(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		SceneLight *inst = (SceneLight*) *((PolyBase**)lua_touserdata(L, 1));
-		PolyBase *ptrRetVal = (PolyBase*)inst->getZBufferTexture();
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Texture> *retInst = new shared_ptr<Texture>();
+		*retInst = inst->getZBufferTexture();
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Texture>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_SceneLight_setSpecularLightColor(lua_State *L) {
@@ -14100,20 +13008,6 @@ static int Polycode_SceneMesh_get_pointSmooth(lua_State *L) {
 	return 1;
 }
 
-static int Polycode_SceneMesh_get_ownsMesh(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	SceneMesh *inst = (SceneMesh*) *((PolyBase**)lua_touserdata(L, 1));
-	lua_pushboolean(L, inst->ownsMesh);
-	return 1;
-}
-
-static int Polycode_SceneMesh_get_ownsSkeleton(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	SceneMesh *inst = (SceneMesh*) *((PolyBase**)lua_touserdata(L, 1));
-	lua_pushboolean(L, inst->ownsSkeleton);
-	return 1;
-}
-
 static int Polycode_SceneMesh_get_useGeometryHitDetection(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	SceneMesh *inst = (SceneMesh*) *((PolyBase**)lua_touserdata(L, 1));
@@ -14166,22 +13060,6 @@ static int Polycode_SceneMesh_set_pointSmooth(lua_State *L) {
 	return 0;
 }
 
-static int Polycode_SceneMesh_set_ownsMesh(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	SceneMesh *inst = (SceneMesh*) *((PolyBase**)lua_touserdata(L, 1));
-	bool param = lua_toboolean(L, 2) != 0;
-	inst->ownsMesh = param;
-	return 0;
-}
-
-static int Polycode_SceneMesh_set_ownsSkeleton(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	SceneMesh *inst = (SceneMesh*) *((PolyBase**)lua_touserdata(L, 1));
-	bool param = lua_toboolean(L, 2) != 0;
-	inst->ownsSkeleton = param;
-	return 0;
-}
-
 static int Polycode_SceneMesh_set_useGeometryHitDetection(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	SceneMesh *inst = (SceneMesh*) *((PolyBase**)lua_touserdata(L, 1));
@@ -14226,7 +13104,7 @@ static int Polycode_SceneMesh_set_sendBoneMatricesToMaterial(lua_State *L) {
 	}
 	static int Polycode_SceneMesh_SceneMeshFromMesh(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Mesh* mesh = (Mesh*) *((PolyBase**)lua_touserdata(L, 1));
+		shared_ptr<Mesh> mesh = *(shared_ptr<Mesh>*) *((PolyBase**)lua_touserdata(L, 1));
 		PolyBase *ptrRetVal = (PolyBase*)SceneMesh::SceneMeshFromMesh(mesh);
 		if(ptrRetVal == NULL) {
 			lua_pushnil(L);
@@ -14282,25 +13160,23 @@ static int Polycode_SceneMesh_set_sendBoneMatricesToMaterial(lua_State *L) {
 	static int Polycode_SceneMesh_getMesh(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		SceneMesh *inst = (SceneMesh*) *((PolyBase**)lua_touserdata(L, 1));
-		PolyBase *ptrRetVal = (PolyBase*)inst->getMesh();
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Mesh> *retInst = new shared_ptr<Mesh>();
+		*retInst = inst->getMesh();
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Mesh>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_SceneMesh_getMaterial(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		SceneMesh *inst = (SceneMesh*) *((PolyBase**)lua_touserdata(L, 1));
-		PolyBase *ptrRetVal = (PolyBase*)inst->getMaterial();
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Material> *retInst = new shared_ptr<Material>();
+		*retInst = inst->getMaterial();
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Material>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_SceneMesh_loadSkeleton(lua_State *L) {
@@ -14308,13 +13184,12 @@ static int Polycode_SceneMesh_set_sendBoneMatricesToMaterial(lua_State *L) {
 		SceneMesh *inst = (SceneMesh*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TSTRING);
 		String fileName = String(lua_tostring(L, 2));
-		PolyBase *ptrRetVal = (PolyBase*)inst->loadSkeleton(fileName);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Skeleton> *retInst = new shared_ptr<Skeleton>();
+		*retInst = inst->loadSkeleton(fileName);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Skeleton>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_SceneMesh_clearMaterial(lua_State *L) {
@@ -14327,7 +13202,7 @@ static int Polycode_SceneMesh_set_sendBoneMatricesToMaterial(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		SceneMesh *inst = (SceneMesh*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Material* material = (Material*) *((PolyBase**)lua_touserdata(L, 2));
+		shared_ptr<Material> material = *(shared_ptr<Material>*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->setMaterial(material);
 		return 0;
 	}
@@ -14349,7 +13224,7 @@ static int Polycode_SceneMesh_set_sendBoneMatricesToMaterial(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		SceneMesh *inst = (SceneMesh*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Mesh* mesh = (Mesh*) *((PolyBase**)lua_touserdata(L, 2));
+		shared_ptr<Mesh> mesh = *(shared_ptr<Mesh>*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->setMesh(mesh);
 		return 0;
 	}
@@ -14357,20 +13232,19 @@ static int Polycode_SceneMesh_set_sendBoneMatricesToMaterial(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		SceneMesh *inst = (SceneMesh*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Skeleton* skeleton = (Skeleton*) *((PolyBase**)lua_touserdata(L, 2));
+		shared_ptr<Skeleton> skeleton = *(shared_ptr<Skeleton>*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->setSkeleton(skeleton);
 		return 0;
 	}
 	static int Polycode_SceneMesh_getSkeleton(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		SceneMesh *inst = (SceneMesh*) *((PolyBase**)lua_touserdata(L, 1));
-		PolyBase *ptrRetVal = (PolyBase*)inst->getSkeleton();
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Skeleton> *retInst = new shared_ptr<Skeleton>();
+		*retInst = inst->getSkeleton();
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Skeleton>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_SceneMesh_applySkeletonLocally(lua_State *L) {
@@ -14659,37 +13533,12 @@ static int Polycode_SceneRenderTexture_set_enabled(lua_State *L) {
 	static int Polycode_SceneRenderTexture_getTargetTexture(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		SceneRenderTexture *inst = (SceneRenderTexture*) *((PolyBase**)lua_touserdata(L, 1));
-		PolyBase *ptrRetVal = (PolyBase*)inst->getTargetTexture();
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_SceneRenderTexture_getFilterColorBufferTexture(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		SceneRenderTexture *inst = (SceneRenderTexture*) *((PolyBase**)lua_touserdata(L, 1));
-		PolyBase *ptrRetVal = (PolyBase*)inst->getFilterColorBufferTexture();
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_SceneRenderTexture_getFilterZBufferTexture(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		SceneRenderTexture *inst = (SceneRenderTexture*) *((PolyBase**)lua_touserdata(L, 1));
-		PolyBase *ptrRetVal = (PolyBase*)inst->getFilterZBufferTexture();
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Texture> *retInst = new shared_ptr<Texture>();
+		*retInst = inst->getTargetTexture();
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Texture>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_SceneRenderTexture_Render(lua_State *L) {
@@ -14929,13 +13778,12 @@ static int Polycode_SceneRenderTexture_set_enabled(lua_State *L) {
 	static int Polycode_SceneSprite_getCurrentSprite(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		SceneSprite *inst = (SceneSprite*) *((PolyBase**)lua_touserdata(L, 1));
-		PolyBase *ptrRetVal = (PolyBase*)inst->getCurrentSprite();
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Sprite> *retInst = new shared_ptr<Sprite>();
+		*retInst = inst->getCurrentSprite();
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Sprite>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_SceneSprite_setSpriteSet(lua_State *L) {
@@ -15011,7 +13859,7 @@ static int Polycode_SceneRenderTexture_set_enabled(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		SceneSprite *inst = (SceneSprite*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Sprite* spriteEntry = (Sprite*) *((PolyBase**)lua_touserdata(L, 2));
+		shared_ptr<Sprite> spriteEntry = *(shared_ptr<Sprite>*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->setSprite(spriteEntry);
 		return 0;
 	}
@@ -15191,41 +14039,26 @@ static int Polycode_SceneRenderTexture_set_enabled(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		SpriteSet *inst = (SpriteSet*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Texture* texture = (Texture*) *((PolyBase**)lua_touserdata(L, 2));
+		shared_ptr<Texture> texture = *(shared_ptr<Texture>*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->setTexture(texture);
 		return 0;
 	}
 	static int Polycode_SpriteSet_getTexture(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		SpriteSet *inst = (SpriteSet*) *((PolyBase**)lua_touserdata(L, 1));
-		PolyBase *ptrRetVal = (PolyBase*)inst->getTexture();
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
-		return 1;
-	}
-	static int Polycode_SpriteSet_loadTexture(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		SpriteSet *inst = (SpriteSet*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TSTRING);
-		String imageFileName = String(lua_tostring(L, 2));
-		PolyBase *ptrRetVal = (PolyBase*)inst->loadTexture(imageFileName);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Texture> *retInst = new shared_ptr<Texture>();
+		*retInst = inst->getTexture();
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Texture>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_SpriteSet_addSpriteEntry(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		SpriteSet *inst = (SpriteSet*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Sprite* newEntry = (Sprite*) *((PolyBase**)lua_touserdata(L, 2));
+		shared_ptr<Sprite> newEntry = *(shared_ptr<Sprite>*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->addSpriteEntry(newEntry);
 		return 0;
 	}
@@ -15240,20 +14073,19 @@ static int Polycode_SceneRenderTexture_set_enabled(lua_State *L) {
 		SpriteSet *inst = (SpriteSet*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		int index = lua_tointeger(L, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getSpriteEntry(index);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Sprite> *retInst = new shared_ptr<Sprite>();
+		*retInst = inst->getSpriteEntry(index);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Sprite>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_SpriteSet_removeSprite(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		SpriteSet *inst = (SpriteSet*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Sprite* sprite = (Sprite*) *((PolyBase**)lua_touserdata(L, 2));
+		shared_ptr<Sprite> sprite = *(shared_ptr<Sprite>*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->removeSprite(sprite);
 		return 0;
 	}
@@ -15360,13 +14192,12 @@ static int Polycode_SceneRenderTexture_set_enabled(lua_State *L) {
 		SpriteSet *inst = (SpriteSet*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TSTRING);
 		String spriteName = String(lua_tostring(L, 2));
-		PolyBase *ptrRetVal = (PolyBase*)inst->getSpriteByName(spriteName);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Sprite> *retInst = new shared_ptr<Sprite>();
+		*retInst = inst->getSpriteByName(spriteName);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Sprite>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_delete_SpriteSet(lua_State *L) {
@@ -15479,13 +14310,12 @@ static int Polycode_SpriteFrame_set_frameID(lua_State *L) {
 		SpriteState *inst = (SpriteState*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		int index = lua_tointeger(L, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getMeshForFrameIndex(index);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Mesh> *retInst = new shared_ptr<Mesh>();
+		*retInst = inst->getMeshForFrameIndex(index);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Mesh>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_SpriteState_insertFrame(lua_State *L) {
@@ -15800,18 +14630,6 @@ static int Polycode_ShaderRenderTarget_get_sizeMode(lua_State *L) {
 	return 1;
 }
 
-static int Polycode_ShaderRenderTarget_get_buffer(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	ShaderRenderTarget *inst = (ShaderRenderTarget*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->buffer) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->buffer;
-	}
-	return 1;
-}
-
 static int Polycode_ShaderRenderTarget_get_normalizedWidth(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	ShaderRenderTarget *inst = (ShaderRenderTarget*) *((PolyBase**)lua_touserdata(L, 1));
@@ -15855,15 +14673,6 @@ static int Polycode_ShaderRenderTarget_set_sizeMode(lua_State *L) {
 	ShaderRenderTarget *inst = (ShaderRenderTarget*) *((PolyBase**)lua_touserdata(L, 1));
 	int param = lua_tointeger(L, 2);
 	inst->sizeMode = param;
-	return 0;
-}
-
-static int Polycode_ShaderRenderTarget_set_buffer(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	ShaderRenderTarget *inst = (ShaderRenderTarget*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	RenderBuffer* *argInst = (RenderBuffer**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->buffer = *argInst;
 	return 0;
 }
 
@@ -15920,18 +14729,6 @@ static int Polycode_RenderTargetBinding_get_mode(lua_State *L) {
 	return 1;
 }
 
-static int Polycode_RenderTargetBinding_get_buffer(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	RenderTargetBinding *inst = (RenderTargetBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->buffer) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->buffer;
-	}
-	return 1;
-}
-
 static int Polycode_RenderTargetBinding_set_id(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	RenderTargetBinding *inst = (RenderTargetBinding*) *((PolyBase**)lua_touserdata(L, 1));
@@ -15953,15 +14750,6 @@ static int Polycode_RenderTargetBinding_set_mode(lua_State *L) {
 	RenderTargetBinding *inst = (RenderTargetBinding*) *((PolyBase**)lua_touserdata(L, 1));
 	int param = lua_tointeger(L, 2);
 	inst->mode = param;
-	return 0;
-}
-
-static int Polycode_RenderTargetBinding_set_buffer(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	RenderTargetBinding *inst = (RenderTargetBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	RenderBuffer* *argInst = (RenderBuffer**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->buffer = *argInst;
 	return 0;
 }
 
@@ -15994,30 +14782,6 @@ static int Polycode_Shader_get_screenShader(lua_State *L) {
 	return 1;
 }
 
-static int Polycode_Shader_get_vertexProgram(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	Shader *inst = (Shader*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->vertexProgram) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->vertexProgram;
-	}
-	return 1;
-}
-
-static int Polycode_Shader_get_fragmentProgram(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	Shader *inst = (Shader*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->fragmentProgram) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->fragmentProgram;
-	}
-	return 1;
-}
-
 static int Polycode_Shader_get_name(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	Shader *inst = (Shader*) *((PolyBase**)lua_touserdata(L, 1));
@@ -16046,24 +14810,6 @@ static int Polycode_Shader_set_screenShader(lua_State *L) {
 	Shader *inst = (Shader*) *((PolyBase**)lua_touserdata(L, 1));
 	bool param = lua_toboolean(L, 2) != 0;
 	inst->screenShader = param;
-	return 0;
-}
-
-static int Polycode_Shader_set_vertexProgram(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	Shader *inst = (Shader*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	ShaderProgram* *argInst = (ShaderProgram**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->vertexProgram = *argInst;
-	return 0;
-}
-
-static int Polycode_Shader_set_fragmentProgram(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	Shader *inst = (Shader*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	ShaderProgram* *argInst = (ShaderProgram**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->fragmentProgram = *argInst;
 	return 0;
 }
 
@@ -16136,22 +14882,6 @@ static int Polycode_Shader_set_name(lua_State *L) {
 		String name = String(lua_tostring(L, 2));
 		lua_pushinteger(L, inst->getExpectedParamType(name));
 		return 1;
-	}
-	static int Polycode_Shader_setVertexProgram(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Shader *inst = (Shader*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		ShaderProgram* vp = (ShaderProgram*) *((PolyBase**)lua_touserdata(L, 2));
-		inst->setVertexProgram(vp);
-		return 0;
-	}
-	static int Polycode_Shader_setFragmentProgram(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Shader *inst = (Shader*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TUSERDATA);
-		ShaderProgram* fp = (ShaderProgram*) *((PolyBase**)lua_touserdata(L, 2));
-		inst->setFragmentProgram(fp);
-		return 0;
 	}
 	static int Polycode_delete_Shader(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
@@ -16253,13 +14983,12 @@ static int Polycode_LocalShaderParam_set_param(lua_State *L) {
 	static int Polycode_LocalShaderParam_Copy(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		LocalShaderParam *inst = (LocalShaderParam*) *((PolyBase**)lua_touserdata(L, 1));
-		PolyBase *ptrRetVal = (PolyBase*)inst->Copy();
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<LocalShaderParam> *retInst = new shared_ptr<LocalShaderParam>();
+		*retInst = inst->Copy();
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<LocalShaderParam>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_LocalShaderParam_getNumber(lua_State *L) {
@@ -16356,40 +15085,38 @@ static int Polycode_LocalShaderParam_set_param(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		LocalShaderParam *inst = (LocalShaderParam*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Texture* texture = (Texture*) *((PolyBase**)lua_touserdata(L, 2));
+		shared_ptr<Texture> texture = *(shared_ptr<Texture>*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->setTexture(texture);
 		return 0;
 	}
 	static int Polycode_LocalShaderParam_getTexture(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		LocalShaderParam *inst = (LocalShaderParam*) *((PolyBase**)lua_touserdata(L, 1));
-		PolyBase *ptrRetVal = (PolyBase*)inst->getTexture();
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Texture> *retInst = new shared_ptr<Texture>();
+		*retInst = inst->getTexture();
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Texture>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_LocalShaderParam_setCubemap(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		LocalShaderParam *inst = (LocalShaderParam*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Cubemap* cubemap = (Cubemap*) *((PolyBase**)lua_touserdata(L, 2));
+		shared_ptr<Cubemap> cubemap = *(shared_ptr<Cubemap>*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->setCubemap(cubemap);
 		return 0;
 	}
 	static int Polycode_LocalShaderParam_getCubemap(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		LocalShaderParam *inst = (LocalShaderParam*) *((PolyBase**)lua_touserdata(L, 1));
-		PolyBase *ptrRetVal = (PolyBase*)inst->getCubemap();
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Cubemap> *retInst = new shared_ptr<Cubemap>();
+		*retInst = inst->getCubemap();
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Cubemap>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_LocalShaderParam_setParamValueFromString(lua_State *L) {
@@ -16543,18 +15270,6 @@ static int Polycode_AttributeBinding_set_enabled(lua_State *L) {
 		return 0;
 	}
 
-static int Polycode_ShaderBinding_get_targetShader(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	ShaderBinding *inst = (ShaderBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->targetShader) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->targetShader;
-	}
-	return 1;
-}
-
 static int Polycode_ShaderBinding_get_accessMutex(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	ShaderBinding *inst = (ShaderBinding*) *((PolyBase**)lua_touserdata(L, 1));
@@ -16565,15 +15280,6 @@ static int Polycode_ShaderBinding_get_accessMutex(lua_State *L) {
 		*userdataPtr = (PolyBase*)inst->accessMutex;
 	}
 	return 1;
-}
-
-static int Polycode_ShaderBinding_set_targetShader(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	ShaderBinding *inst = (ShaderBinding*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	Shader* *argInst = (Shader**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->targetShader = *argInst;
-	return 0;
 }
 
 static int Polycode_ShaderBinding_set_accessMutex(lua_State *L) {
@@ -16608,13 +15314,12 @@ static int Polycode_ShaderBinding_set_accessMutex(lua_State *L) {
 		int type = lua_tointeger(L, 2);
 		luaL_checktype(L, 3, LUA_TSTRING);
 		String name = String(lua_tostring(L, 3));
-		PolyBase *ptrRetVal = (PolyBase*)inst->addParam(type, name);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<LocalShaderParam> *retInst = new shared_ptr<LocalShaderParam>();
+		*retInst = inst->addParam(type, name);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<LocalShaderParam>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_ShaderBinding_addParamPointer(lua_State *L) {
@@ -16626,13 +15331,27 @@ static int Polycode_ShaderBinding_set_accessMutex(lua_State *L) {
 		String name = String(lua_tostring(L, 3));
 		luaL_checktype(L, 4, LUA_TUSERDATA);
 		void* ptr = (void*) *((PolyBase**)lua_touserdata(L, 4));
-		PolyBase *ptrRetVal = (PolyBase*)inst->addParamPointer(type, name, ptr);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<LocalShaderParam> *retInst = new shared_ptr<LocalShaderParam>();
+		*retInst = inst->addParamPointer(type, name, ptr);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<LocalShaderParam>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
+		return 1;
+	}
+	static int Polycode_ShaderBinding_addParamFromData(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		ShaderBinding *inst = (ShaderBinding*) *((PolyBase**)lua_touserdata(L, 1));
+		luaL_checktype(L, 2, LUA_TSTRING);
+		String name = String(lua_tostring(L, 2));
+		luaL_checktype(L, 3, LUA_TSTRING);
+		String data = String(lua_tostring(L, 3));
+		shared_ptr<LocalShaderParam> *retInst = new shared_ptr<LocalShaderParam>();
+		*retInst = inst->addParamFromData(name, data);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<LocalShaderParam>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_ShaderBinding_getNumLocalParams(lua_State *L) {
@@ -16646,13 +15365,12 @@ static int Polycode_ShaderBinding_set_accessMutex(lua_State *L) {
 		ShaderBinding *inst = (ShaderBinding*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		int index = lua_tointeger(L, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getLocalParam(index);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<LocalShaderParam> *retInst = new shared_ptr<LocalShaderParam>();
+		*retInst = inst->getLocalParam(index);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<LocalShaderParam>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_ShaderBinding_getLocalParamByName(lua_State *L) {
@@ -16660,13 +15378,12 @@ static int Polycode_ShaderBinding_set_accessMutex(lua_State *L) {
 		ShaderBinding *inst = (ShaderBinding*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TSTRING);
 		String name = String(lua_tostring(L, 2));
-		PolyBase *ptrRetVal = (PolyBase*)inst->getLocalParamByName(name);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<LocalShaderParam> *retInst = new shared_ptr<LocalShaderParam>();
+		*retInst = inst->getLocalParamByName(name);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<LocalShaderParam>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_ShaderBinding_removeParam(lua_State *L) {
@@ -16684,13 +15401,12 @@ static int Polycode_ShaderBinding_set_accessMutex(lua_State *L) {
 		String paramName = String(lua_tostring(L, 2));
 		luaL_checktype(L, 3, LUA_TSTRING);
 		String fileName = String(lua_tostring(L, 3));
-		PolyBase *ptrRetVal = (PolyBase*)inst->loadTextureForParam(paramName, fileName);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Texture> *retInst = new shared_ptr<Texture>();
+		*retInst = inst->loadTextureForParam(paramName, fileName);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Texture>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_ShaderBinding_setTextureForParam(lua_State *L) {
@@ -16699,7 +15415,7 @@ static int Polycode_ShaderBinding_set_accessMutex(lua_State *L) {
 		luaL_checktype(L, 2, LUA_TSTRING);
 		String paramName = String(lua_tostring(L, 2));
 		luaL_checktype(L, 3, LUA_TUSERDATA);
-		Texture* texture = (Texture*) *((PolyBase**)lua_touserdata(L, 3));
+		shared_ptr<Texture> texture = *(shared_ptr<Texture>*) *((PolyBase**)lua_touserdata(L, 3));
 		inst->setTextureForParam(paramName, texture);
 		return 0;
 	}
@@ -16709,7 +15425,7 @@ static int Polycode_ShaderBinding_set_accessMutex(lua_State *L) {
 		luaL_checktype(L, 2, LUA_TSTRING);
 		String paramName = String(lua_tostring(L, 2));
 		luaL_checktype(L, 3, LUA_TUSERDATA);
-		Cubemap* cubemap = (Cubemap*) *((PolyBase**)lua_touserdata(L, 3));
+		shared_ptr<Cubemap> cubemap = *(shared_ptr<Cubemap>*) *((PolyBase**)lua_touserdata(L, 3));
 		inst->setCubemapForParam(paramName, cubemap);
 		return 0;
 	}
@@ -18345,48 +17061,6 @@ static int Polycode_String_set_w_contents(lua_State *L) {
 		*inst = NULL;
 		return 0;
 	}
-
-static int Polycode_RenderBuffer_get_colorTexture(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	RenderBuffer *inst = (RenderBuffer*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->colorTexture) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->colorTexture;
-	}
-	return 1;
-}
-
-static int Polycode_RenderBuffer_get_depthTexture(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	RenderBuffer *inst = (RenderBuffer*) *((PolyBase**)lua_touserdata(L, 1));
-	if(!inst->depthTexture) {
-		lua_pushnil(L);
-	} else {
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		*userdataPtr = (PolyBase*)inst->depthTexture;
-	}
-	return 1;
-}
-
-static int Polycode_RenderBuffer_set_colorTexture(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	RenderBuffer *inst = (RenderBuffer*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	Texture* *argInst = (Texture**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->colorTexture = *argInst;
-	return 0;
-}
-
-static int Polycode_RenderBuffer_set_depthTexture(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	RenderBuffer *inst = (RenderBuffer*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	Texture* *argInst = (Texture**) *((PolyBase**)lua_touserdata(L, 2));
-	inst->depthTexture = *argInst;
-	return 0;
-}
 
 	static int Polycode_RenderBuffer(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TNUMBER);

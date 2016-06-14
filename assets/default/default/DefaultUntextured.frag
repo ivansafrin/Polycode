@@ -8,7 +8,6 @@ varying vec4 varPosition;
 
 uniform vec4 diffuse_color;
 uniform vec4 specular_color;
-uniform vec4 entityColor;
 uniform float shininess;
 
 #define MAX_LIGHTS 8
@@ -121,9 +120,9 @@ void main()
 	doLights(MAX_LIGHTS, varNormal, varPosition, diffuse_val, specular_val);
 			
     vec4 color = diffuse_val; 	           
-    color = clamp((color*entityColor) + specular_val, 0.0, 1.0);  
+    color = clamp((color) + specular_val, 0.0, 1.0);  
 
-	color.a = entityColor.a * diffuse_color.a;	
+	color.a = diffuse_color.a;	
 	gl_FragColor = color;
 
 }

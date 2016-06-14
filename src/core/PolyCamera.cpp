@@ -52,12 +52,8 @@ Camera::Camera(Scene *parentScene) : Entity() {
 	orthoSizeY = 1.0;
 }
 
-Camera::~Camera() { 
-	for(int i=0; i < shaderPasses.size(); i++)	{
-		Services()->getRenderer()->destroyShaderBinding(shaderPasses[i].shaderBinding);
-	}
+Camera::~Camera() {
 	delete screenQuadMesh;
-	Services()->getRenderer()->destroyRenderBuffer(originalFramebuffer);
 }
 
 void Camera::setClippingPlanes(Number nearClipPlane, Number farClipPlane) {
@@ -309,7 +305,7 @@ void Camera::setParentScene(Scene *parentScene) {
 }
 
 void Camera::setPostFilterByName(const String& materialName) {
-	Material *shaderMaterial = (Material*) CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, materialName);
+	std::shared_ptr<Material> shaderMaterial = std::static_pointer_cast<Material>(Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, materialName));
 	if(shaderMaterial) {
 		setPostFilter(shaderMaterial);
 	}
@@ -322,7 +318,7 @@ void Camera::removePostFilter() {
 	}
 }
 
-void Camera::setPostFilter(Material *material) {
+void Camera::setPostFilter(std::shared_ptr<Material> material) {
 	if(!material) {
 		return;
 	}
@@ -333,7 +329,7 @@ void Camera::setPostFilter(Material *material) {
 	this->filterShaderMaterial = material;
 
 	if(!originalFramebuffer) {
-		originalFramebuffer = Services()->getRenderer()->createRenderBuffer(CoreServices::getInstance()->getCore()->getXRes() * renderer->getBackingResolutionScaleX(), CoreServices::getInstance()->getCore()->getYRes() * renderer->getBackingResolutionScaleY(), true, material->fp16RenderTargets);
+		originalFramebuffer = std::make_shared<RenderBuffer>(Services()->getCore()->getXRes() * renderer->getBackingResolutionScaleX(), Services()->getCore()->getYRes() * renderer->getBackingResolutionScaleY(), true, material->fp16RenderTargets);
 	}
 	
 	if(!screenQuadMesh) {
@@ -351,19 +347,15 @@ void Camera::setPostFilter(Material *material) {
 		screenQuadMesh->addSubmesh(geometry);
 		
 	}
-	
-	for(int i=0; i < shaderPasses.size(); i++)	{
-		Services()->getRenderer()->destroyShaderBinding(shaderPasses[i].shaderBinding);
-	}
 	shaderPasses.clear();
 	
 	for(int i=0; i < material->getNumShaderPasses(); i++)  {
 		
-		ShaderBinding* materialBinding = material->getShaderBinding(i);
+		std::shared_ptr<ShaderBinding> materialBinding = material->getShaderBinding(i);
 		
 		ShaderPass shaderPass = material->getShaderPass(i);
 		shaderPass.materialShaderBinding = shaderPass.shaderBinding;
-		shaderPass.shaderBinding = new ShaderBinding();
+		shaderPass.shaderBinding = std::make_shared<ShaderBinding>();
 		shaderPass.shaderBinding->targetShader = shaderPass.shader;
 		
 		for(int j=0; j < materialBinding->getNumColorTargetBindings(); j++) {
@@ -422,7 +414,7 @@ void Camera::renderFullScreenQuad(GPUDrawBuffer *drawBuffer, int shaderPass) {
 	drawBuffer->drawCalls.push_back(drawCall);
 }
 
-void Camera::drawFilter(RenderBuffer *targetBuffer) {
+void Camera::drawFilter(std::shared_ptr<RenderBuffer> targetBuffer) {
 	if(!filterShaderMaterial)
 		return;
 	
@@ -430,7 +422,7 @@ void Camera::drawFilter(RenderBuffer *targetBuffer) {
 	
 	for(int i=0; i < shaderPasses.size(); i++) {
 		
-		ShaderBinding* materialBinding = filterShaderMaterial->getShaderPass(i).shaderBinding;
+		std::shared_ptr<ShaderBinding> materialBinding = filterShaderMaterial->getShaderPass(i).shaderBinding;
 
 		if(i == shaderPasses.size()-1) {
 			GPUDrawBuffer *drawBuffer = new GPUDrawBuffer();
@@ -448,7 +440,7 @@ void Camera::drawFilter(RenderBuffer *targetBuffer) {
 			renderer->processDrawBuffer(drawBuffer);
 		} else {			
 			for(int j=0; j < materialBinding->getNumOutTargetBindings(); j++) {
-				RenderBuffer *bindingBuffer = materialBinding->getOutTargetBinding(j)->buffer;
+				std::shared_ptr<RenderBuffer> bindingBuffer = materialBinding->getOutTargetBinding(j)->buffer;
 				if(bindingBuffer) {
 					GPUDrawBuffer *drawBuffer = new GPUDrawBuffer();
 					drawBuffer->clearColorBuffer = false;

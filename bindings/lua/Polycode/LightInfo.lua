@@ -44,12 +44,6 @@ function LightInfo:__getvar(name)
 		return Polycode.LightInfo_get_spotlightExponent(self.__ptr)
 	elseif name == "shadowsEnabled" then
 		return Polycode.LightInfo_get_shadowsEnabled(self.__ptr)
-	elseif name == "shadowMapTexture" then
-		local retVal = Polycode.LightInfo_get_shadowMapTexture(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["Texture"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
 	elseif name == "lightViewMatrix" then
 		local retVal = Polycode.LightInfo_get_lightViewMatrix(self.__ptr)
 		if retVal == nil then return nil end
@@ -98,9 +92,6 @@ function LightInfo:__setvar(name,value)
 		return true
 	elseif name == "shadowsEnabled" then
 		Polycode.LightInfo_set_shadowsEnabled(self.__ptr, value)
-		return true
-	elseif name == "shadowMapTexture" then
-		Polycode.LightInfo_set_shadowMapTexture(self.__ptr, value.__ptr)
 		return true
 	elseif name == "lightViewMatrix" then
 		Polycode.LightInfo_set_lightViewMatrix(self.__ptr, value.__ptr)

@@ -22,38 +22,6 @@ function Renderer:getRenderThread()
 	return __c
 end
 
-function Renderer:createCubemap(t0, t1, t2, t3, t4, t5)
-	local retVal = Polycode.Renderer_createCubemap(self.__ptr, t0.__ptr, t1.__ptr, t2.__ptr, t3.__ptr, t4.__ptr, t5.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["Cubemap"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function Renderer:createTexture(width, height, textureData, clamp, createMipmaps, type, filteringMode, anisotropy, framebufferTexture)
-	local retVal = Polycode.Renderer_createTexture(self.__ptr, width, height, textureData.__ptr, clamp, createMipmaps, type, filteringMode, anisotropy, framebufferTexture)
-	if retVal == nil then return nil end
-	local __c = _G["Texture"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function Renderer:createRenderBuffer(width, height, attachDepthBuffer, floatingPoint)
-	local retVal = Polycode.Renderer_createRenderBuffer(self.__ptr, width, height, attachDepthBuffer, floatingPoint)
-	if retVal == nil then return nil end
-	local __c = _G["RenderBuffer"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function Renderer:destroyRenderBuffer(buffer)
-	local retVal = Polycode.Renderer_destroyRenderBuffer(self.__ptr, buffer.__ptr)
-end
-
-function Renderer:destroyTexture(texture)
-	local retVal = Polycode.Renderer_destroyTexture(self.__ptr, texture.__ptr)
-end
-
 function Renderer:processDrawBuffer(buffer)
 	local retVal = Polycode.Renderer_processDrawBuffer(self.__ptr, buffer.__ptr)
 end
@@ -72,44 +40,28 @@ function Renderer:getBackingResolutionScaleY()
 	return retVal
 end
 
-function Renderer:createProgram(fileName)
-	local retVal = Polycode.Renderer_createProgram(self.__ptr, fileName)
-	if retVal == nil then return nil end
-	local __c = _G["ShaderProgram"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function Renderer:createShader(vertexProgram, fragmentProgram)
-	local retVal = Polycode.Renderer_createShader(self.__ptr, vertexProgram.__ptr, fragmentProgram.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["Shader"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function Renderer:enqueueFrameJob(jobType, data)
 	local retVal = Polycode.Renderer_enqueueFrameJob(self.__ptr, jobType, data.__ptr)
 end
 
-function Renderer:destroyProgram(program)
-	local retVal = Polycode.Renderer_destroyProgram(self.__ptr, program.__ptr)
+function Renderer:destroyRenderBufferPlatformData(platformData)
+	local retVal = Polycode.Renderer_destroyRenderBufferPlatformData(self.__ptr, platformData.__ptr)
 end
 
-function Renderer:destroyShader(shader)
-	local retVal = Polycode.Renderer_destroyShader(self.__ptr, shader.__ptr)
+function Renderer:destroyTexturePlatformData(platformData)
+	local retVal = Polycode.Renderer_destroyTexturePlatformData(self.__ptr, platformData.__ptr)
+end
+
+function Renderer:destroyProgramPlatformData(platformData)
+	local retVal = Polycode.Renderer_destroyProgramPlatformData(self.__ptr, platformData.__ptr)
+end
+
+function Renderer:destroyShaderPlatformData(platformData)
+	local retVal = Polycode.Renderer_destroyShaderPlatformData(self.__ptr, platformData.__ptr)
 end
 
 function Renderer:destroySubmeshPlatformData(platformData)
 	local retVal = Polycode.Renderer_destroySubmeshPlatformData(self.__ptr, platformData.__ptr)
-end
-
-function Renderer:destroyShaderBinding(binding)
-	local retVal = Polycode.Renderer_destroyShaderBinding(self.__ptr, binding.__ptr)
-end
-
-function Renderer:destroyShaderParam(param)
-	local retVal = Polycode.Renderer_destroyShaderParam(self.__ptr, param.__ptr)
 end
 
 function Renderer:setTextureParam(param, texture)

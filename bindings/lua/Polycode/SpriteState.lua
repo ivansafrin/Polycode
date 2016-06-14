@@ -37,7 +37,7 @@ end
 function SpriteState:getMeshForFrameIndex(index)
 	local retVal = Polycode.SpriteState_getMeshForFrameIndex(self.__ptr, index)
 	if retVal == nil then return nil end
-	local __c = _G["Mesh"]("__skip_ptr__")
+	local __c = _G["shared_ptr<Mesh>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end

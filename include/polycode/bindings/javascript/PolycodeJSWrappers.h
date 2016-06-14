@@ -29,7 +29,6 @@ extern "C" {
 #include "polycode/core/PolyInputKeys.h"
 #include "polycode/core/PolyLabel.h"
 #include "polycode/core/PolyMaterial.h"
-#include "polycode/core/PolyMaterialManager.h"
 #include "polycode/core/PolyMatrix4.h"
 #include "polycode/core/PolyMesh.h"
 #include "polycode/core/PolyObject.h"
@@ -48,7 +47,6 @@ extern "C" {
 #include "polycode/core/PolyResourceManager.h"
 #include "polycode/core/PolyScene.h"
 #include "polycode/core/PolySceneEntityInstance.h"
-#include "polycode/core/PolySceneImage.h"
 #include "polycode/core/PolySceneLabel.h"
 #include "polycode/core/PolySceneLight.h"
 #include "polycode/core/PolySceneLine.h"
@@ -738,14 +736,14 @@ namespace Polycode {
 
 	duk_ret_t Polycode_Camera_drawFilter(duk_context *context) {
 		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		RenderBuffer* targetBuffer = (RenderBuffer*)duk_to_pointer(context, 1);
+		shared_ptr<RenderBuffer> targetBuffer = *(shared_ptr<RenderBuffer>*)duk_to_pointer(context, 1);
 		inst->drawFilter(targetBuffer);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Camera_setPostFilter(duk_context *context) {
 		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		Material* material = (Material*)duk_to_pointer(context, 1);
+		shared_ptr<Material> material = *(shared_ptr<Material>*)duk_to_pointer(context, 1);
 		inst->setPostFilter(material);
 		return 0;
 	}
@@ -765,8 +763,9 @@ namespace Polycode {
 
 	duk_ret_t Polycode_Camera_getScreenShaderMaterial(duk_context *context) {
 		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getScreenShaderMaterial();
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Material> *retInst = new shared_ptr<Material>();
+		*retInst = inst->getScreenShaderMaterial();
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -1333,6 +1332,13 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_Core_openOnScreenKeyboard(duk_context *context) {
+		Core *inst = (Core*)duk_to_pointer(context, 0);
+		bool open = duk_to_boolean(context, 1);
+		inst->openOnScreenKeyboard(open);
+		return 0;
+	}
+
 	duk_ret_t Polycode_Core_createThread(duk_context *context) {
 		Core *inst = (Core*)duk_to_pointer(context, 0);
 		Threaded* target = (Threaded*)duk_to_pointer(context, 1);
@@ -1523,6 +1529,12 @@ namespace Polycode {
 		Core *inst = (Core*)duk_to_pointer(context, 0);
 		inst->prepareRenderContext();
 		return 0;
+	}
+
+	duk_ret_t Polycode_Core_isWindowInitialized(duk_context *context) {
+		Core *inst = (Core*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, inst->isWindowInitialized());
+		return 1;
 	}
 
 	duk_ret_t Polycode_Core_openFile(duk_context *context) {
@@ -2568,13 +2580,6 @@ namespace Polycode {
 	duk_ret_t Polycode_CoreServices_getInput(duk_context *context) {
 		CoreServices *inst = (CoreServices*)duk_to_pointer(context, 0);
 		PolyBase *ptrRetVal = (PolyBase*)inst->getInput();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_CoreServices_getMaterialManager(duk_context *context) {
-		CoreServices *inst = (CoreServices*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getMaterialManager();
 		duk_push_pointer(context, (void*)ptrRetVal);
 		return 1;
 	}
@@ -4316,19 +4321,6 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_LightInfo__get_shadowMapTexture(duk_context *context) {
-		LightInfo *inst = (LightInfo*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->shadowMapTexture;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_LightInfo__set_shadowMapTexture(duk_context *context) {
-		LightInfo *inst = (LightInfo*)duk_to_pointer(context, 0);
-		inst->shadowMapTexture = (Texture*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_LightInfo__get_lightViewMatrix(duk_context *context) {
 		LightInfo *inst = (LightInfo*)duk_to_pointer(context, 0);
 		Matrix4 *retInst = new Matrix4();
@@ -4374,19 +4366,6 @@ namespace Polycode {
 	duk_ret_t Polycode_GPUDrawCall__set_modelMatrix(duk_context *context) {
 		GPUDrawCall *inst = (GPUDrawCall*)duk_to_pointer(context, 0);
 		inst->modelMatrix = *(Matrix4*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_GPUDrawCall__get_material(duk_context *context) {
-		GPUDrawCall *inst = (GPUDrawCall*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->material;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_GPUDrawCall__set_material(duk_context *context) {
-		GPUDrawCall *inst = (GPUDrawCall*)duk_to_pointer(context, 0);
-		inst->material = (Material*)duk_to_pointer(context, 1);
 		return 0;
 	}
 
@@ -4538,19 +4517,6 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_GPUDrawBuffer__get_targetFramebuffer(duk_context *context) {
-		GPUDrawBuffer *inst = (GPUDrawBuffer*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->targetFramebuffer;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_GPUDrawBuffer__set_targetFramebuffer(duk_context *context) {
-		GPUDrawBuffer *inst = (GPUDrawBuffer*)duk_to_pointer(context, 0);
-		inst->targetFramebuffer = (RenderBuffer*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_GPUDrawBuffer__get_projectionMatrix(duk_context *context) {
 		GPUDrawBuffer *inst = (GPUDrawBuffer*)duk_to_pointer(context, 0);
 		Matrix4 *retInst = new Matrix4();
@@ -4642,19 +4608,6 @@ namespace Polycode {
 	duk_ret_t Polycode_GPUDrawBuffer__set_backingResolutionScale(duk_context *context) {
 		GPUDrawBuffer *inst = (GPUDrawBuffer*)duk_to_pointer(context, 0);
 		inst->backingResolutionScale = *(Vector2*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_GPUDrawBuffer__get_globalMaterial(duk_context *context) {
-		GPUDrawBuffer *inst = (GPUDrawBuffer*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->globalMaterial;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_GPUDrawBuffer__set_globalMaterial(duk_context *context) {
-		GPUDrawBuffer *inst = (GPUDrawBuffer*)duk_to_pointer(context, 0);
-		inst->globalMaterial = (Material*)duk_to_pointer(context, 1);
 		return 0;
 	}
 
@@ -5345,15 +5298,16 @@ namespace Polycode {
 
 	duk_ret_t Polycode_Label_setFont(duk_context *context) {
 		Label *inst = (Label*)duk_to_pointer(context, 0);
-		Font* newFont = (Font*)duk_to_pointer(context, 1);
+		shared_ptr<Font> newFont = *(shared_ptr<Font>*)duk_to_pointer(context, 1);
 		inst->setFont(newFont);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Label_getFont(duk_context *context) {
 		Label *inst = (Label*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getFont();
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Font> *retInst = new shared_ptr<Font>();
+		*retInst = inst->getFont();
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -5490,23 +5444,6 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_Material_addShader(duk_context *context) {
-		Material *inst = (Material*)duk_to_pointer(context, 0);
-		Shader* shader = (Shader*)duk_to_pointer(context, 1);
-		ShaderBinding* shaderBinding = (ShaderBinding*)duk_to_pointer(context, 2);
-		inst->addShader(shader,shaderBinding);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Material_addShaderAtIndex(duk_context *context) {
-		Material *inst = (Material*)duk_to_pointer(context, 0);
-		Shader* shader = (Shader*)duk_to_pointer(context, 1);
-		ShaderBinding* shaderBinding = (ShaderBinding*)duk_to_pointer(context, 2);
-		int shaderIndex = duk_to_int(context, 3);
-		inst->addShaderAtIndex(shader,shaderBinding,shaderIndex);
-		return 0;
-	}
-
 	duk_ret_t Polycode_Material_getNumShaderPasses(duk_context *context) {
 		Material *inst = (Material*)duk_to_pointer(context, 0);
 		duk_push_int(context, inst->getNumShaderPasses());
@@ -5517,12 +5454,6 @@ namespace Polycode {
 		Material *inst = (Material*)duk_to_pointer(context, 0);
 		int shaderIndex = duk_to_int(context, 1);
 		inst->removeShaderPass(shaderIndex);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Material_recreateExpectedShaderParams(duk_context *context) {
-		Material *inst = (Material*)duk_to_pointer(context, 0);
-		inst->recreateExpectedShaderParams();
 		return 0;
 	}
 
@@ -5585,16 +5516,18 @@ namespace Polycode {
 	duk_ret_t Polycode_Material_getShaderBinding(duk_context *context) {
 		Material *inst = (Material*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getShaderBinding(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<ShaderBinding> *retInst = new shared_ptr<ShaderBinding>();
+		*retInst = inst->getShaderBinding(index);
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Material_getShader(duk_context *context) {
 		Material *inst = (Material*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getShader(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Shader> *retInst = new shared_ptr<Shader>();
+		*retInst = inst->getShader(index);
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -5615,19 +5548,6 @@ namespace Polycode {
 	duk_ret_t Polycode_Material_clearShaders(duk_context *context) {
 		Material *inst = (Material*)duk_to_pointer(context, 0);
 		inst->clearShaders();
-		return 0;
-	}
-
-	duk_ret_t Polycode_ShaderPass__get_shader(duk_context *context) {
-		ShaderPass *inst = (ShaderPass*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->shader;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_ShaderPass__set_shader(duk_context *context) {
-		ShaderPass *inst = (ShaderPass*)duk_to_pointer(context, 0);
-		inst->shader = (Shader*)duk_to_pointer(context, 1);
 		return 0;
 	}
 
@@ -5655,318 +5575,10 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_ShaderPass__get_shaderBinding(duk_context *context) {
-		ShaderPass *inst = (ShaderPass*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->shaderBinding;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_ShaderPass__set_shaderBinding(duk_context *context) {
-		ShaderPass *inst = (ShaderPass*)duk_to_pointer(context, 0);
-		inst->shaderBinding = (ShaderBinding*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_ShaderPass__get_materialShaderBinding(duk_context *context) {
-		ShaderPass *inst = (ShaderPass*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->materialShaderBinding;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_ShaderPass__set_materialShaderBinding(duk_context *context) {
-		ShaderPass *inst = (ShaderPass*)duk_to_pointer(context, 0);
-		inst->materialShaderBinding = (ShaderBinding*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_ShaderPass__delete(duk_context *context) {
 		ShaderPass *inst = (ShaderPass*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
-	}
-
-	duk_ret_t Polycode_MaterialManager__get_premultiplyAlphaOnLoad(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->premultiplyAlphaOnLoad);
-		return 1;
-	}
-
-	duk_ret_t Polycode_MaterialManager__set_premultiplyAlphaOnLoad(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		inst->premultiplyAlphaOnLoad = duk_to_boolean(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_MaterialManager__get_clampDefault(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->clampDefault);
-		return 1;
-	}
-
-	duk_ret_t Polycode_MaterialManager__set_clampDefault(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		inst->clampDefault = duk_to_boolean(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_MaterialManager__get_mipmapsDefault(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->mipmapsDefault);
-		return 1;
-	}
-
-	duk_ret_t Polycode_MaterialManager__set_mipmapsDefault(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		inst->mipmapsDefault = duk_to_boolean(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_MaterialManager__get_keepTextureData(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->keepTextureData);
-		return 1;
-	}
-
-	duk_ret_t Polycode_MaterialManager__set_keepTextureData(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		inst->keepTextureData = duk_to_boolean(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_MaterialManager__delete(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		delete inst;
-		return 0;
-	}
-
-	duk_ret_t Polycode_MaterialManager_Update(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		int elapsed = duk_to_int(context, 1);
-		inst->Update(elapsed);
-		return 0;
-	}
-
-	duk_ret_t Polycode_MaterialManager_createTexture(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		int width = duk_to_int(context, 1);
-		int height = duk_to_int(context, 2);
-		char* imageData = (char*)duk_to_pointer(context, 3);
-		bool clamp = duk_to_boolean(context, 4);
-		bool createMipmaps = duk_to_boolean(context, 5);
-		int type = duk_to_int(context, 6);
-		PolyBase *ptrRetVal = (PolyBase*)inst->createTexture(width,height,imageData,clamp,createMipmaps,type);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_MaterialManager_createNewTexture(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		int width = duk_to_int(context, 1);
-		int height = duk_to_int(context, 2);
-		bool clamp = duk_to_boolean(context, 3);
-		bool createMipmaps = duk_to_boolean(context, 4);
-		int type = duk_to_int(context, 5);
-		PolyBase *ptrRetVal = (PolyBase*)inst->createNewTexture(width,height,clamp,createMipmaps,type);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_MaterialManager_createTextureFromImage(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		Image* image = (Image*)duk_to_pointer(context, 1);
-		bool clamp = duk_to_boolean(context, 2);
-		bool createMipmaps = duk_to_boolean(context, 3);
-		PolyBase *ptrRetVal = (PolyBase*)inst->createTextureFromImage(image,clamp,createMipmaps);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_MaterialManager_createTextureFromFile(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		String fileName = duk_to_string(context, 1);
-		bool clamp = duk_to_boolean(context, 2);
-		bool createMipmaps = duk_to_boolean(context, 3);
-		ResourcePool* resourcePool = (ResourcePool*)duk_to_pointer(context, 4);
-		PolyBase *ptrRetVal = (PolyBase*)inst->createTextureFromFile(fileName,clamp,createMipmaps,resourcePool);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_MaterialManager_deleteTexture(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		Texture* texture = (Texture*)duk_to_pointer(context, 1);
-		inst->deleteTexture(texture);
-		return 0;
-	}
-
-	duk_ret_t Polycode_MaterialManager_reloadTextures(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		inst->reloadTextures();
-		return 0;
-	}
-
-	duk_ret_t Polycode_MaterialManager_reloadProgramsAndTextures(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		inst->reloadProgramsAndTextures();
-		return 0;
-	}
-
-	duk_ret_t Polycode_MaterialManager_reloadPrograms(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		inst->reloadPrograms();
-		return 0;
-	}
-
-	duk_ret_t Polycode_MaterialManager_getTextureByResourcePath(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		String resourcePath = duk_to_string(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getTextureByResourcePath(resourcePath);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_MaterialManager_createProgramFromFile(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		String programPath = duk_to_string(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->createProgramFromFile(programPath);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_MaterialManager_loadMaterialLibraryIntoPool(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		ResourcePool* pool = (ResourcePool*)duk_to_pointer(context, 1);
-		String materialFile = duk_to_string(context, 2);
-		inst->loadMaterialLibraryIntoPool(pool,materialFile);
-		return 0;
-	}
-
-	duk_ret_t Polycode_MaterialManager_cubemapFromXMLNode(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		TiXmlNode* node = (TiXmlNode*)duk_to_pointer(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->cubemapFromXMLNode(node);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_MaterialManager_materialFromXMLNode(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		ResourcePool* resourcePool = (ResourcePool*)duk_to_pointer(context, 1);
-		TiXmlNode* node = (TiXmlNode*)duk_to_pointer(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->materialFromXMLNode(resourcePool,node);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_MaterialManager_createMaterial(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		ResourcePool* resourcePool = (ResourcePool*)duk_to_pointer(context, 1);
-		String materialName = duk_to_string(context, 2);
-		String shaderName = duk_to_string(context, 3);
-		PolyBase *ptrRetVal = (PolyBase*)inst->createMaterial(resourcePool,materialName,shaderName);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_MaterialManager_setShaderFromXMLNode(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		ResourcePool* resourcePool = (ResourcePool*)duk_to_pointer(context, 1);
-		TiXmlNode* node = (TiXmlNode*)duk_to_pointer(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->setShaderFromXMLNode(resourcePool,node);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_MaterialManager_createShaderFromXMLNode(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		ResourcePool* resourcePool = (ResourcePool*)duk_to_pointer(context, 1);
-		TiXmlNode* node = (TiXmlNode*)duk_to_pointer(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->createShaderFromXMLNode(resourcePool,node);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_MaterialManager_createShader(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		ResourcePool* resourcePool = (ResourcePool*)duk_to_pointer(context, 1);
-		String shaderType = duk_to_string(context, 2);
-		String name = duk_to_string(context, 3);
-		String vpName = duk_to_string(context, 4);
-		String fpName = duk_to_string(context, 5);
-		bool screenShader = duk_to_boolean(context, 6);
-		PolyBase *ptrRetVal = (PolyBase*)inst->createShader(resourcePool,shaderType,name,vpName,fpName,screenShader);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_MaterialManager_loadMaterialsFromFile(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		ResourcePool* resourcePool = (ResourcePool*)duk_to_pointer(context, 1);
-		String fileName = duk_to_string(context, 2);
-		return 0;
-	}
-
-	duk_ret_t Polycode_MaterialManager_loadShadersFromFile(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		ResourcePool* resourcePool = (ResourcePool*)duk_to_pointer(context, 1);
-		String fileName = duk_to_string(context, 2);
-		return 0;
-	}
-
-	duk_ret_t Polycode_MaterialManager_loadCubemapsFromFile(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		String fileName = duk_to_string(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_MaterialManager_setAnisotropyAmount(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		int anisotropy = duk_to_int(context, 1);
-		inst->setAnisotropyAmount(anisotropy);
-		return 0;
-	}
-
-	duk_ret_t Polycode_MaterialManager_setTextureFilteringMode(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		int textureFilteringMode = duk_to_int(context, 1);
-		inst->setTextureFilteringMode(textureFilteringMode);
-		return 0;
-	}
-
-	duk_ret_t Polycode_MaterialManager_getTextureFilteringMode(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getTextureFilteringMode());
-		return 1;
-	}
-
-	duk_ret_t Polycode_MaterialManager_addMaterial(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		Material* material = (Material*)duk_to_pointer(context, 1);
-		inst->addMaterial(material);
-		return 0;
-	}
-
-	duk_ret_t Polycode_MaterialManager_addShader(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		Shader* shader = (Shader*)duk_to_pointer(context, 1);
-		inst->addShader(shader);
-		return 0;
-	}
-
-	duk_ret_t Polycode_MaterialManager_getNumShaders(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumShaders());
-		return 1;
-	}
-
-	duk_ret_t Polycode_MaterialManager_getShaderByIndex(duk_context *context) {
-		MaterialManager *inst = (MaterialManager*)duk_to_pointer(context, 0);
-		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getShaderByIndex(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
 	}
 
 	duk_ret_t Polycode_Matrix4__delete(duk_context *context) {
@@ -6840,6 +6452,54 @@ namespace Polycode {
 		String fileName = duk_to_string(context, 1);
 		duk_push_boolean(context, inst->writeToFile(fileName));
 		return 1;
+	}
+
+	duk_ret_t Polycode_ShaderPlatformData__get_shaderID(duk_context *context) {
+		ShaderPlatformData *inst = (ShaderPlatformData*)duk_to_pointer(context, 0);
+		GLuint *retInst = new GLuint();
+		*retInst = inst->shaderID;
+		duk_push_pointer(context, (void*)retInst);
+		return 1;
+	}
+
+	duk_ret_t Polycode_ShaderPlatformData__set_shaderID(duk_context *context) {
+		ShaderPlatformData *inst = (ShaderPlatformData*)duk_to_pointer(context, 0);
+		inst->shaderID = *(GLuint*)duk_to_pointer(context, 1);
+		return 0;
+	}
+
+	duk_ret_t Polycode_ShaderPlatformData__get_vertexProgramID(duk_context *context) {
+		ShaderPlatformData *inst = (ShaderPlatformData*)duk_to_pointer(context, 0);
+		GLuint *retInst = new GLuint();
+		*retInst = inst->vertexProgramID;
+		duk_push_pointer(context, (void*)retInst);
+		return 1;
+	}
+
+	duk_ret_t Polycode_ShaderPlatformData__set_vertexProgramID(duk_context *context) {
+		ShaderPlatformData *inst = (ShaderPlatformData*)duk_to_pointer(context, 0);
+		inst->vertexProgramID = *(GLuint*)duk_to_pointer(context, 1);
+		return 0;
+	}
+
+	duk_ret_t Polycode_ShaderPlatformData__get_fragmentProgramID(duk_context *context) {
+		ShaderPlatformData *inst = (ShaderPlatformData*)duk_to_pointer(context, 0);
+		GLuint *retInst = new GLuint();
+		*retInst = inst->fragmentProgramID;
+		duk_push_pointer(context, (void*)retInst);
+		return 1;
+	}
+
+	duk_ret_t Polycode_ShaderPlatformData__set_fragmentProgramID(duk_context *context) {
+		ShaderPlatformData *inst = (ShaderPlatformData*)duk_to_pointer(context, 0);
+		inst->fragmentProgramID = *(GLuint*)duk_to_pointer(context, 1);
+		return 0;
+	}
+
+	duk_ret_t Polycode_ShaderPlatformData__delete(duk_context *context) {
+		ShaderPlatformData *inst = (ShaderPlatformData*)duk_to_pointer(context, 0);
+		delete inst;
+		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticle__get_lifetime(duk_context *context) {
@@ -7953,165 +7613,9 @@ namespace Polycode {
 		return 1;
 	}
 
-	duk_ret_t Polycode_LightShadowInfoBinding__get_shadowMatrix(duk_context *context) {
-		LightShadowInfoBinding *inst = (LightShadowInfoBinding*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->shadowMatrix;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_LightShadowInfoBinding__set_shadowMatrix(duk_context *context) {
-		LightShadowInfoBinding *inst = (LightShadowInfoBinding*)duk_to_pointer(context, 0);
-		inst->shadowMatrix = (LocalShaderParam*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_LightShadowInfoBinding__get_shadowBuffer(duk_context *context) {
-		LightShadowInfoBinding *inst = (LightShadowInfoBinding*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->shadowBuffer;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_LightShadowInfoBinding__set_shadowBuffer(duk_context *context) {
-		LightShadowInfoBinding *inst = (LightShadowInfoBinding*)duk_to_pointer(context, 0);
-		inst->shadowBuffer = (LocalShaderParam*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_LightShadowInfoBinding__delete(duk_context *context) {
 		LightShadowInfoBinding *inst = (LightShadowInfoBinding*)duk_to_pointer(context, 0);
 		delete inst;
-		return 0;
-	}
-
-	duk_ret_t Polycode_LightInfoBinding__get_position(duk_context *context) {
-		LightInfoBinding *inst = (LightInfoBinding*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->position;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_LightInfoBinding__set_position(duk_context *context) {
-		LightInfoBinding *inst = (LightInfoBinding*)duk_to_pointer(context, 0);
-		inst->position = (LocalShaderParam*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_LightInfoBinding__get_direction(duk_context *context) {
-		LightInfoBinding *inst = (LightInfoBinding*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->direction;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_LightInfoBinding__set_direction(duk_context *context) {
-		LightInfoBinding *inst = (LightInfoBinding*)duk_to_pointer(context, 0);
-		inst->direction = (LocalShaderParam*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_LightInfoBinding__get_specular(duk_context *context) {
-		LightInfoBinding *inst = (LightInfoBinding*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->specular;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_LightInfoBinding__set_specular(duk_context *context) {
-		LightInfoBinding *inst = (LightInfoBinding*)duk_to_pointer(context, 0);
-		inst->specular = (LocalShaderParam*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_LightInfoBinding__get_diffuse(duk_context *context) {
-		LightInfoBinding *inst = (LightInfoBinding*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->diffuse;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_LightInfoBinding__set_diffuse(duk_context *context) {
-		LightInfoBinding *inst = (LightInfoBinding*)duk_to_pointer(context, 0);
-		inst->diffuse = (LocalShaderParam*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_LightInfoBinding__get_spotExponent(duk_context *context) {
-		LightInfoBinding *inst = (LightInfoBinding*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->spotExponent;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_LightInfoBinding__set_spotExponent(duk_context *context) {
-		LightInfoBinding *inst = (LightInfoBinding*)duk_to_pointer(context, 0);
-		inst->spotExponent = (LocalShaderParam*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_LightInfoBinding__get_spotCosCutoff(duk_context *context) {
-		LightInfoBinding *inst = (LightInfoBinding*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->spotCosCutoff;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_LightInfoBinding__set_spotCosCutoff(duk_context *context) {
-		LightInfoBinding *inst = (LightInfoBinding*)duk_to_pointer(context, 0);
-		inst->spotCosCutoff = (LocalShaderParam*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_LightInfoBinding__get_constantAttenuation(duk_context *context) {
-		LightInfoBinding *inst = (LightInfoBinding*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->constantAttenuation;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_LightInfoBinding__set_constantAttenuation(duk_context *context) {
-		LightInfoBinding *inst = (LightInfoBinding*)duk_to_pointer(context, 0);
-		inst->constantAttenuation = (LocalShaderParam*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_LightInfoBinding__get_linearAttenuation(duk_context *context) {
-		LightInfoBinding *inst = (LightInfoBinding*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->linearAttenuation;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_LightInfoBinding__set_linearAttenuation(duk_context *context) {
-		LightInfoBinding *inst = (LightInfoBinding*)duk_to_pointer(context, 0);
-		inst->linearAttenuation = (LocalShaderParam*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_LightInfoBinding__get_quadraticAttenuation(duk_context *context) {
-		LightInfoBinding *inst = (LightInfoBinding*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->quadraticAttenuation;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_LightInfoBinding__set_quadraticAttenuation(duk_context *context) {
-		LightInfoBinding *inst = (LightInfoBinding*)duk_to_pointer(context, 0);
-		inst->quadraticAttenuation = (LocalShaderParam*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_LightInfoBinding__get_shadowEnabled(duk_context *context) {
-		LightInfoBinding *inst = (LightInfoBinding*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->shadowEnabled;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_LightInfoBinding__set_shadowEnabled(duk_context *context) {
-		LightInfoBinding *inst = (LightInfoBinding*)duk_to_pointer(context, 0);
-		inst->shadowEnabled = (LocalShaderParam*)duk_to_pointer(context, 1);
 		return 0;
 	}
 
@@ -8223,12 +7727,6 @@ namespace Polycode {
 		return 1;
 	}
 
-	duk_ret_t Polycode_RenderThread_clearFrameQueue(duk_context *context) {
-		RenderThread *inst = (RenderThread*)duk_to_pointer(context, 0);
-		inst->clearFrameQueue();
-		return 0;
-	}
-
 	duk_ret_t Polycode_RenderThread_initGlobals(duk_context *context) {
 		RenderThread *inst = (RenderThread*)duk_to_pointer(context, 0);
 		inst->initGlobals();
@@ -8310,60 +7808,6 @@ namespace Polycode {
 		return 1;
 	}
 
-	duk_ret_t Polycode_Renderer_createCubemap(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		Texture* t0 = (Texture*)duk_to_pointer(context, 1);
-		Texture* t1 = (Texture*)duk_to_pointer(context, 2);
-		Texture* t2 = (Texture*)duk_to_pointer(context, 3);
-		Texture* t3 = (Texture*)duk_to_pointer(context, 4);
-		Texture* t4 = (Texture*)duk_to_pointer(context, 5);
-		Texture* t5 = (Texture*)duk_to_pointer(context, 6);
-		PolyBase *ptrRetVal = (PolyBase*)inst->createCubemap(t0,t1,t2,t3,t4,t5);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Renderer_createTexture(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		int width = duk_to_int(context, 1);
-		int height = duk_to_int(context, 2);
-		char* textureData = (char*)duk_to_pointer(context, 3);
-		bool clamp = duk_to_boolean(context, 4);
-		bool createMipmaps = duk_to_boolean(context, 5);
-		int type = duk_to_int(context, 6);
-		int filteringMode = duk_to_int(context, 7);
-		int anisotropy = duk_to_int(context, 8);
-		bool framebufferTexture = duk_to_boolean(context, 9);
-		PolyBase *ptrRetVal = (PolyBase*)inst->createTexture(width,height,textureData,clamp,createMipmaps,type,filteringMode,anisotropy,framebufferTexture);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Renderer_createRenderBuffer(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		int width = duk_to_int(context, 1);
-		int height = duk_to_int(context, 2);
-		bool attachDepthBuffer = duk_to_boolean(context, 3);
-		bool floatingPoint = duk_to_boolean(context, 4);
-		PolyBase *ptrRetVal = (PolyBase*)inst->createRenderBuffer(width,height,attachDepthBuffer,floatingPoint);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Renderer_destroyRenderBuffer(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		RenderBuffer* buffer = (RenderBuffer*)duk_to_pointer(context, 1);
-		inst->destroyRenderBuffer(buffer);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Renderer_destroyTexture(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		Texture* texture = (Texture*)duk_to_pointer(context, 1);
-		inst->destroyTexture(texture);
-		return 0;
-	}
-
 	duk_ret_t Polycode_Renderer_processDrawBuffer(duk_context *context) {
 		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
 		GPUDrawBuffer* buffer = (GPUDrawBuffer*)duk_to_pointer(context, 1);
@@ -8391,23 +7835,6 @@ namespace Polycode {
 		return 1;
 	}
 
-	duk_ret_t Polycode_Renderer_createProgram(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		String fileName = duk_to_string(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->createProgram(fileName);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Renderer_createShader(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		ShaderProgram* vertexProgram = (ShaderProgram*)duk_to_pointer(context, 1);
-		ShaderProgram* fragmentProgram = (ShaderProgram*)duk_to_pointer(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->createShader(vertexProgram,fragmentProgram);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
 	duk_ret_t Polycode_Renderer_enqueueFrameJob(duk_context *context) {
 		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
 		int jobType = duk_to_int(context, 1);
@@ -8416,17 +7843,31 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_Renderer_destroyProgram(duk_context *context) {
+	duk_ret_t Polycode_Renderer_destroyRenderBufferPlatformData(duk_context *context) {
 		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		ShaderProgram* program = (ShaderProgram*)duk_to_pointer(context, 1);
-		inst->destroyProgram(program);
+		void* platformData = (void*)duk_to_pointer(context, 1);
+		inst->destroyRenderBufferPlatformData(platformData);
 		return 0;
 	}
 
-	duk_ret_t Polycode_Renderer_destroyShader(duk_context *context) {
+	duk_ret_t Polycode_Renderer_destroyTexturePlatformData(duk_context *context) {
 		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		Shader* shader = (Shader*)duk_to_pointer(context, 1);
-		inst->destroyShader(shader);
+		void* platformData = (void*)duk_to_pointer(context, 1);
+		inst->destroyTexturePlatformData(platformData);
+		return 0;
+	}
+
+	duk_ret_t Polycode_Renderer_destroyProgramPlatformData(duk_context *context) {
+		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
+		void* platformData = (void*)duk_to_pointer(context, 1);
+		inst->destroyProgramPlatformData(platformData);
+		return 0;
+	}
+
+	duk_ret_t Polycode_Renderer_destroyShaderPlatformData(duk_context *context) {
+		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
+		void* platformData = (void*)duk_to_pointer(context, 1);
+		inst->destroyShaderPlatformData(platformData);
 		return 0;
 	}
 
@@ -8434,20 +7875,6 @@ namespace Polycode {
 		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
 		void* platformData = (void*)duk_to_pointer(context, 1);
 		inst->destroySubmeshPlatformData(platformData);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Renderer_destroyShaderBinding(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		ShaderBinding* binding = (ShaderBinding*)duk_to_pointer(context, 1);
-		inst->destroyShaderBinding(binding);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Renderer_destroyShaderParam(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		LocalShaderParam* param = (LocalShaderParam*)duk_to_pointer(context, 1);
-		inst->destroyShaderParam(param);
 		return 0;
 	}
 
@@ -8564,8 +7991,9 @@ namespace Polycode {
 		ScriptResourceLoader *inst = (ScriptResourceLoader*)duk_to_pointer(context, 0);
 		String path = duk_to_string(context, 1);
 		ResourcePool* targetPool = (ResourcePool*)duk_to_pointer(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->loadResource(path,targetPool);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
+		*retInst = inst->loadResource(path,targetPool);
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -8632,21 +8060,21 @@ namespace Polycode {
 
 	duk_ret_t Polycode_ResourcePool_addResource(duk_context *context) {
 		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
-		Resource* resource = (Resource*)duk_to_pointer(context, 1);
+		shared_ptr<Resource> resource = *(shared_ptr<Resource>*)duk_to_pointer(context, 1);
 		inst->addResource(resource);
 		return 0;
 	}
 
 	duk_ret_t Polycode_ResourcePool_removeResource(duk_context *context) {
 		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
-		Resource* resource = (Resource*)duk_to_pointer(context, 1);
+		shared_ptr<Resource> resource = *(shared_ptr<Resource>*)duk_to_pointer(context, 1);
 		inst->removeResource(resource);
 		return 0;
 	}
 
 	duk_ret_t Polycode_ResourcePool_hasResource(duk_context *context) {
 		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
-		Resource* resource = (Resource*)duk_to_pointer(context, 1);
+		shared_ptr<Resource> resource = *(shared_ptr<Resource>*)duk_to_pointer(context, 1);
 		duk_push_boolean(context, inst->hasResource(resource));
 		return 1;
 	}
@@ -8659,11 +8087,19 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_ResourcePool_loadResourcesFromMaterialFile(duk_context *context) {
+		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
+		String path = duk_to_string(context, 1);
+		inst->loadResourcesFromMaterialFile(path);
+		return 0;
+	}
+
 	duk_ret_t Polycode_ResourcePool_loadResource(duk_context *context) {
 		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
 		String path = duk_to_string(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->loadResource(path);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
+		*retInst = inst->loadResource(path);
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -8671,8 +8107,9 @@ namespace Polycode {
 		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
 		String path = duk_to_string(context, 1);
 		String name = duk_to_string(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->loadResourceWithName(path,name);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
+		*retInst = inst->loadResourceWithName(path,name);
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -8680,8 +8117,9 @@ namespace Polycode {
 		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
 		int resourceType = duk_to_int(context, 1);
 		String resourceName = duk_to_string(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getResource(resourceType,resourceName);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
+		*retInst = inst->getResource(resourceType,resourceName);
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -8701,8 +8139,9 @@ namespace Polycode {
 	duk_ret_t Polycode_ResourcePool_getResourceByPath(duk_context *context) {
 		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
 		String resourcePath = duk_to_string(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getResourceByPath(resourcePath);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
+		*retInst = inst->getResourceByPath(resourcePath);
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -8804,7 +8243,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_ResourceManager_removeResource(duk_context *context) {
 		ResourceManager *inst = (ResourceManager*)duk_to_pointer(context, 0);
-		Resource* resource = (Resource*)duk_to_pointer(context, 1);
+		shared_ptr<Resource> resource = *(shared_ptr<Resource>*)duk_to_pointer(context, 1);
 		inst->removeResource(resource);
 		return 0;
 	}
@@ -8840,8 +8279,9 @@ namespace Polycode {
 		FontResourceLoader *inst = (FontResourceLoader*)duk_to_pointer(context, 0);
 		String path = duk_to_string(context, 1);
 		ResourcePool* targetPool = (ResourcePool*)duk_to_pointer(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->loadResource(path,targetPool);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
+		*retInst = inst->loadResource(path,targetPool);
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -8855,8 +8295,9 @@ namespace Polycode {
 		ProgramResourceLoader *inst = (ProgramResourceLoader*)duk_to_pointer(context, 0);
 		String path = duk_to_string(context, 1);
 		ResourcePool* targetPool = (ResourcePool*)duk_to_pointer(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->loadResource(path,targetPool);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
+		*retInst = inst->loadResource(path,targetPool);
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -8900,8 +8341,9 @@ namespace Polycode {
 		MeshResourceLoader *inst = (MeshResourceLoader*)duk_to_pointer(context, 0);
 		String path = duk_to_string(context, 1);
 		ResourcePool* targetPool = (ResourcePool*)duk_to_pointer(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->loadResource(path,targetPool);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
+		*retInst = inst->loadResource(path,targetPool);
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -8915,8 +8357,9 @@ namespace Polycode {
 		MaterialResourceLoader *inst = (MaterialResourceLoader*)duk_to_pointer(context, 0);
 		String path = duk_to_string(context, 1);
 		ResourcePool* targetPool = (ResourcePool*)duk_to_pointer(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->loadResource(path,targetPool);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
+		*retInst = inst->loadResource(path,targetPool);
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -8930,8 +8373,9 @@ namespace Polycode {
 		TextureResourceLoader *inst = (TextureResourceLoader*)duk_to_pointer(context, 0);
 		String path = duk_to_string(context, 1);
 		ResourcePool* targetPool = (ResourcePool*)duk_to_pointer(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->loadResource(path,targetPool);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
+		*retInst = inst->loadResource(path,targetPool);
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -9191,8 +8635,8 @@ namespace Polycode {
 	duk_ret_t Polycode_Scene_Render(duk_context *context) {
 		Scene *inst = (Scene*)duk_to_pointer(context, 0);
 		Camera* targetCamera = (Camera*)duk_to_pointer(context, 1);
-		RenderBuffer* targetFramebuffer = (RenderBuffer*)duk_to_pointer(context, 2);
-		Material* overrideMaterial = (Material*)duk_to_pointer(context, 3);
+		shared_ptr<RenderBuffer> targetFramebuffer = *(shared_ptr<RenderBuffer>*)duk_to_pointer(context, 2);
+		shared_ptr<Material> overrideMaterial = *(shared_ptr<Material>*)duk_to_pointer(context, 3);
 		bool sendLights = duk_to_boolean(context, 4);
 		inst->Render(targetCamera,targetFramebuffer,overrideMaterial,sendLights);
 		return 0;
@@ -9200,7 +8644,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_Scene_setOverrideMaterial(duk_context *context) {
 		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		Material* material = (Material*)duk_to_pointer(context, 1);
+		shared_ptr<Material> material = *(shared_ptr<Material>*)duk_to_pointer(context, 1);
 		inst->setOverrideMaterial(material);
 		return 0;
 	}
@@ -9398,8 +8842,9 @@ namespace Polycode {
 
 	duk_ret_t Polycode_SceneEntityInstance_getResourceEntry(duk_context *context) {
 		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getResourceEntry();
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<SceneEntityInstanceResourceEntry> *retInst = new shared_ptr<SceneEntityInstanceResourceEntry>();
+		*retInst = inst->getResourceEntry();
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -9514,54 +8959,6 @@ namespace Polycode {
 		bool val = duk_to_boolean(context, 1);
 		inst->setLayerVisibility(val);
 		return 0;
-	}
-
-	duk_ret_t Polycode_SceneImage__delete(duk_context *context) {
-		SceneImage *inst = (SceneImage*)duk_to_pointer(context, 0);
-		delete inst;
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneImage_Clone(duk_context *context) {
-		SceneImage *inst = (SceneImage*)duk_to_pointer(context, 0);
-		bool deepClone = duk_to_boolean(context, 1);
-		bool ignoreEditorOnly = duk_to_boolean(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->Clone(deepClone,ignoreEditorOnly);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneImage_applyClone(duk_context *context) {
-		SceneImage *inst = (SceneImage*)duk_to_pointer(context, 0);
-		Entity* clone = (Entity*)duk_to_pointer(context, 1);
-		bool deepClone = duk_to_boolean(context, 2);
-		bool ignoreEditorOnly = duk_to_boolean(context, 3);
-		inst->applyClone(clone,deepClone,ignoreEditorOnly);
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneImage_setImageCoordinates(duk_context *context) {
-		SceneImage *inst = (SceneImage*)duk_to_pointer(context, 0);
-		Number x = duk_to_number(context, 1);
-		Number y = duk_to_number(context, 2);
-		Number width = duk_to_number(context, 3);
-		Number height = duk_to_number(context, 4);
-		Number realWidth = duk_to_number(context, 5);
-		Number realHeight = duk_to_number(context, 6);
-		inst->setImageCoordinates(x,y,width,height,realWidth,realHeight);
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneImage_getImageWidth(duk_context *context) {
-		SceneImage *inst = (SceneImage*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getImageWidth());
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneImage_getImageHeight(duk_context *context) {
-		SceneImage *inst = (SceneImage*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getImageHeight());
-		return 1;
 	}
 
 	duk_ret_t Polycode_SceneLabel__get_positionAtBaseline(duk_context *context) {
@@ -9714,8 +9111,9 @@ namespace Polycode {
 
 	duk_ret_t Polycode_SceneLight_getZBufferTexture(duk_context *context) {
 		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getZBufferTexture();
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Texture> *retInst = new shared_ptr<Texture>();
+		*retInst = inst->getZBufferTexture();
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -10073,30 +9471,6 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_SceneMesh__get_ownsMesh(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->ownsMesh);
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneMesh__set_ownsMesh(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		inst->ownsMesh = duk_to_boolean(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneMesh__get_ownsSkeleton(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->ownsSkeleton);
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneMesh__set_ownsSkeleton(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		inst->ownsSkeleton = duk_to_boolean(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_SceneMesh__get_useGeometryHitDetection(duk_context *context) {
 		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
 		duk_push_boolean(context, inst->useGeometryHitDetection);
@@ -10189,23 +9563,26 @@ namespace Polycode {
 
 	duk_ret_t Polycode_SceneMesh_getMesh(duk_context *context) {
 		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getMesh();
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Mesh> *retInst = new shared_ptr<Mesh>();
+		*retInst = inst->getMesh();
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneMesh_getMaterial(duk_context *context) {
 		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getMaterial();
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Material> *retInst = new shared_ptr<Material>();
+		*retInst = inst->getMaterial();
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneMesh_loadSkeleton(duk_context *context) {
 		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
 		String fileName = duk_to_string(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->loadSkeleton(fileName);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Skeleton> *retInst = new shared_ptr<Skeleton>();
+		*retInst = inst->loadSkeleton(fileName);
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -10217,7 +9594,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_SceneMesh_setMaterial(duk_context *context) {
 		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		Material* material = (Material*)duk_to_pointer(context, 1);
+		shared_ptr<Material> material = *(shared_ptr<Material>*)duk_to_pointer(context, 1);
 		inst->setMaterial(material);
 		return 0;
 	}
@@ -10232,22 +9609,23 @@ namespace Polycode {
 
 	duk_ret_t Polycode_SceneMesh_setMesh(duk_context *context) {
 		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		Mesh* mesh = (Mesh*)duk_to_pointer(context, 1);
+		shared_ptr<Mesh> mesh = *(shared_ptr<Mesh>*)duk_to_pointer(context, 1);
 		inst->setMesh(mesh);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneMesh_setSkeleton(duk_context *context) {
 		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		Skeleton* skeleton = (Skeleton*)duk_to_pointer(context, 1);
+		shared_ptr<Skeleton> skeleton = *(shared_ptr<Skeleton>*)duk_to_pointer(context, 1);
 		inst->setSkeleton(skeleton);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneMesh_getSkeleton(duk_context *context) {
 		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getSkeleton();
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Skeleton> *retInst = new shared_ptr<Skeleton>();
+		*retInst = inst->getSkeleton();
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -10420,22 +9798,9 @@ namespace Polycode {
 
 	duk_ret_t Polycode_SceneRenderTexture_getTargetTexture(duk_context *context) {
 		SceneRenderTexture *inst = (SceneRenderTexture*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getTargetTexture();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneRenderTexture_getFilterColorBufferTexture(duk_context *context) {
-		SceneRenderTexture *inst = (SceneRenderTexture*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getFilterColorBufferTexture();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneRenderTexture_getFilterZBufferTexture(duk_context *context) {
-		SceneRenderTexture *inst = (SceneRenderTexture*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getFilterZBufferTexture();
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Texture> *retInst = new shared_ptr<Texture>();
+		*retInst = inst->getTargetTexture();
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -10582,8 +9947,9 @@ namespace Polycode {
 
 	duk_ret_t Polycode_SceneSprite_getCurrentSprite(duk_context *context) {
 		SceneSprite *inst = (SceneSprite*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getCurrentSprite();
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Sprite> *retInst = new shared_ptr<Sprite>();
+		*retInst = inst->getCurrentSprite();
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -10650,7 +10016,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_SceneSprite_setSprite(duk_context *context) {
 		SceneSprite *inst = (SceneSprite*)duk_to_pointer(context, 0);
-		Sprite* spriteEntry = (Sprite*)duk_to_pointer(context, 1);
+		shared_ptr<Sprite> spriteEntry = *(shared_ptr<Sprite>*)duk_to_pointer(context, 1);
 		inst->setSprite(spriteEntry);
 		return 0;
 	}
@@ -10770,29 +10136,22 @@ namespace Polycode {
 
 	duk_ret_t Polycode_SpriteSet_setTexture(duk_context *context) {
 		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
-		Texture* texture = (Texture*)duk_to_pointer(context, 1);
+		shared_ptr<Texture> texture = *(shared_ptr<Texture>*)duk_to_pointer(context, 1);
 		inst->setTexture(texture);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SpriteSet_getTexture(duk_context *context) {
 		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getTexture();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_SpriteSet_loadTexture(duk_context *context) {
-		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
-		String imageFileName = duk_to_string(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->loadTexture(imageFileName);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Texture> *retInst = new shared_ptr<Texture>();
+		*retInst = inst->getTexture();
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SpriteSet_addSpriteEntry(duk_context *context) {
 		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
-		Sprite* newEntry = (Sprite*)duk_to_pointer(context, 1);
+		shared_ptr<Sprite> newEntry = *(shared_ptr<Sprite>*)duk_to_pointer(context, 1);
 		inst->addSpriteEntry(newEntry);
 		return 0;
 	}
@@ -10806,14 +10165,15 @@ namespace Polycode {
 	duk_ret_t Polycode_SpriteSet_getSpriteEntry(duk_context *context) {
 		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getSpriteEntry(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Sprite> *retInst = new shared_ptr<Sprite>();
+		*retInst = inst->getSpriteEntry(index);
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SpriteSet_removeSprite(duk_context *context) {
 		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
-		Sprite* sprite = (Sprite*)duk_to_pointer(context, 1);
+		shared_ptr<Sprite> sprite = *(shared_ptr<Sprite>*)duk_to_pointer(context, 1);
 		inst->removeSprite(sprite);
 		return 0;
 	}
@@ -10897,8 +10257,9 @@ namespace Polycode {
 	duk_ret_t Polycode_SpriteSet_getSpriteByName(duk_context *context) {
 		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
 		String spriteName = duk_to_string(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getSpriteByName(spriteName);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Sprite> *retInst = new shared_ptr<Sprite>();
+		*retInst = inst->getSpriteByName(spriteName);
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -10983,8 +10344,9 @@ namespace Polycode {
 	duk_ret_t Polycode_SpriteState_getMeshForFrameIndex(duk_context *context) {
 		SpriteState *inst = (SpriteState*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getMeshForFrameIndex(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Mesh> *retInst = new shared_ptr<Mesh>();
+		*retInst = inst->getMeshForFrameIndex(index);
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -11231,19 +10593,6 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_ShaderRenderTarget__get_buffer(duk_context *context) {
-		ShaderRenderTarget *inst = (ShaderRenderTarget*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->buffer;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_ShaderRenderTarget__set_buffer(duk_context *context) {
-		ShaderRenderTarget *inst = (ShaderRenderTarget*)duk_to_pointer(context, 0);
-		inst->buffer = (RenderBuffer*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_ShaderRenderTarget__get_normalizedWidth(duk_context *context) {
 		ShaderRenderTarget *inst = (ShaderRenderTarget*)duk_to_pointer(context, 0);
 		duk_push_number(context, inst->normalizedWidth);
@@ -11310,19 +10659,6 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_RenderTargetBinding__get_buffer(duk_context *context) {
-		RenderTargetBinding *inst = (RenderTargetBinding*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->buffer;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_RenderTargetBinding__set_buffer(duk_context *context) {
-		RenderTargetBinding *inst = (RenderTargetBinding*)duk_to_pointer(context, 0);
-		inst->buffer = (RenderBuffer*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_RenderTargetBinding__delete(duk_context *context) {
 		RenderTargetBinding *inst = (RenderTargetBinding*)duk_to_pointer(context, 0);
 		delete inst;
@@ -11362,32 +10698,6 @@ namespace Polycode {
 	duk_ret_t Polycode_Shader__set_screenShader(duk_context *context) {
 		Shader *inst = (Shader*)duk_to_pointer(context, 0);
 		inst->screenShader = duk_to_boolean(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Shader__get_vertexProgram(duk_context *context) {
-		Shader *inst = (Shader*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->vertexProgram;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Shader__set_vertexProgram(duk_context *context) {
-		Shader *inst = (Shader*)duk_to_pointer(context, 0);
-		inst->vertexProgram = (ShaderProgram*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Shader__get_fragmentProgram(duk_context *context) {
-		Shader *inst = (Shader*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->fragmentProgram;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Shader__set_fragmentProgram(duk_context *context) {
-		Shader *inst = (Shader*)duk_to_pointer(context, 0);
-		inst->fragmentProgram = (ShaderProgram*)duk_to_pointer(context, 1);
 		return 0;
 	}
 
@@ -11455,20 +10765,6 @@ namespace Polycode {
 		String name = duk_to_string(context, 1);
 		duk_push_int(context, inst->getExpectedParamType(name));
 		return 1;
-	}
-
-	duk_ret_t Polycode_Shader_setVertexProgram(duk_context *context) {
-		Shader *inst = (Shader*)duk_to_pointer(context, 0);
-		ShaderProgram* vp = (ShaderProgram*)duk_to_pointer(context, 1);
-		inst->setVertexProgram(vp);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Shader_setFragmentProgram(duk_context *context) {
-		Shader *inst = (Shader*)duk_to_pointer(context, 0);
-		ShaderProgram* fp = (ShaderProgram*)duk_to_pointer(context, 1);
-		inst->setFragmentProgram(fp);
-		return 0;
 	}
 
 	duk_ret_t Polycode_LocalShaderParam__get_name(duk_context *context) {
@@ -11540,8 +10836,9 @@ namespace Polycode {
 
 	duk_ret_t Polycode_LocalShaderParam_Copy(duk_context *context) {
 		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->Copy();
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<LocalShaderParam> *retInst = new shared_ptr<LocalShaderParam>();
+		*retInst = inst->Copy();
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -11620,29 +10917,31 @@ namespace Polycode {
 
 	duk_ret_t Polycode_LocalShaderParam_setTexture(duk_context *context) {
 		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
-		Texture* texture = (Texture*)duk_to_pointer(context, 1);
+		shared_ptr<Texture> texture = *(shared_ptr<Texture>*)duk_to_pointer(context, 1);
 		inst->setTexture(texture);
 		return 0;
 	}
 
 	duk_ret_t Polycode_LocalShaderParam_getTexture(duk_context *context) {
 		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getTexture();
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Texture> *retInst = new shared_ptr<Texture>();
+		*retInst = inst->getTexture();
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_LocalShaderParam_setCubemap(duk_context *context) {
 		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
-		Cubemap* cubemap = (Cubemap*)duk_to_pointer(context, 1);
+		shared_ptr<Cubemap> cubemap = *(shared_ptr<Cubemap>*)duk_to_pointer(context, 1);
 		inst->setCubemap(cubemap);
 		return 0;
 	}
 
 	duk_ret_t Polycode_LocalShaderParam_getCubemap(duk_context *context) {
 		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getCubemap();
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Cubemap> *retInst = new shared_ptr<Cubemap>();
+		*retInst = inst->getCubemap();
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -11740,19 +11039,6 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_ShaderBinding__get_targetShader(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->targetShader;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_ShaderBinding__set_targetShader(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
-		inst->targetShader = (Shader*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_ShaderBinding__get_accessMutex(duk_context *context) {
 		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
 		PolyBase *ptrRetVal = (PolyBase*)inst->accessMutex;
@@ -11783,8 +11069,9 @@ namespace Polycode {
 		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
 		int type = duk_to_int(context, 1);
 		String name = duk_to_string(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->addParam(type,name);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<LocalShaderParam> *retInst = new shared_ptr<LocalShaderParam>();
+		*retInst = inst->addParam(type,name);
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -11793,8 +11080,19 @@ namespace Polycode {
 		int type = duk_to_int(context, 1);
 		String name = duk_to_string(context, 2);
 		void* ptr = (void*)duk_to_pointer(context, 3);
-		PolyBase *ptrRetVal = (PolyBase*)inst->addParamPointer(type,name,ptr);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<LocalShaderParam> *retInst = new shared_ptr<LocalShaderParam>();
+		*retInst = inst->addParamPointer(type,name,ptr);
+		duk_push_pointer(context, (void*)retInst);
+		return 1;
+	}
+
+	duk_ret_t Polycode_ShaderBinding_addParamFromData(duk_context *context) {
+		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
+		String name = duk_to_string(context, 1);
+		String data = duk_to_string(context, 2);
+		shared_ptr<LocalShaderParam> *retInst = new shared_ptr<LocalShaderParam>();
+		*retInst = inst->addParamFromData(name,data);
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -11807,16 +11105,18 @@ namespace Polycode {
 	duk_ret_t Polycode_ShaderBinding_getLocalParam(duk_context *context) {
 		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getLocalParam(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<LocalShaderParam> *retInst = new shared_ptr<LocalShaderParam>();
+		*retInst = inst->getLocalParam(index);
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ShaderBinding_getLocalParamByName(duk_context *context) {
 		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
 		String name = duk_to_string(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getLocalParamByName(name);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<LocalShaderParam> *retInst = new shared_ptr<LocalShaderParam>();
+		*retInst = inst->getLocalParamByName(name);
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -11831,15 +11131,16 @@ namespace Polycode {
 		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
 		String paramName = duk_to_string(context, 1);
 		String fileName = duk_to_string(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->loadTextureForParam(paramName,fileName);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Texture> *retInst = new shared_ptr<Texture>();
+		*retInst = inst->loadTextureForParam(paramName,fileName);
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ShaderBinding_setTextureForParam(duk_context *context) {
 		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
 		String paramName = duk_to_string(context, 1);
-		Texture* texture = (Texture*)duk_to_pointer(context, 2);
+		shared_ptr<Texture> texture = *(shared_ptr<Texture>*)duk_to_pointer(context, 2);
 		inst->setTextureForParam(paramName,texture);
 		return 0;
 	}
@@ -11847,7 +11148,7 @@ namespace Polycode {
 	duk_ret_t Polycode_ShaderBinding_setCubemapForParam(duk_context *context) {
 		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
 		String paramName = duk_to_string(context, 1);
-		Cubemap* cubemap = (Cubemap*)duk_to_pointer(context, 2);
+		shared_ptr<Cubemap> cubemap = *(shared_ptr<Cubemap>*)duk_to_pointer(context, 2);
 		inst->setCubemapForParam(paramName,cubemap);
 		return 0;
 	}
@@ -12988,32 +12289,6 @@ namespace Polycode {
 		String *inst = (String*)duk_to_pointer(context, 0);
 		duk_push_boolean(context, inst->isNumber());
 		return 1;
-	}
-
-	duk_ret_t Polycode_RenderBuffer__get_colorTexture(duk_context *context) {
-		RenderBuffer *inst = (RenderBuffer*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->colorTexture;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_RenderBuffer__set_colorTexture(duk_context *context) {
-		RenderBuffer *inst = (RenderBuffer*)duk_to_pointer(context, 0);
-		inst->colorTexture = (Texture*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_RenderBuffer__get_depthTexture(duk_context *context) {
-		RenderBuffer *inst = (RenderBuffer*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->depthTexture;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_RenderBuffer__set_depthTexture(duk_context *context) {
-		RenderBuffer *inst = (RenderBuffer*)duk_to_pointer(context, 0);
-		inst->depthTexture = (Texture*)duk_to_pointer(context, 1);
-		return 0;
 	}
 
 	duk_ret_t Polycode_RenderBuffer__delete(duk_context *context) {

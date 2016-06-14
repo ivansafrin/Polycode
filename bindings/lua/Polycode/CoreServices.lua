@@ -71,14 +71,6 @@ function CoreServices:getInput()
 	return __c
 end
 
-function CoreServices:getMaterialManager()
-	local retVal =  Polycode.CoreServices_getMaterialManager(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["MaterialManager"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function CoreServices:getSceneManager()
 	local retVal =  Polycode.CoreServices_getSceneManager(self.__ptr)
 	if retVal == nil then return nil end

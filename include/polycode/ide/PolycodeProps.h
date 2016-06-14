@@ -153,16 +153,16 @@ class NumberProp : public PropProp {
 class TargetBindingProp : public PropProp {
 	public:
 
-		TargetBindingProp(Shader *shader, Material *material, ShaderBinding *binding, RenderTargetBinding *targetBinding);
+		TargetBindingProp(std::shared_ptr<Shader> shader, std::shared_ptr<Material> material, std::shared_ptr<ShaderBinding> binding, RenderTargetBinding *targetBinding);
 		~TargetBindingProp();
 
 		void handleEvent(Event *event); 
 		void setPropWidth(Number width);
 						
 		RenderTargetBinding *targetBinding;
-		Material *material;
-		Shader *shader;
-		ShaderBinding *binding;
+		std::shared_ptr<Material> material;
+		std::shared_ptr<Shader> shader;
+		std::shared_ptr<ShaderBinding> binding;
 		
 		UIComboBox *typeComboBox;
 		UIComboBox *targetComboBox;
@@ -173,7 +173,7 @@ class TargetBindingProp : public PropProp {
 
 class RenderTargetProp : public PropProp {
 	public:
-		RenderTargetProp(ShaderRenderTarget *renderTarget, Material *material);
+		RenderTargetProp(ShaderRenderTarget *renderTarget, std::shared_ptr<Material> material);
 		~RenderTargetProp();
 
 		void handleEvent(Event *event); 
@@ -181,7 +181,7 @@ class RenderTargetProp : public PropProp {
 		
 		void recreateRenderTarget();
 		
-		Material *material;
+		std::shared_ptr<Material> material;
 		ShaderRenderTarget *renderTarget;
 		
 		UITextInput *nameInput;		
@@ -193,14 +193,14 @@ class RenderTargetProp : public PropProp {
 
 class ShaderPassProp : public PropProp {
 	public:
-		ShaderPassProp(Material *material, int shaderIndex);
+		ShaderPassProp(std::shared_ptr<Material> material, int shaderIndex);
 		~ShaderPassProp();
 		
 		void handleEvent(Event *event); 
 		void setPropWidth(Number width);
 		
-		Material *material;
-		Shader *shader;		
+		std::shared_ptr<Material> material;
+		std::shared_ptr<Shader> shader;		
 		int shaderIndex;
 		UIComboBox *shaderComboBox;		
 		UIImageButton *removeButton;
@@ -387,8 +387,8 @@ class MaterialProp : public PropProp {
 		~MaterialProp();
 	
 		void setEntityInstance(SceneEntityInstance *instance);
-		void set(Material *material);
-		Material *get();
+		void set(std::shared_ptr<Material> material);
+		std::shared_ptr<Material> get();
 		void setPropWidth(Number width);
 		void handleEvent(Event *event);
 	
@@ -406,7 +406,7 @@ class MaterialProp : public PropProp {
 		UIButton *changeButton;
 		UILabel *materialLabel;
 	
-		Material *currentMaterial;
+		std::shared_ptr<Material> currentMaterial;
 };
 
 class TextureProp : public PropProp {
@@ -416,8 +416,8 @@ class TextureProp : public PropProp {
 		void handleEvent(Event *event); 
 		void setPropWidth(Number width);
 				
-		void set(Texture *texture);
-		Texture* get();
+		void set(std::shared_ptr<Texture> texture);
+		std::shared_ptr<Texture> get();
 		
 		void setPropData(PolycodeEditorPropActionData* data);
 				
@@ -439,18 +439,18 @@ class SceneSpriteProp : public PropProp {
 		
 		void setEntityInstance(SceneEntityInstance *instance);
 	
-		void set(Sprite *sprite);
-		Sprite *get();
+		void set(std::shared_ptr<Sprite> sprite);
+		 std::shared_ptr<Sprite> get();
 				
 		SceneEntityInstance *entityInstance;
 	
-		Sprite *sprite;
+		std::shared_ptr<Sprite> sprite;
 		SceneSprite *previewSprite;
 		UIButton *changeButton;
 		UILabel *spriteName;
 	
-		Sprite *lastData;
-		Sprite *currentData;
+		std::shared_ptr<Sprite>lastData;
+		std::shared_ptr<Sprite>currentData;
 };
 
 class SceneEntityInstanceProp : public PropProp {
@@ -517,12 +517,12 @@ class ShaderOptionsSheet : public PropSheet {
 		
 		void clearShader();
 		void setOptionsFromParams(std::vector<ProgramParam> &params);
-		void setShader(Shader *shader, Material *material, ShaderBinding *binding);
+		void setShader(std::shared_ptr<Shader> shader, std::shared_ptr<Material> material, std::shared_ptr<ShaderBinding> binding);
 				
 	private:
-		Shader *shader;
-		Material *material;
-		ShaderBinding *binding;
+		std::shared_ptr<Shader> shader;
+		std::shared_ptr<Material> material;
+		std::shared_ptr<ShaderBinding> binding;
 		
 };
 
@@ -559,10 +559,10 @@ class ShaderPassesSheet : public PropSheet {
 		
 		void Update();
 		
-		void setMaterial(Material *material);
+		void setMaterial(std::shared_ptr<Material> material);
 
-		ShaderBinding *binding;
-		Material *material;
+		std::shared_ptr<ShaderBinding> binding;
+		std::shared_ptr<Material> material;
 
 		ShaderPassProp *selectedProp;
 
@@ -577,15 +577,15 @@ class TargetBindingsSheet : public PropSheet {
 		TargetBindingsSheet();
 		~TargetBindingsSheet();
 		void handleEvent(Event *event);				
-		void setShader(Shader *shader, Material *material, ShaderBinding *binding);
+		void setShader(std::shared_ptr<Shader> shader, std::shared_ptr<Material> material, std::shared_ptr<ShaderBinding> binding);
 		
 		void Update();
 		
 		void refreshTargets();
 		
-		ShaderBinding *binding;
-		Material *material;
-		Shader *shader;
+		std::shared_ptr<ShaderBinding> binding;
+		std::shared_ptr<Material> material;
+		std::shared_ptr<Shader> shader;
 		int shaderIndex;
 		
 		ButtonProp *addButton;
@@ -602,9 +602,9 @@ class RenderTargetsSheet : public PropSheet {
 		
 		void refreshTargets();
 		
-		ShaderBinding *binding;
-		Material *material;
-		Material *lastMaterial;
+		std::shared_ptr<ShaderBinding> binding;
+		std::shared_ptr<Material> material;
+		std::shared_ptr<Material> lastMaterial;
 		
 		Number normTextureWidth;
 		Number normTextureHeight;

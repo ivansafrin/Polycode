@@ -24,9 +24,10 @@
 #include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyLabel.h"
 #include "polycode/core/PolyMesh.h"
+#include "polycode/core/PolyTexture.h"
 #include "polycode/core/PolyRenderer.h"
 #include "polycode/core/PolyResourceManager.h"
-#include "polycode/core/PolyMaterialManager.h"
+#include <memory>
 
 using namespace Polycode;
 
@@ -40,7 +41,7 @@ SceneLabel::SceneLabel(const String& text, int size, const String& fontName, int
 	setMaterialByName("Unlit");
 	
 	ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
-	Font *font = (Font*) pool->getResource(Resource::RESOURCE_FONT, fontName);
+	std::shared_ptr<Font> font = std::static_pointer_cast<Font>(pool->getResource(Resource::RESOURCE_FONT, fontName));
 	
 	label = new Label(font, text, size * CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), amode, premultiplyAlpha, backgroundColor, foregroundColor);
 	
@@ -104,21 +105,12 @@ Number SceneLabel::getLabelActualHeight() {
 
 
 void SceneLabel::updateFromLabel() {
-
-	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
-	LocalShaderParam *textureParam = getShaderPass(0).shaderBinding->getLocalParamByName("diffuse");
+	texture = nullptr;
 	
-	Texture *oldTexture = NULL;
-	if(textureParam) {
-		oldTexture = textureParam->getTexture();
-		textureParam->ownsPointer = false;
-	}
-
-	Texture *texture;
 	if(SceneLabel::createMipmapsForLabels) {
-		texture = materialManager->createTextureFromImage(label, true, false);
+		texture = std::make_shared<Texture>(label, true, false);
 	} else {
-		texture = materialManager->createTextureFromImage(label, true, false);
+		texture = std::make_shared<Texture>(label, true, false);
 	}
 
 	setPrimitiveOptions(type, label->getWidth()*labelScale/CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(),label->getHeight()*labelScale/CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
@@ -126,9 +118,6 @@ void SceneLabel::updateFromLabel() {
 	setLocalBoundingBox(label->getWidth()*labelScale / CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), label->getHeight()*labelScale/ CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), 0.001);
 	
 	getShaderPass(0).shaderBinding->setTextureForParam("diffuse", texture);
-	if(oldTexture) {
-		materialManager->deleteTexture(oldTexture);
-	}
 }
 
 void SceneLabel::Render(GPUDrawBuffer *buffer) {

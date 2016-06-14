@@ -24,7 +24,7 @@ SpriteState.prototype.getFrameIDAtIndex = function(index) {
 }
 
 SpriteState.prototype.getMeshForFrameIndex = function(index) {
-	var retVal = new Mesh()
+	var retVal = new shared_ptr<Mesh>()
 	retVal.__ptr = Polycode.SpriteState_getMeshForFrameIndex(this.__ptr, index)
 	return retVal
 }

@@ -56,7 +56,7 @@ SceneLight::SceneLight(int type, Scene *parentScene, Number intensity, Number co
 	lightInfo.diffuseColor.setColor(1.0f,1.0f,1.0f,1.0f);
 	setSpotlightProperties(40,0.1);
 	
-	unlitMaterial = (Material*) Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit");
+	unlitMaterial = std::static_pointer_cast<Material>(Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
 	
 	lightInfo.importance = 0;
 }
@@ -76,11 +76,8 @@ int SceneLight::getLightImportance() const {
 void SceneLight::enableShadows(bool val, unsigned int resolution) {
 
 	if(val) {
-		if(shadowMapRenderBuffer) {
-			Services()->getRenderer()->destroyRenderBuffer(shadowMapRenderBuffer);
-		}
-		
-		shadowMapRenderBuffer = Services()->getRenderer()->createRenderBuffer(resolution, resolution, true, false);
+		shadowMapRenderBuffer = nullptr;
+		shadowMapRenderBuffer = std::make_shared<RenderBuffer>(resolution, resolution, true, false);
 		
 		if(!spotCamera) {
 			spotCamera = new Camera(parentScene);
@@ -93,9 +90,7 @@ void SceneLight::enableShadows(bool val, unsigned int resolution) {
 		lightInfo.shadowsEnabled = true;
 	} else {
 		lightInfo.shadowsEnabled = false;
-		if(shadowMapRenderBuffer) {
-			Services()->getRenderer()->destroyRenderBuffer(shadowMapRenderBuffer);
-		}
+		shadowMapRenderBuffer = nullptr;
 	}
 }
 
@@ -123,10 +118,6 @@ Number SceneLight::getShadowMapFOV() const {
 }
 
 SceneLight::~SceneLight() {
-	
-	if(shadowMapRenderBuffer) {
-		Services()->getRenderer()->destroyRenderBuffer(shadowMapRenderBuffer);
-	}
 	
 	if(!ownsChildren) {
 		delete spotCamera;
@@ -226,7 +217,7 @@ Camera *SceneLight::getSpotlightCamera() {
 	return spotCamera;
 }
 
-Texture *SceneLight::getZBufferTexture() const {
+std::shared_ptr<Texture> SceneLight::getZBufferTexture() const {
 	return lightInfo.shadowMapTexture;
 }
 

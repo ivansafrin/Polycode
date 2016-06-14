@@ -1,21 +1,15 @@
 class "RenderThread"
 
 RenderThread.JOB_REQUEST_CONTEXT_CHANGE = 0
-RenderThread.JOB_CREATE_TEXTURE = 1
 RenderThread.JOB_PROCESS_DRAW_BUFFER = 2
 RenderThread.JOB_END_FRAME = 3
-RenderThread.JOB_CREATE_PROGRAM = 4
-RenderThread.JOB_CREATE_SHADER = 5
 RenderThread.JOB_BEGIN_FRAME = 6
 RenderThread.JOB_DESTROY_TEXTURE = 8
 RenderThread.JOB_DESTROY_SHADER = 9
 RenderThread.JOB_DESTROY_PROGRAM = 10
 RenderThread.JOB_DESTROY_SUBMESH_BUFFER = 11
-RenderThread.JOB_CREATE_RENDER_BUFFER = 12
 RenderThread.JOB_DESTROY_RENDER_BUFFER = 13
 RenderThread.JOB_SET_TEXTURE_PARAM = 14
-RenderThread.JOB_DESTROY_SHADER_BINDING = 16
-RenderThread.JOB_DESTROY_SHADER_PARAM = 17
 
 function RenderThread:RenderThread(...)
 	local arg = {...}
@@ -77,10 +71,6 @@ function RenderThread:getFrameInfo()
 	local __c = _G["RenderThreadDebugInfo"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
-end
-
-function RenderThread:clearFrameQueue()
-	local retVal =  Polycode.RenderThread_clearFrameQueue(self.__ptr)
 end
 
 function RenderThread:initGlobals()

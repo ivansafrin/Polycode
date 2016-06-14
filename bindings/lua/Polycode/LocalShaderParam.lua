@@ -55,7 +55,7 @@ end
 function LocalShaderParam:Copy()
 	local retVal =  Polycode.LocalShaderParam_Copy(self.__ptr)
 	if retVal == nil then return nil end
-	local __c = _G["LocalShaderParam"]("__skip_ptr__")
+	local __c = _G["shared_ptr<LocalShaderParam>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end
@@ -124,7 +124,7 @@ end
 function LocalShaderParam:getTexture()
 	local retVal =  Polycode.LocalShaderParam_getTexture(self.__ptr)
 	if retVal == nil then return nil end
-	local __c = _G["Texture"]("__skip_ptr__")
+	local __c = _G["shared_ptr<Texture>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end
@@ -136,7 +136,7 @@ end
 function LocalShaderParam:getCubemap()
 	local retVal =  Polycode.LocalShaderParam_getCubemap(self.__ptr)
 	if retVal == nil then return nil end
-	local __c = _G["Cubemap"]("__skip_ptr__")
+	local __c = _G["shared_ptr<Cubemap>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end

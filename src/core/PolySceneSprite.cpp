@@ -26,6 +26,7 @@
 #include "polycode/core/PolyMesh.h"
 #include "polycode/core/PolyTexture.h"
 #include "polycode/core/PolyLogger.h"
+#include "polycode/core/PolyObject.h"
 
 using std::vector;
 using namespace Polycode;
@@ -45,7 +46,6 @@ SceneSprite::SceneSprite(SpriteSet *spriteSet) : SceneMesh() {
 	playOnce = false;
 	spriteTimerVal = 0.1;
 	useGeometryHitDetection = false;
-	ownsMesh = false;
 	startOnRandomFrame = false;
 }
 
@@ -82,7 +82,7 @@ SpriteSet *SceneSprite::getSpriteSet() {
 	return spriteSet;
 }
 
-Sprite *SceneSprite::getCurrentSprite() {
+std::shared_ptr<Sprite> SceneSprite::getCurrentSprite() {
 	return currentSprite;
 }
 
@@ -98,14 +98,14 @@ void SceneSprite::setCurrentFrame(unsigned int frameIndex) {
 	currentFrame = frameIndex;
 }
 
-void SceneSprite::setSpriteByName(String spriteName) {
-	Sprite *sprite = spriteSet->getSpriteByName(spriteName);
+void SceneSprite::setSpriteByName(const String &spriteName) {
+	std::shared_ptr<Sprite> sprite = spriteSet->getSpriteByName(spriteName);
 	if(sprite) {
 		setSprite(sprite);
 	}
 }
 
-void SceneSprite::setSprite(Sprite *spriteEntry) {
+void SceneSprite::setSprite(std::shared_ptr<Sprite> spriteEntry) {
 	
 	if(currentSprite){
 		currentSprite->removeAllHandlersForListener(this);
@@ -123,7 +123,6 @@ void SceneSprite::setSprite(Sprite *spriteEntry) {
 }
 
 void SceneSprite::setSpriteSet(SpriteSet *spriteSet) {
-	
 	if(this->spriteSet) {
 		this->spriteSet->removeAllHandlersForListener(this);
 	}
@@ -159,7 +158,7 @@ void SceneSprite::handleEvent(Event *event) {
 				}
 			}
 		}
-	} else if(event->getDispatcher() == currentSprite) {
+	} else if(event->getDispatcher() == &*currentSprite) {
 		bool hasState = false;
 		for(int i=0; i < currentSprite->getNumStates(); i++) {
 			if(currentSprite->getState(i) == currentSpriteState) {
@@ -249,7 +248,7 @@ void SceneSprite::Render(GPUDrawBuffer *buffer) {
 		return;
 	}
 	
-	Mesh *stateMesh = currentSpriteState->getMeshForFrameIndex(currentFrame);
+	std::shared_ptr<Mesh> stateMesh = currentSpriteState->getMeshForFrameIndex(currentFrame);
 	if(stateMesh) {
 		setMesh(stateMesh);
 		useVertexBuffer = false;
@@ -360,7 +359,7 @@ void SpriteState::insertFrame(unsigned int index, unsigned int frameID) {
 	rebuildStateMeshes();
 }
 
-Mesh *SpriteState::getMeshForFrameIndex(unsigned int index) {
+std::shared_ptr<Mesh> SpriteState::getMeshForFrameIndex(unsigned int index) {
 	if(index < frameMeshes.size()) {
 		return frameMeshes[index];
 	} else {
@@ -369,15 +368,12 @@ Mesh *SpriteState::getMeshForFrameIndex(unsigned int index) {
 }
 
 void SpriteState::rebuildStateMeshes() {
-	for(int i=0; i < frameMeshes.size(); i++) {
-		delete frameMeshes[i];
-	}
 	frameMeshes.clear();
 	
 	largestFrameBoundingBox = Vector3();
 	
 	for(int i=0; i < frameIDs.size(); i++) {
-		Mesh *frameMesh = new Mesh();
+		std::shared_ptr<Mesh> frameMesh = std::make_shared<Mesh>();
 		SpriteFrame frame = spriteSet->getSpriteFrameByID(frameIDs[i]);
 		
 		MeshGeometry geometry;
@@ -538,7 +534,8 @@ void SpriteSet::loadSpriteSet(String fileName) {
 	if(spriteSheetEntry) {
 		ObjectEntry *fileNameEntry = (*spriteSheetEntry)["fileName"];
 		if(fileNameEntry) {
-			loadTexture(fileNameEntry->stringVal);
+			std::shared_ptr<Texture> texture = std::static_pointer_cast<Texture>(loadResource(fileNameEntry->stringVal));
+			setTexture(texture);
 		}
 		
 		ObjectEntry *framesEntry = (*spriteSheetEntry)["frames"];
@@ -599,7 +596,7 @@ void SpriteSet::loadSpriteSet(String fileName) {
 				if(nameEntry) {
 					spriteName = nameEntry->stringVal;
 				}
-				Sprite *newSprite = new Sprite(spriteName);
+				std::shared_ptr<Sprite> newSprite = std::make_shared<Sprite>(spriteName);
 				addSpriteEntry(newSprite);
 				
 				ObjectEntry *statesEntry = (*spriteEntry)["states"];
@@ -668,7 +665,7 @@ void SpriteSet::removeFrameByID(unsigned int frameID) {
 	}
 }
 
-void SpriteSet::removeSprite(Sprite *sprite) {
+void SpriteSet::removeSprite(std::shared_ptr<Sprite> sprite) {
 	for(int i=0; i < sprites.size(); i++) {
 		if(sprites[i] == sprite) {
 			removeResource(sprites[i]);
@@ -679,19 +676,13 @@ void SpriteSet::removeSprite(Sprite *sprite) {
 	}
 }
 
-Sprite *SpriteSet::getSpriteByName(String spriteName) {
+std::shared_ptr<Sprite> SpriteSet::getSpriteByName(const String &spriteName) {
 	for(int i=0; i < sprites.size(); i++) {
 		if(sprites[i]->getName() == spriteName) {
 			return sprites[i];
 		}
 	}
 	return NULL;
-}
-
-Texture *SpriteSet::loadTexture(String imageFileName) {
-	Texture *spriteTexture = Services()->getMaterialManager()->createTextureFromFile(imageFileName, true, Services()->getMaterialManager()->mipmapsDefault);
-	setTexture(spriteTexture);
-	return spriteTexture;
 }
 
 void SpriteSet::addSpriteFrame(const SpriteFrame &frame, bool assignID) {
@@ -747,7 +738,7 @@ SpriteFrame SpriteSet::getSpriteFrame(unsigned int index) const {
 	}
 }
 
-void SpriteSet::addSpriteEntry(Sprite *newEntry) {
+void SpriteSet::addSpriteEntry(std::shared_ptr<Sprite> newEntry) {
 	addResource(newEntry);
 	newEntry->setParentSpritSet(this);
 	sprites.push_back(newEntry);
@@ -758,7 +749,7 @@ unsigned int SpriteSet::getNumSpriteEntries() const {
 	return sprites.size();
 }
 
-Sprite *SpriteSet::getSpriteEntry(unsigned int index) const {
+std::shared_ptr<Sprite> SpriteSet::getSpriteEntry(unsigned int index) const {
 	if(index < sprites.size()) {
 		return sprites[index];
 	} else {
@@ -766,11 +757,11 @@ Sprite *SpriteSet::getSpriteEntry(unsigned int index) const {
 	}
 }
 
-void SpriteSet::setTexture(Texture *texture) {
+void SpriteSet::setTexture(std::shared_ptr<Texture> texture) {
 	spriteTexture = texture;
 }
 
-Texture *SpriteSet::getTexture() {
+std::shared_ptr<Texture> SpriteSet::getTexture() {
 	return spriteTexture;
 }
 

@@ -2,13 +2,7 @@ class "ShaderBinding"
 
 
 function ShaderBinding:__getvar(name)
-	if name == "targetShader" then
-		local retVal = Polycode.ShaderBinding_get_targetShader(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["Shader"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
-	elseif name == "accessMutex" then
+	if name == "accessMutex" then
 		local retVal = Polycode.ShaderBinding_get_accessMutex(self.__ptr)
 		if retVal == nil then return nil end
 		local __c = _G["CoreMutex"]("__skip_ptr__")
@@ -18,10 +12,7 @@ function ShaderBinding:__getvar(name)
 end
 
 function ShaderBinding:__setvar(name,value)
-	if name == "targetShader" then
-		Polycode.ShaderBinding_set_targetShader(self.__ptr, value.__ptr)
-		return true
-	elseif name == "accessMutex" then
+	if name == "accessMutex" then
 		Polycode.ShaderBinding_set_accessMutex(self.__ptr, value.__ptr)
 		return true
 	end
@@ -48,7 +39,7 @@ end
 function ShaderBinding:addParam(type, name)
 	local retVal = Polycode.ShaderBinding_addParam(self.__ptr, type, name)
 	if retVal == nil then return nil end
-	local __c = _G["LocalShaderParam"]("__skip_ptr__")
+	local __c = _G["shared_ptr<LocalShaderParam>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end
@@ -56,7 +47,15 @@ end
 function ShaderBinding:addParamPointer(type, name, ptr)
 	local retVal = Polycode.ShaderBinding_addParamPointer(self.__ptr, type, name, ptr.__ptr)
 	if retVal == nil then return nil end
-	local __c = _G["LocalShaderParam"]("__skip_ptr__")
+	local __c = _G["shared_ptr<LocalShaderParam>"]("__skip_ptr__")
+	__c.__ptr = retVal
+	return __c
+end
+
+function ShaderBinding:addParamFromData(name, data)
+	local retVal = Polycode.ShaderBinding_addParamFromData(self.__ptr, name, data)
+	if retVal == nil then return nil end
+	local __c = _G["shared_ptr<LocalShaderParam>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end
@@ -69,7 +68,7 @@ end
 function ShaderBinding:getLocalParam(index)
 	local retVal = Polycode.ShaderBinding_getLocalParam(self.__ptr, index)
 	if retVal == nil then return nil end
-	local __c = _G["LocalShaderParam"]("__skip_ptr__")
+	local __c = _G["shared_ptr<LocalShaderParam>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end
@@ -77,7 +76,7 @@ end
 function ShaderBinding:getLocalParamByName(name)
 	local retVal = Polycode.ShaderBinding_getLocalParamByName(self.__ptr, name)
 	if retVal == nil then return nil end
-	local __c = _G["LocalShaderParam"]("__skip_ptr__")
+	local __c = _G["shared_ptr<LocalShaderParam>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end
@@ -89,7 +88,7 @@ end
 function ShaderBinding:loadTextureForParam(paramName, fileName)
 	local retVal = Polycode.ShaderBinding_loadTextureForParam(self.__ptr, paramName, fileName)
 	if retVal == nil then return nil end
-	local __c = _G["Texture"]("__skip_ptr__")
+	local __c = _G["shared_ptr<Texture>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end

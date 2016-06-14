@@ -79,10 +79,14 @@ function ResourcePool:loadResourcesFromFolder(folder, recursive)
 	local retVal = Polycode.ResourcePool_loadResourcesFromFolder(self.__ptr, folder, recursive)
 end
 
+function ResourcePool:loadResourcesFromMaterialFile(path)
+	local retVal = Polycode.ResourcePool_loadResourcesFromMaterialFile(self.__ptr, path)
+end
+
 function ResourcePool:loadResource(path)
 	local retVal = Polycode.ResourcePool_loadResource(self.__ptr, path)
 	if retVal == nil then return nil end
-	local __c = _G["Resource"]("__skip_ptr__")
+	local __c = _G["shared_ptr<Resource>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end
@@ -90,7 +94,7 @@ end
 function ResourcePool:loadResourceWithName(path, name)
 	local retVal = Polycode.ResourcePool_loadResourceWithName(self.__ptr, path, name)
 	if retVal == nil then return nil end
-	local __c = _G["Resource"]("__skip_ptr__")
+	local __c = _G["shared_ptr<Resource>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end
@@ -98,7 +102,7 @@ end
 function ResourcePool:getResource(resourceType, resourceName)
 	local retVal = Polycode.ResourcePool_getResource(self.__ptr, resourceType, resourceName)
 	if retVal == nil then return nil end
-	local __c = _G["Resource"]("__skip_ptr__")
+	local __c = _G["shared_ptr<Resource>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end
@@ -115,7 +119,7 @@ end
 function ResourcePool:getResourceByPath(resourcePath)
 	local retVal = Polycode.ResourcePool_getResourceByPath(self.__ptr, resourcePath)
 	if retVal == nil then return nil end
-	local __c = _G["Resource"]("__skip_ptr__")
+	local __c = _G["shared_ptr<Resource>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end
@@ -128,7 +132,7 @@ function ResourcePool:getResources(resourceType)
 	local retVal = Polycode.ResourcePool_getResources(self.__ptr, resourceType)
 	if retVal == nil then return nil end
 	for i=1,count(retVal) do
-		local __c  = _G["Resource"]("__skip_ptr__")
+		local __c  = _G["shared_ptr<Resource"]("__skip_ptr__")
 		__c.__ptr = retVal[i]
 		retVal[i] = __c
 	end

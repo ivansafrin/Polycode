@@ -173,11 +173,13 @@ void OpenGLGraphicsInterface::setParamInShader(Shader *shader, ProgramParam *par
 			glActiveTexture(GL_TEXTURE0 + textureIndex);
 			glUniform1i(paramLocation, textureIndex);
 			if(localParam) {
-				Texture* texture = localParam->getTexture();
+				Texture* texture = &*localParam->getTexture();
 				if(texture) {
-					if(texture->platformData) {
-						glBindTexture(GL_TEXTURE_2D, *((GLuint*) texture->platformData));
+					
+					if(!texture->platformData) {
+						createTexture(texture);
 					}
+					glBindTexture(GL_TEXTURE_2D, *((GLuint*) texture->platformData));
 				} else {
 					glBindTexture(GL_TEXTURE_2D, 0);					
 				}
@@ -376,10 +378,10 @@ void OpenGLGraphicsInterface::endDrawCall() {
 }
 
 void OpenGLGraphicsInterface::useShader(Shader *shader) {
-	GLuint shaderID = *((GLuint*) shader->platformData);
-	if(shaderID != currentShaderID) {
-		glUseProgram(shaderID);
-		currentShaderID = shaderID;
+	ShaderPlatformData *platformData = (ShaderPlatformData*) shader->platformData;
+	if(platformData->shaderID != currentShaderID) {
+		glUseProgram(platformData->shaderID);
+		currentShaderID = platformData->shaderID;
 	}
 }
 
@@ -462,7 +464,7 @@ void OpenGLGraphicsInterface::createRenderBuffer(RenderBuffer *renderBuffer) {
 	}
 	
 	renderBuffer->colorTexture->framebufferTexture = true;
-	createTexture(renderBuffer->colorTexture);
+	createTexture(&*renderBuffer->colorTexture);
 	
 	if(renderBuffer->depthTexture) {
 		renderBuffer->depthBufferPlatformData = (void*) new GLuint;
@@ -481,7 +483,7 @@ void OpenGLGraphicsInterface::createRenderBuffer(RenderBuffer *renderBuffer) {
 		renderBuffer->depthTexture->depthTexture = true;
 		renderBuffer->depthTexture->type = renderBuffer->colorTexture->type;
 		renderBuffer->depthTexture->filteringMode = Texture::FILTERING_LINEAR;
-		createTexture(renderBuffer->depthTexture);
+		createTexture(&*renderBuffer->depthTexture);
 		
 		if(renderBuffer->colorTexture->type == Image::IMAGE_FP16) {
 			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, renderBuffer->getWidth(), renderBuffer->getHeight());
@@ -495,39 +497,28 @@ void OpenGLGraphicsInterface::createRenderBuffer(RenderBuffer *renderBuffer) {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void OpenGLGraphicsInterface::destroyRenderBuffer(RenderBuffer *renderBuffer) {
-	if(!renderBuffer) {
-		return;
-	}
-	glDeleteFramebuffers(1, (GLuint*)renderBuffer->platformData);
-	if(renderBuffer->colorTexture) {
-		destroyTexture(renderBuffer->colorTexture);
-	}
-	if(renderBuffer->depthTexture) {
-		destroyTexture(renderBuffer->depthTexture);
-		glDeleteRenderbuffers(1, (GLuint*)renderBuffer->depthBufferPlatformData);
-		delete (GLuint*)renderBuffer->depthBufferPlatformData;
-	}
-	delete (GLuint*)renderBuffer->platformData;
-	delete renderBuffer;
+void OpenGLGraphicsInterface::destroyRenderBufferData(void *platformData) {
+	glDeleteFramebuffers(1, (GLuint*)platformData);
+	delete (GLuint*)platformData;
 }
 
 void OpenGLGraphicsInterface::bindRenderBuffer(RenderBuffer *renderBuffer) {
 	if(renderBuffer) {
+		if(!renderBuffer->platformData) {
+			createRenderBuffer(renderBuffer);
+		}
 		glBindFramebuffer(GL_FRAMEBUFFER, *((GLuint*) renderBuffer->platformData));
 	} else {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 }
 
-void OpenGLGraphicsInterface::destroyTexture(Texture *texture) {
-	glDeleteTextures(1, (GLuint*)texture->platformData);
-	delete (GLuint*)texture->platformData;
-	delete texture;
+void OpenGLGraphicsInterface::destroyTextureData(void *platformData) {
+	glDeleteTextures(1, (GLuint*)platformData);
+	delete (GLuint*)platformData;
 }
 
 void OpenGLGraphicsInterface::createTexture(Texture *texture) {
-	
 	
 	if(!texture->platformData) {
 		texture->platformData = (void*) new GLuint;
@@ -583,7 +574,7 @@ void OpenGLGraphicsInterface::createTexture(Texture *texture) {
 			glTextureType = GL_RGBA;
 #endif
 			glTextureFormat = GL_RGBA;
-			pixelType = GL_UNSIGNED_BYTE;	
+			pixelType = GL_UNSIGNED_BYTE;
 			break;
 	}
 	
@@ -632,9 +623,8 @@ void OpenGLGraphicsInterface::createTexture(Texture *texture) {
 	
 	if(texture->framebufferTexture) {
 		glTexImage2D(GL_TEXTURE_2D, 0, glTextureFormat, texture->getWidth(), texture->getHeight(), 0, glTextureType, pixelType, NULL);
-		
 	} else {
-		if(texture->getTextureData()) {
+		if(texture->getTextureData()) {			
 			glTexImage2D(GL_TEXTURE_2D, 0, glTextureFormat, texture->getWidth(), texture->getHeight(), 0, glTextureType, pixelType, texture->getTextureData());
 		}
 	}
@@ -650,13 +640,12 @@ void OpenGLGraphicsInterface::setViewport(unsigned int x,unsigned  int y,unsigne
 	glViewport(x, y, width, height);
 }
 
-void OpenGLGraphicsInterface::destroyProgram(ShaderProgram *program) {
-	if(program->platformData) {
-		GLuint programID = *((GLuint*)program->platformData);
+void OpenGLGraphicsInterface::destroyProgramData(void *platformData) {
+	if(platformData) {
+		GLuint programID = *((GLuint*)platformData);
 		glDeleteShader(programID);
-		delete ((GLuint*)program->platformData);
+		delete ((GLuint*)platformData);
 	}
-	delete program;
 }
 
 void OpenGLGraphicsInterface::createProgram(ShaderProgram *program) {
@@ -715,71 +704,70 @@ void OpenGLGraphicsInterface::createProgram(ShaderProgram *program) {
 	*((GLuint*)program->platformData) = programID;
 }
 
-void OpenGLGraphicsInterface::destroyShader(Shader *shader) {
-	if(shader->platformData) {
-		GLuint shaderID = *((GLuint*)shader->platformData);
-		glDetachShader(shaderID, *((GLuint*)shader->fragmentProgram->platformData));
-		glDetachShader(shaderID, *((GLuint*)shader->vertexProgram->platformData));
-		glDeleteProgram(shaderID);
-		delete ((GLuint*)shader->platformData);
+void OpenGLGraphicsInterface::destroyShaderData(void *platformData) {
+	ShaderPlatformData *shaderData = (ShaderPlatformData*)platformData;
+	glDetachShader(shaderData->shaderID, shaderData->fragmentProgramID);
+	glDetachShader(shaderData->shaderID, shaderData->vertexProgramID);
+	glDeleteProgram(shaderData->shaderID);
+	for(auto data:shaderData->expectedData) {
+		delete data;
 	}
-	delete shader;
+	delete shaderData;
 }
 
 void OpenGLGraphicsInterface::createShader(Shader *shader) {
 	
+	if(!shader->fragmentProgram->platformData) {
+		createProgram(&*shader->fragmentProgram);
+	}
+	if(!shader->vertexProgram->platformData) {
+		createProgram(&*shader->vertexProgram);
+	}
+	
 	shader->expectedParams.clear();
-	shader->expectedTextures.clear();
-	shader->expectedCubemaps.clear();
 	shader->expectedAttributes.clear();
 	
-	if(!shader->platformData) {
-		shader->platformData = (void*) new GLuint;
-		*((GLuint*)shader->platformData) = 0;
-	}
+	ShaderPlatformData *platformData = new ShaderPlatformData();
+	shader->platformData = (void*) platformData;
+	platformData->shaderID = 0;
+	platformData->fragmentProgramID = *((GLuint*)shader->fragmentProgram->platformData);
+	platformData->vertexProgramID = *((GLuint*)shader->vertexProgram->platformData);
 	
-	GLuint shaderID = *((GLuint*)shader->platformData);
+	platformData->shaderID = glCreateProgram();
 	
-	if(shaderID != 0) {
-		glDetachShader(shaderID, *((GLuint*)shader->fragmentProgram->platformData));
-		glDetachShader(shaderID, *((GLuint*)shader->vertexProgram->platformData));
-		glDeleteProgram(shaderID);
-	}
-	
-	shaderID = glCreateProgram();
-	
-	glAttachShader(shaderID, *((GLuint*)shader->fragmentProgram->platformData));
-	glAttachShader(shaderID, *((GLuint*)shader->vertexProgram->platformData));
-	glLinkProgram(shaderID);
+	glAttachShader(platformData->shaderID, *((GLuint*)shader->fragmentProgram->platformData));
+	glAttachShader(platformData->shaderID, *((GLuint*)shader->vertexProgram->platformData));
+	glLinkProgram(platformData->shaderID);
 
 	GLint result;
-	glGetProgramiv( shaderID, GL_LINK_STATUS, &result);
+	glGetProgramiv(platformData->shaderID, GL_LINK_STATUS, &result);
 	
 	if(result == GL_INVALID_VALUE || result == GL_INVALID_OPERATION) {
 		Services()->getLogger()->logBroadcast("ERROR: Error linking shader. Invalid shader program.");
 	}
 
 	int total = -1;
-	glGetProgramiv( shaderID, GL_ACTIVE_UNIFORMS, &total );
+	glGetProgramiv(platformData->shaderID, GL_ACTIVE_UNIFORMS, &total );
 	for(int i=0; i < total; i++)  {
 		int name_len=-1, num=-1;
 		GLenum type = GL_ZERO;
 		char name[128];
-		glGetActiveUniform(shaderID, GLuint(i), sizeof(name)-1, &name_len, &num, &type, name );
+		glGetActiveUniform(platformData->shaderID, GLuint(i), sizeof(name)-1, &name_len, &num, &type, name );
 		name[name_len] = 0;
    
-		int paramLocation = glGetUniformLocation(shaderID, name);
+		int paramLocation = glGetUniformLocation(platformData->shaderID, name);
 		
 		ProgramParam param;
 		param.name = String(name);
 		param.platformData = (void*) new GLuint;
 		*((GLuint*)param.platformData) = paramLocation;
+		platformData->expectedData.push_back((GLuint*)param.platformData);
 		param.type = getPolycodeParamType(type);
 		shader->expectedParams.push_back(param);
 	}
 	
 	total = -1;
-	glGetProgramiv( shaderID, GL_ACTIVE_ATTRIBUTES, &total );
+	glGetProgramiv(platformData->shaderID, GL_ACTIVE_ATTRIBUTES, &total );
 	
 	for(GLuint i=0; i < total; i++)	 {
 		
@@ -787,10 +775,10 @@ void OpenGLGraphicsInterface::createShader(Shader *shader) {
 		GLenum type = GL_ZERO;
 		char name[128];
 		
-		glGetActiveAttrib(shaderID, i, sizeof(name)-1, &name_len, &num, &type, name);
+		glGetActiveAttrib(platformData->shaderID, i, sizeof(name)-1, &name_len, &num, &type, name);
 		name[name_len] = 0;
 		
-		int attribLocation = glGetAttribLocation(shaderID, name);
+		int attribLocation = glGetAttribLocation(platformData->shaderID, name);
 		
 		ProgramAttribute attribute;
 		attribute.name = String(name);
@@ -798,15 +786,11 @@ void OpenGLGraphicsInterface::createShader(Shader *shader) {
 		*((GLuint*)attribute.platformData) = attribLocation;
 		attribute.size = getAttributeSize(type);
 		attribute.arrayType = mapNameToArrayType(attribute.name);
-		
 		attribute.platformData = (void*) new GLuint;
-		*((GLuint*)attribute.platformData) = glGetAttribLocation(shaderID, attribute.name.c_str());
-		
-		
+		*((GLuint*)attribute.platformData) = glGetAttribLocation(platformData->shaderID, attribute.name.c_str());
+		platformData->expectedData.push_back((GLuint*)attribute.platformData);
 		shader->expectedAttributes.push_back(attribute);
 	}
-	
-	 *((GLuint*)shader->platformData) = shaderID;
 }
 
 int OpenGLGraphicsInterface::mapNameToArrayType(const String &name) {

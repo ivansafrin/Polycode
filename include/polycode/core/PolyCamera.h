@@ -189,13 +189,13 @@ namespace Polycode {
 			/**
 			 * Binds target buffers and renders the scene in multiple passes based on the post filter material.
 			 */
-			void drawFilter(RenderBuffer *targetBuffer);
+			void drawFilter(std::shared_ptr<RenderBuffer> targetBuffer);
 
 			/**
 			* Sets the post-processing shader for the camera.
 			* @param shaderMaterial Post processing shader material.
 			*/
-			void setPostFilter(Material *material);
+			void setPostFilter(std::shared_ptr<Material> material);
 			
 			/**
 			* Sets the post-processing shader for the camera by name. The material needs have been added as a resource.
@@ -211,7 +211,7 @@ namespace Polycode {
 			/**
 			* Returns the shader material applied to the camera.
 			*/			
-			Material *getScreenShaderMaterial() { return filterShaderMaterial; }	
+			std::shared_ptr<Material> getScreenShaderMaterial() { return filterShaderMaterial; }
 
 			/**
 			 * Clones the camera.
@@ -308,8 +308,8 @@ namespace Polycode {
 
 			Scene *parentScene;
 
-			Material *filterShaderMaterial;			
-			RenderBuffer *originalFramebuffer;
+			std::shared_ptr<Material> filterShaderMaterial;
+			std::shared_ptr<RenderBuffer> originalFramebuffer;
 		
 			bool _hasFilterShader;
 	};	

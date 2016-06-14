@@ -40,7 +40,7 @@ bool PolycodeFontEditor::openFile(OSFileEntry filePath) {
 	
 	ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
 	
-	Resource *resource = globalPool->loadResourceWithName(filePath.fullPath, filePath.fullPath);
+	std::shared_ptr<Resource> resource = globalPool->loadResourceWithName(filePath.fullPath, filePath.fullPath);
 		
 	anchor = new UIElement();
 	addChild(anchor);

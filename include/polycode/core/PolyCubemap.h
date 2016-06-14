@@ -30,10 +30,15 @@ namespace Polycode {
 
 	class _PolyExport Cubemap : public Resource {
 		public:
-			Cubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4, Texture *t5);
-			
-			Texture *getTexture(int index);			
-			void setTexture(Texture *texture, int index);
+			Cubemap(std::shared_ptr<Texture> t0,
+					std::shared_ptr<Texture> t1,
+					std::shared_ptr<Texture> t2,
+					std::shared_ptr<Texture> t3,
+					std::shared_ptr<Texture> t4,
+					std::shared_ptr<Texture> t5);
+		
+			std::shared_ptr<Texture> getTexture(int index);			
+			void setTexture(std::shared_ptr<Texture>, int index);
 			
 			virtual void recreateFromTextures(){}
 			
@@ -48,7 +53,7 @@ namespace Polycode {
 																	
 		protected:
 		
-			std::vector<Texture*> textures;
+			std::vector<std::shared_ptr<Texture> > textures;
 		
 	};
 }

@@ -152,7 +152,7 @@ public:
 private:
 	ScenePrimitive *spotSpot;
 	SceneMesh *fovSceneMesh;	
-	Mesh *fovMesh;
+	std::shared_ptr<Mesh> fovMesh;
 	
 	SceneLight *light;
 };
@@ -166,7 +166,7 @@ class CameraDisplay : public Entity {
 	
 	private:
 		SceneMesh *fovSceneMesh;
-		Mesh *fovMesh;
+		std::shared_ptr<Mesh> fovMesh;
 		Camera *camera;
 };
 

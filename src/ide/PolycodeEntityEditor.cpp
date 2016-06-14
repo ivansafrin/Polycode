@@ -1041,7 +1041,9 @@ void EntityEditorMainView::createIcon(Entity *entity, String iconFile) {
 	ScenePrimitive *iconPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 32, 32);
 	iconPrimitive->setMaterialByName("Unlit");
 	iconPrimitive->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
-	Texture *tex = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile("entityEditor/"+iconFile);
+	Image *image = new Image("entityEditor/"+iconFile);
+	std::shared_ptr<Texture> tex = std::make_shared<Texture>(image, false, false);
+	delete image;
 	iconPrimitive->getShaderPass(0).shaderBinding->setTextureForParam("diffuse", tex);
 	
 	iconBase->addChild(iconPrimitive);
@@ -1485,29 +1487,18 @@ void EntityEditorMainView::handleEvent(Event *event) {
 		if(event->getEventCode() == UIEvent::OK_EVENT) {
 			if(assetSelectType == "mesh") {
 				SceneMesh *newMesh = new SceneMesh(globalFrame->assetBrowser->getSelectedAssetPath());
-				
-				// RENDERER_TODO
-				//newMesh->cacheToVertexBuffer(true);
-				
 				sceneObjectRoot->addChild(newMesh);
 				setEditorProps(newMesh);
 				newMesh->setMaterialByName("Default");
 				newMesh->setPosition(cursorPosition);
 				didPlaceEntity(newMesh);
 				selectEntity(newMesh, false, false);
-			} else if(assetSelectType == "image") {
-				SceneImage *newImage = new SceneImage(globalFrame->assetBrowser->getSelectedAssetPath());
-				sceneObjectRoot->addChild(newImage);
-				setEditorProps(newImage);
-				newImage->setPosition(cursorPosition);
-				didPlaceEntity(newImage);
-				selectEntity(newImage, false, false);
 			} else if(assetSelectType == "sprite") {
 				
-				Resource *selectedResource = globalFrame->assetBrowser->getSelectedResource();
+				std::shared_ptr<Resource> selectedResource = globalFrame->assetBrowser->getSelectedResource();
 				
 				if(selectedResource) {
-					Sprite *sprite = (Sprite*) selectedResource;
+					std::shared_ptr<Sprite> sprite = std::static_pointer_cast<Sprite>(selectedResource);
 					
 					SceneSprite *newSprite = new SceneSprite(sprite->getParentSpriteSet());
 					newSprite->setSprite(sprite);
@@ -1546,7 +1537,6 @@ void EntityEditorMainView::handleEvent(Event *event) {
 		addEntityMenu->addOption("Add Entity", "add_entity");
 		addEntityMenu->addDivider();
 		addEntityMenu->addOption("Add Sprite", "add_sprite");
-		addEntityMenu->addOption("Add Image", "add_image");
 		addEntityMenu->addOption("Add Label", "add_label");
 		addEntityMenu->addDivider();
 		addEntityMenu->addOption("Add Light", "add_light");
@@ -1590,11 +1580,15 @@ void EntityEditorMainView::handleEvent(Event *event) {
 				mainScene->setOverrideMaterial(NULL);
 			break;
 			case 1:
-				mainScene->setOverrideMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Default"));
+			{
+				ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
+				mainScene->setOverrideMaterial(std::static_pointer_cast<Material>(pool->getResource(Resource::RESOURCE_MATERIAL, "Default")));
+			}
 			break;
 			case 2:
 			{
-				Material *wireframeMaterial = (Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitWireframe");
+				ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
+				std::shared_ptr<Material> wireframeMaterial = std::static_pointer_cast<Material>(pool->getResource(Resource::RESOURCE_MATERIAL, "UnlitWireframe"));
 				
 				if(!wireframeMaterial->getShaderPass(0).shaderBinding->getLocalParamByName("wireframeColor")) {
 					wireframeMaterial->getShaderPass(0).shaderBinding->addParam(ProgramParam::PARAM_COLOR, "wireframeColor")->setColor(Color(1.0, 1.0, 1.0, 1.0));
@@ -1811,13 +1805,14 @@ void EntityEditorMainView::doEntityDeselect(Entity *targetEntity) {
 void EntityEditorMainView::setOverlayWireframeRecursive(Entity *targetEntity, bool val) {
 	SceneMesh *sceneMesh = dynamic_cast<SceneMesh*>(targetEntity);
 	if(sceneMesh) {
-		Material *material = sceneMesh->getMaterial();
+		std::shared_ptr<Material> material = sceneMesh->getMaterial();
 		if(material) {
 			if(val) {
 				ShaderPass wireframePass;
-				wireframePass.shader = (Shader*)Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_SHADER, "UnlitWireframe");
+				ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
+				wireframePass.shader = std::static_pointer_cast<Shader>(pool->getResource(Resource::RESOURCE_SHADER, "UnlitWireframe"));
 				wireframePass.wireframe = true;
-				wireframePass.shaderBinding = new ShaderBinding();
+				wireframePass.shaderBinding = std::make_shared<ShaderBinding>();
 				wireframePass.shaderBinding->targetShader = wireframePass.shader;
 				wireframePass.blendingMode = Renderer::BLEND_MODE_NORMAL;
 				wireframePass.shaderBinding->addParam(ProgramParam::PARAM_COLOR, "wireframeColor")->setColor(Color(0.5, 0.6, 1.0, 0.75));
@@ -2435,7 +2430,7 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
 			ObjectEntry *shaderOptions = meshEntry->addChild("shader_options");
 			
 			// RENDERER_TODO
-			saveShaderOptionsToEntry(shaderOptions, sceneMesh->getMaterial(), sceneMesh->getShaderPass(0).shaderBinding);
+			saveShaderOptionsToEntry(shaderOptions, &*sceneMesh->getMaterial(), &*sceneMesh->getShaderPass(0).shaderBinding);
 		}
 	}
 	
@@ -2482,7 +2477,7 @@ void PolycodeEntityEditor::saveShaderOptionsToEntry(ObjectEntry *entry, Material
 	
 	if(material->getNumShaderPasses() > 0) {
 		for(int s=0; s < material->getNumShaderPasses(); s++) {
-			Shader *shader = material->getShader(s);
+			Shader *shader = &*material->getShader(s);
 			
 			ObjectEntry *shaderEntry = entry->addChild("shader");
 			if(shader->expectedParams.size() > 0 || shader->expectedParams.size() > 0) {

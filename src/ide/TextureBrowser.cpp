@@ -22,7 +22,7 @@
  
 #include "polycode/ide/TextureBrowser.h"
 
-AssetEntry::AssetEntry(String assetPath, String assetName, String extension, Resource *resource) : UIElement() {
+AssetEntry::AssetEntry(String assetPath, String assetName, String extension, std::shared_ptr<Resource> resource) : UIElement() {
 
 	this->resource = resource;
 	this->assetPath = assetPath;
@@ -129,7 +129,7 @@ AssetList::~AssetList() {
 
 }
 
-Resource *AssetList::getSelectedResource() {
+std::shared_ptr<Resource> AssetList::getSelectedResource() {
 	return selectedResource;
 }
 
@@ -156,7 +156,7 @@ void AssetList::showResourcePool(ResourcePool *pool, int resourceFilter) {
 	Number xPos = 20;
 	Number yPos = 30;
 	
-	std::vector<Resource*> resources = pool->getResources(resourceFilter);
+	std::vector<std::shared_ptr<Resource> > resources = pool->getResources(resourceFilter);
 	
 	String extension;
 	
@@ -399,7 +399,7 @@ void AssetBrowser::setExtensions(std::vector<String> extensions) {
 	assetList->setExtensions(extensions);
 }
 
-Resource *AssetBrowser::getSelectedResource() {
+std::shared_ptr<Resource> AssetBrowser::getSelectedResource() {
 	return assetList->getSelectedResource();
 	
 }

@@ -18,7 +18,7 @@ end
 function ProgramResourceLoader:loadResource(path, targetPool)
 	local retVal = Polycode.ProgramResourceLoader_loadResource(self.__ptr, path, targetPool.__ptr)
 	if retVal == nil then return nil end
-	local __c = _G["Resource"]("__skip_ptr__")
+	local __c = _G["shared_ptr<Resource>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end

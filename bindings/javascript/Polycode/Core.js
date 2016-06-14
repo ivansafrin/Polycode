@@ -103,6 +103,10 @@ Core.prototype.warpCursor = function(x,y) {
 	Polycode.Core_warpCursor(this.__ptr, x,y)
 }
 
+Core.prototype.openOnScreenKeyboard = function(open) {
+	Polycode.Core_openOnScreenKeyboard(this.__ptr, open)
+}
+
 Core.prototype.createThread = function(target) {
 	Polycode.Core_createThread(this.__ptr, target)
 }
@@ -223,6 +227,10 @@ Core.prototype.flushRenderContext = function() {
 
 Core.prototype.prepareRenderContext = function() {
 	Polycode.Core_prepareRenderContext(this.__ptr)
+}
+
+Core.prototype.isWindowInitialized = function() {
+	return Polycode.Core_isWindowInitialized(this.__ptr)
 }
 
 Core.prototype.openFile = function(fileName,opts) {

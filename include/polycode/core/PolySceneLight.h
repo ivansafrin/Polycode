@@ -24,6 +24,7 @@ THE SOFTWARE.
 #pragma once
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyEntity.h"
+#include <memory>
 
 namespace Polycode {
 
@@ -85,7 +86,7 @@ namespace Polycode {
 			static const int POINT_LIGHT = 0;
 			static const int SPOT_LIGHT = 1;
 			
-			Texture *getZBufferTexture() const;
+			std::shared_ptr<Texture> getZBufferTexture() const;
 			
 			/**
 			* Sets the light color.
@@ -190,8 +191,8 @@ namespace Polycode {
 		
 			LightInfo lightInfo;
 
-			RenderBuffer *shadowMapRenderBuffer;
-			Material *unlitMaterial;
+			std::shared_ptr<RenderBuffer> shadowMapRenderBuffer;
+			std::shared_ptr<Material> unlitMaterial;
 			Camera *spotCamera;
 			Scene *parentScene;
 		

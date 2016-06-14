@@ -31,23 +31,7 @@ end
 function SceneRenderTexture:getTargetTexture()
 	local retVal =  Polycode.SceneRenderTexture_getTargetTexture(self.__ptr)
 	if retVal == nil then return nil end
-	local __c = _G["Texture"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function SceneRenderTexture:getFilterColorBufferTexture()
-	local retVal =  Polycode.SceneRenderTexture_getFilterColorBufferTexture(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["Texture"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function SceneRenderTexture:getFilterZBufferTexture()
-	local retVal =  Polycode.SceneRenderTexture_getFilterZBufferTexture(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["Texture"]("__skip_ptr__")
+	local __c = _G["shared_ptr<Texture>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end

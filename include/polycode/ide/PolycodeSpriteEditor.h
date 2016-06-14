@@ -41,7 +41,7 @@ public:
 		
 	}
 
-	Sprite *sprite;
+	std::shared_ptr<Sprite> sprite;
 	SpriteState *state;
 	String name;
 	
@@ -166,7 +166,7 @@ class SpriteBrowser : public UIElement {
 		void handleEvent(Event *event);
 		void refreshSprites();
 	
-		Sprite *getSelectedSpriteEntry();
+		std::shared_ptr<Sprite> getSelectedSpriteEntry();
 	
 		PolycodeEditor *editor;
 	protected:
@@ -175,7 +175,7 @@ class SpriteBrowser : public UIElement {
 		UIRect *headerBg;
 		SpriteSet *spriteSet;
 	
-		Sprite *selectedEntry;
+		std::shared_ptr<Sprite> selectedEntry;
 	
 		UITreeContainer *spriteTreeView;
 		UIImageButton *newSpriteButton;
@@ -312,7 +312,7 @@ class SpriteStateEditor : public UIElement {
 		SpriteStateEditor(SpriteSet *spriteSet);
 		~SpriteStateEditor();
 	
-		void setSpriteEntry(Sprite *entry);
+		void setSpriteEntry(std::shared_ptr<Sprite> entry);
 		void refreshStates();
 		void handleEvent(Event *event);
 	
@@ -332,7 +332,7 @@ class SpriteStateEditor : public UIElement {
 	
 		SpriteStateBrowser *stateBrowser;
 	
-		Sprite *spriteSetEntry;
+		std::shared_ptr<Sprite> spriteSetEntry;
 	
 		UIImageButton *newStateButton;
 	

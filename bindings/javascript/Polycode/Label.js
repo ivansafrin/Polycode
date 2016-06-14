@@ -58,7 +58,7 @@ Label.prototype.setFont = function(newFont) {
 }
 
 Label.prototype.getFont = function() {
-	var retVal = new Font()
+	var retVal = new shared_ptr<Font>()
 	retVal.__ptr = Polycode.Label_getFont(this.__ptr)
 	return retVal
 }

@@ -25,8 +25,8 @@ THE SOFTWARE.
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyColor.h"
 #include "polycode/core/PolyImage.h"
-
 #include "polycode/core/PolyFont.h"
+#include <memory>
 
 #include FT_GLYPH_H
 #include FT_IMAGE_H
@@ -74,7 +74,7 @@ namespace Polycode {
 			 * @param premultiplyAlpha If set to true, will premultiply alpha in the label image.
 			 * @see Font
 			 */
-			Label(Font *font, const String& text, int size, int antiAliasMode, bool premultiplyAlpha = false, const Color &backgroundColor = Color(0.0, 0.0, 0.0, 0.0), const Color &foregroundColor = Color(1.0, 1.0, 1.0, 1.0));
+			Label(std::shared_ptr<Font> font, const String& text, int size, int antiAliasMode, bool premultiplyAlpha = false, const Color &backgroundColor = Color(0.0, 0.0, 0.0, 0.0), const Color &foregroundColor = Color(1.0, 1.0, 1.0, 1.0));
 			virtual ~Label();
 		
 			/**
@@ -149,13 +149,13 @@ namespace Polycode {
 			 * Sets the Font used to render text in the label.
 			 * @see Font
 			 */
-			void setFont(Font *newFont);
+			void setFont(std::shared_ptr<Font> newFont);
 		
 			/**
 			 * Returns the Font currently used to render text in the label.
 			 * @see Font
 			 */
-			Font *getFont() const;
+			std::shared_ptr<Font> getFont() const;
 			
 			/**
 			 * Sets the vertical pixel size of text rendered in the label.
@@ -221,7 +221,7 @@ namespace Polycode {
 			int antiAliasMode;
 			int size;
 			String text;
-			Font *font;
+			std::shared_ptr<Font> font;
 	};
 
 }

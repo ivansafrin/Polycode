@@ -10,18 +10,6 @@ function Shader:__getvar(name)
 		return Polycode.Shader_get_numPointLights(self.__ptr)
 	elseif name == "screenShader" then
 		return Polycode.Shader_get_screenShader(self.__ptr)
-	elseif name == "vertexProgram" then
-		local retVal = Polycode.Shader_get_vertexProgram(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["ShaderProgram"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
-	elseif name == "fragmentProgram" then
-		local retVal = Polycode.Shader_get_fragmentProgram(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["ShaderProgram"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
 	elseif name == "name" then
 		return Polycode.Shader_get_name(self.__ptr)
 	end
@@ -39,12 +27,6 @@ function Shader:__setvar(name,value)
 		return true
 	elseif name == "screenShader" then
 		Polycode.Shader_set_screenShader(self.__ptr, value)
-		return true
-	elseif name == "vertexProgram" then
-		Polycode.Shader_set_vertexProgram(self.__ptr, value.__ptr)
-		return true
-	elseif name == "fragmentProgram" then
-		Polycode.Shader_set_fragmentProgram(self.__ptr, value.__ptr)
 		return true
 	elseif name == "name" then
 		Polycode.Shader_set_name(self.__ptr, value)
@@ -93,14 +75,6 @@ end
 function Shader:getExpectedParamType(name)
 	local retVal = Polycode.Shader_getExpectedParamType(self.__ptr, name)
 	return retVal
-end
-
-function Shader:setVertexProgram(vp)
-	local retVal = Polycode.Shader_setVertexProgram(self.__ptr, vp.__ptr)
-end
-
-function Shader:setFragmentProgram(fp)
-	local retVal = Polycode.Shader_setFragmentProgram(self.__ptr, fp.__ptr)
 end
 
 function Shader:__delete()

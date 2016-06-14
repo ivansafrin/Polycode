@@ -32,7 +32,7 @@ using namespace Polycode;
 
 SceneRenderTexture::SceneRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight, bool floatingPoint) : floatingPoint(floatingPoint) {
 	
-	targetFramebuffer = Services()->getRenderer()->createRenderBuffer(renderWidth, renderHeight, true, floatingPoint);
+	targetFramebuffer = std::make_shared<RenderBuffer>(renderWidth, renderHeight, true, floatingPoint);
 	
 	this->targetScene = targetScene;
 	this->targetCamera = targetCamera;
@@ -46,21 +46,13 @@ SceneRenderTexture::SceneRenderTexture(Scene *targetScene, Camera *targetCamera,
 void SceneRenderTexture::resizeRenderTexture(int newWidth, int newHeight) {
 
 	if(newWidth > 0 && newHeight > 0) {
-		Services()->getRenderer()->destroyRenderBuffer(targetFramebuffer);
-		targetFramebuffer = Services()->getRenderer()->createRenderBuffer(newWidth, newHeight, true, floatingPoint);
+		targetFramebuffer = nullptr;
+		targetFramebuffer = std::make_shared<RenderBuffer>(newWidth, newHeight, true, floatingPoint);
 	}
 }
 	
 Scene *SceneRenderTexture::getTargetScene() {
 	return targetScene;
-}
-
-Texture *SceneRenderTexture::getFilterColorBufferTexture() {
-	return NULL;
-}
-
-Texture *SceneRenderTexture::getFilterZBufferTexture() {
-	return NULL;
 }
 
 Camera *SceneRenderTexture::getTargetCamera() {
@@ -82,11 +74,10 @@ Image *SceneRenderTexture::saveToImage() {
 	return NULL;
 }
 
-Texture *SceneRenderTexture::getTargetTexture() {
+std::shared_ptr<Texture> SceneRenderTexture::getTargetTexture() {
 	return targetFramebuffer->colorTexture;
 }
 
 SceneRenderTexture::~SceneRenderTexture() {
 	CoreServices::getInstance()->getSceneManager()->unregisterRenderTexture(this);
-	Services()->getRenderer()->destroyRenderBuffer(targetFramebuffer);
 }

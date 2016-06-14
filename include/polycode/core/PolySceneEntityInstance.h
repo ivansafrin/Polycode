@@ -67,7 +67,7 @@ class SceneEntityInstance : public Entity {
 	
 		void unlinkResourcePool(ResourcePool *pool);
 	
-		SceneEntityInstanceResourceEntry *getResourceEntry();
+		std::shared_ptr<SceneEntityInstanceResourceEntry> getResourceEntry();
 	
 		ResourcePool *getTopLevelResourcePool();
 
@@ -86,14 +86,13 @@ class SceneEntityInstance : public Entity {
 		
 	protected:
 		
-		std::vector<SceneEntityInstanceLayer*> layers;
-	
+		std::vector<SceneEntityInstanceLayer*> layers;	
 		void rebuildResourceLinks();
 	
 		ResourcePool *topLevelResourcePool;
 		std::vector<ResourcePool*> resourcePools;
 		Scene *parentScene;
-		SceneEntityInstanceResourceEntry *resourceEntry;
+		std::shared_ptr<SceneEntityInstanceResourceEntry> resourceEntry;
 		
 };
 	

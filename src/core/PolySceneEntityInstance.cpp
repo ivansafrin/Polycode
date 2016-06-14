@@ -57,7 +57,7 @@ SceneEntityInstance *SceneEntityInstance::BlankSceneEntityInstance(Scene *parent
 SceneEntityInstance::SceneEntityInstance(Scene *parentScene, const String& fileName) : Entity() {
 	createNewLayer("default");
 	this->parentScene = parentScene;
-	resourceEntry = new SceneEntityInstanceResourceEntry(this);
+	resourceEntry = std::make_shared<SceneEntityInstanceResourceEntry>(this);
 	topLevelResourcePool = CoreServices::getInstance()->getResourceManager()->getGlobalPool();
 	loadFromFile(fileName);
 	resourceEntry->setResourceName(fileName);
@@ -72,16 +72,14 @@ SceneEntityInstance::SceneEntityInstance(Scene *parentScene) : Entity() {
 	cloneUsingReload = true;
 	ownsChildren = true;
 	topLevelResourcePool = CoreServices::getInstance()->getResourceManager()->getGlobalPool();	  
-	resourceEntry = new SceneEntityInstanceResourceEntry(this);
+	resourceEntry = std::make_shared<SceneEntityInstanceResourceEntry>(this);
 }
 
 SceneEntityInstance::~SceneEntityInstance() {
 	for(int i=0; i < layers.size(); i++) {
 			delete layers[i];
 	}
-	
 	CoreServices::getInstance()->getResourceManager()->removeResource(resourceEntry);
-	delete resourceEntry;
 	for(int i=0; i < resourcePools.size(); i++) {
 		CoreServices::getInstance()->getResourceManager()->unsubscibeFromResourcePool(resourcePools[i]);
 	}
@@ -91,7 +89,7 @@ void SceneEntityInstance::reloadEntityInstance() {
 	loadFromFile(fileName);
 }
 
-SceneEntityInstanceResourceEntry *SceneEntityInstance::getResourceEntry() {
+std::shared_ptr<SceneEntityInstanceResourceEntry> SceneEntityInstance::getResourceEntry() {
 	return resourceEntry;
 }
 
@@ -202,10 +200,8 @@ void SceneEntityInstance::applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMes
 										
 										if(textureEntry->name == "cubemap") {
 											Cubemap *cubemap;
-											
-											cubemap = (Cubemap*)topLevelResourcePool->getResource(Resource::RESOURCE_CUBEMAP, textureEntry->stringVal);
-											
 											// RENDERER_TODO
+											//cubemap = (Cubemap*)topLevelResourcePool->getResource(Resource::RESOURCE_CUBEMAP, textureEntry->stringVal);
 											/*
 											if(cubemap) {
 												sceneMesh->getLocalShaderOptions()->addCubemap(nameEntry->stringVal, cubemap);
@@ -228,18 +224,14 @@ void SceneEntityInstance::applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMes
 									ObjectEntry *nameEntry = (*paramEntry)["name"];
 									ObjectEntry *valueEntry = (*paramEntry)["value"];
 									if(nameEntry && valueEntry) {
-										Shader *materialShader = sceneMesh->getMaterial()->getShader(i);
+										std::shared_ptr<Shader> materialShader = sceneMesh->getMaterial()->getShader(i);
 										if(materialShader) {
 											int type = materialShader->getExpectedParamType(nameEntry->stringVal);
 											
 											// RENDERER_TODO
-											LocalShaderParam *param = sceneMesh->getShaderPass(0).shaderBinding->addParam(type, nameEntry->stringVal);
-											if(param) {
-												param->setParamValueFromString(type, valueEntry->stringVal);
-											}
+											std::shared_ptr<LocalShaderParam> param = sceneMesh->getShaderPass(0).shaderBinding->addParamFromData(nameEntry->stringVal, valueEntry->stringVal);
 										}
 									}
-									
 								}
 							}
 						}
@@ -248,7 +240,6 @@ void SceneEntityInstance::applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMes
 			}
 		}
 	}
-	
 }
 
 void SceneEntityInstance::parseObjectIntoCurve(ObjectEntry *entry, BezierCurve *curve) {
@@ -451,8 +442,6 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 				if(fileName) {
 					SceneMesh *newMesh = new SceneMesh(fileName->stringVal);
 					applySceneMesh(meshEntry, newMesh);
-					// RENDERER_TODO
-					//newMesh->cacheToVertexBuffer(true);
 					entity = newMesh;
 				}
 			}
@@ -710,9 +699,9 @@ bool SceneEntityInstance::loadFromFile(const String& fileName) {
 							String extension = path->stringVal.substr(path->stringVal.find_last_of(".")+1, path->stringVal.length());
 							
 							if(extension == "mat") {
-								newPool = new ResourcePool(path->stringVal,	 CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+								newPool = new ResourcePool(path->stringVal, CoreServices::getInstance()->getResourceManager()->getGlobalPool());
 								newPool->deleteOnUnsubscribe = true;
-								CoreServices::getInstance()->getMaterialManager()->loadMaterialLibraryIntoPool(newPool, path->stringVal);
+								newPool->loadResourcesFromMaterialFile(path->stringVal);
 							} else if( extension == "sprites") {
 								SpriteSet *spriteSet = new SpriteSet(path->stringVal,  CoreServices::getInstance()->getResourceManager()->getGlobalPool());
 								spriteSet->deleteOnUnsubscribe = true;

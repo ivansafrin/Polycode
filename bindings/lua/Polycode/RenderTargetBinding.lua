@@ -12,12 +12,6 @@ function RenderTargetBinding:__getvar(name)
 		return Polycode.RenderTargetBinding_get_name(self.__ptr)
 	elseif name == "mode" then
 		return Polycode.RenderTargetBinding_get_mode(self.__ptr)
-	elseif name == "buffer" then
-		local retVal = Polycode.RenderTargetBinding_get_buffer(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["RenderBuffer"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
 	end
 end
 
@@ -30,9 +24,6 @@ function RenderTargetBinding:__setvar(name,value)
 		return true
 	elseif name == "mode" then
 		Polycode.RenderTargetBinding_set_mode(self.__ptr, value)
-		return true
-	elseif name == "buffer" then
-		Polycode.RenderTargetBinding_set_buffer(self.__ptr, value.__ptr)
 		return true
 	end
 	return false

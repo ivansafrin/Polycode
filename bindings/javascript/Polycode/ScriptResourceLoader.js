@@ -8,7 +8,7 @@ Duktape.fin(ScriptResourceLoader.prototype, function (x) {
 })
 
 ScriptResourceLoader.prototype.loadResource = function(path,targetPool) {
-	var retVal = new Resource()
+	var retVal = new shared_ptr<Resource>()
 	retVal.__ptr = Polycode.ScriptResourceLoader_loadResource(this.__ptr, path,targetPool)
 	return retVal
 }

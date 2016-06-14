@@ -1,6 +1,5 @@
 function GPUDrawBuffer() {
 	Object.defineProperties(this, {
-		'targetFramebuffer': { enumerable: true, configurable: true, get: GPUDrawBuffer.prototype.__get_targetFramebuffer, set: GPUDrawBuffer.prototype.__set_targetFramebuffer},
 		'projectionMatrix': { enumerable: true, configurable: true, get: GPUDrawBuffer.prototype.__get_projectionMatrix, set: GPUDrawBuffer.prototype.__set_projectionMatrix},
 		'viewMatrix': { enumerable: true, configurable: true, get: GPUDrawBuffer.prototype.__get_viewMatrix, set: GPUDrawBuffer.prototype.__set_viewMatrix},
 		'cameraMatrix': { enumerable: true, configurable: true, get: GPUDrawBuffer.prototype.__get_cameraMatrix, set: GPUDrawBuffer.prototype.__set_cameraMatrix},
@@ -8,20 +7,9 @@ function GPUDrawBuffer() {
 		'clearDepthBuffer': { enumerable: true, configurable: true, get: GPUDrawBuffer.prototype.__get_clearDepthBuffer, set: GPUDrawBuffer.prototype.__set_clearDepthBuffer},
 		'clearColorBuffer': { enumerable: true, configurable: true, get: GPUDrawBuffer.prototype.__get_clearColorBuffer, set: GPUDrawBuffer.prototype.__set_clearColorBuffer},
 		'backingResolutionScale': { enumerable: true, configurable: true, get: GPUDrawBuffer.prototype.__get_backingResolutionScale, set: GPUDrawBuffer.prototype.__set_backingResolutionScale},
-		'globalMaterial': { enumerable: true, configurable: true, get: GPUDrawBuffer.prototype.__get_globalMaterial, set: GPUDrawBuffer.prototype.__set_globalMaterial},
 		'viewport': { enumerable: true, configurable: true, get: GPUDrawBuffer.prototype.__get_viewport, set: GPUDrawBuffer.prototype.__set_viewport}
 	})
 }
-GPUDrawBuffer.prototype.__get_targetFramebuffer = function() {
-	var retVal = new RenderBuffer()
-	retVal.__ptr = 	Polycode.GPUDrawBuffer__get_targetFramebuffer(this.__ptr)
-	return retVal
-}
-
-GPUDrawBuffer.prototype.__set_targetFramebuffer = function(val) {
-	Polycode.GPUDrawBuffer__set_targetFramebuffer(this.__ptr, val.__ptr)
-}
-
 GPUDrawBuffer.prototype.__get_projectionMatrix = function() {
 	var retVal = new Matrix4()
 	retVal.__ptr = 	Polycode.GPUDrawBuffer__get_projectionMatrix(this.__ptr)
@@ -86,16 +74,6 @@ GPUDrawBuffer.prototype.__get_backingResolutionScale = function() {
 
 GPUDrawBuffer.prototype.__set_backingResolutionScale = function(val) {
 	Polycode.GPUDrawBuffer__set_backingResolutionScale(this.__ptr, val.__ptr)
-}
-
-GPUDrawBuffer.prototype.__get_globalMaterial = function() {
-	var retVal = new Material()
-	retVal.__ptr = 	Polycode.GPUDrawBuffer__get_globalMaterial(this.__ptr)
-	return retVal
-}
-
-GPUDrawBuffer.prototype.__set_globalMaterial = function(val) {
-	Polycode.GPUDrawBuffer__set_globalMaterial(this.__ptr, val.__ptr)
 }
 
 GPUDrawBuffer.prototype.__get_viewport = function() {

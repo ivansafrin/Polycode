@@ -4,7 +4,6 @@ function ShaderRenderTarget() {
 		'width': { enumerable: true, configurable: true, get: ShaderRenderTarget.prototype.__get_width, set: ShaderRenderTarget.prototype.__set_width},
 		'height': { enumerable: true, configurable: true, get: ShaderRenderTarget.prototype.__get_height, set: ShaderRenderTarget.prototype.__set_height},
 		'sizeMode': { enumerable: true, configurable: true, get: ShaderRenderTarget.prototype.__get_sizeMode, set: ShaderRenderTarget.prototype.__set_sizeMode},
-		'buffer': { enumerable: true, configurable: true, get: ShaderRenderTarget.prototype.__get_buffer, set: ShaderRenderTarget.prototype.__set_buffer},
 		'normalizedWidth': { enumerable: true, configurable: true, get: ShaderRenderTarget.prototype.__get_normalizedWidth, set: ShaderRenderTarget.prototype.__set_normalizedWidth},
 		'normalizedHeight': { enumerable: true, configurable: true, get: ShaderRenderTarget.prototype.__get_normalizedHeight, set: ShaderRenderTarget.prototype.__set_normalizedHeight}
 	})
@@ -39,16 +38,6 @@ ShaderRenderTarget.prototype.__get_sizeMode = function() {
 
 ShaderRenderTarget.prototype.__set_sizeMode = function(val) {
 	Polycode.ShaderRenderTarget__set_sizeMode(this.__ptr, val)
-}
-
-ShaderRenderTarget.prototype.__get_buffer = function() {
-	var retVal = new RenderBuffer()
-	retVal.__ptr = 	Polycode.ShaderRenderTarget__get_buffer(this.__ptr)
-	return retVal
-}
-
-ShaderRenderTarget.prototype.__set_buffer = function(val) {
-	Polycode.ShaderRenderTarget__set_buffer(this.__ptr, val.__ptr)
 }
 
 ShaderRenderTarget.prototype.__get_normalizedWidth = function() {

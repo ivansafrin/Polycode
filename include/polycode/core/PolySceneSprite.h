@@ -51,7 +51,7 @@ namespace Polycode {
 		unsigned int getNumFrameIDs();
 		unsigned int getFrameIDAtIndex(unsigned int index);
 		
-		Mesh *getMeshForFrameIndex(unsigned int index);
+		std::shared_ptr<Mesh> getMeshForFrameIndex(unsigned int index);
 		
 		void insertFrame(unsigned int index, unsigned int frameID);
 		
@@ -87,7 +87,7 @@ namespace Polycode {
 		SpriteSet *spriteSet;
 		String name;
 		std::vector<unsigned int> frameIDs;
-		std::vector<Mesh*> frameMeshes;
+		std::vector<std::shared_ptr<Mesh> > frameMeshes;
 	};
 	
 	class SpriteSet;
@@ -122,14 +122,13 @@ namespace Polycode {
 		SpriteSet(const String &fileName, ResourcePool *parentPool = CoreServices::getInstance()->getResourceManager()->getGlobalPool());
 		~SpriteSet();
 		
-		void setTexture(Texture *texture);
-		Texture *getTexture();
-		Texture *loadTexture(String imageFileName);
-		
-		void addSpriteEntry(Sprite *newEntry);
+		void setTexture(std::shared_ptr<Texture> texture);
+		std::shared_ptr<Texture> getTexture();
+	
+		void addSpriteEntry(std::shared_ptr<Sprite> newEntry);
 		unsigned int getNumSpriteEntries() const;
-		Sprite *getSpriteEntry(unsigned int index) const;
-		void removeSprite(Sprite *sprite);
+		std::shared_ptr<Sprite> getSpriteEntry(unsigned int index) const;
+		void removeSprite(std::shared_ptr<Sprite> sprite);
 		
 		void loadSpriteSet(String fileName);
 		
@@ -149,14 +148,14 @@ namespace Polycode {
 		void createGridFrames(unsigned int xCount, unsigned int yCount, const Vector2 &defaultAnchor);
 		void createFramesFromIslands(unsigned int minDistance, const Vector2 &defaultAnchor);
 		
-		Sprite *getSpriteByName(String spriteName);
+		std::shared_ptr<Sprite> getSpriteByName(const String &spriteName);
 		
 	protected:
 		
 		unsigned int nextFrameIDIndex;
-		Texture *spriteTexture;
+		std::shared_ptr<Texture> spriteTexture;
 		std::vector<SpriteFrame> frames;
-		std::vector<Sprite*> sprites;
+		std::vector<std::shared_ptr<Sprite> > sprites;
 	};
 	
 	class SceneSprite : public SceneMesh {
@@ -168,12 +167,12 @@ namespace Polycode {
 		void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
 		
 		SpriteSet *getSpriteSet();
-		Sprite *getCurrentSprite();
+		std::shared_ptr<Sprite> getCurrentSprite();
 		
 		void handleEvent(Event *event);
 		
 		void setSpriteSet(SpriteSet *spriteSet);
-		void setSpriteByName(String spriteName);
+		void setSpriteByName(const String &spriteName);
 		
 		void setCurrentFrame(unsigned int frameIndex);
 		unsigned int getCurrentFrame();
@@ -185,10 +184,8 @@ namespace Polycode {
 		void setPaused(bool val);
 		bool isPaused();
 		
-		void setSprite(Sprite *spriteEntry);
-		
-		void setSpriteState(SpriteState *spriteState, unsigned int startingFrame, bool playOnce);
-		
+		void setSprite(std::shared_ptr<Sprite> spriteEntry);
+		void setSpriteState(SpriteState *spriteState, unsigned int startingFrame, bool playOnce);		
 		void setSpriteStateByName(String name, unsigned int startingFrame, bool playOnce);
 		
 		SpriteState *getCurrentSpriteState();
@@ -205,8 +202,8 @@ namespace Polycode {
 		bool paused;
 		Core *core;
 		unsigned int currentFrame;
-		Mesh *defaultMesh;
-		Sprite *currentSprite;
+		std::shared_ptr<Mesh> defaultMesh;
+		std::shared_ptr<Sprite> currentSprite;
 		SpriteState *currentSpriteState;
 		SpriteSet *spriteSet;
 		Number spriteTimer;

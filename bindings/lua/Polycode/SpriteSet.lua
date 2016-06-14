@@ -30,15 +30,7 @@ end
 function SpriteSet:getTexture()
 	local retVal =  Polycode.SpriteSet_getTexture(self.__ptr)
 	if retVal == nil then return nil end
-	local __c = _G["Texture"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function SpriteSet:loadTexture(imageFileName)
-	local retVal = Polycode.SpriteSet_loadTexture(self.__ptr, imageFileName)
-	if retVal == nil then return nil end
-	local __c = _G["Texture"]("__skip_ptr__")
+	local __c = _G["shared_ptr<Texture>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end
@@ -55,7 +47,7 @@ end
 function SpriteSet:getSpriteEntry(index)
 	local retVal = Polycode.SpriteSet_getSpriteEntry(self.__ptr, index)
 	if retVal == nil then return nil end
-	local __c = _G["Sprite"]("__skip_ptr__")
+	local __c = _G["shared_ptr<Sprite>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end
@@ -116,7 +108,7 @@ end
 function SpriteSet:getSpriteByName(spriteName)
 	local retVal = Polycode.SpriteSet_getSpriteByName(self.__ptr, spriteName)
 	if retVal == nil then return nil end
-	local __c = _G["Sprite"]("__skip_ptr__")
+	local __c = _G["shared_ptr<Sprite>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end

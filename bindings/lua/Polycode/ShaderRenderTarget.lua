@@ -12,12 +12,6 @@ function ShaderRenderTarget:__getvar(name)
 		return Polycode.ShaderRenderTarget_get_height(self.__ptr)
 	elseif name == "sizeMode" then
 		return Polycode.ShaderRenderTarget_get_sizeMode(self.__ptr)
-	elseif name == "buffer" then
-		local retVal = Polycode.ShaderRenderTarget_get_buffer(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["RenderBuffer"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
 	elseif name == "normalizedWidth" then
 		return Polycode.ShaderRenderTarget_get_normalizedWidth(self.__ptr)
 	elseif name == "normalizedHeight" then
@@ -37,9 +31,6 @@ function ShaderRenderTarget:__setvar(name,value)
 		return true
 	elseif name == "sizeMode" then
 		Polycode.ShaderRenderTarget_set_sizeMode(self.__ptr, value)
-		return true
-	elseif name == "buffer" then
-		Polycode.ShaderRenderTarget_set_buffer(self.__ptr, value.__ptr)
 		return true
 	elseif name == "normalizedWidth" then
 		Polycode.ShaderRenderTarget_set_normalizedWidth(self.__ptr, value)

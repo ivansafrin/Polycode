@@ -46,7 +46,7 @@ end
 function SceneSprite:getCurrentSprite()
 	local retVal =  Polycode.SceneSprite_getCurrentSprite(self.__ptr)
 	if retVal == nil then return nil end
-	local __c = _G["Sprite"]("__skip_ptr__")
+	local __c = _G["shared_ptr<Sprite>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end

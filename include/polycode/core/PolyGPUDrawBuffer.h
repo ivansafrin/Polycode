@@ -49,7 +49,7 @@ namespace Polycode {
 			Number spotlightCutoff;
 			Number spotlightExponent;
 			bool shadowsEnabled;
-			Texture *shadowMapTexture;
+			std::shared_ptr<Texture> shadowMapTexture;
 			Matrix4 lightViewMatrix;
 	};
 	
@@ -74,7 +74,7 @@ namespace Polycode {
 		std::shared_ptr<MeshGeometry> submesh;
 		GPUDrawOptions options;
 		Matrix4 modelMatrix;
-		Material *material;
+		std::shared_ptr<Material> material;
 		std::vector<ShaderPass> shaderPasses;
 	};
 	
@@ -83,7 +83,7 @@ namespace Polycode {
 		GPUDrawBuffer();
 		~GPUDrawBuffer();
 		
-		RenderBuffer *targetFramebuffer;
+		std::shared_ptr<RenderBuffer> targetFramebuffer;
 		Matrix4 projectionMatrix;
 		Matrix4 viewMatrix;
 		Matrix4 cameraMatrix;
@@ -91,7 +91,7 @@ namespace Polycode {
 		bool clearDepthBuffer;
 		bool clearColorBuffer;
 		Vector2 backingResolutionScale;
-		Material *globalMaterial;
+		std::shared_ptr<Material> globalMaterial;
 		
 		std::vector<LightInfo> lights;
 		

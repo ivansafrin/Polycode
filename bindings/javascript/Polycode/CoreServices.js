@@ -45,12 +45,6 @@ CoreServices.prototype.getInput = function() {
 	return retVal
 }
 
-CoreServices.prototype.getMaterialManager = function() {
-	var retVal = new MaterialManager()
-	retVal.__ptr = Polycode.CoreServices_getMaterialManager(this.__ptr)
-	return retVal
-}
-
 CoreServices.prototype.getSceneManager = function() {
 	var retVal = new SceneManager()
 	retVal.__ptr = Polycode.CoreServices_getSceneManager(this.__ptr)

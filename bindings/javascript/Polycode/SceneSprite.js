@@ -18,7 +18,7 @@ SceneSprite.prototype.getSpriteSet = function() {
 }
 
 SceneSprite.prototype.getCurrentSprite = function() {
-	var retVal = new Sprite()
+	var retVal = new shared_ptr<Sprite>()
 	retVal.__ptr = Polycode.SceneSprite_getCurrentSprite(this.__ptr)
 	return retVal
 }

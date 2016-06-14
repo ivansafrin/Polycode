@@ -494,7 +494,6 @@ void Entity::transformAndRender(GPUDrawBuffer *buffer, Polycode::Rectangle *pare
 		rebuildTransformMatrix();
 	}
 	
-
 	Polycode::Rectangle finalScissorBox = scissorBox;
 	Polycode::Rectangle *scissorBoxForChildren = parentScissorBox;
 	

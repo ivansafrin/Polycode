@@ -24,7 +24,6 @@
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/modules/ui/PolyUIElement.h"
 #include "polycode/core/PolySceneLabel.h"
-#include "polycode/core/PolySceneImage.h"
 #include "polycode/core/PolyScenePrimitive.h"
 #include "polycode/core/PolyEntity.h"
 #include "polycode/modules/ui/PolyUITreeEvent.h"
@@ -47,6 +46,8 @@ namespace Polycode {
 			void handleEvent(Event *event);
 			void toggleCollapsed();
 			UITree *addTreeChild(String icon, String text, void *userData = NULL);
+			UITree *addTreeChildShared(String icon, String text, std::shared_ptr<void> userData);
+		
 			void Update();
 			void refreshTree();
 			Number getTreeHeight();
@@ -80,6 +81,9 @@ namespace Polycode {
 
 			bool isSelectedByKey() { return selectedByKey; }
 		
+			void setSharedUserData(std::shared_ptr<void> userData);
+			std::shared_ptr<void> getSharedUserData();
+		
 		private:
 
 			bool willDrag;
@@ -87,6 +91,7 @@ namespace Polycode {
 		
 			String labelText;
 			void *userData;
+			std::shared_ptr<void> sharedUserData;
 			Number treeWidth;
 			Number treeOffset;
 			UITree *selectedNode;
@@ -107,7 +112,6 @@ namespace Polycode {
 			int size;
 			Number cellHeight;
 			Number cellPadding;
-
 			bool selectedByKey;
 	};
 }

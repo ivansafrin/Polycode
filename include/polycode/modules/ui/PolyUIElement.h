@@ -23,8 +23,8 @@
 #pragma once
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyEntity.h"
-#include "polycode/core/PolySceneImage.h"
 #include "polycode/core/PolySceneLabel.h"
+#include <memory>
 
 namespace Polycode {
 	/*
@@ -96,26 +96,25 @@ namespace Polycode {
 			void Resize(Number width, Number height);
 			void Render(GPUDrawBuffer *buffer);
 			void loadTexture(String fileName);
-			void setTexture(Texture *texture);
+			void setTexture(std::shared_ptr<Texture> texture);
 			void setImageCoordinates(Number x, Number y, Number width, Number height, Number imageScale = 1.0);
 			Number getImageWidth() const;
 			Number getImageHeight() const;
-			void setMaterial(Material *material);
+			void setMaterial(std::shared_ptr<Material> material);
 		
-			Texture *getTexture();			
+			std::shared_ptr<Texture> getTexture();			
 		protected:
 		
 			Number imageWidth;
 			Number imageHeight;
 		
-			Material *material;
+			std::shared_ptr<Material> material;
 			std::vector<ShaderPass> shaderPasses;
 			
 			Mesh *rectMesh;
 			MeshGeometry rectMeshGeometry;
 
-			Texture *texture;
-			
+			std::shared_ptr<Texture> texture;
 	};
 	
 	class _PolyExport UILabel : public UIElement {

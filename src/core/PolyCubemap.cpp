@@ -24,7 +24,12 @@
 
 using namespace Polycode;
 
-Cubemap::Cubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4, Texture *t5) : Resource(Resource::RESOURCE_CUBEMAP) {
+Cubemap::Cubemap(std::shared_ptr<Texture> t0,
+					std::shared_ptr<Texture> t1,
+					std::shared_ptr<Texture> t2,
+					std::shared_ptr<Texture> t3,
+					std::shared_ptr<Texture> t4,
+					std::shared_ptr<Texture> t5) : Resource(Resource::RESOURCE_CUBEMAP) {
 	textures.push_back(t0);
 	textures.push_back(t1);
 	textures.push_back(t2);
@@ -33,13 +38,13 @@ Cubemap::Cubemap(Texture *t0, Texture *t1, Texture *t2, Texture *t3, Texture *t4
 	textures.push_back(t5); 
 }
 
-void Cubemap::setTexture(Texture *texture, int index) {
+void Cubemap::setTexture(std::shared_ptr<Texture> texture, int index) {
 	if(index >= 0 && index < 6) {
 		textures[index] = texture;		
 	}	
 }
 
-Texture *Cubemap::getTexture(int index) {
+std::shared_ptr<Texture> Cubemap::getTexture(int index) {
 	if(index >= 0 && index < 6) {
 		return textures[index];
 	} else {

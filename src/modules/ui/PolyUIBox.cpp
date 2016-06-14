@@ -40,14 +40,11 @@ UIBox::UIBox(String imageFile, Number t, Number r, Number b, Number l, Number bo
 	setWidth(boxWidth);
 	setHeight(boxHeight);
 	
-	MaterialManager *materialManager = CoreServices::getInstance()->getMaterialManager();
-	texture = materialManager->createTextureFromFile(imageFile, materialManager->clampDefault, false);
-	
 	boxMesh = new Mesh();
 	
-	setMaterial((Material*)CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
+	setMaterial(std::static_pointer_cast<Material>(CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit")));
 	
-	shaderPasses[0].shaderBinding->setTextureForParam("diffuse", texture);
+	std::shared_ptr<Texture> texture = shaderPasses[0].shaderBinding->loadTextureForParam("diffuse", imageFile);
 	
 	imageWidth = texture->getWidth();
 	imageHeight = texture->getHeight();
@@ -129,17 +126,13 @@ void UIBox::redrawMesh() {
 	boxMesh->addSubmesh(newGeometry);
 }
 
-void UIBox::setMaterial(Material *material) {
-	
-	for(int i=0; i < shaderPasses.size(); i++) {
-		Services()->getRenderer()->destroyShaderBinding(shaderPasses[i].shaderBinding);
-	}
+void UIBox::setMaterial(std::shared_ptr<Material> material) {
 	shaderPasses.clear();
 	
 	this->material = material;
 	
 	ShaderPass pass;
-	pass.shaderBinding = new ShaderBinding();
+	pass.shaderBinding = std::make_shared<ShaderBinding>();
 	pass.shaderBinding->targetShader = pass.shader;
 	pass.shader = material->getShaderPass(0).shader;
 	shaderPasses.push_back(pass);

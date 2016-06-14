@@ -25,6 +25,7 @@
 #include "polycode/core/PolyConfig.h"
 #include "polycode/core/PolyInputEvent.h"
 #include "polycode/core/PolyLabel.h"
+#include "polycode/core/PolyTexture.h"
 #include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyRenderer.h"
 
@@ -239,7 +240,8 @@ void UITree::handleEvent(Event *event) {
 }
 
 void UITree::setIcon(String iconFile) {
-	Texture *texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(iconFile);
+	ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
+	std::shared_ptr<Texture> texture = std::static_pointer_cast<Texture>(globalPool->loadResource(iconFile));
 	iconImage->setTexture(texture);
 }
 
@@ -344,6 +346,20 @@ void *UITree::getUserData() {
 
 void UITree::setUserData(void *data) {
 	userData = data;
+}
+
+UITree *UITree::addTreeChildShared(String icon, String text, std::shared_ptr<void> userData) {
+	UITree *newTree = addTreeChild(icon, text, NULL);
+	newTree->setSharedUserData(userData);
+	return newTree;
+}
+
+void UITree::setSharedUserData(std::shared_ptr<void> userData) {
+	sharedUserData = userData;
+}
+
+std::shared_ptr<void> UITree::getSharedUserData() {
+	return sharedUserData;
 }
 
 UITree *UITree::addTreeChild(String icon, String text, void *userData) {

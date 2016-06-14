@@ -49,8 +49,6 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 	
 	CoreServices::getInstance()->getResourceManager()->getGlobalPool()->reloadResourcesOnModify = true;
 	
-	CoreServices::getInstance()->getMaterialManager()->mipmapsDefault = true;	 
-	
 	runNextFrame = false;
 	
 	core->addEventListener(this, Core::EVENT_CORE_RESIZE);
@@ -59,8 +57,6 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 			
 	globalClipboard = new PolycodeClipboard();
 	
-	CoreServices::getInstance()->getMaterialManager()->setTextureFilteringMode(Texture::FILTERING_NEAREST);
-
 	ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
 	
 	//TODO: this results in doubling "sans" in the font browsers, need to fix
@@ -82,9 +78,7 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 	globalPool->loadResourceWithName("Fonts/Lato-Black.ttf", "section");
 	
 
-	CoreServices::getInstance()->getMaterialManager()->setTextureFilteringMode(Texture::FILTERING_LINEAR);
-	
-	loadConfigFile();	
+	loadConfigFile();
 
 	String themeName = CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiTheme");
 	
@@ -100,6 +94,8 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 		}
 		 */
 	}
+	
+	Texture::defaultTextureFiltering = Texture::FILTERING_LINEAR;
 	
 	printf("LOADING THEME: %s\n", themeName.c_str());
 	
@@ -1213,15 +1209,13 @@ void PolycodeIDEApp::loadConfigFile() {
 	
 	String uiThemeName = "dark";
 	
-	CoreServices::getInstance()->getMaterialManager()->setTextureFilteringMode(Texture::FILTERING_LINEAR);
-	
 	ObjectEntry *texture_filtering_mode = configFile.root["texture_filtering_mode"];
 	config->setStringValue("Polycode", "textureFilteringMode", "linear");	
 	
 	if(texture_filtering_mode) {
 		if(texture_filtering_mode->stringVal == "nearest") {
-		config->setStringValue("Polycode", "textureFilteringMode", "nearest");		
-			CoreServices::getInstance()->getMaterialManager()->setTextureFilteringMode(Texture::FILTERING_NEAREST);
+			config->setStringValue("Polycode", "textureFilteringMode", "nearest");
+			Texture::defaultTextureFiltering = Texture::FILTERING_NEAREST;
 		}
 	}
 	

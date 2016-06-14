@@ -8,7 +8,7 @@ Duktape.fin(FontResourceLoader.prototype, function (x) {
 })
 
 FontResourceLoader.prototype.loadResource = function(path,targetPool) {
-	var retVal = new Resource()
+	var retVal = new shared_ptr<Resource>()
 	retVal.__ptr = Polycode.FontResourceLoader_loadResource(this.__ptr, path,targetPool)
 	return retVal
 }

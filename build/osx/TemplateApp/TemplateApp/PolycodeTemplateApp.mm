@@ -18,7 +18,7 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     core->addFileSource("archive", "hdr.pak");
     globalPool->loadResourcesFromFolder("hdr", true);
     
-    Polycode:Script *rotateScript = (Script*) globalPool->loadResource("rotate.js");
+	//std::shared_ptr<Script>rotateScript = std::static_pointer_cast<Script>(globalPool->loadResource("rotate.js"));
     
 	// Write your code here!
     
@@ -28,7 +28,7 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     
    // scene->setOverrideMaterial((Material*)globalPool->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
     
-    for(int i=0; i  < 3000; i++) {
+    for(int i=0; i  < 2000; i++) {
         
         MeshGeometry geom;
         geom.createVPlane(0.5, 0.5);
@@ -71,7 +71,7 @@ bool PolycodeTemplateApp::Update() {
     for(int i=0; i < tests.size(); i++) {
         tests[i]->Roll(elapsed * 30.0);
     }
-	/*
+	
     if(tests.size() > 0) {
         SceneMesh *removing = tests[0];
         tests.erase(tests.begin());
@@ -90,7 +90,7 @@ bool PolycodeTemplateApp::Update() {
         scene->addChild(test);
         tests.push_back(test);
     }
-    */
+	 
     ++numFrames;
     counter += elapsed;
     if(counter >= 1.0) {

@@ -19,20 +19,8 @@ Duktape.fin(SceneRenderTexture.prototype, function (x) {
 })
 
 SceneRenderTexture.prototype.getTargetTexture = function() {
-	var retVal = new Texture()
+	var retVal = new shared_ptr<Texture>()
 	retVal.__ptr = Polycode.SceneRenderTexture_getTargetTexture(this.__ptr)
-	return retVal
-}
-
-SceneRenderTexture.prototype.getFilterColorBufferTexture = function() {
-	var retVal = new Texture()
-	retVal.__ptr = Polycode.SceneRenderTexture_getFilterColorBufferTexture(this.__ptr)
-	return retVal
-}
-
-SceneRenderTexture.prototype.getFilterZBufferTexture = function() {
-	var retVal = new Texture()
-	retVal.__ptr = Polycode.SceneRenderTexture_getFilterZBufferTexture(this.__ptr)
 	return retVal
 }
 
