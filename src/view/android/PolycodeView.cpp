@@ -104,14 +104,18 @@ void onStart(ANativeActivity* activity){
 void onResume(ANativeActivity* activity){
 	Logger::log("onResume");
 	JNIWakeLock(activity, true);
-	if(core)
+	if(core){
 		core->paused = false;
+		OpenSLAudioInterface::queueCallback(NULL, core->getAudioInterface());
+	}
 	((PolycodeView*)activity->instance)->lifecycleFlags |= APP_STATUS_ACTIVE;
 }
 
 void onPause(ANativeActivity* activity){
 	Logger::log("onPause");
 	JNIWakeLock(activity, false);
+	if(core)
+		core->paused = true;
 	((PolycodeView*)activity->instance)->lifecycleFlags &= ~APP_STATUS_ACTIVE;
 }
 
@@ -181,7 +185,7 @@ void onNativeWindowCreated(ANativeActivity* activity, ANativeWindow *window){
 		((PolycodeView*)activity->instance)->lifecycleFlags|=APP_STATUS_HAS_REAL_SURFACE;
 		if(core){
 			if(((PolycodeView*)activity->instance)->firstWindowCreate){
-				Services()->getSoundManager()->setAudioInterface(new OpenSLAudioInterface());
+				
 				((PolycodeView*)activity->instance)->firstWindowCreate = false;
 			}
 			core->recreateContext = true;

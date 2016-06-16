@@ -84,8 +84,6 @@ AndroidCore::AndroidCore(PolycodeView *view, int xRes, int yRes, bool fullScreen
 	defaultWorkingDirectory = view->native_activity->internalDataPath;
 	userHomeDirectory = view->native_activity->externalDataPath;
 	
-	services->getSoundManager()->setAudioInterface(new AudioInterface());
-	
 	paused = true;
 	
 	initKeyMap();
@@ -93,7 +91,8 @@ AndroidCore::AndroidCore(PolycodeView *view, int xRes, int yRes, bool fullScreen
 	this->view = view;
 	core = this;
 	
-	services->getSoundManager()->setAudioInterface(new OpenSLAudioInterface());
+	audioInterface = new OpenSLAudioInterface();
+	services->getSoundManager()->setAudioInterface(audioInterface);
 	extractResources();
 }
 
@@ -675,3 +674,6 @@ PolyKEY AndroidCore::mapKey(int keyCode){
 	return keyMap[(unsigned int) keyCode];
 }
 
+OpenSLAudioInterface* AndroidCore::getAudioInterface(){
+	return audioInterface;
+}
