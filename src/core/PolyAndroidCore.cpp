@@ -136,12 +136,15 @@ void AndroidCore::checkEvents() {
 			case InputEvent::EVENT_MOUSEUP:
 				input->setMouseButtonState(event.mouseButton, false, getTicks());
 				break;
+			case InputEvent::EVENT_TEXTINPUT:
+				input->textInput(event.text);
+				break;
 			case InputEvent::EVENT_KEYDOWN:
 				if (!checkSpecialKeyEvents(event.keyCode))
-					input->setKeyState(event.keyCode, event.unicodeChar, true, getTicks());
+					input->setKeyState(event.keyCode, true, getTicks());
 				break;
 			case InputEvent::EVENT_KEYUP:
-				input->setKeyState(event.keyCode, event.unicodeChar, false, getTicks());
+				input->setKeyState(event.keyCode, false, getTicks());
 				break;
 			case InputEvent::EVENT_TOUCHES_BEGAN:
 				input->touchesBegan(event.touch, event.touches, getTicks());
@@ -248,8 +251,9 @@ void AndroidCore::openOnScreenKeyboard(bool open){
 		jboolean lRes = jniEnv->CallBooleanMethod(lInputMethodManager, MethodHideSoftInput, lBinder, lFlags); 
 	} 
 
-	// Finished with the JVM. 
-	javaVM->DetachCurrentThread(); 
+	// Finished with the JVM.
+	if (attached)
+	javaVM->DetachCurrentThread();
 }
 
 void launchThread(Threaded *target) {

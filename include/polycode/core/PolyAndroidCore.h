@@ -57,7 +57,7 @@ namespace Polycode {
 		TouchInfo touch;
 
 		PolyKEY keyCode;
-		wchar_t unicodeChar;
+		String text;
 
 		char mouseButton;
 		long eventTime;

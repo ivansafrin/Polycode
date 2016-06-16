@@ -133,7 +133,7 @@ void onDestroy(ANativeActivity* activity){
 	JNIEnv* jniEnv;
 	bool attached = false;
 	
-	if(javaVM->GetEnv((void**)&jniEnv, JNI_VERSION_1_6) ==JNI_EDETACHED){
+	if(javaVM->GetEnv((void**)&jniEnv, JNI_VERSION_1_6) == JNI_EDETACHED){
 		JavaVMAttachArgs attachArgs;
 		attachArgs.version = JNI_VERSION_1_6;
 		attachArgs.name = "NativeThread";
@@ -246,7 +246,6 @@ void onLowMemory(ANativeActivity* activity){
 }
 
 static int inputLoop(int fd, int events, void* data){
-// 	Logger::log("inputLoop");
 	AInputQueue* native_input = ((PolycodeView*)data)->native_input;
 	AndroidEvent event;
 	AInputEvent* aev;
@@ -267,10 +266,15 @@ static int inputLoop(int fd, int events, void* data){
 				action = AKeyEvent_getAction(aev);
 				if(action == AKEY_EVENT_ACTION_DOWN){
 					event.eventCode = InputEvent::EVENT_KEYDOWN;
-					event.unicodeChar = JNIGetUnicodeChar(((PolycodeView*)data)->native_activity, AKEY_EVENT_ACTION_DOWN, kC, AKeyEvent_getMetaState(aev));
+					
+					AndroidEvent textEvent; 
+					textEvent.text = JNIGetUnicodeChar(((PolycodeView*)data)->native_activity, AKEY_EVENT_ACTION_DOWN, kC, AKeyEvent_getMetaState(aev)); 
+					textEvent.eventCode = InputEvent::EVENT_TEXTINPUT; 
+					textEvent.eventGroup = AndroidEvent::INPUT_EVENT; 
+					if(textEvent.text.length() > 0 && !(textEvent.text[0] < ' ' || textEvent.text[0] == 127) && textEvent.text[0] > 0) 
+						core->handleSystemEvent(textEvent); 
 				} else if (action == AKEY_EVENT_ACTION_UP){
 					event.eventCode = InputEvent::EVENT_KEYUP;
-					event.unicodeChar = JNIGetUnicodeChar(((PolycodeView*)data)->native_activity, AKEY_EVENT_ACTION_UP, kC, AKeyEvent_getMetaState(aev));
 				}
 				core->handleSystemEvent(event);
 			} else if(type == AINPUT_EVENT_TYPE_MOTION){
