@@ -1,4 +1,7 @@
 function OSFileEntry() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.OSFileEntry()
+	}
 	Object.defineProperties(this, {
 		'name': { enumerable: true, configurable: true, get: OSFileEntry.prototype.__get_name, set: OSFileEntry.prototype.__set_name},
 		'extension': { enumerable: true, configurable: true, get: OSFileEntry.prototype.__get_extension, set: OSFileEntry.prototype.__set_extension},
@@ -8,6 +11,7 @@ function OSFileEntry() {
 		'type': { enumerable: true, configurable: true, get: OSFileEntry.prototype.__get_type, set: OSFileEntry.prototype.__set_type}
 	})
 }
+
 OSFileEntry.prototype.__get_name = function() {
 	return Polycode.OSFileEntry__get_name(this.__ptr)
 }
@@ -64,5 +68,5 @@ Duktape.fin(OSFileEntry.prototype, function (x) {
 })
 
 OSFileEntry.prototype.init = function(path,name,type) {
-	Polycode.OSFileEntry_init(this.__ptr, path,name,type)
+	Polycode.OSFileEntry_init(this.__ptr, path, name, type)
 }

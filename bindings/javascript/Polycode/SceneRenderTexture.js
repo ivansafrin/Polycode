@@ -1,8 +1,12 @@
-function SceneRenderTexture() {
+function SceneRenderTexture(targetScene,targetCamera,renderWidth,renderHeight,floatingPoint) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.SceneRenderTexture(targetScene,targetCamera,renderWidth,renderHeight,floatingPoint)
+	}
 	Object.defineProperties(this, {
 		'enabled': { enumerable: true, configurable: true, get: SceneRenderTexture.prototype.__get_enabled, set: SceneRenderTexture.prototype.__set_enabled}
 	})
 }
+
 SceneRenderTexture.prototype.__get_enabled = function() {
 	return Polycode.SceneRenderTexture__get_enabled(this.__ptr)
 }
@@ -19,7 +23,7 @@ Duktape.fin(SceneRenderTexture.prototype, function (x) {
 })
 
 SceneRenderTexture.prototype.getTargetTexture = function() {
-	var retVal = new shared_ptr<Texture>()
+	var retVal = new Texture()
 	retVal.__ptr = Polycode.SceneRenderTexture_getTargetTexture(this.__ptr)
 	return retVal
 }
@@ -35,7 +39,7 @@ SceneRenderTexture.prototype.saveToImage = function() {
 }
 
 SceneRenderTexture.prototype.resizeRenderTexture = function(newWidth,newHeight) {
-	Polycode.SceneRenderTexture_resizeRenderTexture(this.__ptr, newWidth,newHeight)
+	Polycode.SceneRenderTexture_resizeRenderTexture(this.__ptr, newWidth, newHeight)
 }
 
 SceneRenderTexture.prototype.getTargetScene = function() {

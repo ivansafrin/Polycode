@@ -1,4 +1,7 @@
 function AttributeBinding() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.AttributeBinding()
+	}
 	Object.defineProperties(this, {
 		'name': { enumerable: true, configurable: true, get: AttributeBinding.prototype.__get_name, set: AttributeBinding.prototype.__set_name},
 		'vertexData': { enumerable: true, configurable: true, get: AttributeBinding.prototype.__get_vertexData, set: AttributeBinding.prototype.__set_vertexData},
@@ -6,6 +9,7 @@ function AttributeBinding() {
 		'enabled': { enumerable: true, configurable: true, get: AttributeBinding.prototype.__get_enabled, set: AttributeBinding.prototype.__set_enabled}
 	})
 }
+
 AttributeBinding.prototype.__get_name = function() {
 	return Polycode.AttributeBinding__get_name(this.__ptr)
 }

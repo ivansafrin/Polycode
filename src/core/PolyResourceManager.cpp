@@ -898,7 +898,7 @@ void ScriptResourceLoader::initJavascript() {
 	duk_put_global_string(duktapeContext, "require");
 
 	loadJSFile(duktapeContext, "Polycode.js");
-	
+	loadJSFile(duktapeContext, "defaults.js");
 }
 
 ScriptResourceLoader::ScriptResourceLoader() {

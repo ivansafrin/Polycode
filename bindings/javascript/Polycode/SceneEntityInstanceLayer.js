@@ -1,4 +1,7 @@
-function SceneEntityInstanceLayer() {
+function SceneEntityInstanceLayer(instance,name) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.SceneEntityInstanceLayer(instance,name)
+	}
 	Object.defineProperties(this, {
 		'name': { enumerable: true, configurable: true, get: SceneEntityInstanceLayer.prototype.__get_name, set: SceneEntityInstanceLayer.prototype.__set_name},
 		'layerID': { enumerable: true, configurable: true, get: SceneEntityInstanceLayer.prototype.__get_layerID, set: SceneEntityInstanceLayer.prototype.__set_layerID},
@@ -6,6 +9,7 @@ function SceneEntityInstanceLayer() {
 		'instance': { enumerable: true, configurable: true, get: SceneEntityInstanceLayer.prototype.__get_instance, set: SceneEntityInstanceLayer.prototype.__set_instance}
 	})
 }
+
 SceneEntityInstanceLayer.prototype.__get_name = function() {
 	return Polycode.SceneEntityInstanceLayer__get_name(this.__ptr)
 }

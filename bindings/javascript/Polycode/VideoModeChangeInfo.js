@@ -1,4 +1,7 @@
 function VideoModeChangeInfo() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.VideoModeChangeInfo()
+	}
 	Object.defineProperties(this, {
 		'xRes': { enumerable: true, configurable: true, get: VideoModeChangeInfo.prototype.__get_xRes, set: VideoModeChangeInfo.prototype.__set_xRes},
 		'yRes': { enumerable: true, configurable: true, get: VideoModeChangeInfo.prototype.__get_yRes, set: VideoModeChangeInfo.prototype.__set_yRes},
@@ -9,6 +12,7 @@ function VideoModeChangeInfo() {
 		'retinaSupport': { enumerable: true, configurable: true, get: VideoModeChangeInfo.prototype.__get_retinaSupport, set: VideoModeChangeInfo.prototype.__set_retinaSupport}
 	})
 }
+
 VideoModeChangeInfo.prototype.__get_xRes = function() {
 	return Polycode.VideoModeChangeInfo__get_xRes(this.__ptr)
 }

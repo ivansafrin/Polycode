@@ -1,4 +1,7 @@
 function Rectangle() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.Rectangle()
+	}
 	Object.defineProperties(this, {
 		'x': { enumerable: true, configurable: true, get: Rectangle.prototype.__get_x, set: Rectangle.prototype.__set_x},
 		'y': { enumerable: true, configurable: true, get: Rectangle.prototype.__get_y, set: Rectangle.prototype.__set_y},
@@ -6,6 +9,7 @@ function Rectangle() {
 		'h': { enumerable: true, configurable: true, get: Rectangle.prototype.__get_h, set: Rectangle.prototype.__set_h}
 	})
 }
+
 Rectangle.prototype.__get_x = function() {
 	return Polycode.Rectangle__get_x(this.__ptr)
 }
@@ -46,7 +50,7 @@ Duktape.fin(Rectangle.prototype, function (x) {
 })
 
 Rectangle.prototype.setRect = function(x,y,w,h) {
-	Polycode.Rectangle_setRect(this.__ptr, x,y,w,h)
+	Polycode.Rectangle_setRect(this.__ptr, x, y, w, h)
 }
 
 Rectangle.prototype.Clipped = function(rect) {

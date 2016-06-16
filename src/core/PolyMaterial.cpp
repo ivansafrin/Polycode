@@ -61,6 +61,10 @@ ShaderPass::ShaderPass(const ShaderPass &other) {
 ShaderPass::~ShaderPass() {
 }
 
+std::shared_ptr<ShaderBinding> ShaderPass::getShaderBinding() {
+	return shaderBinding;
+}
+
 
 Material::Material(const String& name) : Resource(Resource::RESOURCE_MATERIAL) {
 	this->name = name;

@@ -1,4 +1,7 @@
 function ShaderRenderTarget() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.ShaderRenderTarget()
+	}
 	Object.defineProperties(this, {
 		'id': { enumerable: true, configurable: true, get: ShaderRenderTarget.prototype.__get_id, set: ShaderRenderTarget.prototype.__set_id},
 		'width': { enumerable: true, configurable: true, get: ShaderRenderTarget.prototype.__get_width, set: ShaderRenderTarget.prototype.__set_width},
@@ -8,6 +11,7 @@ function ShaderRenderTarget() {
 		'normalizedHeight': { enumerable: true, configurable: true, get: ShaderRenderTarget.prototype.__get_normalizedHeight, set: ShaderRenderTarget.prototype.__set_normalizedHeight}
 	})
 }
+
 ShaderRenderTarget.prototype.__get_id = function() {
 	return Polycode.ShaderRenderTarget__get_id(this.__ptr)
 }

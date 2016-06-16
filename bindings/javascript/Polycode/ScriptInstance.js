@@ -1,8 +1,12 @@
 function ScriptInstance() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.ScriptInstance()
+	}
 	Object.defineProperties(this, {
 		'script': { enumerable: true, configurable: true, get: ScriptInstance.prototype.__get_script, set: ScriptInstance.prototype.__set_script}
 	})
 }
+
 ScriptInstance.prototype.__get_script = function() {
 	var retVal = new Script()
 	retVal.__ptr = 	Polycode.ScriptInstance__get_script(this.__ptr)

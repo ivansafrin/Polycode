@@ -1,5 +1,9 @@
 function ProgramResourceLoader() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.ProgramResourceLoader()
+	}
 }
+
 Duktape.fin(ProgramResourceLoader.prototype, function (x) {
 	if (x === ProgramResourceLoader.prototype) {
 		return;
@@ -8,7 +12,7 @@ Duktape.fin(ProgramResourceLoader.prototype, function (x) {
 })
 
 ProgramResourceLoader.prototype.loadResource = function(path,targetPool) {
-	var retVal = new shared_ptr<Resource>()
-	retVal.__ptr = Polycode.ProgramResourceLoader_loadResource(this.__ptr, path,targetPool)
+	var retVal = new Resource()
+	retVal.__ptr = Polycode.ProgramResourceLoader_loadResource(this.__ptr, path, targetPool.__ptr)
 	return retVal
 }

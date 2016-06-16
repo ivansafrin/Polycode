@@ -1,9 +1,13 @@
-function Vector2() {
+function Vector2(x,y) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.Vector2(x,y)
+	}
 	Object.defineProperties(this, {
 		'x': { enumerable: true, configurable: true, get: Vector2.prototype.__get_x, set: Vector2.prototype.__set_x},
 		'y': { enumerable: true, configurable: true, get: Vector2.prototype.__get_y, set: Vector2.prototype.__set_y}
 	})
 }
+
 Vector2.prototype.__get_x = function() {
 	return Polycode.Vector2__get_x(this.__ptr)
 }
@@ -28,7 +32,7 @@ Duktape.fin(Vector2.prototype, function (x) {
 })
 
 Vector2.prototype.set = function(x,y) {
-	Polycode.Vector2_set(this.__ptr, x,y)
+	Polycode.Vector2_set(this.__ptr, x, y)
 }
 
 Vector2.prototype.distance = function(vec2) {

@@ -1,10 +1,14 @@
 function SpriteFrame() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.SpriteFrame()
+	}
 	Object.defineProperties(this, {
 		'coordinates': { enumerable: true, configurable: true, get: SpriteFrame.prototype.__get_coordinates, set: SpriteFrame.prototype.__set_coordinates},
 		'anchorPoint': { enumerable: true, configurable: true, get: SpriteFrame.prototype.__get_anchorPoint, set: SpriteFrame.prototype.__set_anchorPoint},
 		'frameID': { enumerable: true, configurable: true, get: SpriteFrame.prototype.__get_frameID, set: SpriteFrame.prototype.__set_frameID}
 	})
 }
+
 SpriteFrame.prototype.__get_coordinates = function() {
 	var retVal = new Rectangle()
 	retVal.__ptr = 	Polycode.SpriteFrame__get_coordinates(this.__ptr)

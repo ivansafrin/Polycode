@@ -1,4 +1,9 @@
-function SceneParticleEmitter() {
+require('Polycode/SceneMesh')
+
+function SceneParticleEmitter(particleCount,lifetime,speed) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.SceneParticleEmitter(particleCount,lifetime,speed)
+	}
 	Object.defineProperties(this, {
 		'useScaleCurve': { enumerable: true, configurable: true, get: SceneParticleEmitter.prototype.__get_useScaleCurve, set: SceneParticleEmitter.prototype.__set_useScaleCurve},
 		'scaleCurve': { enumerable: true, configurable: true, get: SceneParticleEmitter.prototype.__get_scaleCurve, set: SceneParticleEmitter.prototype.__set_scaleCurve},
@@ -10,6 +15,9 @@ function SceneParticleEmitter() {
 		'colorDeviation': { enumerable: true, configurable: true, get: SceneParticleEmitter.prototype.__get_colorDeviation, set: SceneParticleEmitter.prototype.__set_colorDeviation}
 	})
 }
+
+SceneParticleEmitter.prototype = Object.create(SceneMesh.prototype);
+
 SceneParticleEmitter.prototype.__get_useScaleCurve = function() {
 	return Polycode.SceneParticleEmitter__get_useScaleCurve(this.__ptr)
 }
@@ -138,7 +146,7 @@ SceneParticleEmitter.prototype.fixedUpdate = function() {
 }
 
 SceneParticleEmitter.prototype.Render = function(buffer) {
-	Polycode.SceneParticleEmitter_Render(this.__ptr, buffer)
+	Polycode.SceneParticleEmitter_Render(this.__ptr, buffer.__ptr)
 }
 
 SceneParticleEmitter.prototype.updateParticles = function() {
@@ -146,7 +154,7 @@ SceneParticleEmitter.prototype.updateParticles = function() {
 }
 
 SceneParticleEmitter.prototype.rebuildParticles = function(buffer) {
-	Polycode.SceneParticleEmitter_rebuildParticles(this.__ptr, buffer)
+	Polycode.SceneParticleEmitter_rebuildParticles(this.__ptr, buffer.__ptr)
 }
 
 SceneParticleEmitter.prototype.triggerParticles = function(allAtOnce) {
@@ -248,7 +256,7 @@ SceneParticleEmitter.prototype.getLoopParticles = function() {
 }
 
 SceneParticleEmitter.prototype.addSourceMesh = function(mesh) {
-	Polycode.SceneParticleEmitter_addSourceMesh(this.__ptr, mesh)
+	Polycode.SceneParticleEmitter_addSourceMesh(this.__ptr, mesh.__ptr)
 }
 
 SceneParticleEmitter.prototype.getNumSourceMeshes = function() {
@@ -271,10 +279,10 @@ SceneParticleEmitter.prototype.positionParticle = function(index) {
 
 SceneParticleEmitter.prototype.Clone = function(deepClone,ignoreEditorOnly) {
 	var retVal = new Entity()
-	retVal.__ptr = Polycode.SceneParticleEmitter_Clone(this.__ptr, deepClone,ignoreEditorOnly)
+	retVal.__ptr = Polycode.SceneParticleEmitter_Clone(this.__ptr, deepClone, ignoreEditorOnly)
 	return retVal
 }
 
 SceneParticleEmitter.prototype.applyClone = function(clone,deepClone,ignoreEditorOnly) {
-	Polycode.SceneParticleEmitter_applyClone(this.__ptr, clone,deepClone,ignoreEditorOnly)
+	Polycode.SceneParticleEmitter_applyClone(this.__ptr, clone.__ptr, deepClone, ignoreEditorOnly)
 }

@@ -1,3 +1,5 @@
+require('Polycode/Resource')
+
 function Texture() {
 	Object.defineProperties(this, {
 		'clamp': { enumerable: true, configurable: true, get: Texture.prototype.__get_clamp, set: Texture.prototype.__set_clamp},
@@ -10,6 +12,9 @@ function Texture() {
 		'depthTexture': { enumerable: true, configurable: true, get: Texture.prototype.__get_depthTexture, set: Texture.prototype.__set_depthTexture}
 	})
 }
+
+Texture.prototype = Object.create(Resource.prototype);
+
 Texture.prototype.__get_clamp = function() {
 	return Polycode.Texture__get_clamp(this.__ptr)
 }
@@ -82,7 +87,7 @@ Texture.prototype.reloadResource = function() {
 }
 
 Texture.prototype.setImageData = function(data) {
-	Polycode.Texture_setImageData(this.__ptr, data)
+	Polycode.Texture_setImageData(this.__ptr, data.__ptr)
 }
 
 Texture.prototype.getTextureData = function() {

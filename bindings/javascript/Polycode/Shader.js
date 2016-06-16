@@ -1,3 +1,5 @@
+require('Polycode/Resource')
+
 function Shader() {
 	Object.defineProperties(this, {
 		'numSpotLights': { enumerable: true, configurable: true, get: Shader.prototype.__get_numSpotLights, set: Shader.prototype.__set_numSpotLights},
@@ -6,6 +8,9 @@ function Shader() {
 		'name': { enumerable: true, configurable: true, get: Shader.prototype.__get_name, set: Shader.prototype.__set_name}
 	})
 }
+
+Shader.prototype = Object.create(Resource.prototype);
+
 Shader.prototype.__get_numSpotLights = function() {
 	return Polycode.Shader__get_numSpotLights(this.__ptr)
 }

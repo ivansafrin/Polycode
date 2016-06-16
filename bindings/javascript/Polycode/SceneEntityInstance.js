@@ -1,9 +1,17 @@
-function SceneEntityInstance() {
+require('Polycode/Entity')
+
+function SceneEntityInstance(parentScene,fileName) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.SceneEntityInstance(parentScene,fileName)
+	}
 	Object.defineProperties(this, {
 		'cloneUsingReload': { enumerable: true, configurable: true, get: SceneEntityInstance.prototype.__get_cloneUsingReload, set: SceneEntityInstance.prototype.__set_cloneUsingReload},
 		'fileName': { enumerable: true, configurable: true, get: SceneEntityInstance.prototype.__get_fileName, set: SceneEntityInstance.prototype.__set_fileName}
 	})
 }
+
+SceneEntityInstance.prototype = Object.create(Entity.prototype);
+
 SceneEntityInstance.prototype.__get_cloneUsingReload = function() {
 	return Polycode.SceneEntityInstance__get_cloneUsingReload(this.__ptr)
 }
@@ -21,14 +29,20 @@ SceneEntityInstance.prototype.__set_fileName = function(val) {
 }
 
 
+SceneEntityInstance.prototype.BlankSceneEntityInstance = function(parentScene) {
+	var retVal = new SceneEntityInstance()
+	retVal.__ptr = Polycode.SceneEntityInstance_BlankSceneEntityInstance(parentScene.__ptr)
+	return retVal
+}
+
 SceneEntityInstance.prototype.Clone = function(deepClone,ignoreEditorOnly) {
 	var retVal = new Entity()
-	retVal.__ptr = Polycode.SceneEntityInstance_Clone(this.__ptr, deepClone,ignoreEditorOnly)
+	retVal.__ptr = Polycode.SceneEntityInstance_Clone(this.__ptr, deepClone, ignoreEditorOnly)
 	return retVal
 }
 
 SceneEntityInstance.prototype.applyClone = function(clone,deepClone,ignoreEditorOnly) {
-	Polycode.SceneEntityInstance_applyClone(this.__ptr, clone,deepClone,ignoreEditorOnly)
+	Polycode.SceneEntityInstance_applyClone(this.__ptr, clone.__ptr, deepClone, ignoreEditorOnly)
 }
 
 SceneEntityInstance.prototype.reloadEntityInstance = function() {
@@ -40,12 +54,12 @@ SceneEntityInstance.prototype.clearInstance = function() {
 }
 
 SceneEntityInstance.prototype.parseObjectIntoCurve = function(entry,curve) {
-	Polycode.SceneEntityInstance_parseObjectIntoCurve(this.__ptr, entry,curve)
+	Polycode.SceneEntityInstance_parseObjectIntoCurve(this.__ptr, entry.__ptr, curve.__ptr)
 }
 
 SceneEntityInstance.prototype.loadObjectEntryIntoEntity = function(entry,targetEntity,entityFileVersion) {
 	var retVal = new Entity()
-	retVal.__ptr = Polycode.SceneEntityInstance_loadObjectEntryIntoEntity(this.__ptr, entry,targetEntity,entityFileVersion)
+	retVal.__ptr = Polycode.SceneEntityInstance_loadObjectEntryIntoEntity(this.__ptr, entry.__ptr, targetEntity.__ptr, entityFileVersion)
 	return retVal
 }
 
@@ -54,11 +68,11 @@ SceneEntityInstance.prototype.loadFromFile = function(fileName) {
 }
 
 SceneEntityInstance.prototype.applySceneMesh = function(entry,sceneMesh) {
-	Polycode.SceneEntityInstance_applySceneMesh(this.__ptr, entry,sceneMesh)
+	Polycode.SceneEntityInstance_applySceneMesh(this.__ptr, entry.__ptr, sceneMesh.__ptr)
 }
 
 SceneEntityInstance.prototype.linkResourcePool = function(pool) {
-	Polycode.SceneEntityInstance_linkResourcePool(this.__ptr, pool)
+	Polycode.SceneEntityInstance_linkResourcePool(this.__ptr, pool.__ptr)
 }
 
 SceneEntityInstance.prototype.getNumLinkedResourePools = function() {
@@ -72,11 +86,11 @@ SceneEntityInstance.prototype.getLinkedResourcePoolAtIndex = function(index) {
 }
 
 SceneEntityInstance.prototype.unlinkResourcePool = function(pool) {
-	Polycode.SceneEntityInstance_unlinkResourcePool(this.__ptr, pool)
+	Polycode.SceneEntityInstance_unlinkResourcePool(this.__ptr, pool.__ptr)
 }
 
 SceneEntityInstance.prototype.getResourceEntry = function() {
-	var retVal = new shared_ptr<SceneEntityInstanceResourceEntry>()
+	var retVal = new SceneEntityInstanceResourceEntry()
 	retVal.__ptr = Polycode.SceneEntityInstance_getResourceEntry(this.__ptr)
 	return retVal
 }
@@ -102,7 +116,7 @@ SceneEntityInstance.prototype.getLayerAtIndex = function(index) {
 }
 
 SceneEntityInstance.prototype.removeLayer = function(layer) {
-	Polycode.SceneEntityInstance_removeLayer(this.__ptr, layer)
+	Polycode.SceneEntityInstance_removeLayer(this.__ptr, layer.__ptr)
 }
 
 SceneEntityInstance.prototype.createNewLayer = function(name) {

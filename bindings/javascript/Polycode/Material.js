@@ -1,10 +1,18 @@
-function Material() {
+require('Polycode/Resource')
+
+function Material(name) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.Material(name)
+	}
 	Object.defineProperties(this, {
 		'fp16RenderTargets': { enumerable: true, configurable: true, get: Material.prototype.__get_fp16RenderTargets, set: Material.prototype.__set_fp16RenderTargets},
 		'blendingMode': { enumerable: true, configurable: true, get: Material.prototype.__get_blendingMode, set: Material.prototype.__set_blendingMode},
 		'screenMaterial': { enumerable: true, configurable: true, get: Material.prototype.__get_screenMaterial, set: Material.prototype.__set_screenMaterial}
 	})
 }
+
+Material.prototype = Object.create(Resource.prototype);
+
 Material.prototype.__get_fp16RenderTargets = function() {
 	return Polycode.Material__get_fp16RenderTargets(this.__ptr)
 }
@@ -35,7 +43,7 @@ Material.prototype.addShaderPass = function(pass) {
 }
 
 Material.prototype.addShaderPassAtIndex = function(pass,shaderIndex) {
-	Polycode.Material_addShaderPassAtIndex(this.__ptr, pass,shaderIndex)
+	Polycode.Material_addShaderPassAtIndex(this.__ptr, pass, shaderIndex)
 }
 
 Material.prototype.getNumShaderPasses = function() {
@@ -47,7 +55,7 @@ Material.prototype.removeShaderPass = function(shaderIndex) {
 }
 
 Material.prototype.addShaderRenderTarget = function(newTarget) {
-	Polycode.Material_addShaderRenderTarget(this.__ptr, newTarget)
+	Polycode.Material_addShaderRenderTarget(this.__ptr, newTarget.__ptr)
 }
 
 Material.prototype.getNumShaderRenderTargets = function() {
@@ -65,7 +73,7 @@ Material.prototype.removeShaderRenderTarget = function(index) {
 }
 
 Material.prototype.recreateRenderTarget = function(renderTarget) {
-	Polycode.Material_recreateRenderTarget(this.__ptr, renderTarget)
+	Polycode.Material_recreateRenderTarget(this.__ptr, renderTarget.__ptr)
 }
 
 Material.prototype.recreateRenderTargets = function() {
@@ -83,13 +91,13 @@ Material.prototype.getShaderPass = function(index) {
 }
 
 Material.prototype.getShaderBinding = function(index) {
-	var retVal = new shared_ptr<ShaderBinding>()
+	var retVal = new ShaderBinding()
 	retVal.__ptr = Polycode.Material_getShaderBinding(this.__ptr, index)
 	return retVal
 }
 
 Material.prototype.getShader = function(index) {
-	var retVal = new shared_ptr<Shader>()
+	var retVal = new Shader()
 	retVal.__ptr = Polycode.Material_getShader(this.__ptr, index)
 	return retVal
 }

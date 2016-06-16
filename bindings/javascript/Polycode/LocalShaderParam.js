@@ -1,4 +1,7 @@
 function LocalShaderParam() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.LocalShaderParam()
+	}
 	Object.defineProperties(this, {
 		'name': { enumerable: true, configurable: true, get: LocalShaderParam.prototype.__get_name, set: LocalShaderParam.prototype.__set_name},
 		'type': { enumerable: true, configurable: true, get: LocalShaderParam.prototype.__get_type, set: LocalShaderParam.prototype.__set_type},
@@ -7,6 +10,7 @@ function LocalShaderParam() {
 		'param': { enumerable: true, configurable: true, get: LocalShaderParam.prototype.__get_param, set: LocalShaderParam.prototype.__set_param}
 	})
 }
+
 LocalShaderParam.prototype.__get_name = function() {
 	return Polycode.LocalShaderParam__get_name(this.__ptr)
 }
@@ -57,7 +61,7 @@ Duktape.fin(LocalShaderParam.prototype, function (x) {
 })
 
 LocalShaderParam.prototype.Copy = function() {
-	var retVal = new shared_ptr<LocalShaderParam>()
+	var retVal = new LocalShaderParam()
 	retVal.__ptr = Polycode.LocalShaderParam_Copy(this.__ptr)
 	return retVal
 }
@@ -115,7 +119,7 @@ LocalShaderParam.prototype.setTexture = function(texture) {
 }
 
 LocalShaderParam.prototype.getTexture = function() {
-	var retVal = new shared_ptr<Texture>()
+	var retVal = new Texture()
 	retVal.__ptr = Polycode.LocalShaderParam_getTexture(this.__ptr)
 	return retVal
 }
@@ -125,11 +129,11 @@ LocalShaderParam.prototype.setCubemap = function(cubemap) {
 }
 
 LocalShaderParam.prototype.getCubemap = function() {
-	var retVal = new shared_ptr<Cubemap>()
+	var retVal = new Cubemap()
 	retVal.__ptr = Polycode.LocalShaderParam_getCubemap(this.__ptr)
 	return retVal
 }
 
 LocalShaderParam.prototype.setParamValueFromString = function(type,pvalue) {
-	Polycode.LocalShaderParam_setParamValueFromString(this.__ptr, type,pvalue)
+	Polycode.LocalShaderParam_setParamValueFromString(this.__ptr, type, pvalue)
 }

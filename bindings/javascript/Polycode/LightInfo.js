@@ -1,4 +1,7 @@
 function LightInfo() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.LightInfo()
+	}
 	Object.defineProperties(this, {
 		'importance': { enumerable: true, configurable: true, get: LightInfo.prototype.__get_importance, set: LightInfo.prototype.__set_importance},
 		'position': { enumerable: true, configurable: true, get: LightInfo.prototype.__get_position, set: LightInfo.prototype.__set_position},
@@ -16,6 +19,7 @@ function LightInfo() {
 		'lightViewMatrix': { enumerable: true, configurable: true, get: LightInfo.prototype.__get_lightViewMatrix, set: LightInfo.prototype.__set_lightViewMatrix}
 	})
 }
+
 LightInfo.prototype.__get_importance = function() {
 	return Polycode.LightInfo__get_importance(this.__ptr)
 }

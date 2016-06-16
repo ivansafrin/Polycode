@@ -886,7 +886,7 @@ namespace Polycode {
 	
 			Scene *getContainerScene();
 		
-			void attachScript(Script *script);
+			void attachScript(std::shared_ptr<Script> script);
 			void detachScript(Script *script);
 			unsigned int getNumScripts();
 			ScriptInstance *getScriptAtIndex(unsigned int index);

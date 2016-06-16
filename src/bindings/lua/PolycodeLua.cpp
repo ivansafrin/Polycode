@@ -849,6 +849,7 @@ int luaopen_Polycode(lua_State *L) {
 		{"ShaderPass_set_wireframe", Polycode_ShaderPass_set_wireframe},
 		{"ShaderPass_set_blendingMode", Polycode_ShaderPass_set_blendingMode},
 		{"ShaderPass", Polycode_ShaderPass},
+		{"ShaderPass_getShaderBinding", Polycode_ShaderPass_getShaderBinding},
 		{"delete_ShaderPass", Polycode_delete_ShaderPass},
 		{"Matrix4", Polycode_Matrix4},
 		{"Matrix4_identity", Polycode_Matrix4_identity},

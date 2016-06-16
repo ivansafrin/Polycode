@@ -43,6 +43,9 @@ namespace Polycode {
 			ShaderPass(Shader *shader);
 			ShaderPass(const ShaderPass &other);
 			~ShaderPass();
+		
+			std::shared_ptr<ShaderBinding> getShaderBinding();
+		
 			std::shared_ptr<Shader> shader;
 			bool wireframe;
 			unsigned short blendingMode;

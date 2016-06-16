@@ -1,4 +1,9 @@
-function Bone() {
+require('Polycode/Entity')
+
+function Bone(boneName) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.Bone(boneName)
+	}
 	Object.defineProperties(this, {
 		'parentBoneId': { enumerable: true, configurable: true, get: Bone.prototype.__get_parentBoneId, set: Bone.prototype.__set_parentBoneId},
 		'boneMatrix': { enumerable: true, configurable: true, get: Bone.prototype.__get_boneMatrix, set: Bone.prototype.__set_boneMatrix},
@@ -11,6 +16,9 @@ function Bone() {
 		'disableAnimation': { enumerable: true, configurable: true, get: Bone.prototype.__get_disableAnimation, set: Bone.prototype.__set_disableAnimation}
 	})
 }
+
+Bone.prototype = Object.create(Entity.prototype);
+
 Bone.prototype.__get_parentBoneId = function() {
 	return Polycode.Bone__get_parentBoneId(this.__ptr)
 }
@@ -109,11 +117,11 @@ Bone.prototype.getName = function() {
 }
 
 Bone.prototype.setParentBone = function(bone) {
-	Polycode.Bone_setParentBone(this.__ptr, bone)
+	Polycode.Bone_setParentBone(this.__ptr, bone.__ptr)
 }
 
 Bone.prototype.addChildBone = function(bone) {
-	Polycode.Bone_addChildBone(this.__ptr, bone)
+	Polycode.Bone_addChildBone(this.__ptr, bone.__ptr)
 }
 
 Bone.prototype.getParentBone = function() {
@@ -197,5 +205,5 @@ Bone.prototype.buildFinalMatrix = function() {
 }
 
 Bone.prototype.intializeBone = function(basePosition,baseScale,baseRotation,restPosition,restScale,restRotation) {
-	Polycode.Bone_intializeBone(this.__ptr, basePosition,baseScale,baseRotation,restPosition,restScale,restRotation)
+	Polycode.Bone_intializeBone(this.__ptr, basePosition, baseScale, baseRotation, restPosition, restScale, restRotation)
 }

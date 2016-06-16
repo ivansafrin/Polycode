@@ -1,9 +1,17 @@
-function Resource() {
+require('Polycode/EventDispatcher')
+
+function Resource(type) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.Resource(type)
+	}
 	Object.defineProperties(this, {
 		'reloadOnFileModify': { enumerable: true, configurable: true, get: Resource.prototype.__get_reloadOnFileModify, set: Resource.prototype.__set_reloadOnFileModify},
 		'resourceFileTime': { enumerable: true, configurable: true, get: Resource.prototype.__get_resourceFileTime, set: Resource.prototype.__set_resourceFileTime}
 	})
 }
+
+Resource.prototype = Object.create(EventDispatcher.prototype);
+
 Resource.prototype.__get_reloadOnFileModify = function() {
 	return Polycode.Resource__get_reloadOnFileModify(this.__ptr)
 }

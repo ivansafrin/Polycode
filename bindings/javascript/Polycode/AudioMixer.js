@@ -1,4 +1,7 @@
 function AudioMixer() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.AudioMixer()
+	}
 	Object.defineProperties(this, {
 		'globalVolume': { enumerable: true, configurable: true, get: AudioMixer.prototype.__get_globalVolume, set: AudioMixer.prototype.__set_globalVolume},
 		'listenerPosition': { enumerable: true, configurable: true, get: AudioMixer.prototype.__get_listenerPosition, set: AudioMixer.prototype.__set_listenerPosition},
@@ -6,6 +9,7 @@ function AudioMixer() {
 		'mixerMutex': { enumerable: true, configurable: true, get: AudioMixer.prototype.__get_mixerMutex, set: AudioMixer.prototype.__set_mixerMutex}
 	})
 }
+
 AudioMixer.prototype.__get_globalVolume = function() {
 	return Polycode.AudioMixer__get_globalVolume(this.__ptr)
 }
@@ -52,5 +56,5 @@ Duktape.fin(AudioMixer.prototype, function (x) {
 })
 
 AudioMixer.prototype.mixIntoBuffer = function(buffer,numSamples) {
-	Polycode.AudioMixer_mixIntoBuffer(this.__ptr, buffer,numSamples)
+	Polycode.AudioMixer_mixIntoBuffer(this.__ptr, buffer.__ptr, numSamples)
 }

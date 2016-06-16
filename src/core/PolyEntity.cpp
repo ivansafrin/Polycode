@@ -317,6 +317,9 @@ Entity *Entity::getChildAtIndex(unsigned int index) {
 }
 
 void Entity::addChild(Entity *newChild) {
+	if(!newChild) {
+		return;
+	}
 	newChild->setRenderer(renderer);
 	newChild->setParentEntity(this);
 	newChild->setInverseY(getInverseY());
@@ -1240,7 +1243,7 @@ MouseEventResult Entity::onMouseWheelDown(const Ray &ray, int timestamp) {
 	return ret;
 }
 
-void Entity::attachScript(Script *script) {
+void Entity::attachScript(std::shared_ptr<Script> script) {
 	ScriptInstance *instance = script->callInit(this);
 	scripts.push_back(instance);
 }

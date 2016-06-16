@@ -1,4 +1,7 @@
 function SceneParticle() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.SceneParticle()
+	}
 	Object.defineProperties(this, {
 		'lifetime': { enumerable: true, configurable: true, get: SceneParticle.prototype.__get_lifetime, set: SceneParticle.prototype.__set_lifetime},
 		'position': { enumerable: true, configurable: true, get: SceneParticle.prototype.__get_position, set: SceneParticle.prototype.__set_position},
@@ -11,6 +14,7 @@ function SceneParticle() {
 		'varianceIndex': { enumerable: true, configurable: true, get: SceneParticle.prototype.__get_varianceIndex, set: SceneParticle.prototype.__set_varianceIndex}
 	})
 }
+
 SceneParticle.prototype.__get_lifetime = function() {
 	return Polycode.SceneParticle__get_lifetime(this.__ptr)
 }

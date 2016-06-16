@@ -1,10 +1,18 @@
-function Camera() {
+require('Polycode/Entity')
+
+function Camera(parentScene) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.Camera(parentScene)
+	}
 	Object.defineProperties(this, {
 		'frustumCulling': { enumerable: true, configurable: true, get: Camera.prototype.__get_frustumCulling, set: Camera.prototype.__set_frustumCulling},
 		'topLeftOrtho': { enumerable: true, configurable: true, get: Camera.prototype.__get_topLeftOrtho, set: Camera.prototype.__set_topLeftOrtho},
 		'cameraShift': { enumerable: true, configurable: true, get: Camera.prototype.__get_cameraShift, set: Camera.prototype.__set_cameraShift}
 	})
 }
+
+Camera.prototype = Object.create(Entity.prototype);
+
 Camera.prototype.__get_frustumCulling = function() {
 	return Polycode.Camera__get_frustumCulling(this.__ptr)
 }
@@ -37,7 +45,7 @@ Camera.prototype.buildFrustumPlanes = function() {
 }
 
 Camera.prototype.isSphereInFrustum = function(pos,fRadius) {
-	return Polycode.Camera_isSphereInFrustum(this.__ptr, pos,fRadius)
+	return Polycode.Camera_isSphereInFrustum(this.__ptr, pos, fRadius)
 }
 
 Camera.prototype.isAABBInFrustum = function(aabb) {
@@ -49,11 +57,11 @@ Camera.prototype.setOrthoMode = function(mode) {
 }
 
 Camera.prototype.setOrthoSize = function(orthoSizeX,orthoSizeY) {
-	Polycode.Camera_setOrthoSize(this.__ptr, orthoSizeX,orthoSizeY)
+	Polycode.Camera_setOrthoSize(this.__ptr, orthoSizeX, orthoSizeY)
 }
 
 Camera.prototype.setFrustumMode = function(left,right,bottom,top,front,back) {
-	Polycode.Camera_setFrustumMode(this.__ptr, left,right,bottom,top,front,back)
+	Polycode.Camera_setFrustumMode(this.__ptr, left, right, bottom, top, front, back)
 }
 
 Camera.prototype.getOrthoMode = function() {
@@ -77,7 +85,7 @@ Camera.prototype.getFOV = function() {
 }
 
 Camera.prototype.setClippingPlanes = function(nearClipPlane,farClipPlane) {
-	Polycode.Camera_setClippingPlanes(this.__ptr, nearClipPlane,farClipPlane)
+	Polycode.Camera_setClippingPlanes(this.__ptr, nearClipPlane, farClipPlane)
 }
 
 Camera.prototype.getNearClippingPlane = function() {
@@ -89,7 +97,7 @@ Camera.prototype.getFarClippingPlane = function() {
 }
 
 Camera.prototype.setParentScene = function(parentScene) {
-	Polycode.Camera_setParentScene(this.__ptr, parentScene)
+	Polycode.Camera_setParentScene(this.__ptr, parentScene.__ptr)
 }
 
 Camera.prototype.getParentScene = function() {
@@ -125,19 +133,19 @@ Camera.prototype.removePostFilter = function() {
 }
 
 Camera.prototype.getScreenShaderMaterial = function() {
-	var retVal = new shared_ptr<Material>()
+	var retVal = new Material()
 	retVal.__ptr = Polycode.Camera_getScreenShaderMaterial(this.__ptr)
 	return retVal
 }
 
 Camera.prototype.Clone = function(deepClone,ignoreEditorOnly) {
 	var retVal = new Entity()
-	retVal.__ptr = Polycode.Camera_Clone(this.__ptr, deepClone,ignoreEditorOnly)
+	retVal.__ptr = Polycode.Camera_Clone(this.__ptr, deepClone, ignoreEditorOnly)
 	return retVal
 }
 
 Camera.prototype.applyClone = function(clone,deepClone,ignoreEditorOnly) {
-	Polycode.Camera_applyClone(this.__ptr, clone,deepClone,ignoreEditorOnly)
+	Polycode.Camera_applyClone(this.__ptr, clone.__ptr, deepClone, ignoreEditorOnly)
 }
 
 Camera.prototype.getProjectionMatrix = function() {
@@ -178,12 +186,12 @@ Camera.prototype.getProjectionMode = function() {
 
 Camera.prototype.projectRayFrom2DCoordinate = function(coordinate,viewport) {
 	var retVal = new Vector3()
-	retVal.__ptr = Polycode.Camera_projectRayFrom2DCoordinate(this.__ptr, coordinate,viewport)
+	retVal.__ptr = Polycode.Camera_projectRayFrom2DCoordinate(this.__ptr, coordinate, viewport)
 	return retVal
 }
 
 Camera.prototype.renderFullScreenQuad = function(drawBuffer,shaderPass) {
-	Polycode.Camera_renderFullScreenQuad(this.__ptr, drawBuffer,shaderPass)
+	Polycode.Camera_renderFullScreenQuad(this.__ptr, drawBuffer.__ptr, shaderPass)
 }
 
 Camera.prototype.getShaderPass = function(index) {

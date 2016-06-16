@@ -1,4 +1,7 @@
 function ObjectEntry() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.ObjectEntry()
+	}
 	Object.defineProperties(this, {
 		'type': { enumerable: true, configurable: true, get: ObjectEntry.prototype.__get_type, set: ObjectEntry.prototype.__set_type},
 		'name': { enumerable: true, configurable: true, get: ObjectEntry.prototype.__get_name, set: ObjectEntry.prototype.__set_name},
@@ -9,6 +12,7 @@ function ObjectEntry() {
 		'length': { enumerable: true, configurable: true, get: ObjectEntry.prototype.__get_length, set: ObjectEntry.prototype.__set_length}
 	})
 }
+
 ObjectEntry.prototype.__get_type = function() {
 	return Polycode.ObjectEntry__get_type(this.__ptr)
 }
@@ -73,15 +77,15 @@ Duktape.fin(ObjectEntry.prototype, function (x) {
 })
 
 ObjectEntry.prototype.readNumber = function(key,out) {
-	return Polycode.ObjectEntry_readNumber(this.__ptr, key,out)
+	return Polycode.ObjectEntry_readNumber(this.__ptr, key, out.__ptr)
 }
 
 ObjectEntry.prototype.readString = function(key,out) {
-	return Polycode.ObjectEntry_readString(this.__ptr, key,out)
+	return Polycode.ObjectEntry_readString(this.__ptr, key, out.__ptr)
 }
 
 ObjectEntry.prototype.readBool = function(key,out) {
-	return Polycode.ObjectEntry_readBool(this.__ptr, key,out)
+	return Polycode.ObjectEntry_readBool(this.__ptr, key, out.__ptr)
 }
 
 ObjectEntry.prototype.addChild = function(name) {

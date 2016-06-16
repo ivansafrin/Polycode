@@ -1,10 +1,14 @@
 function Rotation() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.Rotation()
+	}
 	Object.defineProperties(this, {
 		'pitch': { enumerable: true, configurable: true, get: Rotation.prototype.__get_pitch, set: Rotation.prototype.__set_pitch},
 		'yaw': { enumerable: true, configurable: true, get: Rotation.prototype.__get_yaw, set: Rotation.prototype.__set_yaw},
 		'roll': { enumerable: true, configurable: true, get: Rotation.prototype.__get_roll, set: Rotation.prototype.__set_roll}
 	})
 }
+
 Rotation.prototype.__get_pitch = function() {
 	return Polycode.Rotation__get_pitch(this.__ptr)
 }

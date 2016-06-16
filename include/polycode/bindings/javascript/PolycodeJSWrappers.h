@@ -73,6 +73,12 @@ extern "C" {
 using namespace std;
 namespace Polycode {
 
+	duk_ret_t Polycode_BezierCurve(duk_context *context) {
+		BezierCurve *inst = new BezierCurve();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_BezierCurve__get_insertPoint(duk_context *context) {
 		BezierCurve *inst = (BezierCurve*)duk_to_pointer(context, 0);
 		PolyBase *ptrRetVal = (PolyBase*)inst->insertPoint;
@@ -243,6 +249,21 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_BezierPoint(duk_context *context) {
+		Number p1x = duk_to_number(context, 0);
+		Number p1y = duk_to_number(context, 1);
+		Number p1z = duk_to_number(context, 2);
+		Number p2x = duk_to_number(context, 3);
+		Number p2y = duk_to_number(context, 4);
+		Number p2z = duk_to_number(context, 5);
+		Number p3x = duk_to_number(context, 6);
+		Number p3y = duk_to_number(context, 7);
+		Number p3z = duk_to_number(context, 8);
+		BezierPoint *inst = new BezierPoint(p1x,p1y,p1z,p2x,p2y,p2z,p3x,p3y,p3z);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_BezierPoint__get_p1(duk_context *context) {
 		BezierPoint *inst = (BezierPoint*)duk_to_pointer(context, 0);
 		Vector3 *retInst = new Vector3();
@@ -289,6 +310,13 @@ namespace Polycode {
 		BezierPoint *inst = (BezierPoint*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_Bone(duk_context *context) {
+		String boneName = duk_to_string(context, 0);
+		Bone *inst = new Bone(boneName);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_Bone__get_parentBoneId(duk_context *context) {
@@ -561,6 +589,13 @@ namespace Polycode {
 		Quaternion restRotation = *(Quaternion*)duk_to_pointer(context, 6);
 		inst->intializeBone(basePosition,baseScale,baseRotation,restPosition,restScale,restRotation);
 		return 0;
+	}
+
+	duk_ret_t Polycode_Camera(duk_context *context) {
+		Scene* parentScene = (Scene*)duk_to_pointer(context, 0);
+		Camera *inst = new Camera(parentScene);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_Camera__get_frustumCulling(duk_context *context) {
@@ -876,6 +911,16 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_Color(duk_context *context) {
+		Number r = duk_to_number(context, 0);
+		Number g = duk_to_number(context, 1);
+		Number b = duk_to_number(context, 2);
+		Number a = duk_to_number(context, 3);
+		Color *inst = new Color(r,g,b,a);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_Color__get_r(duk_context *context) {
 		Color *inst = (Color*)duk_to_pointer(context, 0);
 		duk_push_number(context, inst->r);
@@ -928,6 +973,25 @@ namespace Polycode {
 		Color *inst = (Color*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_Color_ColorWithInts(duk_context *context) {
+		int r = duk_to_int(context, 0);
+		int g = duk_to_int(context, 1);
+		int b = duk_to_int(context, 2);
+		int a = duk_to_int(context, 3);
+		Color *retInst = new Color();
+		*retInst = Color::ColorWithInts(r,g,b,a);
+		duk_push_pointer(context, (void*)retInst);
+		return 1;
+	}
+
+	duk_ret_t Polycode_Color_ColorWithHex(duk_context *context) {
+		int hex = duk_to_int(context, 0);
+		Color *retInst = new Color();
+		*retInst = Color::ColorWithHex(hex);
+		duk_push_pointer(context, (void*)retInst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_Color_setColorHex(duk_context *context) {
@@ -1020,6 +1084,17 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_Color_RGBtoHSV(duk_context *context) {
+		Number r = duk_to_number(context, 0);
+		Number g = duk_to_number(context, 1);
+		Number b = duk_to_number(context, 2);
+		Number h = duk_to_number(context, 3);
+		Number s = duk_to_number(context, 4);
+		Number v = duk_to_number(context, 5);
+		Color::RGBtoHSV(r,g,b,h,s,v);
+		return 0;
+	}
+
 	duk_ret_t Polycode_Color_getHue(duk_context *context) {
 		Color *inst = (Color*)duk_to_pointer(context, 0);
 		duk_push_number(context, inst->getHue());
@@ -1041,6 +1116,12 @@ namespace Polycode {
 	duk_ret_t Polycode_Color_getUint(duk_context *context) {
 		Color *inst = (Color*)duk_to_pointer(context, 0);
 		duk_push_int(context, inst->getUint());
+		return 1;
+	}
+
+	duk_ret_t Polycode_ConfigEntry(duk_context *context) {
+		ConfigEntry *inst = new ConfigEntry();
+		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
@@ -1108,6 +1189,12 @@ namespace Polycode {
 		ConfigEntry *inst = (ConfigEntry*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_Config(duk_context *context) {
+		Config *inst = new Config();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_Config__delete(duk_context *context) {
@@ -1442,6 +1529,14 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_Core_getScreenInfo(duk_context *context) {
+		int* width = (int*)duk_to_pointer(context, 0);
+		int* height = (int*)duk_to_pointer(context, 1);
+		int* hz = (int*)duk_to_pointer(context, 2);
+		Core::getScreenInfo(width,height,hz);
+		return 0;
+	}
+
 	duk_ret_t Polycode_Core_getScreenWidth(duk_context *context) {
 		Core *inst = (Core*)duk_to_pointer(context, 0);
 		duk_push_int(context, inst->getScreenWidth());
@@ -1716,6 +1811,12 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_VideoModeChangeInfo(duk_context *context) {
+		VideoModeChangeInfo *inst = new VideoModeChangeInfo();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_VideoModeChangeInfo__get_xRes(duk_context *context) {
 		VideoModeChangeInfo *inst = (VideoModeChangeInfo*)duk_to_pointer(context, 0);
 		duk_push_int(context, inst->xRes);
@@ -1806,6 +1907,12 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_PolycodeViewBase(duk_context *context) {
+		PolycodeViewBase *inst = new PolycodeViewBase();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_PolycodeViewBase__get_resizable(duk_context *context) {
 		PolycodeViewBase *inst = (PolycodeViewBase*)duk_to_pointer(context, 0);
 		duk_push_boolean(context, inst->resizable);
@@ -1822,6 +1929,12 @@ namespace Polycode {
 		PolycodeViewBase *inst = (PolycodeViewBase*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_DummyCore(duk_context *context) {
+		DummyCore *inst = new DummyCore();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_DummyCore__delete(duk_context *context) {
@@ -1970,6 +2083,12 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_TimeInfo(duk_context *context) {
+		TimeInfo *inst = new TimeInfo();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_TimeInfo__get_seconds(duk_context *context) {
 		TimeInfo *inst = (TimeInfo*)duk_to_pointer(context, 0);
 		duk_push_int(context, inst->seconds);
@@ -2072,6 +2191,12 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_CoreMotionEvent(duk_context *context) {
+		CoreMotionEvent *inst = new CoreMotionEvent();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_CoreMotionEvent__get_amount(duk_context *context) {
 		CoreMotionEvent *inst = (CoreMotionEvent*)duk_to_pointer(context, 0);
 		Vector3 *retInst = new Vector3();
@@ -2090,6 +2215,12 @@ namespace Polycode {
 		CoreMotionEvent *inst = (CoreMotionEvent*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_CoreFileExtension(duk_context *context) {
+		CoreFileExtension *inst = new CoreFileExtension();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_CoreFileExtension__get_extension(duk_context *context) {
@@ -2120,6 +2251,12 @@ namespace Polycode {
 		CoreFileExtension *inst = (CoreFileExtension*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_OSFileEntry(duk_context *context) {
+		OSFileEntry *inst = new OSFileEntry();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_OSFileEntry__get_name(duk_context *context) {
@@ -2207,6 +2344,12 @@ namespace Polycode {
 		int type = duk_to_int(context, 3);
 		inst->init(path,name,type);
 		return 0;
+	}
+
+	duk_ret_t Polycode_CoreInput(duk_context *context) {
+		CoreInput *inst = new CoreInput();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_CoreInput__get_simulateTouchWithMouse(duk_context *context) {
@@ -2487,10 +2630,23 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_CoreInput_createEvent(duk_context *context) {
+		Event* event = (Event*)duk_to_pointer(context, 0);
+		PolyBase *ptrRetVal = (PolyBase*)CoreInput::createEvent(event);
+		duk_push_pointer(context, (void*)ptrRetVal);
+		return 1;
+	}
+
 	duk_ret_t Polycode_CoreInput_clearInput(duk_context *context) {
 		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
 		inst->clearInput();
 		return 0;
+	}
+
+	duk_ret_t Polycode_JoystickInfo(duk_context *context) {
+		JoystickInfo *inst = new JoystickInfo();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_JoystickInfo__get_deviceID(duk_context *context) {
@@ -2526,6 +2682,29 @@ namespace Polycode {
 	duk_ret_t Polycode_CoreServices__delete(duk_context *context) {
 		CoreServices *inst = (CoreServices*)duk_to_pointer(context, 0);
 		delete inst;
+		return 0;
+	}
+
+	duk_ret_t Polycode_CoreServices_getInstance(duk_context *context) {
+		PolyBase *ptrRetVal = (PolyBase*)CoreServices::getInstance();
+		duk_push_pointer(context, (void*)ptrRetVal);
+		return 1;
+	}
+
+	duk_ret_t Polycode_CoreServices_setInstance(duk_context *context) {
+		CoreServices* _instance = (CoreServices*)duk_to_pointer(context, 0);
+		CoreServices::setInstance(_instance);
+		return 0;
+	}
+
+	duk_ret_t Polycode_CoreServices_getRenderMutex(duk_context *context) {
+		PolyBase *ptrRetVal = (PolyBase*)CoreServices::getRenderMutex();
+		duk_push_pointer(context, (void*)ptrRetVal);
+		return 1;
+	}
+
+	duk_ret_t Polycode_CoreServices_createInstance(duk_context *context) {
+		CoreServices::createInstance();
 		return 0;
 	}
 
@@ -2633,6 +2812,12 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_Data(duk_context *context) {
+		Data *inst = new Data();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_Data__delete(duk_context *context) {
 		Data *inst = (Data*)duk_to_pointer(context, 0);
 		delete inst;
@@ -2675,6 +2860,12 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_MouseEventResult(duk_context *context) {
+		MouseEventResult *inst = new MouseEventResult();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_MouseEventResult__get_hit(duk_context *context) {
 		MouseEventResult *inst = (MouseEventResult*)duk_to_pointer(context, 0);
 		duk_push_boolean(context, inst->hit);
@@ -2705,6 +2896,12 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_EntityProp(duk_context *context) {
+		EntityProp *inst = new EntityProp();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_EntityProp__get_propName(duk_context *context) {
 		EntityProp *inst = (EntityProp*)duk_to_pointer(context, 0);
 		duk_push_string(context, inst->propName.c_str());
@@ -2733,6 +2930,12 @@ namespace Polycode {
 		EntityProp *inst = (EntityProp*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_AABB(duk_context *context) {
+		AABB *inst = new AABB();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_AABB__get_min(duk_context *context) {
@@ -2767,6 +2970,12 @@ namespace Polycode {
 		AABB *inst = (AABB*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_Rotation(duk_context *context) {
+		Rotation *inst = new Rotation();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_Rotation__get_pitch(duk_context *context) {
@@ -2809,6 +3018,12 @@ namespace Polycode {
 		Rotation *inst = (Rotation*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_Entity(duk_context *context) {
+		Entity *inst = new Entity();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_Entity__get_ownsChildren(duk_context *context) {
@@ -3930,7 +4145,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_Entity_attachScript(duk_context *context) {
 		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Script* script = (Script*)duk_to_pointer(context, 1);
+		shared_ptr<Script> script = *(shared_ptr<Script>*)duk_to_pointer(context, 1);
 		inst->attachScript(script);
 		return 0;
 	}
@@ -3953,6 +4168,12 @@ namespace Polycode {
 		int index = duk_to_int(context, 1);
 		PolyBase *ptrRetVal = (PolyBase*)inst->getScriptAtIndex(index);
 		duk_push_pointer(context, (void*)ptrRetVal);
+		return 1;
+	}
+
+	duk_ret_t Polycode_Event(duk_context *context) {
+		Event *inst = new Event();
+		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
@@ -4023,6 +4244,12 @@ namespace Polycode {
 		Event *inst = (Event*)duk_to_pointer(context, 0);
 		inst->cancelEvent();
 		return 0;
+	}
+
+	duk_ret_t Polycode_EventDispatcher(duk_context *context) {
+		EventDispatcher *inst = new EventDispatcher();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_EventDispatcher__delete(duk_context *context) {
@@ -4100,10 +4327,24 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_EventHandler(duk_context *context) {
+		EventHandler *inst = new EventHandler();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_EventHandler__delete(duk_context *context) {
 		EventHandler *inst = (EventHandler*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_Font(duk_context *context) {
+		String fileName = duk_to_string(context, 0);
+		FT_Library FTLibrary = *(FT_Library*)duk_to_pointer(context, 1);
+		Font *inst = new Font(fileName,FTLibrary);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_Font__get_loaded(duk_context *context) {
@@ -4154,6 +4395,12 @@ namespace Polycode {
 	duk_ret_t Polycode_Font_getFontPath(duk_context *context) {
 		Font *inst = (Font*)duk_to_pointer(context, 0);
 		duk_push_string(context, inst->getFontPath().c_str());
+		return 1;
+	}
+
+	duk_ret_t Polycode_LightInfo(duk_context *context) {
+		LightInfo *inst = new LightInfo();
+		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
@@ -4341,6 +4588,12 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_GPUDrawCall(duk_context *context) {
+		GPUDrawCall *inst = new GPUDrawCall();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_GPUDrawCall__get_options(duk_context *context) {
 		GPUDrawCall *inst = (GPUDrawCall*)duk_to_pointer(context, 0);
 		GPUDrawOptions *retInst = new GPUDrawOptions();
@@ -4373,6 +4626,12 @@ namespace Polycode {
 		GPUDrawCall *inst = (GPUDrawCall*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_GPUDrawOptions(duk_context *context) {
+		GPUDrawOptions *inst = new GPUDrawOptions();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_GPUDrawOptions__get_depthTest(duk_context *context) {
@@ -4517,6 +4776,12 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_GPUDrawBuffer(duk_context *context) {
+		GPUDrawBuffer *inst = new GPUDrawBuffer();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_GPUDrawBuffer__get_projectionMatrix(duk_context *context) {
 		GPUDrawBuffer *inst = (GPUDrawBuffer*)duk_to_pointer(context, 0);
 		Matrix4 *retInst = new Matrix4();
@@ -4631,10 +4896,26 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_Image(duk_context *context) {
+		String fileName = duk_to_string(context, 0);
+		Image *inst = new Image(fileName);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_Image__delete(duk_context *context) {
 		Image *inst = (Image*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_Image_BlankImage(duk_context *context) {
+		int width = duk_to_int(context, 0);
+		int height = duk_to_int(context, 1);
+		int type = duk_to_int(context, 2);
+		PolyBase *ptrRetVal = (PolyBase*)Image::BlankImage(width,height,type);
+		duk_push_pointer(context, (void*)ptrRetVal);
+		return 1;
 	}
 
 	duk_ret_t Polycode_Image_loadImage(duk_context *context) {
@@ -4860,6 +5141,12 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_TouchInfo(duk_context *context) {
+		TouchInfo *inst = new TouchInfo();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_TouchInfo__get_id(duk_context *context) {
 		TouchInfo *inst = (TouchInfo*)duk_to_pointer(context, 0);
 		duk_push_int(context, inst->id);
@@ -4902,6 +5189,12 @@ namespace Polycode {
 		TouchInfo *inst = (TouchInfo*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_InputEvent(duk_context *context) {
+		InputEvent *inst = new InputEvent();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_InputEvent__get_mouseButton(duk_context *context) {
@@ -5106,6 +5399,12 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_GlyphData(duk_context *context) {
+		GlyphData *inst = new GlyphData();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_GlyphData__get_glyphs(duk_context *context) {
 		GlyphData *inst = (GlyphData*)duk_to_pointer(context, 0);
 		PolyBase *ptrRetVal = (PolyBase*)inst->glyphs;
@@ -5170,6 +5469,15 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_ColorRange(duk_context *context) {
+		Color color = *(Color*)duk_to_pointer(context, 0);
+		int rangeStart = duk_to_int(context, 1);
+		int rangeEnd = duk_to_int(context, 2);
+		ColorRange *inst = new ColorRange(color,rangeStart,rangeEnd);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_ColorRange__get_color(duk_context *context) {
 		ColorRange *inst = (ColorRange*)duk_to_pointer(context, 0);
 		Color *retInst = new Color();
@@ -5212,6 +5520,19 @@ namespace Polycode {
 		ColorRange *inst = (ColorRange*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_Label(duk_context *context) {
+		shared_ptr<Font> font = *(shared_ptr<Font>*)duk_to_pointer(context, 0);
+		String text = duk_to_string(context, 1);
+		int size = duk_to_int(context, 2);
+		int antiAliasMode = duk_to_int(context, 3);
+		bool premultiplyAlpha = duk_to_boolean(context, 4);
+		Color backgroundColor = *(Color*)duk_to_pointer(context, 5);
+		Color foregroundColor = *(Color*)duk_to_pointer(context, 6);
+		Label *inst = new Label(font,text,size,antiAliasMode,premultiplyAlpha,backgroundColor,foregroundColor);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_Label__delete(duk_context *context) {
@@ -5387,6 +5708,13 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_Material(duk_context *context) {
+		String name = duk_to_string(context, 0);
+		Material *inst = new Material(name);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_Material__get_fp16RenderTargets(duk_context *context) {
 		Material *inst = (Material*)duk_to_pointer(context, 0);
 		duk_push_boolean(context, inst->fp16RenderTargets);
@@ -5551,6 +5879,12 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_ShaderPass(duk_context *context) {
+		ShaderPass *inst = new ShaderPass();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_ShaderPass__get_wireframe(duk_context *context) {
 		ShaderPass *inst = (ShaderPass*)duk_to_pointer(context, 0);
 		duk_push_boolean(context, inst->wireframe);
@@ -5579,6 +5913,20 @@ namespace Polycode {
 		ShaderPass *inst = (ShaderPass*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_ShaderPass_getShaderBinding(duk_context *context) {
+		ShaderPass *inst = (ShaderPass*)duk_to_pointer(context, 0);
+		shared_ptr<ShaderBinding> *retInst = new shared_ptr<ShaderBinding>();
+		*retInst = inst->getShaderBinding();
+		duk_push_pointer(context, (void*)retInst);
+		return 1;
+	}
+
+	duk_ret_t Polycode_Matrix4(duk_context *context) {
+		Matrix4 *inst = new Matrix4();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_Matrix4__delete(duk_context *context) {
@@ -5701,6 +6049,13 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_Matrix4_generalDeterminant(duk_context *context) {
+		Number** a = (Number**)duk_to_pointer(context, 0);
+		int n = duk_to_int(context, 1);
+		duk_push_number(context, Matrix4::generalDeterminant(a,n));
+		return 1;
+	}
+
 	duk_ret_t Polycode_Matrix4_setOrthoProjection(duk_context *context) {
 		Matrix4 *inst = (Matrix4*)duk_to_pointer(context, 0);
 		Number left = duk_to_number(context, 1);
@@ -5735,10 +6090,23 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_Mesh(duk_context *context) {
+		Mesh *inst = new Mesh();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_Mesh__delete(duk_context *context) {
 		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_Mesh_MeshFromFileName(duk_context *context) {
+		String fileName = duk_to_string(context, 0);
+		PolyBase *ptrRetVal = (PolyBase*)Mesh::MeshFromFileName(fileName);
+		duk_push_pointer(context, (void*)ptrRetVal);
+		return 1;
 	}
 
 	duk_ret_t Polycode_Mesh_Copy(duk_context *context) {
@@ -5830,6 +6198,12 @@ namespace Polycode {
 	duk_ret_t Polycode_Mesh_getRadius(duk_context *context) {
 		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
 		duk_push_number(context, inst->getRadius());
+		return 1;
+	}
+
+	duk_ret_t Polycode_MeshGeometry(duk_context *context) {
+		MeshGeometry *inst = new MeshGeometry();
+		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
@@ -6241,6 +6615,19 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_MeshGeometry_calculateFaceTangent(duk_context *context) {
+		Vector3 v1 = *(Vector3*)duk_to_pointer(context, 0);
+		Vector3 v2 = *(Vector3*)duk_to_pointer(context, 1);
+		Vector3 v3 = *(Vector3*)duk_to_pointer(context, 2);
+		Vector2 texCoord1 = *(Vector2*)duk_to_pointer(context, 3);
+		Vector2 texCoord2 = *(Vector2*)duk_to_pointer(context, 4);
+		Vector2 texCoord3 = *(Vector2*)duk_to_pointer(context, 5);
+		Vector3 *retInst = new Vector3();
+		*retInst = MeshGeometry::calculateFaceTangent(v1,v2,v3,texCoord1,texCoord2,texCoord3);
+		duk_push_pointer(context, (void*)retInst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_MeshGeometry_saveAsOBJ(duk_context *context) {
 		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		String fileName = duk_to_string(context, 1);
@@ -6252,6 +6639,12 @@ namespace Polycode {
 		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
 		inst->normalizeBoneWeights();
 		return 0;
+	}
+
+	duk_ret_t Polycode_ObjectEntry(duk_context *context) {
+		ObjectEntry *inst = new ObjectEntry();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_ObjectEntry__get_type(duk_context *context) {
@@ -6395,6 +6788,14 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_BinaryObjectReader(duk_context *context) {
+		String fileName = duk_to_string(context, 0);
+		Object* object = (Object*)duk_to_pointer(context, 1);
+		BinaryObjectReader *inst = new BinaryObjectReader(fileName,object);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_BinaryObjectReader__get_success(duk_context *context) {
 		BinaryObjectReader *inst = (BinaryObjectReader*)duk_to_pointer(context, 0);
 		duk_push_boolean(context, inst->success);
@@ -6411,6 +6812,13 @@ namespace Polycode {
 		BinaryObjectReader *inst = (BinaryObjectReader*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_BinaryObjectWriter(duk_context *context) {
+		Object* object = (Object*)duk_to_pointer(context, 0);
+		BinaryObjectWriter *inst = new BinaryObjectWriter(object);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_BinaryObjectWriter__delete(duk_context *context) {
@@ -6451,6 +6859,12 @@ namespace Polycode {
 		BinaryObjectWriter *inst = (BinaryObjectWriter*)duk_to_pointer(context, 0);
 		String fileName = duk_to_string(context, 1);
 		duk_push_boolean(context, inst->writeToFile(fileName));
+		return 1;
+	}
+
+	duk_ret_t Polycode_ShaderPlatformData(duk_context *context) {
+		ShaderPlatformData *inst = new ShaderPlatformData();
+		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
@@ -6500,6 +6914,12 @@ namespace Polycode {
 		ShaderPlatformData *inst = (ShaderPlatformData*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_SceneParticle(duk_context *context) {
+		SceneParticle *inst = new SceneParticle();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_SceneParticle__get_lifetime(duk_context *context) {
@@ -6624,6 +7044,15 @@ namespace Polycode {
 		SceneParticle *inst = (SceneParticle*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_SceneParticleEmitter(duk_context *context) {
+		int particleCount = duk_to_int(context, 0);
+		Number lifetime = duk_to_number(context, 1);
+		Number speed = duk_to_number(context, 2);
+		SceneParticleEmitter *inst = new SceneParticleEmitter(particleCount,lifetime,speed);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter__get_useScaleCurve(duk_context *context) {
@@ -7048,6 +7477,16 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_Perlin(duk_context *context) {
+		int octaves = duk_to_int(context, 0);
+		Number freq = duk_to_number(context, 1);
+		Number amp = duk_to_number(context, 2);
+		int seed = duk_to_int(context, 3);
+		Perlin *inst = new Perlin(octaves,freq,amp,seed);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_Perlin__delete(duk_context *context) {
 		Perlin *inst = (Perlin*)duk_to_pointer(context, 0);
 		delete inst;
@@ -7085,6 +7524,16 @@ namespace Polycode {
 		Number y = duk_to_number(context, 2);
 		Number z = duk_to_number(context, 3);
 		duk_push_number(context, inst->Get3D(x,y,z));
+		return 1;
+	}
+
+	duk_ret_t Polycode_Quaternion(duk_context *context) {
+		Number w = duk_to_number(context, 0);
+		Number x = duk_to_number(context, 1);
+		Number y = duk_to_number(context, 2);
+		Number z = duk_to_number(context, 3);
+		Quaternion *inst = new Quaternion(w,x,y,z);
+		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
@@ -7149,6 +7598,17 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_Quaternion_Slerp(duk_context *context) {
+		Number fT = duk_to_number(context, 0);
+		Quaternion rkP = *(Quaternion*)duk_to_pointer(context, 1);
+		Quaternion rkQ = *(Quaternion*)duk_to_pointer(context, 2);
+		bool shortestPath = duk_to_boolean(context, 3);
+		Quaternion *retInst = new Quaternion();
+		*retInst = Quaternion::Slerp(fT,rkP,rkQ,shortestPath);
+		duk_push_pointer(context, (void*)retInst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_Quaternion_Dot(duk_context *context) {
 		Quaternion *inst = (Quaternion*)duk_to_pointer(context, 0);
 		Quaternion rkQ = *(Quaternion*)duk_to_pointer(context, 1);
@@ -7197,6 +7657,19 @@ namespace Polycode {
 		Matrix4 matrix = *(Matrix4*)duk_to_pointer(context, 1);
 		inst->createFromMatrix(matrix);
 		return 0;
+	}
+
+	duk_ret_t Polycode_Quaternion_Squad(duk_context *context) {
+		Number fT = duk_to_number(context, 0);
+		Quaternion rkP = *(Quaternion*)duk_to_pointer(context, 1);
+		Quaternion rkA = *(Quaternion*)duk_to_pointer(context, 2);
+		Quaternion rkB = *(Quaternion*)duk_to_pointer(context, 3);
+		Quaternion rkQ = *(Quaternion*)duk_to_pointer(context, 4);
+		bool shortestPath = duk_to_boolean(context, 5);
+		Quaternion *retInst = new Quaternion();
+		*retInst = Quaternion::Squad(fT,rkP,rkA,rkB,rkQ,shortestPath);
+		duk_push_pointer(context, (void*)retInst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_Quaternion_Inverse(duk_context *context) {
@@ -7284,6 +7757,12 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_QuatTriple(duk_context *context) {
+		QuatTriple *inst = new QuatTriple();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_QuatTriple__get_q1(duk_context *context) {
 		QuatTriple *inst = (QuatTriple*)duk_to_pointer(context, 0);
 		Quaternion *retInst = new Quaternion();
@@ -7344,6 +7823,16 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_QuaternionCurve(duk_context *context) {
+		BezierCurve* wCurve = (BezierCurve*)duk_to_pointer(context, 0);
+		BezierCurve* xCurve = (BezierCurve*)duk_to_pointer(context, 1);
+		BezierCurve* yCurve = (BezierCurve*)duk_to_pointer(context, 2);
+		BezierCurve* zCurve = (BezierCurve*)duk_to_pointer(context, 3);
+		QuaternionCurve *inst = new QuaternionCurve(wCurve,xCurve,yCurve,zCurve);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_QuaternionCurve__delete(duk_context *context) {
 		QuaternionCurve *inst = (QuaternionCurve*)duk_to_pointer(context, 0);
 		delete inst;
@@ -7368,6 +7857,12 @@ namespace Polycode {
 		BezierCurve* zCurve = (BezierCurve*)duk_to_pointer(context, 4);
 		inst->generatePointsFromCurves(wCurve,xCurve,yCurve,zCurve);
 		return 0;
+	}
+
+	duk_ret_t Polycode_Ray(duk_context *context) {
+		Ray *inst = new Ray();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_Ray__get_origin(duk_context *context) {
@@ -7474,6 +7969,12 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_Rectangle(duk_context *context) {
+		Rectangle *inst = new Rectangle();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_Rectangle__get_x(duk_context *context) {
 		Rectangle *inst = (Rectangle*)duk_to_pointer(context, 0);
 		duk_push_number(context, inst->x);
@@ -7571,6 +8072,13 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_RenderDataArray(duk_context *context) {
+		int type = duk_to_int(context, 0);
+		RenderDataArray *inst = new RenderDataArray(type);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_RenderDataArray__get_type(duk_context *context) {
 		RenderDataArray *inst = (RenderDataArray*)duk_to_pointer(context, 0);
 		duk_push_int(context, inst->type);
@@ -7613,10 +8121,22 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_LightShadowInfoBinding(duk_context *context) {
+		LightShadowInfoBinding *inst = new LightShadowInfoBinding();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_LightShadowInfoBinding__delete(duk_context *context) {
 		LightShadowInfoBinding *inst = (LightShadowInfoBinding*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_LightInfoBinding(duk_context *context) {
+		LightInfoBinding *inst = new LightInfoBinding();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_LightInfoBinding__delete(duk_context *context) {
@@ -7625,10 +8145,22 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_RenderFrame(duk_context *context) {
+		RenderFrame *inst = new RenderFrame();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_RenderFrame__delete(duk_context *context) {
 		RenderFrame *inst = (RenderFrame*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_RendererThreadJob(duk_context *context) {
+		RendererThreadJob *inst = new RendererThreadJob();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_RendererThreadJob__get_jobType(duk_context *context) {
@@ -7647,6 +8179,12 @@ namespace Polycode {
 		RendererThreadJob *inst = (RendererThreadJob*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_RenderThread(duk_context *context) {
+		RenderThread *inst = new RenderThread();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_RenderThread__delete(duk_context *context) {
@@ -7749,6 +8287,12 @@ namespace Polycode {
 		RenderThread *inst = (RenderThread*)duk_to_pointer(context, 0);
 		inst->unlockRenderMutex();
 		return 0;
+	}
+
+	duk_ret_t Polycode_RenderThreadDebugInfo(duk_context *context) {
+		RenderThreadDebugInfo *inst = new RenderThreadDebugInfo();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_RenderThreadDebugInfo__get_buffersProcessed(duk_context *context) {
@@ -7905,6 +8449,28 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_Renderer_unProject(duk_context *context) {
+		Vector3 position = *(Vector3*)duk_to_pointer(context, 0);
+		Matrix4 modelMatrix = *(Matrix4*)duk_to_pointer(context, 1);
+		Matrix4 projectionMatrix = *(Matrix4*)duk_to_pointer(context, 2);
+		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 3);
+		Vector3 *retInst = new Vector3();
+		*retInst = Renderer::unProject(position,modelMatrix,projectionMatrix,viewport);
+		duk_push_pointer(context, (void*)retInst);
+		return 1;
+	}
+
+	duk_ret_t Polycode_Renderer_project(duk_context *context) {
+		Vector3 position = *(Vector3*)duk_to_pointer(context, 0);
+		Matrix4 modelMatrix = *(Matrix4*)duk_to_pointer(context, 1);
+		Matrix4 projectionMatrix = *(Matrix4*)duk_to_pointer(context, 2);
+		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 3);
+		Vector3 *retInst = new Vector3();
+		*retInst = Renderer::project(position,modelMatrix,projectionMatrix,viewport);
+		duk_push_pointer(context, (void*)retInst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_Renderer_beginFrame(duk_context *context) {
 		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
 		inst->beginFrame();
@@ -7915,6 +8481,13 @@ namespace Polycode {
 		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
 		inst->endFrame();
 		return 0;
+	}
+
+	duk_ret_t Polycode_Resource(duk_context *context) {
+		int type = duk_to_int(context, 0);
+		Resource *inst = new Resource(type);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_Resource__get_reloadOnFileModify(duk_context *context) {
@@ -7987,6 +8560,12 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_ScriptResourceLoader(duk_context *context) {
+		ScriptResourceLoader *inst = new ScriptResourceLoader();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_ScriptResourceLoader__delete(duk_context *context) {
 		ScriptResourceLoader *inst = (ScriptResourceLoader*)duk_to_pointer(context, 0);
 		delete inst;
@@ -8000,6 +8579,14 @@ namespace Polycode {
 		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
 		*retInst = inst->loadResource(path,targetPool);
 		duk_push_pointer(context, (void*)retInst);
+		return 1;
+	}
+
+	duk_ret_t Polycode_ResourcePool(duk_context *context) {
+		String name = duk_to_string(context, 0);
+		ResourcePool* fallbackPool = (ResourcePool*)duk_to_pointer(context, 1);
+		ResourcePool *inst = new ResourcePool(name,fallbackPool);
+		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
@@ -8170,6 +8757,12 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_ResourceManager(duk_context *context) {
+		ResourceManager *inst = new ResourceManager();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_ResourceManager__delete(duk_context *context) {
 		ResourceManager *inst = (ResourceManager*)duk_to_pointer(context, 0);
 		delete inst;
@@ -8275,6 +8868,12 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_FontResourceLoader(duk_context *context) {
+		FontResourceLoader *inst = new FontResourceLoader();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_FontResourceLoader__delete(duk_context *context) {
 		FontResourceLoader *inst = (FontResourceLoader*)duk_to_pointer(context, 0);
 		delete inst;
@@ -8291,6 +8890,12 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_ProgramResourceLoader(duk_context *context) {
+		ProgramResourceLoader *inst = new ProgramResourceLoader();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_ProgramResourceLoader__delete(duk_context *context) {
 		ProgramResourceLoader *inst = (ProgramResourceLoader*)duk_to_pointer(context, 0);
 		delete inst;
@@ -8304,6 +8909,12 @@ namespace Polycode {
 		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
 		*retInst = inst->loadResource(path,targetPool);
 		duk_push_pointer(context, (void*)retInst);
+		return 1;
+	}
+
+	duk_ret_t Polycode_DebugBackTraceEntry(duk_context *context) {
+		DebugBackTraceEntry *inst = new DebugBackTraceEntry();
+		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
@@ -8337,6 +8948,12 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_MeshResourceLoader(duk_context *context) {
+		MeshResourceLoader *inst = new MeshResourceLoader();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_MeshResourceLoader__delete(duk_context *context) {
 		MeshResourceLoader *inst = (MeshResourceLoader*)duk_to_pointer(context, 0);
 		delete inst;
@@ -8350,6 +8967,12 @@ namespace Polycode {
 		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
 		*retInst = inst->loadResource(path,targetPool);
 		duk_push_pointer(context, (void*)retInst);
+		return 1;
+	}
+
+	duk_ret_t Polycode_MaterialResourceLoader(duk_context *context) {
+		MaterialResourceLoader *inst = new MaterialResourceLoader();
+		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
@@ -8369,6 +8992,12 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_TextureResourceLoader(duk_context *context) {
+		TextureResourceLoader *inst = new TextureResourceLoader();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_TextureResourceLoader__delete(duk_context *context) {
 		TextureResourceLoader *inst = (TextureResourceLoader*)duk_to_pointer(context, 0);
 		delete inst;
@@ -8382,6 +9011,14 @@ namespace Polycode {
 		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
 		*retInst = inst->loadResource(path,targetPool);
 		duk_push_pointer(context, (void*)retInst);
+		return 1;
+	}
+
+	duk_ret_t Polycode_Scene(duk_context *context) {
+		int sceneType = duk_to_int(context, 0);
+		bool virtualScene = duk_to_boolean(context, 1);
+		Scene *inst = new Scene(sceneType,virtualScene);
+		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
@@ -8706,6 +9343,13 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_SceneEntityInstanceResourceEntry(duk_context *context) {
+		SceneEntityInstance* instance = (SceneEntityInstance*)duk_to_pointer(context, 0);
+		SceneEntityInstanceResourceEntry *inst = new SceneEntityInstanceResourceEntry(instance);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_SceneEntityInstanceResourceEntry__delete(duk_context *context) {
 		SceneEntityInstanceResourceEntry *inst = (SceneEntityInstanceResourceEntry*)duk_to_pointer(context, 0);
 		delete inst;
@@ -8723,6 +9367,14 @@ namespace Polycode {
 		SceneEntityInstanceResourceEntry *inst = (SceneEntityInstanceResourceEntry*)duk_to_pointer(context, 0);
 		inst->reloadResource();
 		return 0;
+	}
+
+	duk_ret_t Polycode_SceneEntityInstance(duk_context *context) {
+		Scene* parentScene = (Scene*)duk_to_pointer(context, 0);
+		String fileName = duk_to_string(context, 1);
+		SceneEntityInstance *inst = new SceneEntityInstance(parentScene,fileName);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_SceneEntityInstance__get_cloneUsingReload(duk_context *context) {
@@ -8753,6 +9405,13 @@ namespace Polycode {
 		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_SceneEntityInstance_BlankSceneEntityInstance(duk_context *context) {
+		Scene* parentScene = (Scene*)duk_to_pointer(context, 0);
+		PolyBase *ptrRetVal = (PolyBase*)SceneEntityInstance::BlankSceneEntityInstance(parentScene);
+		duk_push_pointer(context, (void*)ptrRetVal);
+		return 1;
 	}
 
 	duk_ret_t Polycode_SceneEntityInstance_Clone(duk_context *context) {
@@ -8903,6 +9562,14 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_SceneEntityInstanceLayer(duk_context *context) {
+		SceneEntityInstance* instance = (SceneEntityInstance*)duk_to_pointer(context, 0);
+		String name = duk_to_string(context, 1);
+		SceneEntityInstanceLayer *inst = new SceneEntityInstanceLayer(instance,name);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_SceneEntityInstanceLayer__get_name(duk_context *context) {
 		SceneEntityInstanceLayer *inst = (SceneEntityInstanceLayer*)duk_to_pointer(context, 0);
 		duk_push_string(context, inst->name.c_str());
@@ -8965,6 +9632,17 @@ namespace Polycode {
 		bool val = duk_to_boolean(context, 1);
 		inst->setLayerVisibility(val);
 		return 0;
+	}
+
+	duk_ret_t Polycode_SceneLabel(duk_context *context) {
+		String text = duk_to_string(context, 0);
+		int size = duk_to_int(context, 1);
+		String fontName = duk_to_string(context, 2);
+		int amode = duk_to_int(context, 3);
+		Number actualHeight = duk_to_number(context, 4);
+		SceneLabel *inst = new SceneLabel(text,size,fontName,amode,actualHeight);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_SceneLabel__get_positionAtBaseline(duk_context *context) {
@@ -9053,6 +9731,18 @@ namespace Polycode {
 		SceneLabel *inst = (SceneLabel*)duk_to_pointer(context, 0);
 		PolyBase *ptrRetVal = (PolyBase*)inst->getLabel();
 		duk_push_pointer(context, (void*)ptrRetVal);
+		return 1;
+	}
+
+	duk_ret_t Polycode_SceneLight(duk_context *context) {
+		int type = duk_to_int(context, 0);
+		Scene* parentScene = (Scene*)duk_to_pointer(context, 1);
+		Number intensity = duk_to_number(context, 2);
+		Number constantAttenuation = duk_to_number(context, 3);
+		Number linearAttenuation = duk_to_number(context, 4);
+		Number quadraticAttenuation = duk_to_number(context, 5);
+		SceneLight *inst = new SceneLight(type,parentScene,intensity,constantAttenuation,linearAttenuation,quadraticAttenuation);
+		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
@@ -9279,6 +9969,12 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_SceneCurve(duk_context *context) {
+		SceneCurve *inst = new SceneCurve();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_SceneCurve__get_renderCurve(duk_context *context) {
 		SceneCurve *inst = (SceneCurve*)duk_to_pointer(context, 0);
 		duk_push_boolean(context, inst->renderCurve);
@@ -9307,6 +10003,13 @@ namespace Polycode {
 		SceneCurve *inst = (SceneCurve*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_SceneCurve_SceneCurveWithCurve(duk_context *context) {
+		BezierCurve* curve = (BezierCurve*)duk_to_pointer(context, 0);
+		PolyBase *ptrRetVal = (PolyBase*)SceneCurve::SceneCurveWithCurve(curve);
+		duk_push_pointer(context, (void*)ptrRetVal);
+		return 1;
 	}
 
 	duk_ret_t Polycode_SceneCurve_getWorldPointAt(duk_context *context) {
@@ -9349,10 +10052,26 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_SceneLine(duk_context *context) {
+		Entity* ent1 = (Entity*)duk_to_pointer(context, 0);
+		Entity* ent2 = (Entity*)duk_to_pointer(context, 1);
+		SceneLine *inst = new SceneLine(ent1,ent2);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_SceneLine__delete(duk_context *context) {
 		SceneLine *inst = (SceneLine*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_SceneLine_SceneLineWithPositions(duk_context *context) {
+		Vector3 startp = *(Vector3*)duk_to_pointer(context, 0);
+		Vector3 endp = *(Vector3*)duk_to_pointer(context, 1);
+		PolyBase *ptrRetVal = (PolyBase*)SceneLine::SceneLineWithPositions(startp,endp);
+		duk_push_pointer(context, (void*)ptrRetVal);
+		return 1;
 	}
 
 	duk_ret_t Polycode_SceneLine_setStart(duk_context *context) {
@@ -9373,6 +10092,12 @@ namespace Polycode {
 		SceneLine *inst = (SceneLine*)duk_to_pointer(context, 0);
 		inst->Update();
 		return 0;
+	}
+
+	duk_ret_t Polycode_SceneManager(duk_context *context) {
+		SceneManager *inst = new SceneManager();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_SceneManager__delete(duk_context *context) {
@@ -9439,6 +10164,13 @@ namespace Polycode {
 		Renderer* renderer = (Renderer*)duk_to_pointer(context, 1);
 		inst->setRenderer(renderer);
 		return 0;
+	}
+
+	duk_ret_t Polycode_SceneMesh(duk_context *context) {
+		String fileName = duk_to_string(context, 0);
+		SceneMesh *inst = new SceneMesh(fileName);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_SceneMesh__get_lineWidth(duk_context *context) {
@@ -9529,6 +10261,13 @@ namespace Polycode {
 		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_SceneMesh_SceneMeshFromMesh(duk_context *context) {
+		shared_ptr<Mesh> mesh = *(shared_ptr<Mesh>*)duk_to_pointer(context, 0);
+		PolyBase *ptrRetVal = (PolyBase*)SceneMesh::SceneMeshFromMesh(mesh);
+		duk_push_pointer(context, (void*)ptrRetVal);
+		return 1;
 	}
 
 	duk_ret_t Polycode_SceneMesh_Render(duk_context *context) {
@@ -9706,6 +10445,18 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_ScenePrimitive(duk_context *context) {
+		int type = duk_to_int(context, 0);
+		Number v1 = duk_to_number(context, 1);
+		Number v2 = duk_to_number(context, 2);
+		Number v3 = duk_to_number(context, 3);
+		Number v4 = duk_to_number(context, 4);
+		Number v5 = duk_to_number(context, 5);
+		ScenePrimitive *inst = new ScenePrimitive(type,v1,v2,v3,v4,v5);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_ScenePrimitive__delete(duk_context *context) {
 		ScenePrimitive *inst = (ScenePrimitive*)duk_to_pointer(context, 0);
 		delete inst;
@@ -9784,6 +10535,17 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_SceneRenderTexture(duk_context *context) {
+		Scene* targetScene = (Scene*)duk_to_pointer(context, 0);
+		Camera* targetCamera = (Camera*)duk_to_pointer(context, 1);
+		int renderWidth = duk_to_int(context, 2);
+		int renderHeight = duk_to_int(context, 3);
+		bool floatingPoint = duk_to_boolean(context, 4);
+		SceneRenderTexture *inst = new SceneRenderTexture(targetScene,targetCamera,renderWidth,renderHeight,floatingPoint);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_SceneRenderTexture__get_enabled(duk_context *context) {
 		SceneRenderTexture *inst = (SceneRenderTexture*)duk_to_pointer(context, 0);
 		duk_push_boolean(context, inst->enabled);
@@ -9842,6 +10604,16 @@ namespace Polycode {
 		SceneRenderTexture *inst = (SceneRenderTexture*)duk_to_pointer(context, 0);
 		PolyBase *ptrRetVal = (PolyBase*)inst->getTargetCamera();
 		duk_push_pointer(context, (void*)ptrRetVal);
+		return 1;
+	}
+
+	duk_ret_t Polycode_SceneSound(duk_context *context) {
+		String fileName = duk_to_string(context, 0);
+		Number referenceDistance = duk_to_number(context, 1);
+		Number maxDistance = duk_to_number(context, 2);
+		bool directionalSound = duk_to_boolean(context, 3);
+		SceneSound *inst = new SceneSound(fileName,referenceDistance,maxDistance,directionalSound);
+		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
@@ -9908,6 +10680,12 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_SceneSoundListener(duk_context *context) {
+		SceneSoundListener *inst = new SceneSoundListener();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_SceneSoundListener__delete(duk_context *context) {
 		SceneSoundListener *inst = (SceneSoundListener*)duk_to_pointer(context, 0);
 		delete inst;
@@ -9918,6 +10696,13 @@ namespace Polycode {
 		SceneSoundListener *inst = (SceneSoundListener*)duk_to_pointer(context, 0);
 		inst->Update();
 		return 0;
+	}
+
+	duk_ret_t Polycode_SceneSprite(duk_context *context) {
+		SpriteSet* spriteSet = (SpriteSet*)duk_to_pointer(context, 0);
+		SceneSprite *inst = new SceneSprite(spriteSet);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_SceneSprite__delete(duk_context *context) {
@@ -10065,6 +10850,13 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_Sprite(duk_context *context) {
+		String name = duk_to_string(context, 0);
+		Sprite *inst = new Sprite(name);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_Sprite__delete(duk_context *context) {
 		Sprite *inst = (Sprite*)duk_to_pointer(context, 0);
 		delete inst;
@@ -10131,6 +10923,14 @@ namespace Polycode {
 		Sprite *inst = (Sprite*)duk_to_pointer(context, 0);
 		PolyBase *ptrRetVal = (PolyBase*)inst->getParentSpriteSet();
 		duk_push_pointer(context, (void*)ptrRetVal);
+		return 1;
+	}
+
+	duk_ret_t Polycode_SpriteSet(duk_context *context) {
+		String fileName = duk_to_string(context, 0);
+		ResourcePool* parentPool = (ResourcePool*)duk_to_pointer(context, 1);
+		SpriteSet *inst = new SpriteSet(fileName,parentPool);
+		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
@@ -10269,6 +11069,12 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_SpriteFrame(duk_context *context) {
+		SpriteFrame *inst = new SpriteFrame();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_SpriteFrame__get_coordinates(duk_context *context) {
 		SpriteFrame *inst = (SpriteFrame*)duk_to_pointer(context, 0);
 		Polycode::Rectangle *retInst = new Polycode::Rectangle();
@@ -10313,6 +11119,14 @@ namespace Polycode {
 		SpriteFrame *inst = (SpriteFrame*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_SpriteState(duk_context *context) {
+		SpriteSet* spriteSet = (SpriteSet*)duk_to_pointer(context, 0);
+		String name = duk_to_string(context, 1);
+		SpriteState *inst = new SpriteState(spriteSet,name);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_SpriteState__delete(duk_context *context) {
@@ -10447,6 +11261,12 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_ScriptInstance(duk_context *context) {
+		ScriptInstance *inst = new ScriptInstance();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_ScriptInstance__get_script(duk_context *context) {
 		ScriptInstance *inst = (ScriptInstance*)duk_to_pointer(context, 0);
 		PolyBase *ptrRetVal = (PolyBase*)inst->script;
@@ -10464,6 +11284,12 @@ namespace Polycode {
 		ScriptInstance *inst = (ScriptInstance*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_ProgramParam(duk_context *context) {
+		ProgramParam *inst = new ProgramParam();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_ProgramParam__get_name(duk_context *context) {
@@ -10509,6 +11335,18 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_ProgramParam_createParamData(duk_context *context) {
+		int type = duk_to_int(context, 0);
+		ProgramParam::createParamData(type);
+		return 0;
+	}
+
+	duk_ret_t Polycode_ProgramAttribute(duk_context *context) {
+		ProgramAttribute *inst = new ProgramAttribute();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_ProgramAttribute__get_size(duk_context *context) {
 		ProgramAttribute *inst = (ProgramAttribute*)duk_to_pointer(context, 0);
 		duk_push_int(context, inst->size);
@@ -10549,6 +11387,12 @@ namespace Polycode {
 		ProgramAttribute *inst = (ProgramAttribute*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_ShaderRenderTarget(duk_context *context) {
+		ShaderRenderTarget *inst = new ShaderRenderTarget();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_ShaderRenderTarget__get_id(duk_context *context) {
@@ -10627,6 +11471,12 @@ namespace Polycode {
 		ShaderRenderTarget *inst = (ShaderRenderTarget*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_RenderTargetBinding(duk_context *context) {
+		RenderTargetBinding *inst = new RenderTargetBinding();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_RenderTargetBinding__get_id(duk_context *context) {
@@ -10770,6 +11620,12 @@ namespace Polycode {
 		Shader *inst = (Shader*)duk_to_pointer(context, 0);
 		String name = duk_to_string(context, 1);
 		duk_push_int(context, inst->getExpectedParamType(name));
+		return 1;
+	}
+
+	duk_ret_t Polycode_LocalShaderParam(duk_context *context) {
+		LocalShaderParam *inst = new LocalShaderParam();
+		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
@@ -10959,6 +11815,13 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_ShaderProgram(duk_context *context) {
+		String fileName = duk_to_string(context, 0);
+		ShaderProgram *inst = new ShaderProgram(fileName);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_ShaderProgram__get_type(duk_context *context) {
 		ShaderProgram *inst = (ShaderProgram*)duk_to_pointer(context, 0);
 		duk_push_int(context, inst->type);
@@ -10987,6 +11850,12 @@ namespace Polycode {
 		ShaderProgram *inst = (ShaderProgram*)duk_to_pointer(context, 0);
 		inst->reloadResource();
 		return 0;
+	}
+
+	duk_ret_t Polycode_AttributeBinding(duk_context *context) {
+		AttributeBinding *inst = new AttributeBinding();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_AttributeBinding__get_name(duk_context *context) {
@@ -11043,6 +11912,12 @@ namespace Polycode {
 		AttributeBinding *inst = (AttributeBinding*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_ShaderBinding(duk_context *context) {
+		ShaderBinding *inst = new ShaderBinding();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_ShaderBinding__get_accessMutex(duk_context *context) {
@@ -11274,6 +12149,14 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_SkeletonAnimation(duk_context *context) {
+		String name = duk_to_string(context, 0);
+		Number duration = duk_to_number(context, 1);
+		SkeletonAnimation *inst = new SkeletonAnimation(name,duration);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_SkeletonAnimation__delete(duk_context *context) {
 		SkeletonAnimation *inst = (SkeletonAnimation*)duk_to_pointer(context, 0);
 		delete inst;
@@ -11344,10 +12227,23 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_Skeleton(duk_context *context) {
+		String fileName = duk_to_string(context, 0);
+		Skeleton *inst = new Skeleton(fileName);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_Skeleton__delete(duk_context *context) {
 		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
+	}
+
+	duk_ret_t Polycode_Skeleton_BlankSkeleton(duk_context *context) {
+		PolyBase *ptrRetVal = (PolyBase*)Skeleton::BlankSkeleton();
+		duk_push_pointer(context, (void*)ptrRetVal);
+		return 1;
 	}
 
 	duk_ret_t Polycode_Skeleton_loadSkeleton(duk_context *context) {
@@ -11487,6 +12383,14 @@ namespace Polycode {
 		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
 		Bone* bone = (Bone*)duk_to_pointer(context, 1);
 		duk_push_int(context, inst->getBoneIndexByBone(bone));
+		return 1;
+	}
+
+	duk_ret_t Polycode_BoneTrack(duk_context *context) {
+		Bone* bone = (Bone*)duk_to_pointer(context, 0);
+		Number length = duk_to_number(context, 1);
+		BoneTrack *inst = new BoneTrack(bone,length);
+		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
@@ -11726,6 +12630,13 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_Sound(duk_context *context) {
+		String fileName = duk_to_string(context, 0);
+		Sound *inst = new Sound(fileName);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_Sound__delete(duk_context *context) {
 		Sound *inst = (Sound*)duk_to_pointer(context, 0);
 		delete inst;
@@ -11953,6 +12864,14 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_AudioStreamingSource(duk_context *context) {
+		int channels = duk_to_int(context, 0);
+		int freq = duk_to_int(context, 1);
+		AudioStreamingSource *inst = new AudioStreamingSource(channels,freq);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_AudioStreamingSource__delete(duk_context *context) {
 		AudioStreamingSource *inst = (AudioStreamingSource*)duk_to_pointer(context, 0);
 		delete inst;
@@ -11968,6 +12887,12 @@ namespace Polycode {
 	duk_ret_t Polycode_AudioStreamingSource_getFrequency(duk_context *context) {
 		AudioStreamingSource *inst = (AudioStreamingSource*)duk_to_pointer(context, 0);
 		duk_push_int(context, inst->getFrequency());
+		return 1;
+	}
+
+	duk_ret_t Polycode_AudioMixer(duk_context *context) {
+		AudioMixer *inst = new AudioMixer();
+		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
@@ -12038,6 +12963,12 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_SoundManager(duk_context *context) {
+		SoundManager *inst = new SoundManager();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_SoundManager__delete(duk_context *context) {
 		SoundManager *inst = (SoundManager*)duk_to_pointer(context, 0);
 		delete inst;
@@ -12106,6 +13037,12 @@ namespace Polycode {
 		Sound* sound = (Sound*)duk_to_pointer(context, 1);
 		inst->unregisterSound(sound);
 		return 0;
+	}
+
+	duk_ret_t Polycode_String(duk_context *context) {
+		String *inst = new String();
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_String__get_contents(duk_context *context) {
@@ -12232,6 +13169,13 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_String_NumberToString(duk_context *context) {
+		Number value = duk_to_number(context, 0);
+		int precision = duk_to_int(context, 1);
+		duk_push_string(context, String::NumberToString(value,precision).c_str());
+		return 1;
+	}
+
 	duk_ret_t Polycode_String_toNumber(duk_context *context) {
 		String *inst = (String*)duk_to_pointer(context, 0);
 		duk_push_number(context, inst->toNumber());
@@ -12241,6 +13185,12 @@ namespace Polycode {
 	duk_ret_t Polycode_String_toInteger(duk_context *context) {
 		String *inst = (String*)duk_to_pointer(context, 0);
 		duk_push_int(context, inst->toInteger());
+		return 1;
+	}
+
+	duk_ret_t Polycode_String_IntToString(duk_context *context) {
+		int value = duk_to_int(context, 0);
+		duk_push_string(context, String::IntToString(value).c_str());
 		return 1;
 	}
 
@@ -12294,6 +13244,16 @@ namespace Polycode {
 	duk_ret_t Polycode_String_isNumber(duk_context *context) {
 		String *inst = (String*)duk_to_pointer(context, 0);
 		duk_push_boolean(context, inst->isNumber());
+		return 1;
+	}
+
+	duk_ret_t Polycode_RenderBuffer(duk_context *context) {
+		int width = duk_to_int(context, 0);
+		int height = duk_to_int(context, 1);
+		bool attachDepthBuffer = duk_to_boolean(context, 2);
+		bool floatingPoint = duk_to_boolean(context, 3);
+		RenderBuffer *inst = new RenderBuffer(width,height,attachDepthBuffer,floatingPoint);
+		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
@@ -12463,6 +13423,14 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_Timer(duk_context *context) {
+		bool triggerMode = duk_to_boolean(context, 0);
+		int msecs = duk_to_int(context, 1);
+		Timer *inst = new Timer(triggerMode,msecs);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_Timer__delete(duk_context *context) {
 		Timer *inst = (Timer*)duk_to_pointer(context, 0);
 		delete inst;
@@ -12518,6 +13486,14 @@ namespace Polycode {
 		int msecs = duk_to_int(context, 1);
 		inst->setTimerInterval(msecs);
 		return 0;
+	}
+
+	duk_ret_t Polycode_Vector2(duk_context *context) {
+		Number x = duk_to_number(context, 0);
+		Number y = duk_to_number(context, 1);
+		Vector2 *inst = new Vector2(x,y);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_Vector2__get_x(duk_context *context) {
@@ -12596,6 +13572,15 @@ namespace Polycode {
 		Vector2 *inst = (Vector2*)duk_to_pointer(context, 0);
 		inst->Normalize();
 		return 0;
+	}
+
+	duk_ret_t Polycode_Vector3(duk_context *context) {
+		Number x = duk_to_number(context, 0);
+		Number y = duk_to_number(context, 1);
+		Number z = duk_to_number(context, 2);
+		Vector3 *inst = new Vector3(x,y,z);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_Vector3__get_x(duk_context *context) {
@@ -12704,6 +13689,16 @@ namespace Polycode {
 		Vector3 *inst = (Vector3*)duk_to_pointer(context, 0);
 		inst->Normalize();
 		return 0;
+	}
+
+	duk_ret_t Polycode_Vector4(duk_context *context) {
+		Number x = duk_to_number(context, 0);
+		Number y = duk_to_number(context, 1);
+		Number z = duk_to_number(context, 2);
+		Number w = duk_to_number(context, 3);
+		Vector4 *inst = new Vector4(x,y,z,w);
+		duk_push_pointer(context, (void*)inst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_Vector4__get_x(duk_context *context) {

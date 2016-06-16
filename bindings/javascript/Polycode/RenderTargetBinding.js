@@ -1,10 +1,14 @@
 function RenderTargetBinding() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.RenderTargetBinding()
+	}
 	Object.defineProperties(this, {
 		'id': { enumerable: true, configurable: true, get: RenderTargetBinding.prototype.__get_id, set: RenderTargetBinding.prototype.__set_id},
 		'name': { enumerable: true, configurable: true, get: RenderTargetBinding.prototype.__get_name, set: RenderTargetBinding.prototype.__set_name},
 		'mode': { enumerable: true, configurable: true, get: RenderTargetBinding.prototype.__get_mode, set: RenderTargetBinding.prototype.__set_mode}
 	})
 }
+
 RenderTargetBinding.prototype.__get_id = function() {
 	return Polycode.RenderTargetBinding__get_id(this.__ptr)
 }

@@ -1,4 +1,9 @@
+require('Polycode/EventDispatcher')
+
 function CoreInput() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.CoreInput()
+	}
 	Object.defineProperties(this, {
 		'simulateTouchWithMouse': { enumerable: true, configurable: true, get: CoreInput.prototype.__get_simulateTouchWithMouse, set: CoreInput.prototype.__set_simulateTouchWithMouse},
 		'simulateTouchAsPen': { enumerable: true, configurable: true, get: CoreInput.prototype.__get_simulateTouchAsPen, set: CoreInput.prototype.__set_simulateTouchAsPen},
@@ -9,6 +14,9 @@ function CoreInput() {
 		'deltaMousePosition': { enumerable: true, configurable: true, get: CoreInput.prototype.__get_deltaMousePosition, set: CoreInput.prototype.__set_deltaMousePosition}
 	})
 }
+
+CoreInput.prototype = Object.create(EventDispatcher.prototype);
+
 CoreInput.prototype.__get_simulateTouchWithMouse = function() {
 	return Polycode.CoreInput__get_simulateTouchWithMouse(this.__ptr)
 }
@@ -87,11 +95,11 @@ CoreInput.prototype.getKeyState = function(keyCode) {
 }
 
 CoreInput.prototype.getJoystickButtonState = function(joystickIndex,button) {
-	return Polycode.CoreInput_getJoystickButtonState(this.__ptr, joystickIndex,button)
+	return Polycode.CoreInput_getJoystickButtonState(this.__ptr, joystickIndex, button)
 }
 
 CoreInput.prototype.getJoystickAxisValue = function(joystickIndex,axis) {
-	return Polycode.CoreInput_getJoystickAxisValue(this.__ptr, joystickIndex,axis)
+	return Polycode.CoreInput_getJoystickAxisValue(this.__ptr, joystickIndex, axis)
 }
 
 CoreInput.prototype.getMouseDelta = function() {
@@ -129,15 +137,15 @@ CoreInput.prototype.removeJoystick = function(deviceID) {
 }
 
 CoreInput.prototype.joystickAxisMoved = function(axisID,value,deviceID) {
-	Polycode.CoreInput_joystickAxisMoved(this.__ptr, axisID,value,deviceID)
+	Polycode.CoreInput_joystickAxisMoved(this.__ptr, axisID, value, deviceID)
 }
 
 CoreInput.prototype.joystickButtonDown = function(buttonID,deviceID) {
-	Polycode.CoreInput_joystickButtonDown(this.__ptr, buttonID,deviceID)
+	Polycode.CoreInput_joystickButtonDown(this.__ptr, buttonID, deviceID)
 }
 
 CoreInput.prototype.joystickButtonUp = function(buttonID,deviceID) {
-	Polycode.CoreInput_joystickButtonUp(this.__ptr, buttonID,deviceID)
+	Polycode.CoreInput_joystickButtonUp(this.__ptr, buttonID, deviceID)
 }
 
 CoreInput.prototype.mouseWheelUp = function(ticks) {
@@ -149,31 +157,37 @@ CoreInput.prototype.mouseWheelDown = function(ticks) {
 }
 
 CoreInput.prototype.setMouseButtonState = function(mouseButton,state,ticks) {
-	Polycode.CoreInput_setMouseButtonState(this.__ptr, mouseButton,state,ticks)
+	Polycode.CoreInput_setMouseButtonState(this.__ptr, mouseButton, state, ticks)
 }
 
 CoreInput.prototype.setMousePosition = function(x,y,ticks) {
-	Polycode.CoreInput_setMousePosition(this.__ptr, x,y,ticks)
+	Polycode.CoreInput_setMousePosition(this.__ptr, x, y, ticks)
 }
 
 CoreInput.prototype.setKeyState = function(keyCode,code,newState,ticks) {
-	Polycode.CoreInput_setKeyState(this.__ptr, keyCode,code,newState,ticks)
+	Polycode.CoreInput_setKeyState(this.__ptr, keyCode, code, newState, ticks)
 }
 
 CoreInput.prototype.setDeltaPosition = function(x,y) {
-	Polycode.CoreInput_setDeltaPosition(this.__ptr, x,y)
+	Polycode.CoreInput_setDeltaPosition(this.__ptr, x, y)
 }
 
 CoreInput.prototype.touchesBegan = function(touch,touches,ticks) {
-	Polycode.CoreInput_touchesBegan(this.__ptr, touch,touches,ticks)
+	Polycode.CoreInput_touchesBegan(this.__ptr, touch, touches, ticks)
 }
 
 CoreInput.prototype.touchesMoved = function(touch,touches,ticks) {
-	Polycode.CoreInput_touchesMoved(this.__ptr, touch,touches,ticks)
+	Polycode.CoreInput_touchesMoved(this.__ptr, touch, touches, ticks)
 }
 
 CoreInput.prototype.touchesEnded = function(touch,touches,ticks) {
-	Polycode.CoreInput_touchesEnded(this.__ptr, touch,touches,ticks)
+	Polycode.CoreInput_touchesEnded(this.__ptr, touch, touches, ticks)
+}
+
+CoreInput.prototype.createEvent = function(event) {
+	var retVal = new InputEvent()
+	retVal.__ptr = Polycode.CoreInput_createEvent(event.__ptr)
+	return retVal
 }
 
 CoreInput.prototype.clearInput = function() {

@@ -1,9 +1,17 @@
+require('Polycode/SceneMesh')
+
 function SceneCurve() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.SceneCurve()
+	}
 	Object.defineProperties(this, {
 		'renderCurve': { enumerable: true, configurable: true, get: SceneCurve.prototype.__get_renderCurve, set: SceneCurve.prototype.__set_renderCurve},
 		'curveResolution': { enumerable: true, configurable: true, get: SceneCurve.prototype.__get_curveResolution, set: SceneCurve.prototype.__set_curveResolution}
 	})
 }
+
+SceneCurve.prototype = Object.create(SceneMesh.prototype);
+
 SceneCurve.prototype.__get_renderCurve = function() {
 	return Polycode.SceneCurve__get_renderCurve(this.__ptr)
 }
@@ -27,6 +35,12 @@ Duktape.fin(SceneCurve.prototype, function (x) {
 	Polycode.SceneCurve__delete(x.__ptr)
 })
 
+SceneCurve.prototype.SceneCurveWithCurve = function(curve) {
+	var retVal = new SceneCurve()
+	retVal.__ptr = Polycode.SceneCurve_SceneCurveWithCurve(curve.__ptr)
+	return retVal
+}
+
 SceneCurve.prototype.getWorldPointAt = function(t) {
 	var retVal = new Vector3()
 	retVal.__ptr = Polycode.SceneCurve_getWorldPointAt(this.__ptr, t)
@@ -39,12 +53,12 @@ SceneCurve.prototype.Update = function() {
 
 SceneCurve.prototype.Clone = function(deepClone,ignoreEditorOnly) {
 	var retVal = new Entity()
-	retVal.__ptr = Polycode.SceneCurve_Clone(this.__ptr, deepClone,ignoreEditorOnly)
+	retVal.__ptr = Polycode.SceneCurve_Clone(this.__ptr, deepClone, ignoreEditorOnly)
 	return retVal
 }
 
 SceneCurve.prototype.applyClone = function(clone,deepClone,ignoreEditorOnly) {
-	Polycode.SceneCurve_applyClone(this.__ptr, clone,deepClone,ignoreEditorOnly)
+	Polycode.SceneCurve_applyClone(this.__ptr, clone.__ptr, deepClone, ignoreEditorOnly)
 }
 
 SceneCurve.prototype.getCurve = function() {

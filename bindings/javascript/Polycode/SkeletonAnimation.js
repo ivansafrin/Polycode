@@ -1,5 +1,9 @@
-function SkeletonAnimation() {
+function SkeletonAnimation(name,duration) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.SkeletonAnimation(name,duration)
+	}
 }
+
 Duktape.fin(SkeletonAnimation.prototype, function (x) {
 	if (x === SkeletonAnimation.prototype) {
 		return;
@@ -8,7 +12,7 @@ Duktape.fin(SkeletonAnimation.prototype, function (x) {
 })
 
 SkeletonAnimation.prototype.addBoneTrack = function(boneTrack) {
-	Polycode.SkeletonAnimation_addBoneTrack(this.__ptr, boneTrack)
+	Polycode.SkeletonAnimation_addBoneTrack(this.__ptr, boneTrack.__ptr)
 }
 
 SkeletonAnimation.prototype.getName = function() {

@@ -36,6 +36,23 @@ bool SceneLabel::defaultPositionAtBaseline = false;
 bool SceneLabel::defaultSnapToPixels = false;
 bool SceneLabel::createMipmapsForLabels = true;
 
+
+SceneLabel::SceneLabel(const String& text, int size, const String& fontName, int amode, Number actualHeight) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1){
+	setMaterialByName("Unlit");
+	
+	ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
+	std::shared_ptr<Font> font = std::static_pointer_cast<Font>(pool->getResource(Resource::RESOURCE_FONT, fontName));
+	
+	label = new Label(font, text, size * CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), amode, false, Color(0.0, 0.0, 0.0, 0.0), Color(1.0, 1.0, 1.0, 1.0));
+	
+	positionAtBaseline = SceneLabel::defaultPositionAtBaseline;
+	setAnchorPoint(SceneLabel::defaultAnchor);
+	snapToPixels = SceneLabel::defaultSnapToPixels;
+	setLabelActualHeight(actualHeight);
+
+	
+}
+
 SceneLabel::SceneLabel(const String& text, int size, const String& fontName, int amode, Number actualHeight, bool premultiplyAlpha, const Color &backgroundColor, const Color &foregroundColor) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1){
 
 	setMaterialByName("Unlit");

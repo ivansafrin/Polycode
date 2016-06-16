@@ -1,9 +1,13 @@
 function CoreFileExtension() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.CoreFileExtension()
+	}
 	Object.defineProperties(this, {
 		'extension': { enumerable: true, configurable: true, get: CoreFileExtension.prototype.__get_extension, set: CoreFileExtension.prototype.__set_extension},
 		'description': { enumerable: true, configurable: true, get: CoreFileExtension.prototype.__get_description, set: CoreFileExtension.prototype.__set_description}
 	})
 }
+
 CoreFileExtension.prototype.__get_extension = function() {
 	return Polycode.CoreFileExtension__get_extension(this.__ptr)
 }

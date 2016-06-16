@@ -1,5 +1,9 @@
-function RenderBuffer() {
+function RenderBuffer(width,height,attachDepthBuffer,floatingPoint) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.RenderBuffer(width,height,attachDepthBuffer,floatingPoint)
+	}
 }
+
 Duktape.fin(RenderBuffer.prototype, function (x) {
 	if (x === RenderBuffer.prototype) {
 		return;

@@ -1,10 +1,14 @@
 function ShaderPlatformData() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.ShaderPlatformData()
+	}
 	Object.defineProperties(this, {
 		'shaderID': { enumerable: true, configurable: true, get: ShaderPlatformData.prototype.__get_shaderID, set: ShaderPlatformData.prototype.__set_shaderID},
 		'vertexProgramID': { enumerable: true, configurable: true, get: ShaderPlatformData.prototype.__get_vertexProgramID, set: ShaderPlatformData.prototype.__set_vertexProgramID},
 		'fragmentProgramID': { enumerable: true, configurable: true, get: ShaderPlatformData.prototype.__get_fragmentProgramID, set: ShaderPlatformData.prototype.__set_fragmentProgramID}
 	})
 }
+
 ShaderPlatformData.prototype.__get_shaderID = function() {
 	var retVal = new GLuint()
 	retVal.__ptr = 	Polycode.ShaderPlatformData__get_shaderID(this.__ptr)

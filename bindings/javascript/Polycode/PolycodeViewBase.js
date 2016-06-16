@@ -1,8 +1,12 @@
 function PolycodeViewBase() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.PolycodeViewBase()
+	}
 	Object.defineProperties(this, {
 		'resizable': { enumerable: true, configurable: true, get: PolycodeViewBase.prototype.__get_resizable, set: PolycodeViewBase.prototype.__set_resizable}
 	})
 }
+
 PolycodeViewBase.prototype.__get_resizable = function() {
 	return Polycode.PolycodeViewBase__get_resizable(this.__ptr)
 }

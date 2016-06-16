@@ -1,4 +1,9 @@
-function Scene() {
+require('Polycode/EventDispatcher')
+
+function Scene(sceneType,virtualScene) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.Scene(sceneType,virtualScene)
+	}
 	Object.defineProperties(this, {
 		'clearColor': { enumerable: true, configurable: true, get: Scene.prototype.__get_clearColor, set: Scene.prototype.__set_clearColor},
 		'useClearColor': { enumerable: true, configurable: true, get: Scene.prototype.__get_useClearColor, set: Scene.prototype.__set_useClearColor},
@@ -13,6 +18,9 @@ function Scene() {
 		'constrainPickingToViewport': { enumerable: true, configurable: true, get: Scene.prototype.__get_constrainPickingToViewport, set: Scene.prototype.__set_constrainPickingToViewport}
 	})
 }
+
+Scene.prototype = Object.create(EventDispatcher.prototype);
+
 Scene.prototype.__get_clearColor = function() {
 	var retVal = new Color()
 	retVal.__ptr = 	Polycode.Scene__get_clearColor(this.__ptr)
@@ -113,15 +121,15 @@ Scene.prototype.__set_constrainPickingToViewport = function(val) {
 
 
 Scene.prototype.addEntity = function(entity) {
-	Polycode.Scene_addEntity(this.__ptr, entity)
+	Polycode.Scene_addEntity(this.__ptr, entity.__ptr)
 }
 
 Scene.prototype.addChild = function(entity) {
-	Polycode.Scene_addChild(this.__ptr, entity)
+	Polycode.Scene_addChild(this.__ptr, entity.__ptr)
 }
 
 Scene.prototype.removeEntity = function(entity) {
-	Polycode.Scene_removeEntity(this.__ptr, entity)
+	Polycode.Scene_removeEntity(this.__ptr, entity.__ptr)
 }
 
 Scene.prototype.getDefaultCamera = function() {
@@ -137,7 +145,7 @@ Scene.prototype.getActiveCamera = function() {
 }
 
 Scene.prototype.setActiveCamera = function(camera) {
-	Polycode.Scene_setActiveCamera(this.__ptr, camera)
+	Polycode.Scene_setActiveCamera(this.__ptr, camera.__ptr)
 }
 
 Scene.prototype.enableFog = function(enable) {
@@ -145,7 +153,7 @@ Scene.prototype.enableFog = function(enable) {
 }
 
 Scene.prototype.setFogProperties = function(fogMode,color,density,startDepth,endDepth) {
-	Polycode.Scene_setFogProperties(this.__ptr, fogMode,color,density,startDepth,endDepth)
+	Polycode.Scene_setFogProperties(this.__ptr, fogMode, color, density, startDepth, endDepth)
 }
 
 Scene.prototype.setSceneType = function(newType) {
@@ -177,7 +185,7 @@ Scene.prototype.setEnabled = function(enabled) {
 }
 
 Scene.prototype.Render = function(targetCamera,targetFramebuffer,overrideMaterial,sendLights) {
-	Polycode.Scene_Render(this.__ptr, targetCamera,targetFramebuffer,overrideMaterial,sendLights)
+	Polycode.Scene_Render(this.__ptr, targetCamera.__ptr, targetFramebuffer, overrideMaterial, sendLights)
 }
 
 Scene.prototype.setOverrideMaterial = function(material) {
@@ -186,16 +194,16 @@ Scene.prototype.setOverrideMaterial = function(material) {
 
 Scene.prototype.projectRayFromCameraAndViewportCoordinate = function(camera,coordinate) {
 	var retVal = new Ray()
-	retVal.__ptr = Polycode.Scene_projectRayFromCameraAndViewportCoordinate(this.__ptr, camera,coordinate)
+	retVal.__ptr = Polycode.Scene_projectRayFromCameraAndViewportCoordinate(this.__ptr, camera.__ptr, coordinate)
 	return retVal
 }
 
 Scene.prototype.addLight = function(light) {
-	Polycode.Scene_addLight(this.__ptr, light)
+	Polycode.Scene_addLight(this.__ptr, light.__ptr)
 }
 
 Scene.prototype.removeLight = function(light) {
-	Polycode.Scene_removeLight(this.__ptr, light)
+	Polycode.Scene_removeLight(this.__ptr, light.__ptr)
 }
 
 Scene.prototype.getNumLights = function() {

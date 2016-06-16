@@ -1,3 +1,5 @@
+require('Polycode/EventDispatcher')
+
 function Core() {
 	Object.defineProperties(this, {
 		'eventMutex': { enumerable: true, configurable: true, get: Core.prototype.__get_eventMutex, set: Core.prototype.__set_eventMutex},
@@ -8,6 +10,9 @@ function Core() {
 		'deviceAttitude': { enumerable: true, configurable: true, get: Core.prototype.__get_deviceAttitude, set: Core.prototype.__set_deviceAttitude}
 	})
 }
+
+Core.prototype = Object.create(EventDispatcher.prototype);
+
 Core.prototype.__get_eventMutex = function() {
 	var retVal = new CoreMutex()
 	retVal.__ptr = 	Polycode.Core__get_eventMutex(this.__ptr)
@@ -100,7 +105,7 @@ Core.prototype.setCursor = function(cursorType) {
 }
 
 Core.prototype.warpCursor = function(x,y) {
-	Polycode.Core_warpCursor(this.__ptr, x,y)
+	Polycode.Core_warpCursor(this.__ptr, x, y)
 }
 
 Core.prototype.openOnScreenKeyboard = function(open) {
@@ -108,15 +113,15 @@ Core.prototype.openOnScreenKeyboard = function(open) {
 }
 
 Core.prototype.createThread = function(target) {
-	Polycode.Core_createThread(this.__ptr, target)
+	Polycode.Core_createThread(this.__ptr, target.__ptr)
 }
 
 Core.prototype.lockMutex = function(mutex) {
-	Polycode.Core_lockMutex(this.__ptr, mutex)
+	Polycode.Core_lockMutex(this.__ptr, mutex.__ptr)
 }
 
 Core.prototype.unlockMutex = function(mutex) {
-	Polycode.Core_unlockMutex(this.__ptr, mutex)
+	Polycode.Core_unlockMutex(this.__ptr, mutex.__ptr)
 }
 
 Core.prototype.createMutex = function() {
@@ -177,6 +182,10 @@ Core.prototype.getBackingYRes = function() {
 	return Polycode.Core_getBackingYRes(this.__ptr)
 }
 
+Core.prototype.getScreenInfo = function(width,height,hz) {
+	Polycode.Core_getScreenInfo(width.__ptr, height.__ptr, hz.__ptr)
+}
+
 Core.prototype.getScreenWidth = function() {
 	return Polycode.Core_getScreenWidth(this.__ptr)
 }
@@ -190,11 +199,11 @@ Core.prototype.createFolder = function(folderPath) {
 }
 
 Core.prototype.copyDiskItem = function(itemPath,destItemPath) {
-	Polycode.Core_copyDiskItem(this.__ptr, itemPath,destItemPath)
+	Polycode.Core_copyDiskItem(this.__ptr, itemPath, destItemPath)
 }
 
 Core.prototype.moveDiskItem = function(itemPath,destItemPath) {
-	Polycode.Core_moveDiskItem(this.__ptr, itemPath,destItemPath)
+	Polycode.Core_moveDiskItem(this.__ptr, itemPath, destItemPath)
 }
 
 Core.prototype.removeDiskItem = function(itemPath) {
@@ -206,11 +215,11 @@ Core.prototype.openFolderPicker = function() {
 }
 
 Core.prototype.setFramerate = function(frameRate,maxFixedCycles) {
-	Polycode.Core_setFramerate(this.__ptr, frameRate,maxFixedCycles)
+	Polycode.Core_setFramerate(this.__ptr, frameRate, maxFixedCycles)
 }
 
 Core.prototype.openFilePicker = function(extensions,allowMultiple) {
-	Polycode.Core_openFilePicker(this.__ptr, extensions,allowMultiple)
+	Polycode.Core_openFilePicker(this.__ptr, extensions, allowMultiple)
 }
 
 Core.prototype.saveFilePicker = function(extensions) {
@@ -218,7 +227,7 @@ Core.prototype.saveFilePicker = function(extensions) {
 }
 
 Core.prototype.handleVideoModeChange = function(modeInfo) {
-	Polycode.Core_handleVideoModeChange(this.__ptr, modeInfo)
+	Polycode.Core_handleVideoModeChange(this.__ptr, modeInfo.__ptr)
 }
 
 Core.prototype.flushRenderContext = function() {
@@ -235,28 +244,28 @@ Core.prototype.isWindowInitialized = function() {
 
 Core.prototype.openFile = function(fileName,opts) {
 	var retVal = new CoreFile()
-	retVal.__ptr = Polycode.Core_openFile(this.__ptr, fileName,opts)
+	retVal.__ptr = Polycode.Core_openFile(this.__ptr, fileName, opts)
 	return retVal
 }
 
 Core.prototype.closeFile = function(file) {
-	Polycode.Core_closeFile(this.__ptr, file)
+	Polycode.Core_closeFile(this.__ptr, file.__ptr)
 }
 
 Core.prototype.addFileSource = function(type,source) {
-	Polycode.Core_addFileSource(this.__ptr, type,source)
+	Polycode.Core_addFileSource(this.__ptr, type, source)
 }
 
 Core.prototype.removeFileSource = function(type,source) {
-	Polycode.Core_removeFileSource(this.__ptr, type,source)
+	Polycode.Core_removeFileSource(this.__ptr, type, source)
 }
 
 Core.prototype.parseFolder = function(pathString,showHidden) {
-	Polycode.Core_parseFolder(this.__ptr, pathString,showHidden)
+	Polycode.Core_parseFolder(this.__ptr, pathString, showHidden)
 }
 
 Core.prototype.systemParseFolder = function(pathString,showHidden,targetVector) {
-	return Polycode.Core_systemParseFolder(this.__ptr, pathString,showHidden,targetVector)
+	return Polycode.Core_systemParseFolder(this.__ptr, pathString, showHidden, targetVector)
 }
 
 Core.prototype.getResourcePathForFile = function(fileName) {
@@ -264,11 +273,11 @@ Core.prototype.getResourcePathForFile = function(fileName) {
 }
 
 Core.prototype.setVideoMode = function(xRes,yRes,fullScreen,vSync,aaLevel,anisotropyLevel,retinaSupport) {
-	Polycode.Core_setVideoMode(this.__ptr, xRes,yRes,fullScreen,vSync,aaLevel,anisotropyLevel,retinaSupport)
+	Polycode.Core_setVideoMode(this.__ptr, xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport)
 }
 
 Core.prototype.resizeTo = function(xRes,yRes) {
-	Polycode.Core_resizeTo(this.__ptr, xRes,yRes)
+	Polycode.Core_resizeTo(this.__ptr, xRes, yRes)
 }
 
 Core.prototype.doSleep = function() {
@@ -304,7 +313,7 @@ Core.prototype.getTicksFloat = function() {
 }
 
 Core.prototype.setUserPointer = function(ptr) {
-	Polycode.Core_setUserPointer(this.__ptr, ptr)
+	Polycode.Core_setUserPointer(this.__ptr, ptr.__ptr)
 }
 
 Core.prototype.getUserPointer = function() {
@@ -312,7 +321,7 @@ Core.prototype.getUserPointer = function() {
 }
 
 Core.prototype.executeExternalCommand = function(command,args,inDirectory) {
-	return Polycode.Core_executeExternalCommand(this.__ptr, command,args,inDirectory)
+	return Polycode.Core_executeExternalCommand(this.__ptr, command, args, inDirectory)
 }
 
 Core.prototype.getDefaultWorkingDirectory = function() {
@@ -334,5 +343,5 @@ Core.prototype.getEventMutex = function() {
 }
 
 Core.prototype.removeThread = function(thread) {
-	Polycode.Core_removeThread(this.__ptr, thread)
+	Polycode.Core_removeThread(this.__ptr, thread.__ptr)
 }

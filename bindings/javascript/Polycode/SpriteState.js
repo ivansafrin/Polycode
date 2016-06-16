@@ -1,5 +1,9 @@
-function SpriteState() {
+function SpriteState(spriteSet,name) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.SpriteState(spriteSet,name)
+	}
 }
+
 Duktape.fin(SpriteState.prototype, function (x) {
 	if (x === SpriteState.prototype) {
 		return;
@@ -24,13 +28,13 @@ SpriteState.prototype.getFrameIDAtIndex = function(index) {
 }
 
 SpriteState.prototype.getMeshForFrameIndex = function(index) {
-	var retVal = new shared_ptr<Mesh>()
+	var retVal = new Mesh()
 	retVal.__ptr = Polycode.SpriteState_getMeshForFrameIndex(this.__ptr, index)
 	return retVal
 }
 
 SpriteState.prototype.insertFrame = function(index,frameID) {
-	Polycode.SpriteState_insertFrame(this.__ptr, index,frameID)
+	Polycode.SpriteState_insertFrame(this.__ptr, index, frameID)
 }
 
 SpriteState.prototype.removeFrameByIndex = function(frameIndex) {

@@ -1,4 +1,7 @@
-function Vector4() {
+function Vector4(x,y,z,w) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.Vector4(x,y,z,w)
+	}
 	Object.defineProperties(this, {
 		'x': { enumerable: true, configurable: true, get: Vector4.prototype.__get_x, set: Vector4.prototype.__set_x},
 		'y': { enumerable: true, configurable: true, get: Vector4.prototype.__get_y, set: Vector4.prototype.__set_y},
@@ -6,6 +9,7 @@ function Vector4() {
 		'w': { enumerable: true, configurable: true, get: Vector4.prototype.__get_w, set: Vector4.prototype.__set_w}
 	})
 }
+
 Vector4.prototype.__get_x = function() {
 	return Polycode.Vector4__get_x(this.__ptr)
 }
@@ -46,7 +50,7 @@ Duktape.fin(Vector4.prototype, function (x) {
 })
 
 Vector4.prototype.set = function(x,y,z,w) {
-	Polycode.Vector4_set(this.__ptr, x,y,z,w)
+	Polycode.Vector4_set(this.__ptr, x, y, z, w)
 }
 
 Vector4.prototype.dot = function(u) {

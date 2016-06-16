@@ -1,10 +1,14 @@
 function RenderThreadDebugInfo() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.RenderThreadDebugInfo()
+	}
 	Object.defineProperties(this, {
 		'buffersProcessed': { enumerable: true, configurable: true, get: RenderThreadDebugInfo.prototype.__get_buffersProcessed, set: RenderThreadDebugInfo.prototype.__set_buffersProcessed},
 		'drawCallsProcessed': { enumerable: true, configurable: true, get: RenderThreadDebugInfo.prototype.__get_drawCallsProcessed, set: RenderThreadDebugInfo.prototype.__set_drawCallsProcessed},
 		'timeTaken': { enumerable: true, configurable: true, get: RenderThreadDebugInfo.prototype.__get_timeTaken, set: RenderThreadDebugInfo.prototype.__set_timeTaken}
 	})
 }
+
 RenderThreadDebugInfo.prototype.__get_buffersProcessed = function() {
 	return Polycode.RenderThreadDebugInfo__get_buffersProcessed(this.__ptr)
 }
