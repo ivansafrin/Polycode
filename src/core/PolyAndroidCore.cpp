@@ -331,6 +331,7 @@ void AndroidCore::extractResources(){
 			while(source->read(buffer, sizeof(char), 1) > 0){
 				dest->write(buffer,sizeof(char), 1);
 			}
+			bfileProvider->closeFile(dest);
 		}
 		
 		afileProvider->closeFile(source);
@@ -667,7 +668,7 @@ void AndroidCore::initKeyMap() {
 	keyMap[AKEYCODE_META_RIGHT] = KEY_RSUPER;
 	keyMap[AKEYCODE_META_LEFT] = KEY_LSUPER;
 
-	keyMap[AKEYCODE_HELP] = KEY_HELP;
+	keyMap[259] = KEY_HELP;
  	keyMap[AKEYCODE_SYSRQ] = KEY_PRINT;
 	keyMap[AKEYCODE_BREAK] = KEY_BREAK;
 	keyMap[AKEYCODE_MENU] = KEY_MENU;

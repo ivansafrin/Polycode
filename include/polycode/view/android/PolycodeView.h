@@ -44,6 +44,8 @@
 #define LOGI(text) ((void)__android_log_write(ANDROID_LOG_INFO, "TemplateApp", text))
 #define LOGE(text) ((void)__android_log_write(ANDROID_LOG_ERROR, "TemplateApp", text))
 
+#define ACONFIGURATION_DENSITY_XXXHIGH 640
+
 namespace Polycode {
 	
 	enum{
