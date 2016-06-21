@@ -111,5 +111,5 @@ int AAssetFile::seek(long int offset, int origin) {
 }
 
 long AAssetFile::tell() {
-	return AAsset_getLength64(file);
+	return AAsset_getLength64(file) - AAsset_getRemainingLength64(file);
 }

@@ -22,12 +22,9 @@
 
 #include "polycode/core/PolySound.h"
 
-#ifndef NO_OGG
-	#define OV_EXCLUDE_STATIC_CALLBACKS
-	#include <vorbis/vorbisfile.h>
-#endif
+#define STB_VORBIS_HEADER_ONLY
+#include "stb_vorbis.h"
 
-#undef OV_EXCLUDE_STATIC_CALLBACKS
 #include "polycode/core/PolyString.h"
 #include "polycode/core/PolyLogger.h"
 #include "polycode/core/PolySoundManager.h"
@@ -68,29 +65,6 @@ unsigned int AudioStreamingSource::getFrequency() {
 unsigned int AudioStreamingSource::streamData(int16_t *buffer, unsigned int size) {
 	return 0;
 }
-
-#ifndef NO_OGG
-size_t custom_readfunc(void *ptr, size_t size, size_t nmemb, void *datasource) {
-	Polycode::CoreFile *file = (Polycode::CoreFile*) datasource;
-	return file->read(ptr, size, nmemb);
-}
-
-int custom_seekfunc(void *datasource, ogg_int64_t offset, int whence){
-	Polycode::CoreFile *file = (Polycode::CoreFile*) datasource;
-	return file->seek(offset, whence);
-}
-
-int custom_closefunc(void *datasource) {
-	Polycode::CoreFile *file = (Polycode::CoreFile*) datasource;
-	Services()->getCore()->closeFile(file);
-	return 0;
-}
-
-long custom_tellfunc(void *datasource) {
-	CoreFile *file = (CoreFile*) datasource;
-	return file->tell();
-}
-#endif
 
 Sound::Sound(const String& fileName) :	referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), numSamples(-1), streamingSound(false), playing(false), playbackOffset(0), streamingSource(NULL), frequencyAdjust(1.0) {
 	soundLoaded = false;
@@ -431,41 +405,27 @@ unsigned int Sound::getFrequency() {
 
 
 bool Sound::loadOGG(const String& fileName) {
-#ifndef NO_OGG
-
-	vector<char> data;
-	int bitStream;
-	long bytes;
-	char array[BUFFER_SIZE];
-	
 	CoreFile *f = Services()->getCore()->openFile(fileName.c_str(), "rb");
-	if(!f) {
+	if (!f) {
 		Logger::log("Error loading OGG file!\n");
 		return false;
 	}
-	vorbis_info *pInfo;
-	OggVorbis_File oggFile; 
-	
-	ov_callbacks callbacks;
-	callbacks.read_func = custom_readfunc;
-	callbacks.seek_func = custom_seekfunc;
-	callbacks.close_func = custom_closefunc;
-	callbacks.tell_func = custom_tellfunc;
-	
-	ov_open_callbacks( (void*)f, &oggFile, NULL, 0, callbacks);
-	pInfo = ov_info(&oggFile, -1);
+	Services()->getCore()->closeFile(f);
 
-	do {
-		bytes = ov_read(&oggFile, array, BUFFER_SIZE, 0, 2, 1, &bitStream);
-		data.insert(data.end(), array, array + bytes);
-	} while (bytes > 0);
-	
-	bool retVal = loadBytes(data.data(), data.size(), pInfo->channels, pInfo->rate, SoundFormat16);
-	ov_clear(&oggFile);
-	return retVal;
-#else
-	return false;
-#endif
+	short *decoded;
+	int channels, len, sample_rate;
+	len = stb_vorbis_decode_filename(fileName.c_str(), &channels, &sample_rate, &decoded);
+	if (len <= 0) {
+		return false;
+	}
+
+	numChannels = channels;
+	numSamples = len;
+	soundBuffer = decoded;
+	frequency = sample_rate;
+	frequencyAdjust = sample_rate / POLY_AUDIO_FREQ;
+
+	return true;
 }
 
 bool Sound::loadWAV(const String& fileName) {
