@@ -33,7 +33,7 @@ bool Texture::premultiplyAlphaOnLoad = false;
 bool Texture::clampDefault = true;
 bool Texture::mipmapsDefault = true;
 bool Texture::keepTextureData = true;
-int Texture::defaultTextureFiltering = 1;
+int Texture::defaultTextureFiltering = 0;
 
 Texture::Texture() : Resource(Resource::RESOURCE_TEXTURE), width(0), height(0), clamp(false), type(Image::IMAGE_RGBA), createMipmaps(false), filteringMode(defaultTextureFiltering), anisotropy(0), framebufferTexture(false), depthTexture(false) {
 	filteringMode = defaultTextureFiltering;
@@ -148,7 +148,7 @@ Texture::Texture(Image *image, bool clamp, bool createMipmaps) : Resource(Resour
 
 	type = targetImage->getType();
 	this->textureData = (char*)malloc(targetImage->getWidth()*targetImage->getHeight()*pixelSize);
-	memcpy(this->textureD ata, targetImage->getPixels(), targetImage->getWidth()*targetImage->getHeight()*pixelSize);
+	memcpy(this->textureData, targetImage->getPixels(), targetImage->getWidth()*targetImage->getHeight()*pixelSize);
 
 	if (premultiplyAlphaOnLoad) {
 		delete targetImage;
