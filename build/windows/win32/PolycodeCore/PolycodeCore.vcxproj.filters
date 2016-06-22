@@ -258,6 +258,9 @@
     <ClCompile Include="..\..\..\..\src\view\win32\PolycodeView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\core\stb_vorbis.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyFont.h">

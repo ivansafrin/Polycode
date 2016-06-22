@@ -229,6 +229,7 @@
     <ClCompile Include="..\..\..\..\src\core\PolyVector4.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyWinCore.cpp" />
     <ClCompile Include="..\..\..\..\src\core\rgbe.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\stb_vorbis.cpp" />
     <ClCompile Include="..\..\..\..\src\core\tinystr.cpp" />
     <ClCompile Include="..\..\..\..\src\core\tinyxml.cpp" />
     <ClCompile Include="..\..\..\..\src\core\tinyxmlerror.cpp" />
