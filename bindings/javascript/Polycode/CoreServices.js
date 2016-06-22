@@ -1,5 +1,10 @@
+require('Polycode/EventDispatcher')
+
 function CoreServices() {
 }
+
+CoreServices.prototype = Object.create(EventDispatcher.prototype);
+
 Duktape.fin(CoreServices.prototype, function (x) {
 	if (x === CoreServices.prototype) {
 		return;
@@ -7,8 +12,28 @@ Duktape.fin(CoreServices.prototype, function (x) {
 	Polycode.CoreServices__delete(x.__ptr)
 })
 
+CoreServices.prototype.getInstance = function() {
+	var retVal = new CoreServices()
+	retVal.__ptr = Polycode.CoreServices_getInstance()
+	return retVal
+}
+
+CoreServices.prototype.setInstance = function(_instance) {
+	Polycode.CoreServices_setInstance(_instance.__ptr)
+}
+
+CoreServices.prototype.getRenderMutex = function() {
+	var retVal = new CoreMutex()
+	retVal.__ptr = Polycode.CoreServices_getRenderMutex()
+	return retVal
+}
+
+CoreServices.prototype.createInstance = function() {
+	Polycode.CoreServices_createInstance()
+}
+
 CoreServices.prototype.setRenderer = function(renderer) {
-	Polycode.CoreServices_setRenderer(this.__ptr, renderer)
+	Polycode.CoreServices_setRenderer(this.__ptr, renderer.__ptr)
 }
 
 CoreServices.prototype.getRenderer = function() {
@@ -30,7 +55,7 @@ CoreServices.prototype.Render = function(viewport) {
 }
 
 CoreServices.prototype.setCore = function(core) {
-	Polycode.CoreServices_setCore(this.__ptr, core)
+	Polycode.CoreServices_setCore(this.__ptr, core.__ptr)
 }
 
 CoreServices.prototype.getCore = function() {

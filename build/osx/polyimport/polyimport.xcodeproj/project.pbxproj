@@ -7,23 +7,26 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6D90506F1CCC0B0A00D0E80A /* liblua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D90506E1CCC0B0A00D0E80A /* liblua.a */; };
-		8AE1F6B61CB82FDF0001557D /* polyimport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8AE1F6B51CB82FDF0001557D /* polyimport.cpp */; };
-		8AE1F6B91CB837050001557D /* libassimp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE1F6B71CB837050001557D /* libassimp.a */; };
-		8AE1F6D41CB8391D0001557D /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE1F6D31CB8391D0001557D /* libz.a */; };
-		8AE1F6EA1CB83C640001557D /* libPolycore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE1F6E91CB83C640001557D /* libPolycore.a */; };
-		8AE1F6EC1CB83C720001557D /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE1F6EB1CB83C720001557D /* libfreetype.a */; };
+		8AA42A941D135B5200007A63 /* polyimport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8AA42A931D135B5200007A63 /* polyimport.cpp */; };
+		8AA42AA21D135B6C00007A63 /* libarchive.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AA42A951D135B6C00007A63 /* libarchive.a */; };
+		8AA42AA31D135B6C00007A63 /* libassimp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AA42A961D135B6C00007A63 /* libassimp.a */; };
+		8AA42AA41D135B6C00007A63 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AA42A971D135B6C00007A63 /* libfreetype.a */; };
+		8AA42AA51D135B6C00007A63 /* liblibogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AA42A981D135B6C00007A63 /* liblibogg.a */; };
+		8AA42AA61D135B6C00007A63 /* liblibvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AA42A991D135B6C00007A63 /* liblibvorbis.a */; };
+		8AA42AA71D135B6C00007A63 /* liblibvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AA42A9A1D135B6C00007A63 /* liblibvorbisfile.a */; };
+		8AA42AA81D135B6C00007A63 /* libLinearMath.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AA42A9B1D135B6C00007A63 /* libLinearMath.a */; };
+		8AA42AA91D135B6C00007A63 /* liblua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AA42A9C1D135B6C00007A63 /* liblua.a */; };
+		8AA42AAA1D135B6C00007A63 /* libphysfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AA42A9D1D135B6C00007A63 /* libphysfs.a */; };
+		8AA42AAB1D135B6C00007A63 /* libPolycodeUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AA42A9E1D135B6C00007A63 /* libPolycodeUI.a */; };
+		8AA42AAC1D135B6C00007A63 /* libPolycore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AA42A9F1D135B6C00007A63 /* libPolycore.a */; };
+		8AA42AAD1D135B6C00007A63 /* libportaudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AA42AA01D135B6C00007A63 /* libportaudio.a */; };
+		8AA42AAE1D135B6C00007A63 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AA42AA11D135B6C00007A63 /* libz.a */; };
 		8AE1F6EE1CB83C850001557D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE1F6ED1CB83C850001557D /* Cocoa.framework */; };
 		8AE1F6F01CB83C8B0001557D /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE1F6EF1CB83C8B0001557D /* OpenGL.framework */; };
-		8AE1F6F21CB83C990001557D /* libphysfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE1F6F11CB83C990001557D /* libphysfs.a */; };
 		8AE1F6F41CB83CC20001557D /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE1F6F31CB83CC20001557D /* IOKit.framework */; };
-		8AE1F6F61CB83CD00001557D /* libportaudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE1F6F51CB83CD00001557D /* libportaudio.a */; };
 		8AE1F6F81CB83CD80001557D /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE1F6F71CB83CD80001557D /* CoreAudio.framework */; };
 		8AE1F6FA1CB83CE10001557D /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE1F6F91CB83CE10001557D /* AudioUnit.framework */; };
 		8AE1F6FC1CB83CF00001557D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE1F6FB1CB83CF00001557D /* AudioToolbox.framework */; };
-		8AE1F7001CB83CFE0001557D /* liblibogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE1F6FD1CB83CFE0001557D /* liblibogg.a */; };
-		8AE1F7011CB83CFE0001557D /* liblibvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE1F6FE1CB83CFE0001557D /* liblibvorbis.a */; };
-		8AE1F7021CB83CFE0001557D /* liblibvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AE1F6FF1CB83CFE0001557D /* liblibvorbisfile.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -39,25 +42,28 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		6D90506E1CCC0B0A00D0E80A /* liblua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua.a; path = ../../../../lib/osx/liblua.a; sourceTree = "<group>"; };
+		8AA42A931D135B5200007A63 /* polyimport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = polyimport.cpp; path = ../../../src/tools/polyimport.cpp; sourceTree = SOURCE_ROOT; };
+		8AA42A951D135B6C00007A63 /* libarchive.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libarchive.a; path = ../../../../lib/osx/libarchive.a; sourceTree = "<group>"; };
+		8AA42A961D135B6C00007A63 /* libassimp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libassimp.a; path = ../../../../lib/osx/libassimp.a; sourceTree = "<group>"; };
+		8AA42A971D135B6C00007A63 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../../../../lib/osx/libfreetype.a; sourceTree = "<group>"; };
+		8AA42A981D135B6C00007A63 /* liblibogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibogg.a; path = ../../../../lib/osx/liblibogg.a; sourceTree = "<group>"; };
+		8AA42A991D135B6C00007A63 /* liblibvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibvorbis.a; path = ../../../../lib/osx/liblibvorbis.a; sourceTree = "<group>"; };
+		8AA42A9A1D135B6C00007A63 /* liblibvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibvorbisfile.a; path = ../../../../lib/osx/liblibvorbisfile.a; sourceTree = "<group>"; };
+		8AA42A9B1D135B6C00007A63 /* libLinearMath.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLinearMath.a; path = ../../../../lib/osx/libLinearMath.a; sourceTree = "<group>"; };
+		8AA42A9C1D135B6C00007A63 /* liblua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua.a; path = ../../../../lib/osx/liblua.a; sourceTree = "<group>"; };
+		8AA42A9D1D135B6C00007A63 /* libphysfs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libphysfs.a; path = ../../../../lib/osx/libphysfs.a; sourceTree = "<group>"; };
+		8AA42A9E1D135B6C00007A63 /* libPolycodeUI.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeUI.a; path = ../../../../lib/osx/libPolycodeUI.a; sourceTree = "<group>"; };
+		8AA42A9F1D135B6C00007A63 /* libPolycore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycore.a; path = ../../../../lib/osx/libPolycore.a; sourceTree = "<group>"; };
+		8AA42AA01D135B6C00007A63 /* libportaudio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libportaudio.a; path = ../../../../lib/osx/libportaudio.a; sourceTree = "<group>"; };
+		8AA42AA11D135B6C00007A63 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = ../../../../lib/osx/libz.a; sourceTree = "<group>"; };
+		8AA42AAF1D135BBF00007A63 /* polyimport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = polyimport.h; path = ../../../include/polycode/tools/polyimport.h; sourceTree = SOURCE_ROOT; };
 		8AE1F6AB1CB82FBD0001557D /* polyimport */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = polyimport; sourceTree = BUILT_PRODUCTS_DIR; };
-		8AE1F6B51CB82FDF0001557D /* polyimport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = polyimport.cpp; path = ../../../../src/tools/polyimport.cpp; sourceTree = "<group>"; };
-		8AE1F6B71CB837050001557D /* libassimp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libassimp.a; path = ../../../../lib/osx/libassimp.a; sourceTree = "<group>"; };
-		8AE1F6D31CB8391D0001557D /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = ../../../../lib/osx/libz.a; sourceTree = "<group>"; };
-		8AE1F6E91CB83C640001557D /* libPolycore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycore.a; path = ../../../../lib/osx/libPolycore.a; sourceTree = "<group>"; };
-		8AE1F6EB1CB83C720001557D /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../../../../lib/osx/libfreetype.a; sourceTree = "<group>"; };
 		8AE1F6ED1CB83C850001557D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		8AE1F6EF1CB83C8B0001557D /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
-		8AE1F6F11CB83C990001557D /* libphysfs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libphysfs.a; path = ../../../../lib/osx/libphysfs.a; sourceTree = "<group>"; };
 		8AE1F6F31CB83CC20001557D /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
-		8AE1F6F51CB83CD00001557D /* libportaudio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libportaudio.a; path = ../../../../lib/osx/libportaudio.a; sourceTree = "<group>"; };
 		8AE1F6F71CB83CD80001557D /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		8AE1F6F91CB83CE10001557D /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
 		8AE1F6FB1CB83CF00001557D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		8AE1F6FD1CB83CFE0001557D /* liblibogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibogg.a; path = ../../../../lib/osx/liblibogg.a; sourceTree = "<group>"; };
-		8AE1F6FE1CB83CFE0001557D /* liblibvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibvorbis.a; path = ../../../../lib/osx/liblibvorbis.a; sourceTree = "<group>"; };
-		8AE1F6FF1CB83CFE0001557D /* liblibvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibvorbisfile.a; path = ../../../../lib/osx/liblibvorbisfile.a; sourceTree = "<group>"; };
-		8AE1F71D1CB844370001557D /* polyimport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = polyimport.h; path = ../../../../include/polycode/tools/polyimport.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,22 +71,25 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6D90506F1CCC0B0A00D0E80A /* liblua.a in Frameworks */,
-				8AE1F7011CB83CFE0001557D /* liblibvorbis.a in Frameworks */,
+				8AA42AA71D135B6C00007A63 /* liblibvorbisfile.a in Frameworks */,
+				8AA42AA81D135B6C00007A63 /* libLinearMath.a in Frameworks */,
+				8AA42AAB1D135B6C00007A63 /* libPolycodeUI.a in Frameworks */,
 				8AE1F6FC1CB83CF00001557D /* AudioToolbox.framework in Frameworks */,
+				8AA42AAE1D135B6C00007A63 /* libz.a in Frameworks */,
 				8AE1F6FA1CB83CE10001557D /* AudioUnit.framework in Frameworks */,
-				8AE1F7021CB83CFE0001557D /* liblibvorbisfile.a in Frameworks */,
+				8AA42AAC1D135B6C00007A63 /* libPolycore.a in Frameworks */,
+				8AA42AA41D135B6C00007A63 /* libfreetype.a in Frameworks */,
+				8AA42AA21D135B6C00007A63 /* libarchive.a in Frameworks */,
 				8AE1F6F81CB83CD80001557D /* CoreAudio.framework in Frameworks */,
-				8AE1F6F61CB83CD00001557D /* libportaudio.a in Frameworks */,
+				8AA42AAD1D135B6C00007A63 /* libportaudio.a in Frameworks */,
+				8AA42AA51D135B6C00007A63 /* liblibogg.a in Frameworks */,
+				8AA42AA61D135B6C00007A63 /* liblibvorbis.a in Frameworks */,
 				8AE1F6F41CB83CC20001557D /* IOKit.framework in Frameworks */,
+				8AA42AA91D135B6C00007A63 /* liblua.a in Frameworks */,
 				8AE1F6F01CB83C8B0001557D /* OpenGL.framework in Frameworks */,
+				8AA42AA31D135B6C00007A63 /* libassimp.a in Frameworks */,
+				8AA42AAA1D135B6C00007A63 /* libphysfs.a in Frameworks */,
 				8AE1F6EE1CB83C850001557D /* Cocoa.framework in Frameworks */,
-				8AE1F6D41CB8391D0001557D /* libz.a in Frameworks */,
-				8AE1F6B91CB837050001557D /* libassimp.a in Frameworks */,
-				8AE1F7001CB83CFE0001557D /* liblibogg.a in Frameworks */,
-				8AE1F6EA1CB83C640001557D /* libPolycore.a in Frameworks */,
-				8AE1F6F21CB83C990001557D /* libphysfs.a in Frameworks */,
-				8AE1F6EC1CB83C720001557D /* libfreetype.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,18 +121,21 @@
 		8AE1F6AD1CB82FBD0001557D /* polyimport */ = {
 			isa = PBXGroup;
 			children = (
-				8AE1F6B71CB837050001557D /* libassimp.a */,
-				8AE1F6F51CB83CD00001557D /* libportaudio.a */,
-				8AE1F6FD1CB83CFE0001557D /* liblibogg.a */,
-				8AE1F6FE1CB83CFE0001557D /* liblibvorbis.a */,
-				8AE1F6FF1CB83CFE0001557D /* liblibvorbisfile.a */,
-				6D90506E1CCC0B0A00D0E80A /* liblua.a */,
-				8AE1F6F11CB83C990001557D /* libphysfs.a */,
-				8AE1F6EB1CB83C720001557D /* libfreetype.a */,
-				8AE1F6D31CB8391D0001557D /* libz.a */,
-				8AE1F6E91CB83C640001557D /* libPolycore.a */,
-				8AE1F71D1CB844370001557D /* polyimport.h */,
-				8AE1F6B51CB82FDF0001557D /* polyimport.cpp */,
+				8AA42A951D135B6C00007A63 /* libarchive.a */,
+				8AA42A961D135B6C00007A63 /* libassimp.a */,
+				8AA42A971D135B6C00007A63 /* libfreetype.a */,
+				8AA42A981D135B6C00007A63 /* liblibogg.a */,
+				8AA42A991D135B6C00007A63 /* liblibvorbis.a */,
+				8AA42A9A1D135B6C00007A63 /* liblibvorbisfile.a */,
+				8AA42A9B1D135B6C00007A63 /* libLinearMath.a */,
+				8AA42A9C1D135B6C00007A63 /* liblua.a */,
+				8AA42A9D1D135B6C00007A63 /* libphysfs.a */,
+				8AA42A9E1D135B6C00007A63 /* libPolycodeUI.a */,
+				8AA42A9F1D135B6C00007A63 /* libPolycore.a */,
+				8AA42AA01D135B6C00007A63 /* libportaudio.a */,
+				8AA42AA11D135B6C00007A63 /* libz.a */,
+				8AA42AAF1D135BBF00007A63 /* polyimport.h */,
+				8AA42A931D135B5200007A63 /* polyimport.cpp */,
 			);
 			path = polyimport;
 			sourceTree = "<group>";
@@ -201,7 +213,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8AE1F6B61CB82FDF0001557D /* polyimport.cpp in Sources */,
+				8AA42A941D135B5200007A63 /* polyimport.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

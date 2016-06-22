@@ -1,4 +1,7 @@
 function GPUDrawOptions() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.GPUDrawOptions()
+	}
 	Object.defineProperties(this, {
 		'depthTest': { enumerable: true, configurable: true, get: GPUDrawOptions.prototype.__get_depthTest, set: GPUDrawOptions.prototype.__set_depthTest},
 		'depthWrite': { enumerable: true, configurable: true, get: GPUDrawOptions.prototype.__get_depthWrite, set: GPUDrawOptions.prototype.__set_depthWrite},
@@ -13,6 +16,7 @@ function GPUDrawOptions() {
 		'drawColor': { enumerable: true, configurable: true, get: GPUDrawOptions.prototype.__get_drawColor, set: GPUDrawOptions.prototype.__set_drawColor}
 	})
 }
+
 GPUDrawOptions.prototype.__get_depthTest = function() {
 	return Polycode.GPUDrawOptions__get_depthTest(this.__ptr)
 }

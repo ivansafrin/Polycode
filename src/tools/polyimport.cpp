@@ -73,6 +73,7 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
 	for (; n < nd->mNumMeshes; ++n) {
 
 		MeshGeometry geometry;
+		geometry.indexedMesh = true;
 		
 		const struct aiMesh* mesh = scene->mMeshes[nd->mMeshes[n]];
 		

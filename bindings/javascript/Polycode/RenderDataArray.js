@@ -1,9 +1,13 @@
-function RenderDataArray() {
+function RenderDataArray(type) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.RenderDataArray(type)
+	}
 	Object.defineProperties(this, {
 		'type': { enumerable: true, configurable: true, get: RenderDataArray.prototype.__get_type, set: RenderDataArray.prototype.__set_type},
 		'customArrayName': { enumerable: true, configurable: true, get: RenderDataArray.prototype.__get_customArrayName, set: RenderDataArray.prototype.__set_customArrayName}
 	})
 }
+
 RenderDataArray.prototype.__get_type = function() {
 	return Polycode.RenderDataArray__get_type(this.__ptr)
 }

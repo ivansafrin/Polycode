@@ -1,4 +1,7 @@
-function BoneTrack() {
+function BoneTrack(bone,length) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.BoneTrack(bone,length)
+	}
 	Object.defineProperties(this, {
 		'scaleX': { enumerable: true, configurable: true, get: BoneTrack.prototype.__get_scaleX, set: BoneTrack.prototype.__set_scaleX},
 		'scaleY': { enumerable: true, configurable: true, get: BoneTrack.prototype.__get_scaleY, set: BoneTrack.prototype.__set_scaleY},
@@ -17,6 +20,7 @@ function BoneTrack() {
 		'weight': { enumerable: true, configurable: true, get: BoneTrack.prototype.__get_weight, set: BoneTrack.prototype.__set_weight}
 	})
 }
+
 BoneTrack.prototype.__get_scaleX = function() {
 	var retVal = new BezierCurve()
 	retVal.__ptr = 	Polycode.BoneTrack__get_scaleX(this.__ptr)

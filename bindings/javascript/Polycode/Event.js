@@ -1,9 +1,13 @@
 function Event() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.Event()
+	}
 	Object.defineProperties(this, {
 		'deleteOnDispatch': { enumerable: true, configurable: true, get: Event.prototype.__get_deleteOnDispatch, set: Event.prototype.__set_deleteOnDispatch},
 		'cancelEventFlag': { enumerable: true, configurable: true, get: Event.prototype.__get_cancelEventFlag, set: Event.prototype.__set_cancelEventFlag}
 	})
 }
+
 Event.prototype.__get_deleteOnDispatch = function() {
 	return Polycode.Event__get_deleteOnDispatch(this.__ptr)
 }
@@ -42,7 +46,7 @@ Event.prototype.setEventCode = function(eventCode) {
 }
 
 Event.prototype.setDispatcher = function(dispatcher) {
-	Polycode.Event_setDispatcher(this.__ptr, dispatcher)
+	Polycode.Event_setDispatcher(this.__ptr, dispatcher.__ptr)
 }
 
 Event.prototype.getEventType = function() {

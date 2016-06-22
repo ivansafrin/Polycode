@@ -33,7 +33,7 @@ bool Texture::premultiplyAlphaOnLoad = false;
 bool Texture::clampDefault = true;
 bool Texture::mipmapsDefault = true;
 bool Texture::keepTextureData = true;
-int Texture::defaultTextureFiltering = 0;
+int Texture::defaultTextureFiltering = 1;
 
 Texture::Texture() : Resource(Resource::RESOURCE_TEXTURE), width(0), height(0), clamp(false), type(Image::IMAGE_RGBA), createMipmaps(false), filteringMode(defaultTextureFiltering), anisotropy(0), framebufferTexture(false), depthTexture(false) {
 	filteringMode = defaultTextureFiltering;

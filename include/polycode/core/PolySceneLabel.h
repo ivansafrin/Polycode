@@ -38,9 +38,10 @@ namespace Polycode {
 	*/
 	class _PolyExport SceneLabel : public ScenePrimitive {
 		public:
+		
+			SceneLabel(const String& text, int size, const String& fontName, int amode = 0, Number actualHeight = 0.0);
 			
-			
-			SceneLabel(const String& text, int size, const String& fontName = "sans", int amode = 0, Number actualHeight = 0.0, bool premultiplyAlpha = false, const Color &backgroundColor = Color(0.0, 0.0, 0.0, 0.0), const Color &foregroundColor = Color(1.0, 1.0, 1.0, 1.0));
+			SceneLabel(const String& text, int size, const String& fontName, int amode, Number actualHeight, bool premultiplyAlpha, const Color &backgroundColor, const Color &foregroundColor);
 			
 			String getText();
 		

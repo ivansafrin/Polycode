@@ -1,4 +1,7 @@
 function ConfigEntry() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.ConfigEntry()
+	}
 	Object.defineProperties(this, {
 		'key': { enumerable: true, configurable: true, get: ConfigEntry.prototype.__get_key, set: ConfigEntry.prototype.__set_key},
 		'configNamespace': { enumerable: true, configurable: true, get: ConfigEntry.prototype.__get_configNamespace, set: ConfigEntry.prototype.__set_configNamespace},
@@ -7,6 +10,7 @@ function ConfigEntry() {
 		'isString': { enumerable: true, configurable: true, get: ConfigEntry.prototype.__get_isString, set: ConfigEntry.prototype.__set_isString}
 	})
 }
+
 ConfigEntry.prototype.__get_key = function() {
 	return Polycode.ConfigEntry__get_key(this.__ptr)
 }

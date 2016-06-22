@@ -5239,7 +5239,7 @@ static int Polycode_Entity_set_layerID(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Entity *inst = (Entity*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Script* script = (Script*) *((PolyBase**)lua_touserdata(L, 2));
+		shared_ptr<Script> script = *(shared_ptr<Script>*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->attachScript(script);
 		return 0;
 	}
@@ -7454,6 +7454,17 @@ static int Polycode_ShaderPass_set_blendingMode(lua_State *L) {
 		*userdataPtr = (PolyBase*)inst;
 		luaL_getmetatable(L, "Polycode.ShaderPass");
 		lua_setmetatable(L, -2);
+		return 1;
+	}
+	static int Polycode_ShaderPass_getShaderBinding(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		ShaderPass *inst = (ShaderPass*) *((PolyBase**)lua_touserdata(L, 1));
+		shared_ptr<ShaderBinding> *retInst = new shared_ptr<ShaderBinding>();
+		*retInst = inst->getShaderBinding();
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<ShaderBinding>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_delete_ShaderPass(lua_State *L) {
@@ -12303,17 +12314,7 @@ static int Polycode_SceneLabel_set_positionAtBaseline(lua_State *L) {
 		} else {
 			actualHeight = 0.0;
 		}
-		bool premultiplyAlpha;
-		if(lua_isboolean(L, 6)) {
-			premultiplyAlpha = lua_toboolean(L, 6) != 0;
-		} else {
-			premultiplyAlpha = false;
-		}
-		luaL_checktype(L, 7, LUA_TUSERDATA);
-		Color backgroundColor = *(Color*) *((PolyBase**)lua_touserdata(L, 7));
-		luaL_checktype(L, 8, LUA_TUSERDATA);
-		Color foregroundColor = *(Color*) *((PolyBase**)lua_touserdata(L, 8));
-		SceneLabel *inst = new SceneLabel(text, size, fontName, amode, actualHeight, premultiplyAlpha, backgroundColor, foregroundColor);
+		SceneLabel *inst = new SceneLabel(text, size, fontName, amode, actualHeight);
 		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
 		*userdataPtr = (PolyBase*)inst;
 		luaL_getmetatable(L, "Polycode.SceneLabel");

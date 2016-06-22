@@ -1,5 +1,13 @@
-function SceneEntityInstanceResourceEntry() {
+require('Polycode/Resource')
+
+function SceneEntityInstanceResourceEntry(instance) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.SceneEntityInstanceResourceEntry(instance)
+	}
 }
+
+SceneEntityInstanceResourceEntry.prototype = Object.create(Resource.prototype);
+
 Duktape.fin(SceneEntityInstanceResourceEntry.prototype, function (x) {
 	if (x === SceneEntityInstanceResourceEntry.prototype) {
 		return;

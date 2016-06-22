@@ -1,8 +1,16 @@
-function SceneLabel() {
+require('Polycode/ScenePrimitive')
+
+function SceneLabel(text,size,fontName,amode,actualHeight) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.SceneLabel(text,size,fontName,amode,actualHeight)
+	}
 	Object.defineProperties(this, {
 		'positionAtBaseline': { enumerable: true, configurable: true, get: SceneLabel.prototype.__get_positionAtBaseline, set: SceneLabel.prototype.__set_positionAtBaseline}
 	})
 }
+
+SceneLabel.prototype = Object.create(ScenePrimitive.prototype);
+
 SceneLabel.prototype.__get_positionAtBaseline = function() {
 	return Polycode.SceneLabel__get_positionAtBaseline(this.__ptr)
 }
@@ -25,7 +33,7 @@ SceneLabel.prototype.getLabelActualHeight = function() {
 }
 
 SceneLabel.prototype.Render = function(buffer) {
-	Polycode.SceneLabel_Render(this.__ptr, buffer)
+	Polycode.SceneLabel_Render(this.__ptr, buffer.__ptr)
 }
 
 SceneLabel.prototype.getTextWidthForString = function(text) {
@@ -38,12 +46,12 @@ SceneLabel.prototype.setText = function(newText) {
 
 SceneLabel.prototype.Clone = function(deepClone,ignoreEditorOnly) {
 	var retVal = new Entity()
-	retVal.__ptr = Polycode.SceneLabel_Clone(this.__ptr, deepClone,ignoreEditorOnly)
+	retVal.__ptr = Polycode.SceneLabel_Clone(this.__ptr, deepClone, ignoreEditorOnly)
 	return retVal
 }
 
 SceneLabel.prototype.applyClone = function(clone,deepClone,ignoreEditorOnly) {
-	Polycode.SceneLabel_applyClone(this.__ptr, clone,deepClone,ignoreEditorOnly)
+	Polycode.SceneLabel_applyClone(this.__ptr, clone.__ptr, deepClone, ignoreEditorOnly)
 }
 
 SceneLabel.prototype.updateFromLabel = function() {

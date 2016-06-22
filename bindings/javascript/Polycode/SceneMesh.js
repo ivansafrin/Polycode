@@ -1,4 +1,9 @@
-function SceneMesh() {
+require('Polycode/Entity')
+
+function SceneMesh(fileName) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.SceneMesh(fileName)
+	}
 	Object.defineProperties(this, {
 		'lineWidth': { enumerable: true, configurable: true, get: SceneMesh.prototype.__get_lineWidth, set: SceneMesh.prototype.__set_lineWidth},
 		'lineSmooth': { enumerable: true, configurable: true, get: SceneMesh.prototype.__get_lineSmooth, set: SceneMesh.prototype.__set_lineSmooth},
@@ -9,6 +14,9 @@ function SceneMesh() {
 		'sendBoneMatricesToMaterial': { enumerable: true, configurable: true, get: SceneMesh.prototype.__get_sendBoneMatricesToMaterial, set: SceneMesh.prototype.__set_sendBoneMatricesToMaterial}
 	})
 }
+
+SceneMesh.prototype = Object.create(Entity.prototype);
+
 SceneMesh.prototype.__get_lineWidth = function() {
 	return Polycode.SceneMesh__get_lineWidth(this.__ptr)
 }
@@ -66,8 +74,14 @@ SceneMesh.prototype.__set_sendBoneMatricesToMaterial = function(val) {
 }
 
 
+SceneMesh.prototype.SceneMeshFromMesh = function(mesh) {
+	var retVal = new SceneMesh()
+	retVal.__ptr = Polycode.SceneMesh_SceneMeshFromMesh(mesh)
+	return retVal
+}
+
 SceneMesh.prototype.Render = function(buffer) {
-	Polycode.SceneMesh_Render(this.__ptr, buffer)
+	Polycode.SceneMesh_Render(this.__ptr, buffer.__ptr)
 }
 
 SceneMesh.prototype.getShaderPass = function(index) {
@@ -89,19 +103,19 @@ SceneMesh.prototype.removeShaderPass = function(shaderIndex) {
 }
 
 SceneMesh.prototype.getMesh = function() {
-	var retVal = new shared_ptr<Mesh>()
+	var retVal = new Mesh()
 	retVal.__ptr = Polycode.SceneMesh_getMesh(this.__ptr)
 	return retVal
 }
 
 SceneMesh.prototype.getMaterial = function() {
-	var retVal = new shared_ptr<Material>()
+	var retVal = new Material()
 	retVal.__ptr = Polycode.SceneMesh_getMaterial(this.__ptr)
 	return retVal
 }
 
 SceneMesh.prototype.loadSkeleton = function(fileName) {
-	var retVal = new shared_ptr<Skeleton>()
+	var retVal = new Skeleton()
 	retVal.__ptr = Polycode.SceneMesh_loadSkeleton(this.__ptr, fileName)
 	return retVal
 }
@@ -115,7 +129,7 @@ SceneMesh.prototype.setMaterial = function(material) {
 }
 
 SceneMesh.prototype.setMaterialByName = function(materialName,resourcePool) {
-	Polycode.SceneMesh_setMaterialByName(this.__ptr, materialName,resourcePool)
+	Polycode.SceneMesh_setMaterialByName(this.__ptr, materialName, resourcePool.__ptr)
 }
 
 SceneMesh.prototype.setMesh = function(mesh) {
@@ -127,7 +141,7 @@ SceneMesh.prototype.setSkeleton = function(skeleton) {
 }
 
 SceneMesh.prototype.getSkeleton = function() {
-	var retVal = new shared_ptr<Skeleton>()
+	var retVal = new Skeleton()
 	retVal.__ptr = Polycode.SceneMesh_getSkeleton(this.__ptr)
 	return retVal
 }
@@ -166,10 +180,10 @@ SceneMesh.prototype.getForceMaterial = function() {
 
 SceneMesh.prototype.Clone = function(deepClone,ignoreEditorOnly) {
 	var retVal = new Entity()
-	retVal.__ptr = Polycode.SceneMesh_Clone(this.__ptr, deepClone,ignoreEditorOnly)
+	retVal.__ptr = Polycode.SceneMesh_Clone(this.__ptr, deepClone, ignoreEditorOnly)
 	return retVal
 }
 
 SceneMesh.prototype.applyClone = function(clone,deepClone,ignoreEditorOnly) {
-	Polycode.SceneMesh_applyClone(this.__ptr, clone,deepClone,ignoreEditorOnly)
+	Polycode.SceneMesh_applyClone(this.__ptr, clone.__ptr, deepClone, ignoreEditorOnly)
 }

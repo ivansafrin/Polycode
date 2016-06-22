@@ -1,4 +1,18 @@
+require('Polycode/Resource')
+
 function Mesh() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.Mesh()
+	}
+}
+
+Mesh.prototype = Object.create(Resource.prototype);
+
+
+Mesh.prototype.MeshFromFileName = function(fileName) {
+	var retVal = new Mesh()
+	retVal.__ptr = Polycode.Mesh_MeshFromFileName(fileName)
+	return retVal
 }
 
 Mesh.prototype.Copy = function() {
@@ -12,11 +26,11 @@ Mesh.prototype.loadMesh = function(fileName) {
 }
 
 Mesh.prototype.saveToFile = function(fileName,writeNormals,writeTangents,writeColors,writeBoneWeights,writeUVs,writeSecondaryUVs) {
-	Polycode.Mesh_saveToFile(this.__ptr, fileName,writeNormals,writeTangents,writeColors,writeBoneWeights,writeUVs,writeSecondaryUVs)
+	Polycode.Mesh_saveToFile(this.__ptr, fileName, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs)
 }
 
 Mesh.prototype.loadFromFile = function(inFile) {
-	Polycode.Mesh_loadFromFile(this.__ptr, inFile)
+	Polycode.Mesh_loadFromFile(this.__ptr, inFile.__ptr)
 }
 
 Mesh.prototype.addSubmesh = function(newSubmesh) {
@@ -38,7 +52,7 @@ Mesh.prototype.getSubmeshAtIndex = function(index) {
 }
 
 Mesh.prototype.getSubmeshPointer = function(index) {
-	var retVal = new shared_ptr<MeshGeometry>()
+	var retVal = new MeshGeometry()
 	retVal.__ptr = Polycode.Mesh_getSubmeshPointer(this.__ptr, index)
 	return retVal
 }

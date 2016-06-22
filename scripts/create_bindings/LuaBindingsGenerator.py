@@ -25,7 +25,7 @@ class LuaBindingsGenerator(object):
 		self.cppLoaderOut = ""
 		self.luaIndexOut = ""
 		self.disableGC = self.config.get('global', 'DisableGarbageCollection').replace(" ", "").split(",")
-		self.inheritInModule = self.config.get('lua', 'InheritInModule').replace(" ", "").split(",")
+		self.inheritInModule = self.config.get('global', 'InheritInModule').replace(" ", "").split(",")
 		self.libName = self.config.get('global', 'LibraryName')
 
 		self.cppRegisterOut += "int luaopen_%s(lua_State *L) {\n" % self.libName
@@ -51,9 +51,9 @@ class LuaBindingsGenerator(object):
 		parentClass = ""
 		if "parent" in c:
 				if c["parent"] in self.inheritInModule: # Parent class is in this module
-					self.luaClassBindingOut += "require \"%s/%s\"\n\n" % (self.config.get('lua', 'LibraryName'), c["parent"])
+					self.luaClassBindingOut += "require \"%s/%s\"\n\n" % (self.config.get('global', 'LibraryName'), c["parent"])
 				else: 
-					self.luaClassBindingOut += "require \"%s/%s\"\n\n" % (self.config.get('lua', 'DefaultModule'), c["parent"])
+					self.luaClassBindingOut += "require \"%s/%s\"\n\n" % (self.config.get('global', 'DefaultModule'), c["parent"])
 
 				self.luaClassBindingOut += "class \"%s\" (%s)\n\n" % (c["name"], c["parent"])
 				parentClass = c["parent"]

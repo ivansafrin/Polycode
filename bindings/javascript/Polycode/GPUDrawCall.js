@@ -1,9 +1,13 @@
 function GPUDrawCall() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.GPUDrawCall()
+	}
 	Object.defineProperties(this, {
 		'options': { enumerable: true, configurable: true, get: GPUDrawCall.prototype.__get_options, set: GPUDrawCall.prototype.__set_options},
 		'modelMatrix': { enumerable: true, configurable: true, get: GPUDrawCall.prototype.__get_modelMatrix, set: GPUDrawCall.prototype.__set_modelMatrix}
 	})
 }
+
 GPUDrawCall.prototype.__get_options = function() {
 	var retVal = new GPUDrawOptions()
 	retVal.__ptr = 	Polycode.GPUDrawCall__get_options(this.__ptr)

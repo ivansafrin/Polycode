@@ -1,4 +1,9 @@
+require('Polycode/Event')
+
 function InputEvent() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.InputEvent()
+	}
 	Object.defineProperties(this, {
 		'mouseButton': { enumerable: true, configurable: true, get: InputEvent.prototype.__get_mouseButton, set: InputEvent.prototype.__set_mouseButton},
 		'mousePosition': { enumerable: true, configurable: true, get: InputEvent.prototype.__get_mousePosition, set: InputEvent.prototype.__set_mousePosition},
@@ -15,6 +20,9 @@ function InputEvent() {
 		'hitDistance': { enumerable: true, configurable: true, get: InputEvent.prototype.__get_hitDistance, set: InputEvent.prototype.__set_hitDistance}
 	})
 }
+
+InputEvent.prototype = Object.create(Event.prototype);
+
 InputEvent.prototype.__get_mouseButton = function() {
 	return Polycode.InputEvent__get_mouseButton(this.__ptr)
 }

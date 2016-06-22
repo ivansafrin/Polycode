@@ -1,4 +1,7 @@
-function Quaternion() {
+function Quaternion(w,x,y,z) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.Quaternion(w,x,y,z)
+	}
 	Object.defineProperties(this, {
 		'x': { enumerable: true, configurable: true, get: Quaternion.prototype.__get_x, set: Quaternion.prototype.__set_x},
 		'y': { enumerable: true, configurable: true, get: Quaternion.prototype.__get_y, set: Quaternion.prototype.__set_y},
@@ -6,6 +9,7 @@ function Quaternion() {
 		'w': { enumerable: true, configurable: true, get: Quaternion.prototype.__get_w, set: Quaternion.prototype.__set_w}
 	})
 }
+
 Quaternion.prototype.__get_x = function() {
 	return Polycode.Quaternion__get_x(this.__ptr)
 }
@@ -49,6 +53,12 @@ Quaternion.prototype.setFromMatrix = function(_mat) {
 	Polycode.Quaternion_setFromMatrix(this.__ptr, _mat)
 }
 
+Quaternion.prototype.Slerp = function(fT,rkP,rkQ,shortestPath) {
+	var retVal = new Quaternion()
+	retVal.__ptr = Polycode.Quaternion_Slerp(fT, rkP, rkQ, shortestPath)
+	return retVal
+}
+
 Quaternion.prototype.Dot = function(rkQ) {
 	return Polycode.Quaternion_Dot(this.__ptr, rkQ)
 }
@@ -74,11 +84,17 @@ Quaternion.prototype.Normalize = function() {
 }
 
 Quaternion.prototype.lookAt = function(D,upVector) {
-	Polycode.Quaternion_lookAt(this.__ptr, D,upVector)
+	Polycode.Quaternion_lookAt(this.__ptr, D, upVector)
 }
 
 Quaternion.prototype.createFromMatrix = function(matrix) {
 	Polycode.Quaternion_createFromMatrix(this.__ptr, matrix)
+}
+
+Quaternion.prototype.Squad = function(fT,rkP,rkA,rkB,rkQ,shortestPath) {
+	var retVal = new Quaternion()
+	retVal.__ptr = Polycode.Quaternion_Squad(fT, rkP, rkA, rkB, rkQ, shortestPath)
+	return retVal
 }
 
 Quaternion.prototype.Inverse = function() {
@@ -88,7 +104,7 @@ Quaternion.prototype.Inverse = function() {
 }
 
 Quaternion.prototype.set = function(w,x,y,z) {
-	Polycode.Quaternion_set(this.__ptr, w,x,y,z)
+	Polycode.Quaternion_set(this.__ptr, w, x, y, z)
 }
 
 Quaternion.prototype.InvSqrt = function(x) {
@@ -96,11 +112,11 @@ Quaternion.prototype.InvSqrt = function(x) {
 }
 
 Quaternion.prototype.fromAxes = function(az,ay,ax) {
-	Polycode.Quaternion_fromAxes(this.__ptr, az,ay,ax)
+	Polycode.Quaternion_fromAxes(this.__ptr, az, ay, ax)
 }
 
 Quaternion.prototype.fromAngleAxis = function(rfAngle,rkAxis) {
-	Polycode.Quaternion_fromAngleAxis(this.__ptr, rfAngle,rkAxis)
+	Polycode.Quaternion_fromAngleAxis(this.__ptr, rfAngle, rkAxis)
 }
 
 Quaternion.prototype.toEulerAngles = function() {
@@ -110,11 +126,11 @@ Quaternion.prototype.toEulerAngles = function() {
 }
 
 Quaternion.prototype.toAngleAxis = function(rfAngle,rkAxis) {
-	Polycode.Quaternion_toAngleAxis(this.__ptr, rfAngle,rkAxis)
+	Polycode.Quaternion_toAngleAxis(this.__ptr, rfAngle, rkAxis)
 }
 
 Quaternion.prototype.createFromAxisAngle = function(x,y,z,degrees) {
-	Polycode.Quaternion_createFromAxisAngle(this.__ptr, x,y,z,degrees)
+	Polycode.Quaternion_createFromAxisAngle(this.__ptr, x, y, z, degrees)
 }
 
 Quaternion.prototype.createMatrix = function() {

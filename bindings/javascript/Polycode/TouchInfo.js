@@ -1,10 +1,14 @@
 function TouchInfo() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.TouchInfo()
+	}
 	Object.defineProperties(this, {
 		'id': { enumerable: true, configurable: true, get: TouchInfo.prototype.__get_id, set: TouchInfo.prototype.__set_id},
 		'position': { enumerable: true, configurable: true, get: TouchInfo.prototype.__get_position, set: TouchInfo.prototype.__set_position},
 		'type': { enumerable: true, configurable: true, get: TouchInfo.prototype.__get_type, set: TouchInfo.prototype.__set_type}
 	})
 }
+
 TouchInfo.prototype.__get_id = function() {
 	return Polycode.TouchInfo__get_id(this.__ptr)
 }

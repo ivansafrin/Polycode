@@ -1,9 +1,13 @@
 function MouseEventResult() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.MouseEventResult()
+	}
 	Object.defineProperties(this, {
 		'hit': { enumerable: true, configurable: true, get: MouseEventResult.prototype.__get_hit, set: MouseEventResult.prototype.__set_hit},
 		'blocked': { enumerable: true, configurable: true, get: MouseEventResult.prototype.__get_blocked, set: MouseEventResult.prototype.__set_blocked}
 	})
 }
+
 MouseEventResult.prototype.__get_hit = function() {
 	return Polycode.MouseEventResult__get_hit(this.__ptr)
 }

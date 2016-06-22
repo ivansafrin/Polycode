@@ -1,5 +1,13 @@
-function Label() {
+require('Polycode/Image')
+
+function Label(font,text,size,antiAliasMode,premultiplyAlpha,backgroundColor,foregroundColor) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.Label(font,text,size,antiAliasMode,premultiplyAlpha,backgroundColor,foregroundColor)
+	}
 }
+
+Label.prototype = Object.create(Image.prototype);
+
 Duktape.fin(Label.prototype, function (x) {
 	if (x === Label.prototype) {
 		return;
@@ -32,7 +40,7 @@ Label.prototype.getTextHeight = function() {
 }
 
 Label.prototype.setColorForRange = function(color,rangeStart,rangeEnd) {
-	Polycode.Label_setColorForRange(this.__ptr, color,rangeStart,rangeEnd)
+	Polycode.Label_setColorForRange(this.__ptr, color, rangeStart, rangeEnd)
 }
 
 Label.prototype.clearColors = function() {
@@ -58,7 +66,7 @@ Label.prototype.setFont = function(newFont) {
 }
 
 Label.prototype.getFont = function() {
-	var retVal = new shared_ptr<Font>()
+	var retVal = new Font()
 	retVal.__ptr = Polycode.Label_getFont(this.__ptr)
 	return retVal
 }
@@ -92,7 +100,7 @@ Label.prototype.setForegroundColor = function(color) {
 }
 
 Label.prototype.setColors = function(backgroundColor,foregroundColor) {
-	Polycode.Label_setColors(this.__ptr, backgroundColor,foregroundColor)
+	Polycode.Label_setColors(this.__ptr, backgroundColor, foregroundColor)
 }
 
 Label.prototype.getBackgroundColor = function() {

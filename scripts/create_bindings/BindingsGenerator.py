@@ -77,6 +77,16 @@ class BindingsGenerator(object):
 		return ty
 
 	# ----------------------------------------------------
+	# Clean and reduce types to standard identifiers
+	# ----------------------------------------------------
+	def cleanTypeFilter(self, ty):
+		ty = ty.replace("shared_ptr", "")
+		ty = ty.replace("<", "")
+		ty = ty.replace(">", "")
+		ty = ty.replace("*", "")
+		return ty
+
+	# ----------------------------------------------------
 	# Parse and clean properties from a class
 	# ----------------------------------------------------
 	def parseClassProperties(self, c):
@@ -87,6 +97,7 @@ class BindingsGenerator(object):
 			pp["type"] = pp["type"].replace("Polycode::", "")
 			pp["type"] = pp["type"].replace("std::", "")
 			classPP["type"] = self.typeFilter(pp["type"])
+			classPP["cleanType"] = self.cleanTypeFilter(classPP["type"])
 			if pp["type"].find("POLYIGNORE") != -1:
 				continue
 			if pp["name"] == "" or pp["array"] == 1:
@@ -129,6 +140,7 @@ class BindingsGenerator(object):
 				method["isStatic"] = True
 
 			method["type"] = self.typeFilter(pm["rtnType"])
+			method["cleanType"] = self.cleanTypeFilter(method["type"])
 			if pm["name"] in parsedMethods or pm["name"].find("operator") > -1 or pm["rtnType"].find("POLYIGNORE") > -1 or pm["name"] in self.ignoreMethods :
 				continue
 			#ignore destructors
@@ -145,6 +157,7 @@ class BindingsGenerator(object):
 					continue
 				mParam["name"] = param["name"]
 				mParam["type"] = self.typeFilter(param["type"])
+				mParam["cleanType"] = self.cleanTypeFilter(mParam["type"])
 				if "defaltValue" in param:
 					mParam["defaultValue"] = param["defaltValue"]
 				method["parameters"].append(mParam)

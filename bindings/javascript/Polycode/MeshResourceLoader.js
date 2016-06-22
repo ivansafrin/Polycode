@@ -1,5 +1,9 @@
 function MeshResourceLoader() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.MeshResourceLoader()
+	}
 }
+
 Duktape.fin(MeshResourceLoader.prototype, function (x) {
 	if (x === MeshResourceLoader.prototype) {
 		return;
@@ -8,7 +12,7 @@ Duktape.fin(MeshResourceLoader.prototype, function (x) {
 })
 
 MeshResourceLoader.prototype.loadResource = function(path,targetPool) {
-	var retVal = new shared_ptr<Resource>()
-	retVal.__ptr = Polycode.MeshResourceLoader_loadResource(this.__ptr, path,targetPool)
+	var retVal = new Resource()
+	retVal.__ptr = Polycode.MeshResourceLoader_loadResource(this.__ptr, path, targetPool.__ptr)
 	return retVal
 }

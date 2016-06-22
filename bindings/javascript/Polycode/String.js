@@ -1,9 +1,13 @@
 function String() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.String()
+	}
 	Object.defineProperties(this, {
 		'contents': { enumerable: true, configurable: true, get: String.prototype.__get_contents, set: String.prototype.__set_contents},
 		'w_contents': { enumerable: true, configurable: true, get: String.prototype.__get_w_contents, set: String.prototype.__set_w_contents}
 	})
 }
+
 String.prototype.__get_contents = function() {
 	var retVal = new string()
 	retVal.__ptr = 	Polycode.String__get_contents(this.__ptr)
@@ -44,30 +48,30 @@ String.prototype.length = function() {
 }
 
 String.prototype.substr = function(pos,n) {
-	return Polycode.String_substr(this.__ptr, pos,n)
+	return Polycode.String_substr(this.__ptr, pos, n)
 }
 
 String.prototype.rfind = function(str,pos) {
 	var retVal = new size_t()
-	retVal.__ptr = Polycode.String_rfind(this.__ptr, str,pos)
+	retVal.__ptr = Polycode.String_rfind(this.__ptr, str, pos)
 	return retVal
 }
 
 String.prototype.find = function(str,pos) {
 	var retVal = new size_t()
-	retVal.__ptr = Polycode.String_find(this.__ptr, str,pos)
+	retVal.__ptr = Polycode.String_find(this.__ptr, str, pos)
 	return retVal
 }
 
 String.prototype.find_last_of = function(str,pos) {
 	var retVal = new size_t()
-	retVal.__ptr = Polycode.String_find_last_of(this.__ptr, str,pos)
+	retVal.__ptr = Polycode.String_find_last_of(this.__ptr, str, pos)
 	return retVal
 }
 
 String.prototype.find_first_of = function(str,pos) {
 	var retVal = new size_t()
-	retVal.__ptr = Polycode.String_find_first_of(this.__ptr, str,pos)
+	retVal.__ptr = Polycode.String_find_first_of(this.__ptr, str, pos)
 	return retVal
 }
 
@@ -84,7 +88,11 @@ String.prototype.split = function(delim) {
 }
 
 String.prototype.replace = function(what,withWhat) {
-	return Polycode.String_replace(this.__ptr, what,withWhat)
+	return Polycode.String_replace(this.__ptr, what, withWhat)
+}
+
+String.prototype.NumberToString = function(value,precision) {
+	return Polycode.String_NumberToString(value, precision)
 }
 
 String.prototype.toNumber = function() {
@@ -93,6 +101,10 @@ String.prototype.toNumber = function() {
 
 String.prototype.toInteger = function() {
 	return Polycode.String_toInteger(this.__ptr)
+}
+
+String.prototype.IntToString = function(value) {
+	return Polycode.String_IntToString(value)
 }
 
 String.prototype.c_str = function() {
@@ -124,7 +136,7 @@ String.prototype.getDataSizeWithEncoding = function(encoding) {
 }
 
 String.prototype.setDataWithEncoding = function(data,encoding) {
-	Polycode.String_setDataWithEncoding(this.__ptr, data,encoding)
+	Polycode.String_setDataWithEncoding(this.__ptr, data.__ptr, encoding)
 }
 
 String.prototype.isNumber = function() {

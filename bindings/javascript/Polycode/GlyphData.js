@@ -1,4 +1,7 @@
 function GlyphData() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.GlyphData()
+	}
 	Object.defineProperties(this, {
 		'glyphs': { enumerable: true, configurable: true, get: GlyphData.prototype.__get_glyphs, set: GlyphData.prototype.__set_glyphs},
 		'positions': { enumerable: true, configurable: true, get: GlyphData.prototype.__get_positions, set: GlyphData.prototype.__set_positions},
@@ -6,6 +9,7 @@ function GlyphData() {
 		'trailingAdvance': { enumerable: true, configurable: true, get: GlyphData.prototype.__get_trailingAdvance, set: GlyphData.prototype.__set_trailingAdvance}
 	})
 }
+
 GlyphData.prototype.__get_glyphs = function() {
 	var retVal = new FT_Glyph()
 	retVal.__ptr = 	Polycode.GlyphData__get_glyphs(this.__ptr)

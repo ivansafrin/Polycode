@@ -1,4 +1,7 @@
 function TimeInfo() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.TimeInfo()
+	}
 	Object.defineProperties(this, {
 		'seconds': { enumerable: true, configurable: true, get: TimeInfo.prototype.__get_seconds, set: TimeInfo.prototype.__set_seconds},
 		'minutes': { enumerable: true, configurable: true, get: TimeInfo.prototype.__get_minutes, set: TimeInfo.prototype.__set_minutes},
@@ -10,6 +13,7 @@ function TimeInfo() {
 		'yearDay': { enumerable: true, configurable: true, get: TimeInfo.prototype.__get_yearDay, set: TimeInfo.prototype.__set_yearDay}
 	})
 }
+
 TimeInfo.prototype.__get_seconds = function() {
 	return Polycode.TimeInfo__get_seconds(this.__ptr)
 }

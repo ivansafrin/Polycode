@@ -1,5 +1,13 @@
+require('Polycode/EventDispatcher')
+
 function ResourceManager() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.ResourceManager()
+	}
 }
+
+ResourceManager.prototype = Object.create(EventDispatcher.prototype);
+
 Duktape.fin(ResourceManager.prototype, function (x) {
 	if (x === ResourceManager.prototype) {
 		return;
@@ -20,7 +28,7 @@ ResourceManager.prototype.getResourcePoolByName = function(name) {
 }
 
 ResourceManager.prototype.addResourceLoader = function(loader) {
-	Polycode.ResourceManager_addResourceLoader(this.__ptr, loader)
+	Polycode.ResourceManager_addResourceLoader(this.__ptr, loader.__ptr)
 }
 
 ResourceManager.prototype.getResourceLoaderForExtension = function(extension) {
@@ -30,7 +38,7 @@ ResourceManager.prototype.getResourceLoaderForExtension = function(extension) {
 }
 
 ResourceManager.prototype.removeResourceLoader = function(loader) {
-	Polycode.ResourceManager_removeResourceLoader(this.__ptr, loader)
+	Polycode.ResourceManager_removeResourceLoader(this.__ptr, loader.__ptr)
 }
 
 ResourceManager.prototype.getNumResourceLoaders = function() {
@@ -44,11 +52,11 @@ ResourceManager.prototype.getResourceLoaderAtIndex = function(index) {
 }
 
 ResourceManager.prototype.addResourcePool = function(pool) {
-	Polycode.ResourceManager_addResourcePool(this.__ptr, pool)
+	Polycode.ResourceManager_addResourcePool(this.__ptr, pool.__ptr)
 }
 
 ResourceManager.prototype.removeResourcePool = function(pool) {
-	Polycode.ResourceManager_removeResourcePool(this.__ptr, pool)
+	Polycode.ResourceManager_removeResourcePool(this.__ptr, pool.__ptr)
 }
 
 ResourceManager.prototype.getResources = function(resourceType) {
@@ -60,11 +68,11 @@ ResourceManager.prototype.removeResource = function(resource) {
 }
 
 ResourceManager.prototype.subscribeToResourcePool = function(pool) {
-	Polycode.ResourceManager_subscribeToResourcePool(this.__ptr, pool)
+	Polycode.ResourceManager_subscribeToResourcePool(this.__ptr, pool.__ptr)
 }
 
 ResourceManager.prototype.unsubscibeFromResourcePool = function(pool) {
-	Polycode.ResourceManager_unsubscibeFromResourcePool(this.__ptr, pool)
+	Polycode.ResourceManager_unsubscibeFromResourcePool(this.__ptr, pool.__ptr)
 }
 
 ResourceManager.prototype.Update = function(elapsed) {

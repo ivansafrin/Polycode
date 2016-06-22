@@ -1,5 +1,9 @@
 function RenderThread() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.RenderThread()
+	}
 }
+
 Duktape.fin(RenderThread.prototype, function (x) {
 	if (x === RenderThread.prototype) {
 		return;
@@ -8,7 +12,7 @@ Duktape.fin(RenderThread.prototype, function (x) {
 })
 
 RenderThread.prototype.setGraphicsInterface = function(core,graphicsInterface) {
-	Polycode.RenderThread_setGraphicsInterface(this.__ptr, core,graphicsInterface)
+	Polycode.RenderThread_setGraphicsInterface(this.__ptr, core.__ptr, graphicsInterface.__ptr)
 }
 
 RenderThread.prototype.runThread = function() {
@@ -20,11 +24,11 @@ RenderThread.prototype.updateRenderThread = function() {
 }
 
 RenderThread.prototype.enqueueFrame = function(frame) {
-	Polycode.RenderThread_enqueueFrame(this.__ptr, frame)
+	Polycode.RenderThread_enqueueFrame(this.__ptr, frame.__ptr)
 }
 
 RenderThread.prototype.enqueueJob = function(jobType,data,data2) {
-	Polycode.RenderThread_enqueueJob(this.__ptr, jobType,data,data2)
+	Polycode.RenderThread_enqueueJob(this.__ptr, jobType, data.__ptr, data2.__ptr)
 }
 
 RenderThread.prototype.processJob = function(job) {
@@ -42,11 +46,11 @@ RenderThread.prototype.getShaderBinding = function() {
 }
 
 RenderThread.prototype.processDrawBufferLights = function(buffer) {
-	Polycode.RenderThread_processDrawBufferLights(this.__ptr, buffer)
+	Polycode.RenderThread_processDrawBufferLights(this.__ptr, buffer.__ptr)
 }
 
 RenderThread.prototype.processDrawBuffer = function(buffer) {
-	Polycode.RenderThread_processDrawBuffer(this.__ptr, buffer)
+	Polycode.RenderThread_processDrawBuffer(this.__ptr, buffer.__ptr)
 }
 
 RenderThread.prototype.getFrameInfo = function() {

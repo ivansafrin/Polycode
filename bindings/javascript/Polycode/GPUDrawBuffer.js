@@ -1,4 +1,7 @@
 function GPUDrawBuffer() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.GPUDrawBuffer()
+	}
 	Object.defineProperties(this, {
 		'projectionMatrix': { enumerable: true, configurable: true, get: GPUDrawBuffer.prototype.__get_projectionMatrix, set: GPUDrawBuffer.prototype.__set_projectionMatrix},
 		'viewMatrix': { enumerable: true, configurable: true, get: GPUDrawBuffer.prototype.__get_viewMatrix, set: GPUDrawBuffer.prototype.__set_viewMatrix},
@@ -10,6 +13,7 @@ function GPUDrawBuffer() {
 		'viewport': { enumerable: true, configurable: true, get: GPUDrawBuffer.prototype.__get_viewport, set: GPUDrawBuffer.prototype.__set_viewport}
 	})
 }
+
 GPUDrawBuffer.prototype.__get_projectionMatrix = function() {
 	var retVal = new Matrix4()
 	retVal.__ptr = 	Polycode.GPUDrawBuffer__get_projectionMatrix(this.__ptr)

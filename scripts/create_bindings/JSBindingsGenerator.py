@@ -24,18 +24,88 @@ class JSBindingsGenerator(object):
 		self.wrappersHeaderList = ""
 		self.wrappersHeaderBody = ""
 		self.cppRegisterOut = ""
+		self.inheritInModule = self.config.get('global', 'InheritInModule').replace(" ", "").split(",")
 		self.disableGC = self.config.get('global', 'DisableGarbageCollection').replace(" ", "").split(",")
 		self.cppRegisterOut += "int jsopen_%s(duk_context *ctx) {\n" % (self.libName)
 		self.cppRegisterOut += "\tconst duk_function_list_entry %s_funcs[] = {\n" % (self.libName)
 		mkdir_p("%s/%s" % (self.config.get('js', 'JSApiDirectory'), self.libName))
+		self.ignoreMethods = self.config.get('global', 'IgnoreMethods').replace(" ", "").split(",")
 
 	def processTargetFile(self, targetFile):
 		self.wrappersHeaderList += "#include \"%s/%s\"\n" % (self.config.get('global', 'HeaderIncludeDirectory'), targetFile)
 
 	def processClass(self, c):
-		self.jsClassOut += "function %s() {\n" % c["name"]
+
+		inherits = False
+		parentClass = ""
+		if "parent" in c:
+			if c["parent"] in self.inheritInModule: # Parent class is in this module
+				self.jsClassOut += "require('%s/%s')\n\n" % (self.config.get('global', 'LibraryName'), c["parent"])
+			else: 
+				self.jsClassOut += "require('%s/%s')\n\n" % (self.config.get('global', 'DefaultModule'), c["parent"])
+
+			parentClass = c["parent"]
+			inherits = True
+
+		constructor = None
+		for method in c["methods"]:
+			if method["name"] == c["name"]:
+				constructor = method
+
+		params = ""
+		paramList  = []
+		if constructor:
+			params = ",".join(str(p["name"]) for p in constructor["parameters"])
+			paramList = constructor["parameters"]
+
+		self.jsClassOut += "function %s(%s) {\n" % (c["name"], params)
+		if c["name"] not in self.ignoreMethods:
+			self.jsClassOut += "\tif(arguments[0] != \"__skip_ptr__\") {\n"
+			self.jsClassOut += "\t\tthis.__ptr = %s.%s(%s)\n" % (self.libName, c["name"], params)
+			self.jsClassOut += "\t}\n"
+			self.cppRegisterOut += "\t\t\t{\"%s\", %s_%s, %d},\n" % (c["name"], self.libName, c["name"], len(paramList))
+
+			self.wrappersHeaderBody += "\tduk_ret_t %s_%s(duk_context *context) {\n" % (self.libName, c["name"])
+
+			idx = 0
+			for p in paramList:
+				if "*" in p["type"]:
+					outfunc = "(%s)duk_to_pointer" % (p["type"])
+					outtype = "%s" % p["type"]
+				else:
+					outfunc = "*(%s*)duk_to_pointer" % (p["type"])
+					outtype = "%s" % p["type"]
+				if p["type"] == "int":
+					outfunc = "duk_to_int"
+					outtype = "int"
+				if p["type"] == "PolyKEY":
+					outfunc = "(PolyKEY)duk_to_int"
+					outtype = "PolyKEY"
+				if p["type"] == "Number":
+					outfunc = "duk_to_number"
+					outtype = "Number"
+				if p["type"] == "bool":
+					outfunc = "duk_to_boolean"
+					outtype = "bool"
+				if p["type"] == "String":
+					outfunc = "duk_to_string"
+					outtype = "String"
+				self.wrappersHeaderBody += "\t\t%s %s = %s(context, %d);\n" % (outtype, p["name"], outfunc, idx)
+				idx += 1
+
+			self.wrappersHeaderBody += "\t\t%s *inst = new %s(%s);\n" % (c["name"], c["name"], params)
+					
+			self.wrappersHeaderBody += "\t\tduk_push_pointer(context, (void*)inst);\n"
+			self.wrappersHeaderBody += "\t\treturn 1;\n"
+			self.wrappersHeaderBody += "\t}\n\n"
+
+
 		self.makeJSProperties(c)
-		self.jsClassOut += "}\n"
+		self.jsClassOut += "}\n\n"
+
+		if inherits:
+			self.jsClassOut += "%s.prototype = Object.create(%s.prototype);\n\n" % (c["name"], parentClass)
+
 		self.makeJSPropAccessors(c)
 
 		if c["name"] not in self.disableGC:
@@ -83,7 +153,7 @@ class JSBindingsGenerator(object):
 				if pp["type"].find("*") > -1: # Returned var is definitely a pointer.
 					self.wrappersHeaderBody += "\t\tPolyBase *ptrRetVal = (PolyBase*)inst->%s%s;\n" % (pp["name"], retFunc)
 					self.wrappersHeaderBody += "\t\tduk_push_pointer(context, (void*)ptrRetVal);\n"
-					self.jsClassOut += "\tvar retVal = new %s()\n\tretVal.__ptr = " % (pp["type"].replace("*", ""))
+					self.jsClassOut += "\tvar retVal = new %s()\n\tretVal.__ptr = " % (pp["cleanType"])
 					self.jsClassOut += "\t%s.%s__get_%s(this.__ptr)\n" % (self.libName, c["name"], pp["name"]) 
 					self.jsClassOut += "\treturn retVal\n"
 					self.jsClassOut += "}\n\n"
@@ -102,7 +172,7 @@ class JSBindingsGenerator(object):
 					self.wrappersHeaderBody += "\t\t%s *retInst = new %s();\n" % (className, className)
 					self.wrappersHeaderBody += "\t\t*retInst = inst->%s%s;\n" % (pp["name"], retFunc)
 					self.wrappersHeaderBody += "\t\tduk_push_pointer(context, (void*)retInst);\n"
-					self.jsClassOut += "\tvar retVal = new %s()\n\tretVal.__ptr = " % (pp["type"].replace("*", ""))
+					self.jsClassOut += "\tvar retVal = new %s()\n\tretVal.__ptr = " % (pp["cleanType"])
 					self.jsClassOut += "\t%s.%s__get_%s(this.__ptr)\n" % (self.libName, c["name"], pp["name"]) 
 					self.jsClassOut += "\treturn retVal\n"
 					self.jsClassOut += "}\n\n"
@@ -160,16 +230,20 @@ class JSBindingsGenerator(object):
 
 	def makeJSMethods(self, c):
 		for method in c["methods"]:
-			if method["isStatic"] == False and method["name"] != c["name"]:
+			if method["name"] != c["name"]:
 				self.jsClassOut += "\n%s.prototype.%s = function(" % (c["name"], method["name"])
 				params = ",".join(str(p["name"]) for p in method["parameters"])
 				self.jsClassOut += params
 				self.jsClassOut += ") {\n"
 				self.cppRegisterOut += "\t\t\t{\"%s_%s\", %s_%s_%s, %d},\n" % (c["name"], method["name"], self.libName, c["name"], method["name"], len(method["parameters"]) + 1)
 				self.wrappersHeaderBody += "\tduk_ret_t %s_%s_%s(duk_context *context) {\n" % (self.libName, c["name"], method["name"])
-				self.wrappersHeaderBody += "\t\t%s *inst = (%s*)duk_to_pointer(context, 0);\n" % (c["name"], c["name"])
+
+				if not method["isStatic"]:
+					self.wrappersHeaderBody += "\t\t%s *inst = (%s*)duk_to_pointer(context, 0);\n" % (c["name"], c["name"])
 
 				idx = 1
+				if method["isStatic"]:
+					idx = 0
 				for p in method["parameters"]:
 					if "*" in p["type"]:
 						outfunc = "(%s)duk_to_pointer" % (p["type"])
@@ -200,7 +274,10 @@ class JSBindingsGenerator(object):
 				if self.isVectorType(method["type"]):
 					self.wrappersHeaderBody += "\t\treturn 0;\n"
 				elif method["type"] == "void" or method["type"] == "static void" or method["type"] == "virtual void" or method["type"] == "inline void" or method["type"] == "void*":
-					self.wrappersHeaderBody += "\t\tinst->%s(%s);\n" % (method["name"], params)
+					if method["isStatic"]:
+						self.wrappersHeaderBody += "\t\t%s::%s(%s);\n" % (c["name"], method["name"], params)
+					else:
+						self.wrappersHeaderBody += "\t\tinst->%s(%s);\n" % (method["name"], params)
 					self.wrappersHeaderBody += "\t\treturn 0;\n"
 				else:
 					outfunc = "this_shouldnt_happen"
@@ -216,12 +293,18 @@ class JSBindingsGenerator(object):
 						outfunc = "duk_push_boolean"
 					
 					if method["type"].find("*") > -1: # Returned var is definitely a pointer.
-						self.wrappersHeaderBody += "\t\tPolyBase *ptrRetVal = (PolyBase*)inst->%s(%s)%s;\n" % (method["name"], params, retFunc)
+						if method["isStatic"]:
+							self.wrappersHeaderBody += "\t\tPolyBase *ptrRetVal = (PolyBase*)%s::%s(%s)%s;\n" % (c["name"], method["name"], params, retFunc)
+						else:
+							self.wrappersHeaderBody += "\t\tPolyBase *ptrRetVal = (PolyBase*)inst->%s(%s)%s;\n" % (method["name"], params, retFunc)
 						self.wrappersHeaderBody += "\t\tduk_push_pointer(context, (void*)ptrRetVal);\n"
-						jsRet = "var retVal = new %s()\n\tretVal.__ptr = " % (method["type"].replace("*", ""))
+						jsRet = "var retVal = new %s()\n\tretVal.__ptr = " % (method["cleanType"])
 						finalOut = "\treturn retVal\n"
 					elif self.isBasicType(method["type"])  == True:
-						self.wrappersHeaderBody += "\t\t%s(context, inst->%s(%s)%s);\n" % (outfunc, method["name"], params, retFunc);
+						if method["isStatic"]:
+							self.wrappersHeaderBody += "\t\t%s(context, %s::%s(%s)%s);\n" % (outfunc, c["name"], method["name"], params, retFunc);
+						else:
+							self.wrappersHeaderBody += "\t\t%s(context, inst->%s(%s)%s);\n" % (outfunc, method["name"], params, retFunc);
 						jsRet = "return "
 					else: 
 						className = method["type"].replace("const", "").replace("&", "").replace("inline", "").replace("virtual", "").replace("static", "")
@@ -232,17 +315,37 @@ class JSBindingsGenerator(object):
 						if className == "Polycode : : Rectangle":
 							className = "Polycode::Rectangle"
 						self.wrappersHeaderBody += "\t\t%s *retInst = new %s();\n" % (className, className)
-						self.wrappersHeaderBody += "\t\t*retInst = inst->%s(%s)%s;\n" % (method["name"], params, retFunc)
+						if method["isStatic"]:
+							self.wrappersHeaderBody += "\t\t*retInst = %s::%s(%s)%s;\n" % (c["name"], method["name"], params, retFunc)
+						else:
+							self.wrappersHeaderBody += "\t\t*retInst = inst->%s(%s)%s;\n" % (method["name"], params, retFunc)
 						self.wrappersHeaderBody += "\t\tduk_push_pointer(context, (void*)retInst);\n"
-						jsRet = "var retVal = new %s()\n\tretVal.__ptr = " % (method["type"].replace("*", ""))
+						jsRet = "var retVal = new %s()\n\tretVal.__ptr = " % (method["cleanType"])
 						finalOut = "\treturn retVal\n"
 					self.wrappersHeaderBody += "\t\treturn 1;\n"
 
 				self.wrappersHeaderBody += "\t}\n\n"
+
 				if len(params) > 0:
-					self.jsClassOut += "\t%s%s.%s_%s(this.__ptr, %s)\n" % (jsRet, self.libName, c["name"], method["name"], params)
+					jsParams = ""
+					jidx = 0
+					for jp in method["parameters"]:
+						if jp["type"].find("*") > -1:
+							jsParams += "%s.__ptr" % jp["name"]
+						else:
+							jsParams += jp["name"]
+						jidx += 1
+						if jidx < len(method["parameters"]):
+							jsParams += ", "
+					if method["isStatic"]:
+						self.jsClassOut += "\t%s%s.%s_%s(%s)\n" % (jsRet, self.libName, c["name"], method["name"], jsParams)
+					else:
+						self.jsClassOut += "\t%s%s.%s_%s(this.__ptr, %s)\n" % (jsRet, self.libName, c["name"], method["name"], jsParams)
 				else:
-					self.jsClassOut += "\t%s%s.%s_%s(this.__ptr)\n" % (jsRet, self.libName, c["name"], method["name"])
+					if method["isStatic"]:
+						self.jsClassOut += "\t%s%s.%s_%s()\n" % (jsRet, self.libName, c["name"], method["name"])
+					else:
+						self.jsClassOut += "\t%s%s.%s_%s(this.__ptr)\n" % (jsRet, self.libName, c["name"], method["name"])
 				self.jsClassOut += finalOut
 				self.jsClassOut += "}\n"
 	

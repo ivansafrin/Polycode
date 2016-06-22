@@ -1,8 +1,16 @@
-function ScenePrimitive() {
+require('Polycode/SceneMesh')
+
+function ScenePrimitive(type,v1,v2,v3,v4,v5) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.ScenePrimitive(type,v1,v2,v3,v4,v5)
+	}
 }
 
+ScenePrimitive.prototype = Object.create(SceneMesh.prototype);
+
+
 ScenePrimitive.prototype.setPrimitiveOptions = function(type,v1,v2,v3,v4,v5) {
-	Polycode.ScenePrimitive_setPrimitiveOptions(this.__ptr, type,v1,v2,v3,v4,v5)
+	Polycode.ScenePrimitive_setPrimitiveOptions(this.__ptr, type, v1, v2, v3, v4, v5)
 }
 
 ScenePrimitive.prototype.recreatePrimitive = function() {
@@ -35,10 +43,10 @@ ScenePrimitive.prototype.getPrimitiveParameter5 = function() {
 
 ScenePrimitive.prototype.Clone = function(deepClone,ignoreEditorOnly) {
 	var retVal = new Entity()
-	retVal.__ptr = Polycode.ScenePrimitive_Clone(this.__ptr, deepClone,ignoreEditorOnly)
+	retVal.__ptr = Polycode.ScenePrimitive_Clone(this.__ptr, deepClone, ignoreEditorOnly)
 	return retVal
 }
 
 ScenePrimitive.prototype.applyClone = function(clone,deepClone,ignoreEditorOnly) {
-	Polycode.ScenePrimitive_applyClone(this.__ptr, clone,deepClone,ignoreEditorOnly)
+	Polycode.ScenePrimitive_applyClone(this.__ptr, clone.__ptr, deepClone, ignoreEditorOnly)
 }

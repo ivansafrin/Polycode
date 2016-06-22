@@ -1,5 +1,13 @@
+require('Polycode/Core')
+
 function DummyCore() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.DummyCore()
+	}
 }
+
+DummyCore.prototype = Object.create(Core.prototype);
+
 Duktape.fin(DummyCore.prototype, function (x) {
 	if (x === DummyCore.prototype) {
 		return;
@@ -20,7 +28,7 @@ DummyCore.prototype.setCursor = function(cursorType) {
 }
 
 DummyCore.prototype.createThread = function(target) {
-	Polycode.DummyCore_createThread(this.__ptr, target)
+	Polycode.DummyCore_createThread(this.__ptr, target.__ptr)
 }
 
 DummyCore.prototype.createMutex = function() {
@@ -42,11 +50,11 @@ DummyCore.prototype.createFolder = function(folderPath) {
 }
 
 DummyCore.prototype.copyDiskItem = function(itemPath,destItemPath) {
-	Polycode.DummyCore_copyDiskItem(this.__ptr, itemPath,destItemPath)
+	Polycode.DummyCore_copyDiskItem(this.__ptr, itemPath, destItemPath)
 }
 
 DummyCore.prototype.moveDiskItem = function(itemPath,destItemPath) {
-	Polycode.DummyCore_moveDiskItem(this.__ptr, itemPath,destItemPath)
+	Polycode.DummyCore_moveDiskItem(this.__ptr, itemPath, destItemPath)
 }
 
 DummyCore.prototype.removeDiskItem = function(itemPath) {
@@ -58,7 +66,7 @@ DummyCore.prototype.openFolderPicker = function() {
 }
 
 DummyCore.prototype.openFilePicker = function(extensions,allowMultiple) {
-	Polycode.DummyCore_openFilePicker(this.__ptr, extensions,allowMultiple)
+	Polycode.DummyCore_openFilePicker(this.__ptr, extensions, allowMultiple)
 }
 
 DummyCore.prototype.saveFilePicker = function(extensions) {
@@ -66,7 +74,7 @@ DummyCore.prototype.saveFilePicker = function(extensions) {
 }
 
 DummyCore.prototype.handleVideoModeChange = function(modeInfo) {
-	Polycode.DummyCore_handleVideoModeChange(this.__ptr, modeInfo)
+	Polycode.DummyCore_handleVideoModeChange(this.__ptr, modeInfo.__ptr)
 }
 
 DummyCore.prototype.flushRenderContext = function() {
@@ -82,9 +90,9 @@ DummyCore.prototype.getTicks = function() {
 }
 
 DummyCore.prototype.executeExternalCommand = function(command,args,inDirectory) {
-	return Polycode.DummyCore_executeExternalCommand(this.__ptr, command,args,inDirectory)
+	return Polycode.DummyCore_executeExternalCommand(this.__ptr, command, args, inDirectory)
 }
 
 DummyCore.prototype.systemParseFolder = function(pathString,showHidden,targetVector) {
-	return Polycode.DummyCore_systemParseFolder(this.__ptr, pathString,showHidden,targetVector)
+	return Polycode.DummyCore_systemParseFolder(this.__ptr, pathString, showHidden, targetVector)
 }

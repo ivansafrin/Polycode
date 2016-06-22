@@ -1,10 +1,14 @@
 function ProgramAttribute() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.ProgramAttribute()
+	}
 	Object.defineProperties(this, {
 		'size': { enumerable: true, configurable: true, get: ProgramAttribute.prototype.__get_size, set: ProgramAttribute.prototype.__set_size},
 		'name': { enumerable: true, configurable: true, get: ProgramAttribute.prototype.__get_name, set: ProgramAttribute.prototype.__set_name},
 		'arrayType': { enumerable: true, configurable: true, get: ProgramAttribute.prototype.__get_arrayType, set: ProgramAttribute.prototype.__set_arrayType}
 	})
 }
+
 ProgramAttribute.prototype.__get_size = function() {
 	return Polycode.ProgramAttribute__get_size(this.__ptr)
 }

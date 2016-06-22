@@ -1,5 +1,13 @@
-function Sprite() {
+require('Polycode/Resource')
+
+function Sprite(name) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.Sprite(name)
+	}
 }
+
+Sprite.prototype = Object.create(Resource.prototype);
+
 Duktape.fin(Sprite.prototype, function (x) {
 	if (x === Sprite.prototype) {
 		return;
@@ -16,11 +24,11 @@ Sprite.prototype.setName = function(name) {
 }
 
 Sprite.prototype.addSpriteState = function(state) {
-	Polycode.Sprite_addSpriteState(this.__ptr, state)
+	Polycode.Sprite_addSpriteState(this.__ptr, state.__ptr)
 }
 
 Sprite.prototype.removeSpriteState = function(state) {
-	Polycode.Sprite_removeSpriteState(this.__ptr, state)
+	Polycode.Sprite_removeSpriteState(this.__ptr, state.__ptr)
 }
 
 Sprite.prototype.getNumStates = function() {
@@ -40,7 +48,7 @@ Sprite.prototype.getStateByName = function(name) {
 }
 
 Sprite.prototype.setParentSpritSet = function(spriteSet) {
-	Polycode.Sprite_setParentSpritSet(this.__ptr, spriteSet)
+	Polycode.Sprite_setParentSpritSet(this.__ptr, spriteSet.__ptr)
 }
 
 Sprite.prototype.getParentSpriteSet = function() {

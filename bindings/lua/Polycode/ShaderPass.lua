@@ -33,6 +33,14 @@ function ShaderPass:ShaderPass(...)
 	end
 end
 
+function ShaderPass:getShaderBinding()
+	local retVal =  Polycode.ShaderPass_getShaderBinding(self.__ptr)
+	if retVal == nil then return nil end
+	local __c = _G["shared_ptr<ShaderBinding>"]("__skip_ptr__")
+	__c.__ptr = retVal
+	return __c
+end
+
 function ShaderPass:__delete()
 	if self then Polycode.delete_ShaderPass(self.__ptr) end
 end

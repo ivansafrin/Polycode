@@ -1,5 +1,9 @@
-function AudioStreamingSource() {
+function AudioStreamingSource(channels,freq) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.AudioStreamingSource(channels,freq)
+	}
 }
+
 Duktape.fin(AudioStreamingSource.prototype, function (x) {
 	if (x === AudioStreamingSource.prototype) {
 		return;

@@ -1,10 +1,14 @@
 function Ray() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.Ray()
+	}
 	Object.defineProperties(this, {
 		'origin': { enumerable: true, configurable: true, get: Ray.prototype.__get_origin, set: Ray.prototype.__set_origin},
 		'direction': { enumerable: true, configurable: true, get: Ray.prototype.__get_direction, set: Ray.prototype.__set_direction},
 		'inv_direction': { enumerable: true, configurable: true, get: Ray.prototype.__get_inv_direction, set: Ray.prototype.__set_inv_direction}
 	})
 }
+
 Ray.prototype.__get_origin = function() {
 	var retVal = new Vector3()
 	retVal.__ptr = 	Polycode.Ray__get_origin(this.__ptr)
@@ -43,12 +47,12 @@ Duktape.fin(Ray.prototype, function (x) {
 })
 
 Ray.prototype.boxIntersect = function(box,transformMatrix,vnear,vfar) {
-	return Polycode.Ray_boxIntersect(this.__ptr, box,transformMatrix,vnear,vfar)
+	return Polycode.Ray_boxIntersect(this.__ptr, box, transformMatrix, vnear, vfar)
 }
 
 Ray.prototype.planeIntersectPoint = function(planeNormal,planeDistance) {
 	var retVal = new Vector3()
-	retVal.__ptr = Polycode.Ray_planeIntersectPoint(this.__ptr, planeNormal,planeDistance)
+	retVal.__ptr = Polycode.Ray_planeIntersectPoint(this.__ptr, planeNormal, planeDistance)
 	return retVal
 }
 
@@ -65,9 +69,9 @@ Ray.prototype.closestPointOnRay = function(point) {
 }
 
 Ray.prototype.closestPointsBetween = function(ray2,point1,point2) {
-	return Polycode.Ray_closestPointsBetween(this.__ptr, ray2,point1,point2)
+	return Polycode.Ray_closestPointsBetween(this.__ptr, ray2, point1.__ptr, point2.__ptr)
 }
 
 Ray.prototype.polygonIntersect = function(v1,v2,v3) {
-	return Polycode.Ray_polygonIntersect(this.__ptr, v1,v2,v3)
+	return Polycode.Ray_polygonIntersect(this.__ptr, v1, v2, v3)
 }

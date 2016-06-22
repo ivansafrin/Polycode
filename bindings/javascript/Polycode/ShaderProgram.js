@@ -1,8 +1,16 @@
-function ShaderProgram() {
+require('Polycode/Resource')
+
+function ShaderProgram(fileName) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.ShaderProgram(fileName)
+	}
 	Object.defineProperties(this, {
 		'type': { enumerable: true, configurable: true, get: ShaderProgram.prototype.__get_type, set: ShaderProgram.prototype.__set_type}
 	})
 }
+
+ShaderProgram.prototype = Object.create(Resource.prototype);
+
 ShaderProgram.prototype.__get_type = function() {
 	return Polycode.ShaderProgram__get_type(this.__ptr)
 }

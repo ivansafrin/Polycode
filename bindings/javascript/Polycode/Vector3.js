@@ -1,10 +1,14 @@
-function Vector3() {
+function Vector3(x,y,z) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.Vector3(x,y,z)
+	}
 	Object.defineProperties(this, {
 		'x': { enumerable: true, configurable: true, get: Vector3.prototype.__get_x, set: Vector3.prototype.__set_x},
 		'y': { enumerable: true, configurable: true, get: Vector3.prototype.__get_y, set: Vector3.prototype.__set_y},
 		'z': { enumerable: true, configurable: true, get: Vector3.prototype.__get_z, set: Vector3.prototype.__set_z}
 	})
 }
+
 Vector3.prototype.__get_x = function() {
 	return Polycode.Vector3__get_x(this.__ptr)
 }
@@ -37,7 +41,7 @@ Duktape.fin(Vector3.prototype, function (x) {
 })
 
 Vector3.prototype.set = function(x,y,z) {
-	Polycode.Vector3_set(this.__ptr, x,y,z)
+	Polycode.Vector3_set(this.__ptr, x, y, z)
 }
 
 Vector3.prototype.distance = function(vec2) {

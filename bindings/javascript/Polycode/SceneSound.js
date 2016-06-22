@@ -1,5 +1,13 @@
-function SceneSound() {
+require('Polycode/Entity')
+
+function SceneSound(fileName,referenceDistance,maxDistance,directionalSound) {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.SceneSound(fileName,referenceDistance,maxDistance,directionalSound)
+	}
 }
+
+SceneSound.prototype = Object.create(Entity.prototype);
+
 
 SceneSound.prototype.Update = function() {
 	Polycode.SceneSound_Update(this.__ptr)
@@ -7,12 +15,12 @@ SceneSound.prototype.Update = function() {
 
 SceneSound.prototype.Clone = function(deepClone,ignoreEditorOnly) {
 	var retVal = new Entity()
-	retVal.__ptr = Polycode.SceneSound_Clone(this.__ptr, deepClone,ignoreEditorOnly)
+	retVal.__ptr = Polycode.SceneSound_Clone(this.__ptr, deepClone, ignoreEditorOnly)
 	return retVal
 }
 
 SceneSound.prototype.applyClone = function(clone,deepClone,ignoreEditorOnly) {
-	Polycode.SceneSound_applyClone(this.__ptr, clone,deepClone,ignoreEditorOnly)
+	Polycode.SceneSound_applyClone(this.__ptr, clone.__ptr, deepClone, ignoreEditorOnly)
 }
 
 SceneSound.prototype.isDirectionalSound = function() {

@@ -1,8 +1,16 @@
+require('Polycode/Event')
+
 function CoreMotionEvent() {
+	if(arguments[0] != "__skip_ptr__") {
+		this.__ptr = Polycode.CoreMotionEvent()
+	}
 	Object.defineProperties(this, {
 		'amount': { enumerable: true, configurable: true, get: CoreMotionEvent.prototype.__get_amount, set: CoreMotionEvent.prototype.__set_amount}
 	})
 }
+
+CoreMotionEvent.prototype = Object.create(Event.prototype);
+
 CoreMotionEvent.prototype.__get_amount = function() {
 	var retVal = new Vector3()
 	retVal.__ptr = 	Polycode.CoreMotionEvent__get_amount(this.__ptr)
