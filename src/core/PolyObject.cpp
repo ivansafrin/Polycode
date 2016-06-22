@@ -95,6 +95,19 @@ Object::~Object() {
 	
 }
 
+String Object::saveToXMLString() {
+	TiXmlPrinter printer;
+	TiXmlDocument doc;
+	TiXmlDeclaration* decl = new TiXmlDeclaration("1.0", "", "");
+	doc.LinkEndChild(decl);
+
+	TiXmlElement * rootElement = createElementFromObjectEntry(&root);
+	doc.LinkEndChild(rootElement);
+	printer.SetIndent("    ");
+	doc.Accept(&printer);
+	return String(printer.CStr());
+}
+
 void Object::saveToXML(const String& fileName) {
 	TiXmlDocument doc;		
 	TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "", "" );	 

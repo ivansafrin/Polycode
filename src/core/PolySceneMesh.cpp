@@ -145,6 +145,7 @@ std::shared_ptr<Mesh> SceneMesh::getMesh() {
 
 void SceneMesh::clearMaterial() {
 	shaderPasses.clear();
+	colorParams.clear();
 	this->material = nullptr;
 }
 
@@ -166,7 +167,8 @@ void SceneMesh::setMaterial(std::shared_ptr<Material> material) {
 		shaderPass.materialShaderBinding = shaderPass.shaderBinding;
 		shaderPass.shaderBinding = std::make_shared<ShaderBinding>();
 		shaderPass.shaderBinding->targetShader = shaderPass.shader;
-		shaderPass.shaderBinding->addParamPointer(ProgramParam::PARAM_COLOR, "entityColor", &color);
+		std::shared_ptr<LocalShaderParam> colorParam = shaderPass.shaderBinding->addParam(ProgramParam::PARAM_COLOR, "entityColor");
+		colorParams.push_back(colorParam);
 		if(skeleton) {
 		 //	  shaderPass.attributeArrays.push_back(&skeletalVertexPositions);
 		 //	  shaderPass.attributeArrays.push_back(&skeletalVertexNormals);
@@ -316,6 +318,10 @@ void SceneMesh::Render(GPUDrawBuffer *buffer) {
 		return;
 	}
 	
+	for (auto param : colorParams) {
+		param->setColor(color);
+	}
+
 	for(int i=0; i < mesh->getNumSubmeshes(); i++) {
 		drawCall.options.alphaTest = alphaTest;
 		drawCall.options.linePointSize = lineWidth;

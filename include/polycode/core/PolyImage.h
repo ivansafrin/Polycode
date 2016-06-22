@@ -93,6 +93,10 @@ namespace Polycode {
 			* @return True if successfully loaded, false otherwise.
 			*/			
 			bool loadImage(const String& fileName);
+
+			bool loadFromMemory(const unsigned char *buffer, unsigned int length);
+
+			bool encodeToPNGData(unsigned char **data, unsigned int *size);
 		
 			static POLYIGNORE TokenArray readTokens(char *line, const char *tokens);
 			static POLYIGNORE void freeTokens(TokenArray tokens);

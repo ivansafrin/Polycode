@@ -273,14 +273,14 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
 
 				shaderPass = buffer->drawCalls[i].shaderPasses[s];
 				
-				ShaderBinding *localShaderBinding = &*buffer->drawCalls[i].shaderPasses[s].shaderBinding;
-				ShaderBinding *materialShaderBinding = &*shaderPass.materialShaderBinding;
+				std::shared_ptr<ShaderBinding> localShaderBinding = buffer->drawCalls[i].shaderPasses[s].shaderBinding;
+				std::shared_ptr<ShaderBinding> materialShaderBinding = shaderPass.materialShaderBinding;
 				
 				
 				if(buffer->globalMaterial && !buffer->drawCalls[i].options.forceMaterial) {
 					if(s < buffer->globalMaterial->getNumShaderPasses()) {
 						shaderPass = buffer->globalMaterial->getShaderPass(s);
-						localShaderBinding = &*shaderPass.shaderBinding;
+						localShaderBinding = shaderPass.shaderBinding;
 					}
 				}
 				
@@ -322,13 +322,13 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
 				}
 				if(materialShaderBinding) {
 					for(int p=0; p < materialShaderBinding->getNumLocalParams(); p++) {						   
-						LocalShaderParam *localParam = &*materialShaderBinding->getLocalParam(p);
+						std::shared_ptr<LocalShaderParam> localParam = materialShaderBinding->getLocalParam(p);
 						if(localParam) {
 							if(!localParam->param) {
 								localParam->param = shaderPass.shader->getParamPointer(localParam->name);
 							}
 							if(localParam->param) {
-								graphicsInterface->setParamInShader(&*shaderPass.shader, localParam->param, localParam);
+								graphicsInterface->setParamInShader(&*shaderPass.shader, localParam->param, &*localParam);
 								Color c = localParam->getColor();
 								
 							}
@@ -341,13 +341,13 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
 				
 				localShaderBinding->accessMutex->lock();
 				for(int p=0; p < localShaderBinding->getNumLocalParams(); p++) {
-					LocalShaderParam *localParam = &*localShaderBinding->getLocalParam(p);
+					std::shared_ptr<LocalShaderParam> localParam = localShaderBinding->getLocalParam(p);
 					if(localParam) {
 						if(!localParam->param) {
 							localParam->param = shaderPass.shader->getParamPointer(localParam->name);
 						}
 						if(localParam->param) {
-							graphicsInterface->setParamInShader(&*shaderPass.shader, localParam->param, localParam);
+							graphicsInterface->setParamInShader(&*shaderPass.shader, localParam->param, &*localParam);
 						}
 					}
 				}

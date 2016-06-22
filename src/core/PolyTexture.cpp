@@ -49,7 +49,7 @@ Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool
 			pixelSize = 4;						
 		break;
 		case Image::IMAGE_FP16:		
-			pixelSize = 12;
+			pixelSize = 6;
 		break;
 		default:
 			pixelSize = 4;								
@@ -100,7 +100,7 @@ void Texture::setImageData(Image *data) {
 			pixelSize = 4;						
 		break;
 		case Image::IMAGE_FP16:		
-			pixelSize = 12;
+			pixelSize = 6;
 		break;
 		default:
 			pixelSize = 4;								
@@ -130,7 +130,7 @@ Texture::Texture(Image *image, bool clamp, bool createMipmaps) : Resource(Resour
 			pixelSize = 4;
 			break;
 		case Image::IMAGE_FP16:
-			pixelSize = 12;
+			pixelSize = 6;
 			break;
 		default:
 			pixelSize = 4;
@@ -148,7 +148,7 @@ Texture::Texture(Image *image, bool clamp, bool createMipmaps) : Resource(Resour
 
 	type = targetImage->getType();
 	this->textureData = (char*)malloc(targetImage->getWidth()*targetImage->getHeight()*pixelSize);
-	memcpy(this->textureData, targetImage->getPixels(), targetImage->getWidth()*targetImage->getHeight()*pixelSize);
+	memcpy(this->textureD ata, targetImage->getPixels(), targetImage->getWidth()*targetImage->getHeight()*pixelSize);
 
 	if (premultiplyAlphaOnLoad) {
 		delete targetImage;

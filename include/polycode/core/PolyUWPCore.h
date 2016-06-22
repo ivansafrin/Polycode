@@ -33,13 +33,7 @@ THE SOFTWARE.
 #include <wrl\client.h>
 #include <wrl.h>
 
-#include <angle/GLES2/gl2.h>
-#include <angle/GLES2/gl2ext.h>
-#include <angle/EGL/egl.h>
-#include <angle/EGL/eglext.h>
-#include <angle/EGL/eglplatform.h>
-#include <angle/angle_windowsstore.h>
-
+#include "polycode/core/PolyOpenGLGraphicsInterface.h"
 #include "polycode/core/PolyXAudio2AudioInterface.h"
 
 using namespace concurrency;

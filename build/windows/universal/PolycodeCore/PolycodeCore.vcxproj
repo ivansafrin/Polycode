@@ -28,6 +28,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\Polycode.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\bindings\javascript\PolycodeJS.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\bindings\javascript\PolycodeJSWrappers.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyBasicFileProvider.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyBezierCurve.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyBone.h" />
@@ -46,8 +48,6 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyEventDispatcher.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyEventHandler.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyFont.h" />
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyFontGlyphSheet.h" />
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyFontManager.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyGlobals.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyGPUDrawBuffer.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyImage.h" />
@@ -56,7 +56,6 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyLabel.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyLogger.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyMaterial.h" />
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyMaterialManager.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyMatrix4.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyMesh.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyObject.h" />
@@ -74,7 +73,6 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyResourceManager.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyScene.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneEntityInstance.h" />
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneImage.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneLabel.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneLight.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneLine.h" />
@@ -84,6 +82,7 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneRenderTexture.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneSound.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneSprite.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyScript.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyServer.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyServerWorld.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyShader.h" />
@@ -110,6 +109,7 @@
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\bindings\javascript\PolycodeJS.cpp" />
     <ClCompile Include="..\..\..\..\src\core\lodepng.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyBasicFileProvider.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyBezierCurve.cpp" />
@@ -129,15 +129,12 @@
     <ClCompile Include="..\..\..\..\src\core\PolyEventDispatcher.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyEventHandler.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyFont.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyFontGlyphSheet.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyFontManager.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyGPUDrawBuffer.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyImage.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyInputEvent.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyLabel.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyLogger.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyMaterial.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyMaterialManager.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyMatrix4.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyMesh.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyObject.cpp" />
@@ -155,7 +152,6 @@
     <ClCompile Include="..\..\..\..\src\core\PolyResourceManager.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyScene.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolySceneEntityInstance.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolySceneImage.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolySceneLabel.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolySceneLight.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolySceneLine.cpp" />
@@ -165,6 +161,7 @@
     <ClCompile Include="..\..\..\..\src\core\PolySceneRenderTexture.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolySceneSound.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolySceneSprite.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyScript.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyServer.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyShader.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolySkeleton.cpp" />
@@ -188,6 +185,7 @@
     <ClCompile Include="..\..\..\..\src\core\tinyxml.cpp" />
     <ClCompile Include="..\..\..\..\src\core\tinyxmlerror.cpp" />
     <ClCompile Include="..\..\..\..\src\core\tinyxmlparser.cpp" />
+    <ClCompile Include="..\..\..\..\src\duktape\duktape.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{ee7ae05c-9ae5-47fa-8a08-28e8d8d89b94}</ProjectGuid>
@@ -269,7 +267,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <GenerateManifest>false</GenerateManifest>
-    <IncludePath>../../../../include;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\..\include;$(IncludePath)</IncludePath>
     <OutDir>..\..\..\..\lib\windows\x86</OutDir>
     <TargetName>Polycore</TargetName>
   </PropertyGroup>
@@ -311,7 +309,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINDOWS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NO_OGG;NO_LUA;_CRT_SECURE_NO_WARNINGS;_WINDOWS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Optimization>Full</Optimization>
     </ClCompile>
     <Link>
@@ -366,6 +364,7 @@
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NO_OGG;_CRT_SECURE_NO_WARNINGS;_WINDOWS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

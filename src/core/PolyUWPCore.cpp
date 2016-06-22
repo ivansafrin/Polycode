@@ -24,7 +24,6 @@ THE SOFTWARE.
 #include "polycode/core/PolyUWPCore.h"
 #include "polycode/core/PolyBasicFileProvider.h"
 #include <ppltasks.h>
-#include "polycode/core/PolyOpenGLGraphicsInterface.h"
 
 using namespace concurrency;
 using namespace Polycode;
@@ -84,6 +83,7 @@ void UWPCore::Render() {
 	renderer->beginFrame();
 	services->Render(Polycode::Rectangle(0, 0, xRes, yRes));
 	renderer->endFrame();
+	//eglSwapBuffers(mEglDisplay, mEglSurface);
 }
 
 

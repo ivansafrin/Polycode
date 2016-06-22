@@ -94,8 +94,12 @@
  	#endif
 #else
     #if defined(_WINDOWS) && !defined(_MINGW)
-        #include "polycode/core/PolyWinCore.h"
-    #else
+		#if defined(WINAPI_FAMILY)
+			#include "polycode/core/PolyUWPCore.h"
+		#else
+			#include "polycode/core/PolyWinCore.h"
+		#endif
+	#else
 		#if defined(WINAPI_FAMILY)
 			#include "polycode/core/PolyUWPCore.h"
 		#else

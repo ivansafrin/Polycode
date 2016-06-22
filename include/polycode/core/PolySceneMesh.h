@@ -191,6 +191,8 @@ namespace Polycode {
 			std::shared_ptr<Material> material;
 			std::shared_ptr<Skeleton> skeleton;
 		
+			std::vector<std::shared_ptr<LocalShaderParam> > colorParams;
+
 			std::vector<ShaderPass> shaderPasses;
 		
 			String fileName;

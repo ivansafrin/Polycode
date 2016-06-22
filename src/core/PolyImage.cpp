@@ -562,6 +562,29 @@ void Image::freeTokens(TokenArray tokens) {
 	free(tokens.tokens);
 }
 
+bool Image::encodeToPNGData(unsigned char **data, unsigned int *size) {
+	unsigned int error = lodepng_encode32(data, size, (const unsigned char*)imageData, width, height);
+	if(error) {
+		return false;
+	}
+	return true;
+}
+
+bool Image::loadFromMemory(const unsigned char *buffer, unsigned int length) {
+	int x, y, n;
+	stbi_uc *data = stbi_load_from_memory((const stbi_uc*)buffer, length, &x, &y, &n, 4);
+
+	if (!data) {
+		return false;
+	}
+
+	imageType = Image::IMAGE_RGBA;
+	width = x;
+	height = y;
+	imageData = (char*)data;
+	return true;
+}
+
 bool Image::loadSTB(const String &fileName) {
 	
 	CoreFile *infile = Services()->getCore()->openFile(fileName.c_str(), "rb");

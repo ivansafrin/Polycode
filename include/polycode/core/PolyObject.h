@@ -331,6 +331,8 @@ namespace Polycode {
 		*/				
 		void saveToXML(const String& fileName);
 
+		String saveToXMLString();
+
 		/**
 		* Saves the object to an optimized binary file
 		* @param fileName Path to the file to save to.

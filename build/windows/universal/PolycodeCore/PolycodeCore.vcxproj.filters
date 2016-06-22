@@ -66,12 +66,6 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyFont.h">
       <Filter>Include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyFontGlyphSheet.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyFontManager.h">
-      <Filter>Include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyGlobals.h">
       <Filter>Include</Filter>
     </ClInclude>
@@ -94,9 +88,6 @@
       <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyMaterial.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyMaterialManager.h">
       <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyMatrix4.h">
@@ -145,9 +136,6 @@
       <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneEntityInstance.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneImage.h">
       <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneLabel.h">
@@ -252,6 +240,15 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyXAudio2AudioInterface.h">
       <Filter>Include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyScript.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\polycode\bindings\javascript\PolycodeJS.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\polycode\bindings\javascript\PolycodeJSWrappers.h">
+      <Filter>Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\core\PolyBasicFileProvider.cpp">
@@ -308,12 +305,6 @@
     <ClCompile Include="..\..\..\..\src\core\PolyFont.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\core\PolyFontGlyphSheet.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\core\PolyFontManager.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\core\PolyGPUDrawBuffer.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -330,9 +321,6 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\core\PolyMaterial.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\core\PolyMaterialManager.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\core\PolyMatrix4.cpp">
@@ -381,9 +369,6 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\core\PolySceneEntityInstance.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\core\PolySceneImage.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\core\PolySceneLabel.cpp">
@@ -486,6 +471,15 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\core\PolyXAudio2AudioInterface.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\duktape\duktape.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\core\PolyScript.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\bindings\javascript\PolycodeJS.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
