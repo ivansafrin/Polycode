@@ -57,7 +57,7 @@ int Skeleton::getNumBones() const {
 	return bones.size();
 }
 
-Bone *Skeleton::getBoneByName(const String& name) const {
+std::shared_ptr<Bone> Skeleton::getBoneByName(const String& name) const {
 	for(int i=0; i < bones.size(); i++) {
 		if(bones[i]->getName() == name)
 			return bones[i];
@@ -65,7 +65,7 @@ Bone *Skeleton::getBoneByName(const String& name) const {
 	return NULL;
 }
 
-Bone *Skeleton::getBone(unsigned int index) const {
+std::shared_ptr<Bone> Skeleton::getBone(unsigned int index) const {
 	if(index >= bones.size()) {
 		return NULL;
 	}
@@ -125,7 +125,7 @@ SkeletonAnimation *Skeleton::getAnimation(const String& name) const {
 }
 
 void Skeleton::Update() {
-	
+    
 	for(int i=0; i < bones.size(); i++) {
 		if(!bones[i]->disableAnimation) {
 			bones[i]->setRotationByQuaternion(bones[i]->baseRotation);
@@ -152,11 +152,11 @@ void Skeleton::Update() {
 	}
 }
 
-void Skeleton::addBone(Bone *bone) {
+void Skeleton::addBone(std::shared_ptr<Bone> bone) {
 	bones.push_back(bone);
 }
 
-void Skeleton::removeBone(Bone *bone) {
+void Skeleton::removeBone(std::shared_ptr<Bone> bone) {
 	for(int i=0; i < bones.size(); i++) {
 		if(bones[i] == bone) {
 			bones.erase(bones.begin()+i);
@@ -165,7 +165,7 @@ void Skeleton::removeBone(Bone *bone) {
 	}
 }
 
-unsigned int Skeleton::getBoneIndexByBone(Bone *bone) {
+unsigned int Skeleton::getBoneIndexByBone(std::shared_ptr<Bone> bone) {
 	for(int i=0; i < bones.size(); i++) {
 		if(bones[i] == bone) {
 			return i;
@@ -195,7 +195,7 @@ void Skeleton::loadSkeleton(const String& fileName) {
 		memset(buffer, 0, 1024);
 		inFile->read(buffer, 1, namelen);
 		
-		Bone *newBone = new Bone(String(buffer));
+        std::shared_ptr<Bone> newBone = std::make_shared<Bone>(String(buffer));
 		
 		inFile->read(&hasParent, sizeof(unsigned int), 1);
 		if(hasParent == 1) {
@@ -239,16 +239,16 @@ void Skeleton::loadSkeleton(const String& fileName) {
 		
 	}
 
-	Bone *parentBone;
+	std::shared_ptr<Bone> parentBone;
 	
 	for(int i=0; i < bones.size(); i++) {
 		if(bones[i]->parentBoneId != -1) {
 			parentBone = bones[bones[i]->parentBoneId];
 			parentBone->addChildBone(bones[i]);
 			bones[i]->setParentBone(parentBone);
-			parentBone->addChild(bones[i]);
+			parentBone->addChild(&*bones[i]);
 		} else {
-			bonesEntity->addChild(bones[i]);
+			bonesEntity->addChild(&*bones[i]);
 		}
 	}
 	Services()->getCore()->closeFile(inFile);
@@ -306,7 +306,7 @@ void Skeleton::addAnimation(const String& name, const String& fileName) {
 		inFile->read(boneNameBuffer, 1, boneNameLen);
 		boneNameBuffer[boneNameLen] = '\0';
 		
-		Bone *trackBone = getBoneByName(boneNameBuffer);
+        std::shared_ptr<Bone> trackBone = getBoneByName(boneNameBuffer);
 		if(!trackBone) {
 			printf("WARNING, INVALID BONE NAME: %s\n", boneNameBuffer);
 			continue;
@@ -371,7 +371,7 @@ void Skeleton::bonesVisible(bool val) {
 	bonesEntity->visible = val;
 }
 
-BoneTrack::BoneTrack(Bone *bone, Number length) {
+BoneTrack::BoneTrack(std::shared_ptr<Bone> bone, Number length) {
 	weight = 0.0;
 	this->length = length;
 	targetBone = bone;

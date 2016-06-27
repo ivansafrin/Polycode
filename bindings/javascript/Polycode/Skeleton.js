@@ -94,13 +94,13 @@ Skeleton.prototype.getBone = function(index) {
 }
 
 Skeleton.prototype.addBone = function(bone) {
-	Polycode.Skeleton_addBone(this.__ptr, bone.__ptr)
+	Polycode.Skeleton_addBone(this.__ptr, bone)
 }
 
 Skeleton.prototype.removeBone = function(bone) {
-	Polycode.Skeleton_removeBone(this.__ptr, bone.__ptr)
+	Polycode.Skeleton_removeBone(this.__ptr, bone)
 }
 
 Skeleton.prototype.getBoneIndexByBone = function(bone) {
-	return Polycode.Skeleton_getBoneIndexByBone(this.__ptr, bone.__ptr)
+	return Polycode.Skeleton_getBoneIndexByBone(this.__ptr, bone)
 }

@@ -473,35 +473,64 @@ void LocalShaderParam::setNumber(Number x) {
 	if(type != ProgramParam::PARAM_NUMBER) {
 		return;
 	}
+    accessMutex->lock();
 	memcpy(data, &x, sizeof(x));
+    accessMutex->unlock();
 }
 
 void LocalShaderParam::setVector2(Vector2 x) {
 	if(type != ProgramParam::PARAM_VECTOR2) {
 		return;
 	}
+    accessMutex->lock();
 	memcpy(data, &x, sizeof(x));
+    accessMutex->unlock();
 }
 
 void LocalShaderParam::setVector3(Vector3 x) {
 	if(type != ProgramParam::PARAM_VECTOR3) {
 		return;
 	}
+    accessMutex->lock();
 	memcpy(data, &x, sizeof(x));
+    accessMutex->unlock();
 }
 
 void LocalShaderParam::setMatrix4(Matrix4 x) {
 	if(type != ProgramParam::PARAM_MATRIX) {
 		return;
 	}
+    accessMutex->lock();
 	memcpy(data, &x, sizeof(x));
+    accessMutex->unlock();
+}
+
+void LocalShaderParam::setMatrix4Array(std::vector<Matrix4> &x) {
+    if(type != ProgramParam::PARAM_MATRIX) {
+        return;
+    }
+    accessMutex->lock();
+    if(arraySize > 0) {
+        delete[] ((Matrix4*) data);
+    } else {
+        delete ((Matrix4*) data);
+    }
+    arraySize = x.size();
+    data = new Matrix4[arraySize];
+    for(int i=0; i < x.size(); i++) {
+        ((Matrix4*)data)[i] = x[i];
+    }
+//    memcpy(data, &x[0], sizeof(x));
+    accessMutex->unlock();
 }
 
 void LocalShaderParam::setColor(Color x) {
 	if(type != ProgramParam::PARAM_COLOR) {
 		return;
 	}
+    accessMutex->lock();
 	static_cast<Color*>(data)->setColor(&x);
+    accessMutex->unlock();
 }
 
 const String& Shader::getName() const {
@@ -512,11 +541,13 @@ LocalShaderParam::LocalShaderParam() {
 	data = NULL;
 	arraySize = 0;
 	ownsPointer = true;
+    accessMutex = Services()->getCore()->createMutex();
 }
 
 void LocalShaderParam::setTexture(std::shared_ptr<Texture> texture) {
-	Services()->getRenderer()->setTextureParam(this, &*texture);
+    accessMutex->lock();
 	texturePtr = texture;
+    accessMutex->unlock();
 }
 
 std::shared_ptr<Texture> LocalShaderParam::getTexture() {
@@ -524,8 +555,9 @@ std::shared_ptr<Texture> LocalShaderParam::getTexture() {
 }
 
 void LocalShaderParam::setCubemap(std::shared_ptr<Cubemap> cubemap) {
-	data = (void*) &*cubemap;
+    accessMutex->lock();
 	cubemapPtr = cubemap;
+    accessMutex->unlock();
 }
 
 std::shared_ptr<Cubemap> LocalShaderParam::getCubemap() {
@@ -533,6 +565,7 @@ std::shared_ptr<Cubemap> LocalShaderParam::getCubemap() {
 }
 
 LocalShaderParam::~LocalShaderParam() {
+    accessMutex->lock();
 	if(ownsPointer) {
 		switch(type) {
 			case ProgramParam::PARAM_NUMBER:
@@ -548,10 +581,16 @@ LocalShaderParam::~LocalShaderParam() {
 				delete ((Color*) data);
 			break;
 			case ProgramParam::PARAM_MATRIX:
-				delete ((Matrix4*) data);
+                if(arraySize > 0) {
+                    delete[] ((Matrix4*) data);
+                } else {
+                    delete ((Matrix4*) data);
+                }
 			break;
 		}
 	}
+    accessMutex->unlock();
+    delete accessMutex;
 }
 
 std::shared_ptr<LocalShaderParam> LocalShaderParam::Copy() {

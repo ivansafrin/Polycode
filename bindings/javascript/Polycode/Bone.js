@@ -117,11 +117,11 @@ Bone.prototype.getName = function() {
 }
 
 Bone.prototype.setParentBone = function(bone) {
-	Polycode.Bone_setParentBone(this.__ptr, bone.__ptr)
+	Polycode.Bone_setParentBone(this.__ptr, bone)
 }
 
 Bone.prototype.addChildBone = function(bone) {
-	Polycode.Bone_addChildBone(this.__ptr, bone.__ptr)
+	Polycode.Bone_addChildBone(this.__ptr, bone)
 }
 
 Bone.prototype.getParentBone = function() {

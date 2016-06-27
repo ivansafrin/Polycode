@@ -563,7 +563,7 @@ void Image::freeTokens(TokenArray tokens) {
 }
 
 bool Image::encodeToPNGData(unsigned char **data, unsigned int *size) {
-	unsigned int error = lodepng_encode32(data, size, (const unsigned char*)imageData, width, height);
+	unsigned int error = lodepng_encode32(data, (size_t*)size, (const unsigned char*)imageData, width, height);
 	if(error) {
 		return false;
 	}

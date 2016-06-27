@@ -39,7 +39,7 @@ SceneMesh *SceneMesh::SceneMeshFromMesh(std::shared_ptr<Mesh> mesh) {
 	return new SceneMesh(mesh);
 }
 
-SceneMesh::SceneMesh() : material(NULL), skeleton(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) { 
+SceneMesh::SceneMesh() : material(NULL), skeleton(NULL) {
 	mesh = std::make_shared<Mesh>();
 	setLocalBoundingBox(mesh->calculateBBox());
 	useVertexBuffer = false;
@@ -53,7 +53,7 @@ SceneMesh::SceneMesh() : material(NULL), skeleton(NULL), skeletalVertexPositions
 }
 
 
-SceneMesh::SceneMesh(const String& fileName) : material(NULL), skeleton(NULL), mesh(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
+SceneMesh::SceneMesh(const String& fileName) : material(NULL), skeleton(NULL), mesh(NULL) {
 	loadFromFile(fileName);
 	useVertexBuffer = false;
 	lineSmooth = false;
@@ -66,7 +66,7 @@ SceneMesh::SceneMesh(const String& fileName) : material(NULL), skeleton(NULL), m
 	setMaterialByName("UnlitUntextured");
 }
 
-SceneMesh::SceneMesh(std::shared_ptr<Mesh> mesh) : material(NULL), skeleton(NULL), skeletalVertexPositions(3, RenderDataArray::VERTEX_DATA_ARRAY), skeletalVertexNormals(3, RenderDataArray::NORMAL_DATA_ARRAY) {
+SceneMesh::SceneMesh(std::shared_ptr<Mesh> mesh) : material(NULL), skeleton(NULL) {
 	this->mesh = mesh;
 	setLocalBoundingBox(mesh->calculateBBox());
 	useVertexBuffer = false;
@@ -146,6 +146,7 @@ std::shared_ptr<Mesh> SceneMesh::getMesh() {
 void SceneMesh::clearMaterial() {
 	shaderPasses.clear();
 	colorParams.clear();
+    boneMatrixParams.clear();
 	this->material = nullptr;
 }
 
@@ -170,11 +171,26 @@ void SceneMesh::setMaterial(std::shared_ptr<Material> material) {
 		std::shared_ptr<LocalShaderParam> colorParam = shaderPass.shaderBinding->addParam(ProgramParam::PARAM_COLOR, "entityColor");
 		colorParams.push_back(colorParam);
 		if(skeleton) {
-		 //	  shaderPass.attributeArrays.push_back(&skeletalVertexPositions);
-		 //	  shaderPass.attributeArrays.push_back(&skeletalVertexNormals);
+            createMaterialBoneParams(&*shaderPass.shaderBinding);
 		}
 		shaderPasses.push_back(shaderPass);
-	}	 
+	}
+}
+
+void SceneMesh::createMaterialBoneParams(ShaderBinding *shaderBinding) {
+    if(!skeleton) {
+        return;
+    }
+    boneMatrixParams.clear();
+    
+    for(int i=0; i < skeleton->getNumBones(); i++) {
+        String paramName = "skeletonMatrix[0]";
+        std::shared_ptr<LocalShaderParam> param = shaderBinding->getLocalParamByName(paramName);
+        if(!param) {
+            param = shaderBinding->addParam(ProgramParam::PARAM_MATRIX, paramName);
+        }
+        boneMatrixParams.push_back(param);
+    }
 }
 
 void SceneMesh::setMaterialByName(const String& materialName, ResourcePool *resourcePool) {
@@ -213,6 +229,11 @@ std::shared_ptr<Skeleton> SceneMesh::loadSkeleton(const String& fileName) {
 
 void SceneMesh::setSkeleton(std::shared_ptr<Skeleton> skeleton) {
 	this->skeleton = skeleton;
+    if(material) {
+        for(auto pass:shaderPasses) {
+            createMaterialBoneParams(&*pass.shaderBinding);
+        }
+    }
 }
 
 void SceneMesh::setLineWidth(Number newWidth) {
@@ -272,46 +293,6 @@ void SceneMesh::removeShaderPass(int shaderIndex) {
 	}
 }
 
-void SceneMesh::applySkeletonLocally() {
-	skeletalVertexPositions.data.clear();
-	skeletalVertexNormals.data.clear();
-	
-	// REDNERER_TODO: appply to submeshes
-	/*
-	for(int i=0; i < mesh->vertexPositionArray.data.size()/3; i++) {
-		
-		Vector3 norm;
-		Vector3 tPos;
-		
-		for(int b=0; b < 4; b++) {
-			
-			PolyRendererVertexType boneWeight = mesh->vertexBoneWeightArray.data[(i*4)+b];
-			if(boneWeight > 0.0) {
-				Bone *bone = skeleton->getBone(mesh->vertexBoneIndexArray.data[(i*4)+b]);
-				if(bone) {
-					Vector3 restVert(mesh->vertexPositionArray.data[i*3], mesh->vertexPositionArray.data[(i*3)+1], mesh->vertexPositionArray.data[(i*3)+2]);
-					tPos += bone->finalMatrix * restVert * (boneWeight);
-					Vector3 nvec(mesh->vertexNormalArray.data[i*3], mesh->vertexNormalArray.data[(i*3)+1], mesh->vertexNormalArray.data[(i*3)+2]);
-					
-					nvec = bone->finalMatrix.rotateVector(nvec);
-					norm += nvec * (boneWeight);
-				}
-			}
-		}
-		
-		skeletalVertexPositions.data.push_back(tPos.x);
-		skeletalVertexPositions.data.push_back(tPos.y);
-		skeletalVertexPositions.data.push_back(tPos.z);
-		
-		norm.Normalize();
-		
-		skeletalVertexNormals.data.push_back(norm.x);
-		skeletalVertexNormals.data.push_back(norm.y);
-		skeletalVertexNormals.data.push_back(norm.z);
-	}
-	 */
-}
-
 void SceneMesh::Render(GPUDrawBuffer *buffer) {
 
 	if(!mesh) {
@@ -321,6 +302,18 @@ void SceneMesh::Render(GPUDrawBuffer *buffer) {
 	for (auto param : colorParams) {
 		param->setColor(color);
 	}
+    
+    if(skeleton) {
+        
+        std::vector<Matrix4> matrices;
+        for(int i =0; i < skeleton->getNumBones(); i++) {
+            matrices.push_back(skeleton->getBone(i)->getFinalMatrix());
+        }
+        
+        for(auto param:boneMatrixParams) {
+            param->setMatrix4Array(matrices);
+        }
+    }
 
 	for(int i=0; i < mesh->getNumSubmeshes(); i++) {
 		drawCall.options.alphaTest = alphaTest;
@@ -331,72 +324,6 @@ void SceneMesh::Render(GPUDrawBuffer *buffer) {
 		drawCall.submesh = mesh->getSubmeshPointer(i);		  
 		drawCall.material = material;
 		drawCall.shaderPasses = shaderPasses;
-		if(skeleton) {
-			applySkeletonLocally();
-		}
-		
 		buffer->drawCalls.push_back(drawCall);
 	}
-	
-	// RENDERERTODO: FIX GPU SKINNING
-	/*
-	if(material) {
-		
-		renderer->applyMaterial(material, localShaderOptions,0, forceMaterial);
-	} else {
-		if(texture)
-			renderer->setTexture(texture);
-		else
-			renderer->setTexture(NULL);
-	}
-	
-	if(sendBoneMatricesToMaterial && localShaderOptions && skeleton) {
-		LocalShaderParam *skeletonMatrix = localShaderOptions->getLocalParamByName("skeletonMatrix[0]");
-		
-		if(skeletonMatrix) {
-			for(int i=0; i < skeleton->getNumBones(); i++) {
-				materialBoneMatrices[i] = skeleton->getBone(i)->getFinalMatrix();
-			}
-		} else {
-			materialBoneMatrices.resize(skeleton->getNumBones());
-			localShaderOptions->addParamPointer(ProgramParam::PARAM_MATRIX, "skeletonMatrix[0]", materialBoneMatrices.data())->arraySize = skeleton->getNumBones();
-		}
-	}
-	
-	bool useVertexBuffer = this->useVertexBuffer;
-
-	if(useVertexBuffer && skeleton && !sendBoneMatricesToMaterial) {
-		useVertexBuffer = false;
-	}
-	
-	if(useVertexBuffer) {
-		VertexBuffer *vb = mesh->getVertexBuffer();
-		if(vb){
-			renderer->drawVertexBuffer(vb, mesh->useVertexColors);
-		}
-	} else {
-		renderMeshLocally();
-	}
-	
-	if(material)  {
-		renderer->clearShader();
-	}
-	
-	renderer->setTexture(NULL);
-	
-	if(overlayWireframe) {
-		bool depthTestVal = depthTest;
-		renderer->enableDepthTest(false);
-		renderer->setWireframePolygonMode(true);
-		renderer->setVertexColor(wireFrameColor.r, wireFrameColor.g, wireFrameColor.b, wireFrameColor.a);
-		
-		if(useVertexBuffer) {
-			renderer->drawVertexBuffer(mesh->getVertexBuffer(), mesh->useVertexColors);
-		} else {
-			renderMeshLocally();
-		}
-		renderer->enableDepthTest(depthTestVal);
-	}	
-	renderer->setWireframePolygonMode(false);	 
-	 */
 }

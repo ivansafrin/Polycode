@@ -51,6 +51,7 @@ void OpenGLGraphicsInterface::setUniformMatrix(GLint paramLocation, const Polyco
 
 void OpenGLGraphicsInterface::setParamInShader(Shader *shader, ProgramParam *param, LocalShaderParam *localParam) {
 	
+    localParam->accessMutex->lock();
 	GLuint paramLocation = *((GLuint*) param->platformData);
 	
 	switch(param->type) {
@@ -173,11 +174,10 @@ void OpenGLGraphicsInterface::setParamInShader(Shader *shader, ProgramParam *par
 			glActiveTexture(GL_TEXTURE0 + textureIndex);
 			glUniform1i(paramLocation, textureIndex);
 			if(localParam) {
-				Texture* texture = &*localParam->getTexture();
+                std::shared_ptr<Texture> texture = localParam->getTexture();
 				if(texture) {
-					
 					if(!texture->platformData) {
-						createTexture(texture);
+						createTexture(&*texture);
 					}
 					glBindTexture(GL_TEXTURE_2D, *((GLuint*) texture->platformData));
 				} else {
@@ -192,6 +192,7 @@ void OpenGLGraphicsInterface::setParamInShader(Shader *shader, ProgramParam *par
 			// RENDERER_TODO
 		break;
 	}
+    localParam->accessMutex->unlock();
 }
 
 void OpenGLGraphicsInterface::destroyBuffer(RenderDataArray *array) {

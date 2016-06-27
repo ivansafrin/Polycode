@@ -40,15 +40,15 @@ Bone::~Bone() {
 
 }
 
-void Bone::setParentBone(Bone *bone) {
+void Bone::setParentBone(std::shared_ptr<Bone> bone) {
 	parentBone = bone;
 }
 
-void Bone::addChildBone(Bone *bone) {
+void Bone::addChildBone(std::shared_ptr<Bone> bone) {
 	childBones.push_back(bone);
 }
 
-Bone* Bone::getParentBone() {
+std::shared_ptr<Bone> Bone::getParentBone() {
 	return parentBone;
 }
 
@@ -56,7 +56,7 @@ int Bone::getNumChildBones() {
 	return childBones.size();
 }
 
-Bone *Bone::getChildBone(unsigned int index) {
+std::shared_ptr<Bone> Bone::getChildBone(unsigned int index) {
 	if(index > childBones.size()-1)
 		index = childBones.size()-1;
 		

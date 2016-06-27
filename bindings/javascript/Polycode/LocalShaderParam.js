@@ -7,7 +7,8 @@ function LocalShaderParam() {
 		'type': { enumerable: true, configurable: true, get: LocalShaderParam.prototype.__get_type, set: LocalShaderParam.prototype.__set_type},
 		'ownsPointer': { enumerable: true, configurable: true, get: LocalShaderParam.prototype.__get_ownsPointer, set: LocalShaderParam.prototype.__set_ownsPointer},
 		'arraySize': { enumerable: true, configurable: true, get: LocalShaderParam.prototype.__get_arraySize, set: LocalShaderParam.prototype.__set_arraySize},
-		'param': { enumerable: true, configurable: true, get: LocalShaderParam.prototype.__get_param, set: LocalShaderParam.prototype.__set_param}
+		'param': { enumerable: true, configurable: true, get: LocalShaderParam.prototype.__get_param, set: LocalShaderParam.prototype.__set_param},
+		'accessMutex': { enumerable: true, configurable: true, get: LocalShaderParam.prototype.__get_accessMutex, set: LocalShaderParam.prototype.__set_accessMutex}
 	})
 }
 
@@ -51,6 +52,16 @@ LocalShaderParam.prototype.__get_param = function() {
 
 LocalShaderParam.prototype.__set_param = function(val) {
 	Polycode.LocalShaderParam__set_param(this.__ptr, val.__ptr)
+}
+
+LocalShaderParam.prototype.__get_accessMutex = function() {
+	var retVal = new CoreMutex()
+	retVal.__ptr = 	Polycode.LocalShaderParam__get_accessMutex(this.__ptr)
+	return retVal
+}
+
+LocalShaderParam.prototype.__set_accessMutex = function(val) {
+	Polycode.LocalShaderParam__set_accessMutex(this.__ptr, val.__ptr)
 }
 
 Duktape.fin(LocalShaderParam.prototype, function (x) {
@@ -108,6 +119,10 @@ LocalShaderParam.prototype.setVector3 = function(x) {
 
 LocalShaderParam.prototype.setMatrix4 = function(x) {
 	Polycode.LocalShaderParam_setMatrix4(this.__ptr, x)
+}
+
+LocalShaderParam.prototype.setMatrix4Array = function(x) {
+	Polycode.LocalShaderParam_setMatrix4Array(this.__ptr, x)
 }
 
 LocalShaderParam.prototype.setColor = function(x) {

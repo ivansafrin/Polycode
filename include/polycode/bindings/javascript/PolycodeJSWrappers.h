@@ -455,22 +455,23 @@ namespace Polycode {
 
 	duk_ret_t Polycode_Bone_setParentBone(duk_context *context) {
 		Bone *inst = (Bone*)duk_to_pointer(context, 0);
-		Bone* bone = (Bone*)duk_to_pointer(context, 1);
+		shared_ptr<Bone> bone = *(shared_ptr<Bone>*)duk_to_pointer(context, 1);
 		inst->setParentBone(bone);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Bone_addChildBone(duk_context *context) {
 		Bone *inst = (Bone*)duk_to_pointer(context, 0);
-		Bone* bone = (Bone*)duk_to_pointer(context, 1);
+		shared_ptr<Bone> bone = *(shared_ptr<Bone>*)duk_to_pointer(context, 1);
 		inst->addChildBone(bone);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Bone_getParentBone(duk_context *context) {
 		Bone *inst = (Bone*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getParentBone();
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Bone> *retInst = new shared_ptr<Bone>();
+		*retInst = inst->getParentBone();
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -483,8 +484,9 @@ namespace Polycode {
 	duk_ret_t Polycode_Bone_getChildBone(duk_context *context) {
 		Bone *inst = (Bone*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getChildBone(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Bone> *retInst = new shared_ptr<Bone>();
+		*retInst = inst->getChildBone(index);
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -847,7 +849,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_Camera_setViewport(duk_context *context) {
 		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 1);
+		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 1);
 		inst->setViewport(viewport);
 		return 0;
 	}
@@ -881,7 +883,7 @@ namespace Polycode {
 	duk_ret_t Polycode_Camera_projectRayFrom2DCoordinate(duk_context *context) {
 		Camera *inst = (Camera*)duk_to_pointer(context, 0);
 		Vector2 coordinate = *(Vector2*)duk_to_pointer(context, 1);
-		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 2);
+		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 2);
 		Vector3 *retInst = new Vector3();
 		*retInst = inst->projectRayFrom2DCoordinate(coordinate,viewport);
 		duk_push_pointer(context, (void*)retInst);
@@ -2737,7 +2739,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_CoreServices_Render(duk_context *context) {
 		CoreServices *inst = (CoreServices*)duk_to_pointer(context, 0);
-		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 1);
+		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 1);
 		inst->Render(viewport);
 		return 0;
 	}
@@ -3320,7 +3322,7 @@ namespace Polycode {
 	duk_ret_t Polycode_Entity_transformAndRender(duk_context *context) {
 		Entity *inst = (Entity*)duk_to_pointer(context, 0);
 		GPUDrawBuffer* drawBuffer = (GPUDrawBuffer*)duk_to_pointer(context, 1);
-		Rectangle* parentScissorBox = (Rectangle*)duk_to_pointer(context, 2);
+		Polycode::Rectangle* parentScissorBox = (Polycode::Rectangle*)duk_to_pointer(context, 2);
 		inst->transformAndRender(drawBuffer,parentScissorBox);
 		return 0;
 	}
@@ -3328,7 +3330,7 @@ namespace Polycode {
 	duk_ret_t Polycode_Entity_renderChildren(duk_context *context) {
 		Entity *inst = (Entity*)duk_to_pointer(context, 0);
 		GPUDrawBuffer* buffer = (GPUDrawBuffer*)duk_to_pointer(context, 1);
-		Rectangle* parentScissorBox = (Rectangle*)duk_to_pointer(context, 2);
+		Polycode::Rectangle* parentScissorBox = (Polycode::Rectangle*)duk_to_pointer(context, 2);
 		inst->renderChildren(buffer,parentScissorBox);
 		return 0;
 	}
@@ -4066,7 +4068,7 @@ namespace Polycode {
 		Entity *inst = (Entity*)duk_to_pointer(context, 0);
 		Matrix4 projectionMatrix = *(Matrix4*)duk_to_pointer(context, 1);
 		Matrix4 cameraMatrix = *(Matrix4*)duk_to_pointer(context, 2);
-		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 3);
+		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 3);
 		Vector2 *retInst = new Vector2();
 		*retInst = inst->getScreenPosition(projectionMatrix,cameraMatrix,viewport);
 		duk_push_pointer(context, (void*)retInst);
@@ -5079,7 +5081,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_Image_getImagePart(duk_context *context) {
 		Image *inst = (Image*)duk_to_pointer(context, 0);
-		Rectangle subRect = *(Rectangle*)duk_to_pointer(context, 1);
+		Polycode::Rectangle subRect = *(Polycode::Rectangle*)duk_to_pointer(context, 1);
 		PolyBase *ptrRetVal = (PolyBase*)inst->getImagePart(subRect);
 		duk_push_pointer(context, (void*)ptrRetVal);
 		return 1;
@@ -8041,7 +8043,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_Rectangle_Clipped(duk_context *context) {
 		Rectangle *inst = (Rectangle*)duk_to_pointer(context, 0);
-		Rectangle rect = *(Rectangle*)duk_to_pointer(context, 1);
+		Polycode::Rectangle rect = *(Polycode::Rectangle*)duk_to_pointer(context, 1);
 		Polycode::Rectangle *retInst = new Polycode::Rectangle();
 		*retInst = inst->Clipped(rect);
 		duk_push_pointer(context, (void*)retInst);
@@ -8453,7 +8455,7 @@ namespace Polycode {
 		Vector3 position = *(Vector3*)duk_to_pointer(context, 0);
 		Matrix4 modelMatrix = *(Matrix4*)duk_to_pointer(context, 1);
 		Matrix4 projectionMatrix = *(Matrix4*)duk_to_pointer(context, 2);
-		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 3);
+		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 3);
 		Vector3 *retInst = new Vector3();
 		*retInst = Renderer::unProject(position,modelMatrix,projectionMatrix,viewport);
 		duk_push_pointer(context, (void*)retInst);
@@ -8464,7 +8466,7 @@ namespace Polycode {
 		Vector3 position = *(Vector3*)duk_to_pointer(context, 0);
 		Matrix4 modelMatrix = *(Matrix4*)duk_to_pointer(context, 1);
 		Matrix4 projectionMatrix = *(Matrix4*)duk_to_pointer(context, 2);
-		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 3);
+		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 3);
 		Vector3 *retInst = new Vector3();
 		*retInst = Renderer::project(position,modelMatrix,projectionMatrix,viewport);
 		duk_push_pointer(context, (void*)retInst);
@@ -8727,6 +8729,16 @@ namespace Polycode {
 		String name = duk_to_string(context, 1);
 		inst->setName(name);
 		return 0;
+	}
+
+	duk_ret_t Polycode_ResourcePool_loadFont(duk_context *context) {
+		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
+		String name = duk_to_string(context, 1);
+		String path = duk_to_string(context, 2);
+		shared_ptr<Font> *retInst = new shared_ptr<Font>();
+		*retInst = inst->loadFont(name,path);
+		duk_push_pointer(context, (void*)retInst);
+		return 1;
 	}
 
 	duk_ret_t Polycode_ResourcePool_getResourceByPath(duk_context *context) {
@@ -10134,7 +10146,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_SceneManager_Render(duk_context *context) {
 		SceneManager *inst = (SceneManager*)duk_to_pointer(context, 0);
-		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 1);
+		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 1);
 		inst->Render(viewport);
 		return 0;
 	}
@@ -10372,12 +10384,6 @@ namespace Polycode {
 		*retInst = inst->getSkeleton();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
-	}
-
-	duk_ret_t Polycode_SceneMesh_applySkeletonLocally(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		inst->applySkeletonLocally();
-		return 0;
 	}
 
 	duk_ret_t Polycode_SceneMesh_setLineWidth(duk_context *context) {
@@ -11690,6 +11696,19 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_LocalShaderParam__get_accessMutex(duk_context *context) {
+		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
+		PolyBase *ptrRetVal = (PolyBase*)inst->accessMutex;
+		duk_push_pointer(context, (void*)ptrRetVal);
+		return 1;
+	}
+
+	duk_ret_t Polycode_LocalShaderParam__set_accessMutex(duk_context *context) {
+		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
+		inst->accessMutex = (CoreMutex*)duk_to_pointer(context, 1);
+		return 0;
+	}
+
 	duk_ret_t Polycode_LocalShaderParam__delete(duk_context *context) {
 		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
 		delete inst;
@@ -11767,6 +11786,13 @@ namespace Polycode {
 		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
 		Matrix4 x = *(Matrix4*)duk_to_pointer(context, 1);
 		inst->setMatrix4(x);
+		return 0;
+	}
+
+	duk_ret_t Polycode_LocalShaderParam_setMatrix4Array(duk_context *context) {
+		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
+		vector<Matrix4> x = *(vector<Matrix4>*)duk_to_pointer(context, 1);
+		inst->setMatrix4Array(x);
 		return 0;
 	}
 
@@ -12339,8 +12365,9 @@ namespace Polycode {
 	duk_ret_t Polycode_Skeleton_getBoneByName(duk_context *context) {
 		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
 		String name = duk_to_string(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getBoneByName(name);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Bone> *retInst = new shared_ptr<Bone>();
+		*retInst = inst->getBoneByName(name);
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -12360,34 +12387,35 @@ namespace Polycode {
 	duk_ret_t Polycode_Skeleton_getBone(duk_context *context) {
 		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getBone(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		shared_ptr<Bone> *retInst = new shared_ptr<Bone>();
+		*retInst = inst->getBone(index);
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Skeleton_addBone(duk_context *context) {
 		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
-		Bone* bone = (Bone*)duk_to_pointer(context, 1);
+		shared_ptr<Bone> bone = *(shared_ptr<Bone>*)duk_to_pointer(context, 1);
 		inst->addBone(bone);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Skeleton_removeBone(duk_context *context) {
 		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
-		Bone* bone = (Bone*)duk_to_pointer(context, 1);
+		shared_ptr<Bone> bone = *(shared_ptr<Bone>*)duk_to_pointer(context, 1);
 		inst->removeBone(bone);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Skeleton_getBoneIndexByBone(duk_context *context) {
 		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
-		Bone* bone = (Bone*)duk_to_pointer(context, 1);
+		shared_ptr<Bone> bone = *(shared_ptr<Bone>*)duk_to_pointer(context, 1);
 		duk_push_int(context, inst->getBoneIndexByBone(bone));
 		return 1;
 	}
 
 	duk_ret_t Polycode_BoneTrack(duk_context *context) {
-		Bone* bone = (Bone*)duk_to_pointer(context, 0);
+		shared_ptr<Bone> bone = *(shared_ptr<Bone>*)duk_to_pointer(context, 0);
 		Number length = duk_to_number(context, 1);
 		BoneTrack *inst = new BoneTrack(bone,length);
 		duk_push_pointer(context, (void*)inst);

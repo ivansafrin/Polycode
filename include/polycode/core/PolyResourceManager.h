@@ -52,6 +52,7 @@ namespace Polycode {
 	class Shader;
 	class Cubemap;
 	class Material;
+    class Font;
 	
 	class _PolyExport ResourcePool : public EventDispatcher {
 		public:
@@ -69,11 +70,12 @@ namespace Polycode {
 		
 			std::shared_ptr<Resource> loadResource(const String &path);
 			std::shared_ptr<Resource> loadResourceWithName(const String &path, const String &name);
-		
 			std::shared_ptr<Resource> getResource(int resourceType, const String& resourceName) const;
 			String getName();
 			void setName(const String &name);
 		
+            std::shared_ptr<Font> loadFont(const String &name, const String &path);
+        
 			std::shared_ptr<Resource> getResourceByPath(const String& resourcePath) const;
 			void Update(int elapsed);
 		

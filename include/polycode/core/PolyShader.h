@@ -170,6 +170,7 @@ namespace Polycode {
 			void setVector2(Vector2 x);
 			void setVector3(Vector3 x);
 			void setMatrix4(Matrix4 x);
+            void setMatrix4Array(std::vector<Matrix4> &x);
 			void setColor(Color x);
 		
 			void setTexture(std::shared_ptr<Texture> texture);
@@ -179,6 +180,8 @@ namespace Polycode {
 			std::shared_ptr<Cubemap> getCubemap();
 		
 			void setParamValueFromString(int type, String pvalue);
+        
+            CoreMutex *accessMutex;
 	};
 	
 	class AttributeBinding : public PolyBase {

@@ -146,10 +146,6 @@ SceneMesh.prototype.getSkeleton = function() {
 	return retVal
 }
 
-SceneMesh.prototype.applySkeletonLocally = function() {
-	Polycode.SceneMesh_applySkeletonLocally(this.__ptr)
-}
-
 SceneMesh.prototype.setLineWidth = function(newWidth) {
 	Polycode.SceneMesh_setLineWidth(this.__ptr, newWidth)
 }

@@ -492,6 +492,10 @@ void ResourcePool::loadResourcesFromFolderWithLoader(const String &folder, bool 
 	}
 }
 
+std::shared_ptr<Font> ResourcePool::loadFont(const String &name, const String &path) {
+    return std::static_pointer_cast<Font>(loadResourceWithName(path, name));
+}
+
 std::shared_ptr<Resource> ResourcePool::loadResource(const String &path) {
 	
 	std::shared_ptr<Resource> newResource = getResourceByPath(path);

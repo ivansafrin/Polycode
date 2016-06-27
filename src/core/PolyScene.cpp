@@ -268,12 +268,12 @@ void Scene::Render(Camera *targetCamera, std::shared_ptr<RenderBuffer> targetFra
 			drawBuffer->lights[drawBuffer->lights.size()-1].direction = direction;
 		}
 	}
-	
+	/*
 	if(_doVisibilityChecking) {
 		targetCamera->buildFrustumPlanes();
 		setEntityVisibility(&rootEntity, targetCamera);
 	}
-
+*/
 	rootEntity.transformAndRender(drawBuffer, NULL);
 	renderer->processDrawBuffer(drawBuffer);
 }

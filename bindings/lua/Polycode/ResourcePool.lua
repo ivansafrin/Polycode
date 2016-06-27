@@ -116,6 +116,14 @@ function ResourcePool:setName(name)
 	local retVal = Polycode.ResourcePool_setName(self.__ptr, name)
 end
 
+function ResourcePool:loadFont(name, path)
+	local retVal = Polycode.ResourcePool_loadFont(self.__ptr, name, path)
+	if retVal == nil then return nil end
+	local __c = _G["shared_ptr<Font>"]("__skip_ptr__")
+	__c.__ptr = retVal
+	return __c
+end
+
 function ResourcePool:getResourceByPath(resourcePath)
 	local retVal = Polycode.ResourcePool_getResourceByPath(self.__ptr, resourcePath)
 	if retVal == nil then return nil end

@@ -53,19 +53,19 @@ namespace Polycode {
 			* Sets the parent bone of this bone.
 			* @param bone New parent bone.
 			*/
-			void setParentBone(Bone *bone);
+			void setParentBone(std::shared_ptr<Bone> bone);
 			
 			/**
 			* Adds another bone as the child of this bone.
 			* @param bone New parent bone.
 			*/			
-			void addChildBone(Bone *bone);
+			void addChildBone(std::shared_ptr<Bone> bone);
 			
 			/**
 			* Returns the parent bone of this bone.
 			* @return Parent bone of this bone.
 			*/						
-			Bone* getParentBone();
+			std::shared_ptr<Bone> getParentBone();
 			
 			/**
 			* Returns the number of child bones of this bone.
@@ -78,7 +78,7 @@ namespace Polycode {
 			* @param index Index of the child bone to return.
 			* @return Parent bone of this bone.
 			*/									
-			Bone *getChildBone(unsigned int index);
+			std::shared_ptr<Bone> getChildBone(unsigned int index);
 
 			/**
 			* Returns the bone matrix
@@ -162,8 +162,8 @@ namespace Polycode {
 			bool disableAnimation;
 		
 		protected:
-			Bone* parentBone;
-			std::vector<Bone*> childBones;
+			std::shared_ptr<Bone> parentBone;
+			std::vector<std::shared_ptr<Bone> > childBones;
 			String boneName;
 	};
 

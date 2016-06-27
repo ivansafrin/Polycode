@@ -586,7 +586,7 @@ static int Polycode_Bone_set_disableAnimation(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Bone *inst = (Bone*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Bone* bone = (Bone*) *((PolyBase**)lua_touserdata(L, 2));
+		shared_ptr<Bone> bone = *(shared_ptr<Bone>*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->setParentBone(bone);
 		return 0;
 	}
@@ -594,20 +594,19 @@ static int Polycode_Bone_set_disableAnimation(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Bone *inst = (Bone*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Bone* bone = (Bone*) *((PolyBase**)lua_touserdata(L, 2));
+		shared_ptr<Bone> bone = *(shared_ptr<Bone>*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->addChildBone(bone);
 		return 0;
 	}
 	static int Polycode_Bone_getParentBone(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Bone *inst = (Bone*) *((PolyBase**)lua_touserdata(L, 1));
-		PolyBase *ptrRetVal = (PolyBase*)inst->getParentBone();
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Bone> *retInst = new shared_ptr<Bone>();
+		*retInst = inst->getParentBone();
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Bone>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_Bone_getNumChildBones(lua_State *L) {
@@ -621,13 +620,12 @@ static int Polycode_Bone_set_disableAnimation(lua_State *L) {
 		Bone *inst = (Bone*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		int index = lua_tointeger(L, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getChildBone(index);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Bone> *retInst = new shared_ptr<Bone>();
+		*retInst = inst->getChildBone(index);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Bone>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_Bone_getBoneMatrix(lua_State *L) {
@@ -11077,6 +11075,21 @@ static int Polycode_ResourcePool_set_deleteOnUnsubscribe(lua_State *L) {
 		inst->setName(name);
 		return 0;
 	}
+	static int Polycode_ResourcePool_loadFont(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		ResourcePool *inst = (ResourcePool*) *((PolyBase**)lua_touserdata(L, 1));
+		luaL_checktype(L, 2, LUA_TSTRING);
+		String name = String(lua_tostring(L, 2));
+		luaL_checktype(L, 3, LUA_TSTRING);
+		String path = String(lua_tostring(L, 3));
+		shared_ptr<Font> *retInst = new shared_ptr<Font>();
+		*retInst = inst->loadFont(name, path);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Font>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
+		return 1;
+	}
 	static int Polycode_ResourcePool_getResourceByPath(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		ResourcePool *inst = (ResourcePool*) *((PolyBase**)lua_touserdata(L, 1));
@@ -12296,12 +12309,8 @@ static int Polycode_SceneLabel_set_positionAtBaseline(lua_State *L) {
 		String text = String(lua_tostring(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		int size = lua_tointeger(L, 2);
-		String fontName;
-		if(lua_isstring(L, 3)) {
-			fontName = lua_tostring(L, 3);
-		} else {
-			fontName = "sans";
-		}
+		luaL_checktype(L, 3, LUA_TSTRING);
+		String fontName = String(lua_tostring(L, 3));
 		int amode;
 		if(lua_isnumber(L, 4)) {
 			amode = lua_tointeger(L, 4);
@@ -13253,12 +13262,6 @@ static int Polycode_SceneMesh_set_sendBoneMatricesToMaterial(lua_State *L) {
 		lua_setmetatable(L, -2);
 		*userdataPtr = (PolyBase*)retInst;
 		return 1;
-	}
-	static int Polycode_SceneMesh_applySkeletonLocally(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		SceneMesh *inst = (SceneMesh*) *((PolyBase**)lua_touserdata(L, 1));
-		inst->applySkeletonLocally();
-		return 0;
 	}
 	static int Polycode_SceneMesh_setLineWidth(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
@@ -14938,6 +14941,18 @@ static int Polycode_LocalShaderParam_get_param(lua_State *L) {
 	return 1;
 }
 
+static int Polycode_LocalShaderParam_get_accessMutex(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	LocalShaderParam *inst = (LocalShaderParam*) *((PolyBase**)lua_touserdata(L, 1));
+	if(!inst->accessMutex) {
+		lua_pushnil(L);
+	} else {
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		*userdataPtr = (PolyBase*)inst->accessMutex;
+	}
+	return 1;
+}
+
 static int Polycode_LocalShaderParam_set_name(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	LocalShaderParam *inst = (LocalShaderParam*) *((PolyBase**)lua_touserdata(L, 1));
@@ -14976,6 +14991,15 @@ static int Polycode_LocalShaderParam_set_param(lua_State *L) {
 	luaL_checktype(L, 2, LUA_TUSERDATA);
 	ProgramParam* *argInst = (ProgramParam**) *((PolyBase**)lua_touserdata(L, 2));
 	inst->param = *argInst;
+	return 0;
+}
+
+static int Polycode_LocalShaderParam_set_accessMutex(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	LocalShaderParam *inst = (LocalShaderParam*) *((PolyBase**)lua_touserdata(L, 1));
+	luaL_checktype(L, 2, LUA_TUSERDATA);
+	CoreMutex* *argInst = (CoreMutex**) *((PolyBase**)lua_touserdata(L, 2));
+	inst->accessMutex = *argInst;
 	return 0;
 }
 
@@ -15078,6 +15102,14 @@ static int Polycode_LocalShaderParam_set_param(lua_State *L) {
 		luaL_checktype(L, 2, LUA_TUSERDATA);
 		Matrix4 x = *(Matrix4*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->setMatrix4(x);
+		return 0;
+	}
+	static int Polycode_LocalShaderParam_setMatrix4Array(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		LocalShaderParam *inst = (LocalShaderParam*) *((PolyBase**)lua_touserdata(L, 1));
+		luaL_checktype(L, 2, LUA_TUSERDATA);
+		vector<Matrix4> x = *(vector<Matrix4>*) *((PolyBase**)lua_touserdata(L, 2));
+		inst->setMatrix4Array(x);
 		return 0;
 	}
 	static int Polycode_LocalShaderParam_setColor(lua_State *L) {
@@ -15863,13 +15895,12 @@ static int Polycode_ShaderBinding_set_accessMutex(lua_State *L) {
 		Skeleton *inst = (Skeleton*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TSTRING);
 		String name = String(lua_tostring(L, 2));
-		PolyBase *ptrRetVal = (PolyBase*)inst->getBoneByName(name);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Bone> *retInst = new shared_ptr<Bone>();
+		*retInst = inst->getBoneByName(name);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Bone>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_Skeleton_bonesVisible(lua_State *L) {
@@ -15891,20 +15922,19 @@ static int Polycode_ShaderBinding_set_accessMutex(lua_State *L) {
 		Skeleton *inst = (Skeleton*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		int index = lua_tointeger(L, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getBone(index);
-		if(ptrRetVal == NULL) {
-			lua_pushnil(L);
-		} else {
-			PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-			*userdataPtr = ptrRetVal;
-		}
+		shared_ptr<Bone> *retInst = new shared_ptr<Bone>();
+		*retInst = inst->getBone(index);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.shared_ptr<Bone>");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_Skeleton_addBone(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Skeleton *inst = (Skeleton*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Bone* bone = (Bone*) *((PolyBase**)lua_touserdata(L, 2));
+		shared_ptr<Bone> bone = *(shared_ptr<Bone>*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->addBone(bone);
 		return 0;
 	}
@@ -15912,7 +15942,7 @@ static int Polycode_ShaderBinding_set_accessMutex(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Skeleton *inst = (Skeleton*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Bone* bone = (Bone*) *((PolyBase**)lua_touserdata(L, 2));
+		shared_ptr<Bone> bone = *(shared_ptr<Bone>*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->removeBone(bone);
 		return 0;
 	}
@@ -15920,7 +15950,7 @@ static int Polycode_ShaderBinding_set_accessMutex(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Skeleton *inst = (Skeleton*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TUSERDATA);
-		Bone* bone = (Bone*) *((PolyBase**)lua_touserdata(L, 2));
+		shared_ptr<Bone> bone = *(shared_ptr<Bone>*) *((PolyBase**)lua_touserdata(L, 2));
 		lua_pushinteger(L, inst->getBoneIndexByBone(bone));
 		return 1;
 	}
@@ -16231,7 +16261,7 @@ static int Polycode_BoneTrack_set_weight(lua_State *L) {
 
 	static int Polycode_BoneTrack(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Bone* bone = (Bone*) *((PolyBase**)lua_touserdata(L, 1));
+		shared_ptr<Bone> bone = *(shared_ptr<Bone>*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		Number length = lua_tonumber(L, 2);
 		BoneTrack *inst = new BoneTrack(bone, length);

@@ -5,6 +5,10 @@
 			<vp source="default/DefaultShader.vert"/>
 			<fp source="default/DefaultShader.frag"/>
 		</shader>
+		<shader type="glsl" name="DefaultShaderAnimated" numPointLights="6" numSpotLights="2">
+			<vp source="default/GPUSkinning.vert"/>
+			<fp source="default/DefaultShader.frag"/>
+		</shader>		
 		<shader type="glsl" name="DefaultShaderShadows" numPointLights="6" numSpotLights="2">
 			<vp source="default/DefaultShaderShadows.vert"/>
 			<fp source="default/DefaultShaderShadows.frag"/>
@@ -89,7 +93,15 @@
 					<param name="diffuse_color" value="1.0 1.0 1.0 1.0" />
 				</params>					
 			</shader>
-		</material>				
+		</material>
+		<material name="DefaultTexturedAnimated">
+			<shader name="DefaultShaderAnimated">
+				<params>
+					<param name="entityColor" value="1.0 1.0 1.0 1.0" />
+					<param name="diffuse_color" value="1.0 1.0 1.0 1.0" />
+				</params>					
+			</shader>
+		</material>		
 		<material name="DefaultTextured">
 			<shader name="DefaultShader">
 				<params>

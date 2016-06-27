@@ -158,10 +158,6 @@ function SceneMesh:getSkeleton()
 	return __c
 end
 
-function SceneMesh:applySkeletonLocally()
-	local retVal =  Polycode.SceneMesh_applySkeletonLocally(self.__ptr)
-end
-
 function SceneMesh:setLineWidth(newWidth)
 	local retVal = Polycode.SceneMesh_setLineWidth(self.__ptr, newWidth)
 end

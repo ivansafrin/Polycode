@@ -103,6 +103,12 @@ ResourcePool.prototype.setName = function(name) {
 	Polycode.ResourcePool_setName(this.__ptr, name)
 }
 
+ResourcePool.prototype.loadFont = function(name,path) {
+	var retVal = new Font()
+	retVal.__ptr = Polycode.ResourcePool_loadFont(this.__ptr, name, path)
+	return retVal
+}
+
 ResourcePool.prototype.getResourceByPath = function(resourcePath) {
 	var retVal = new Resource()
 	retVal.__ptr = Polycode.ResourcePool_getResourceByPath(this.__ptr, resourcePath)

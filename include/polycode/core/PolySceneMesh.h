@@ -33,9 +33,10 @@ namespace Polycode {
 	class Mesh;
 	class Texture;
 	class Skeleton;
+    class Bone;
 	class Image;
 	class ResourcePool;
-	
+    
 	/**
 	* 3D polygonal mesh instance. The SceneMesh is the base for all polygonal 3d geometry. It can have simple textures or complex materials applied to it.
 	*/
@@ -119,8 +120,6 @@ namespace Polycode {
 			* Returns the skeleton applied to this scene mesh.
 			*/
 			std::shared_ptr<Skeleton> getSkeleton();
-		
-			void applySkeletonLocally();
 			
 			/**
 			 * Sets the line width for line-based meshes.
@@ -186,20 +185,15 @@ namespace Polycode {
 			
 		protected:
 		
+            void createMaterialBoneParams(ShaderBinding *shaderBinding);
 			bool useVertexBuffer;
 			std::shared_ptr<Mesh> mesh;
 			std::shared_ptr<Material> material;
 			std::shared_ptr<Skeleton> skeleton;
-		
 			std::vector<std::shared_ptr<LocalShaderParam> > colorParams;
-
+            std::vector<std::shared_ptr<LocalShaderParam> > boneMatrixParams;        
 			std::vector<ShaderPass> shaderPasses;
-		
 			String fileName;
-			std::vector<Matrix4> materialBoneMatrices;
-
-			VertexDataArray skeletalVertexPositions;
-			VertexDataArray skeletalVertexNormals;
 		
 		
 		

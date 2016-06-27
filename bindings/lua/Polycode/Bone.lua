@@ -127,7 +127,7 @@ end
 function Bone:getParentBone()
 	local retVal =  Polycode.Bone_getParentBone(self.__ptr)
 	if retVal == nil then return nil end
-	local __c = _G["Bone"]("__skip_ptr__")
+	local __c = _G["shared_ptr<Bone>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end
@@ -140,7 +140,7 @@ end
 function Bone:getChildBone(index)
 	local retVal = Polycode.Bone_getChildBone(self.__ptr, index)
 	if retVal == nil then return nil end
-	local __c = _G["Bone"]("__skip_ptr__")
+	local __c = _G["shared_ptr<Bone>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end

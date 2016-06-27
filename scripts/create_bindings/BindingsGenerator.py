@@ -69,7 +69,9 @@ class BindingsGenerator(object):
 		ty = re.sub(r'^.*\sshort\s*$', 'int', ty)
 		ty = re.sub(r'^.*\sfloat\s*$', 'Number', ty)
 		ty = re.sub(r'^.*\sdouble\s*$', 'Number', ty) # eg "long double"
-		ty = ty.replace("unsigned", "int")
+		ty = ty.replace("unsigned int", "int")
+		ty = ty.replace("unsigned short", "int")
+		ty = ty.replace("unsigned long", "int")
 		ty = ty.replace("long", "int")
 		ty = ty.replace("float", "Number")
 		ty = ty.replace("double", "Number")

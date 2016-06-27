@@ -24,8 +24,8 @@
 
 using namespace Polycode;
 
-bool BezierCurve::cacheHeightValues = false;
-unsigned int BezierCurve::defaultHeightCacheResolution = 512;
+bool BezierCurve::cacheHeightValues = true;
+unsigned int BezierCurve::defaultHeightCacheResolution = 1024;
 
 BezierPoint::BezierPoint(Number p1x, Number p1y, Number p1z, Number p2x, Number p2y, Number p2z, Number p3x, Number p3y, Number p3z) {
 	p1.x = p1x;

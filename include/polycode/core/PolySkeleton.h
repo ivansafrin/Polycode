@@ -40,7 +40,7 @@ namespace Polycode {
 	
 	class _PolyExport BoneTrack : public PolyBase {
 		public:
-			BoneTrack(Bone *bone, Number length);
+			BoneTrack(std::shared_ptr<Bone> bone, Number length);
 			~BoneTrack();
 		
 			void Play(bool once=false);
@@ -74,7 +74,7 @@ namespace Polycode {
 			Number speed;
 			bool paused;
 			Number time;
-			Bone *targetBone;
+            std::shared_ptr<Bone> targetBone;
 			bool playOnce;
 		
 	};
@@ -202,7 +202,7 @@ namespace Polycode {
 			* Get bone instance by its name
 			* @param name Name of the bone.
 			*/
-			Bone *getBoneByName(const String& name) const;
+			std::shared_ptr<Bone> getBoneByName(const String& name) const;
 			
 			/**
 			* Toggles bone visibility on and off.
@@ -219,12 +219,12 @@ namespace Polycode {
 			* Returns a bone at the specified index.
 			* @param index Bone index.
 			*/
-			Bone *getBone(unsigned int index) const;
+            std::shared_ptr<Bone> getBone(unsigned int index) const;
 		
-			void addBone(Bone *bone);
-			void removeBone(Bone *bone);
+			void addBone(std::shared_ptr<Bone> bone);
+			void removeBone(std::shared_ptr<Bone> bone);
 		
-			unsigned int getBoneIndexByBone(Bone *bone);
+			unsigned int getBoneIndexByBone(std::shared_ptr<Bone> bone);
 		
 		protected:
 		
@@ -232,7 +232,7 @@ namespace Polycode {
 		
 			SkeletonAnimation *baseAnimation;
 			std::vector<SkeletonAnimation*> playingAnimations;
-			std::vector<Bone*> bones;
+            std::vector<std::shared_ptr<Bone> > bones;
 			std::vector<SkeletonAnimation*> animations;
 	};
 
