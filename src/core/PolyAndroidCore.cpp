@@ -282,11 +282,127 @@ CoreMutex *AndroidCore::createMutex() {
 }
 
 void AndroidCore::copyStringToClipboard(const String& str) {
+	// Attaches the current thread to the JVM. 
+	JavaVM* javaVM = view->native_activity->vm;
+	JNIEnv* jniEnv;
+	bool attached = false;
 
+	if(javaVM->GetEnv((void**)&jniEnv, JNI_VERSION_1_6) ==JNI_EDETACHED){
+		JavaVMAttachArgs attachArgs;
+		attachArgs.version = JNI_VERSION_1_6;
+		attachArgs.name = "NativeThread";
+		attachArgs.group = NULL;
+		
+		jint result = javaVM->AttachCurrentThread(&jniEnv, &attachArgs);
+		if(result == JNI_ERR){
+			return;
+		}
+		attached = true;
+	} 
+
+	
+	jclass looperClass = jniEnv->FindClass("android/os/Looper");
+	jmethodID prepareMethodID = jniEnv->GetStaticMethodID(looperClass, "prepare", "()V");
+	jniEnv->CallStaticVoidMethod(looperClass, prepareMethodID);
+	
+	// Retrieves Context.CLIPBOARD_SERVICE. 
+	jclass ClassContext = jniEnv->FindClass("android/content/Context");
+	jfieldID FieldCLIPBOARD_SERVICE = jniEnv->GetStaticFieldID(ClassContext, "CLIPBOARD_SERVICE", "Ljava/lang/String;");
+	jobject CLIPBOARD_SERVICE = jniEnv->GetStaticObjectField(ClassContext, FieldCLIPBOARD_SERVICE);
+// 	jstring CLIPBOARD_SERVICE = jniEnv->NewStringUTF("clipboard");
+
+	jclass ClassNativeActivity = jniEnv->FindClass("android/app/NativeActivity");
+	jobject lNativeActivity = view->native_activity->clazz;
+	
+	// Runs getSystemService(Context.CLIPBOARD_SERVICE).
+	jclass ClassClipboardManager = jniEnv->FindClass("android/content/ClipboardManager");
+	jmethodID MethodGetSystemService = jniEnv->GetMethodID(ClassNativeActivity, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;");
+	jobject lCliboardManager = jniEnv->CallObjectMethod(lNativeActivity, MethodGetSystemService, CLIPBOARD_SERVICE);
+	
+	// Runs clipData.newPlainText()
+	jclass ClassClipData = jniEnv->FindClass("android/content/ClipData");
+	jmethodID MethodnewPlainText = jniEnv->GetStaticMethodID(ClassClipData, "newPlainText", "(Ljava/lang/CharSequence;Ljava/lang/CharSequence;)Landroid/content/ClipData;");
+	jstring text = jniEnv->NewStringUTF(str.c_str());
+	jstring lbl = jniEnv->NewStringUTF("PolycodeText");
+	jobject lClipData = jniEnv->CallStaticObjectMethod(ClassClipData, MethodnewPlainText, lbl, text);
+	
+	jmethodID MethodSetPrimaryClip = jniEnv->GetMethodID(ClassClipboardManager, "setPrimaryClip", "(Landroid/content/ClipData;)V");
+	jniEnv->CallVoidMethod(lCliboardManager, MethodSetPrimaryClip, lClipData);
+	
+	// Finished with the JVM.
+	if (attached)
+		javaVM->DetachCurrentThread();
 }
 
 String AndroidCore::getClipboardString() {
-	return "";
+	// Attaches the current thread to the JVM. 
+	JavaVM* javaVM = view->native_activity->vm;
+	JNIEnv* jniEnv;
+	bool attached = false;
+
+	if(javaVM->GetEnv((void**)&jniEnv, JNI_VERSION_1_6) ==JNI_EDETACHED){
+		JavaVMAttachArgs attachArgs;
+		attachArgs.version = JNI_VERSION_1_6;
+		attachArgs.name = "NativeThread";
+		attachArgs.group = NULL;
+		
+		jint result = javaVM->AttachCurrentThread(&jniEnv, &attachArgs);
+		if(result == JNI_ERR){
+			return "";
+		}
+		attached = true;
+	} 
+	
+	jclass looperClass = jniEnv->FindClass("android/os/Looper");
+	jmethodID prepareMethodID = jniEnv->GetStaticMethodID(looperClass, "prepare", "()V");
+	jniEnv->CallStaticVoidMethod(looperClass, prepareMethodID);
+
+	// Retrieves Context.CLIPBOARD_SERVICE. 
+	jclass ClassContext = jniEnv->FindClass("android/content/Context");
+	jfieldID FieldCLIPBOARD_SERVICE = jniEnv->GetStaticFieldID(ClassContext, "CLIPBOARD_SERVICE", "Ljava/lang/String;");
+	jobject CLIPBOARD_SERVICE = jniEnv->GetStaticObjectField(ClassContext, FieldCLIPBOARD_SERVICE);
+
+	jclass ClassNativeActivity = jniEnv->FindClass("android/app/NativeActivity");
+	jobject lNativeActivity = view->native_activity->clazz;
+	
+	// Runs getSystemService(Context.CLIPBOARD_SERVICE).
+	jclass ClassClipboardManager = jniEnv->FindClass("android/content/ClipboardManager");
+	jmethodID MethodGetSystemService = jniEnv->GetMethodID(ClassNativeActivity, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;");
+	jobject lCliboardManager = jniEnv->CallObjectMethod(lNativeActivity, MethodGetSystemService, CLIPBOARD_SERVICE);
+
+	// Runs clipboard.getPrimaryClip()
+	jmethodID MethodGetPrimaryClip = jniEnv->GetMethodID(ClassClipboardManager, "getPrimaryClip", "()Landroid/content/ClipData;");
+	jniEnv->ExceptionDescribe();
+	jobject lClipData = jniEnv->CallObjectMethod(lCliboardManager, MethodGetPrimaryClip);
+	jniEnv->ExceptionDescribe();
+	//Runs clipdata.getItemAt(0)
+	jclass ClassClipDataItem = jniEnv->FindClass("android/content/ClipData$Item");
+	jniEnv->ExceptionDescribe();
+	jclass ClassClipData = jniEnv->FindClass("android/content/ClipData");
+	jniEnv->ExceptionDescribe();
+	jmethodID MethodGetItemAt = jniEnv->GetMethodID(ClassClipData, "getItemAt", "(I)Landroid/content/ClipData$Item;");
+	jniEnv->ExceptionDescribe();
+	jobject lClipDataItem = jniEnv->CallObjectMethod(lClipData, MethodGetItemAt, 0);
+	jniEnv->ExceptionDescribe();
+	//Runs clipdescription.getText()
+	
+	jmethodID MethodGetText = jniEnv->GetMethodID(ClassClipDataItem, "getText", "()Ljava/lang/CharSequence;");
+	jniEnv->ExceptionDescribe();
+	jobject lCharSequence = jniEnv->CallObjectMethod(lClipDataItem, MethodGetText);
+	jniEnv->ExceptionDescribe();
+	//Runs charseuquence.toString()
+	jclass ClassCharSequence = jniEnv->FindClass("java/lang/CharSequence");
+	jmethodID MethodtoString = jniEnv->GetMethodID(ClassCharSequence, "toString", "()Ljava/lang/String;");
+	jobject lText = jniEnv->CallObjectMethod(lCharSequence, MethodtoString);
+	
+	const char *nativeString = jniEnv->GetStringUTFChars((jstring)lText, (jboolean*)0);
+	String returnStr = String(nativeString);
+	jniEnv->ReleaseStringUTFChars((jstring)lText, nativeString);
+	
+	// Finished with the JVM.
+	if (attached)
+		javaVM->DetachCurrentThread();
+	return returnStr;
 }
 
 void AndroidCore::extractResources(){
