@@ -35,11 +35,11 @@ CFLAGSSTUDIO = $(CFLAGS) -DUSE_POLYCODEUI_FILE_DIALOGS -DUSE_POLYCODEUI_MENUBAR
 OPTFLAGS = -O2
 DEBUGFLAGS = -g -DDEBUG
 
-LDFLAGSTEMPLATE = -L$(LIBDIR) $(OPTFLAGS) -pthread -lPolycore -lfreetype -lphysfs -logg -lportaudio -lasound -lz -lSDL2 -lGLEW -lGL -lX11 -lrt -llua -ldl 
-DLDFLAGSTEMPLATE = -L$(LIBDIR) -pthread -lPolycored -lfreetype -lphysfs -logg -lportaudio -lasound -lz -lSDL2 -lGLEW -lGL -lX11 -lrt -llua -ldl
+LDFLAGSTEMPLATE = -L$(LIBDIR) $(OPTFLAGS) -pthread -lPolycore -lfreetype -lphysfs -lportaudio -lasound -lz -lSDL2 -lGLEW -lGL -lX11 -lrt -llua -ldl 
+DLDFLAGSTEMPLATE = -L$(LIBDIR) -pthread -lPolycored -lfreetype -lphysfs -lportaudio -lasound -lz -lSDL2 -lGLEW -lGL -lX11 -lrt -llua -ldl
 
-LDFLAGSSTUDIO = -L$(LIBDIR) $(OPTFLAGS) -pthread -lPolycore -lPolycodeUI -lfreetype -lphysfs -logg -lportaudio -lasound -lz -lSDL2 -lGLEW -lGL -lX11 -lrt -llua -ldl
-DLDFLAGSSTUDIO = -L$(LIBDIR) -pthread -lPolycored -lPolycodeUId -lfreetype -lphysfs -logg -lportaudio -lasound -lz -lSDL2 -lGLEW -lGL -lX11 -lrt -llua -ldl
+LDFLAGSSTUDIO = -L$(LIBDIR) $(OPTFLAGS) -pthread -lPolycore -lPolycodeUI -lfreetype -lphysfs -lportaudio -lasound -lz -lSDL2 -lGLEW -lGL -lX11 -lrt -llua -ldl
+DLDFLAGSSTUDIO = -L$(LIBDIR) -pthread -lPolycored -lPolycodeUId -lfreetype -lphysfs -lportaudio -lasound -lz -lSDL2 -lGLEW -lGL -lX11 -lrt -llua -ldl
 
 default: setup core
 
