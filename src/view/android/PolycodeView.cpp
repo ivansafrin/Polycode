@@ -260,8 +260,14 @@ static int inputLoop(int fd, int events, void* data){
 			if(type == AINPUT_EVENT_TYPE_KEY){
 				event.eventTime = AKeyEvent_getEventTime(aev);
 				int kC = AKeyEvent_getKeyCode(aev);
-				if(core)
+				if(core){
 					event.keyCode = core->mapKey(kC);
+					if(kC == AKEYCODE_VOLUME_DOWN){
+						JNIVolumeControl(((PolycodeView*)data)->native_activity, false);
+					} else if (kC == AKEYCODE_VOLUME_UP){
+						JNIVolumeControl(((PolycodeView*)data)->native_activity, true);
+					}
+				}
 				
 				action = AKeyEvent_getAction(aev);
 				if(action == AKEY_EVENT_ACTION_DOWN){
@@ -564,6 +570,48 @@ void JNIWakeLock(ANativeActivity* native_activity, bool acquire){
 			jmethodID releaseWakeLockID = jniEnv->GetMethodID(wakeLock, "release", "()V");
 			jniEnv->CallVoidMethod(WakeLock, releaseWakeLockID);
 		}
+	}
+	
+	if(attached)
+		javaVM->DetachCurrentThread();
+}
+
+void JNIVolumeControl(ANativeActivity* native_activity, bool up){
+	JavaVM* javaVM = native_activity->vm;
+	JNIEnv* jniEnv;
+	bool attached = false;
+	
+	if(javaVM->GetEnv((void**)&jniEnv, JNI_VERSION_1_6) ==JNI_EDETACHED){
+		JavaVMAttachArgs attachArgs;
+		attachArgs.version = JNI_VERSION_1_6;
+		attachArgs.name = "NativeThread";
+		attachArgs.group = NULL;
+		
+		jint result = javaVM->AttachCurrentThread(&jniEnv, &attachArgs);
+		if(result == JNI_ERR){
+			return;
+		}
+		attached = true;
+	}
+
+	jclass classNativeActivity = jniEnv->FindClass("android/app/NativeActivity");
+	jclass classAudioManager = jniEnv->FindClass("android/media/AudioManager");
+	
+	jclass ClassContext = jniEnv->FindClass("android/content/Context");
+	jfieldID FieldAUDIO_SERVICE = jniEnv->GetStaticFieldID(ClassContext, "AUDIO_SERVICE", "Ljava/lang/String;");
+	jobject AUDIO_SERVICE = jniEnv->GetStaticObjectField(ClassContext, FieldAUDIO_SERVICE);
+	
+	jmethodID getSystemServiceID = jniEnv->GetMethodID(classNativeActivity, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;");
+	jobject AudioManager = jniEnv->CallObjectMethod(native_activity->clazz, getSystemServiceID, AUDIO_SERVICE);
+	
+	int ADJUST_RAISE = 1;
+	int ADJUST_LOWER = -1;
+	jmethodID adjustVolumeID = jniEnv->GetMethodID(classAudioManager, "adjustVolume", "(II)V");
+	
+	if (up){
+		jniEnv->CallVoidMethod(AudioManager, adjustVolumeID, ADJUST_RAISE, 0);
+	} else {
+		jniEnv->CallVoidMethod(AudioManager, adjustVolumeID, ADJUST_LOWER, 0);
 	}
 	
 	if(attached)

@@ -372,24 +372,18 @@ String AndroidCore::getClipboardString() {
 
 	// Runs clipboard.getPrimaryClip()
 	jmethodID MethodGetPrimaryClip = jniEnv->GetMethodID(ClassClipboardManager, "getPrimaryClip", "()Landroid/content/ClipData;");
-	jniEnv->ExceptionDescribe();
 	jobject lClipData = jniEnv->CallObjectMethod(lCliboardManager, MethodGetPrimaryClip);
-	jniEnv->ExceptionDescribe();
+	
 	//Runs clipdata.getItemAt(0)
 	jclass ClassClipDataItem = jniEnv->FindClass("android/content/ClipData$Item");
-	jniEnv->ExceptionDescribe();
 	jclass ClassClipData = jniEnv->FindClass("android/content/ClipData");
-	jniEnv->ExceptionDescribe();
 	jmethodID MethodGetItemAt = jniEnv->GetMethodID(ClassClipData, "getItemAt", "(I)Landroid/content/ClipData$Item;");
-	jniEnv->ExceptionDescribe();
 	jobject lClipDataItem = jniEnv->CallObjectMethod(lClipData, MethodGetItemAt, 0);
-	jniEnv->ExceptionDescribe();
-	//Runs clipdescription.getText()
 	
+	//Runs clipdescription.getText()
 	jmethodID MethodGetText = jniEnv->GetMethodID(ClassClipDataItem, "getText", "()Ljava/lang/CharSequence;");
-	jniEnv->ExceptionDescribe();
 	jobject lCharSequence = jniEnv->CallObjectMethod(lClipDataItem, MethodGetText);
-	jniEnv->ExceptionDescribe();
+	
 	//Runs charseuquence.toString()
 	jclass ClassCharSequence = jniEnv->FindClass("java/lang/CharSequence");
 	jmethodID MethodtoString = jniEnv->GetMethodID(ClassCharSequence, "toString", "()Ljava/lang/String;");
