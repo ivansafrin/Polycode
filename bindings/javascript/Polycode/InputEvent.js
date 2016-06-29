@@ -8,8 +8,8 @@ function InputEvent() {
 		'mouseButton': { enumerable: true, configurable: true, get: InputEvent.prototype.__get_mouseButton, set: InputEvent.prototype.__set_mouseButton},
 		'mousePosition': { enumerable: true, configurable: true, get: InputEvent.prototype.__get_mousePosition, set: InputEvent.prototype.__set_mousePosition},
 		'key': { enumerable: true, configurable: true, get: InputEvent.prototype.__get_key, set: InputEvent.prototype.__set_key},
-		'charCode': { enumerable: true, configurable: true, get: InputEvent.prototype.__get_charCode, set: InputEvent.prototype.__set_charCode},
 		'timestamp': { enumerable: true, configurable: true, get: InputEvent.prototype.__get_timestamp, set: InputEvent.prototype.__set_timestamp},
+		'text': { enumerable: true, configurable: true, get: InputEvent.prototype.__get_text, set: InputEvent.prototype.__set_text},
 		'touch': { enumerable: true, configurable: true, get: InputEvent.prototype.__get_touch, set: InputEvent.prototype.__set_touch},
 		'touchType': { enumerable: true, configurable: true, get: InputEvent.prototype.__get_touchType, set: InputEvent.prototype.__set_touchType},
 		'joystickDeviceID': { enumerable: true, configurable: true, get: InputEvent.prototype.__get_joystickDeviceID, set: InputEvent.prototype.__set_joystickDeviceID},
@@ -49,22 +49,20 @@ InputEvent.prototype.__set_key = function(val) {
 	Polycode.InputEvent__set_key(this.__ptr, val)
 }
 
-InputEvent.prototype.__get_charCode = function() {
-	var retVal = new wchar_t()
-	retVal.__ptr = 	Polycode.InputEvent__get_charCode(this.__ptr)
-	return retVal
-}
-
-InputEvent.prototype.__set_charCode = function(val) {
-	Polycode.InputEvent__set_charCode(this.__ptr, val.__ptr)
-}
-
 InputEvent.prototype.__get_timestamp = function() {
 	return Polycode.InputEvent__get_timestamp(this.__ptr)
 }
 
 InputEvent.prototype.__set_timestamp = function(val) {
 	Polycode.InputEvent__set_timestamp(this.__ptr, val)
+}
+
+InputEvent.prototype.__get_text = function() {
+	return Polycode.InputEvent__get_text(this.__ptr)
+}
+
+InputEvent.prototype.__set_text = function(val) {
+	Polycode.InputEvent__set_text(this.__ptr, val)
 }
 
 InputEvent.prototype.__get_touch = function() {
@@ -152,12 +150,6 @@ InputEvent.prototype.getKey = function() {
 
 InputEvent.prototype.getMouseButton = function() {
 	return Polycode.InputEvent_getMouseButton(this.__ptr)
-}
-
-InputEvent.prototype.getCharCode = function() {
-	var retVal = new wchar_t()
-	retVal.__ptr = Polycode.InputEvent_getCharCode(this.__ptr)
-	return retVal
 }
 
 InputEvent.prototype.keyCode = function() {

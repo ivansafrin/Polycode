@@ -164,8 +164,8 @@ CoreInput.prototype.setMousePosition = function(x,y,ticks) {
 	Polycode.CoreInput_setMousePosition(this.__ptr, x, y, ticks)
 }
 
-CoreInput.prototype.setKeyState = function(keyCode,code,newState,ticks) {
-	Polycode.CoreInput_setKeyState(this.__ptr, keyCode, code, newState, ticks)
+CoreInput.prototype.setKeyState = function(keyCode,newState,ticks) {
+	Polycode.CoreInput_setKeyState(this.__ptr, keyCode, newState, ticks)
 }
 
 CoreInput.prototype.setDeltaPosition = function(x,y) {
@@ -182,6 +182,10 @@ CoreInput.prototype.touchesMoved = function(touch,touches,ticks) {
 
 CoreInput.prototype.touchesEnded = function(touch,touches,ticks) {
 	Polycode.CoreInput_touchesEnded(this.__ptr, touch, touches, ticks)
+}
+
+CoreInput.prototype.textInput = function(text) {
+	Polycode.CoreInput_textInput(this.__ptr, text)
 }
 
 CoreInput.prototype.createEvent = function(event) {

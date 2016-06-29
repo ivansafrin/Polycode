@@ -3243,13 +3243,11 @@ static int Polycode_CoreInput_set_deltaMousePosition(lua_State *L) {
 		CoreInput *inst = (CoreInput*) *((PolyBase**)lua_touserdata(L, 1));
 		luaL_checktype(L, 2, LUA_TNUMBER);
 		PolyKEY keyCode = (PolyKEY)lua_tointeger(L, 2);
-		luaL_checktype(L, 3, LUA_TUSERDATA);
-		wchar_t code = *(wchar_t*) *((PolyBase**)lua_touserdata(L, 3));
-		luaL_checktype(L, 4, LUA_TBOOLEAN);
-		bool newState = lua_toboolean(L, 4) != 0;
-		luaL_checktype(L, 5, LUA_TNUMBER);
-		int ticks = lua_tointeger(L, 5);
-		inst->setKeyState(keyCode, code, newState, ticks);
+		luaL_checktype(L, 3, LUA_TBOOLEAN);
+		bool newState = lua_toboolean(L, 3) != 0;
+		luaL_checktype(L, 4, LUA_TNUMBER);
+		int ticks = lua_tointeger(L, 4);
+		inst->setKeyState(keyCode, newState, ticks);
 		return 0;
 	}
 	static int Polycode_CoreInput_setDeltaPosition(lua_State *L) {
@@ -3296,6 +3294,14 @@ static int Polycode_CoreInput_set_deltaMousePosition(lua_State *L) {
 		luaL_checktype(L, 4, LUA_TNUMBER);
 		int ticks = lua_tointeger(L, 4);
 		inst->touchesEnded(touch, touches, ticks);
+		return 0;
+	}
+	static int Polycode_CoreInput_textInput(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		CoreInput *inst = (CoreInput*) *((PolyBase**)lua_touserdata(L, 1));
+		luaL_checktype(L, 2, LUA_TSTRING);
+		String text = String(lua_tostring(L, 2));
+		inst->textInput(text);
 		return 0;
 	}
 	static int Polycode_CoreInput_createEvent(lua_State *L) {
@@ -6576,18 +6582,17 @@ static int Polycode_InputEvent_get_key(lua_State *L) {
 	return 1;
 }
 
-static int Polycode_InputEvent_get_charCode(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	InputEvent *inst = (InputEvent*) *((PolyBase**)lua_touserdata(L, 1));
-	PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-	*userdataPtr = (PolyBase*)&inst->charCode;
-	return 1;
-}
-
 static int Polycode_InputEvent_get_timestamp(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	InputEvent *inst = (InputEvent*) *((PolyBase**)lua_touserdata(L, 1));
 	lua_pushinteger(L, inst->timestamp);
+	return 1;
+}
+
+static int Polycode_InputEvent_get_text(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	InputEvent *inst = (InputEvent*) *((PolyBase**)lua_touserdata(L, 1));
+	lua_pushstring(L, inst->text.c_str());
 	return 1;
 }
 
@@ -6673,20 +6678,19 @@ static int Polycode_InputEvent_set_key(lua_State *L) {
 	return 0;
 }
 
-static int Polycode_InputEvent_set_charCode(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	InputEvent *inst = (InputEvent*) *((PolyBase**)lua_touserdata(L, 1));
-	luaL_checktype(L, 2, LUA_TUSERDATA);
-	wchar_t *argInst = (wchar_t*) *((PolyBase**)lua_touserdata(L, 2));
-	inst->charCode = *argInst;
-	return 0;
-}
-
 static int Polycode_InputEvent_set_timestamp(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	InputEvent *inst = (InputEvent*) *((PolyBase**)lua_touserdata(L, 1));
 	int param = lua_tointeger(L, 2);
 	inst->timestamp = param;
+	return 0;
+}
+
+static int Polycode_InputEvent_set_text(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	InputEvent *inst = (InputEvent*) *((PolyBase**)lua_touserdata(L, 1));
+	String param = lua_tostring(L, 2);
+	inst->text = param;
 	return 0;
 }
 
@@ -6784,17 +6788,6 @@ static int Polycode_InputEvent_set_hitDistance(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		InputEvent *inst = (InputEvent*) *((PolyBase**)lua_touserdata(L, 1));
 		lua_pushinteger(L, inst->getMouseButton());
-		return 1;
-	}
-	static int Polycode_InputEvent_getCharCode(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		InputEvent *inst = (InputEvent*) *((PolyBase**)lua_touserdata(L, 1));
-		wchar_t *retInst = new wchar_t();
-		*retInst = inst->getCharCode();
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		luaL_getmetatable(L, "Polycode.wchar_t");
-		lua_setmetatable(L, -2);
-		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
 	static int Polycode_InputEvent_keyCode(lua_State *L) {
@@ -16955,6 +16948,21 @@ static int Polycode_String_set_w_contents(lua_State *L) {
 		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
+	static int Polycode_String_find_first_not_of(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		String *inst = (String*) *((PolyBase**)lua_touserdata(L, 1));
+		luaL_checktype(L, 2, LUA_TSTRING);
+		String str = String(lua_tostring(L, 2));
+		luaL_checktype(L, 3, LUA_TUSERDATA);
+		size_t pos = *(size_t*) *((PolyBase**)lua_touserdata(L, 3));
+		size_t *retInst = new size_t();
+		*retInst = inst->find_first_not_of(str, pos);
+		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
+		luaL_getmetatable(L, "Polycode.size_t");
+		lua_setmetatable(L, -2);
+		*userdataPtr = (PolyBase*)retInst;
+		return 1;
+	}
 	static int Polycode_String_toLowerCase(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		String *inst = (String*) *((PolyBase**)lua_touserdata(L, 1));
@@ -17089,6 +17097,12 @@ static int Polycode_String_set_w_contents(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		String *inst = (String*) *((PolyBase**)lua_touserdata(L, 1));
 		lua_pushboolean(L, inst->isNumber());
+		return 1;
+	}
+	static int Polycode_String_isInteger(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		String *inst = (String*) *((PolyBase**)lua_touserdata(L, 1));
+		lua_pushboolean(L, inst->isInteger());
 		return 1;
 	}
 	static int Polycode_delete_String(lua_State *L) {

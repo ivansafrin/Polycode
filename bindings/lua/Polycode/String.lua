@@ -95,6 +95,14 @@ function String:find_first_of(str, pos)
 	return __c
 end
 
+function String:find_first_not_of(str, pos)
+	local retVal = Polycode.String_find_first_not_of(self.__ptr, str, pos.__ptr)
+	if retVal == nil then return nil end
+	local __c = _G["size_t"]("__skip_ptr__")
+	__c.__ptr = retVal
+	return __c
+end
+
 function String:toLowerCase()
 	local retVal =  Polycode.String_toLowerCase(self.__ptr)
 	return retVal
@@ -183,6 +191,11 @@ end
 
 function String:isNumber()
 	local retVal =  Polycode.String_isNumber(self.__ptr)
+	return retVal
+end
+
+function String:isInteger()
+	local retVal =  Polycode.String_isInteger(self.__ptr)
 	return retVal
 end
 

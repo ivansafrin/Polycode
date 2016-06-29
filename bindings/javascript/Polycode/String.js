@@ -75,6 +75,12 @@ String.prototype.find_first_of = function(str,pos) {
 	return retVal
 }
 
+String.prototype.find_first_not_of = function(str,pos) {
+	var retVal = new size_t()
+	retVal.__ptr = Polycode.String_find_first_not_of(this.__ptr, str, pos)
+	return retVal
+}
+
 String.prototype.toLowerCase = function() {
 	return Polycode.String_toLowerCase(this.__ptr)
 }
@@ -141,4 +147,8 @@ String.prototype.setDataWithEncoding = function(data,encoding) {
 
 String.prototype.isNumber = function() {
 	return Polycode.String_isNumber(this.__ptr)
+}
+
+String.prototype.isInteger = function() {
+	return Polycode.String_isInteger(this.__ptr)
 }

@@ -849,7 +849,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_Camera_setViewport(duk_context *context) {
 		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 1);
+		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 1);
 		inst->setViewport(viewport);
 		return 0;
 	}
@@ -883,7 +883,7 @@ namespace Polycode {
 	duk_ret_t Polycode_Camera_projectRayFrom2DCoordinate(duk_context *context) {
 		Camera *inst = (Camera*)duk_to_pointer(context, 0);
 		Vector2 coordinate = *(Vector2*)duk_to_pointer(context, 1);
-		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 2);
+		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 2);
 		Vector3 *retInst = new Vector3();
 		*retInst = inst->projectRayFrom2DCoordinate(coordinate,viewport);
 		duk_push_pointer(context, (void*)retInst);
@@ -2590,10 +2590,9 @@ namespace Polycode {
 	duk_ret_t Polycode_CoreInput_setKeyState(duk_context *context) {
 		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
 		PolyKEY keyCode = (PolyKEY)duk_to_int(context, 1);
-		wchar_t code = *(wchar_t*)duk_to_pointer(context, 2);
-		bool newState = duk_to_boolean(context, 3);
-		int ticks = duk_to_int(context, 4);
-		inst->setKeyState(keyCode,code,newState,ticks);
+		bool newState = duk_to_boolean(context, 2);
+		int ticks = duk_to_int(context, 3);
+		inst->setKeyState(keyCode,newState,ticks);
 		return 0;
 	}
 
@@ -2629,6 +2628,13 @@ namespace Polycode {
 		vector<TouchInfo> touches = *(vector<TouchInfo>*)duk_to_pointer(context, 2);
 		int ticks = duk_to_int(context, 3);
 		inst->touchesEnded(touch,touches,ticks);
+		return 0;
+	}
+
+	duk_ret_t Polycode_CoreInput_textInput(duk_context *context) {
+		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
+		String text = duk_to_string(context, 1);
+		inst->textInput(text);
 		return 0;
 	}
 
@@ -2739,7 +2745,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_CoreServices_Render(duk_context *context) {
 		CoreServices *inst = (CoreServices*)duk_to_pointer(context, 0);
-		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 1);
+		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 1);
 		inst->Render(viewport);
 		return 0;
 	}
@@ -3322,7 +3328,7 @@ namespace Polycode {
 	duk_ret_t Polycode_Entity_transformAndRender(duk_context *context) {
 		Entity *inst = (Entity*)duk_to_pointer(context, 0);
 		GPUDrawBuffer* drawBuffer = (GPUDrawBuffer*)duk_to_pointer(context, 1);
-		Polycode::Rectangle* parentScissorBox = (Polycode::Rectangle*)duk_to_pointer(context, 2);
+		Rectangle* parentScissorBox = (Rectangle*)duk_to_pointer(context, 2);
 		inst->transformAndRender(drawBuffer,parentScissorBox);
 		return 0;
 	}
@@ -3330,7 +3336,7 @@ namespace Polycode {
 	duk_ret_t Polycode_Entity_renderChildren(duk_context *context) {
 		Entity *inst = (Entity*)duk_to_pointer(context, 0);
 		GPUDrawBuffer* buffer = (GPUDrawBuffer*)duk_to_pointer(context, 1);
-		Polycode::Rectangle* parentScissorBox = (Polycode::Rectangle*)duk_to_pointer(context, 2);
+		Rectangle* parentScissorBox = (Rectangle*)duk_to_pointer(context, 2);
 		inst->renderChildren(buffer,parentScissorBox);
 		return 0;
 	}
@@ -4068,7 +4074,7 @@ namespace Polycode {
 		Entity *inst = (Entity*)duk_to_pointer(context, 0);
 		Matrix4 projectionMatrix = *(Matrix4*)duk_to_pointer(context, 1);
 		Matrix4 cameraMatrix = *(Matrix4*)duk_to_pointer(context, 2);
-		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 3);
+		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 3);
 		Vector2 *retInst = new Vector2();
 		*retInst = inst->getScreenPosition(projectionMatrix,cameraMatrix,viewport);
 		duk_push_pointer(context, (void*)retInst);
@@ -5081,7 +5087,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_Image_getImagePart(duk_context *context) {
 		Image *inst = (Image*)duk_to_pointer(context, 0);
-		Polycode::Rectangle subRect = *(Polycode::Rectangle*)duk_to_pointer(context, 1);
+		Rectangle subRect = *(Rectangle*)duk_to_pointer(context, 1);
 		PolyBase *ptrRetVal = (PolyBase*)inst->getImagePart(subRect);
 		duk_push_pointer(context, (void*)ptrRetVal);
 		return 1;
@@ -5237,20 +5243,6 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_InputEvent__get_charCode(duk_context *context) {
-		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
-		wchar_t *retInst = new wchar_t();
-		*retInst = inst->charCode;
-		duk_push_pointer(context, (void*)retInst);
-		return 1;
-	}
-
-	duk_ret_t Polycode_InputEvent__set_charCode(duk_context *context) {
-		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
-		inst->charCode = *(wchar_t*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_InputEvent__get_timestamp(duk_context *context) {
 		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
 		duk_push_int(context, inst->timestamp);
@@ -5260,6 +5252,18 @@ namespace Polycode {
 	duk_ret_t Polycode_InputEvent__set_timestamp(duk_context *context) {
 		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
 		inst->timestamp = duk_to_int(context, 1);
+		return 0;
+	}
+
+	duk_ret_t Polycode_InputEvent__get_text(duk_context *context) {
+		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
+		duk_push_string(context, inst->text.c_str());
+		return 1;
+	}
+
+	duk_ret_t Polycode_InputEvent__set_text(duk_context *context) {
+		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
+		inst->text = duk_to_string(context, 1);
 		return 0;
 	}
 
@@ -5384,14 +5388,6 @@ namespace Polycode {
 	duk_ret_t Polycode_InputEvent_getMouseButton(duk_context *context) {
 		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
 		duk_push_int(context, inst->getMouseButton());
-		return 1;
-	}
-
-	duk_ret_t Polycode_InputEvent_getCharCode(duk_context *context) {
-		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
-		wchar_t *retInst = new wchar_t();
-		*retInst = inst->getCharCode();
-		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
@@ -8043,7 +8039,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_Rectangle_Clipped(duk_context *context) {
 		Rectangle *inst = (Rectangle*)duk_to_pointer(context, 0);
-		Polycode::Rectangle rect = *(Polycode::Rectangle*)duk_to_pointer(context, 1);
+		Rectangle rect = *(Rectangle*)duk_to_pointer(context, 1);
 		Polycode::Rectangle *retInst = new Polycode::Rectangle();
 		*retInst = inst->Clipped(rect);
 		duk_push_pointer(context, (void*)retInst);
@@ -8455,7 +8451,7 @@ namespace Polycode {
 		Vector3 position = *(Vector3*)duk_to_pointer(context, 0);
 		Matrix4 modelMatrix = *(Matrix4*)duk_to_pointer(context, 1);
 		Matrix4 projectionMatrix = *(Matrix4*)duk_to_pointer(context, 2);
-		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 3);
+		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 3);
 		Vector3 *retInst = new Vector3();
 		*retInst = Renderer::unProject(position,modelMatrix,projectionMatrix,viewport);
 		duk_push_pointer(context, (void*)retInst);
@@ -8466,7 +8462,7 @@ namespace Polycode {
 		Vector3 position = *(Vector3*)duk_to_pointer(context, 0);
 		Matrix4 modelMatrix = *(Matrix4*)duk_to_pointer(context, 1);
 		Matrix4 projectionMatrix = *(Matrix4*)duk_to_pointer(context, 2);
-		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 3);
+		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 3);
 		Vector3 *retInst = new Vector3();
 		*retInst = Renderer::project(position,modelMatrix,projectionMatrix,viewport);
 		duk_push_pointer(context, (void*)retInst);
@@ -10146,7 +10142,7 @@ namespace Polycode {
 
 	duk_ret_t Polycode_SceneManager_Render(duk_context *context) {
 		SceneManager *inst = (SceneManager*)duk_to_pointer(context, 0);
-		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 1);
+		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 1);
 		inst->Render(viewport);
 		return 0;
 	}
@@ -13171,6 +13167,16 @@ namespace Polycode {
 		return 1;
 	}
 
+	duk_ret_t Polycode_String_find_first_not_of(duk_context *context) {
+		String *inst = (String*)duk_to_pointer(context, 0);
+		String str = duk_to_string(context, 1);
+		size_t pos = *(size_t*)duk_to_pointer(context, 2);
+		size_t *retInst = new size_t();
+		*retInst = inst->find_first_not_of(str,pos);
+		duk_push_pointer(context, (void*)retInst);
+		return 1;
+	}
+
 	duk_ret_t Polycode_String_toLowerCase(duk_context *context) {
 		String *inst = (String*)duk_to_pointer(context, 0);
 		duk_push_string(context, inst->toLowerCase().c_str());
@@ -13272,6 +13278,12 @@ namespace Polycode {
 	duk_ret_t Polycode_String_isNumber(duk_context *context) {
 		String *inst = (String*)duk_to_pointer(context, 0);
 		duk_push_boolean(context, inst->isNumber());
+		return 1;
+	}
+
+	duk_ret_t Polycode_String_isInteger(duk_context *context) {
+		String *inst = (String*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, inst->isInteger());
 		return 1;
 	}
 

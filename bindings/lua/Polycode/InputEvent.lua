@@ -22,6 +22,7 @@ InputEvent.EVENT_JOYDEVICE_DETACHED = InputEvent.EVENTBASE_INPUTEVENT + 19
 InputEvent.EVENT_TOUCHES_BEGAN = InputEvent.EVENTBASE_INPUTEVENT + 20
 InputEvent.EVENT_TOUCHES_MOVED = InputEvent.EVENTBASE_INPUTEVENT + 21
 InputEvent.EVENT_TOUCHES_ENDED = InputEvent.EVENTBASE_INPUTEVENT + 22
+InputEvent.EVENT_TEXTINPUT = InputEvent.EVENTBASE_INPUTEVENT + 23
 
 function InputEvent:__getvar(name)
 	if name == "mouseButton" then
@@ -34,14 +35,10 @@ function InputEvent:__getvar(name)
 		return __c
 	elseif name == "key" then
 		return Polycode.InputEvent_get_key(self.__ptr)
-	elseif name == "charCode" then
-		local retVal = Polycode.InputEvent_get_charCode(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["wchar_t"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
 	elseif name == "timestamp" then
 		return Polycode.InputEvent_get_timestamp(self.__ptr)
+	elseif name == "text" then
+		return Polycode.InputEvent_get_text(self.__ptr)
 	elseif name == "touch" then
 		local retVal = Polycode.InputEvent_get_touch(self.__ptr)
 		if retVal == nil then return nil end
@@ -78,11 +75,11 @@ function InputEvent:__setvar(name,value)
 	elseif name == "key" then
 		Polycode.InputEvent_set_key(self.__ptr, value)
 		return true
-	elseif name == "charCode" then
-		Polycode.InputEvent_set_charCode(self.__ptr, value.__ptr)
-		return true
 	elseif name == "timestamp" then
 		Polycode.InputEvent_set_timestamp(self.__ptr, value)
+		return true
+	elseif name == "text" then
+		Polycode.InputEvent_set_text(self.__ptr, value)
 		return true
 	elseif name == "touch" then
 		Polycode.InputEvent_set_touch(self.__ptr, value.__ptr)
@@ -151,14 +148,6 @@ end
 function InputEvent:getMouseButton()
 	local retVal =  Polycode.InputEvent_getMouseButton(self.__ptr)
 	return retVal
-end
-
-function InputEvent:getCharCode()
-	local retVal =  Polycode.InputEvent_getCharCode(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["wchar_t"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
 end
 
 function InputEvent:keyCode()
