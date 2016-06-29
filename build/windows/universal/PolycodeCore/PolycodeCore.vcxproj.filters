@@ -482,5 +482,8 @@
     <ClCompile Include="..\..\..\..\src\bindings\javascript\PolycodeJS.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\core\stb_vorbis.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
