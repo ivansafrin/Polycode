@@ -8,9 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		6D086CF21CD9B3770057F210 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D086CF11CD9B3770057F210 /* AudioToolbox.framework */; };
-		6D086D661CD9BC330057F210 /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D086D631CD9BC330057F210 /* libogg.a */; };
-		6D086D671CD9BC330057F210 /* libvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D086D641CD9BC330057F210 /* libvorbis.a */; };
-		6D086D681CD9BC330057F210 /* libvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D086D651CD9BC330057F210 /* libvorbisfile.a */; };
 		6D086D6A1CD9BC820057F210 /* test.ogg in Resources */ = {isa = PBXBuildFile; fileRef = 6D086D691CD9BC820057F210 /* test.ogg */; };
 		6D1992381CD692ED00DE01FA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D1992341CD692ED00DE01FA /* QuartzCore.framework */; };
 		6D1992391CD692ED00DE01FA /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D1992351CD692ED00DE01FA /* CoreMotion.framework */; };
@@ -34,9 +31,6 @@
 
 /* Begin PBXFileReference section */
 		6D086CF11CD9B3770057F210 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		6D086D631CD9BC330057F210 /* libogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libogg.a; path = ../../../../lib/ios/iphonesimulator/libogg.a; sourceTree = "<group>"; };
-		6D086D641CD9BC330057F210 /* libvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbis.a; path = ../../../../lib/ios/iphonesimulator/libvorbis.a; sourceTree = "<group>"; };
-		6D086D651CD9BC330057F210 /* libvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbisfile.a; path = ../../../../lib/ios/iphonesimulator/libvorbisfile.a; sourceTree = "<group>"; };
 		6D086D691CD9BC820057F210 /* test.ogg */ = {isa = PBXFileReference; lastKnownFileType = file; name = test.ogg; path = ../../../../../../../Downloads/test.ogg; sourceTree = "<group>"; };
 		6D1992341CD692ED00DE01FA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		6D1992351CD692ED00DE01FA /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
@@ -72,14 +66,11 @@
 				6D086CF21CD9B3770057F210 /* AudioToolbox.framework in Frameworks */,
 				6D1992381CD692ED00DE01FA /* QuartzCore.framework in Frameworks */,
 				6D1992391CD692ED00DE01FA /* CoreMotion.framework in Frameworks */,
-				6D086D661CD9BC330057F210 /* libogg.a in Frameworks */,
 				6D90505D1CCBFFD400D0E80A /* liblua.a in Frameworks */,
 				6D19923B1CD692ED00DE01FA /* OpenGLES.framework in Frameworks */,
-				6D086D681CD9BC330057F210 /* libvorbisfile.a in Frameworks */,
 				8A35E14F1C877DDB00BF9EEA /* libFreetype2.a in Frameworks */,
 				8A35E1C61C87B3BC00BF9EEA /* libphysfs.a in Frameworks */,
 				6D19923A1CD692ED00DE01FA /* UIKit.framework in Frameworks */,
-				6D086D671CD9BC330057F210 /* libvorbis.a in Frameworks */,
 				8AD300AB1BF68290004D243B /* libPolycodeCore.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -106,9 +97,6 @@
 		8A0F805E1BF536C800E24F9B /* TemplateApp */ = {
 			isa = PBXGroup;
 			children = (
-				6D086D631CD9BC330057F210 /* libogg.a */,
-				6D086D641CD9BC330057F210 /* libvorbis.a */,
-				6D086D651CD9BC330057F210 /* libvorbisfile.a */,
 				6D086CF11CD9B3770057F210 /* AudioToolbox.framework */,
 				6D1992341CD692ED00DE01FA /* QuartzCore.framework */,
 				6D1992351CD692ED00DE01FA /* CoreMotion.framework */,
