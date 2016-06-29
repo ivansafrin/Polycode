@@ -701,15 +701,16 @@
 	newEvent.keyCode = keymap[[theEvent keyCode]];	
     core->cocoaEvents.push_back(newEvent);
     
-    CocoaEvent textEvent;
-    textEvent.eventGroup = CocoaEvent::INPUT_EVENT;
-    textEvent.eventCode = InputEvent::EVENT_TEXTINPUT;
-    
-    NSString *chars = [theEvent characters];
-    NSUInteger numChars = [chars length];
-	textEvent.text = [chars UTF8String];
-	if(numChars > 0 && !((unsigned char) textEvent.text[0] < ' ' || textEvent.text[0] == 127) && textEvent.text[0] > 0) {
-		core->cocoaEvents.push_back(textEvent);
+    if(!([theEvent modifierFlags] & NSAlternateKeyMask || [theEvent modifierFlags] & NSCommandKeyMask || [theEvent modifierFlags] & NSControlKeyMask)) {
+	    CocoaEvent textEvent;
+	    textEvent.eventGroup = CocoaEvent::INPUT_EVENT;
+	    textEvent.eventCode = InputEvent::EVENT_TEXTINPUT;
+		textEvent.text = [[theEvent characters] UTF8String];
+		if(textEvent.text.length() > 0) {
+			if((unsigned char)textEvent.text.c_str()[0] != 13 && (unsigned char)textEvent.text.c_str()[0] != 239 && (unsigned char)textEvent.text.c_str()[0] != 127 && (unsigned char)textEvent.text.c_str()[0] != 27) {
+				core->cocoaEvents.push_back(textEvent);
+			}
+		}
 	}
 	
 	core->unlockMutex(core->eventMutex);
