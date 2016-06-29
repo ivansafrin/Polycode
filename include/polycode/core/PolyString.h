@@ -44,32 +44,32 @@ namespace Polycode {
 		
 			/**
 			* Default constructor
-			*/			
+			*/
 			String();
 			
 			/**
 			* Initializes the string from a pointer to wide character buffer.
-			*/			
+			*/
 			String(const wchar_t *str);
 			
 			/**
 			* Initializes the string from a pointer to regular character buffer of a certain size.
-			*/						
+			*/
 			String(const char *str, size_t n);
 			
 			/**
 			* Initializes the string from a regular character buffer.
-			*/									
+			*/
 			String(const char *str);
 			
 			/**
 			* Initializes the string from an STL string.
-			*/												
+			*/
 			String(const std::string& str);
 			
 			/**
 			* Initializes the string from an STL wstring.
-			*/															
+			*/
 			String(const std::wstring& str);
 			
 			String(const wchar_t wchar);
@@ -78,25 +78,25 @@ namespace Polycode {
 		
 			/**
 			* Return the length of the string.
-			*/														
+			*/
 			size_t size() const { return contents.size(); }
 			
 			/**
 			* Return the length of the string.
-			*/			
+			*/
 			size_t length() const { return contents.size(); }
 		
 			/**
 			* Return the string and an STL string.
-			*/		
+			*/
 			const std::string& getSTLString() const;
-					
+			
 			/**
 			* Returns the substring of the string.
 			* @param pos Position of a character in the current string object to be used as starting character for the substring.
 			* @param n Length of the substring.
 			* @return A string object containing a substring of the current object.
-			*/					
+			*/
 			String substr(size_t pos = 0, size_t n = std::wstring::npos) const { return String(contents.substr(pos,n)); }
 
 			/**
@@ -104,7 +104,7 @@ namespace Polycode {
 			* @param str String to be searched for in the object.
 			* @param pos Position of the last character in the string to be taken into consideration for possible matches. The default value indicates that the entire string is searched.
 			* @return The position of the last occurrence in the string of the searched content or -1 if not found
-			*/							
+			*/
 			size_t rfind ( const String &str, size_t pos = std::wstring::npos ) const { return contents.rfind(str.contents, pos); }
 			
 			/**
@@ -112,7 +112,7 @@ namespace Polycode {
 			* @param str String to be searched for in the object.
 			* @param pos Position of the first character in the string to be taken into consideration for possible matches. The default value indicates that the entire string is searched.
 			* @return The position of the first occurrence in the string of the searched content or -1 if not found.
-			*/										
+			*/
 			size_t find ( const String &str, size_t pos = 0 ) const { return contents.find(str.contents, pos); }
 			
 			/**
@@ -120,7 +120,7 @@ namespace Polycode {
 			* @param str String containing the characters to search for.
 			* @param pos Position of the last character in the string to be taken into consideration for possible matches. The default value indicates that the entire string is searched.
 			* @return The position of the last occurrence in the string of any of the characters searched for.
-			*/													
+			*/
 			size_t find_last_of(const String& str, size_t pos = std::wstring::npos ) { return contents.find_last_of(str.contents, pos); }
 		
 			
@@ -128,37 +128,47 @@ namespace Polycode {
 			* Find character in string from the beginning. Searches the string from the beginnign for any of the characters that are part of the passed string.
 			* @param str String containing the characters to search for.
 			* @param pos Position of the first character in the string to be taken into consideration for possible matches. The default value indicates that the entire string is searched.
-			* @return The position of the last occurrence in the string of any of the characters searched for.
-			*/			
+			* @return The position of the first occurrence in the string of any of the characters searched for.
+			*/
 			size_t find_first_of(const String &str, size_t pos = 0) {
-				return contents.find_first_of(str.contents, pos); 
+				return contents.find_first_of(str.contents, pos);
+			}
+			
+			/**
+			* Find character in string from the beginning. Searches the string from the beginning for any other than the characters that are part of the passed string.
+			* @param str String containing the characters to not search for.
+			* @param pos Position of the first character in the string to be taken into consideration for possible matches. The default value indicates that the entire string is searched.
+			* @return The position of the first occurrence in the string of any of the characters searched for.
+			*/
+			size_t find_first_not_of(const String &str, size_t pos = 0) {
+				return contents.find_first_not_of(str.contents, pos);
 			}
 		
-			inline String operator + (const char *str) const { return String(contents + String(str).contents); }		
-			inline String operator + (const String &str) const { return String(contents + str.contents); }		
-			String operator += (const String &str) { contents = contents + str.contents; return *this; }		
+			inline String operator + (const char *str) const { return String(contents + String(str).contents); }
+			inline String operator + (const String &str) const { return String(contents + str.contents); }
+			String operator += (const String &str) { contents = contents + str.contents; return *this; }
 			String operator = (const String &str) {	 contents = str.contents; return *this;}
-			inline bool operator == (const String &str) const {	 return (str.contents == contents); }		
-			inline bool operator != (const String &str) const {	 return (str.contents != contents); }		
+			inline bool operator == (const String &str) const {	 return (str.contents == contents); }
+			inline bool operator != (const String &str) const {	 return (str.contents != contents); }
 			inline wchar_t operator [] ( const size_t i ) const { return contents[i]; }
 
 			/**
 			* Returns the lowercase version of the string.
 			* @return Lowercase version of the stirng.
-			*/															
+			*/
 			String toLowerCase() const;
 			
 			/**
 			* Returns the uppercase version of the string.
 			* @return Uppercase version of the stirng.
-			*/																		
+			*/
 			String toUpperCase() const;
-					
+			
 			/**
 			* Splits the string by the specified delimeter
 			* @param delim The delimeter to split by.
 			* @return An STL vector of the split parts of the string. 
-			*/																				
+			*/
 			std::vector<String> split(const String &delim) const;
 
 			/**
@@ -166,14 +176,14 @@ namespace Polycode {
 			* @param what Ocurrences of which string to replace in this string.
 			* @param withWhat What to replace them with.
 			* @return A new string with the specified matches replaced with the specified string.
-			*/																							
+			*/
 			String replace(const String &what, const String &withWhat) const;
 			
 			/**
 			* Convert a Number to a String.
 			* @param value Number to convert.
 			* @return A string converted from the Number.
-			*/																										
+			*/
 			static String NumberToString(Number value, int precision = 2);
 		
 		
@@ -184,13 +194,13 @@ namespace Polycode {
 			* Convert an integer to a String.
 			* @param value Integer to convert.
 			* @return A string converted from the integer.
-			*/																												
+			*/
 			static String IntToString(int value);
 		
 			/**
 			* Pointer to char data.
 			* @return A pointer to char data.
-			*/																												
+			*/
 			const char *c_str() const;
 			
 			/**
@@ -198,7 +208,7 @@ namespace Polycode {
 			* @param encoding The encoding to use.
 			* @return A pointer to the data using specified encoding.
 			* @see getDataSizeWithEncoding()
-			*/																															
+			*/
 			const char *getDataWithEncoding(int encoding) const;
 			
 			/**
@@ -206,48 +216,51 @@ namespace Polycode {
 			* @param encoding The encoding to use.
 			* @return A pointer to the data using specified encoding.
 			* @see getDataSizeWithEncoding()
-			*/																															
+			*/
 			wchar_t *getWDataWithEncoding(int encoding);
 
+			void append(const char c);
 
 			/**
 			* Returns the size of the data with the specified encoding. Currently the only supported encoding is String::ENCODING_UTF8
 			* @param encoding The encoding to use.
 			* @return The size the data would take up if returned with this encoding.
-			* @see getDataWithEncoding()
-			*/																		
-			
-
-			void append(const char c);
-
-			size_t getDataSizeWithEncoding(int encoding) const;					
+			* @see getDataSizeWithEncoding()
+			*/
+			size_t getDataSizeWithEncoding(int encoding) const;
 			
 			/**
 			* Sets the data for the string using specified encoding.
 			* @param data Data to set the string with.
 			* @param encoding The encoding to use.
-			*/																																		
+			*/
 			void setDataWithEncoding(char *data, int encoding);
 			
 			/**
 			* Checks if the string is a number
 			* @return true if the string is a number
-			*/			
+			*/
 			bool isNumber();
 
 			/**
+			* Checks if the string is an integer
+			* @return true if the string is an integer
+			*/
+			bool isInteger();
+ 
+			/**
 			* STL string version of the string.
-			*/																																					
+			*/
 			std::string contents;
 
 			/**
 			* STL string version of the string.
-			*/																																					
+			*/
 			std::wstring w_contents;
 
 			/**
 			* UTF-8 encoding.
-			*/																																							
+			*/
 			static const int ENCODING_UTF8 = 0; 
 			
 		

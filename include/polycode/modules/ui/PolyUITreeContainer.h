@@ -41,7 +41,7 @@ namespace Polycode {
 		UITree *getRootNode();
 		Entity *scrollChild;
 		
-		void onKeyDown(PolyKEY key, wchar_t charCode);
+		void onKeyDown(PolyKEY key);
 		void onGainFocus();
 		
 		/**

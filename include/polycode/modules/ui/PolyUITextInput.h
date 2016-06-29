@@ -183,8 +183,10 @@ namespace Polycode {
 			 */
 			int insertLine(String lineText = "");
 
-			void onKeyDown(PolyKEY key, wchar_t charCode);
-		
+			void onKeyDown(PolyKEY key);
+			
+			void onTextInput(String newText);
+			
 			/**
 			 * Clear the current selection.
 			 */

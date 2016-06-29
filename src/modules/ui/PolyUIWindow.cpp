@@ -131,7 +131,7 @@ UIWindow::~UIWindow() {
 	CoreServices::getInstance()->getCore()->getInput()->removeAllHandlersForListener(this);
 }
 
-void UIWindow::onKeyDown(PolyKEY key, wchar_t charCode) {	
+void UIWindow::onKeyDown(PolyKEY key) {	
 	if(key == KEY_ESCAPE && closeOnEscape) {
 		onClose();
 		dispatchEvent(new UIEvent(), UIEvent::CLOSE_EVENT);		
@@ -177,7 +177,7 @@ void UIWindow::handleEvent(Event *event) {
 	if(event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {
 		InputEvent *inputEvent = (InputEvent*)event;
 		if(event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
-			onKeyDown(inputEvent->key, inputEvent->charCode);
+			onKeyDown(inputEvent->key);
 		}
 	}
 

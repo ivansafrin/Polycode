@@ -334,6 +334,12 @@ void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 	}
 	else {
 
+		bool menu;
+		if (GetMenu(hWnd))
+			menu = true;
+		else
+			menu = false;
+
 		RECT rect;
 		rect.left = 0;
 		rect.top = 0;
@@ -341,11 +347,11 @@ void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, in
 		rect.bottom = yRes;
 		if (resizable){
 			SetWindowLongPtr(hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_SYSMENU | WS_VISIBLE);
-			AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW | WS_SYSMENU, FALSE);
+			AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW | WS_SYSMENU, menu);
 		}
 		else {
 			SetWindowLongPtr(hWnd, GWL_STYLE, WS_CAPTION | WS_POPUP | WS_SYSMENU | WS_VISIBLE);
-			AdjustWindowRect(&rect, WS_CAPTION | WS_POPUP | WS_SYSMENU, FALSE);
+			AdjustWindowRect(&rect, WS_CAPTION | WS_POPUP | WS_SYSMENU, menu);
 		}
 		MoveWindow(hWnd, 0, 0, rect.right-rect.left, rect.bottom-rect.top, TRUE);
 
@@ -653,13 +659,12 @@ PolyKEY Win32Core::mapKey(LPARAM lParam, WPARAM wParam) {
 	return keyMap[(unsigned int)wParam];
 }
 
-void Win32Core::handleKeyDown(LPARAM lParam, WPARAM wParam, wchar_t unicodeChar) {
+void Win32Core::handleKeyDown(LPARAM lParam, WPARAM wParam) {
 	lockMutex(eventMutex);
 	Win32Event newEvent;
 	newEvent.eventGroup = Win32Event::INPUT_EVENT;
 	newEvent.eventCode = InputEvent::EVENT_KEYDOWN;
 	newEvent.keyCode = mapKey(lParam, wParam);
-	newEvent.unicodeChar = unicodeChar;
 	win32Events.push_back(newEvent);
 	unlockMutex(eventMutex);
 }
@@ -670,7 +675,6 @@ void Win32Core::handleKeyUp(LPARAM lParam, WPARAM wParam) {
 	newEvent.eventGroup = Win32Event::INPUT_EVENT;
 	newEvent.eventCode = InputEvent::EVENT_KEYUP;
 	newEvent.keyCode = mapKey(lParam, wParam);
-	newEvent.unicodeChar = 0;
 	win32Events.push_back(newEvent);
 	unlockMutex(eventMutex);
 }
@@ -860,6 +864,19 @@ void Win32Core::handleMouseUp(int mouseCode,LPARAM lParam, WPARAM wParam) {
 	unlockMutex(eventMutex);
 }
 
+void Win32Core::handleTextInput(LPARAM lParam, WPARAM wParam) {
+	Win32Event newEvent;
+	newEvent.eventGroup = Win32Event::INPUT_EVENT;
+	newEvent.text = String(wParam);
+	newEvent.eventCode = InputEvent::EVENT_TEXTINPUT;
+	if ((unsigned char) newEvent.text[0] < ' ' || newEvent.text[0] == 127) {
+		return;
+	}
+	lockMutex(eventMutex);
+	win32Events.push_back(newEvent);
+	unlockMutex(eventMutex);
+}
+
 bool Win32Core::checkSpecialKeyEvents(PolyKEY key) {
 	
 	if(key == KEY_a && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
@@ -932,11 +949,14 @@ void Win32Core::checkEvents() {
 					break;	
 					case InputEvent::EVENT_KEYDOWN:
 						if(!checkSpecialKeyEvents((event.keyCode))) {
-							input->setKeyState(event.keyCode, (char)event.unicodeChar, true, getTicks());
+							input->setKeyState(event.keyCode, true, getTicks());
 						}
 					break;
 					case InputEvent::EVENT_KEYUP:
-						input->setKeyState(event.keyCode, (char)event.unicodeChar, false, getTicks());
+						input->setKeyState(event.keyCode, false, getTicks());
+					break;
+					case InputEvent::EVENT_TEXTINPUT:
+						input->textInput(event.text);
 					break;
 				}
 			break;

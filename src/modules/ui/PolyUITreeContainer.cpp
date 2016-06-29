@@ -91,7 +91,7 @@ void UITreeContainer::handleEvent(Event *event) {
 	if(event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {
 		InputEvent *inputEvent = (InputEvent*) event;
 		if(event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
-			onKeyDown(inputEvent->key, inputEvent->charCode);
+			onKeyDown(inputEvent->key);
 		}
 	}
 
@@ -164,7 +164,7 @@ UITree *UITreeContainer::findNextParentSibling(UITree *parent) {
 //
 // END RECURSIVE HELPER FUNCTIONS
 
-void UITreeContainer::onKeyDown(PolyKEY key, wchar_t charCode) {
+void UITreeContainer::onKeyDown(PolyKEY key) {
 	if (hasFocus) {
 		
 		// KEYBOARD NAV STUFF

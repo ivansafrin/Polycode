@@ -43,16 +43,18 @@ Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool
 	
 	switch(type) {
 		case Image::IMAGE_RGB:
-			pixelSize = 3;			
+			pixelSize = 3;
 			break;
 		case Image::IMAGE_RGBA:
-			pixelSize = 4;						
+			pixelSize = 4;
 		break;
-		case Image::IMAGE_FP16:		
+#ifndef NO_FP16
+		case Image::IMAGE_FP16:
 			pixelSize = 6;
 		break;
+#endif
 		default:
-			pixelSize = 4;								
+			pixelSize = 4;
 		break;
 	}
 	
@@ -94,16 +96,18 @@ void Texture::setImageData(Image *data) {
 
 	switch (data->getType()) {
 		case Image::IMAGE_RGB:
-			pixelSize = 3;			
+			pixelSize = 3;
 		break;
 		case Image::IMAGE_RGBA:
-			pixelSize = 4;						
+			pixelSize = 4;
 		break;
-		case Image::IMAGE_FP16:		
+#ifndef NO_FP16
+		case Image::IMAGE_FP16:
 			pixelSize = 6;
 		break;
+#endif
 		default:
-			pixelSize = 4;								
+			pixelSize = 4;
 		break;
 	}
 
@@ -159,9 +163,11 @@ Texture::Texture(Image *image, bool clamp, bool createMipmaps) : Resource(Resour
 RenderBuffer::RenderBuffer(unsigned int width, unsigned int height, bool attachDepthBuffer, bool floatingPoint) : platformData(NULL), width(width), height(height), depthBufferPlatformData(NULL), floatingPoint(floatingPoint) {
 	
 	int imageType = Image::IMAGE_RGBA;
+#ifndef NO_FP16
 	if(floatingPoint) {
 		imageType = Image::IMAGE_FP16;
 	}
+#endif
 	colorTexture = std::make_shared<Texture>(width, height, nullptr, false, false, imageType, true);
 	if(attachDepthBuffer) {
 		depthTexture = std::make_shared<Texture>(width, height, nullptr, false, false, 1, true);

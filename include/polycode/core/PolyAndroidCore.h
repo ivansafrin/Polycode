@@ -41,6 +41,7 @@
 
 namespace Polycode {
 
+	class OpenSLAudioInterface;
 	class PolycodeView;
 // 	class ANativeActivity;
 	
@@ -56,7 +57,7 @@ namespace Polycode {
 		TouchInfo touch;
 
 		PolyKEY keyCode;
-		wchar_t unicodeChar;
+		String text;
 
 		char mouseButton;
 		long eventTime;
@@ -133,6 +134,8 @@ namespace Polycode {
 		
 		PolyKEY mapKey(int keyCode);
 		void extractResources();
+		
+		OpenSLAudioInterface* getAudioInterface();
 	private:
 		PolycodeView* view;
 		
@@ -150,10 +153,11 @@ namespace Polycode {
 		
 		std::vector<AndroidEvent> systemInputEvents;
 
-		double pcFreq;
+// 		double pcFreq;
 
 		OpenGLGraphicsInterface *graphicsInterface;
-
+		OpenSLAudioInterface* audioInterface;
+		
 		void initKeyMap();
 		PolyKEY keyMap[1024];
 	};

@@ -121,7 +121,7 @@ void OpenSLAudioInterface::terminateOpenSL(){
 
 void OpenSLAudioInterface::queueCallback(SLAndroidSimpleBufferQueueItf caller, void* pContext){
 	OpenSLAudioInterface *audioInterface = (OpenSLAudioInterface*) pContext;
-	if(audioInterface->buffer && audioInterface->getMixer()) {
+	if(audioInterface->buffer && audioInterface->getMixer() && !Services()->getCore()->paused) {
 		int16_t *out = (int16_t*)audioInterface->buffer;
 		audioInterface->getMixer()->mixIntoBuffer(out, POLY_FRAMES_PER_BUFFER);
 		(*(audioInterface->mPlayerQueue))->Enqueue(audioInterface->mPlayerQueue, out, sizeof(int16_t)*POLY_FRAMES_PER_BUFFER*POLY_NUM_CHANNELS);

@@ -61,9 +61,11 @@ void Image::setPixelType(int type) {
 		case IMAGE_RGBA:
 			pixelSize = 4;						
 		break;
+#ifndef NO_FP16
 		case IMAGE_FP16:		
 			pixelSize = 6;
 		break;
+#endif
 		default:
 			pixelSize = 4;								
 			break;
@@ -624,7 +626,7 @@ bool Image::loadSTB(const String &fileName) {
 }
 
 bool Image::loadHDR(const String &fileName) {
-	
+#ifndef NO_FP16
 	imageType = Image::IMAGE_FP16;
 	
 	CoreFile *infile = Services()->getCore()->openFile(fileName.c_str(), "rb");
@@ -660,6 +662,10 @@ bool Image::loadHDR(const String &fileName) {
 	
 	
 	return true;
+#else
+	Logger::log("HDR not supported!");
+	return false;
+#endif
 }
 
 void Image::transformCoordinates(int *x, int *y) {

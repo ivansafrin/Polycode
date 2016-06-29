@@ -32,8 +32,8 @@
 #include "polycode/core/PolyBasicFileProvider.h"
 #include "polycode/core/PolyPhysFSFileProvider.h"
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_syswm.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_syswm.h>
 #include <stdio.h>
 #include <limits.h>
 #include <dirent.h>
@@ -47,19 +47,13 @@
 #include <pwd.h>
 
 #ifdef USE_X11
-	// SDL scrap
-	#define T(A, B, C, D)	(int)((A<<24)|(B<<16)|(C<<8)|(D<<0))
-
-	int init_scrap(void);
-	int lost_scrap(void);
-	void put_scrap(int type, int srclen, const char *src);
-	void get_scrap(int type, int *dstlen, char **dst);
-	// end SDL scrap
-
 // X11 cursor
 #include <X11/cursorfont.h>
 
 namespace {
+	Display* XDisplay = nullptr;
+	Window XWindow;
+	
 	void set_cursor(int cursorType);
 	void free_cursors();
 } // namespace
@@ -85,15 +79,18 @@ long getThreadID() {
 }
 
 void Core::getScreenInfo(int *width, int *height, int *hz) {
-	SDL_Init(SDL_INIT_VIDEO); // Or GetVideoInfo will not work
-	const SDL_VideoInfo *video = SDL_GetVideoInfo();
-	if (width) *width = video->current_w;
-	if (height) *height = video->current_h;
-	if (hz) *hz = 0;
+	SDL_DisplayMode current;
+
+	SDL_Init(SDL_INIT_VIDEO);
+	SDL_GetCurrentDisplayMode(0, &current);
+
+	if (width) *width = current.w;
+	if (height) *height = current.h;
+	if (hz) *hz = current.refresh_rate;
 }
 
 SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex, bool retinaSupport) : Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
-  
+ 
 	this->resizableWindow = view->resizable;
 
 	fileProviders.push_back(new BasicFileProvider());
@@ -107,6 +104,8 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 	const char *homedir = pw->pw_dir;
 	userHomeDirectory = String(homedir);
 
+	initKeymap();
+	
 	windowTitle = (String*)view->windowData;
 	
 	if(resizableWindow) {
@@ -114,15 +113,10 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 	} else {
 		setenv("SDL_VIDEO_CENTERED", "1", 1);
 	}
-	
+		
 	int sdlerror = SDL_Init(SDL_INIT_VIDEO|SDL_INIT_JOYSTICK);
 	if(sdlerror < 0) {
 	  Logger::log("SDL_Init failed! Code: %d, %s\n", sdlerror, SDL_GetError());
-	}
-	
-	SDL_Surface* icon = SDL_LoadBMP("icon.bmp");
-	if(icon){
-		SDL_WM_SetIcon(icon, NULL);
 	}
 	
 	eventMutex = createMutex();
@@ -133,11 +127,6 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 	renderer->setGraphicsInterface(this, renderInterface);
 	services->setRenderer(renderer);
 	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
-	
-	SDL_WM_SetCaption(windowTitle->c_str(), windowTitle->c_str());
-	
-	SDL_EnableUNICODE(1);
-	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 	
 	SDL_JoystickEventState(SDL_ENABLE);
 	
@@ -153,12 +142,6 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 	lastMouseX = 0;
 	lastMouseY = 0;
 
-#ifdef USE_X11
-	// Start listening to clipboard events.
-	// (Yes on X11 you need to actively listen to
-	//	clipboard events and respond to them)
-	init_scrap();
-#endif // USE_X11
 }
 
 
@@ -186,60 +169,92 @@ void SDLCore::handleVideoModeChange(VideoModeChangeInfo* modeInfo){
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
 	}
 	
-	flags = SDL_OPENGL;
+	flags = SDL_WINDOW_OPENGL;
 
 	if(fullScreen) {
-		flags |= SDL_FULLSCREEN;
+		flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 	}
 
 	if(resizableWindow) {
-		flags |= SDL_RESIZABLE;
+		flags |= SDL_WINDOW_RESIZABLE;
 	}
 	
-//	if(modeInfo->retinaSupport) {
-//		flags |= SDL_WINDOW_ALLOW_HIGHDPI;
-//	}
-/*
-	if(vSync) {
-		flags |= SDL_DOUBLEBUF;
-		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-		SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);
-	} else {
-		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
- -		SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 0);
+	if(modeInfo->retinaSupport) {
+		flags |= SDL_WINDOW_ALLOW_HIGHDPI;
 	}
-*/
+	
+	if(vSync){
+		if(SDL_GL_SetSwapInterval(-1) == -1){
+			SDL_GL_SetSwapInterval(1);
+		}
+	} else {
+		SDL_GL_SetSwapInterval(0);
+	}
+	
+	if(!sdlWindow){
+		sdlWindow = SDL_CreateWindow(windowTitle->c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, xRes, yRes, flags);
+		sdlContext = SDL_GL_CreateContext(sdlWindow);
+		SDL_Surface* icon = SDL_LoadBMP("icon.bmp");
+		if(icon){
+			SDL_SetWindowIcon(sdlWindow, icon);
+		}
+	} else {
+		SDL_SetWindowSize(sdlWindow, xRes, yRes);
+	}
 
-	SDL_SetVideoMode(xRes, yRes, 0, flags);
-
+	int x, y;
+	SDL_GL_GetDrawableSize(sdlWindow, &x, &y);
+	if(x >= xRes){
+		backingX = x;
+	}else{
+		backingX = xRes;
+	}
+	if(y >= yRes){
+		backingY = y;
+	}else{
+		backingY = yRes;
+	}
+	
 	int glewcode = glewInit();
 	if (glewcode != GLEW_OK){
 	  Logger::log("glewInit failed! code: %d, %s\n", glewcode, glewGetErrorString(glewcode));
 	}
 	
-	//setVSync(modeInfo->vSync);
 	renderer->setAnisotropyAmount(modeInfo->anisotropyLevel);
+
+#ifdef USE_X11
+	if(!XWindow){
+		SDL_SysWMinfo info;
+		SDL_VERSION(&info.version);
+		
+		if ( SDL_GetWindowWMInfo(sdlWindow, &info) == SDL_TRUE ){
+			if ( info.subsystem == SDL_SYSWM_X11 ){
+				XDisplay = info.info.x11.display;
+				XWindow = info.info.x11.window;
+			}
+		}
+	}
+#endif
 }
 
 vector<Polycode::Rectangle> SDLCore::getVideoModes() {
 	vector<Polycode::Rectangle> retVector;
 	
-	SDL_Rect **modes;
-	modes=SDL_ListModes(NULL, SDL_FULLSCREEN);
-	for(int i=0;modes[i];++i) {
+	SDL_DisplayMode modes;
+	for(int i=0;i<SDL_GetNumDisplayModes(0);++i) {
+		SDL_GetDisplayMode(0, i, &modes);
 		Rectangle res;
-		res.w = modes[i]->w;
-		res.h = modes[i]->h;
+		res.w = modes.w;
+		res.h = modes.h;
 		retVector.push_back(res);
-	}	
+	}
 	
 	return retVector;
 }
 
 SDLCore::~SDLCore() {
-#ifdef USE_X11
-	free_cursors();
-#endif // USE_X11
+	SDL_GL_DeleteContext(sdlContext);
+	SDL_DestroyWindow(sdlWindow);
 	SDL_Quit();
 }
 
@@ -285,7 +300,7 @@ int SDLThreadFunc(void *data) {
 }
 
 void SDLCore::createThread(Threaded *target) {
-	SDL_CreateThread(SDLThreadFunc, (void*)target);
+	SDL_CreateThread(SDLThreadFunc, "PolycodeThread", (void*)target);
 }
 
 unsigned int SDLCore::getTicks() {
@@ -295,22 +310,149 @@ unsigned int SDLCore::getTicks() {
 void SDLCore::enableMouse(bool newval) {
 	if(newval) {
 		SDL_ShowCursor(1);
-		//SDL_WM_GrabInput(SDL_GRAB_OFF);
 	} else {
 		SDL_ShowCursor(0);
-		//SDL_WM_GrabInput(SDL_GRAB_ON);
 	}
 	Core::enableMouse(newval);
 }
 
 void SDLCore::captureMouse(bool newval) {
 	if(newval) {
-		SDL_WM_GrabInput(SDL_GRAB_ON);
+ 		SDL_SetWindowGrab(sdlWindow, SDL_TRUE);
 	} else {
-		SDL_WM_GrabInput(SDL_GRAB_OFF);
+		SDL_SetWindowGrab(sdlWindow, SDL_FALSE);
 	}
 	Core::captureMouse(newval);
 }
+
+void SDLCore::initKeymap(){
+	
+	for (int i=0; i<512; ++i )
+		keyMap[i] = KEY_UNKNOWN;
+
+	keyMap[SDL_SCANCODE_BACKSPACE] = KEY_BACKSPACE;
+	keyMap[SDL_SCANCODE_TAB] = KEY_TAB;
+	keyMap[SDL_SCANCODE_CLEAR] = KEY_CLEAR;
+	keyMap[SDL_SCANCODE_RETURN] = KEY_RETURN;
+	keyMap[SDL_SCANCODE_PAUSE] = KEY_PAUSE;
+	keyMap[SDL_SCANCODE_ESCAPE] = KEY_ESCAPE;
+	keyMap[SDL_SCANCODE_SPACE] = KEY_SPACE;
+	keyMap[SDL_SCANCODE_APOSTROPHE] = KEY_QUOTE;
+	keyMap[SDL_SCANCODE_COMMA] = KEY_COMMA;
+	keyMap[SDL_SCANCODE_MINUS] = KEY_MINUS;
+	keyMap[SDL_SCANCODE_PERIOD] = KEY_PERIOD;
+	keyMap[SDL_SCANCODE_SLASH] = KEY_SLASH;
+	keyMap[SDL_SCANCODE_0] = KEY_0;
+	keyMap[SDL_SCANCODE_1] = KEY_1;
+	keyMap[SDL_SCANCODE_2] = KEY_2;
+	keyMap[SDL_SCANCODE_3] = KEY_3;
+	keyMap[SDL_SCANCODE_4] = KEY_4;
+	keyMap[SDL_SCANCODE_5] = KEY_5;
+	keyMap[SDL_SCANCODE_6] = KEY_6;
+	keyMap[SDL_SCANCODE_7] = KEY_7;
+	keyMap[SDL_SCANCODE_8] = KEY_8;
+	keyMap[SDL_SCANCODE_9] = KEY_9;
+	keyMap[SDL_SCANCODE_SEMICOLON] = KEY_SEMICOLON;
+	keyMap[SDL_SCANCODE_EQUALS] = KEY_EQUALS;
+	keyMap[SDL_SCANCODE_RIGHTBRACKET] = KEY_LEFTBRACKET;
+	keyMap[SDL_SCANCODE_BACKSLASH] = KEY_BACKSLASH;
+	keyMap[SDL_SCANCODE_NONUSBACKSLASH] = KEY_LESS;
+	keyMap[SDL_SCANCODE_RIGHTBRACKET] = KEY_RIGHTBRACKET;
+	keyMap[SDL_SCANCODE_GRAVE] = KEY_BACKQUOTE;
+// 	keyMap[SDL_SCANCODE_BACKTICK] = KEY_BACKQUOTE;
+	keyMap[SDL_SCANCODE_A] = KEY_a;
+	keyMap[SDL_SCANCODE_B] = KEY_b;
+	keyMap[SDL_SCANCODE_C] = KEY_c;
+	keyMap[SDL_SCANCODE_D] = KEY_d;
+	keyMap[SDL_SCANCODE_E] = KEY_e;
+	keyMap[SDL_SCANCODE_F] = KEY_f;
+	keyMap[SDL_SCANCODE_G] = KEY_g;
+	keyMap[SDL_SCANCODE_H] = KEY_h;
+	keyMap[SDL_SCANCODE_I] = KEY_i;
+	keyMap[SDL_SCANCODE_J] = KEY_j;
+	keyMap[SDL_SCANCODE_K] = KEY_k;
+	keyMap[SDL_SCANCODE_L] = KEY_l;
+	keyMap[SDL_SCANCODE_M] = KEY_m;
+	keyMap[SDL_SCANCODE_N] = KEY_n;
+	keyMap[SDL_SCANCODE_O] = KEY_o;
+	keyMap[SDL_SCANCODE_P] = KEY_p;
+	keyMap[SDL_SCANCODE_Q] = KEY_q;
+	keyMap[SDL_SCANCODE_R] = KEY_r;
+	keyMap[SDL_SCANCODE_S] = KEY_s;
+	keyMap[SDL_SCANCODE_T] = KEY_t;
+	keyMap[SDL_SCANCODE_U] = KEY_u;
+	keyMap[SDL_SCANCODE_V] = KEY_v;
+	keyMap[SDL_SCANCODE_W] = KEY_w;
+	keyMap[SDL_SCANCODE_X] = KEY_x;
+	keyMap[SDL_SCANCODE_Y] = KEY_y;
+	keyMap[SDL_SCANCODE_Z] = KEY_z;
+	keyMap[SDL_SCANCODE_DELETE] = KEY_DELETE;
+
+	keyMap[SDL_SCANCODE_KP_0] = KEY_KP0;
+	keyMap[SDL_SCANCODE_KP_1] = KEY_KP1;
+	keyMap[SDL_SCANCODE_KP_2] = KEY_KP2;
+	keyMap[SDL_SCANCODE_KP_3] = KEY_KP3;
+	keyMap[SDL_SCANCODE_KP_4] = KEY_KP4;
+	keyMap[SDL_SCANCODE_KP_5] = KEY_KP5;
+	keyMap[SDL_SCANCODE_KP_6] = KEY_KP6;
+	keyMap[SDL_SCANCODE_KP_7] = KEY_KP7;
+	keyMap[SDL_SCANCODE_KP_8] = KEY_KP8;
+	keyMap[SDL_SCANCODE_KP_9] = KEY_KP9;
+	keyMap[SDL_SCANCODE_KP_DECIMAL] = KEY_KP_PERIOD;
+	keyMap[SDL_SCANCODE_KP_DIVIDE] = KEY_KP_DIVIDE;
+	keyMap[SDL_SCANCODE_KP_MULTIPLY] = KEY_KP_MULTIPLY;
+	keyMap[SDL_SCANCODE_KP_MINUS] = KEY_KP_MINUS;
+	keyMap[SDL_SCANCODE_KP_PLUS] = KEY_KP_PLUS;
+
+	keyMap[SDL_SCANCODE_UP] = KEY_UP;
+	keyMap[SDL_SCANCODE_DOWN] = KEY_DOWN;
+	keyMap[SDL_SCANCODE_RIGHT] = KEY_RIGHT;
+	keyMap[SDL_SCANCODE_LEFT] = KEY_LEFT;
+	keyMap[SDL_SCANCODE_INSERT] = KEY_INSERT;
+	keyMap[SDL_SCANCODE_HOME] = KEY_HOME;
+	keyMap[SDL_SCANCODE_END] = KEY_END;
+	keyMap[SDL_SCANCODE_PAGEUP] = KEY_PAGEUP;
+	keyMap[SDL_SCANCODE_PAGEDOWN] = KEY_PAGEDOWN;
+
+	keyMap[SDL_SCANCODE_F1] = KEY_F1;
+	keyMap[SDL_SCANCODE_F2] = KEY_F2;
+	keyMap[SDL_SCANCODE_F3] = KEY_F3;
+	keyMap[SDL_SCANCODE_F4] = KEY_F4;
+	keyMap[SDL_SCANCODE_F5] = KEY_F5;
+	keyMap[SDL_SCANCODE_F6] = KEY_F6;
+	keyMap[SDL_SCANCODE_F7] = KEY_F7;
+	keyMap[SDL_SCANCODE_F8] = KEY_F8;
+	keyMap[SDL_SCANCODE_F9] = KEY_F9;
+	keyMap[SDL_SCANCODE_F10] = KEY_F10;
+	keyMap[SDL_SCANCODE_F11] = KEY_F11;
+	keyMap[SDL_SCANCODE_F12] = KEY_F12;
+	keyMap[SDL_SCANCODE_F13] = KEY_F13;
+	keyMap[SDL_SCANCODE_F14] = KEY_F14;
+	keyMap[SDL_SCANCODE_F15] = KEY_F15;
+
+	keyMap[131] = KEY_NUMLOCK;
+	keyMap[130] = KEY_CAPSLOCK;
+	keyMap[132] = KEY_SCROLLOCK;
+	keyMap[SDL_SCANCODE_RSHIFT] = KEY_RSHIFT;
+	keyMap[SDL_SCANCODE_LSHIFT] = KEY_LSHIFT;
+	keyMap[SDL_SCANCODE_RCTRL] = KEY_RCTRL;
+	keyMap[SDL_SCANCODE_LCTRL] = KEY_LCTRL;
+	keyMap[SDL_SCANCODE_RALT] = KEY_RALT;
+	keyMap[SDL_SCANCODE_LALT] = KEY_LALT;
+	keyMap[SDL_SCANCODE_RGUI] = KEY_RSUPER;
+	keyMap[SDL_SCANCODE_LGUI] = KEY_LSUPER;
+
+	keyMap[SDL_SCANCODE_HELP] = KEY_HELP;
+	keyMap[SDL_SCANCODE_PRINTSCREEN] = KEY_PRINT;
+	keyMap[SDL_SCANCODE_CANCEL] = KEY_BREAK;
+	keyMap[SDL_SCANCODE_MENU] = KEY_MENU;
+}
+
+
+PolyKEY SDLCore::mapKey(SDL_Scancode key){
+	return keyMap[key];
+}
+
 
 bool SDLCore::checkSpecialKeyEvents(PolyKEY key) {
 	
@@ -354,13 +496,13 @@ void SDLCore::Render() {
 }
 
 void SDLCore::flushRenderContext(){
-	SDL_GL_SwapBuffers();
+	SDL_GL_SwapWindow(sdlWindow);
 }
 
 bool SDLCore::systemUpdate() {
 	if(!running)
 		return false;
-	doSleep();	
+	doSleep();
 	
 	updateCore();
 	
@@ -370,26 +512,41 @@ bool SDLCore::systemUpdate() {
 				case SDL_QUIT:
 					running = false;
 				break;
-				case SDL_VIDEORESIZE:
-					if(resizableWindow) {
-						unsetenv("SDL_VIDEO_CENTERED");
-					} else {
-						setenv("SDL_VIDEO_CENTERED", "1", 1);
-					}
-					this->xRes = event.resize.w;
-					this->yRes = event.resize.h;
-					SDL_SetVideoMode(xRes, yRes, 0, flags);
-					dispatchEvent(new Event(), EVENT_CORE_RESIZE);	
-				break;
-				case SDL_ACTIVEEVENT:
-					if(event.active.state == SDL_APPINPUTFOCUS){
-						if(event.active.gain == 1){
+				case SDL_WINDOWEVENT:
+					switch(event.window.event){
+						case SDL_WINDOWEVENT_RESIZED:
+							if(resizableWindow) {
+								unsetenv("SDL_VIDEO_CENTERED");
+							} else {
+								setenv("SDL_VIDEO_CENTERED", "1", 1);
+							}
+							this->xRes = event.window.data1;
+							this->yRes = event.window.data2;
+							
+							SDL_SetWindowSize(sdlWindow, xRes, yRes);
+							
+							int x, y;
+							SDL_GL_GetDrawableSize(sdlWindow, &x, &y);
+							if(x >= xRes){
+								backingX = x;
+							}else{
+								backingX = xRes;
+							}
+							if(y >= yRes){
+								backingY = y;
+							}else{
+								backingY = yRes;
+							}
+							
+							dispatchEvent(new Event(), EVENT_CORE_RESIZE);	
+						break;
+						case SDL_WINDOWEVENT_FOCUS_GAINED:
 							gainFocus();
-						} else {
+						break;
+						case SDL_WINDOWEVENT_FOCUS_LOST:
 							loseFocus();
-						}
+						break;
 					}
-				break;
 				case SDL_JOYAXISMOTION:
 					input->joystickAxisMoved(event.jaxis.axis, ((Number)event.jaxis.value)/32767.0, event.jaxis.which);
 				break;
@@ -400,30 +557,31 @@ bool SDLCore::systemUpdate() {
 					input->joystickButtonUp(event.jbutton.button, event.jbutton.which);
 				break;
 				case SDL_KEYDOWN:
-					if(!checkSpecialKeyEvents((PolyKEY)(event.key.keysym.sym))) {
-						input->setKeyState((PolyKEY)(event.key.keysym.sym), event.key.keysym.unicode, true, getTicks());
+					if(!checkSpecialKeyEvents(mapKey(event.key.keysym.scancode))) {
+						input->setKeyState(mapKey(event.key.keysym.scancode), true, getTicks());
 					}
 				break;
 				case SDL_KEYUP:
-					input->setKeyState((PolyKEY)(event.key.keysym.sym), event.key.keysym.unicode, false, getTicks());
+					input->setKeyState(mapKey(event.key.keysym.scancode), false, getTicks());
+				break;
+				case SDL_MOUSEWHEEL:
+					if(event.wheel.y > 0) {
+						input->mouseWheelUp(getTicks());
+					} else if(event.wheel.y < 0) {
+						input->mouseWheelDown(getTicks());
+					}
 				break;
 				case SDL_MOUSEBUTTONDOWN:
-					if(event.button.button == SDL_BUTTON_WHEELUP){
-						input->mouseWheelUp(getTicks());
-					} else if (event.button.button == SDL_BUTTON_WHEELDOWN){
-						input->mouseWheelDown(getTicks());
-					} else {
-						switch(event.button.button) {
-							case SDL_BUTTON_LEFT:
-								input->setMouseButtonState(CoreInput::MOUSE_BUTTON1, true, getTicks());
-							break;
-							case SDL_BUTTON_RIGHT:
-								input->setMouseButtonState(CoreInput::MOUSE_BUTTON2, true, getTicks());
-							break;
-							case SDL_BUTTON_MIDDLE:
-								input->setMouseButtonState(CoreInput::MOUSE_BUTTON3, true, getTicks());
-							break;
-						}
+					switch(event.button.button) {
+						case SDL_BUTTON_LEFT:
+							input->setMouseButtonState(CoreInput::MOUSE_BUTTON1, true, getTicks());
+						break;
+						case SDL_BUTTON_RIGHT:
+							input->setMouseButtonState(CoreInput::MOUSE_BUTTON2, true, getTicks());
+						break;
+						case SDL_BUTTON_MIDDLE:
+							input->setMouseButtonState(CoreInput::MOUSE_BUTTON3, true, getTicks());
+						break;
 					}
 				break;
 				case SDL_MOUSEBUTTONUP:
@@ -445,6 +603,9 @@ bool SDLCore::systemUpdate() {
 					lastMouseY = event.motion.y;
 					lastMouseX = event.motion.x;
 				break;
+				case SDL_TEXTINPUT:
+					input->textInput(String(event.text.text));
+				break;
 				default:
 					break;
 			}
@@ -459,21 +620,10 @@ void SDLCore::setCursor(int cursorType) {
 }
 
 void SDLCore::warpCursor(int x, int y) {
-	SDL_WarpMouse(x, y);
+	SDL_WarpMouseInWindow(sdlWindow, x, y);
 	lastMouseX = x;
 	lastMouseY = y;
 }
-
-/*void SDLCore::lockMutex(CoreMutex *mutex) {
-	SDLCoreMutex *smutex = (SDLCoreMutex*)mutex;
-	SDL_mutexP(smutex->pMutex);
-
-}
-
-void SDLCore::unlockMutex(CoreMutex *mutex) {
-	SDLCoreMutex *smutex = (SDLCoreMutex*)mutex;
-	SDL_mutexV(smutex->pMutex);
-}*/
 
 CoreMutex *SDLCore::createMutex() {
 	SDLCoreMutex *mutex = new SDLCoreMutex();
@@ -482,29 +632,17 @@ CoreMutex *SDLCore::createMutex() {
 }
 
 void SDLCore::copyStringToClipboard(const String& str) {
-#ifdef USE_X11
-	put_scrap(T('T', 'E', 'X', 'T'), str.size(), str.c_str());
-#endif
-//	SDL_SetClipboardText(str.c_str());
+	SDL_SetClipboardText(str.c_str());
 }
 
 String SDLCore::getClipboardString() {
-#ifdef USE_X11
-	int dstlen;
-	char* buffer;
-	get_scrap(T('T', 'E', 'X', 'T'), &dstlen, &buffer);
-	
-	String rval(buffer, dstlen);
-	free(buffer);
+	String rval;
+	if(SDL_HasClipboardText() ==SDL_TRUE){
+		rval=SDL_GetClipboardText();
+	} else {
+		rval="";
+	}
 	return rval;
-	#endif
-//	String rval;
-//	if(SDL_HasClipboardText() ==SDL_TRUE){
-//		rval=SDL_GetClipboardText();
-//	} else {
-//		rval="";
-//	}
-//	return rval;
 }
 
 void SDLCore::createFolder(const String& folderPath) {
@@ -582,384 +720,18 @@ bool SDLCore::systemParseFolder(const String& pathString, bool showHidden, vecto
 	return true;
 }
 
+Number SDLCore::getBackingXRes() {
+	return backingX;
+}
+
+Number SDLCore::getBackingYRes() {
+	return backingY;
+}
+
 #ifdef USE_X11
-// SDL_scrap.c
-// Credits to Sam Lantinga for making this
-// Changes include:
-// - All non-X11 stuff was removed
-// - Uses the X11 CLIPBOARD atom in addition to PRIMARY
-// =======================================
-
-
-/* Handle clipboard text and data in arbitrary formats */
-
-/* Miscellaneous defines */
-#define PUBLIC
-#define PRIVATE static
-
-#define X11_SCRAP
-
-typedef Atom scrap_type;
-
-static Display *SDL_Display;
-static Window SDL_Window;
-static void (*Lock_Display)(void);
-static void (*Unlock_Display)(void);
-
-#define FORMAT_PREFIX	"SDL_scrap_0x"
-
-PRIVATE scrap_type
-convert_format(int type)
-{
-  switch (type)
-	{
-
-	case T('T', 'E', 'X', 'T'):
-	  return XA_STRING;
-
-	default:
-	  {
-		char format[sizeof(FORMAT_PREFIX)+8+1];
-
-		sprintf(format, "%s%08lx", FORMAT_PREFIX, (unsigned long)type);
-
-		return XInternAtom(SDL_Display, format, False);
-	  }
-	}
-}
-
-/* Convert internal data to scrap format */
-PRIVATE int
-convert_data(int type, char *dst, const char *src, int srclen)
-{
-  int dstlen;
-
-  dstlen = 0;
-  switch (type)
-	{
-	case T('T', 'E', 'X', 'T'):
-	  if ( dst )
-		{
-		  while ( --srclen >= 0 )
-			{
-			  if ( *src == '\r' )
-				{
-				  *dst++ = '\n';
-				  ++dstlen;
-				}
-			  else
-				{
-				  *dst++ = *src;
-				  ++dstlen;
-				}
-			  ++src;
-			}
-			*dst = '\0';
-			++dstlen;
-		}
-	  else
-		{
-		  while ( --srclen >= 0 )
-			{
-			  if ( *src == '\r' )
-				{
-				  ++dstlen;
-				}
-			  else
-				{
-				  ++dstlen;
-				}
-			  ++src;
-			}
-			++dstlen;
-		}
-	  break;
-
-	default:
-	  if ( dst )
-		{
-		  *(int *)dst = srclen;
-		  dst += sizeof(int);
-		  memcpy(dst, src, srclen);
-		}
-	  dstlen = sizeof(int)+srclen;
-	  break;
-	}
-	return(dstlen);
-}
-
-/* Convert scrap data to internal format */
-PRIVATE int
-convert_scrap(int type, char *dst, char *src, int srclen)
-{
-  int dstlen;
-
-  dstlen = 0;
-  switch (type)
-	{
-	case T('T', 'E', 'X', 'T'):
-	  {
-		if ( srclen == 0 )
-		  srclen = strlen(src);
-		if ( dst )
-		  {
-			while ( --srclen >= 0 )
-			  {
-				if ( *src == '\n' )
-				  {
-					*dst++ = '\r';
-					++dstlen;
-				  }
-				else
-				  {
-					*dst++ = *src;
-					++dstlen;
-				  }
-				++src;
-			  }
-			  *dst = '\0';
-			  ++dstlen;
-		  }
-		else
-		  {
-			while ( --srclen >= 0 )
-			  {
-				++dstlen;
-				++src;
-			  }
-			  ++dstlen;
-		  }
-		}
-	  break;
-
-	default:
-	  dstlen = *(int *)src;
-	  if ( dst )
-		{
-		  if ( srclen == 0 )
-			memcpy(dst, src+sizeof(int), dstlen);
-		  else
-			memcpy(dst, src+sizeof(int), srclen-sizeof(int));
-		}
-	  break;
-	}
-  return dstlen;
-}
-
-/* The system message filter function -- handle clipboard messages */
-PRIVATE int clipboard_filter(const SDL_Event *event);
-
-PUBLIC int
-init_scrap(void)
-{
-  SDL_SysWMinfo info;
-  int retval;
-
-  /* Grab the window manager specific information */
-  retval = -1;
-  SDL_SetError("SDL is not running on known window manager");
-
-  SDL_VERSION(&info.version);
-  if ( SDL_GetWMInfo(&info) )
-	{
-	  /* Save the information for later use */
-/* * */
-	  if ( info.subsystem == SDL_SYSWM_X11 )
-		{
-		  SDL_Display = info.info.x11.display;
-		  SDL_Window = info.info.x11.window;
-		  Lock_Display = info.info.x11.lock_func;
-		  Unlock_Display = info.info.x11.unlock_func;
-
-		  /* Enable the special window hook events */
-		  SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
-		  SDL_SetEventFilter(clipboard_filter);
-
-		  retval = 0;
-		}
-	  else
-		{
-		  SDL_SetError("SDL is not running on X11");
-		}
-	}
-  return(retval);
-}
-
-PUBLIC int
-lost_scrap(void)
-{
-  int retval;
-
-/* * */
-  Lock_Display();
-  retval = ( XGetSelectionOwner(SDL_Display, XA_PRIMARY) != SDL_Window );
-  Unlock_Display();
-
-  return(retval);
-}
-
-PUBLIC void
-put_scrap(int type, int srclen, const char *src)
-{
-  scrap_type format;
-  int dstlen;
-  char *dst;
-
-  format = convert_format(type);
-  dstlen = convert_data(type, NULL, src, srclen);
-
-/* * */
-  dst = (char *)malloc(dstlen);
-  if ( dst != NULL )
-	{
-	  Lock_Display();
-	  convert_data(type, dst, src, srclen);
-	  XChangeProperty(SDL_Display, DefaultRootWindow(SDL_Display),
-		XA_CUT_BUFFER0, format, 8, PropModeReplace, (unsigned char*) dst, dstlen);
-	  free(dst);
-	  Atom XA_CLIPBOARD = XInternAtom(SDL_Display, "CLIPBOARD", 0);
-	  if ( lost_scrap() ) {
-		XSetSelectionOwner(SDL_Display, XA_PRIMARY, SDL_Window, CurrentTime);
-		XSetSelectionOwner(SDL_Display, XA_CLIPBOARD, SDL_Window, CurrentTime);
-	  }
-	  Unlock_Display();
-	}
-
-}
-
-PUBLIC void
-get_scrap(int type, int *dstlen, char **dst)
-{
-  scrap_type format;
-
-  *dstlen = 0;
-  format = convert_format(type);
-
-/* * */
-  {
-	Window owner;
-	Atom selection;
-	Atom seln_type;
-	int seln_format;
-	unsigned long nbytes;
-	unsigned long overflow;
-	char *src;
-
-	Lock_Display();
-	Atom XA_CLIPBOARD = XInternAtom(SDL_Display, "CLIPBOARD", 0);
-	owner = XGetSelectionOwner(SDL_Display, XA_PRIMARY);
-	Unlock_Display();
-	if ( (owner == None) || (owner == SDL_Window) )
-	  {
-		owner = DefaultRootWindow(SDL_Display);
-		selection = XA_CUT_BUFFER0;
-	  }
-	else
-	  {
-		int selection_response = 0;
-		SDL_Event event;
-
-		owner = SDL_Window;
-		Lock_Display();
-		selection = XInternAtom(SDL_Display, "SDL_SELECTION", False);
-		XConvertSelection(SDL_Display, XA_PRIMARY, format,
-										selection, owner, CurrentTime);
-		XConvertSelection(SDL_Display, XA_CLIPBOARD, format,
-										selection, owner, CurrentTime);
-		Unlock_Display();
-		while ( ! selection_response )
-		  {
-			SDL_WaitEvent(&event);
-			if ( event.type == SDL_SYSWMEVENT )
-			  {
-				XEvent xevent = event.syswm.msg->event.xevent;
-
-				if ( (xevent.type == SelectionNotify) &&
-					 (xevent.xselection.requestor == owner) )
-					selection_response = 1;
-			  }
-		  }
-	  }
-	Lock_Display();
-	if ( XGetWindowProperty(SDL_Display, owner, selection, 0, INT_MAX/4,
-							False, format, &seln_type, &seln_format,
-					   &nbytes, &overflow, (unsigned char **)&src) == Success )
-	  {
-		if ( seln_type == format )
-		  {
-			*dstlen = convert_scrap(type, NULL, src, nbytes);
-			*dst = (char *)malloc(*dstlen);
-			if ( *dst == NULL )
-			  *dstlen = 0;
-			else
-			  convert_scrap(type, *dst, src, nbytes);
-		  }
-		XFree(src);
-	  }
-	}
-	Unlock_Display();
-}
-
-PRIVATE int clipboard_filter(const SDL_Event *event)
-{
-  /* Post all non-window manager specific events */
-  if ( event->type != SDL_SYSWMEVENT ) {
-	return(1);
-  }
-
-  /* Handle window-manager specific clipboard events */
-  switch (event->syswm.msg->event.xevent.type) {
-	/* Copy the selection from XA_CUT_BUFFER0 to the requested property */
-	case SelectionRequest: {
-	  XSelectionRequestEvent *req;
-	  XEvent sevent;
-	  int seln_format;
-	  unsigned long nbytes;
-	  unsigned long overflow;
-	  unsigned char *seln_data;
-
-	  req = &event->syswm.msg->event.xevent.xselectionrequest;
-	  sevent.xselection.type = SelectionNotify;
-	  sevent.xselection.display = req->display;
-	  sevent.xselection.selection = req->selection;
-	  sevent.xselection.target = None;
-	  sevent.xselection.property = None;
-	  sevent.xselection.requestor = req->requestor;
-	  sevent.xselection.time = req->time;
-	  if ( XGetWindowProperty(SDL_Display, DefaultRootWindow(SDL_Display),
-							  XA_CUT_BUFFER0, 0, INT_MAX/4, False, req->target,
-							  &sevent.xselection.target, &seln_format,
-							  &nbytes, &overflow, &seln_data) == Success )
-		{
-		  if ( sevent.xselection.target == req->target )
-			{
-			  if ( sevent.xselection.target == XA_STRING )
-				{
-				  if ( seln_data[nbytes-1] == '\0' )
-					--nbytes;
-				}
-			  XChangeProperty(SDL_Display, req->requestor, req->property,
-				sevent.xselection.target, seln_format, PropModeReplace,
-													  seln_data, nbytes);
-			  sevent.xselection.property = req->property;
-			}
-		  XFree(seln_data);
-		}
-	  XSendEvent(SDL_Display,req->requestor,False,0,&sevent);
-	  XSync(SDL_Display, False);
-	}
-	break;
-  }
-
-  /* Post the event for X11 clipboard reading above */
-  return(1);
-}
-
 // X11 cursor
 
 namespace {
-
-// WARNING: These functions rely on the SDL_Display and SDL_Window previously initialized by init_scrap
 
 const int CURSOR_COUNT = 7;
 Cursor defined_cursors[CURSOR_COUNT] = {0};
@@ -972,22 +744,22 @@ void set_cursor(int cursorType) {
 		if(!cursor) {
 			switch(cursorType) {
 				case Polycode::Core::CURSOR_TEXT:
-					cursor = XCreateFontCursor (SDL_Display, XC_xterm);
+					cursor = XCreateFontCursor (XDisplay, XC_xterm);
 				break;
 				case Polycode::Core::CURSOR_POINTER:
-					cursor = XCreateFontCursor (SDL_Display, XC_hand1);
+					cursor = XCreateFontCursor (XDisplay, XC_hand1);
 				break;
 				case Polycode::Core::CURSOR_CROSSHAIR:
-					cursor = XCreateFontCursor (SDL_Display, XC_crosshair);
+					cursor = XCreateFontCursor (XDisplay, XC_crosshair);
 				break;
 				case Polycode::Core::CURSOR_RESIZE_LEFT_RIGHT:
-					cursor = XCreateFontCursor (SDL_Display, XC_sb_h_double_arrow);
+					cursor = XCreateFontCursor (XDisplay, XC_sb_h_double_arrow);
 				break;
 				case Polycode::Core::CURSOR_RESIZE_UP_DOWN:
-					cursor = XCreateFontCursor (SDL_Display, XC_sb_v_double_arrow);
+					cursor = XCreateFontCursor (XDisplay, XC_sb_v_double_arrow);
 				break;
 				case Polycode::Core::CURSOR_OPEN_HAND:
-					cursor = XCreateFontCursor (SDL_Display, XC_fleur);
+					cursor = XCreateFontCursor (XDisplay, XC_fleur);
 				break;
 				case Polycode::Core::CURSOR_ARROW:
 					cursor = 0;
@@ -1000,19 +772,19 @@ void set_cursor(int cursorType) {
 
 	if(!cursor) {
 		// Restore the normal cursor.
-		XUndefineCursor(SDL_Display, SDL_Window);
+		XUndefineCursor(XDisplay, XWindow);
 	} else {
-		XDefineCursor(SDL_Display, SDL_Window, cursor);
+		XDefineCursor(XDisplay, XWindow, cursor);
 	}
 	
-	XFlush(SDL_Display);
+	XFlush(XDisplay);
 }
 
 void free_cursors() {
-	XUndefineCursor(SDL_Display, SDL_Window);
+	XUndefineCursor(XDisplay, XWindow);
 	for(int i = 0; i < CURSOR_COUNT; i++) {
 		if(defined_cursors[i]) {
-			XFreeCursor(SDL_Display, defined_cursors[i]);
+			XFreeCursor(XDisplay, defined_cursors[i]);
 			defined_cursors[i] = 0;
 		}
 	}

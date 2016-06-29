@@ -107,9 +107,9 @@ long AAssetFile::write( const void * ptr, size_t size, size_t count) {
 }
 
 int AAssetFile::seek(long int offset, int origin) {
-	return AAsset_seek(file, offset, origin);
+	return AAsset_seek64(file, offset, origin);
 }
 
 long AAssetFile::tell() {
-	return AAsset_getLength64(file);
+	return AAsset_getLength64(file) - AAsset_getRemainingLength64(file);
 }

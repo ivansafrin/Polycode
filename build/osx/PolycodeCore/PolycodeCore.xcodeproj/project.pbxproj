@@ -169,6 +169,7 @@
 		8A9D122F1CDD503C00ACD484 /* PolycodeJS.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A9D122D1CDD503C00ACD484 /* PolycodeJS.h */; };
 		8A9D12301CDD503C00ACD484 /* PolycodeJSWrappers.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A9D122E1CDD503C00ACD484 /* PolycodeJSWrappers.h */; };
 		8A9D12321CDD504400ACD484 /* PolycodeJS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A9D12311CDD504400ACD484 /* PolycodeJS.cpp */; };
+		AA5DCB931D2433BE0021D0F8 /* stb_vorbis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA5DCB921D2433BE0021D0F8 /* stb_vorbis.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -335,6 +336,7 @@
 		8A9D122D1CDD503C00ACD484 /* PolycodeJS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeJS.h; path = ../../../include/polycode/bindings/javascript/PolycodeJS.h; sourceTree = "<group>"; };
 		8A9D122E1CDD503C00ACD484 /* PolycodeJSWrappers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeJSWrappers.h; path = ../../../include/polycode/bindings/javascript/PolycodeJSWrappers.h; sourceTree = "<group>"; };
 		8A9D12311CDD504400ACD484 /* PolycodeJS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolycodeJS.cpp; path = ../../../src/bindings/javascript/PolycodeJS.cpp; sourceTree = "<group>"; };
+		AA5DCB921D2433BE0021D0F8 /* stb_vorbis.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = stb_vorbis.cpp; path = ../../../src/core/stb_vorbis.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -435,6 +437,7 @@
 				8A8652CF1B72867F009F94DD /* PolyVector4.cpp */,
 				8A7349091B86A54800F660C0 /* lodepng.cpp */,
 				8A8652D01B72867F009F94DD /* rgbe.cpp */,
+				AA5DCB921D2433BE0021D0F8 /* stb_vorbis.cpp */,
 				8A8652D11B72867F009F94DD /* tinystr.cpp */,
 				8A8652D21B72867F009F94DD /* tinyxml.cpp */,
 				8A8652D31B72867F009F94DD /* tinyxmlerror.cpp */,
@@ -711,6 +714,7 @@
 				8A8652DF1B72867F009F94DD /* PolyCoreServices.cpp in Sources */,
 				8A8652FC1B72867F009F94DD /* PolyRenderer.cpp in Sources */,
 				8A8653131B72867F009F94DD /* PolyThreaded.cpp in Sources */,
+				AA5DCB931D2433BE0021D0F8 /* stb_vorbis.cpp in Sources */,
 				8A8652F11B72867F009F94DD /* PolyMesh.cpp in Sources */,
 				8A8652E21B72867F009F94DD /* PolyEntity.cpp in Sources */,
 				8A8652F21B72867F009F94DD /* PolyObject.cpp in Sources */,

@@ -44,6 +44,8 @@
 #define LOGI(text) ((void)__android_log_write(ANDROID_LOG_INFO, "TemplateApp", text))
 #define LOGE(text) ((void)__android_log_write(ANDROID_LOG_ERROR, "TemplateApp", text))
 
+#define ACONFIGURATION_DENSITY_XXXHIGH 640
+
 namespace Polycode {
 	
 	enum{
@@ -115,3 +117,4 @@ void* startApp(void* data);
 int JNIGetUnicodeChar(ANativeActivity* native_activity, int eventType, int keyCode, int metaState);
 void JNIAutoHideNavBar(ANativeActivity* native_activity);
 void JNIWakeLock(ANativeActivity* native_activity, bool acquire);
+void JNIVolumeControl(ANativeActivity* native_activity, bool up);

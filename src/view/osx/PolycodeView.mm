@@ -682,7 +682,6 @@
 			// Don't care otherwise
 			break;
 	}
-	newEvent.unicodeChar = 0;
 	
 	
 	core->cocoaEvents.push_back(newEvent);	
@@ -700,19 +699,20 @@
 	newEvent.eventGroup = CocoaEvent::INPUT_EVENT;
 	newEvent.eventCode = InputEvent::EVENT_KEYDOWN;
 	newEvent.keyCode = keymap[[theEvent keyCode]];	
-	
-	NSString *chars = [theEvent characters];
-	NSUInteger numChars = [chars length];
-	
-//	NSLog(@"CHARS: %@", [chars characterAtIndex:0]);
-	if(numChars > 0) {
-		newEvent.unicodeChar = [chars characterAtIndex:0];
-	} else {
-		newEvent.unicodeChar = 0;
+    core->cocoaEvents.push_back(newEvent);
+    
+    CocoaEvent textEvent;
+    textEvent.eventGroup = CocoaEvent::INPUT_EVENT;
+    textEvent.eventCode = InputEvent::EVENT_TEXTINPUT;
+    
+    NSString *chars = [theEvent characters];
+    NSUInteger numChars = [chars length];
+	textEvent.text = [chars UTF8String];
+	if(numChars > 0 && !((unsigned char) textEvent.text[0] < ' ' || textEvent.text[0] == 127) && textEvent.text[0] > 0) {
+		core->cocoaEvents.push_back(textEvent);
 	}
 	
-	core->cocoaEvents.push_back(newEvent);	
-	core->unlockMutex(core->eventMutex);	
+	core->unlockMutex(core->eventMutex);
 	
 }
 
@@ -726,15 +726,7 @@
 	newEvent.eventGroup = CocoaEvent::INPUT_EVENT;
 	newEvent.eventCode = InputEvent::EVENT_KEYUP;
 	newEvent.keyCode = keymap[[theEvent keyCode]];
-	
-	NSString *chars = [theEvent characters];
-	NSUInteger numChars = [chars length];
-	
-	if(numChars > 0)
-		newEvent.unicodeChar = [chars characterAtIndex:0];
-	else
-		newEvent.unicodeChar = 0;
-	
+    
 	core->cocoaEvents.push_back(newEvent);	
 	core->unlockMutex(core->eventMutex);		
 }

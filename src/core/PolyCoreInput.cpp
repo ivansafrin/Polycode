@@ -242,7 +242,7 @@ namespace Polycode {
 			return false;
 	}
 	
-	void CoreInput::setKeyState(PolyKEY keyCode, wchar_t code, bool newState, int ticks) {
+	void CoreInput::setKeyState(PolyKEY keyCode, bool newState, int ticks) {
 		
 		if(newState && !keyRepeat) {
 			if(keyboardState[keyCode]) {
@@ -250,7 +250,7 @@ namespace Polycode {
 			}
 		}
 		
-		InputEvent *evt = new InputEvent(keyCode, code, ticks);
+		InputEvent *evt = new InputEvent(keyCode, ticks);
 		if(keyCode < 512)
 			keyboardState[keyCode] = newState;
 		if(newState) {
@@ -259,6 +259,15 @@ namespace Polycode {
 			dispatchEvent(evt, InputEvent::EVENT_KEYUP);
 		}
 	}
+	
+	void CoreInput::textInput(String text){
+		InputEvent* iev = new InputEvent();
+		iev->text = "";
+		iev->text = text;
+		
+		dispatchEvent(iev, InputEvent::EVENT_TEXTINPUT);
+	}
+
 	
 	void CoreInput::touchesBegan(TouchInfo touch, std::vector<TouchInfo> touches, int ticks) {
 		if(ignoreOffScreenTouch) {
@@ -295,12 +304,6 @@ namespace Polycode {
 		}
 	}
 
-
-
-
-
-
-	
 	void CoreInput::touchesEnded(TouchInfo touch, std::vector<TouchInfo> touches, int ticks) {
 		if(ignoreOffScreenTouch) {
 			Core *core = CoreServices::getInstance()->getCore();

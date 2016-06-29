@@ -84,8 +84,6 @@ AndroidCore::AndroidCore(PolycodeView *view, int xRes, int yRes, bool fullScreen
 	defaultWorkingDirectory = view->native_activity->internalDataPath;
 	userHomeDirectory = view->native_activity->externalDataPath;
 	
-	services->getSoundManager()->setAudioInterface(new AudioInterface());
-	
 	paused = true;
 	
 	initKeyMap();
@@ -93,7 +91,8 @@ AndroidCore::AndroidCore(PolycodeView *view, int xRes, int yRes, bool fullScreen
 	this->view = view;
 	core = this;
 	
-	services->getSoundManager()->setAudioInterface(new OpenSLAudioInterface());
+	audioInterface = new OpenSLAudioInterface();
+	services->getSoundManager()->setAudioInterface(audioInterface);
 	extractResources();
 }
 
@@ -137,12 +136,15 @@ void AndroidCore::checkEvents() {
 			case InputEvent::EVENT_MOUSEUP:
 				input->setMouseButtonState(event.mouseButton, false, getTicks());
 				break;
+			case InputEvent::EVENT_TEXTINPUT:
+				input->textInput(event.text);
+				break;
 			case InputEvent::EVENT_KEYDOWN:
 				if (!checkSpecialKeyEvents(event.keyCode))
-					input->setKeyState(event.keyCode, event.unicodeChar, true, getTicks());
+					input->setKeyState(event.keyCode, true, getTicks());
 				break;
 			case InputEvent::EVENT_KEYUP:
-				input->setKeyState(event.keyCode, event.unicodeChar, false, getTicks());
+				input->setKeyState(event.keyCode, false, getTicks());
 				break;
 			case InputEvent::EVENT_TOUCHES_BEGAN:
 				input->touchesBegan(event.touch, event.touches, getTicks());
@@ -249,8 +251,9 @@ void AndroidCore::openOnScreenKeyboard(bool open){
 		jboolean lRes = jniEnv->CallBooleanMethod(lInputMethodManager, MethodHideSoftInput, lBinder, lFlags); 
 	} 
 
-	// Finished with the JVM. 
-	javaVM->DetachCurrentThread(); 
+	// Finished with the JVM.
+	if (attached)
+	javaVM->DetachCurrentThread();
 }
 
 void launchThread(Threaded *target) {
@@ -279,11 +282,121 @@ CoreMutex *AndroidCore::createMutex() {
 }
 
 void AndroidCore::copyStringToClipboard(const String& str) {
+	// Attaches the current thread to the JVM. 
+	JavaVM* javaVM = view->native_activity->vm;
+	JNIEnv* jniEnv;
+	bool attached = false;
 
+	if(javaVM->GetEnv((void**)&jniEnv, JNI_VERSION_1_6) ==JNI_EDETACHED){
+		JavaVMAttachArgs attachArgs;
+		attachArgs.version = JNI_VERSION_1_6;
+		attachArgs.name = "NativeThread";
+		attachArgs.group = NULL;
+		
+		jint result = javaVM->AttachCurrentThread(&jniEnv, &attachArgs);
+		if(result == JNI_ERR){
+			return;
+		}
+		attached = true;
+	} 
+
+	
+	jclass looperClass = jniEnv->FindClass("android/os/Looper");
+	jmethodID prepareMethodID = jniEnv->GetStaticMethodID(looperClass, "prepare", "()V");
+	jniEnv->CallStaticVoidMethod(looperClass, prepareMethodID);
+	
+	// Retrieves Context.CLIPBOARD_SERVICE. 
+	jclass ClassContext = jniEnv->FindClass("android/content/Context");
+	jfieldID FieldCLIPBOARD_SERVICE = jniEnv->GetStaticFieldID(ClassContext, "CLIPBOARD_SERVICE", "Ljava/lang/String;");
+	jobject CLIPBOARD_SERVICE = jniEnv->GetStaticObjectField(ClassContext, FieldCLIPBOARD_SERVICE);
+// 	jstring CLIPBOARD_SERVICE = jniEnv->NewStringUTF("clipboard");
+
+	jclass ClassNativeActivity = jniEnv->FindClass("android/app/NativeActivity");
+	jobject lNativeActivity = view->native_activity->clazz;
+	
+	// Runs getSystemService(Context.CLIPBOARD_SERVICE).
+	jclass ClassClipboardManager = jniEnv->FindClass("android/content/ClipboardManager");
+	jmethodID MethodGetSystemService = jniEnv->GetMethodID(ClassNativeActivity, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;");
+	jobject lCliboardManager = jniEnv->CallObjectMethod(lNativeActivity, MethodGetSystemService, CLIPBOARD_SERVICE);
+	
+	// Runs clipData.newPlainText()
+	jclass ClassClipData = jniEnv->FindClass("android/content/ClipData");
+	jmethodID MethodnewPlainText = jniEnv->GetStaticMethodID(ClassClipData, "newPlainText", "(Ljava/lang/CharSequence;Ljava/lang/CharSequence;)Landroid/content/ClipData;");
+	jstring text = jniEnv->NewStringUTF(str.c_str());
+	jstring lbl = jniEnv->NewStringUTF("PolycodeText");
+	jobject lClipData = jniEnv->CallStaticObjectMethod(ClassClipData, MethodnewPlainText, lbl, text);
+	
+	jmethodID MethodSetPrimaryClip = jniEnv->GetMethodID(ClassClipboardManager, "setPrimaryClip", "(Landroid/content/ClipData;)V");
+	jniEnv->CallVoidMethod(lCliboardManager, MethodSetPrimaryClip, lClipData);
+	
+	// Finished with the JVM.
+	if (attached)
+		javaVM->DetachCurrentThread();
 }
 
 String AndroidCore::getClipboardString() {
-	return "";
+	// Attaches the current thread to the JVM. 
+	JavaVM* javaVM = view->native_activity->vm;
+	JNIEnv* jniEnv;
+	bool attached = false;
+
+	if(javaVM->GetEnv((void**)&jniEnv, JNI_VERSION_1_6) ==JNI_EDETACHED){
+		JavaVMAttachArgs attachArgs;
+		attachArgs.version = JNI_VERSION_1_6;
+		attachArgs.name = "NativeThread";
+		attachArgs.group = NULL;
+		
+		jint result = javaVM->AttachCurrentThread(&jniEnv, &attachArgs);
+		if(result == JNI_ERR){
+			return "";
+		}
+		attached = true;
+	} 
+	
+	jclass looperClass = jniEnv->FindClass("android/os/Looper");
+	jmethodID prepareMethodID = jniEnv->GetStaticMethodID(looperClass, "prepare", "()V");
+	jniEnv->CallStaticVoidMethod(looperClass, prepareMethodID);
+
+	// Retrieves Context.CLIPBOARD_SERVICE. 
+	jclass ClassContext = jniEnv->FindClass("android/content/Context");
+	jfieldID FieldCLIPBOARD_SERVICE = jniEnv->GetStaticFieldID(ClassContext, "CLIPBOARD_SERVICE", "Ljava/lang/String;");
+	jobject CLIPBOARD_SERVICE = jniEnv->GetStaticObjectField(ClassContext, FieldCLIPBOARD_SERVICE);
+
+	jclass ClassNativeActivity = jniEnv->FindClass("android/app/NativeActivity");
+	jobject lNativeActivity = view->native_activity->clazz;
+	
+	// Runs getSystemService(Context.CLIPBOARD_SERVICE).
+	jclass ClassClipboardManager = jniEnv->FindClass("android/content/ClipboardManager");
+	jmethodID MethodGetSystemService = jniEnv->GetMethodID(ClassNativeActivity, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;");
+	jobject lCliboardManager = jniEnv->CallObjectMethod(lNativeActivity, MethodGetSystemService, CLIPBOARD_SERVICE);
+
+	// Runs clipboard.getPrimaryClip()
+	jmethodID MethodGetPrimaryClip = jniEnv->GetMethodID(ClassClipboardManager, "getPrimaryClip", "()Landroid/content/ClipData;");
+	jobject lClipData = jniEnv->CallObjectMethod(lCliboardManager, MethodGetPrimaryClip);
+	
+	//Runs clipdata.getItemAt(0)
+	jclass ClassClipDataItem = jniEnv->FindClass("android/content/ClipData$Item");
+	jclass ClassClipData = jniEnv->FindClass("android/content/ClipData");
+	jmethodID MethodGetItemAt = jniEnv->GetMethodID(ClassClipData, "getItemAt", "(I)Landroid/content/ClipData$Item;");
+	jobject lClipDataItem = jniEnv->CallObjectMethod(lClipData, MethodGetItemAt, 0);
+	
+	//Runs clipdescription.getText()
+	jmethodID MethodGetText = jniEnv->GetMethodID(ClassClipDataItem, "getText", "()Ljava/lang/CharSequence;");
+	jobject lCharSequence = jniEnv->CallObjectMethod(lClipDataItem, MethodGetText);
+	
+	//Runs charseuquence.toString()
+	jclass ClassCharSequence = jniEnv->FindClass("java/lang/CharSequence");
+	jmethodID MethodtoString = jniEnv->GetMethodID(ClassCharSequence, "toString", "()Ljava/lang/String;");
+	jobject lText = jniEnv->CallObjectMethod(lCharSequence, MethodtoString);
+	
+	const char *nativeString = jniEnv->GetStringUTFChars((jstring)lText, (jboolean*)0);
+	String returnStr = String(nativeString);
+	jniEnv->ReleaseStringUTFChars((jstring)lText, nativeString);
+	
+	// Finished with the JVM.
+	if (attached)
+		javaVM->DetachCurrentThread();
+	return returnStr;
 }
 
 void AndroidCore::extractResources(){
@@ -328,6 +441,7 @@ void AndroidCore::extractResources(){
 			while(source->read(buffer, sizeof(char), 1) > 0){
 				dest->write(buffer,sizeof(char), 1);
 			}
+			bfileProvider->closeFile(dest);
 		}
 		
 		afileProvider->closeFile(source);
@@ -664,7 +778,7 @@ void AndroidCore::initKeyMap() {
 	keyMap[AKEYCODE_META_RIGHT] = KEY_RSUPER;
 	keyMap[AKEYCODE_META_LEFT] = KEY_LSUPER;
 
-	keyMap[AKEYCODE_HELP] = KEY_HELP;
+	keyMap[259] = KEY_HELP;
  	keyMap[AKEYCODE_SYSRQ] = KEY_PRINT;
 	keyMap[AKEYCODE_BREAK] = KEY_BREAK;
 	keyMap[AKEYCODE_MENU] = KEY_MENU;
@@ -675,3 +789,6 @@ PolyKEY AndroidCore::mapKey(int keyCode){
 	return keyMap[(unsigned int) keyCode];
 }
 
+OpenSLAudioInterface* AndroidCore::getAudioInterface(){
+	return audioInterface;
+}

@@ -109,7 +109,17 @@ PolycodeSyntaxHighlighter::PolycodeSyntaxHighlighter(String extension) {
 		}
 	
 		keywords = String("for cast safe_cast and require true false class self break do end else elseif function if local nil not or repeat return then until while").split(" ");
-		
+	} else if (extension == "js") {
+		mode = MODE_JS;
+
+		std::vector<String>separators_s = String("[ * [ ] { } ; . , : ( ) \t \n = + - / \\ ' \"").split(" ");
+		separators_s.push_back(" ");
+
+		for (int i = 0; i < separators_s.size(); i++) {
+			separators.push_back(separators_s[i][0]);
+		}
+
+		keywords = String("abstract arguments boolean break byte case catch char class const continue debugger default delete do double else enum eval export extends false final finally float for function goto if implements import in instanceof int interface let long native new null package private protected public return short static super switch synchronized this throw throws transient true try typeof var void volatile while with yield").split(" ");
 	} else if(extension == "vert" || extension == "frag") {
 		mode = MODE_GLSL;
 		
@@ -120,8 +130,7 @@ PolycodeSyntaxHighlighter::PolycodeSyntaxHighlighter(String extension) {
 			separators.push_back(separators_s[i][0]);
 		}
 	
-		keywords = String("for cast and true falsebreak do end else if notreturn then until while uniform varying sampler2D sampler3D vec2 vec3 vec4 float in inout void mat2 mat3 mat4 bool int #define #ifdef #elif #else #endif").split(" ");
-		
+		keywords = String("for cast and true false break do end else if not return then until while uniform varying sampler2D sampler3D vec2 vec3 vec4 float in inout void mat2 mat3 mat4 bool int #define #ifdef #elif #else #endif").split(" ");
 	}
 	
 }
@@ -149,6 +158,8 @@ bool PolycodeSyntaxHighlighter::contains_char(char part, std::vector<char> *list
 std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseText(String text, SyntaxHighlightToken overrideToken) {
 	if(mode == MODE_LUA) {	
 		return parseLua(text, overrideToken);
+	} else if (mode == MODE_JS) {
+		return parseJS(text, overrideToken);
 	} else {
 		return parseGLSL(text, overrideToken);	
 	}
@@ -448,6 +459,165 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseLua(String tex
 	return tokens;
 }
 
+std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseJS(String text, SyntaxHighlightToken overrideToken) {
+	std::vector<SyntaxHighlightToken> tokens;
+
+	text = text + "\n";
+
+	const int MODE_GENERAL = 0;
+	const int MODE_COMMENT = 1;
+	const int MODE_STRING = 2;
+	const int MODE_METHOD = 3;
+	const int MODE_KEYWORD = 4;
+	const int MODE_NUMBER = 5;
+	const int MODE_MEMBER = 6;
+	const int MODE_SINGLEQUOTE_STRING = 7;
+
+	int mode = MODE_GENERAL;
+	bool isComment = false;
+
+	if (text.find_first_of("*/") != -1) {
+		if (overrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_LINE || overrideToken.overrideType == SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_START) {
+			mode = MODE_COMMENT;
+		}
+	}
+
+
+	String line = "";
+
+	char lastSeparator = ' ';
+
+
+	for (int i = 0; i < text.length(); i++) {
+		char ch = text[i];
+		if (contains_char(ch, &separators)) {
+
+			unsigned int type = mode;
+			unsigned int ch_type = mode;
+
+
+			if (ch == '\"' && mode != MODE_COMMENT && mode != MODE_SINGLEQUOTE_STRING)
+				ch_type = MODE_STRING;
+
+			if (ch == '\'' && mode != MODE_COMMENT && mode != MODE_STRING)
+				ch_type = MODE_SINGLEQUOTE_STRING;
+
+			if ((mode != MODE_STRING && mode != MODE_SINGLEQUOTE_STRING) && ch == '(' && mode != MODE_COMMENT) {
+				type = MODE_METHOD;
+			}
+
+			if ((mode != MODE_STRING && mode != MODE_SINGLEQUOTE_STRING)	&& mode != MODE_COMMENT) {
+				if (contains(line, &keywords)) {
+					type = MODE_KEYWORD;
+				}
+			}
+
+			if ((mode != MODE_STRING && mode != MODE_SINGLEQUOTE_STRING) && !isComment && mode != MODE_COMMENT) {
+
+				if (line.isNumber()) {
+					type = MODE_NUMBER;
+				} else {
+					if (lastSeparator == '.' && ch != '.' && ch != ':') {
+						type = MODE_MEMBER;
+					}
+				}
+			}
+
+			if (isComment) {
+				type = MODE_COMMENT;
+				ch_type = MODE_COMMENT;
+			}
+
+			if (mode == MODE_COMMENT) {
+				type = MODE_COMMENT;
+				ch_type = MODE_COMMENT;
+			}
+
+
+			if (line != "")
+				tokens.push_back(SyntaxHighlightToken(line, type));
+			tokens.push_back(SyntaxHighlightToken(ch, ch_type));
+
+			if (ch == '/' && lastSeparator == '/' && (mode != MODE_STRING && mode != MODE_SINGLEQUOTE_STRING)) {
+				isComment = true;
+				tokens[tokens.size() - 1].type = MODE_COMMENT;
+				tokens[tokens.size() - 2].type = MODE_COMMENT;
+			}
+
+			if (ch == '*' && lastSeparator == '/' && (mode != MODE_STRING && mode != MODE_SINGLEQUOTE_STRING)) {
+				tokens[tokens.size() - 1].type = MODE_COMMENT;
+				tokens[tokens.size() - 2].type = MODE_COMMENT;
+				mode = MODE_COMMENT;
+				tokens[tokens.size() - 1].overrideType = SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_START;
+			}
+
+			if (ch == '/' && lastSeparator == '*' && mode == MODE_COMMENT) {
+				if (mode == MODE_COMMENT)
+					mode = MODE_GENERAL;
+				if ((mode != MODE_STRING && mode != MODE_SINGLEQUOTE_STRING))
+					tokens[tokens.size() - 1].overrideType = SyntaxHighlightToken::TOKEN_TYPE_OVERRIDE_END;
+
+			}
+
+			if (ch == '\n')
+				isComment = false;
+
+
+			if (ch == '\"'  && mode != MODE_COMMENT) {
+				if (mode == MODE_STRING) {
+					mode = MODE_GENERAL;
+				} else if (mode != MODE_SINGLEQUOTE_STRING){
+					mode = MODE_STRING;
+				}
+			}
+
+			if (ch == '\''  && mode != MODE_COMMENT) {
+				if (mode == MODE_SINGLEQUOTE_STRING) {
+					mode = MODE_GENERAL;
+				} else if (mode != MODE_STRING){
+					mode = MODE_SINGLEQUOTE_STRING;
+				}
+			}
+
+			line = "";
+			lastSeparator = ch;
+		} else {
+			line.append(ch);
+		}
+	}
+
+	for (int i = 0; i < tokens.size(); i++) {
+		switch (tokens[i].type) {
+		case MODE_STRING:
+			tokens[i].color = globalSyntaxTheme->colors[4];
+			break;
+		case MODE_SINGLEQUOTE_STRING:
+			tokens[i].color = globalSyntaxTheme->colors[4];
+			break;
+		case MODE_COMMENT:
+			tokens[i].color = globalSyntaxTheme->colors[1];
+			break;
+		case MODE_METHOD:
+			tokens[i].color = globalSyntaxTheme->colors[3];
+			break;
+		case MODE_KEYWORD:
+			tokens[i].color = globalSyntaxTheme->colors[2];
+			break;
+		case MODE_NUMBER:
+			tokens[i].color = globalSyntaxTheme->colors[6];
+			break;
+		case MODE_MEMBER:
+			tokens[i].color = globalSyntaxTheme->colors[5];
+			break;
+		default:
+			tokens[i].color = globalSyntaxTheme->colors[0];
+			break;
+		}
+	}
+
+	return tokens;
+}
+
 PolycodeTextEditor::PolycodeTextEditor() : PolycodeEditor(true){
 	firstTimeResize = true;
 	editorType = "PolycodeTextEditor";
@@ -493,7 +663,7 @@ bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 			
 	syntaxHighligher = NULL;
 	
-	if(filePath.extension == "lua" || filePath.extension == "vert" || filePath.extension == "frag") {
+	if(filePath.extension == "lua" || filePath.extension == "js" || filePath.extension == "vert" || filePath.extension == "frag") {
 		syntaxHighligher = new PolycodeSyntaxHighlighter(filePath.extension);
 		textInput->setSyntaxHighlighter(syntaxHighligher);
 	} else {
