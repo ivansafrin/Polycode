@@ -9,6 +9,7 @@ function BezierPoint(p1x,p1y,p1z,p2x,p2y,p2z,p3x,p3y,p3z) {
 	})
 }
 
+
 BezierPoint.prototype.__get_p1 = function() {
 	var retVal = new Vector3()
 	retVal.__ptr = 	Polycode.BezierPoint__get_p1(this.__ptr)

@@ -4,6 +4,7 @@ function MeshResourceLoader() {
 	}
 }
 
+
 Duktape.fin(MeshResourceLoader.prototype, function (x) {
 	if (x === MeshResourceLoader.prototype) {
 		return;

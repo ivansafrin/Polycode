@@ -7,6 +7,7 @@ function BinaryObjectReader(fileName,object) {
 	})
 }
 
+
 BinaryObjectReader.prototype.__get_success = function() {
 	return Polycode.BinaryObjectReader__get_success(this.__ptr)
 }

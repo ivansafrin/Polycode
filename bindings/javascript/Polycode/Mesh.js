@@ -6,7 +6,8 @@ function Mesh() {
 	}
 }
 
-Mesh.prototype = Object.create(Resource.prototype);
+
+Mesh.prototype = Object.create(Resource.prototype)
 
 
 Mesh.prototype.MeshFromFileName = function(fileName) {

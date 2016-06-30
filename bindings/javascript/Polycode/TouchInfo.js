@@ -9,6 +9,10 @@ function TouchInfo() {
 	})
 }
 
+TouchInfo.TYPEBASE = 0x500
+TouchInfo.TYPE_TOUCH = TYPEBASE + 0
+TouchInfo.TYPE_PEN = TYPEBASE + 1
+
 TouchInfo.prototype.__get_id = function() {
 	return Polycode.TouchInfo__get_id(this.__ptr)
 }

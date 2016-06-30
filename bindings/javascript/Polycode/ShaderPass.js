@@ -8,6 +8,7 @@ function ShaderPass() {
 	})
 }
 
+
 ShaderPass.prototype.__get_wireframe = function() {
 	return Polycode.ShaderPass__get_wireframe(this.__ptr)
 }

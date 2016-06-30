@@ -4,6 +4,7 @@ function MaterialResourceLoader() {
 	}
 }
 
+
 Duktape.fin(MaterialResourceLoader.prototype, function (x) {
 	if (x === MaterialResourceLoader.prototype) {
 		return;

@@ -8,6 +8,7 @@ function JoystickInfo() {
 	})
 }
 
+
 JoystickInfo.prototype.__get_deviceID = function() {
 	return Polycode.JoystickInfo__get_deviceID(this.__ptr)
 }

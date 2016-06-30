@@ -10,7 +10,18 @@ function Resource(type) {
 	})
 }
 
-Resource.prototype = Object.create(EventDispatcher.prototype);
+Resource.RESOURCE_TEXTURE = 0
+Resource.RESOURCE_MATERIAL = 1
+Resource.RESOURCE_SHADER = 2
+Resource.RESOURCE_PROGRAM = 3
+Resource.RESOURCE_MESH = 5
+Resource.RESOURCE_CUBEMAP = 6
+Resource.RESOURCE_SPRITE = 7
+Resource.RESOURCE_ENTITY_INSTANCE = 8
+Resource.RESOURCE_FONT = 9
+Resource.RESOURCE_SCRIPT = 10
+
+Resource.prototype = Object.create(EventDispatcher.prototype)
 
 Resource.prototype.__get_reloadOnFileModify = function() {
 	return Polycode.Resource__get_reloadOnFileModify(this.__ptr)

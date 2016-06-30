@@ -6,7 +6,8 @@ function DummyCore() {
 	}
 }
 
-DummyCore.prototype = Object.create(Core.prototype);
+
+DummyCore.prototype = Object.create(Core.prototype)
 
 Duktape.fin(DummyCore.prototype, function (x) {
 	if (x === DummyCore.prototype) {

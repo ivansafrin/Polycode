@@ -15,7 +15,8 @@ function SceneMesh(fileName) {
 	})
 }
 
-SceneMesh.prototype = Object.create(Entity.prototype);
+
+SceneMesh.prototype = Object.create(Entity.prototype)
 
 SceneMesh.prototype.__get_lineWidth = function() {
 	return Polycode.SceneMesh__get_lineWidth(this.__ptr)

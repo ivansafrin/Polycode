@@ -4,6 +4,7 @@ function Perlin(octaves,freq,amp,seed) {
 	}
 }
 
+
 Duktape.fin(Perlin.prototype, function (x) {
 	if (x === Perlin.prototype) {
 		return;

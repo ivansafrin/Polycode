@@ -4,6 +4,7 @@ function Matrix4() {
 	}
 }
 
+
 Duktape.fin(Matrix4.prototype, function (x) {
 	if (x === Matrix4.prototype) {
 		return;

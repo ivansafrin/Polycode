@@ -9,6 +9,7 @@ function ColorRange(color,rangeStart,rangeEnd) {
 	})
 }
 
+
 ColorRange.prototype.__get_color = function() {
 	var retVal = new Color()
 	retVal.__ptr = 	Polycode.ColorRange__get_color(this.__ptr)

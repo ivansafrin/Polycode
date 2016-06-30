@@ -8,6 +8,7 @@ function BezierCurve() {
 	})
 }
 
+
 BezierCurve.prototype.__get_insertPoint = function() {
 	var retVal = new BezierPoint()
 	retVal.__ptr = 	Polycode.BezierCurve__get_insertPoint(this.__ptr)

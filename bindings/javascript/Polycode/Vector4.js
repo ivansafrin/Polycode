@@ -10,6 +10,7 @@ function Vector4(x,y,z,w) {
 	})
 }
 
+
 Vector4.prototype.__get_x = function() {
 	return Polycode.Vector4__get_x(this.__ptr)
 }

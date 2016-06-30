@@ -4,6 +4,7 @@ function SoundManager() {
 	}
 }
 
+
 Duktape.fin(SoundManager.prototype, function (x) {
 	if (x === SoundManager.prototype) {
 		return;

@@ -17,7 +17,8 @@ function Bone(boneName) {
 	})
 }
 
-Bone.prototype = Object.create(Entity.prototype);
+
+Bone.prototype = Object.create(Entity.prototype)
 
 Bone.prototype.__get_parentBoneId = function() {
 	return Polycode.Bone__get_parentBoneId(this.__ptr)

@@ -6,7 +6,8 @@ function SceneSound(fileName,referenceDistance,maxDistance,directionalSound) {
 	}
 }
 
-SceneSound.prototype = Object.create(Entity.prototype);
+
+SceneSound.prototype = Object.create(Entity.prototype)
 
 
 SceneSound.prototype.Update = function() {

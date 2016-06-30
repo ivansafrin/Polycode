@@ -11,7 +11,15 @@ function Camera(parentScene) {
 	})
 }
 
-Camera.prototype = Object.create(Entity.prototype);
+Camera.ORTHO_SIZE_MANUAL = 0
+Camera.ORTHO_SIZE_LOCK_HEIGHT = 1
+Camera.ORTHO_SIZE_LOCK_WIDTH = 2
+Camera.ORTHO_SIZE_VIEWPORT = 3
+Camera.PERSPECTIVE_FOV = 4
+Camera.PERSPECTIVE_FRUSTUM = 5
+Camera.MANUAL_MATRIX = 6
+
+Camera.prototype = Object.create(Entity.prototype)
 
 Camera.prototype.__get_frustumCulling = function() {
 	return Polycode.Camera__get_frustumCulling(this.__ptr)

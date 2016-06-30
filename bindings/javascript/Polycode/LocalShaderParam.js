@@ -12,6 +12,7 @@ function LocalShaderParam() {
 	})
 }
 
+
 LocalShaderParam.prototype.__get_name = function() {
 	return Polycode.LocalShaderParam__get_name(this.__ptr)
 }

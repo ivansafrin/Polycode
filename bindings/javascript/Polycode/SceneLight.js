@@ -6,7 +6,10 @@ function SceneLight(type,parentScene,intensity,constantAttenuation,linearAttenua
 	}
 }
 
-SceneLight.prototype = Object.create(Entity.prototype);
+SceneLight.POINT_LIGHT = 0
+SceneLight.SPOT_LIGHT = 1
+
+SceneLight.prototype = Object.create(Entity.prototype)
 
 
 SceneLight.prototype.getIntensity = function() {

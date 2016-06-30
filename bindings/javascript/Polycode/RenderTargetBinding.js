@@ -9,6 +9,11 @@ function RenderTargetBinding() {
 	})
 }
 
+RenderTargetBinding.MODE_IN = 0
+RenderTargetBinding.MODE_OUT = 1
+RenderTargetBinding.MODE_COLOR = 2
+RenderTargetBinding.MODE_DEPTH = 3
+
 RenderTargetBinding.prototype.__get_id = function() {
 	return Polycode.RenderTargetBinding__get_id(this.__ptr)
 }

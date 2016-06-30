@@ -9,7 +9,8 @@ function SceneLabel(text,size,fontName,amode,actualHeight) {
 	})
 }
 
-SceneLabel.prototype = Object.create(ScenePrimitive.prototype);
+
+SceneLabel.prototype = Object.create(ScenePrimitive.prototype)
 
 SceneLabel.prototype.__get_positionAtBaseline = function() {
 	return Polycode.SceneLabel__get_positionAtBaseline(this.__ptr)

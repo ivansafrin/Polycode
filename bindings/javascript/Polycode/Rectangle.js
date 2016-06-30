@@ -10,6 +10,7 @@ function Rectangle() {
 	})
 }
 
+
 Rectangle.prototype.__get_x = function() {
 	return Polycode.Rectangle__get_x(this.__ptr)
 }

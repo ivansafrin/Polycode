@@ -9,7 +9,8 @@ function Font(fileName,FTLibrary) {
 	})
 }
 
-Font.prototype = Object.create(Resource.prototype);
+
+Font.prototype = Object.create(Resource.prototype)
 
 Font.prototype.__get_loaded = function() {
 	return Polycode.Font__get_loaded(this.__ptr)

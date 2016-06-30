@@ -9,6 +9,7 @@ function Ray() {
 	})
 }
 
+
 Ray.prototype.__get_origin = function() {
 	var retVal = new Vector3()
 	retVal.__ptr = 	Polycode.Ray__get_origin(this.__ptr)

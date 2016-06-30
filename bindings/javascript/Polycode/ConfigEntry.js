@@ -11,6 +11,7 @@ function ConfigEntry() {
 	})
 }
 
+
 ConfigEntry.prototype.__get_key = function() {
 	return Polycode.ConfigEntry__get_key(this.__ptr)
 }

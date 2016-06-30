@@ -10,7 +10,8 @@ function SceneCurve() {
 	})
 }
 
-SceneCurve.prototype = Object.create(SceneMesh.prototype);
+
+SceneCurve.prototype = Object.create(SceneMesh.prototype)
 
 SceneCurve.prototype.__get_renderCurve = function() {
 	return Polycode.SceneCurve__get_renderCurve(this.__ptr)

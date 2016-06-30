@@ -8,6 +8,7 @@ function CoreFileExtension() {
 	})
 }
 
+
 CoreFileExtension.prototype.__get_extension = function() {
 	return Polycode.CoreFileExtension__get_extension(this.__ptr)
 }

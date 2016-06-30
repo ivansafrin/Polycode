@@ -9,6 +9,7 @@ function ProgramAttribute() {
 	})
 }
 
+
 ProgramAttribute.prototype.__get_size = function() {
 	return Polycode.ProgramAttribute__get_size(this.__ptr)
 }

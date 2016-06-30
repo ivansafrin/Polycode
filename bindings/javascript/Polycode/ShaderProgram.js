@@ -9,7 +9,10 @@ function ShaderProgram(fileName) {
 	})
 }
 
-ShaderProgram.prototype = Object.create(Resource.prototype);
+ShaderProgram.TYPE_VERT = 0
+ShaderProgram.TYPE_FRAG = 1
+
+ShaderProgram.prototype = Object.create(Resource.prototype)
 
 ShaderProgram.prototype.__get_type = function() {
 	return Polycode.ShaderProgram__get_type(this.__ptr)

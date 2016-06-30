@@ -12,6 +12,9 @@ function OSFileEntry() {
 	})
 }
 
+OSFileEntry.TYPE_FILE = 0
+OSFileEntry.TYPE_FOLDER = 1
+
 OSFileEntry.prototype.__get_name = function() {
 	return Polycode.OSFileEntry__get_name(this.__ptr)
 }

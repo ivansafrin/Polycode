@@ -10,6 +10,7 @@ function GlyphData() {
 	})
 }
 
+
 GlyphData.prototype.__get_glyphs = function() {
 	var retVal = new FT_Glyph()
 	retVal.__ptr = 	Polycode.GlyphData__get_glyphs(this.__ptr)

@@ -6,7 +6,9 @@ function Timer(triggerMode,msecs) {
 	}
 }
 
-Timer.prototype = Object.create(EventDispatcher.prototype);
+Timer.EVENT_TRIGGER = 0
+
+Timer.prototype = Object.create(EventDispatcher.prototype)
 
 Duktape.fin(Timer.prototype, function (x) {
 	if (x === Timer.prototype) {

@@ -4,6 +4,7 @@ function RenderBuffer(width,height,attachDepthBuffer,floatingPoint) {
 	}
 }
 
+
 Duktape.fin(RenderBuffer.prototype, function (x) {
 	if (x === RenderBuffer.prototype) {
 		return;

@@ -6,7 +6,8 @@ function SceneLine(ent1,ent2) {
 	}
 }
 
-SceneLine.prototype = Object.create(SceneMesh.prototype);
+
+SceneLine.prototype = Object.create(SceneMesh.prototype)
 
 
 SceneLine.prototype.SceneLineWithPositions = function(startp,endp) {

@@ -10,6 +10,7 @@ function Quaternion(w,x,y,z) {
 	})
 }
 
+
 Quaternion.prototype.__get_x = function() {
 	return Polycode.Quaternion__get_x(this.__ptr)
 }

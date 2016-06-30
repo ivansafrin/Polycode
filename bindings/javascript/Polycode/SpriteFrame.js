@@ -9,6 +9,7 @@ function SpriteFrame() {
 	})
 }
 
+
 SpriteFrame.prototype.__get_coordinates = function() {
 	var retVal = new Rectangle()
 	retVal.__ptr = 	Polycode.SpriteFrame__get_coordinates(this.__ptr)

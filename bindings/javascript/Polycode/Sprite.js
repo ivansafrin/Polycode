@@ -6,7 +6,8 @@ function Sprite(name) {
 	}
 }
 
-Sprite.prototype = Object.create(Resource.prototype);
+
+Sprite.prototype = Object.create(Resource.prototype)
 
 Duktape.fin(Sprite.prototype, function (x) {
 	if (x === Sprite.prototype) {

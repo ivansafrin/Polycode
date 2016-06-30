@@ -4,6 +4,7 @@ function BinaryObjectWriter(object) {
 	}
 }
 
+
 Duktape.fin(BinaryObjectWriter.prototype, function (x) {
 	if (x === BinaryObjectWriter.prototype) {
 		return;

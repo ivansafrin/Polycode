@@ -15,6 +15,7 @@ function SceneParticle() {
 	})
 }
 
+
 SceneParticle.prototype.__get_lifetime = function() {
 	return Polycode.SceneParticle__get_lifetime(this.__ptr)
 }

@@ -8,6 +8,7 @@ function Vector2(x,y) {
 	})
 }
 
+
 Vector2.prototype.__get_x = function() {
 	return Polycode.Vector2__get_x(this.__ptr)
 }

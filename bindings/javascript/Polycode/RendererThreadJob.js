@@ -7,6 +7,7 @@ function RendererThreadJob() {
 	})
 }
 
+
 RendererThreadJob.prototype.__get_jobType = function() {
 	return Polycode.RendererThreadJob__get_jobType(this.__ptr)
 }

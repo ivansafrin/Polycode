@@ -7,6 +7,7 @@ function ShaderBinding() {
 	})
 }
 
+
 ShaderBinding.prototype.__get_accessMutex = function() {
 	var retVal = new CoreMutex()
 	retVal.__ptr = 	Polycode.ShaderBinding__get_accessMutex(this.__ptr)

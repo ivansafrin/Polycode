@@ -6,7 +6,14 @@ function Label(font,text,size,antiAliasMode,premultiplyAlpha,backgroundColor,for
 	}
 }
 
-Label.prototype = Object.create(Image.prototype);
+Label.ANTIALIAS_FULL = 0
+Label.ANTIALIAS_NONE = 1
+Label.ANTIALIAS_STRONG = 2
+Label.ANTIALIAS_LCD = 3
+Label.ANTIALIAS_LCD_HINT = 4
+Label.ANTIALIAS_FULL_HINT = 5
+
+Label.prototype = Object.create(Image.prototype)
 
 Duktape.fin(Label.prototype, function (x) {
 	if (x === Label.prototype) {

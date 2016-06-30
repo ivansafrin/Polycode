@@ -7,6 +7,7 @@ function SceneRenderTexture(targetScene,targetCamera,renderWidth,renderHeight,fl
 	})
 }
 
+
 SceneRenderTexture.prototype.__get_enabled = function() {
 	return Polycode.SceneRenderTexture__get_enabled(this.__ptr)
 }

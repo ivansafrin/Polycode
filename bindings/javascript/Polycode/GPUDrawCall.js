@@ -8,6 +8,7 @@ function GPUDrawCall() {
 	})
 }
 
+
 GPUDrawCall.prototype.__get_options = function() {
 	var retVal = new GPUDrawOptions()
 	retVal.__ptr = 	Polycode.GPUDrawCall__get_options(this.__ptr)

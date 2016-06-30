@@ -6,7 +6,8 @@ function ResourceManager() {
 	}
 }
 
-ResourceManager.prototype = Object.create(EventDispatcher.prototype);
+
+ResourceManager.prototype = Object.create(EventDispatcher.prototype)
 
 Duktape.fin(ResourceManager.prototype, function (x) {
 	if (x === ResourceManager.prototype) {

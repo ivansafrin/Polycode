@@ -4,6 +4,7 @@ function TextureResourceLoader() {
 	}
 }
 
+
 Duktape.fin(TextureResourceLoader.prototype, function (x) {
 	if (x === TextureResourceLoader.prototype) {
 		return;

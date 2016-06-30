@@ -21,6 +21,7 @@ function BoneTrack(bone,length) {
 	})
 }
 
+
 BoneTrack.prototype.__get_scaleX = function() {
 	var retVal = new BezierCurve()
 	retVal.__ptr = 	Polycode.BoneTrack__get_scaleX(this.__ptr)

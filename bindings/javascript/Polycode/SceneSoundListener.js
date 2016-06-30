@@ -6,7 +6,8 @@ function SceneSoundListener() {
 	}
 }
 
-SceneSoundListener.prototype = Object.create(Entity.prototype);
+
+SceneSoundListener.prototype = Object.create(Entity.prototype)
 
 Duktape.fin(SceneSoundListener.prototype, function (x) {
 	if (x === SceneSoundListener.prototype) {

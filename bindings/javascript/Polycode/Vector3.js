@@ -9,6 +9,7 @@ function Vector3(x,y,z) {
 	})
 }
 
+
 Vector3.prototype.__get_x = function() {
 	return Polycode.Vector3__get_x(this.__ptr)
 }

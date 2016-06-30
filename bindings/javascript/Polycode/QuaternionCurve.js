@@ -4,6 +4,7 @@ function QuaternionCurve(wCurve,xCurve,yCurve,zCurve) {
 	}
 }
 
+
 Duktape.fin(QuaternionCurve.prototype, function (x) {
 	if (x === QuaternionCurve.prototype) {
 		return;

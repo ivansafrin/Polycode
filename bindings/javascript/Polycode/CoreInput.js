@@ -15,7 +15,11 @@ function CoreInput() {
 	})
 }
 
-CoreInput.prototype = Object.create(EventDispatcher.prototype);
+CoreInput.MOUSE_BUTTON1 = 0
+CoreInput.MOUSE_BUTTON2 = 1
+CoreInput.MOUSE_BUTTON3 = 2
+
+CoreInput.prototype = Object.create(EventDispatcher.prototype)
 
 CoreInput.prototype.__get_simulateTouchWithMouse = function() {
 	return Polycode.CoreInput__get_simulateTouchWithMouse(this.__ptr)

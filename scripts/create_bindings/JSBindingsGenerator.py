@@ -103,8 +103,11 @@ class JSBindingsGenerator(object):
 		self.makeJSProperties(c)
 		self.jsClassOut += "}\n\n"
 
+		self.makeJSStaticProps(c)
+		self.jsClassOut += "\n"
+
 		if inherits:
-			self.jsClassOut += "%s.prototype = Object.create(%s.prototype);\n\n" % (c["name"], parentClass)
+			self.jsClassOut += "%s.prototype = Object.create(%s.prototype)\n\n" % (c["name"], parentClass)
 
 		self.makeJSPropAccessors(c)
 
@@ -127,6 +130,12 @@ class JSBindingsGenerator(object):
 		self.makeJSMethods(c)
 		self.writeClass(c)
 		self.jsIndexOut += "require('%s/%s')\n" % (self.libName, c["name"])
+
+	def makeJSStaticProps(self, c):
+		if len(c["staticProperties"]) > 0:
+			for pp in c["staticProperties"]:
+				if "defaultValue" in pp:
+					self.jsClassOut += "%s.%s = %s\n" % (c["name"], pp["name"], pp["defaultValue"])
 
 	def makeJSPropAccessors(self, c):
 		if len(c["properties"]) > 0:

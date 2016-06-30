@@ -4,6 +4,7 @@ function Data() {
 	}
 }
 
+
 Duktape.fin(Data.prototype, function (x) {
 	if (x === Data.prototype) {
 		return;

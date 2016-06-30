@@ -4,6 +4,10 @@ function Image(fileName) {
 	}
 }
 
+Image.IMAGE_RGB = 0
+Image.IMAGE_RGBA = 1
+Image.IMAGE_FP16 = 2
+
 
 Image.prototype.BlankImage = function(width,height,type) {
 	var retVal = new Image()

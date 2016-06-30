@@ -6,7 +6,8 @@ function Skeleton(fileName) {
 	}
 }
 
-Skeleton.prototype = Object.create(Entity.prototype);
+
+Skeleton.prototype = Object.create(Entity.prototype)
 
 Duktape.fin(Skeleton.prototype, function (x) {
 	if (x === Skeleton.prototype) {

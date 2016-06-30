@@ -10,6 +10,7 @@ function AudioMixer() {
 	})
 }
 
+
 AudioMixer.prototype.__get_globalVolume = function() {
 	return Polycode.AudioMixer__get_globalVolume(this.__ptr)
 }

@@ -13,6 +13,7 @@ function VideoModeChangeInfo() {
 	})
 }
 
+
 VideoModeChangeInfo.prototype.__get_xRes = function() {
 	return Polycode.VideoModeChangeInfo__get_xRes(this.__ptr)
 }

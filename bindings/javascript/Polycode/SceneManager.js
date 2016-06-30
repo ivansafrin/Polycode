@@ -4,6 +4,7 @@ function SceneManager() {
 	}
 }
 
+
 Duktape.fin(SceneManager.prototype, function (x) {
 	if (x === SceneManager.prototype) {
 		return;

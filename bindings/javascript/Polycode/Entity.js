@@ -29,7 +29,8 @@ function Entity() {
 	})
 }
 
-Entity.prototype = Object.create(EventDispatcher.prototype);
+
+Entity.prototype = Object.create(EventDispatcher.prototype)
 
 Entity.prototype.__get_ownsChildren = function() {
 	return Polycode.Entity__get_ownsChildren(this.__ptr)

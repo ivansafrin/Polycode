@@ -4,6 +4,7 @@ function ScriptResourceLoader() {
 	}
 }
 
+
 Duktape.fin(ScriptResourceLoader.prototype, function (x) {
 	if (x === ScriptResourceLoader.prototype) {
 		return;

@@ -10,6 +10,7 @@ function AttributeBinding() {
 	})
 }
 
+
 AttributeBinding.prototype.__get_name = function() {
 	return Polycode.AttributeBinding__get_name(this.__ptr)
 }

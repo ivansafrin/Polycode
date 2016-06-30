@@ -6,7 +6,8 @@ function EventDispatcher() {
 	}
 }
 
-EventDispatcher.prototype = Object.create(EventHandler.prototype);
+
+EventDispatcher.prototype = Object.create(EventHandler.prototype)
 
 Duktape.fin(EventDispatcher.prototype, function (x) {
 	if (x === EventDispatcher.prototype) {

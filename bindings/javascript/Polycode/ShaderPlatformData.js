@@ -9,6 +9,7 @@ function ShaderPlatformData() {
 	})
 }
 
+
 ShaderPlatformData.prototype.__get_shaderID = function() {
 	var retVal = new GLuint()
 	retVal.__ptr = 	Polycode.ShaderPlatformData__get_shaderID(this.__ptr)

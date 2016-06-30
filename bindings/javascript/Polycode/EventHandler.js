@@ -4,6 +4,7 @@ function EventHandler() {
 	}
 }
 
+
 Duktape.fin(EventHandler.prototype, function (x) {
 	if (x === EventHandler.prototype) {
 		return;

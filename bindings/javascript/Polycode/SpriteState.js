@@ -4,6 +4,7 @@ function SpriteState(spriteSet,name) {
 	}
 }
 
+
 Duktape.fin(SpriteState.prototype, function (x) {
 	if (x === SpriteState.prototype) {
 		return;

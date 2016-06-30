@@ -16,7 +16,11 @@ function SceneParticleEmitter(particleCount,lifetime,speed) {
 	})
 }
 
-SceneParticleEmitter.prototype = Object.create(SceneMesh.prototype);
+SceneParticleEmitter.PARTICLE_TYPE_POINT = 0
+SceneParticleEmitter.PARTICLE_TYPE_QUAD = 1
+SceneParticleEmitter.PARTICLE_TYPE_MESH = 2
+
+SceneParticleEmitter.prototype = Object.create(SceneMesh.prototype)
 
 SceneParticleEmitter.prototype.__get_useScaleCurve = function() {
 	return Polycode.SceneParticleEmitter__get_useScaleCurve(this.__ptr)

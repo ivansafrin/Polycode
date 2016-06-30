@@ -13,7 +13,10 @@ function Texture() {
 	})
 }
 
-Texture.prototype = Object.create(Resource.prototype);
+Texture.FILTERING_NEAREST = 0
+Texture.FILTERING_LINEAR = 1
+
+Texture.prototype = Object.create(Resource.prototype)
 
 Texture.prototype.__get_clamp = function() {
 	return Polycode.Texture__get_clamp(this.__ptr)

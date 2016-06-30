@@ -9,7 +9,8 @@ function Shader() {
 	})
 }
 
-Shader.prototype = Object.create(Resource.prototype);
+
+Shader.prototype = Object.create(Resource.prototype)
 
 Shader.prototype.__get_numSpotLights = function() {
 	return Polycode.Shader__get_numSpotLights(this.__ptr)

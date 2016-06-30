@@ -4,6 +4,7 @@ function ProgramResourceLoader() {
 	}
 }
 
+
 Duktape.fin(ProgramResourceLoader.prototype, function (x) {
 	if (x === ProgramResourceLoader.prototype) {
 		return;

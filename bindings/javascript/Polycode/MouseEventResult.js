@@ -8,6 +8,7 @@ function MouseEventResult() {
 	})
 }
 
+
 MouseEventResult.prototype.__get_hit = function() {
 	return Polycode.MouseEventResult__get_hit(this.__ptr)
 }

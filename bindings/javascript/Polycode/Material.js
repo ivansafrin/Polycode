@@ -11,7 +11,8 @@ function Material(name) {
 	})
 }
 
-Material.prototype = Object.create(Resource.prototype);
+
+Material.prototype = Object.create(Resource.prototype)
 
 Material.prototype.__get_fp16RenderTargets = function() {
 	return Polycode.Material__get_fp16RenderTargets(this.__ptr)

@@ -9,6 +9,7 @@ function Rotation() {
 	})
 }
 
+
 Rotation.prototype.__get_pitch = function() {
 	return Polycode.Rotation__get_pitch(this.__ptr)
 }

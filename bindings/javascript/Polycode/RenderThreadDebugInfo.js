@@ -9,6 +9,7 @@ function RenderThreadDebugInfo() {
 	})
 }
 
+
 RenderThreadDebugInfo.prototype.__get_buffersProcessed = function() {
 	return Polycode.RenderThreadDebugInfo__get_buffersProcessed(this.__ptr)
 }

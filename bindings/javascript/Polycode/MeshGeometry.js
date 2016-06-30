@@ -9,6 +9,14 @@ function MeshGeometry() {
 	})
 }
 
+MeshGeometry.TRISTRIP_MESH = 0
+MeshGeometry.TRI_MESH = 1
+MeshGeometry.TRIFAN_MESH = 2
+MeshGeometry.LINE_MESH = 4
+MeshGeometry.POINT_MESH = 5
+MeshGeometry.LINE_STRIP_MESH = 6
+MeshGeometry.LINE_LOOP_MESH = 7
+
 MeshGeometry.prototype.__get_meshType = function() {
 	return Polycode.MeshGeometry__get_meshType(this.__ptr)
 }

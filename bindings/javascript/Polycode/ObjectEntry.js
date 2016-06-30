@@ -13,6 +13,14 @@ function ObjectEntry() {
 	})
 }
 
+ObjectEntry.UNKNOWN_ENTRY = - 1
+ObjectEntry.FLOAT_ENTRY = 0
+ObjectEntry.INT_ENTRY = 1
+ObjectEntry.BOOL_ENTRY = 2
+ObjectEntry.ARRAY_ENTRY = 3
+ObjectEntry.STRING_ENTRY = 4
+ObjectEntry.CONTAINER_ENTRY = 5
+
 ObjectEntry.prototype.__get_type = function() {
 	return Polycode.ObjectEntry__get_type(this.__ptr)
 }

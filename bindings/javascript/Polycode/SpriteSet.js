@@ -6,7 +6,8 @@ function SpriteSet(fileName,parentPool) {
 	}
 }
 
-SpriteSet.prototype = Object.create(ResourcePool.prototype);
+
+SpriteSet.prototype = Object.create(ResourcePool.prototype)
 
 Duktape.fin(SpriteSet.prototype, function (x) {
 	if (x === SpriteSet.prototype) {

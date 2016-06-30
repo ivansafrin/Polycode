@@ -8,6 +8,7 @@ function EntityProp() {
 	})
 }
 
+
 EntityProp.prototype.__get_propName = function() {
 	return Polycode.EntityProp__get_propName(this.__ptr)
 }

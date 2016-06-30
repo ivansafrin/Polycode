@@ -20,6 +20,7 @@ function LightInfo() {
 	})
 }
 
+
 LightInfo.prototype.__get_importance = function() {
 	return Polycode.LightInfo__get_importance(this.__ptr)
 }

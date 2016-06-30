@@ -8,6 +8,7 @@ function DebugBackTraceEntry() {
 	})
 }
 
+
 DebugBackTraceEntry.prototype.__get_fileName = function() {
 	return Polycode.DebugBackTraceEntry__get_fileName(this.__ptr)
 }

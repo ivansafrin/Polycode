@@ -4,6 +4,7 @@ function SkeletonAnimation(name,duration) {
 	}
 }
 
+
 Duktape.fin(SkeletonAnimation.prototype, function (x) {
 	if (x === SkeletonAnimation.prototype) {
 		return;

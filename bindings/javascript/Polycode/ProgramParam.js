@@ -9,6 +9,15 @@ function ProgramParam() {
 	})
 }
 
+ProgramParam.PARAM_UNKNOWN = 0
+ProgramParam.PARAM_NUMBER = 1
+ProgramParam.PARAM_VECTOR2 = 2
+ProgramParam.PARAM_VECTOR3 = 3
+ProgramParam.PARAM_COLOR = 4
+ProgramParam.PARAM_MATRIX = 5
+ProgramParam.PARAM_TEXTURE = 6
+ProgramParam.PARAM_CUBEMAP = 7
+
 ProgramParam.prototype.__get_name = function() {
 	return Polycode.ProgramParam__get_name(this.__ptr)
 }

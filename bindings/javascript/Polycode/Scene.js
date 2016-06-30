@@ -19,7 +19,11 @@ function Scene(sceneType,virtualScene) {
 	})
 }
 
-Scene.prototype = Object.create(EventDispatcher.prototype);
+Scene.SCENE_3D = 0
+Scene.SCENE_2D = 1
+Scene.SCENE_2D_TOPLEFT = 2
+
+Scene.prototype = Object.create(EventDispatcher.prototype)
 
 Scene.prototype.__get_clearColor = function() {
 	var retVal = new Color()

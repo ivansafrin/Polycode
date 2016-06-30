@@ -10,6 +10,7 @@ function QuatTriple() {
 	})
 }
 
+
 QuatTriple.prototype.__get_q1 = function() {
 	var retVal = new Quaternion()
 	retVal.__ptr = 	Polycode.QuatTriple__get_q1(this.__ptr)

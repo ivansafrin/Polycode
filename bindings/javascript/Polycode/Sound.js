@@ -4,6 +4,7 @@ function Sound(fileName) {
 	}
 }
 
+
 Duktape.fin(Sound.prototype, function (x) {
 	if (x === Sound.prototype) {
 		return;

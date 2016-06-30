@@ -9,7 +9,8 @@ function CoreMotionEvent() {
 	})
 }
 
-CoreMotionEvent.prototype = Object.create(Event.prototype);
+
+CoreMotionEvent.prototype = Object.create(Event.prototype)
 
 CoreMotionEvent.prototype.__get_amount = function() {
 	var retVal = new Vector3()

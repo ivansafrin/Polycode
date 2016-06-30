@@ -7,6 +7,7 @@ function ScriptInstance() {
 	})
 }
 
+
 ScriptInstance.prototype.__get_script = function() {
 	var retVal = new Script()
 	retVal.__ptr = 	Polycode.ScriptInstance__get_script(this.__ptr)

@@ -3,7 +3,8 @@ require('Polycode/EventDispatcher')
 function CoreServices() {
 }
 
-CoreServices.prototype = Object.create(EventDispatcher.prototype);
+
+CoreServices.prototype = Object.create(EventDispatcher.prototype)
 
 Duktape.fin(CoreServices.prototype, function (x) {
 	if (x === CoreServices.prototype) {

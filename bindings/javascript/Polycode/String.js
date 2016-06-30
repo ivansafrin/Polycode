@@ -8,6 +8,8 @@ function String() {
 	})
 }
 
+String.ENCODING_UTF8 = 0
+
 String.prototype.__get_contents = function() {
 	var retVal = new string()
 	retVal.__ptr = 	Polycode.String__get_contents(this.__ptr)

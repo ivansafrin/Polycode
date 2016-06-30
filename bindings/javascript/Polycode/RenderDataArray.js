@@ -8,6 +8,21 @@ function RenderDataArray(type) {
 	})
 }
 
+RenderDataArray.VERTEX_DATA_ARRAY = 0
+RenderDataArray.COLOR_DATA_ARRAY = 1
+RenderDataArray.NORMAL_DATA_ARRAY = 2
+RenderDataArray.TEXCOORD_DATA_ARRAY = 3
+RenderDataArray.TANGENT_DATA_ARRAY = 4
+RenderDataArray.BONE_WEIGHT_DATA_ARRAY = 5
+RenderDataArray.BONE_INDEX_DATA_ARRAY = 6
+RenderDataArray.INDEX_DATA_ARRAY = 7
+RenderDataArray.TEXCOORD2_DATA_ARRAY = 8
+RenderDataArray.CUSTOM_DATA_ARRAY1 = 9
+RenderDataArray.CUSTOM_DATA_ARRAY2 = 10
+RenderDataArray.CUSTOM_DATA_ARRAY3 = 11
+RenderDataArray.CUSTOM_DATA_ARRAY4 = 12
+RenderDataArray.UNKNOWN_DATA_ARRAY = 13
+
 RenderDataArray.prototype.__get_type = function() {
 	return Polycode.RenderDataArray__get_type(this.__ptr)
 }

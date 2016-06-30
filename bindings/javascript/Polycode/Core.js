@@ -11,7 +11,27 @@ function Core() {
 	})
 }
 
-Core.prototype = Object.create(EventDispatcher.prototype);
+Core.EVENTBASE_CORE = 0x200
+Core.EVENT_CORE_RESIZE = EVENTBASE_CORE + 0
+Core.EVENT_LOST_FOCUS = EVENTBASE_CORE + 1
+Core.EVENT_GAINED_FOCUS = EVENTBASE_CORE + 2
+Core.EVENT_UNDO = EVENTBASE_CORE + 3
+Core.EVENT_REDO = EVENTBASE_CORE + 4
+Core.EVENT_COPY = EVENTBASE_CORE + 5
+Core.EVENT_CUT = EVENTBASE_CORE + 6
+Core.EVENT_SELECT_ALL = EVENTBASE_CORE + 7
+Core.EVENT_PASTE = EVENTBASE_CORE + 8
+Core.EVENT_GYRO_ROTATION = EVENTBASE_CORE + 9
+Core.EVENT_ACCELEROMETER_MOTION = EVENTBASE_CORE + 10
+Core.CURSOR_ARROW = 0
+Core.CURSOR_TEXT = 1
+Core.CURSOR_POINTER = 2
+Core.CURSOR_CROSSHAIR = 3
+Core.CURSOR_RESIZE_LEFT_RIGHT = 4
+Core.CURSOR_RESIZE_UP_DOWN = 5
+Core.CURSOR_OPEN_HAND = 6
+
+Core.prototype = Object.create(EventDispatcher.prototype)
 
 Core.prototype.__get_eventMutex = function() {
 	var retVal = new CoreMutex()

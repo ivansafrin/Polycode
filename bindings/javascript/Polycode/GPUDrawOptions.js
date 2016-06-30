@@ -17,6 +17,7 @@ function GPUDrawOptions() {
 	})
 }
 
+
 GPUDrawOptions.prototype.__get_depthTest = function() {
 	return Polycode.GPUDrawOptions__get_depthTest(this.__ptr)
 }

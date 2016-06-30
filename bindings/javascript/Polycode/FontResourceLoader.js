@@ -4,6 +4,7 @@ function FontResourceLoader() {
 	}
 }
 
+
 Duktape.fin(FontResourceLoader.prototype, function (x) {
 	if (x === FontResourceLoader.prototype) {
 		return;

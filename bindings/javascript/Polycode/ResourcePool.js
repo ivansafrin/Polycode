@@ -12,7 +12,8 @@ function ResourcePool(name,fallbackPool) {
 	})
 }
 
-ResourcePool.prototype = Object.create(EventDispatcher.prototype);
+
+ResourcePool.prototype = Object.create(EventDispatcher.prototype)
 
 ResourcePool.prototype.__get_reloadResourcesOnModify = function() {
 	return Polycode.ResourcePool__get_reloadResourcesOnModify(this.__ptr)

@@ -10,6 +10,7 @@ function SceneEntityInstanceLayer(instance,name) {
 	})
 }
 
+
 SceneEntityInstanceLayer.prototype.__get_name = function() {
 	return Polycode.SceneEntityInstanceLayer__get_name(this.__ptr)
 }

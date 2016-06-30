@@ -14,6 +14,7 @@ function GPUDrawBuffer() {
 	})
 }
 
+
 GPUDrawBuffer.prototype.__get_projectionMatrix = function() {
 	var retVal = new Matrix4()
 	retVal.__ptr = 	Polycode.GPUDrawBuffer__get_projectionMatrix(this.__ptr)

@@ -4,6 +4,7 @@ function AudioStreamingSource(channels,freq) {
 	}
 }
 
+
 Duktape.fin(AudioStreamingSource.prototype, function (x) {
 	if (x === AudioStreamingSource.prototype) {
 		return;

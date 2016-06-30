@@ -1,6 +1,16 @@
 function Renderer() {
 }
 
+Renderer.BLEND_MODE_NONE = 0
+Renderer.BLEND_MODE_NORMAL = 1
+Renderer.BLEND_MODE_LIGHTEN = 2
+Renderer.BLEND_MODE_COLOR = 3
+Renderer.BLEND_MODE_PREMULTIPLIED = 4
+Renderer.BLEND_MODE_MULTIPLY = 5
+Renderer.BLEND_MODE_MATERIAL = 6
+Renderer.DEPTH_FUNCTION_GREATER = 0
+Renderer.DEPTH_FUNCTION_LEQUAL = 1
+
 Duktape.fin(Renderer.prototype, function (x) {
 	if (x === Renderer.prototype) {
 		return;

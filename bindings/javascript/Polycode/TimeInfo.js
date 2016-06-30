@@ -14,6 +14,7 @@ function TimeInfo() {
 	})
 }
 
+
 TimeInfo.prototype.__get_seconds = function() {
 	return Polycode.TimeInfo__get_seconds(this.__ptr)
 }

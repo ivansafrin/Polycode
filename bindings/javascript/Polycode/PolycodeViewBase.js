@@ -7,6 +7,7 @@ function PolycodeViewBase() {
 	})
 }
 
+
 PolycodeViewBase.prototype.__get_resizable = function() {
 	return Polycode.PolycodeViewBase__get_resizable(this.__ptr)
 }

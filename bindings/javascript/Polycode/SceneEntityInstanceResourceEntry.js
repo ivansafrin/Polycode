@@ -6,7 +6,8 @@ function SceneEntityInstanceResourceEntry(instance) {
 	}
 }
 
-SceneEntityInstanceResourceEntry.prototype = Object.create(Resource.prototype);
+
+SceneEntityInstanceResourceEntry.prototype = Object.create(Resource.prototype)
 
 Duktape.fin(SceneEntityInstanceResourceEntry.prototype, function (x) {
 	if (x === SceneEntityInstanceResourceEntry.prototype) {

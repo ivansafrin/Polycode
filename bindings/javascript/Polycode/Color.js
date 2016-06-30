@@ -10,6 +10,10 @@ function Color(r,g,b,a) {
 	})
 }
 
+Color.BLEND_NORMAL = 0
+Color.BLEND_REPLACE_COLOR = 1
+Color.BLEND_ADDITIVE = 2
+
 Color.prototype.__get_r = function() {
 	return Polycode.Color__get_r(this.__ptr)
 }

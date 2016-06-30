@@ -10,7 +10,8 @@ function SceneEntityInstance(parentScene,fileName) {
 	})
 }
 
-SceneEntityInstance.prototype = Object.create(Entity.prototype);
+
+SceneEntityInstance.prototype = Object.create(Entity.prototype)
 
 SceneEntityInstance.prototype.__get_cloneUsingReload = function() {
 	return Polycode.SceneEntityInstance__get_cloneUsingReload(this.__ptr)

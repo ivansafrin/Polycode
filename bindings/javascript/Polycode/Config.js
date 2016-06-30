@@ -4,6 +4,7 @@ function Config() {
 	}
 }
 
+
 Duktape.fin(Config.prototype, function (x) {
 	if (x === Config.prototype) {
 		return;

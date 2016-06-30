@@ -8,6 +8,7 @@ function AABB() {
 	})
 }
 
+
 AABB.prototype.__get_min = function() {
 	var retVal = new Vector3()
 	retVal.__ptr = 	Polycode.AABB__get_min(this.__ptr)

@@ -6,7 +6,8 @@ function SceneSprite(spriteSet) {
 	}
 }
 
-SceneSprite.prototype = Object.create(SceneMesh.prototype);
+
+SceneSprite.prototype = Object.create(SceneMesh.prototype)
 
 
 SceneSprite.prototype.Clone = function(deepClone,ignoreEditorOnly) {

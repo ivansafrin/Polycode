@@ -12,6 +12,9 @@ function ShaderRenderTarget() {
 	})
 }
 
+ShaderRenderTarget.SIZE_MODE_PIXELS = 0
+ShaderRenderTarget.SIZE_MODE_NORMALIZED = 1
+
 ShaderRenderTarget.prototype.__get_id = function() {
 	return Polycode.ShaderRenderTarget__get_id(this.__ptr)
 }
