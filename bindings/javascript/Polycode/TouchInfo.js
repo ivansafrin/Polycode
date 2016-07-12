@@ -22,7 +22,7 @@ TouchInfo.prototype.__set_id = function(val) {
 }
 
 TouchInfo.prototype.__get_position = function() {
-	var retVal = new Vector2()
+	var retVal = new Vector2("__skip_ptr__")
 	retVal.__ptr = 	Polycode.TouchInfo__get_position(this.__ptr)
 	return retVal
 }

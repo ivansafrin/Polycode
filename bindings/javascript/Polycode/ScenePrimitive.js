@@ -53,13 +53,3 @@ ScenePrimitive.prototype.getPrimitiveParameter4 = function() {
 ScenePrimitive.prototype.getPrimitiveParameter5 = function() {
 	return Polycode.ScenePrimitive_getPrimitiveParameter5(this.__ptr)
 }
-
-ScenePrimitive.prototype.Clone = function(deepClone,ignoreEditorOnly) {
-	var retVal = new Entity()
-	retVal.__ptr = Polycode.ScenePrimitive_Clone(this.__ptr, deepClone, ignoreEditorOnly)
-	return retVal
-}
-
-ScenePrimitive.prototype.applyClone = function(clone,deepClone,ignoreEditorOnly) {
-	Polycode.ScenePrimitive_applyClone(this.__ptr, clone.__ptr, deepClone, ignoreEditorOnly)
-}

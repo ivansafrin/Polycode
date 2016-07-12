@@ -23,14 +23,6 @@ function SceneEntityInstanceResourceEntry:SceneEntityInstanceResourceEntry(...)
 	end
 end
 
-function SceneEntityInstanceResourceEntry:getInstance()
-	local retVal =  Polycode.SceneEntityInstanceResourceEntry_getInstance(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["SceneEntityInstance"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function SceneEntityInstanceResourceEntry:reloadResource()
 	local retVal =  Polycode.SceneEntityInstanceResourceEntry_reloadResource(self.__ptr)
 end

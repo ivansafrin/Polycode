@@ -47,18 +47,8 @@ Event.prototype.getEventCode = function() {
 	return Polycode.Event_getEventCode(this.__ptr)
 }
 
-Event.prototype.getDispatcher = function() {
-	var retVal = new EventDispatcher()
-	retVal.__ptr = Polycode.Event_getDispatcher(this.__ptr)
-	return retVal
-}
-
 Event.prototype.setEventCode = function(eventCode) {
 	Polycode.Event_setEventCode(this.__ptr, eventCode)
-}
-
-Event.prototype.setDispatcher = function(dispatcher) {
-	Polycode.Event_setDispatcher(this.__ptr, dispatcher.__ptr)
 }
 
 Event.prototype.getEventType = function() {

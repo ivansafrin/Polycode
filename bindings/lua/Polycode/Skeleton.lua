@@ -23,14 +23,6 @@ function Skeleton:Skeleton(...)
 	end
 end
 
-function Skeleton:BlankSkeleton()
-	local retVal =  Polycode.Skeleton_BlankSkeleton(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["Skeleton"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function Skeleton:loadSkeleton(fileName)
 	local retVal = Polycode.Skeleton_loadSkeleton(self.__ptr, fileName)
 end
@@ -39,48 +31,20 @@ function Skeleton:playAnimationByName(animName, weight, once, restartIfPlaying)
 	local retVal = Polycode.Skeleton_playAnimationByName(self.__ptr, animName, weight, once, restartIfPlaying)
 end
 
-function Skeleton:playAnimation(animation, weight, once, restartIfPlaying)
-	local retVal = Polycode.Skeleton_playAnimation(self.__ptr, animation.__ptr, weight, once, restartIfPlaying)
-end
-
 function Skeleton:setBaseAnimationByName(animName)
 	local retVal = Polycode.Skeleton_setBaseAnimationByName(self.__ptr, animName)
-end
-
-function Skeleton:setBaseAnimation(animation)
-	local retVal = Polycode.Skeleton_setBaseAnimation(self.__ptr, animation.__ptr)
 end
 
 function Skeleton:stopAllAnimations()
 	local retVal =  Polycode.Skeleton_stopAllAnimations(self.__ptr)
 end
 
-function Skeleton:getBaseAnimation()
-	local retVal =  Polycode.Skeleton_getBaseAnimation(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["SkeletonAnimation"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function Skeleton:addAnimation(name, fileName)
 	local retVal = Polycode.Skeleton_addAnimation(self.__ptr, name, fileName)
 end
 
-function Skeleton:getAnimation(name)
-	local retVal = Polycode.Skeleton_getAnimation(self.__ptr, name)
-	if retVal == nil then return nil end
-	local __c = _G["SkeletonAnimation"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function Skeleton:stopAnimationByName(name)
 	local retVal = Polycode.Skeleton_stopAnimationByName(self.__ptr, name)
-end
-
-function Skeleton:stopAnimation(animation)
-	local retVal = Polycode.Skeleton_stopAnimation(self.__ptr, animation.__ptr)
 end
 
 function Skeleton:Update()

@@ -32,6 +32,7 @@ namespace Polycode {
 	class Texture;
 	class Renderer;
 	class RenderBuffer;
+	class RenderFrame;
 	class Image;
 	
 	/**
@@ -47,7 +48,7 @@ namespace Polycode {
 			* @param renderHeight Vertical size of the render texture.
 			* @param floatingPoint Pass true if you want fp16 target renders			
 			*/
-			SceneRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight, bool floatingPoint);
+			SceneRenderTexture(int renderWidth,int renderHeight, bool floatingPoint);
 			virtual ~SceneRenderTexture();
 						
 			/**
@@ -55,7 +56,7 @@ namespace Polycode {
 			*/
 			std::shared_ptr<Texture> getTargetTexture();
 		
-			void Render();
+			void Render(RenderFrame *frame, Scene *targetScene, Camera* targetCamera);
 		
 			Image *saveToImage();
 
@@ -72,14 +73,9 @@ namespace Polycode {
 						
 			bool enabled;
 			
-		protected:
-		
+		protected:		
 			bool floatingPoint;
-		
 			Renderer *renderer;
 			std::shared_ptr<RenderBuffer> targetFramebuffer;
-		
-			Scene *targetScene;
-			Camera *targetCamera;
 	};
 }

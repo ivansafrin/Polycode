@@ -16,26 +16,12 @@ Duktape.fin(DummyCore.prototype, function (x) {
 	Polycode.DummyCore__delete(x.__ptr)
 })
 
-DummyCore.prototype.Render = function() {
-	Polycode.DummyCore_Render(this.__ptr)
-}
-
 DummyCore.prototype.systemUpdate = function() {
 	return Polycode.DummyCore_systemUpdate(this.__ptr)
 }
 
 DummyCore.prototype.setCursor = function(cursorType) {
 	Polycode.DummyCore_setCursor(this.__ptr, cursorType)
-}
-
-DummyCore.prototype.createThread = function(target) {
-	Polycode.DummyCore_createThread(this.__ptr, target.__ptr)
-}
-
-DummyCore.prototype.createMutex = function() {
-	var retVal = new CoreMutex()
-	retVal.__ptr = Polycode.DummyCore_createMutex(this.__ptr)
-	return retVal
 }
 
 DummyCore.prototype.copyStringToClipboard = function(str) {
@@ -72,10 +58,6 @@ DummyCore.prototype.openFilePicker = function(extensions,allowMultiple) {
 
 DummyCore.prototype.saveFilePicker = function(extensions) {
 	return Polycode.DummyCore_saveFilePicker(this.__ptr, extensions)
-}
-
-DummyCore.prototype.handleVideoModeChange = function(modeInfo) {
-	Polycode.DummyCore_handleVideoModeChange(this.__ptr, modeInfo.__ptr)
 }
 
 DummyCore.prototype.flushRenderContext = function() {

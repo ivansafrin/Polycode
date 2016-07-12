@@ -117,8 +117,6 @@ namespace Polycode {
 		unsigned int getTicks();
 		bool systemUpdate();
 		
-		void Render();
-
 		void createThread(Threaded *target);		
 		
 		void createFolder(const String& folderPath);

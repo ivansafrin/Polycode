@@ -136,11 +136,6 @@ function Sound:getMaxDistance()
 	return retVal
 end
 
-function Sound:loadBytes(data, size, channels, freq, format)
-	local retVal = Polycode.Sound_loadBytes(self.__ptr, data.__ptr, size, channels, freq, format.__ptr)
-	return retVal
-end
-
 function Sound:loadWAV(fileName)
 	local retVal = Polycode.Sound_loadWAV(self.__ptr, fileName)
 	return retVal

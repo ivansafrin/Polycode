@@ -120,10 +120,6 @@ Sound.prototype.getMaxDistance = function() {
 	return Polycode.Sound_getMaxDistance(this.__ptr)
 }
 
-Sound.prototype.loadBytes = function(data,size,channels,freq,format) {
-	return Polycode.Sound_loadBytes(this.__ptr, data.__ptr, size, channels, freq, format)
-}
-
 Sound.prototype.loadWAV = function(fileName) {
 	return Polycode.Sound_loadWAV(this.__ptr, fileName)
 }

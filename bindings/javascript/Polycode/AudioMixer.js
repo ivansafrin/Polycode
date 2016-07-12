@@ -5,8 +5,7 @@ function AudioMixer() {
 	Object.defineProperties(this, {
 		'globalVolume': { enumerable: true, configurable: true, get: AudioMixer.prototype.__get_globalVolume, set: AudioMixer.prototype.__set_globalVolume},
 		'listenerPosition': { enumerable: true, configurable: true, get: AudioMixer.prototype.__get_listenerPosition, set: AudioMixer.prototype.__set_listenerPosition},
-		'listenerOrientation': { enumerable: true, configurable: true, get: AudioMixer.prototype.__get_listenerOrientation, set: AudioMixer.prototype.__set_listenerOrientation},
-		'mixerMutex': { enumerable: true, configurable: true, get: AudioMixer.prototype.__get_mixerMutex, set: AudioMixer.prototype.__set_mixerMutex}
+		'listenerOrientation': { enumerable: true, configurable: true, get: AudioMixer.prototype.__get_listenerOrientation, set: AudioMixer.prototype.__set_listenerOrientation}
 	})
 }
 
@@ -20,7 +19,7 @@ AudioMixer.prototype.__set_globalVolume = function(val) {
 }
 
 AudioMixer.prototype.__get_listenerPosition = function() {
-	var retVal = new Vector3()
+	var retVal = new Vector3("__skip_ptr__")
 	retVal.__ptr = 	Polycode.AudioMixer__get_listenerPosition(this.__ptr)
 	return retVal
 }
@@ -30,7 +29,7 @@ AudioMixer.prototype.__set_listenerPosition = function(val) {
 }
 
 AudioMixer.prototype.__get_listenerOrientation = function() {
-	var retVal = new Quaternion()
+	var retVal = new Quaternion("__skip_ptr__")
 	retVal.__ptr = 	Polycode.AudioMixer__get_listenerOrientation(this.__ptr)
 	return retVal
 }
@@ -39,23 +38,9 @@ AudioMixer.prototype.__set_listenerOrientation = function(val) {
 	Polycode.AudioMixer__set_listenerOrientation(this.__ptr, val.__ptr)
 }
 
-AudioMixer.prototype.__get_mixerMutex = function() {
-	var retVal = new CoreMutex()
-	retVal.__ptr = 	Polycode.AudioMixer__get_mixerMutex(this.__ptr)
-	return retVal
-}
-
-AudioMixer.prototype.__set_mixerMutex = function(val) {
-	Polycode.AudioMixer__set_mixerMutex(this.__ptr, val.__ptr)
-}
-
 Duktape.fin(AudioMixer.prototype, function (x) {
 	if (x === AudioMixer.prototype) {
 		return;
 	}
 	Polycode.AudioMixer__delete(x.__ptr)
 })
-
-AudioMixer.prototype.mixIntoBuffer = function(buffer,numSamples) {
-	Polycode.AudioMixer_mixIntoBuffer(this.__ptr, buffer.__ptr, numSamples)
-}

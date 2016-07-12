@@ -40,6 +40,8 @@ class PolycodeMeshEditor : public PolycodeEditor {
 		void Activate();
 		void Deactivate();
 	
+		void Render(GPUDrawBuffer *buffer);
+	
 		bool openFile(OSFileEntry filePath);
 		void Resize(int x, int y);
 	

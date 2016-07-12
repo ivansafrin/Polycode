@@ -27,18 +27,6 @@ function SceneSound:Update()
 	local retVal =  Polycode.SceneSound_Update(self.__ptr)
 end
 
-function SceneSound:Clone(deepClone, ignoreEditorOnly)
-	local retVal = Polycode.SceneSound_Clone(self.__ptr, deepClone, ignoreEditorOnly)
-	if retVal == nil then return nil end
-	local __c = _G["Entity"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function SceneSound:applyClone(clone, deepClone, ignoreEditorOnly)
-	local retVal = Polycode.SceneSound_applyClone(self.__ptr, clone.__ptr, deepClone, ignoreEditorOnly)
-end
-
 function SceneSound:isDirectionalSound()
 	local retVal =  Polycode.SceneSound_isDirectionalSound(self.__ptr)
 	return retVal
@@ -46,14 +34,6 @@ end
 
 function SceneSound:setDirectionalSound(val)
 	local retVal = Polycode.SceneSound_setDirectionalSound(self.__ptr, val)
-end
-
-function SceneSound:getSound()
-	local retVal =  Polycode.SceneSound_getSound(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["Sound"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
 end
 
 function SceneSound:setLoopOnLoad(val)

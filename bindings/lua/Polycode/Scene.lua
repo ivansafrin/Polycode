@@ -116,38 +116,6 @@ function Scene:Scene(...)
 	end
 end
 
-function Scene:addEntity(entity)
-	local retVal = Polycode.Scene_addEntity(self.__ptr, entity.__ptr)
-end
-
-function Scene:addChild(entity)
-	local retVal = Polycode.Scene_addChild(self.__ptr, entity.__ptr)
-end
-
-function Scene:removeEntity(entity)
-	local retVal = Polycode.Scene_removeEntity(self.__ptr, entity.__ptr)
-end
-
-function Scene:getDefaultCamera()
-	local retVal =  Polycode.Scene_getDefaultCamera(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["Camera"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function Scene:getActiveCamera()
-	local retVal =  Polycode.Scene_getActiveCamera(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["Camera"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function Scene:setActiveCamera(camera)
-	local retVal = Polycode.Scene_setActiveCamera(self.__ptr, camera.__ptr)
-end
-
 function Scene:enableFog(enable)
 	local retVal = Polycode.Scene_enableFog(self.__ptr, enable)
 end
@@ -168,15 +136,6 @@ function Scene:Update()
 	local retVal =  Polycode.Scene_Update(self.__ptr)
 end
 
-function Scene:setVirtual(val)
-	local retVal = Polycode.Scene_setVirtual(self.__ptr, val)
-end
-
-function Scene:isVirtual()
-	local retVal =  Polycode.Scene_isVirtual(self.__ptr)
-	return retVal
-end
-
 function Scene:isEnabled()
 	local retVal =  Polycode.Scene_isEnabled(self.__ptr)
 	return retVal
@@ -186,41 +145,13 @@ function Scene:setEnabled(enabled)
 	local retVal = Polycode.Scene_setEnabled(self.__ptr, enabled)
 end
 
-function Scene:Render(targetCamera, targetFramebuffer, overrideMaterial, sendLights)
-	local retVal = Polycode.Scene_Render(self.__ptr, targetCamera.__ptr, targetFramebuffer.__ptr, overrideMaterial.__ptr, sendLights)
-end
-
 function Scene:setOverrideMaterial(material)
 	local retVal = Polycode.Scene_setOverrideMaterial(self.__ptr, material.__ptr)
-end
-
-function Scene:projectRayFromCameraAndViewportCoordinate(camera, coordinate)
-	local retVal = Polycode.Scene_projectRayFromCameraAndViewportCoordinate(self.__ptr, camera.__ptr, coordinate.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["Ray"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function Scene:addLight(light)
-	local retVal = Polycode.Scene_addLight(self.__ptr, light.__ptr)
-end
-
-function Scene:removeLight(light)
-	local retVal = Polycode.Scene_removeLight(self.__ptr, light.__ptr)
 end
 
 function Scene:getNumLights()
 	local retVal =  Polycode.Scene_getNumLights(self.__ptr)
 	return retVal
-end
-
-function Scene:getLight(index)
-	local retVal = Polycode.Scene_getLight(self.__ptr, index)
-	if retVal == nil then return nil end
-	local __c = _G["SceneLight"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
 end
 
 function Scene:doVisibilityChecking(val)

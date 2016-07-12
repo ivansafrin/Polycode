@@ -11,9 +11,3 @@ Duktape.fin(ScriptResourceLoader.prototype, function (x) {
 	}
 	Polycode.ScriptResourceLoader__delete(x.__ptr)
 })
-
-ScriptResourceLoader.prototype.loadResource = function(path,targetPool) {
-	var retVal = new Resource()
-	retVal.__ptr = Polycode.ScriptResourceLoader_loadResource(this.__ptr, path, targetPool.__ptr)
-	return retVal
-}

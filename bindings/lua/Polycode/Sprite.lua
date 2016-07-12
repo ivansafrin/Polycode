@@ -32,45 +32,9 @@ function Sprite:setName(name)
 	local retVal = Polycode.Sprite_setName(self.__ptr, name)
 end
 
-function Sprite:addSpriteState(state)
-	local retVal = Polycode.Sprite_addSpriteState(self.__ptr, state.__ptr)
-end
-
-function Sprite:removeSpriteState(state)
-	local retVal = Polycode.Sprite_removeSpriteState(self.__ptr, state.__ptr)
-end
-
 function Sprite:getNumStates()
 	local retVal =  Polycode.Sprite_getNumStates(self.__ptr)
 	return retVal
-end
-
-function Sprite:getState(index)
-	local retVal = Polycode.Sprite_getState(self.__ptr, index)
-	if retVal == nil then return nil end
-	local __c = _G["SpriteState"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function Sprite:getStateByName(name)
-	local retVal = Polycode.Sprite_getStateByName(self.__ptr, name)
-	if retVal == nil then return nil end
-	local __c = _G["SpriteState"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function Sprite:setParentSpritSet(spriteSet)
-	local retVal = Polycode.Sprite_setParentSpritSet(self.__ptr, spriteSet.__ptr)
-end
-
-function Sprite:getParentSpriteSet()
-	local retVal =  Polycode.Sprite_getParentSpriteSet(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["SpriteSet"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
 end
 
 function Sprite:__delete()

@@ -23,21 +23,15 @@
 #include "polycode/core/PolySceneRenderTexture.h"
 #include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyRenderer.h"
-#include "polycode/core/PolySceneManager.h"
 #include "polycode/core/PolyTexture.h"
 #include "polycode/core/PolyScene.h"
 #include "polycode/core/PolyCamera.h"
 
 using namespace Polycode;
 
-SceneRenderTexture::SceneRenderTexture(Scene *targetScene, Camera *targetCamera, int renderWidth,int renderHeight, bool floatingPoint) : floatingPoint(floatingPoint) {
+SceneRenderTexture::SceneRenderTexture(int renderWidth,int renderHeight, bool floatingPoint) : floatingPoint(floatingPoint) {
 	
 	targetFramebuffer = std::make_shared<RenderBuffer>(renderWidth, renderHeight, true, floatingPoint);
-	
-	this->targetScene = targetScene;
-	this->targetCamera = targetCamera;
-
-	CoreServices::getInstance()->getSceneManager()->registerRenderTexture(this);
 	renderer = Services()->getRenderer();
 	
 	enabled = true;
@@ -50,21 +44,12 @@ void SceneRenderTexture::resizeRenderTexture(int newWidth, int newHeight) {
 		targetFramebuffer = std::make_shared<RenderBuffer>(newWidth, newHeight, true, floatingPoint);
 	}
 }
-	
-Scene *SceneRenderTexture::getTargetScene() {
-	return targetScene;
-}
 
-Camera *SceneRenderTexture::getTargetCamera() {
-	return targetCamera;
-}
-
-void SceneRenderTexture::Render() {
+void SceneRenderTexture::Render(RenderFrame *frame, Scene *targetScene, Camera* targetCamera) {
 	if(targetCamera->hasFilterShader()) {
-		targetCamera->drawFilter(targetFramebuffer);
+		targetCamera->drawFilter(frame, targetFramebuffer, targetScene);
 	} else {
-		targetCamera->setViewport(Polycode::Rectangle(0.0, 0.0, targetFramebuffer->getWidth(), targetFramebuffer->getHeight()));
-		targetScene->Render(targetCamera, targetFramebuffer, NULL, true);
+		targetScene->Render(frame, targetCamera, targetFramebuffer, NULL, true);
 	}
 }
 
@@ -79,5 +64,4 @@ std::shared_ptr<Texture> SceneRenderTexture::getTargetTexture() {
 }
 
 SceneRenderTexture::~SceneRenderTexture() {
-	CoreServices::getInstance()->getSceneManager()->unregisterRenderTexture(this);
 }

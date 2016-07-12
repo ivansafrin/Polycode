@@ -1,6 +1,6 @@
-function SpriteState(spriteSet,name) {
+function SpriteState() {
 	if(arguments[0] != "__skip_ptr__") {
-		this.__ptr = Polycode.SpriteState(spriteSet,name)
+		this.__ptr = Polycode.SpriteState()
 	}
 }
 
@@ -29,7 +29,7 @@ SpriteState.prototype.getFrameIDAtIndex = function(index) {
 }
 
 SpriteState.prototype.getMeshForFrameIndex = function(index) {
-	var retVal = new Mesh()
+	var retVal = new Mesh("__skip_ptr__")
 	retVal.__ptr = Polycode.SpriteState_getMeshForFrameIndex(this.__ptr, index)
 	return retVal
 }
@@ -67,7 +67,7 @@ SpriteState.prototype.getStateFPS = function() {
 }
 
 SpriteState.prototype.getLargestFrameBoundingBox = function() {
-	var retVal = new Vector3()
+	var retVal = new Vector3("__skip_ptr__")
 	retVal.__ptr = Polycode.SpriteState_getLargestFrameBoundingBox(this.__ptr)
 	return retVal
 }
@@ -77,13 +77,13 @@ SpriteState.prototype.setBoundingBox = function(boundingBox) {
 }
 
 SpriteState.prototype.getBoundingBox = function() {
-	var retVal = new Vector2()
+	var retVal = new Vector2("__skip_ptr__")
 	retVal.__ptr = Polycode.SpriteState_getBoundingBox(this.__ptr)
 	return retVal
 }
 
 SpriteState.prototype.getSpriteOffset = function() {
-	var retVal = new Vector2()
+	var retVal = new Vector2("__skip_ptr__")
 	retVal.__ptr = Polycode.SpriteState_getSpriteOffset(this.__ptr)
 	return retVal
 }

@@ -1,6 +1,23 @@
 class "RenderFrame"
 
 
+function RenderFrame:__getvar(name)
+	if name == "viewport" then
+		local retVal = Polycode.RenderFrame_get_viewport(self.__ptr)
+		if retVal == nil then return nil end
+		local __c = _G["Rectangle"]("__skip_ptr__")
+		__c.__ptr = retVal
+		return __c
+	end
+end
+
+function RenderFrame:__setvar(name,value)
+	if name == "viewport" then
+		Polycode.RenderFrame_set_viewport(self.__ptr, value.__ptr)
+		return true
+	end
+	return false
+end
 function RenderFrame:RenderFrame(...)
 	local arg = {...}
 	for k,v in pairs(arg) do

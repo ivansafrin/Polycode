@@ -15,14 +15,6 @@ function SceneManager:SceneManager(...)
 	end
 end
 
-function SceneManager:addScene(newScene)
-	local retVal = Polycode.SceneManager_addScene(self.__ptr, newScene.__ptr)
-end
-
-function SceneManager:removeScene(scene)
-	local retVal = Polycode.SceneManager_removeScene(self.__ptr, scene.__ptr)
-end
-
 function SceneManager:Update()
 	local retVal =  Polycode.SceneManager_Update(self.__ptr)
 end
@@ -37,18 +29,6 @@ end
 
 function SceneManager:renderVirtual()
 	local retVal =  Polycode.SceneManager_renderVirtual(self.__ptr)
-end
-
-function SceneManager:registerRenderTexture(renderTexture)
-	local retVal = Polycode.SceneManager_registerRenderTexture(self.__ptr, renderTexture.__ptr)
-end
-
-function SceneManager:unregisterRenderTexture(renderTexture)
-	local retVal = Polycode.SceneManager_unregisterRenderTexture(self.__ptr, renderTexture.__ptr)
-end
-
-function SceneManager:setRenderer(renderer)
-	local retVal = Polycode.SceneManager_setRenderer(self.__ptr, renderer.__ptr)
 end
 
 function SceneManager:__delete()

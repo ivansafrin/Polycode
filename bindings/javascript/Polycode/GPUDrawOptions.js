@@ -83,7 +83,7 @@ GPUDrawOptions.prototype.__set_blendingMode = function(val) {
 }
 
 GPUDrawOptions.prototype.__get_scissorBox = function() {
-	var retVal = new Rectangle()
+	var retVal = new Rectangle("__skip_ptr__")
 	retVal.__ptr = 	Polycode.GPUDrawOptions__get_scissorBox(this.__ptr)
 	return retVal
 }
@@ -101,7 +101,7 @@ GPUDrawOptions.prototype.__set_enableScissor = function(val) {
 }
 
 GPUDrawOptions.prototype.__get_drawColor = function() {
-	var retVal = new Color()
+	var retVal = new Color("__skip_ptr__")
 	retVal.__ptr = 	Polycode.GPUDrawOptions__get_drawColor(this.__ptr)
 	return retVal
 }

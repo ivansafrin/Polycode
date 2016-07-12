@@ -57,7 +57,6 @@
 #include "polycode/core/PolyMaterial.h"
 #include "polycode/core/PolyMesh.h"
 #include "polycode/core/PolyShader.h"
-#include "polycode/core/PolySceneManager.h"
 #include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyCamera.h"
 #include "polycode/core/PolyScene.h"

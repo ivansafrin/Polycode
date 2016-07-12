@@ -73,18 +73,6 @@ function ScenePrimitive:getPrimitiveParameter5()
 	return retVal
 end
 
-function ScenePrimitive:Clone(deepClone, ignoreEditorOnly)
-	local retVal = Polycode.ScenePrimitive_Clone(self.__ptr, deepClone, ignoreEditorOnly)
-	if retVal == nil then return nil end
-	local __c = _G["Entity"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function ScenePrimitive:applyClone(clone, deepClone, ignoreEditorOnly)
-	local retVal = Polycode.ScenePrimitive_applyClone(self.__ptr, clone.__ptr, deepClone, ignoreEditorOnly)
-end
-
 function ScenePrimitive:__delete()
 	if self then Polycode.delete_ScenePrimitive(self.__ptr) end
 end

@@ -118,12 +118,9 @@ namespace Polycode {
 		virtual ~Core();
 		
 		bool Update();
-		virtual void Render() = 0;
 		
 		bool fixedUpdate();
 		virtual bool systemUpdate() = 0;
-		
-		bool updateAndRender();
 		
 		/**
 		* Show or hide cursor.
@@ -374,6 +371,9 @@ namespace Polycode {
 		
 		Number getFixedTimestep();
 		
+		Renderer *getRenderer();
+		Polycode::Rectangle getViewport();
+		
 		/**
 		* Returns the total ticks elapsed since launch.
 		* @return Time elapsed since launch in floating point seconds.
@@ -509,7 +509,6 @@ namespace Polycode {
 		DummyCore();
 		~DummyCore();
 		
-		void Render();
 		bool systemUpdate();
 		void setCursor(int cursorType);
 		void createThread(Threaded *target);

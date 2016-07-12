@@ -178,14 +178,6 @@ function MeshGeometry:getVertexTexCoordAtIndex(index)
 	return __c
 end
 
-function MeshGeometry:Copy()
-	local retVal =  Polycode.MeshGeometry_Copy(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["MeshGeometry"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function MeshGeometry:getRadius()
 	local retVal =  Polycode.MeshGeometry_getRadius(self.__ptr)
 	return retVal

@@ -163,16 +163,8 @@ function SceneParticleEmitter:fixedUpdate()
 	local retVal =  Polycode.SceneParticleEmitter_fixedUpdate(self.__ptr)
 end
 
-function SceneParticleEmitter:Render(buffer)
-	local retVal = Polycode.SceneParticleEmitter_Render(self.__ptr, buffer.__ptr)
-end
-
 function SceneParticleEmitter:updateParticles()
 	local retVal =  Polycode.SceneParticleEmitter_updateParticles(self.__ptr)
-end
-
-function SceneParticleEmitter:rebuildParticles(buffer)
-	local retVal = Polycode.SceneParticleEmitter_rebuildParticles(self.__ptr, buffer.__ptr)
 end
 
 function SceneParticleEmitter:triggerParticles(allAtOnce)
@@ -285,21 +277,9 @@ function SceneParticleEmitter:getLoopParticles()
 	return retVal
 end
 
-function SceneParticleEmitter:addSourceMesh(mesh)
-	local retVal = Polycode.SceneParticleEmitter_addSourceMesh(self.__ptr, mesh.__ptr)
-end
-
 function SceneParticleEmitter:getNumSourceMeshes()
 	local retVal =  Polycode.SceneParticleEmitter_getNumSourceMeshes(self.__ptr)
 	return retVal
-end
-
-function SceneParticleEmitter:getSourcesMeshAtIndex(index)
-	local retVal = Polycode.SceneParticleEmitter_getSourcesMeshAtIndex(self.__ptr, index)
-	if retVal == nil then return nil end
-	local __c = _G["Mesh"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
 end
 
 function SceneParticleEmitter:removeSourceMeshAtIndex(index)
@@ -308,18 +288,6 @@ end
 
 function SceneParticleEmitter:positionParticle(index)
 	local retVal = Polycode.SceneParticleEmitter_positionParticle(self.__ptr, index)
-end
-
-function SceneParticleEmitter:Clone(deepClone, ignoreEditorOnly)
-	local retVal = Polycode.SceneParticleEmitter_Clone(self.__ptr, deepClone, ignoreEditorOnly)
-	if retVal == nil then return nil end
-	local __c = _G["Entity"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function SceneParticleEmitter:applyClone(clone, deepClone, ignoreEditorOnly)
-	local retVal = Polycode.SceneParticleEmitter_applyClone(self.__ptr, clone.__ptr, deepClone, ignoreEditorOnly)
 end
 
 function SceneParticleEmitter:__delete()

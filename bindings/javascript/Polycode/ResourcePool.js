@@ -1,8 +1,8 @@
 require('Polycode/EventDispatcher')
 
-function ResourcePool(name,fallbackPool) {
+function ResourcePool() {
 	if(arguments[0] != "__skip_ptr__") {
-		this.__ptr = Polycode.ResourcePool(name,fallbackPool)
+		this.__ptr = Polycode.ResourcePool()
 	}
 	Object.defineProperties(this, {
 		'reloadResourcesOnModify': { enumerable: true, configurable: true, get: ResourcePool.prototype.__get_reloadResourcesOnModify, set: ResourcePool.prototype.__set_reloadResourcesOnModify},
@@ -54,10 +54,6 @@ Duktape.fin(ResourcePool.prototype, function (x) {
 	Polycode.ResourcePool__delete(x.__ptr)
 })
 
-ResourcePool.prototype.setFallbackPool = function(pool) {
-	Polycode.ResourcePool_setFallbackPool(this.__ptr, pool.__ptr)
-}
-
 ResourcePool.prototype.addResource = function(resource) {
 	Polycode.ResourcePool_addResource(this.__ptr, resource)
 }
@@ -79,19 +75,19 @@ ResourcePool.prototype.loadResourcesFromMaterialFile = function(path) {
 }
 
 ResourcePool.prototype.loadResource = function(path) {
-	var retVal = new Resource()
+	var retVal = new Resource("__skip_ptr__")
 	retVal.__ptr = Polycode.ResourcePool_loadResource(this.__ptr, path)
 	return retVal
 }
 
 ResourcePool.prototype.loadResourceWithName = function(path,name) {
-	var retVal = new Resource()
+	var retVal = new Resource("__skip_ptr__")
 	retVal.__ptr = Polycode.ResourcePool_loadResourceWithName(this.__ptr, path, name)
 	return retVal
 }
 
 ResourcePool.prototype.getResource = function(resourceType,resourceName) {
-	var retVal = new Resource()
+	var retVal = new Resource("__skip_ptr__")
 	retVal.__ptr = Polycode.ResourcePool_getResource(this.__ptr, resourceType, resourceName)
 	return retVal
 }
@@ -105,13 +101,13 @@ ResourcePool.prototype.setName = function(name) {
 }
 
 ResourcePool.prototype.loadFont = function(name,path) {
-	var retVal = new Font()
+	var retVal = new Font("__skip_ptr__")
 	retVal.__ptr = Polycode.ResourcePool_loadFont(this.__ptr, name, path)
 	return retVal
 }
 
 ResourcePool.prototype.getResourceByPath = function(resourcePath) {
-	var retVal = new Resource()
+	var retVal = new Resource("__skip_ptr__")
 	retVal.__ptr = Polycode.ResourcePool_getResourceByPath(this.__ptr, resourcePath)
 	return retVal
 }

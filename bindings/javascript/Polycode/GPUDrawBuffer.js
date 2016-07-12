@@ -16,7 +16,7 @@ function GPUDrawBuffer() {
 
 
 GPUDrawBuffer.prototype.__get_projectionMatrix = function() {
-	var retVal = new Matrix4()
+	var retVal = new Matrix4("__skip_ptr__")
 	retVal.__ptr = 	Polycode.GPUDrawBuffer__get_projectionMatrix(this.__ptr)
 	return retVal
 }
@@ -26,7 +26,7 @@ GPUDrawBuffer.prototype.__set_projectionMatrix = function(val) {
 }
 
 GPUDrawBuffer.prototype.__get_viewMatrix = function() {
-	var retVal = new Matrix4()
+	var retVal = new Matrix4("__skip_ptr__")
 	retVal.__ptr = 	Polycode.GPUDrawBuffer__get_viewMatrix(this.__ptr)
 	return retVal
 }
@@ -36,7 +36,7 @@ GPUDrawBuffer.prototype.__set_viewMatrix = function(val) {
 }
 
 GPUDrawBuffer.prototype.__get_cameraMatrix = function() {
-	var retVal = new Matrix4()
+	var retVal = new Matrix4("__skip_ptr__")
 	retVal.__ptr = 	Polycode.GPUDrawBuffer__get_cameraMatrix(this.__ptr)
 	return retVal
 }
@@ -46,7 +46,7 @@ GPUDrawBuffer.prototype.__set_cameraMatrix = function(val) {
 }
 
 GPUDrawBuffer.prototype.__get_clearColor = function() {
-	var retVal = new Color()
+	var retVal = new Color("__skip_ptr__")
 	retVal.__ptr = 	Polycode.GPUDrawBuffer__get_clearColor(this.__ptr)
 	return retVal
 }
@@ -72,7 +72,7 @@ GPUDrawBuffer.prototype.__set_clearColorBuffer = function(val) {
 }
 
 GPUDrawBuffer.prototype.__get_backingResolutionScale = function() {
-	var retVal = new Vector2()
+	var retVal = new Vector2("__skip_ptr__")
 	retVal.__ptr = 	Polycode.GPUDrawBuffer__get_backingResolutionScale(this.__ptr)
 	return retVal
 }
@@ -82,7 +82,7 @@ GPUDrawBuffer.prototype.__set_backingResolutionScale = function(val) {
 }
 
 GPUDrawBuffer.prototype.__get_viewport = function() {
-	var retVal = new Rectangle()
+	var retVal = new Rectangle("__skip_ptr__")
 	retVal.__ptr = 	Polycode.GPUDrawBuffer__get_viewport(this.__ptr)
 	return retVal
 }

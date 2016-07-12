@@ -26,9 +26,8 @@ extern UIGlobalMenu *globalMenu;
 
 PolycodeMeshEditor::PolycodeMeshEditor() : PolycodeEditor(true){
 	
-	previewScene = new Scene(Scene::SCENE_3D, true);		
-	renderTexture = new SceneRenderTexture(previewScene, previewScene->getDefaultCamera(), 512, 512, false);
-	
+	previewScene = new Scene(Scene::SCENE_3D);
+	renderTexture = new SceneRenderTexture(512, 512, false);
 	
 	ownsChildren = true;
 
@@ -38,10 +37,10 @@ PolycodeMeshEditor::PolycodeMeshEditor() : PolycodeEditor(true){
 //	previewScene->ambientColor.setColor(0.0, 0.0, 0.0, 1.0);
 				
 	Number customFalloff = 0.006;
-	mainLight = new SceneLight(SceneLight::POINT_LIGHT, previewScene, 999999, customFalloff, customFalloff, customFalloff);
+	mainLight = new SceneLight(SceneLight::POINT_LIGHT, 999999, customFalloff, customFalloff, customFalloff);
 	previewScene->addLight(mainLight);
 
-	secondLight = new SceneLight(SceneLight::POINT_LIGHT, previewScene, 999999, customFalloff, customFalloff, customFalloff);
+	secondLight = new SceneLight(SceneLight::POINT_LIGHT, 999999, customFalloff, customFalloff, customFalloff);
 	previewScene->addLight(secondLight);
 	
 	mainLight->setPosition(9999, 9999, 9999);
@@ -75,6 +74,10 @@ void PolycodeMeshEditor::Deactivate() {
 	previewScene->enabled = false;
 	renderTexture->enabled = false;
 	
+}
+
+void PolycodeMeshEditor::Render(GPUDrawBuffer *buffer) {
+	renderTexture->Render(buffer->renderFrame, previewScene, previewScene->getDefaultCamera());
 }
 
 void PolycodeMeshEditor::handleEvent(Event *event) {

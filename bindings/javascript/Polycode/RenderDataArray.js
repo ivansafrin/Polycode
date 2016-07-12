@@ -46,10 +46,6 @@ Duktape.fin(RenderDataArray.prototype, function (x) {
 	Polycode.RenderDataArray__delete(x.__ptr)
 })
 
-RenderDataArray.prototype.getArrayData = function() {
-	Polycode.RenderDataArray_getArrayData(this.__ptr)
-}
-
 RenderDataArray.prototype.getDataSize = function() {
 	return Polycode.RenderDataArray_getDataSize(this.__ptr)
 }

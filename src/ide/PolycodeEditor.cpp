@@ -176,7 +176,7 @@ void PolycodeEditor::Resize(int x, int y) {
 	// RENDERER_TODO
 
 	Vector2 pos = getScreenPositionForMainCamera();
-	scissorBox.setRect(pos.x,pos.y, x, y);	
+	scissorBox.setRect(pos.x,pos.y, x, y);
 }
 
 PolycodeEditor::~PolycodeEditor() {

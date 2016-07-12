@@ -115,18 +115,18 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 	UITextInput::setMenuSingleton(globalMenu);
 			
 	
-	Scene *screen = new Scene(Scene::SCENE_2D_TOPLEFT);
+	mainScene = new Scene(Scene::SCENE_2D_TOPLEFT);
 	
-	screen->doVisibilityChecking(false);
-	screen->getDefaultCamera()->frustumCulling = false;
+	mainScene->doVisibilityChecking(false);
+	mainScene->getDefaultCamera()->frustumCulling = false;
 	
-	globalScene = screen;
+	globalScene = mainScene;
 	
-	screen->rootEntity.processInputEvents = true;
+	mainScene->rootEntity.processInputEvents = true;
 //	screen->rootEntity.setDefaultScreenOptions(true);
 
-	screen->clearColor.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiBgColor"));	
-	screen->useClearColor = true;
+	mainScene->clearColor.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiBgColor"));
+	mainScene->useClearColor = true;
 	
 	editorManager = new PolycodeEditorManager();
 	globalEditorManager = editorManager;
@@ -158,7 +158,7 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 	
 	frame->addEventListener(this, UIEvent::CLOSE_EVENT);
 	frame->addEventListener(this, Event::CHANGE_EVENT); 
-	screen->addChild(frame);
+	mainScene->addChild(frame);
 	
 	projectManager = new PolycodeProjectManager();
 	editorManager->setProjectManager(projectManager);
@@ -181,7 +181,7 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 	editorManager->registerEditorFactory(new PolycodeMeshEditorFactory());
 	editorManager->registerEditorFactory(new PolycodeEntityEditorFactory());
 			
-	screen->addChild(globalMenu);	
+	mainScene->addChild(globalMenu);
 				
 	frame->console->applyTheme();
 
@@ -223,7 +223,7 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 
 	menuBar->addEventListener(this, UIEvent::OK_EVENT);
 
-	screen->addChild(menuBar);
+	mainScene->addChild(menuBar);
 	frame->setPositionY(25);
 #else
 	menuBar = NULL;
@@ -238,7 +238,11 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 	
 	applyFinalConfig();
 	
-	core->updateAndRender();
+	
+	RenderFrame *renderFrame = new RenderFrame(core->getViewport());
+	mainScene->Render(renderFrame);
+	core->getRenderer()->submitRenderFrame(renderFrame);
+	
 	frame->Resize(core->getXRes(), core->getYRes());
 
 }
@@ -1399,7 +1403,6 @@ bool PolycodeIDEApp::Update() {
 			frame->playButton->visible = true;
 			frame->playButton->enabled = true;				
 	}
-	
 
 	if(projectManager->getProjectCount() == 1) {
 		projectManager->setActiveProject(projectManager->getProjectByIndex(0));
@@ -1415,6 +1418,16 @@ bool PolycodeIDEApp::Update() {
 	}
 
 
-	return core->updateAndRender();
+	bool result = core->systemUpdate();
+	
+	mainScene->Update();
+	while(core->fixedUpdate()) {
+		mainScene->fixedUpdate();
+	}
+	
+	RenderFrame *renderFrame = new RenderFrame(core->getViewport());
+	mainScene->Render(renderFrame);
+	core->getRenderer()->submitRenderFrame(renderFrame);
+	return result;
 }
 

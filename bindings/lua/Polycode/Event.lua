@@ -49,20 +49,8 @@ function Event:getEventCode()
 	return retVal
 end
 
-function Event:getDispatcher()
-	local retVal =  Polycode.Event_getDispatcher(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["EventDispatcher"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function Event:setEventCode(eventCode)
 	local retVal = Polycode.Event_setEventCode(self.__ptr, eventCode)
-end
-
-function Event:setDispatcher(dispatcher)
-	local retVal = Polycode.Event_setDispatcher(self.__ptr, dispatcher.__ptr)
 end
 
 function Event:getEventType()

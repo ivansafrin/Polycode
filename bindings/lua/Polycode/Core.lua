@@ -23,13 +23,7 @@ Core.CURSOR_RESIZE_UP_DOWN = 5
 Core.CURSOR_OPEN_HAND = 6
 
 function Core:__getvar(name)
-	if name == "eventMutex" then
-		local retVal = Polycode.Core_get_eventMutex(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["CoreMutex"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
-	elseif name == "paused" then
+	if name == "paused" then
 		return Polycode.Core_get_paused(self.__ptr)
 	elseif name == "pauseOnLoseFocus" then
 		return Polycode.Core_get_pauseOnLoseFocus(self.__ptr)
@@ -50,10 +44,7 @@ function Core:__getvar(name)
 end
 
 function Core:__setvar(name,value)
-	if name == "eventMutex" then
-		Polycode.Core_set_eventMutex(self.__ptr, value.__ptr)
-		return true
-	elseif name == "paused" then
+	if name == "paused" then
 		Polycode.Core_set_paused(self.__ptr, value)
 		return true
 	elseif name == "pauseOnLoseFocus" then
@@ -80,10 +71,6 @@ function Core:Update()
 	return retVal
 end
 
-function Core:Render()
-	local retVal =  Polycode.Core_Render(self.__ptr)
-end
-
 function Core:fixedUpdate()
 	local retVal =  Polycode.Core_fixedUpdate(self.__ptr)
 	return retVal
@@ -91,11 +78,6 @@ end
 
 function Core:systemUpdate()
 	local retVal =  Polycode.Core_systemUpdate(self.__ptr)
-	return retVal
-end
-
-function Core:updateAndRender()
-	local retVal =  Polycode.Core_updateAndRender(self.__ptr)
 	return retVal
 end
 
@@ -119,26 +101,6 @@ function Core:openOnScreenKeyboard(open)
 	local retVal = Polycode.Core_openOnScreenKeyboard(self.__ptr, open)
 end
 
-function Core:createThread(target)
-	local retVal = Polycode.Core_createThread(self.__ptr, target.__ptr)
-end
-
-function Core:lockMutex(mutex)
-	local retVal = Polycode.Core_lockMutex(self.__ptr, mutex.__ptr)
-end
-
-function Core:unlockMutex(mutex)
-	local retVal = Polycode.Core_unlockMutex(self.__ptr, mutex.__ptr)
-end
-
-function Core:createMutex()
-	local retVal =  Polycode.Core_createMutex(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["CoreMutex"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function Core:copyStringToClipboard(str)
 	local retVal = Polycode.Core_copyStringToClipboard(self.__ptr, str)
 end
@@ -146,14 +108,6 @@ end
 function Core:getClipboardString()
 	local retVal =  Polycode.Core_getClipboardString(self.__ptr)
 	return retVal
-end
-
-function Core:getServices()
-	local retVal =  Polycode.Core_getServices(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["CoreServices"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
 end
 
 function Core:getFPS()
@@ -175,14 +129,6 @@ function Core:getAALevel()
 	return retVal
 end
 
-function Core:getInput()
-	local retVal =  Polycode.Core_getInput(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["CoreInput"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function Core:getXRes()
 	local retVal =  Polycode.Core_getXRes(self.__ptr)
 	return retVal
@@ -201,10 +147,6 @@ end
 function Core:getBackingYRes()
 	local retVal =  Polycode.Core_getBackingYRes(self.__ptr)
 	return retVal
-end
-
-function Core:getScreenInfo(width, height, hz)
-	local retVal = Polycode.Core_getScreenInfo(self.__ptr, width.__ptr, height.__ptr, hz.__ptr)
 end
 
 function Core:getScreenWidth()
@@ -258,10 +200,6 @@ function Core:saveFilePicker(extensions)
 	return retVal
 end
 
-function Core:handleVideoModeChange(modeInfo)
-	local retVal = Polycode.Core_handleVideoModeChange(self.__ptr, modeInfo.__ptr)
-end
-
 function Core:flushRenderContext()
 	local retVal =  Polycode.Core_flushRenderContext(self.__ptr)
 end
@@ -273,18 +211,6 @@ end
 function Core:isWindowInitialized()
 	local retVal =  Polycode.Core_isWindowInitialized(self.__ptr)
 	return retVal
-end
-
-function Core:openFile(fileName, opts)
-	local retVal = Polycode.Core_openFile(self.__ptr, fileName, opts)
-	if retVal == nil then return nil end
-	local __c = _G["CoreFile"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function Core:closeFile(file)
-	local retVal = Polycode.Core_closeFile(self.__ptr, file.__ptr)
 end
 
 function Core:addFileSource(type, source)
@@ -357,21 +283,17 @@ function Core:getFixedTimestep()
 	return retVal
 end
 
+function Core:getViewport()
+	local retVal =  Polycode.Core_getViewport(self.__ptr)
+	if retVal == nil then return nil end
+	local __c = _G["Rectangle"]("__skip_ptr__")
+	__c.__ptr = retVal
+	return __c
+end
+
 function Core:getTicksFloat()
 	local retVal =  Polycode.Core_getTicksFloat(self.__ptr)
 	return retVal
-end
-
-function Core:setUserPointer(ptr)
-	local retVal = Polycode.Core_setUserPointer(self.__ptr, ptr.__ptr)
-end
-
-function Core:getUserPointer()
-	local retVal =  Polycode.Core_getUserPointer(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["void"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
 end
 
 function Core:executeExternalCommand(command, args, inDirectory)
@@ -391,18 +313,6 @@ end
 
 function Core:makeApplicationMain()
 	local retVal =  Polycode.Core_makeApplicationMain(self.__ptr)
-end
-
-function Core:getEventMutex()
-	local retVal =  Polycode.Core_getEventMutex(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["CoreMutex"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function Core:removeThread(thread)
-	local retVal = Polycode.Core_removeThread(self.__ptr, thread.__ptr)
 end
 
 function Core:__delete()

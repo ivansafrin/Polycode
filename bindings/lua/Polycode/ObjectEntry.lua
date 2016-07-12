@@ -65,29 +65,6 @@ function ObjectEntry:ObjectEntry(...)
 	end
 end
 
-function ObjectEntry:readNumber(key, out)
-	local retVal = Polycode.ObjectEntry_readNumber(self.__ptr, key, out.__ptr)
-	return retVal
-end
-
-function ObjectEntry:readString(key, out)
-	local retVal = Polycode.ObjectEntry_readString(self.__ptr, key, out.__ptr)
-	return retVal
-end
-
-function ObjectEntry:readBool(key, out)
-	local retVal = Polycode.ObjectEntry_readBool(self.__ptr, key, out.__ptr)
-	return retVal
-end
-
-function ObjectEntry:addChild(name)
-	local retVal = Polycode.ObjectEntry_addChild(self.__ptr, name)
-	if retVal == nil then return nil end
-	local __c = _G["ObjectEntry"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function ObjectEntry:getTypedName()
 	local retVal =  Polycode.ObjectEntry_getTypedName(self.__ptr)
 	return retVal

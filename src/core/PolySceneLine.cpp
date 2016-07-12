@@ -104,21 +104,11 @@ void SceneCurve::Update() {
 	setLocalBoundingBox(bBox * 2.0);
 }
 
-SceneLine::SceneLine(Vector3 startp, Vector3 endp) : SceneMesh() {
-	this->ent1 = NULL;
-	this->ent2 = NULL;
+SceneLine::SceneLine(const Vector3 &startp, const Vector3 &endp) : SceneMesh() {
 	this->start = start;
 	this->end = end;	
 	initLine();
 	ignoreParentMatrix = false;
-}
-
-SceneLine::SceneLine(Entity *ent1, Entity *ent2) : SceneMesh() {
-	this->ent1 = ent1;
-	this->ent2 = ent2;	
-	initLine();
-	ignoreParentMatrix = true;
-
 }
 
 void SceneLine::initLine() {
@@ -130,9 +120,6 @@ void SceneLine::initLine() {
 	mesh->addSubmesh(geometry);
 }
 
-SceneLine *SceneLine::SceneLineWithPositions(Vector3 startp, Vector3 endp) {
-	return new SceneLine(startp, endp);
-}
 
 SceneLine::~SceneLine() {
 }
@@ -154,18 +141,10 @@ void SceneLine::Update(){
 	MeshGeometry geometry;
 	geometry.meshType = MeshGeometry::LINE_MESH;
 	
-	if(ent1 != NULL && ent2 != NULL) {
-		v1 = ent1->getConcatenatedMatrix().getPosition();
-		v2 = ent2->getConcatenatedMatrix().getPosition();
-		
-		geometry.addVertex(v1.x,v1.y,v1.z);
-		geometry.addVertex(v2.x,v2.y,v2.z);
-	} else {
-		v1 = start;
-		v2 = end;
-		geometry.addVertex(v1.x,v1.y*yAdjust,v1.z);
-		geometry.addVertex(v2.x,v2.y*yAdjust,v2.z);
+	v1 = start;
+	v2 = end;
+	geometry.addVertex(v1.x,v1.y*yAdjust,v1.z);
+	geometry.addVertex(v2.x,v2.y*yAdjust,v2.z);
 
-	}
 	mesh->addSubmesh(geometry);
 }

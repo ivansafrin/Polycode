@@ -1,8 +1,8 @@
 require('Polycode/Entity')
 
-function SceneLight(type,parentScene,intensity,constantAttenuation,linearAttenuation,quadraticAttenuation) {
+function SceneLight(type,intensity,constantAttenuation,linearAttenuation,quadraticAttenuation) {
 	if(arguments[0] != "__skip_ptr__") {
-		this.__ptr = Polycode.SceneLight(type,parentScene,intensity,constantAttenuation,linearAttenuation,quadraticAttenuation)
+		this.__ptr = Polycode.SceneLight(type,intensity,constantAttenuation,linearAttenuation,quadraticAttenuation)
 	}
 }
 
@@ -40,12 +40,8 @@ SceneLight.prototype.getType = function() {
 	return Polycode.SceneLight_getType(this.__ptr)
 }
 
-SceneLight.prototype.renderDepthMap = function(scene) {
-	Polycode.SceneLight_renderDepthMap(this.__ptr, scene.__ptr)
-}
-
 SceneLight.prototype.getZBufferTexture = function() {
-	var retVal = new Texture()
+	var retVal = new Texture("__skip_ptr__")
 	retVal.__ptr = Polycode.SceneLight_getZBufferTexture(this.__ptr)
 	return retVal
 }
@@ -110,34 +106,8 @@ SceneLight.prototype.setLightType = function(lightType) {
 	Polycode.SceneLight_setLightType(this.__ptr, lightType)
 }
 
-SceneLight.prototype.Clone = function(deepClone,ignoreEditorOnly) {
-	var retVal = new Entity()
-	retVal.__ptr = Polycode.SceneLight_Clone(this.__ptr, deepClone, ignoreEditorOnly)
-	return retVal
-}
-
-SceneLight.prototype.applyClone = function(clone,deepClone,ignoreEditorOnly) {
-	Polycode.SceneLight_applyClone(this.__ptr, clone.__ptr, deepClone, ignoreEditorOnly)
-}
-
-SceneLight.prototype.getParentScene = function() {
-	var retVal = new Scene()
-	retVal.__ptr = Polycode.SceneLight_getParentScene(this.__ptr)
-	return retVal
-}
-
-SceneLight.prototype.setParentScene = function(scene) {
-	Polycode.SceneLight_setParentScene(this.__ptr, scene.__ptr)
-}
-
-SceneLight.prototype.getSpotlightCamera = function() {
-	var retVal = new Camera()
-	retVal.__ptr = Polycode.SceneLight_getSpotlightCamera(this.__ptr)
-	return retVal
-}
-
 SceneLight.prototype.getLightInfo = function() {
-	var retVal = new LightInfo()
+	var retVal = new LightInfo("__skip_ptr__")
 	retVal.__ptr = Polycode.SceneLight_getLightInfo(this.__ptr)
 	return retVal
 }

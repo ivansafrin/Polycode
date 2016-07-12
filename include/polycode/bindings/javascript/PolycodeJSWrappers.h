@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 extern "C" {
 	#include <stdio.h>
  	#include "duktape.h"
@@ -50,7 +52,6 @@ extern "C" {
 #include "polycode/core/PolySceneLabel.h"
 #include "polycode/core/PolySceneLight.h"
 #include "polycode/core/PolySceneLine.h"
-#include "polycode/core/PolySceneManager.h"
 #include "polycode/core/PolySceneMesh.h"
 #include "polycode/core/PolyScenePrimitive.h"
 #include "polycode/core/PolySceneRenderTexture.h"
@@ -74,27 +75,15 @@ using namespace std;
 namespace Polycode {
 
 	duk_ret_t Polycode_BezierCurve(duk_context *context) {
-		BezierCurve *inst = new BezierCurve();
+		std::shared_ptr<BezierCurve> *inst = new std::shared_ptr<BezierCurve>;
+		(*inst) = std::make_shared<BezierCurve>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
-	duk_ret_t Polycode_BezierCurve__get_insertPoint(duk_context *context) {
-		BezierCurve *inst = (BezierCurve*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->insertPoint;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_BezierCurve__set_insertPoint(duk_context *context) {
-		BezierCurve *inst = (BezierCurve*)duk_to_pointer(context, 0);
-		inst->insertPoint = (BezierPoint*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_BezierCurve__get_evaluationAccuracy(duk_context *context) {
-		BezierCurve *inst = (BezierCurve*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->evaluationAccuracy);
+		std::shared_ptr<BezierCurve> *inst = (std::shared_ptr<BezierCurve>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->evaluationAccuracy);
 		return 1;
 	}
 
@@ -105,27 +94,19 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_BezierCurve__delete(duk_context *context) {
-		BezierCurve *inst = (BezierCurve*)duk_to_pointer(context, 0);
+		std::shared_ptr<BezierCurve> *inst = (std::shared_ptr<BezierCurve>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_BezierCurve_getControlPoint(duk_context *context) {
-		BezierCurve *inst = (BezierCurve*)duk_to_pointer(context, 0);
-		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getControlPoint(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
 	duk_ret_t Polycode_BezierCurve_getNumControlPoints(duk_context *context) {
-		BezierCurve *inst = (BezierCurve*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumControlPoints());
+		std::shared_ptr<BezierCurve> *inst = (std::shared_ptr<BezierCurve>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumControlPoints());
 		return 1;
 	}
 
 	duk_ret_t Polycode_BezierCurve_addControlPoint(duk_context *context) {
-		BezierCurve *inst = (BezierCurve*)duk_to_pointer(context, 0);
+		std::shared_ptr<BezierCurve> *inst = (std::shared_ptr<BezierCurve>*)duk_to_pointer(context, 0);
 		Number p1x = duk_to_number(context, 1);
 		Number p1y = duk_to_number(context, 2);
 		Number p1z = duk_to_number(context, 3);
@@ -135,12 +116,12 @@ namespace Polycode {
 		Number p3x = duk_to_number(context, 7);
 		Number p3y = duk_to_number(context, 8);
 		Number p3z = duk_to_number(context, 9);
-		inst->addControlPoint(p1x,p1y,p1z,p2x,p2y,p2z,p3x,p3y,p3z);
+		(*inst)->addControlPoint(p1x,p1y,p1z,p2x,p2y,p2z,p3x,p3y,p3z);
 		return 0;
 	}
 
 	duk_ret_t Polycode_BezierCurve_addControlPoint3dWithHandles(duk_context *context) {
-		BezierCurve *inst = (BezierCurve*)duk_to_pointer(context, 0);
+		std::shared_ptr<BezierCurve> *inst = (std::shared_ptr<BezierCurve>*)duk_to_pointer(context, 0);
 		Number p1x = duk_to_number(context, 1);
 		Number p1y = duk_to_number(context, 2);
 		Number p1z = duk_to_number(context, 3);
@@ -150,102 +131,84 @@ namespace Polycode {
 		Number p3x = duk_to_number(context, 7);
 		Number p3y = duk_to_number(context, 8);
 		Number p3z = duk_to_number(context, 9);
-		inst->addControlPoint3dWithHandles(p1x,p1y,p1z,p2x,p2y,p2z,p3x,p3y,p3z);
+		(*inst)->addControlPoint3dWithHandles(p1x,p1y,p1z,p2x,p2y,p2z,p3x,p3y,p3z);
 		return 0;
 	}
 
 	duk_ret_t Polycode_BezierCurve_addControlPoint3d(duk_context *context) {
-		BezierCurve *inst = (BezierCurve*)duk_to_pointer(context, 0);
+		std::shared_ptr<BezierCurve> *inst = (std::shared_ptr<BezierCurve>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
 		Number z = duk_to_number(context, 3);
-		inst->addControlPoint3d(x,y,z);
+		(*inst)->addControlPoint3d(x,y,z);
 		return 0;
 	}
 
 	duk_ret_t Polycode_BezierCurve_addControlPoint2dWithHandles(duk_context *context) {
-		BezierCurve *inst = (BezierCurve*)duk_to_pointer(context, 0);
+		std::shared_ptr<BezierCurve> *inst = (std::shared_ptr<BezierCurve>*)duk_to_pointer(context, 0);
 		Number p1x = duk_to_number(context, 1);
 		Number p1y = duk_to_number(context, 2);
 		Number p2x = duk_to_number(context, 3);
 		Number p2y = duk_to_number(context, 4);
 		Number p3x = duk_to_number(context, 5);
 		Number p3y = duk_to_number(context, 6);
-		inst->addControlPoint2dWithHandles(p1x,p1y,p2x,p2y,p3x,p3y);
+		(*inst)->addControlPoint2dWithHandles(p1x,p1y,p2x,p2y,p3x,p3y);
 		return 0;
 	}
 
 	duk_ret_t Polycode_BezierCurve_addControlPoint2d(duk_context *context) {
-		BezierCurve *inst = (BezierCurve*)duk_to_pointer(context, 0);
+		std::shared_ptr<BezierCurve> *inst = (std::shared_ptr<BezierCurve>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
-		inst->addControlPoint2d(x,y);
+		(*inst)->addControlPoint2d(x,y);
 		return 0;
 	}
 
 	duk_ret_t Polycode_BezierCurve_getPointAt(duk_context *context) {
-		BezierCurve *inst = (BezierCurve*)duk_to_pointer(context, 0);
+		std::shared_ptr<BezierCurve> *inst = (std::shared_ptr<BezierCurve>*)duk_to_pointer(context, 0);
 		Number a = duk_to_number(context, 1);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->getPointAt(a);
-		duk_push_pointer(context, (void*)retInst);
-		return 1;
-	}
-
-	duk_ret_t Polycode_BezierCurve_getPointBetween(duk_context *context) {
-		BezierCurve *inst = (BezierCurve*)duk_to_pointer(context, 0);
-		Number a = duk_to_number(context, 1);
-		BezierPoint* bp1 = (BezierPoint*)duk_to_pointer(context, 2);
-		BezierPoint* bp2 = (BezierPoint*)duk_to_pointer(context, 3);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->getPointBetween(a,bp1,bp2);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->getPointAt(a);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_BezierCurve_clearControlPoints(duk_context *context) {
-		BezierCurve *inst = (BezierCurve*)duk_to_pointer(context, 0);
-		inst->clearControlPoints();
+		std::shared_ptr<BezierCurve> *inst = (std::shared_ptr<BezierCurve>*)duk_to_pointer(context, 0);
+		(*inst)->clearControlPoints();
 		return 0;
 	}
 
 	duk_ret_t Polycode_BezierCurve_getYValueAtX(duk_context *context) {
-		BezierCurve *inst = (BezierCurve*)duk_to_pointer(context, 0);
+		std::shared_ptr<BezierCurve> *inst = (std::shared_ptr<BezierCurve>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
-		duk_push_number(context, inst->getYValueAtX(x));
+		duk_push_number(context, (*inst)->getYValueAtX(x));
 		return 1;
 	}
 
 	duk_ret_t Polycode_BezierCurve_getTValueAtX(duk_context *context) {
-		BezierCurve *inst = (BezierCurve*)duk_to_pointer(context, 0);
+		std::shared_ptr<BezierCurve> *inst = (std::shared_ptr<BezierCurve>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
-		duk_push_number(context, inst->getTValueAtX(x));
+		duk_push_number(context, (*inst)->getTValueAtX(x));
 		return 1;
 	}
 
-	duk_ret_t Polycode_BezierCurve_removePoint(duk_context *context) {
-		BezierCurve *inst = (BezierCurve*)duk_to_pointer(context, 0);
-		BezierPoint* point = (BezierPoint*)duk_to_pointer(context, 1);
-		inst->removePoint(point);
-		return 0;
-	}
-
 	duk_ret_t Polycode_BezierCurve_setHeightCacheResolution(duk_context *context) {
-		BezierCurve *inst = (BezierCurve*)duk_to_pointer(context, 0);
+		std::shared_ptr<BezierCurve> *inst = (std::shared_ptr<BezierCurve>*)duk_to_pointer(context, 0);
 		Number resolution = duk_to_number(context, 1);
-		inst->setHeightCacheResolution(resolution);
+		(*inst)->setHeightCacheResolution(resolution);
 		return 0;
 	}
 
 	duk_ret_t Polycode_BezierCurve_rebuildHeightCache(duk_context *context) {
-		BezierCurve *inst = (BezierCurve*)duk_to_pointer(context, 0);
-		inst->rebuildHeightCache();
+		std::shared_ptr<BezierCurve> *inst = (std::shared_ptr<BezierCurve>*)duk_to_pointer(context, 0);
+		(*inst)->rebuildHeightCache();
 		return 0;
 	}
 
 	duk_ret_t Polycode_BezierCurve_recalculateDistances(duk_context *context) {
-		BezierCurve *inst = (BezierCurve*)duk_to_pointer(context, 0);
-		inst->recalculateDistances();
+		std::shared_ptr<BezierCurve> *inst = (std::shared_ptr<BezierCurve>*)duk_to_pointer(context, 0);
+		(*inst)->recalculateDistances();
 		return 0;
 	}
 
@@ -259,15 +222,17 @@ namespace Polycode {
 		Number p3x = duk_to_number(context, 6);
 		Number p3y = duk_to_number(context, 7);
 		Number p3z = duk_to_number(context, 8);
-		BezierPoint *inst = new BezierPoint(p1x,p1y,p1z,p2x,p2y,p2z,p3x,p3y,p3z);
+		std::shared_ptr<BezierPoint> *inst = new std::shared_ptr<BezierPoint>;
+		(*inst) = std::make_shared<BezierPoint>(p1x,p1y,p1z,p2x,p2y,p2z,p3x,p3y,p3z);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_BezierPoint__get_p1(duk_context *context) {
-		BezierPoint *inst = (BezierPoint*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->p1;
+		std::shared_ptr<BezierPoint> *inst = (std::shared_ptr<BezierPoint>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*retInst = std::make_shared<Vector3>();
+		*(*retInst) = (*inst)->p1;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -279,9 +244,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_BezierPoint__get_p2(duk_context *context) {
-		BezierPoint *inst = (BezierPoint*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->p2;
+		std::shared_ptr<BezierPoint> *inst = (std::shared_ptr<BezierPoint>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*retInst = std::make_shared<Vector3>();
+		*(*retInst) = (*inst)->p2;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -293,9 +259,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_BezierPoint__get_p3(duk_context *context) {
-		BezierPoint *inst = (BezierPoint*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->p3;
+		std::shared_ptr<BezierPoint> *inst = (std::shared_ptr<BezierPoint>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*retInst = std::make_shared<Vector3>();
+		*(*retInst) = (*inst)->p3;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -307,21 +274,22 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_BezierPoint__delete(duk_context *context) {
-		BezierPoint *inst = (BezierPoint*)duk_to_pointer(context, 0);
+		std::shared_ptr<BezierPoint> *inst = (std::shared_ptr<BezierPoint>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Bone(duk_context *context) {
 		String boneName = duk_to_string(context, 0);
-		Bone *inst = new Bone(boneName);
+		std::shared_ptr<Bone> *inst = new std::shared_ptr<Bone>;
+		(*inst) = std::make_shared<Bone>(boneName);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Bone__get_parentBoneId(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->parentBoneId);
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->parentBoneId);
 		return 1;
 	}
 
@@ -332,9 +300,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Bone__get_boneMatrix(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->boneMatrix;
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*retInst = std::make_shared<Matrix4>();
+		*(*retInst) = (*inst)->boneMatrix;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -346,9 +315,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Bone__get_restMatrix(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->restMatrix;
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*retInst = std::make_shared<Matrix4>();
+		*(*retInst) = (*inst)->restMatrix;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -360,9 +330,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Bone__get_baseMatrix(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->baseMatrix;
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*retInst = std::make_shared<Matrix4>();
+		*(*retInst) = (*inst)->baseMatrix;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -374,9 +345,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Bone__get_finalMatrix(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->finalMatrix;
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*retInst = std::make_shared<Matrix4>();
+		*(*retInst) = (*inst)->finalMatrix;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -388,9 +360,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Bone__get_baseRotation(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
-		Quaternion *retInst = new Quaternion();
-		*retInst = inst->baseRotation;
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Quaternion> *retInst = new std::shared_ptr<Quaternion>;
+		*retInst = std::make_shared<Quaternion>();
+		*(*retInst) = (*inst)->baseRotation;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -402,9 +375,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Bone__get_baseScale(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->baseScale;
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*retInst = std::make_shared<Vector3>();
+		*(*retInst) = (*inst)->baseScale;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -416,9 +390,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Bone__get_basePosition(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->basePosition;
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*retInst = std::make_shared<Vector3>();
+		*(*retInst) = (*inst)->basePosition;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -430,8 +405,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Bone__get_disableAnimation(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->disableAnimation);
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->disableAnimation);
 		return 1;
 	}
 
@@ -442,167 +417,167 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Bone__delete(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Bone_getName(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->getName().c_str());
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->getName().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Bone_setParentBone(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
 		shared_ptr<Bone> bone = *(shared_ptr<Bone>*)duk_to_pointer(context, 1);
-		inst->setParentBone(bone);
+		(*inst)->setParentBone(bone);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Bone_addChildBone(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
 		shared_ptr<Bone> bone = *(shared_ptr<Bone>*)duk_to_pointer(context, 1);
-		inst->addChildBone(bone);
+		(*inst)->addChildBone(bone);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Bone_getParentBone(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
-		shared_ptr<Bone> *retInst = new shared_ptr<Bone>();
-		*retInst = inst->getParentBone();
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
+		std::shared_ptr<shared_ptr<Bone>> *retInst = new std::shared_ptr<shared_ptr<Bone>>;
+		*(*retInst) = (*inst)->getParentBone();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Bone_getNumChildBones(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumChildBones());
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumChildBones());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Bone_getChildBone(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		shared_ptr<Bone> *retInst = new shared_ptr<Bone>();
-		*retInst = inst->getChildBone(index);
+		std::shared_ptr<shared_ptr<Bone>> *retInst = new std::shared_ptr<shared_ptr<Bone>>;
+		*(*retInst) = (*inst)->getChildBone(index);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Bone_getBoneMatrix(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->getBoneMatrix();
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*(*retInst) = (*inst)->getBoneMatrix();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Bone_setBoneMatrix(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
 		Matrix4 matrix = *(Matrix4*)duk_to_pointer(context, 1);
-		inst->setBoneMatrix(matrix);
+		(*inst)->setBoneMatrix(matrix);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Bone_getRestMatrix(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->getRestMatrix();
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*(*retInst) = (*inst)->getRestMatrix();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Bone_getFullRestMatrix(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->getFullRestMatrix();
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*(*retInst) = (*inst)->getFullRestMatrix();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Bone_getParentRestMatrix(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->getParentRestMatrix();
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*(*retInst) = (*inst)->getParentRestMatrix();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Bone_getFinalMatrix(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->getFinalMatrix();
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*(*retInst) = (*inst)->getFinalMatrix();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Bone_setRestMatrix(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
 		Matrix4 matrix = *(Matrix4*)duk_to_pointer(context, 1);
-		inst->setRestMatrix(matrix);
+		(*inst)->setRestMatrix(matrix);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Bone_setBaseMatrix(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
 		Matrix4 matrix = *(Matrix4*)duk_to_pointer(context, 1);
-		inst->setBaseMatrix(matrix);
+		(*inst)->setBaseMatrix(matrix);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Bone_getBaseMatrix(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->getBaseMatrix();
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*(*retInst) = (*inst)->getBaseMatrix();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Bone_getFullBaseMatrix(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->getFullBaseMatrix();
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*(*retInst) = (*inst)->getFullBaseMatrix();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Bone_rebuildFinalMatrix(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
-		inst->rebuildFinalMatrix();
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
+		(*inst)->rebuildFinalMatrix();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Bone_buildFinalMatrix(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->buildFinalMatrix();
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*(*retInst) = (*inst)->buildFinalMatrix();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Bone_intializeBone(duk_context *context) {
-		Bone *inst = (Bone*)duk_to_pointer(context, 0);
+		std::shared_ptr<Bone> *inst = (std::shared_ptr<Bone>*)duk_to_pointer(context, 0);
 		Vector3 basePosition = *(Vector3*)duk_to_pointer(context, 1);
 		Vector3 baseScale = *(Vector3*)duk_to_pointer(context, 2);
 		Quaternion baseRotation = *(Quaternion*)duk_to_pointer(context, 3);
 		Vector3 restPosition = *(Vector3*)duk_to_pointer(context, 4);
 		Vector3 restScale = *(Vector3*)duk_to_pointer(context, 5);
 		Quaternion restRotation = *(Quaternion*)duk_to_pointer(context, 6);
-		inst->intializeBone(basePosition,baseScale,baseRotation,restPosition,restScale,restRotation);
+		(*inst)->intializeBone(basePosition,baseScale,baseRotation,restPosition,restScale,restRotation);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Camera(duk_context *context) {
-		Scene* parentScene = (Scene*)duk_to_pointer(context, 0);
-		Camera *inst = new Camera(parentScene);
+		std::shared_ptr<Camera> *inst = new std::shared_ptr<Camera>;
+		(*inst) = std::make_shared<Camera>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Camera__get_frustumCulling(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->frustumCulling);
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->frustumCulling);
 		return 1;
 	}
 
@@ -613,8 +588,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Camera__get_topLeftOrtho(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->topLeftOrtho);
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->topLeftOrtho);
 		return 1;
 	}
 
@@ -625,9 +600,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Camera__get_cameraShift(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		Vector2 *retInst = new Vector2();
-		*retInst = inst->cameraShift;
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector2> *retInst = new std::shared_ptr<Vector2>;
+		*retInst = std::make_shared<Vector2>();
+		*(*retInst) = (*inst)->cameraShift;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -639,277 +615,230 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Camera__delete(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Camera_buildFrustumPlanes(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		inst->buildFrustumPlanes();
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
+		(*inst)->buildFrustumPlanes();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Camera_isSphereInFrustum(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
 		Vector3 pos = *(Vector3*)duk_to_pointer(context, 1);
 		Number fRadius = duk_to_number(context, 2);
-		duk_push_boolean(context, inst->isSphereInFrustum(pos,fRadius));
+		duk_push_boolean(context, (*inst)->isSphereInFrustum(pos,fRadius));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Camera_isAABBInFrustum(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
 		AABB aabb = *(AABB*)duk_to_pointer(context, 1);
-		duk_push_boolean(context, inst->isAABBInFrustum(aabb));
+		duk_push_boolean(context, (*inst)->isAABBInFrustum(aabb));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Camera_setOrthoMode(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
 		bool mode = duk_to_boolean(context, 1);
-		inst->setOrthoMode(mode);
+		(*inst)->setOrthoMode(mode);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Camera_setOrthoSize(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
 		Number orthoSizeX = duk_to_number(context, 1);
 		Number orthoSizeY = duk_to_number(context, 2);
-		inst->setOrthoSize(orthoSizeX,orthoSizeY);
+		(*inst)->setOrthoSize(orthoSizeX,orthoSizeY);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Camera_setFrustumMode(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
 		Number left = duk_to_number(context, 1);
 		Number right = duk_to_number(context, 2);
 		Number bottom = duk_to_number(context, 3);
 		Number top = duk_to_number(context, 4);
 		Number front = duk_to_number(context, 5);
 		Number back = duk_to_number(context, 6);
-		inst->setFrustumMode(left,right,bottom,top,front,back);
+		(*inst)->setFrustumMode(left,right,bottom,top,front,back);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Camera_getOrthoMode(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->getOrthoMode());
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->getOrthoMode());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Camera_getOrthoSizeX(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getOrthoSizeX());
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getOrthoSizeX());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Camera_getOrthoSizeY(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getOrthoSizeY());
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getOrthoSizeY());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Camera_setFOV(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
 		Number fov = duk_to_number(context, 1);
-		inst->setFOV(fov);
+		(*inst)->setFOV(fov);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Camera_getFOV(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getFOV());
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getFOV());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Camera_setClippingPlanes(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
 		Number nearClipPlane = duk_to_number(context, 1);
 		Number farClipPlane = duk_to_number(context, 2);
-		inst->setClippingPlanes(nearClipPlane,farClipPlane);
+		(*inst)->setClippingPlanes(nearClipPlane,farClipPlane);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Camera_getNearClippingPlane(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getNearClippingPlane());
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getNearClippingPlane());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Camera_getFarClippingPlane(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getFarClippingPlane());
-		return 1;
-	}
-
-	duk_ret_t Polycode_Camera_setParentScene(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		Scene* parentScene = (Scene*)duk_to_pointer(context, 1);
-		inst->setParentScene(parentScene);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Camera_getParentScene(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getParentScene();
-		duk_push_pointer(context, (void*)ptrRetVal);
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getFarClippingPlane());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Camera_createProjectionMatrix(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->createProjectionMatrix();
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*(*retInst) = (*inst)->createProjectionMatrix();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Camera_hasFilterShader(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->hasFilterShader());
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->hasFilterShader());
 		return 1;
 	}
 
-	duk_ret_t Polycode_Camera_drawFilter(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		shared_ptr<RenderBuffer> targetBuffer = *(shared_ptr<RenderBuffer>*)duk_to_pointer(context, 1);
-		inst->drawFilter(targetBuffer);
-		return 0;
-	}
-
 	duk_ret_t Polycode_Camera_setPostFilter(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
 		shared_ptr<Material> material = *(shared_ptr<Material>*)duk_to_pointer(context, 1);
-		inst->setPostFilter(material);
+		(*inst)->setPostFilter(material);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Camera_setPostFilterByName(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
 		String shaderName = duk_to_string(context, 1);
-		inst->setPostFilterByName(shaderName);
+		(*inst)->setPostFilterByName(shaderName);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Camera_removePostFilter(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		inst->removePostFilter();
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
+		(*inst)->removePostFilter();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Camera_getScreenShaderMaterial(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		shared_ptr<Material> *retInst = new shared_ptr<Material>();
-		*retInst = inst->getScreenShaderMaterial();
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
+		std::shared_ptr<shared_ptr<Material>> *retInst = new std::shared_ptr<shared_ptr<Material>>;
+		*(*retInst) = (*inst)->getScreenShaderMaterial();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
-	duk_ret_t Polycode_Camera_Clone(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		bool deepClone = duk_to_boolean(context, 1);
-		bool ignoreEditorOnly = duk_to_boolean(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->Clone(deepClone,ignoreEditorOnly);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Camera_applyClone(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		Entity* clone = (Entity*)duk_to_pointer(context, 1);
-		bool deepClone = duk_to_boolean(context, 2);
-		bool ignoreEditorOnly = duk_to_boolean(context, 3);
-		inst->applyClone(clone,deepClone,ignoreEditorOnly);
-		return 0;
-	}
-
 	duk_ret_t Polycode_Camera_getProjectionMatrix(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->getProjectionMatrix();
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*(*retInst) = (*inst)->getProjectionMatrix();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Camera_setCustomProjectionMatrix(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
 		Matrix4 matrix = *(Matrix4*)duk_to_pointer(context, 1);
-		inst->setCustomProjectionMatrix(matrix);
+		(*inst)->setCustomProjectionMatrix(matrix);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Camera_getViewport(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		Polycode::Rectangle *retInst = new Polycode::Rectangle();
-		*retInst = inst->getViewport();
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Polycode::Rectangle> *retInst = new std::shared_ptr<Polycode::Rectangle>;
+		*(*retInst) = (*inst)->getViewport();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Camera_setViewport(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 1);
-		inst->setViewport(viewport);
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
+		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 1);
+		(*inst)->setViewport(viewport);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Camera_setOrthoSizeMode(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
 		int orthoSizeMode = duk_to_int(context, 1);
-		inst->setOrthoSizeMode(orthoSizeMode);
+		(*inst)->setOrthoSizeMode(orthoSizeMode);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Camera_getOrthoSizeMode(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getOrthoSizeMode());
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getOrthoSizeMode());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Camera_setProjectionMode(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
 		int mode = duk_to_int(context, 1);
-		inst->setProjectionMode(mode);
+		(*inst)->setProjectionMode(mode);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Camera_getProjectionMode(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getProjectionMode());
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getProjectionMode());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Camera_projectRayFrom2DCoordinate(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
 		Vector2 coordinate = *(Vector2*)duk_to_pointer(context, 1);
-		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 2);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->projectRayFrom2DCoordinate(coordinate,viewport);
+		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 2);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->projectRayFrom2DCoordinate(coordinate,viewport);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
-	duk_ret_t Polycode_Camera_renderFullScreenQuad(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		GPUDrawBuffer* drawBuffer = (GPUDrawBuffer*)duk_to_pointer(context, 1);
-		int shaderPass = duk_to_int(context, 2);
-		inst->renderFullScreenQuad(drawBuffer,shaderPass);
-		return 0;
-	}
-
 	duk_ret_t Polycode_Camera_getShaderPass(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		ShaderPass *retInst = new ShaderPass();
-		*retInst = inst->getShaderPass(index);
+		std::shared_ptr<ShaderPass> *retInst = new std::shared_ptr<ShaderPass>;
+		*(*retInst) = (*inst)->getShaderPass(index);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Camera_getNumShaderPasses(duk_context *context) {
-		Camera *inst = (Camera*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumShaderPasses());
+		std::shared_ptr<Camera> *inst = (std::shared_ptr<Camera>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumShaderPasses());
 		return 1;
 	}
 
@@ -918,14 +847,15 @@ namespace Polycode {
 		Number g = duk_to_number(context, 1);
 		Number b = duk_to_number(context, 2);
 		Number a = duk_to_number(context, 3);
-		Color *inst = new Color(r,g,b,a);
+		std::shared_ptr<Color> *inst = new std::shared_ptr<Color>;
+		(*inst) = std::make_shared<Color>(r,g,b,a);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Color__get_r(duk_context *context) {
-		Color *inst = (Color*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->r);
+		std::shared_ptr<Color> *inst = (std::shared_ptr<Color>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->r);
 		return 1;
 	}
 
@@ -936,8 +866,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Color__get_g(duk_context *context) {
-		Color *inst = (Color*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->g);
+		std::shared_ptr<Color> *inst = (std::shared_ptr<Color>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->g);
 		return 1;
 	}
 
@@ -948,8 +878,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Color__get_b(duk_context *context) {
-		Color *inst = (Color*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->b);
+		std::shared_ptr<Color> *inst = (std::shared_ptr<Color>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->b);
 		return 1;
 	}
 
@@ -960,8 +890,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Color__get_a(duk_context *context) {
-		Color *inst = (Color*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->a);
+		std::shared_ptr<Color> *inst = (std::shared_ptr<Color>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->a);
 		return 1;
 	}
 
@@ -972,7 +902,7 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Color__delete(duk_context *context) {
-		Color *inst = (Color*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *inst = (std::shared_ptr<Color>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
@@ -982,107 +912,107 @@ namespace Polycode {
 		int g = duk_to_int(context, 1);
 		int b = duk_to_int(context, 2);
 		int a = duk_to_int(context, 3);
-		Color *retInst = new Color();
-		*retInst = Color::ColorWithInts(r,g,b,a);
+		std::shared_ptr<Color> *retInst = new std::shared_ptr<Color>;
+		*(*retInst) = Color::ColorWithInts(r,g,b,a);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Color_ColorWithHex(duk_context *context) {
 		int hex = duk_to_int(context, 0);
-		Color *retInst = new Color();
-		*retInst = Color::ColorWithHex(hex);
+		std::shared_ptr<Color> *retInst = new std::shared_ptr<Color>;
+		*(*retInst) = Color::ColorWithHex(hex);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Color_setColorHex(duk_context *context) {
-		Color *inst = (Color*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *inst = (std::shared_ptr<Color>*)duk_to_pointer(context, 0);
 		int hex = duk_to_int(context, 1);
-		inst->setColorHex(hex);
+		(*inst)->setColorHex(hex);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Color_setColorHexRGB(duk_context *context) {
-		Color *inst = (Color*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *inst = (std::shared_ptr<Color>*)duk_to_pointer(context, 0);
 		int hex = duk_to_int(context, 1);
-		inst->setColorHexRGB(hex);
+		(*inst)->setColorHexRGB(hex);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Color_setColorHexFromString(duk_context *context) {
-		Color *inst = (Color*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *inst = (std::shared_ptr<Color>*)duk_to_pointer(context, 0);
 		String hex = duk_to_string(context, 1);
-		inst->setColorHexFromString(hex);
+		(*inst)->setColorHexFromString(hex);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Color_setColorHexRGBFromString(duk_context *context) {
-		Color *inst = (Color*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *inst = (std::shared_ptr<Color>*)duk_to_pointer(context, 0);
 		String hex = duk_to_string(context, 1);
-		inst->setColorHexRGBFromString(hex);
+		(*inst)->setColorHexRGBFromString(hex);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Color_setColorHSV(duk_context *context) {
-		Color *inst = (Color*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *inst = (std::shared_ptr<Color>*)duk_to_pointer(context, 0);
 		Number h = duk_to_number(context, 1);
 		Number s = duk_to_number(context, 2);
 		Number v = duk_to_number(context, 3);
-		inst->setColorHSV(h,s,v);
+		(*inst)->setColorHSV(h,s,v);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Color_setColorRGBA(duk_context *context) {
-		Color *inst = (Color*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *inst = (std::shared_ptr<Color>*)duk_to_pointer(context, 0);
 		int r = duk_to_int(context, 1);
 		int g = duk_to_int(context, 2);
 		int b = duk_to_int(context, 3);
 		int a = duk_to_int(context, 4);
-		inst->setColorRGBA(r,g,b,a);
+		(*inst)->setColorRGBA(r,g,b,a);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Color_setColorRGB(duk_context *context) {
-		Color *inst = (Color*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *inst = (std::shared_ptr<Color>*)duk_to_pointer(context, 0);
 		int r = duk_to_int(context, 1);
 		int g = duk_to_int(context, 2);
 		int b = duk_to_int(context, 3);
-		inst->setColorRGB(r,g,b);
+		(*inst)->setColorRGB(r,g,b);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Color_setColor(duk_context *context) {
-		Color *inst = (Color*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *inst = (std::shared_ptr<Color>*)duk_to_pointer(context, 0);
 		Number r = duk_to_number(context, 1);
 		Number g = duk_to_number(context, 2);
 		Number b = duk_to_number(context, 3);
 		Number a = duk_to_number(context, 4);
-		inst->setColor(r,g,b,a);
+		(*inst)->setColor(r,g,b,a);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Color_blendColor(duk_context *context) {
-		Color *inst = (Color*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *inst = (std::shared_ptr<Color>*)duk_to_pointer(context, 0);
 		Color c2 = *(Color*)duk_to_pointer(context, 1);
 		int mode = duk_to_int(context, 2);
 		Number amount = duk_to_number(context, 3);
 		Color c3 = *(Color*)duk_to_pointer(context, 4);
-		Color *retInst = new Color();
-		*retInst = inst->blendColor(c2,mode,amount,c3);
+		std::shared_ptr<Color> *retInst = new std::shared_ptr<Color>;
+		*(*retInst) = (*inst)->blendColor(c2,mode,amount,c3);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Color_Random(duk_context *context) {
-		Color *inst = (Color*)duk_to_pointer(context, 0);
-		inst->Random();
+		std::shared_ptr<Color> *inst = (std::shared_ptr<Color>*)duk_to_pointer(context, 0);
+		(*inst)->Random();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Color_getBrightness(duk_context *context) {
-		Color *inst = (Color*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getBrightness());
+		std::shared_ptr<Color> *inst = (std::shared_ptr<Color>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getBrightness());
 		return 1;
 	}
 
@@ -1098,38 +1028,39 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Color_getHue(duk_context *context) {
-		Color *inst = (Color*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getHue());
+		std::shared_ptr<Color> *inst = (std::shared_ptr<Color>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getHue());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Color_getSaturation(duk_context *context) {
-		Color *inst = (Color*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getSaturation());
+		std::shared_ptr<Color> *inst = (std::shared_ptr<Color>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getSaturation());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Color_getValue(duk_context *context) {
-		Color *inst = (Color*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getValue());
+		std::shared_ptr<Color> *inst = (std::shared_ptr<Color>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getValue());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Color_getUint(duk_context *context) {
-		Color *inst = (Color*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getUint());
+		std::shared_ptr<Color> *inst = (std::shared_ptr<Color>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getUint());
 		return 1;
 	}
 
 	duk_ret_t Polycode_ConfigEntry(duk_context *context) {
-		ConfigEntry *inst = new ConfigEntry();
+		std::shared_ptr<ConfigEntry> *inst = new std::shared_ptr<ConfigEntry>;
+		(*inst) = std::make_shared<ConfigEntry>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ConfigEntry__get_key(duk_context *context) {
-		ConfigEntry *inst = (ConfigEntry*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->key.c_str());
+		std::shared_ptr<ConfigEntry> *inst = (std::shared_ptr<ConfigEntry>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->key.c_str());
 		return 1;
 	}
 
@@ -1140,8 +1071,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ConfigEntry__get_configNamespace(duk_context *context) {
-		ConfigEntry *inst = (ConfigEntry*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->configNamespace.c_str());
+		std::shared_ptr<ConfigEntry> *inst = (std::shared_ptr<ConfigEntry>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->configNamespace.c_str());
 		return 1;
 	}
 
@@ -1152,8 +1083,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ConfigEntry__get_numVal(duk_context *context) {
-		ConfigEntry *inst = (ConfigEntry*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->numVal);
+		std::shared_ptr<ConfigEntry> *inst = (std::shared_ptr<ConfigEntry>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->numVal);
 		return 1;
 	}
 
@@ -1164,8 +1095,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ConfigEntry__get_stringVal(duk_context *context) {
-		ConfigEntry *inst = (ConfigEntry*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->stringVal.c_str());
+		std::shared_ptr<ConfigEntry> *inst = (std::shared_ptr<ConfigEntry>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->stringVal.c_str());
 		return 1;
 	}
 
@@ -1176,8 +1107,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ConfigEntry__get_isString(duk_context *context) {
-		ConfigEntry *inst = (ConfigEntry*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->isString);
+		std::shared_ptr<ConfigEntry> *inst = (std::shared_ptr<ConfigEntry>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->isString);
 		return 1;
 	}
 
@@ -1188,115 +1119,94 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ConfigEntry__delete(duk_context *context) {
-		ConfigEntry *inst = (ConfigEntry*)duk_to_pointer(context, 0);
+		std::shared_ptr<ConfigEntry> *inst = (std::shared_ptr<ConfigEntry>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Config(duk_context *context) {
-		Config *inst = new Config();
+		std::shared_ptr<Config> *inst = new std::shared_ptr<Config>;
+		(*inst) = std::make_shared<Config>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Config__delete(duk_context *context) {
-		Config *inst = (Config*)duk_to_pointer(context, 0);
+		std::shared_ptr<Config> *inst = (std::shared_ptr<Config>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Config_loadConfig(duk_context *context) {
-		Config *inst = (Config*)duk_to_pointer(context, 0);
+		std::shared_ptr<Config> *inst = (std::shared_ptr<Config>*)duk_to_pointer(context, 0);
 		String configNamespace = duk_to_string(context, 1);
 		String fileName = duk_to_string(context, 2);
-		inst->loadConfig(configNamespace,fileName);
+		(*inst)->loadConfig(configNamespace,fileName);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Config_saveConfig(duk_context *context) {
-		Config *inst = (Config*)duk_to_pointer(context, 0);
+		std::shared_ptr<Config> *inst = (std::shared_ptr<Config>*)duk_to_pointer(context, 0);
 		String configNamespace = duk_to_string(context, 1);
 		String fileName = duk_to_string(context, 2);
-		inst->saveConfig(configNamespace,fileName);
+		(*inst)->saveConfig(configNamespace,fileName);
 		return 0;
 	}
 
-	duk_ret_t Polycode_Config_getEntry(duk_context *context) {
-		Config *inst = (Config*)duk_to_pointer(context, 0);
-		String configNamespace = duk_to_string(context, 1);
-		String key = duk_to_string(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getEntry(configNamespace,key);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
 	duk_ret_t Polycode_Config_setStringValue(duk_context *context) {
-		Config *inst = (Config*)duk_to_pointer(context, 0);
+		std::shared_ptr<Config> *inst = (std::shared_ptr<Config>*)duk_to_pointer(context, 0);
 		String configNamespace = duk_to_string(context, 1);
 		String key = duk_to_string(context, 2);
 		String value = duk_to_string(context, 3);
-		inst->setStringValue(configNamespace,key,value);
+		(*inst)->setStringValue(configNamespace,key,value);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Config_setNumericValue(duk_context *context) {
-		Config *inst = (Config*)duk_to_pointer(context, 0);
+		std::shared_ptr<Config> *inst = (std::shared_ptr<Config>*)duk_to_pointer(context, 0);
 		String configNamespace = duk_to_string(context, 1);
 		String key = duk_to_string(context, 2);
 		Number value = duk_to_number(context, 3);
-		inst->setNumericValue(configNamespace,key,value);
+		(*inst)->setNumericValue(configNamespace,key,value);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Config_getNumericValue(duk_context *context) {
-		Config *inst = (Config*)duk_to_pointer(context, 0);
+		std::shared_ptr<Config> *inst = (std::shared_ptr<Config>*)duk_to_pointer(context, 0);
 		String configNamespace = duk_to_string(context, 1);
 		String key = duk_to_string(context, 2);
-		duk_push_number(context, inst->getNumericValue(configNamespace,key));
+		duk_push_number(context, (*inst)->getNumericValue(configNamespace,key));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Config_getStringValue(duk_context *context) {
-		Config *inst = (Config*)duk_to_pointer(context, 0);
+		std::shared_ptr<Config> *inst = (std::shared_ptr<Config>*)duk_to_pointer(context, 0);
 		String configNamespace = duk_to_string(context, 1);
 		String key = duk_to_string(context, 2);
-		duk_push_string(context, inst->getStringValue(configNamespace,key).c_str());
+		duk_push_string(context, (*inst)->getStringValue(configNamespace,key).c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Config_setBoolValue(duk_context *context) {
-		Config *inst = (Config*)duk_to_pointer(context, 0);
+		std::shared_ptr<Config> *inst = (std::shared_ptr<Config>*)duk_to_pointer(context, 0);
 		String configNamespace = duk_to_string(context, 1);
 		String key = duk_to_string(context, 2);
 		bool value = duk_to_boolean(context, 3);
-		inst->setBoolValue(configNamespace,key,value);
+		(*inst)->setBoolValue(configNamespace,key,value);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Config_getBoolValue(duk_context *context) {
-		Config *inst = (Config*)duk_to_pointer(context, 0);
+		std::shared_ptr<Config> *inst = (std::shared_ptr<Config>*)duk_to_pointer(context, 0);
 		String configNamespace = duk_to_string(context, 1);
 		String key = duk_to_string(context, 2);
-		duk_push_boolean(context, inst->getBoolValue(configNamespace,key));
+		duk_push_boolean(context, (*inst)->getBoolValue(configNamespace,key));
 		return 1;
-	}
-
-	duk_ret_t Polycode_Core__get_eventMutex(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->eventMutex;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Core__set_eventMutex(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		inst->eventMutex = (CoreMutex*)duk_to_pointer(context, 1);
-		return 0;
 	}
 
 	duk_ret_t Polycode_Core__get_paused(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->paused);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->paused);
 		return 1;
 	}
 
@@ -1307,8 +1217,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Core__get_pauseOnLoseFocus(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->pauseOnLoseFocus);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->pauseOnLoseFocus);
 		return 1;
 	}
 
@@ -1319,8 +1229,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Core__get_defaultScreenWidth(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->defaultScreenWidth);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->defaultScreenWidth);
 		return 1;
 	}
 
@@ -1331,8 +1241,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Core__get_defaultScreenHeight(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->defaultScreenHeight);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->defaultScreenHeight);
 		return 1;
 	}
 
@@ -1343,9 +1253,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Core__get_deviceAttitude(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		Quaternion *retInst = new Quaternion();
-		*retInst = inst->deviceAttitude;
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Quaternion> *retInst = new std::shared_ptr<Quaternion>;
+		*retInst = std::make_shared<Quaternion>();
+		*(*retInst) = (*inst)->deviceAttitude;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -1357,340 +1268,255 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Core__delete(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Core_Update(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->Update());
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->Update());
 		return 1;
 	}
 
-	duk_ret_t Polycode_Core_Render(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		inst->Render();
-		return 0;
-	}
-
 	duk_ret_t Polycode_Core_fixedUpdate(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->fixedUpdate());
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->fixedUpdate());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Core_systemUpdate(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->systemUpdate());
-		return 1;
-	}
-
-	duk_ret_t Polycode_Core_updateAndRender(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->updateAndRender());
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->systemUpdate());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Core_enableMouse(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
 		bool newval = duk_to_boolean(context, 1);
-		inst->enableMouse(newval);
+		(*inst)->enableMouse(newval);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Core_captureMouse(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
 		bool newval = duk_to_boolean(context, 1);
-		inst->captureMouse(newval);
+		(*inst)->captureMouse(newval);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Core_setCursor(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
 		int cursorType = duk_to_int(context, 1);
-		inst->setCursor(cursorType);
+		(*inst)->setCursor(cursorType);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Core_warpCursor(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
 		int x = duk_to_int(context, 1);
 		int y = duk_to_int(context, 2);
-		inst->warpCursor(x,y);
+		(*inst)->warpCursor(x,y);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Core_openOnScreenKeyboard(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
 		bool open = duk_to_boolean(context, 1);
-		inst->openOnScreenKeyboard(open);
+		(*inst)->openOnScreenKeyboard(open);
 		return 0;
-	}
-
-	duk_ret_t Polycode_Core_createThread(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		Threaded* target = (Threaded*)duk_to_pointer(context, 1);
-		inst->createThread(target);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Core_lockMutex(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		CoreMutex* mutex = (CoreMutex*)duk_to_pointer(context, 1);
-		inst->lockMutex(mutex);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Core_unlockMutex(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		CoreMutex* mutex = (CoreMutex*)duk_to_pointer(context, 1);
-		inst->unlockMutex(mutex);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Core_createMutex(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->createMutex();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
 	}
 
 	duk_ret_t Polycode_Core_copyStringToClipboard(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
 		String str = duk_to_string(context, 1);
-		inst->copyStringToClipboard(str);
+		(*inst)->copyStringToClipboard(str);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Core_getClipboardString(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->getClipboardString().c_str());
-		return 1;
-	}
-
-	duk_ret_t Polycode_Core_getServices(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getServices();
-		duk_push_pointer(context, (void*)ptrRetVal);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->getClipboardString().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Core_getFPS(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getFPS());
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getFPS());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Core_Shutdown(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		inst->Shutdown();
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		(*inst)->Shutdown();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Core_isFullscreen(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->isFullscreen());
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->isFullscreen());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Core_getAALevel(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getAALevel());
-		return 1;
-	}
-
-	duk_ret_t Polycode_Core_getInput(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getInput();
-		duk_push_pointer(context, (void*)ptrRetVal);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getAALevel());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Core_getXRes(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getXRes());
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getXRes());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Core_getYRes(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getYRes());
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getYRes());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Core_getBackingXRes(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getBackingXRes());
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getBackingXRes());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Core_getBackingYRes(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getBackingYRes());
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getBackingYRes());
 		return 1;
 	}
 
-	duk_ret_t Polycode_Core_getScreenInfo(duk_context *context) {
-		int* width = (int*)duk_to_pointer(context, 0);
-		int* height = (int*)duk_to_pointer(context, 1);
-		int* hz = (int*)duk_to_pointer(context, 2);
-		Core::getScreenInfo(width,height,hz);
-		return 0;
-	}
-
 	duk_ret_t Polycode_Core_getScreenWidth(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getScreenWidth());
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getScreenWidth());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Core_getScreenHeight(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getScreenHeight());
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getScreenHeight());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Core_createFolder(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
 		String folderPath = duk_to_string(context, 1);
-		inst->createFolder(folderPath);
+		(*inst)->createFolder(folderPath);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Core_copyDiskItem(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
 		String itemPath = duk_to_string(context, 1);
 		String destItemPath = duk_to_string(context, 2);
-		inst->copyDiskItem(itemPath,destItemPath);
+		(*inst)->copyDiskItem(itemPath,destItemPath);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Core_moveDiskItem(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
 		String itemPath = duk_to_string(context, 1);
 		String destItemPath = duk_to_string(context, 2);
-		inst->moveDiskItem(itemPath,destItemPath);
+		(*inst)->moveDiskItem(itemPath,destItemPath);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Core_removeDiskItem(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
 		String itemPath = duk_to_string(context, 1);
-		inst->removeDiskItem(itemPath);
+		(*inst)->removeDiskItem(itemPath);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Core_openFolderPicker(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->openFolderPicker().c_str());
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->openFolderPicker().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Core_setFramerate(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
 		int frameRate = duk_to_int(context, 1);
 		int maxFixedCycles = duk_to_int(context, 2);
-		inst->setFramerate(frameRate,maxFixedCycles);
+		(*inst)->setFramerate(frameRate,maxFixedCycles);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Core_openFilePicker(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
 		vector<CoreFileExtension> extensions = *(vector<CoreFileExtension>*)duk_to_pointer(context, 1);
 		bool allowMultiple = duk_to_boolean(context, 2);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Core_saveFilePicker(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
 		vector<CoreFileExtension> extensions = *(vector<CoreFileExtension>*)duk_to_pointer(context, 1);
-		duk_push_string(context, inst->saveFilePicker(extensions).c_str());
+		duk_push_string(context, (*inst)->saveFilePicker(extensions).c_str());
 		return 1;
 	}
 
-	duk_ret_t Polycode_Core_handleVideoModeChange(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		VideoModeChangeInfo* modeInfo = (VideoModeChangeInfo*)duk_to_pointer(context, 1);
-		inst->handleVideoModeChange(modeInfo);
-		return 0;
-	}
-
 	duk_ret_t Polycode_Core_flushRenderContext(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		inst->flushRenderContext();
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		(*inst)->flushRenderContext();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Core_prepareRenderContext(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		inst->prepareRenderContext();
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		(*inst)->prepareRenderContext();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Core_isWindowInitialized(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->isWindowInitialized());
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->isWindowInitialized());
 		return 1;
-	}
-
-	duk_ret_t Polycode_Core_openFile(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		String fileName = duk_to_string(context, 1);
-		String opts = duk_to_string(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->openFile(fileName,opts);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Core_closeFile(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		CoreFile* file = (CoreFile*)duk_to_pointer(context, 1);
-		inst->closeFile(file);
-		return 0;
 	}
 
 	duk_ret_t Polycode_Core_addFileSource(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
 		String type = duk_to_string(context, 1);
 		String source = duk_to_string(context, 2);
-		inst->addFileSource(type,source);
+		(*inst)->addFileSource(type,source);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Core_removeFileSource(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
 		String type = duk_to_string(context, 1);
 		String source = duk_to_string(context, 2);
-		inst->removeFileSource(type,source);
+		(*inst)->removeFileSource(type,source);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Core_parseFolder(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
 		String pathString = duk_to_string(context, 1);
 		bool showHidden = duk_to_boolean(context, 2);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Core_systemParseFolder(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
 		String pathString = duk_to_string(context, 1);
 		bool showHidden = duk_to_boolean(context, 2);
 		vector<OSFileEntry> targetVector = *(vector<OSFileEntry>*)duk_to_pointer(context, 3);
-		duk_push_boolean(context, inst->systemParseFolder(pathString,showHidden,targetVector));
+		duk_push_boolean(context, (*inst)->systemParseFolder(pathString,showHidden,targetVector));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Core_getResourcePathForFile(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
 		String fileName = duk_to_string(context, 1);
-		duk_push_string(context, inst->getResourcePathForFile(fileName).c_str());
+		duk_push_string(context, (*inst)->getResourcePathForFile(fileName).c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Core_setVideoMode(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
 		int xRes = duk_to_int(context, 1);
 		int yRes = duk_to_int(context, 2);
 		bool fullScreen = duk_to_boolean(context, 3);
@@ -1698,130 +1524,112 @@ namespace Polycode {
 		int aaLevel = duk_to_int(context, 5);
 		int anisotropyLevel = duk_to_int(context, 6);
 		bool retinaSupport = duk_to_boolean(context, 7);
-		inst->setVideoMode(xRes,yRes,fullScreen,vSync,aaLevel,anisotropyLevel,retinaSupport);
+		(*inst)->setVideoMode(xRes,yRes,fullScreen,vSync,aaLevel,anisotropyLevel,retinaSupport);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Core_resizeTo(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
 		int xRes = duk_to_int(context, 1);
 		int yRes = duk_to_int(context, 2);
-		inst->resizeTo(xRes,yRes);
+		(*inst)->resizeTo(xRes,yRes);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Core_doSleep(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		inst->doSleep();
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		(*inst)->doSleep();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Core_openURL(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
 		String url = duk_to_string(context, 1);
-		inst->openURL(url);
+		(*inst)->openURL(url);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Core_getElapsed(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getElapsed());
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getElapsed());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Core_getTicks(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getTicks());
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getTicks());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Core_getRefreshIntervalMs(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getRefreshIntervalMs());
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getRefreshIntervalMs());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Core_getTimeSleptMs(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getTimeSleptMs());
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getTimeSleptMs());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Core_getFixedTimestep(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getFixedTimestep());
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getFixedTimestep());
+		return 1;
+	}
+
+	duk_ret_t Polycode_Core_getViewport(duk_context *context) {
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Polycode::Rectangle> *retInst = new std::shared_ptr<Polycode::Rectangle>;
+		*(*retInst) = (*inst)->getViewport();
+		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Core_getTicksFloat(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getTicksFloat());
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getTicksFloat());
 		return 1;
 	}
 
-	duk_ret_t Polycode_Core_setUserPointer(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		void* ptr = (void*)duk_to_pointer(context, 1);
-		inst->setUserPointer(ptr);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Core_getUserPointer(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		inst->getUserPointer();
-		return 0;
-	}
-
 	duk_ret_t Polycode_Core_executeExternalCommand(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
 		String command = duk_to_string(context, 1);
 		String args = duk_to_string(context, 2);
 		String inDirectory = duk_to_string(context, 3);
-		duk_push_string(context, inst->executeExternalCommand(command,args,inDirectory).c_str());
+		duk_push_string(context, (*inst)->executeExternalCommand(command,args,inDirectory).c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Core_getDefaultWorkingDirectory(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->getDefaultWorkingDirectory().c_str());
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->getDefaultWorkingDirectory().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Core_getUserHomeDirectory(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->getUserHomeDirectory().c_str());
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->getUserHomeDirectory().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Core_makeApplicationMain(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		inst->makeApplicationMain();
-		return 0;
-	}
-
-	duk_ret_t Polycode_Core_getEventMutex(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getEventMutex();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Core_removeThread(duk_context *context) {
-		Core *inst = (Core*)duk_to_pointer(context, 0);
-		Threaded* thread = (Threaded*)duk_to_pointer(context, 1);
-		inst->removeThread(thread);
+		std::shared_ptr<Core> *inst = (std::shared_ptr<Core>*)duk_to_pointer(context, 0);
+		(*inst)->makeApplicationMain();
 		return 0;
 	}
 
 	duk_ret_t Polycode_VideoModeChangeInfo(duk_context *context) {
-		VideoModeChangeInfo *inst = new VideoModeChangeInfo();
+		std::shared_ptr<VideoModeChangeInfo> *inst = new std::shared_ptr<VideoModeChangeInfo>;
+		(*inst) = std::make_shared<VideoModeChangeInfo>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_VideoModeChangeInfo__get_xRes(duk_context *context) {
-		VideoModeChangeInfo *inst = (VideoModeChangeInfo*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->xRes);
+		std::shared_ptr<VideoModeChangeInfo> *inst = (std::shared_ptr<VideoModeChangeInfo>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->xRes);
 		return 1;
 	}
 
@@ -1832,8 +1640,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_VideoModeChangeInfo__get_yRes(duk_context *context) {
-		VideoModeChangeInfo *inst = (VideoModeChangeInfo*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->yRes);
+		std::shared_ptr<VideoModeChangeInfo> *inst = (std::shared_ptr<VideoModeChangeInfo>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->yRes);
 		return 1;
 	}
 
@@ -1844,8 +1652,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_VideoModeChangeInfo__get_fullScreen(duk_context *context) {
-		VideoModeChangeInfo *inst = (VideoModeChangeInfo*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->fullScreen);
+		std::shared_ptr<VideoModeChangeInfo> *inst = (std::shared_ptr<VideoModeChangeInfo>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->fullScreen);
 		return 1;
 	}
 
@@ -1856,8 +1664,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_VideoModeChangeInfo__get_vSync(duk_context *context) {
-		VideoModeChangeInfo *inst = (VideoModeChangeInfo*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->vSync);
+		std::shared_ptr<VideoModeChangeInfo> *inst = (std::shared_ptr<VideoModeChangeInfo>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->vSync);
 		return 1;
 	}
 
@@ -1868,8 +1676,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_VideoModeChangeInfo__get_aaLevel(duk_context *context) {
-		VideoModeChangeInfo *inst = (VideoModeChangeInfo*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->aaLevel);
+		std::shared_ptr<VideoModeChangeInfo> *inst = (std::shared_ptr<VideoModeChangeInfo>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->aaLevel);
 		return 1;
 	}
 
@@ -1880,8 +1688,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_VideoModeChangeInfo__get_anisotropyLevel(duk_context *context) {
-		VideoModeChangeInfo *inst = (VideoModeChangeInfo*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->anisotropyLevel);
+		std::shared_ptr<VideoModeChangeInfo> *inst = (std::shared_ptr<VideoModeChangeInfo>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->anisotropyLevel);
 		return 1;
 	}
 
@@ -1892,8 +1700,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_VideoModeChangeInfo__get_retinaSupport(duk_context *context) {
-		VideoModeChangeInfo *inst = (VideoModeChangeInfo*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->retinaSupport);
+		std::shared_ptr<VideoModeChangeInfo> *inst = (std::shared_ptr<VideoModeChangeInfo>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->retinaSupport);
 		return 1;
 	}
 
@@ -1904,20 +1712,21 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_VideoModeChangeInfo__delete(duk_context *context) {
-		VideoModeChangeInfo *inst = (VideoModeChangeInfo*)duk_to_pointer(context, 0);
+		std::shared_ptr<VideoModeChangeInfo> *inst = (std::shared_ptr<VideoModeChangeInfo>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_PolycodeViewBase(duk_context *context) {
-		PolycodeViewBase *inst = new PolycodeViewBase();
+		std::shared_ptr<PolycodeViewBase> *inst = new std::shared_ptr<PolycodeViewBase>;
+		(*inst) = std::make_shared<PolycodeViewBase>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_PolycodeViewBase__get_resizable(duk_context *context) {
-		PolycodeViewBase *inst = (PolycodeViewBase*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->resizable);
+		std::shared_ptr<PolycodeViewBase> *inst = (std::shared_ptr<PolycodeViewBase>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->resizable);
 		return 1;
 	}
 
@@ -1928,172 +1737,147 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_PolycodeViewBase__delete(duk_context *context) {
-		PolycodeViewBase *inst = (PolycodeViewBase*)duk_to_pointer(context, 0);
+		std::shared_ptr<PolycodeViewBase> *inst = (std::shared_ptr<PolycodeViewBase>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_DummyCore(duk_context *context) {
-		DummyCore *inst = new DummyCore();
+		std::shared_ptr<DummyCore> *inst = new std::shared_ptr<DummyCore>;
+		(*inst) = std::make_shared<DummyCore>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_DummyCore__delete(duk_context *context) {
-		DummyCore *inst = (DummyCore*)duk_to_pointer(context, 0);
+		std::shared_ptr<DummyCore> *inst = (std::shared_ptr<DummyCore>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_DummyCore_Render(duk_context *context) {
-		DummyCore *inst = (DummyCore*)duk_to_pointer(context, 0);
-		inst->Render();
-		return 0;
-	}
-
 	duk_ret_t Polycode_DummyCore_systemUpdate(duk_context *context) {
-		DummyCore *inst = (DummyCore*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->systemUpdate());
+		std::shared_ptr<DummyCore> *inst = (std::shared_ptr<DummyCore>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->systemUpdate());
 		return 1;
 	}
 
 	duk_ret_t Polycode_DummyCore_setCursor(duk_context *context) {
-		DummyCore *inst = (DummyCore*)duk_to_pointer(context, 0);
+		std::shared_ptr<DummyCore> *inst = (std::shared_ptr<DummyCore>*)duk_to_pointer(context, 0);
 		int cursorType = duk_to_int(context, 1);
-		inst->setCursor(cursorType);
+		(*inst)->setCursor(cursorType);
 		return 0;
-	}
-
-	duk_ret_t Polycode_DummyCore_createThread(duk_context *context) {
-		DummyCore *inst = (DummyCore*)duk_to_pointer(context, 0);
-		Threaded* target = (Threaded*)duk_to_pointer(context, 1);
-		inst->createThread(target);
-		return 0;
-	}
-
-	duk_ret_t Polycode_DummyCore_createMutex(duk_context *context) {
-		DummyCore *inst = (DummyCore*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->createMutex();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
 	}
 
 	duk_ret_t Polycode_DummyCore_copyStringToClipboard(duk_context *context) {
-		DummyCore *inst = (DummyCore*)duk_to_pointer(context, 0);
+		std::shared_ptr<DummyCore> *inst = (std::shared_ptr<DummyCore>*)duk_to_pointer(context, 0);
 		String str = duk_to_string(context, 1);
-		inst->copyStringToClipboard(str);
+		(*inst)->copyStringToClipboard(str);
 		return 0;
 	}
 
 	duk_ret_t Polycode_DummyCore_getClipboardString(duk_context *context) {
-		DummyCore *inst = (DummyCore*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->getClipboardString().c_str());
+		std::shared_ptr<DummyCore> *inst = (std::shared_ptr<DummyCore>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->getClipboardString().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_DummyCore_createFolder(duk_context *context) {
-		DummyCore *inst = (DummyCore*)duk_to_pointer(context, 0);
+		std::shared_ptr<DummyCore> *inst = (std::shared_ptr<DummyCore>*)duk_to_pointer(context, 0);
 		String folderPath = duk_to_string(context, 1);
-		inst->createFolder(folderPath);
+		(*inst)->createFolder(folderPath);
 		return 0;
 	}
 
 	duk_ret_t Polycode_DummyCore_copyDiskItem(duk_context *context) {
-		DummyCore *inst = (DummyCore*)duk_to_pointer(context, 0);
+		std::shared_ptr<DummyCore> *inst = (std::shared_ptr<DummyCore>*)duk_to_pointer(context, 0);
 		String itemPath = duk_to_string(context, 1);
 		String destItemPath = duk_to_string(context, 2);
-		inst->copyDiskItem(itemPath,destItemPath);
+		(*inst)->copyDiskItem(itemPath,destItemPath);
 		return 0;
 	}
 
 	duk_ret_t Polycode_DummyCore_moveDiskItem(duk_context *context) {
-		DummyCore *inst = (DummyCore*)duk_to_pointer(context, 0);
+		std::shared_ptr<DummyCore> *inst = (std::shared_ptr<DummyCore>*)duk_to_pointer(context, 0);
 		String itemPath = duk_to_string(context, 1);
 		String destItemPath = duk_to_string(context, 2);
-		inst->moveDiskItem(itemPath,destItemPath);
+		(*inst)->moveDiskItem(itemPath,destItemPath);
 		return 0;
 	}
 
 	duk_ret_t Polycode_DummyCore_removeDiskItem(duk_context *context) {
-		DummyCore *inst = (DummyCore*)duk_to_pointer(context, 0);
+		std::shared_ptr<DummyCore> *inst = (std::shared_ptr<DummyCore>*)duk_to_pointer(context, 0);
 		String itemPath = duk_to_string(context, 1);
-		inst->removeDiskItem(itemPath);
+		(*inst)->removeDiskItem(itemPath);
 		return 0;
 	}
 
 	duk_ret_t Polycode_DummyCore_openFolderPicker(duk_context *context) {
-		DummyCore *inst = (DummyCore*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->openFolderPicker().c_str());
+		std::shared_ptr<DummyCore> *inst = (std::shared_ptr<DummyCore>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->openFolderPicker().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_DummyCore_openFilePicker(duk_context *context) {
-		DummyCore *inst = (DummyCore*)duk_to_pointer(context, 0);
+		std::shared_ptr<DummyCore> *inst = (std::shared_ptr<DummyCore>*)duk_to_pointer(context, 0);
 		vector<CoreFileExtension> extensions = *(vector<CoreFileExtension>*)duk_to_pointer(context, 1);
 		bool allowMultiple = duk_to_boolean(context, 2);
 		return 0;
 	}
 
 	duk_ret_t Polycode_DummyCore_saveFilePicker(duk_context *context) {
-		DummyCore *inst = (DummyCore*)duk_to_pointer(context, 0);
+		std::shared_ptr<DummyCore> *inst = (std::shared_ptr<DummyCore>*)duk_to_pointer(context, 0);
 		vector<CoreFileExtension> extensions = *(vector<CoreFileExtension>*)duk_to_pointer(context, 1);
-		duk_push_string(context, inst->saveFilePicker(extensions).c_str());
+		duk_push_string(context, (*inst)->saveFilePicker(extensions).c_str());
 		return 1;
 	}
 
-	duk_ret_t Polycode_DummyCore_handleVideoModeChange(duk_context *context) {
-		DummyCore *inst = (DummyCore*)duk_to_pointer(context, 0);
-		VideoModeChangeInfo* modeInfo = (VideoModeChangeInfo*)duk_to_pointer(context, 1);
-		inst->handleVideoModeChange(modeInfo);
-		return 0;
-	}
-
 	duk_ret_t Polycode_DummyCore_flushRenderContext(duk_context *context) {
-		DummyCore *inst = (DummyCore*)duk_to_pointer(context, 0);
-		inst->flushRenderContext();
+		std::shared_ptr<DummyCore> *inst = (std::shared_ptr<DummyCore>*)duk_to_pointer(context, 0);
+		(*inst)->flushRenderContext();
 		return 0;
 	}
 
 	duk_ret_t Polycode_DummyCore_openURL(duk_context *context) {
-		DummyCore *inst = (DummyCore*)duk_to_pointer(context, 0);
+		std::shared_ptr<DummyCore> *inst = (std::shared_ptr<DummyCore>*)duk_to_pointer(context, 0);
 		String url = duk_to_string(context, 1);
-		inst->openURL(url);
+		(*inst)->openURL(url);
 		return 0;
 	}
 
 	duk_ret_t Polycode_DummyCore_getTicks(duk_context *context) {
-		DummyCore *inst = (DummyCore*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getTicks());
+		std::shared_ptr<DummyCore> *inst = (std::shared_ptr<DummyCore>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getTicks());
 		return 1;
 	}
 
 	duk_ret_t Polycode_DummyCore_executeExternalCommand(duk_context *context) {
-		DummyCore *inst = (DummyCore*)duk_to_pointer(context, 0);
+		std::shared_ptr<DummyCore> *inst = (std::shared_ptr<DummyCore>*)duk_to_pointer(context, 0);
 		String command = duk_to_string(context, 1);
 		String args = duk_to_string(context, 2);
 		String inDirectory = duk_to_string(context, 3);
-		duk_push_string(context, inst->executeExternalCommand(command,args,inDirectory).c_str());
+		duk_push_string(context, (*inst)->executeExternalCommand(command,args,inDirectory).c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_DummyCore_systemParseFolder(duk_context *context) {
-		DummyCore *inst = (DummyCore*)duk_to_pointer(context, 0);
+		std::shared_ptr<DummyCore> *inst = (std::shared_ptr<DummyCore>*)duk_to_pointer(context, 0);
 		String pathString = duk_to_string(context, 1);
 		bool showHidden = duk_to_boolean(context, 2);
 		vector<OSFileEntry> targetVector = *(vector<OSFileEntry>*)duk_to_pointer(context, 3);
-		duk_push_boolean(context, inst->systemParseFolder(pathString,showHidden,targetVector));
+		duk_push_boolean(context, (*inst)->systemParseFolder(pathString,showHidden,targetVector));
 		return 1;
 	}
 
 	duk_ret_t Polycode_TimeInfo(duk_context *context) {
-		TimeInfo *inst = new TimeInfo();
+		std::shared_ptr<TimeInfo> *inst = new std::shared_ptr<TimeInfo>;
+		(*inst) = std::make_shared<TimeInfo>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_TimeInfo__get_seconds(duk_context *context) {
-		TimeInfo *inst = (TimeInfo*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->seconds);
+		std::shared_ptr<TimeInfo> *inst = (std::shared_ptr<TimeInfo>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->seconds);
 		return 1;
 	}
 
@@ -2104,8 +1888,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_TimeInfo__get_minutes(duk_context *context) {
-		TimeInfo *inst = (TimeInfo*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->minutes);
+		std::shared_ptr<TimeInfo> *inst = (std::shared_ptr<TimeInfo>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->minutes);
 		return 1;
 	}
 
@@ -2116,8 +1900,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_TimeInfo__get_hours(duk_context *context) {
-		TimeInfo *inst = (TimeInfo*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->hours);
+		std::shared_ptr<TimeInfo> *inst = (std::shared_ptr<TimeInfo>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->hours);
 		return 1;
 	}
 
@@ -2128,8 +1912,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_TimeInfo__get_month(duk_context *context) {
-		TimeInfo *inst = (TimeInfo*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->month);
+		std::shared_ptr<TimeInfo> *inst = (std::shared_ptr<TimeInfo>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->month);
 		return 1;
 	}
 
@@ -2140,8 +1924,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_TimeInfo__get_monthDay(duk_context *context) {
-		TimeInfo *inst = (TimeInfo*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->monthDay);
+		std::shared_ptr<TimeInfo> *inst = (std::shared_ptr<TimeInfo>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->monthDay);
 		return 1;
 	}
 
@@ -2152,8 +1936,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_TimeInfo__get_weekDay(duk_context *context) {
-		TimeInfo *inst = (TimeInfo*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->weekDay);
+		std::shared_ptr<TimeInfo> *inst = (std::shared_ptr<TimeInfo>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->weekDay);
 		return 1;
 	}
 
@@ -2164,8 +1948,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_TimeInfo__get_year(duk_context *context) {
-		TimeInfo *inst = (TimeInfo*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->year);
+		std::shared_ptr<TimeInfo> *inst = (std::shared_ptr<TimeInfo>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->year);
 		return 1;
 	}
 
@@ -2176,8 +1960,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_TimeInfo__get_yearDay(duk_context *context) {
-		TimeInfo *inst = (TimeInfo*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->yearDay);
+		std::shared_ptr<TimeInfo> *inst = (std::shared_ptr<TimeInfo>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->yearDay);
 		return 1;
 	}
 
@@ -2188,21 +1972,23 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_TimeInfo__delete(duk_context *context) {
-		TimeInfo *inst = (TimeInfo*)duk_to_pointer(context, 0);
+		std::shared_ptr<TimeInfo> *inst = (std::shared_ptr<TimeInfo>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_CoreMotionEvent(duk_context *context) {
-		CoreMotionEvent *inst = new CoreMotionEvent();
+		std::shared_ptr<CoreMotionEvent> *inst = new std::shared_ptr<CoreMotionEvent>;
+		(*inst) = std::make_shared<CoreMotionEvent>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_CoreMotionEvent__get_amount(duk_context *context) {
-		CoreMotionEvent *inst = (CoreMotionEvent*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->amount;
+		std::shared_ptr<CoreMotionEvent> *inst = (std::shared_ptr<CoreMotionEvent>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*retInst = std::make_shared<Vector3>();
+		*(*retInst) = (*inst)->amount;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -2214,20 +2000,21 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_CoreMotionEvent__delete(duk_context *context) {
-		CoreMotionEvent *inst = (CoreMotionEvent*)duk_to_pointer(context, 0);
+		std::shared_ptr<CoreMotionEvent> *inst = (std::shared_ptr<CoreMotionEvent>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_CoreFileExtension(duk_context *context) {
-		CoreFileExtension *inst = new CoreFileExtension();
+		std::shared_ptr<CoreFileExtension> *inst = new std::shared_ptr<CoreFileExtension>;
+		(*inst) = std::make_shared<CoreFileExtension>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_CoreFileExtension__get_extension(duk_context *context) {
-		CoreFileExtension *inst = (CoreFileExtension*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->extension.c_str());
+		std::shared_ptr<CoreFileExtension> *inst = (std::shared_ptr<CoreFileExtension>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->extension.c_str());
 		return 1;
 	}
 
@@ -2238,8 +2025,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_CoreFileExtension__get_description(duk_context *context) {
-		CoreFileExtension *inst = (CoreFileExtension*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->description.c_str());
+		std::shared_ptr<CoreFileExtension> *inst = (std::shared_ptr<CoreFileExtension>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->description.c_str());
 		return 1;
 	}
 
@@ -2250,20 +2037,21 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_CoreFileExtension__delete(duk_context *context) {
-		CoreFileExtension *inst = (CoreFileExtension*)duk_to_pointer(context, 0);
+		std::shared_ptr<CoreFileExtension> *inst = (std::shared_ptr<CoreFileExtension>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_OSFileEntry(duk_context *context) {
-		OSFileEntry *inst = new OSFileEntry();
+		std::shared_ptr<OSFileEntry> *inst = new std::shared_ptr<OSFileEntry>;
+		(*inst) = std::make_shared<OSFileEntry>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_OSFileEntry__get_name(duk_context *context) {
-		OSFileEntry *inst = (OSFileEntry*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->name.c_str());
+		std::shared_ptr<OSFileEntry> *inst = (std::shared_ptr<OSFileEntry>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->name.c_str());
 		return 1;
 	}
 
@@ -2274,8 +2062,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_OSFileEntry__get_extension(duk_context *context) {
-		OSFileEntry *inst = (OSFileEntry*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->extension.c_str());
+		std::shared_ptr<OSFileEntry> *inst = (std::shared_ptr<OSFileEntry>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->extension.c_str());
 		return 1;
 	}
 
@@ -2286,8 +2074,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_OSFileEntry__get_nameWithoutExtension(duk_context *context) {
-		OSFileEntry *inst = (OSFileEntry*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->nameWithoutExtension.c_str());
+		std::shared_ptr<OSFileEntry> *inst = (std::shared_ptr<OSFileEntry>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->nameWithoutExtension.c_str());
 		return 1;
 	}
 
@@ -2298,8 +2086,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_OSFileEntry__get_basePath(duk_context *context) {
-		OSFileEntry *inst = (OSFileEntry*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->basePath.c_str());
+		std::shared_ptr<OSFileEntry> *inst = (std::shared_ptr<OSFileEntry>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->basePath.c_str());
 		return 1;
 	}
 
@@ -2310,8 +2098,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_OSFileEntry__get_fullPath(duk_context *context) {
-		OSFileEntry *inst = (OSFileEntry*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->fullPath.c_str());
+		std::shared_ptr<OSFileEntry> *inst = (std::shared_ptr<OSFileEntry>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->fullPath.c_str());
 		return 1;
 	}
 
@@ -2322,8 +2110,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_OSFileEntry__get_type(duk_context *context) {
-		OSFileEntry *inst = (OSFileEntry*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->type);
+		std::shared_ptr<OSFileEntry> *inst = (std::shared_ptr<OSFileEntry>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->type);
 		return 1;
 	}
 
@@ -2334,29 +2122,30 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_OSFileEntry__delete(duk_context *context) {
-		OSFileEntry *inst = (OSFileEntry*)duk_to_pointer(context, 0);
+		std::shared_ptr<OSFileEntry> *inst = (std::shared_ptr<OSFileEntry>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_OSFileEntry_init(duk_context *context) {
-		OSFileEntry *inst = (OSFileEntry*)duk_to_pointer(context, 0);
+		std::shared_ptr<OSFileEntry> *inst = (std::shared_ptr<OSFileEntry>*)duk_to_pointer(context, 0);
 		String path = duk_to_string(context, 1);
 		String name = duk_to_string(context, 2);
 		int type = duk_to_int(context, 3);
-		inst->init(path,name,type);
+		(*inst)->init(path,name,type);
 		return 0;
 	}
 
 	duk_ret_t Polycode_CoreInput(duk_context *context) {
-		CoreInput *inst = new CoreInput();
+		std::shared_ptr<CoreInput> *inst = new std::shared_ptr<CoreInput>;
+		(*inst) = std::make_shared<CoreInput>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_CoreInput__get_simulateTouchWithMouse(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->simulateTouchWithMouse);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->simulateTouchWithMouse);
 		return 1;
 	}
 
@@ -2367,8 +2156,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_CoreInput__get_simulateTouchAsPen(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->simulateTouchAsPen);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->simulateTouchAsPen);
 		return 1;
 	}
 
@@ -2379,8 +2168,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_CoreInput__get_simulateMouseWithTouch(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->simulateMouseWithTouch);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->simulateMouseWithTouch);
 		return 1;
 	}
 
@@ -2391,8 +2180,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_CoreInput__get_ignoreOffScreenTouch(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->ignoreOffScreenTouch);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->ignoreOffScreenTouch);
 		return 1;
 	}
 
@@ -2403,8 +2192,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_CoreInput__get_keyRepeat(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->keyRepeat);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->keyRepeat);
 		return 1;
 	}
 
@@ -2415,9 +2204,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_CoreInput__get_mousePosition(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
-		Vector2 *retInst = new Vector2();
-		*retInst = inst->mousePosition;
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector2> *retInst = new std::shared_ptr<Vector2>;
+		*retInst = std::make_shared<Vector2>();
+		*(*retInst) = (*inst)->mousePosition;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -2429,9 +2219,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_CoreInput__get_deltaMousePosition(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
-		Vector2 *retInst = new Vector2();
-		*retInst = inst->deltaMousePosition;
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector2> *retInst = new std::shared_ptr<Vector2>;
+		*retInst = std::make_shared<Vector2>();
+		*(*retInst) = (*inst)->deltaMousePosition;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -2443,223 +2234,201 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_CoreInput__delete(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_CoreInput_getMousePosition(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
-		Vector2 *retInst = new Vector2();
-		*retInst = inst->getMousePosition();
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector2> *retInst = new std::shared_ptr<Vector2>;
+		*(*retInst) = (*inst)->getMousePosition();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_CoreInput_getKeyState(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
 		PolyKEY keyCode = (PolyKEY)duk_to_int(context, 1);
-		duk_push_boolean(context, inst->getKeyState(keyCode));
+		duk_push_boolean(context, (*inst)->getKeyState(keyCode));
 		return 1;
 	}
 
 	duk_ret_t Polycode_CoreInput_getJoystickButtonState(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
 		int joystickIndex = duk_to_int(context, 1);
 		int button = duk_to_int(context, 2);
-		duk_push_boolean(context, inst->getJoystickButtonState(joystickIndex,button));
+		duk_push_boolean(context, (*inst)->getJoystickButtonState(joystickIndex,button));
 		return 1;
 	}
 
 	duk_ret_t Polycode_CoreInput_getJoystickAxisValue(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
 		int joystickIndex = duk_to_int(context, 1);
 		int axis = duk_to_int(context, 2);
-		duk_push_number(context, inst->getJoystickAxisValue(joystickIndex,axis));
+		duk_push_number(context, (*inst)->getJoystickAxisValue(joystickIndex,axis));
 		return 1;
 	}
 
 	duk_ret_t Polycode_CoreInput_getMouseDelta(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
-		Vector2 *retInst = new Vector2();
-		*retInst = inst->getMouseDelta();
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector2> *retInst = new std::shared_ptr<Vector2>;
+		*(*retInst) = (*inst)->getMouseDelta();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_CoreInput_getMouseButtonState(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
 		int mouseButton = duk_to_int(context, 1);
-		duk_push_boolean(context, inst->getMouseButtonState(mouseButton));
+		duk_push_boolean(context, (*inst)->getMouseButtonState(mouseButton));
 		return 1;
 	}
 
 	duk_ret_t Polycode_CoreInput_getNumJoysticks(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumJoysticks());
-		return 1;
-	}
-
-	duk_ret_t Polycode_CoreInput_getJoystickInfoByIndex(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
-		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getJoystickInfoByIndex(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_CoreInput_getJoystickInfoByID(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
-		int deviceID = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getJoystickInfoByID(deviceID);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumJoysticks());
 		return 1;
 	}
 
 	duk_ret_t Polycode_CoreInput_addJoystick(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
 		int deviceID = duk_to_int(context, 1);
-		inst->addJoystick(deviceID);
+		(*inst)->addJoystick(deviceID);
 		return 0;
 	}
 
 	duk_ret_t Polycode_CoreInput_removeJoystick(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
 		int deviceID = duk_to_int(context, 1);
-		inst->removeJoystick(deviceID);
+		(*inst)->removeJoystick(deviceID);
 		return 0;
 	}
 
 	duk_ret_t Polycode_CoreInput_joystickAxisMoved(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
 		int axisID = duk_to_int(context, 1);
 		Number value = duk_to_number(context, 2);
 		int deviceID = duk_to_int(context, 3);
-		inst->joystickAxisMoved(axisID,value,deviceID);
+		(*inst)->joystickAxisMoved(axisID,value,deviceID);
 		return 0;
 	}
 
 	duk_ret_t Polycode_CoreInput_joystickButtonDown(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
 		int buttonID = duk_to_int(context, 1);
 		int deviceID = duk_to_int(context, 2);
-		inst->joystickButtonDown(buttonID,deviceID);
+		(*inst)->joystickButtonDown(buttonID,deviceID);
 		return 0;
 	}
 
 	duk_ret_t Polycode_CoreInput_joystickButtonUp(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
 		int buttonID = duk_to_int(context, 1);
 		int deviceID = duk_to_int(context, 2);
-		inst->joystickButtonUp(buttonID,deviceID);
+		(*inst)->joystickButtonUp(buttonID,deviceID);
 		return 0;
 	}
 
 	duk_ret_t Polycode_CoreInput_mouseWheelUp(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
 		int ticks = duk_to_int(context, 1);
-		inst->mouseWheelUp(ticks);
+		(*inst)->mouseWheelUp(ticks);
 		return 0;
 	}
 
 	duk_ret_t Polycode_CoreInput_mouseWheelDown(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
 		int ticks = duk_to_int(context, 1);
-		inst->mouseWheelDown(ticks);
+		(*inst)->mouseWheelDown(ticks);
 		return 0;
 	}
 
 	duk_ret_t Polycode_CoreInput_setMouseButtonState(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
 		int mouseButton = duk_to_int(context, 1);
 		bool state = duk_to_boolean(context, 2);
 		int ticks = duk_to_int(context, 3);
-		inst->setMouseButtonState(mouseButton,state,ticks);
+		(*inst)->setMouseButtonState(mouseButton,state,ticks);
 		return 0;
 	}
 
 	duk_ret_t Polycode_CoreInput_setMousePosition(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
 		int x = duk_to_int(context, 1);
 		int y = duk_to_int(context, 2);
 		int ticks = duk_to_int(context, 3);
-		inst->setMousePosition(x,y,ticks);
+		(*inst)->setMousePosition(x,y,ticks);
 		return 0;
 	}
 
 	duk_ret_t Polycode_CoreInput_setKeyState(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
 		PolyKEY keyCode = (PolyKEY)duk_to_int(context, 1);
 		bool newState = duk_to_boolean(context, 2);
 		int ticks = duk_to_int(context, 3);
-		inst->setKeyState(keyCode,newState,ticks);
+		(*inst)->setKeyState(keyCode,newState,ticks);
 		return 0;
 	}
 
 	duk_ret_t Polycode_CoreInput_setDeltaPosition(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
 		int x = duk_to_int(context, 1);
 		int y = duk_to_int(context, 2);
-		inst->setDeltaPosition(x,y);
+		(*inst)->setDeltaPosition(x,y);
 		return 0;
 	}
 
 	duk_ret_t Polycode_CoreInput_touchesBegan(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
 		TouchInfo touch = *(TouchInfo*)duk_to_pointer(context, 1);
 		vector<TouchInfo> touches = *(vector<TouchInfo>*)duk_to_pointer(context, 2);
 		int ticks = duk_to_int(context, 3);
-		inst->touchesBegan(touch,touches,ticks);
+		(*inst)->touchesBegan(touch,touches,ticks);
 		return 0;
 	}
 
 	duk_ret_t Polycode_CoreInput_touchesMoved(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
 		TouchInfo touch = *(TouchInfo*)duk_to_pointer(context, 1);
 		vector<TouchInfo> touches = *(vector<TouchInfo>*)duk_to_pointer(context, 2);
 		int ticks = duk_to_int(context, 3);
-		inst->touchesMoved(touch,touches,ticks);
+		(*inst)->touchesMoved(touch,touches,ticks);
 		return 0;
 	}
 
 	duk_ret_t Polycode_CoreInput_touchesEnded(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
 		TouchInfo touch = *(TouchInfo*)duk_to_pointer(context, 1);
 		vector<TouchInfo> touches = *(vector<TouchInfo>*)duk_to_pointer(context, 2);
 		int ticks = duk_to_int(context, 3);
-		inst->touchesEnded(touch,touches,ticks);
+		(*inst)->touchesEnded(touch,touches,ticks);
 		return 0;
 	}
 
 	duk_ret_t Polycode_CoreInput_textInput(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
 		String text = duk_to_string(context, 1);
-		inst->textInput(text);
+		(*inst)->textInput(text);
 		return 0;
 	}
 
-	duk_ret_t Polycode_CoreInput_createEvent(duk_context *context) {
-		Event* event = (Event*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)CoreInput::createEvent(event);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
 	duk_ret_t Polycode_CoreInput_clearInput(duk_context *context) {
-		CoreInput *inst = (CoreInput*)duk_to_pointer(context, 0);
-		inst->clearInput();
+		std::shared_ptr<CoreInput> *inst = (std::shared_ptr<CoreInput>*)duk_to_pointer(context, 0);
+		(*inst)->clearInput();
 		return 0;
 	}
 
 	duk_ret_t Polycode_JoystickInfo(duk_context *context) {
-		JoystickInfo *inst = new JoystickInfo();
+		std::shared_ptr<JoystickInfo> *inst = new std::shared_ptr<JoystickInfo>;
+		(*inst) = std::make_shared<JoystickInfo>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_JoystickInfo__get_deviceID(duk_context *context) {
-		JoystickInfo *inst = (JoystickInfo*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->deviceID);
+		std::shared_ptr<JoystickInfo> *inst = (std::shared_ptr<JoystickInfo>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->deviceID);
 		return 1;
 	}
 
@@ -2670,8 +2439,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_JoystickInfo__get_deviceIndex(duk_context *context) {
-		JoystickInfo *inst = (JoystickInfo*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->deviceIndex);
+		std::shared_ptr<JoystickInfo> *inst = (std::shared_ptr<JoystickInfo>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->deviceIndex);
 		return 1;
 	}
 
@@ -2682,33 +2451,15 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_JoystickInfo__delete(duk_context *context) {
-		JoystickInfo *inst = (JoystickInfo*)duk_to_pointer(context, 0);
+		std::shared_ptr<JoystickInfo> *inst = (std::shared_ptr<JoystickInfo>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_CoreServices__delete(duk_context *context) {
-		CoreServices *inst = (CoreServices*)duk_to_pointer(context, 0);
+		std::shared_ptr<CoreServices> *inst = (std::shared_ptr<CoreServices>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
-	}
-
-	duk_ret_t Polycode_CoreServices_getInstance(duk_context *context) {
-		PolyBase *ptrRetVal = (PolyBase*)CoreServices::getInstance();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_CoreServices_setInstance(duk_context *context) {
-		CoreServices* _instance = (CoreServices*)duk_to_pointer(context, 0);
-		CoreServices::setInstance(_instance);
-		return 0;
-	}
-
-	duk_ret_t Polycode_CoreServices_getRenderMutex(duk_context *context) {
-		PolyBase *ptrRetVal = (PolyBase*)CoreServices::getRenderMutex();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
 	}
 
 	duk_ret_t Polycode_CoreServices_createInstance(duk_context *context) {
@@ -2716,167 +2467,71 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_CoreServices_setRenderer(duk_context *context) {
-		CoreServices *inst = (CoreServices*)duk_to_pointer(context, 0);
-		Renderer* renderer = (Renderer*)duk_to_pointer(context, 1);
-		inst->setRenderer(renderer);
-		return 0;
-	}
-
-	duk_ret_t Polycode_CoreServices_getRenderer(duk_context *context) {
-		CoreServices *inst = (CoreServices*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getRenderer();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
 	duk_ret_t Polycode_CoreServices_Update(duk_context *context) {
-		CoreServices *inst = (CoreServices*)duk_to_pointer(context, 0);
+		std::shared_ptr<CoreServices> *inst = (std::shared_ptr<CoreServices>*)duk_to_pointer(context, 0);
 		int elapsed = duk_to_int(context, 1);
-		inst->Update(elapsed);
+		(*inst)->Update(elapsed);
 		return 0;
 	}
 
 	duk_ret_t Polycode_CoreServices_fixedUpdate(duk_context *context) {
-		CoreServices *inst = (CoreServices*)duk_to_pointer(context, 0);
-		inst->fixedUpdate();
+		std::shared_ptr<CoreServices> *inst = (std::shared_ptr<CoreServices>*)duk_to_pointer(context, 0);
+		(*inst)->fixedUpdate();
 		return 0;
-	}
-
-	duk_ret_t Polycode_CoreServices_Render(duk_context *context) {
-		CoreServices *inst = (CoreServices*)duk_to_pointer(context, 0);
-		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 1);
-		inst->Render(viewport);
-		return 0;
-	}
-
-	duk_ret_t Polycode_CoreServices_setCore(duk_context *context) {
-		CoreServices *inst = (CoreServices*)duk_to_pointer(context, 0);
-		Core* core = (Core*)duk_to_pointer(context, 1);
-		inst->setCore(core);
-		return 0;
-	}
-
-	duk_ret_t Polycode_CoreServices_getCore(duk_context *context) {
-		CoreServices *inst = (CoreServices*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getCore();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_CoreServices_getInput(duk_context *context) {
-		CoreServices *inst = (CoreServices*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getInput();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_CoreServices_getSceneManager(duk_context *context) {
-		CoreServices *inst = (CoreServices*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getSceneManager();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_CoreServices_getTimerManager(duk_context *context) {
-		CoreServices *inst = (CoreServices*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getTimerManager();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_CoreServices_getTweenManager(duk_context *context) {
-		CoreServices *inst = (CoreServices*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getTweenManager();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_CoreServices_getResourceManager(duk_context *context) {
-		CoreServices *inst = (CoreServices*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getResourceManager();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_CoreServices_getSoundManager(duk_context *context) {
-		CoreServices *inst = (CoreServices*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getSoundManager();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_CoreServices_getLogger(duk_context *context) {
-		CoreServices *inst = (CoreServices*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getLogger();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_CoreServices_getConfig(duk_context *context) {
-		CoreServices *inst = (CoreServices*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getConfig();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
 	}
 
 	duk_ret_t Polycode_Data(duk_context *context) {
-		Data *inst = new Data();
+		std::shared_ptr<Data> *inst = new std::shared_ptr<Data>;
+		(*inst) = std::make_shared<Data>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Data__delete(duk_context *context) {
-		Data *inst = (Data*)duk_to_pointer(context, 0);
+		std::shared_ptr<Data> *inst = (std::shared_ptr<Data>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Data_loadFromFile(duk_context *context) {
-		Data *inst = (Data*)duk_to_pointer(context, 0);
+		std::shared_ptr<Data> *inst = (std::shared_ptr<Data>*)duk_to_pointer(context, 0);
 		String fileName = duk_to_string(context, 1);
-		duk_push_boolean(context, inst->loadFromFile(fileName));
+		duk_push_boolean(context, (*inst)->loadFromFile(fileName));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Data_getAsString(duk_context *context) {
-		Data *inst = (Data*)duk_to_pointer(context, 0);
+		std::shared_ptr<Data> *inst = (std::shared_ptr<Data>*)duk_to_pointer(context, 0);
 		int encoding = duk_to_int(context, 1);
-		duk_push_string(context, inst->getAsString(encoding).c_str());
+		duk_push_string(context, (*inst)->getAsString(encoding).c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Data_setFromString(duk_context *context) {
-		Data *inst = (Data*)duk_to_pointer(context, 0);
+		std::shared_ptr<Data> *inst = (std::shared_ptr<Data>*)duk_to_pointer(context, 0);
 		String str = duk_to_string(context, 1);
 		int encoding = duk_to_int(context, 2);
-		inst->setFromString(str,encoding);
+		(*inst)->setFromString(str,encoding);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Data_saveToFile(duk_context *context) {
-		Data *inst = (Data*)duk_to_pointer(context, 0);
+		std::shared_ptr<Data> *inst = (std::shared_ptr<Data>*)duk_to_pointer(context, 0);
 		String fileName = duk_to_string(context, 1);
-		duk_push_boolean(context, inst->saveToFile(fileName));
-		return 1;
-	}
-
-	duk_ret_t Polycode_Data_getData(duk_context *context) {
-		Data *inst = (Data*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getData();
-		duk_push_pointer(context, (void*)ptrRetVal);
+		duk_push_boolean(context, (*inst)->saveToFile(fileName));
 		return 1;
 	}
 
 	duk_ret_t Polycode_MouseEventResult(duk_context *context) {
-		MouseEventResult *inst = new MouseEventResult();
+		std::shared_ptr<MouseEventResult> *inst = new std::shared_ptr<MouseEventResult>;
+		(*inst) = std::make_shared<MouseEventResult>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_MouseEventResult__get_hit(duk_context *context) {
-		MouseEventResult *inst = (MouseEventResult*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->hit);
+		std::shared_ptr<MouseEventResult> *inst = (std::shared_ptr<MouseEventResult>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->hit);
 		return 1;
 	}
 
@@ -2887,8 +2542,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_MouseEventResult__get_blocked(duk_context *context) {
-		MouseEventResult *inst = (MouseEventResult*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->blocked);
+		std::shared_ptr<MouseEventResult> *inst = (std::shared_ptr<MouseEventResult>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->blocked);
 		return 1;
 	}
 
@@ -2899,20 +2554,21 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_MouseEventResult__delete(duk_context *context) {
-		MouseEventResult *inst = (MouseEventResult*)duk_to_pointer(context, 0);
+		std::shared_ptr<MouseEventResult> *inst = (std::shared_ptr<MouseEventResult>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_EntityProp(duk_context *context) {
-		EntityProp *inst = new EntityProp();
+		std::shared_ptr<EntityProp> *inst = new std::shared_ptr<EntityProp>;
+		(*inst) = std::make_shared<EntityProp>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_EntityProp__get_propName(duk_context *context) {
-		EntityProp *inst = (EntityProp*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->propName.c_str());
+		std::shared_ptr<EntityProp> *inst = (std::shared_ptr<EntityProp>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->propName.c_str());
 		return 1;
 	}
 
@@ -2923,8 +2579,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_EntityProp__get_propValue(duk_context *context) {
-		EntityProp *inst = (EntityProp*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->propValue.c_str());
+		std::shared_ptr<EntityProp> *inst = (std::shared_ptr<EntityProp>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->propValue.c_str());
 		return 1;
 	}
 
@@ -2935,21 +2591,23 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_EntityProp__delete(duk_context *context) {
-		EntityProp *inst = (EntityProp*)duk_to_pointer(context, 0);
+		std::shared_ptr<EntityProp> *inst = (std::shared_ptr<EntityProp>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_AABB(duk_context *context) {
-		AABB *inst = new AABB();
+		std::shared_ptr<AABB> *inst = new std::shared_ptr<AABB>;
+		(*inst) = std::make_shared<AABB>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_AABB__get_min(duk_context *context) {
-		AABB *inst = (AABB*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->min;
+		std::shared_ptr<AABB> *inst = (std::shared_ptr<AABB>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*retInst = std::make_shared<Vector3>();
+		*(*retInst) = (*inst)->min;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -2961,9 +2619,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_AABB__get_max(duk_context *context) {
-		AABB *inst = (AABB*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->max;
+		std::shared_ptr<AABB> *inst = (std::shared_ptr<AABB>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*retInst = std::make_shared<Vector3>();
+		*(*retInst) = (*inst)->max;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -2975,20 +2634,21 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_AABB__delete(duk_context *context) {
-		AABB *inst = (AABB*)duk_to_pointer(context, 0);
+		std::shared_ptr<AABB> *inst = (std::shared_ptr<AABB>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Rotation(duk_context *context) {
-		Rotation *inst = new Rotation();
+		std::shared_ptr<Rotation> *inst = new std::shared_ptr<Rotation>;
+		(*inst) = std::make_shared<Rotation>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Rotation__get_pitch(duk_context *context) {
-		Rotation *inst = (Rotation*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->pitch);
+		std::shared_ptr<Rotation> *inst = (std::shared_ptr<Rotation>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->pitch);
 		return 1;
 	}
 
@@ -2999,8 +2659,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Rotation__get_yaw(duk_context *context) {
-		Rotation *inst = (Rotation*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->yaw);
+		std::shared_ptr<Rotation> *inst = (std::shared_ptr<Rotation>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->yaw);
 		return 1;
 	}
 
@@ -3011,8 +2671,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Rotation__get_roll(duk_context *context) {
-		Rotation *inst = (Rotation*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->roll);
+		std::shared_ptr<Rotation> *inst = (std::shared_ptr<Rotation>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->roll);
 		return 1;
 	}
 
@@ -3023,20 +2683,21 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Rotation__delete(duk_context *context) {
-		Rotation *inst = (Rotation*)duk_to_pointer(context, 0);
+		std::shared_ptr<Rotation> *inst = (std::shared_ptr<Rotation>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity(duk_context *context) {
-		Entity *inst = new Entity();
+		std::shared_ptr<Entity> *inst = new std::shared_ptr<Entity>;
+		(*inst) = std::make_shared<Entity>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity__get_ownsChildren(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->ownsChildren);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->ownsChildren);
 		return 1;
 	}
 
@@ -3047,8 +2708,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Entity__get_billboardMode(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->billboardMode);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->billboardMode);
 		return 1;
 	}
 
@@ -3059,9 +2720,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Entity__get_color(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Color *retInst = new Color();
-		*retInst = inst->color;
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *retInst = new std::shared_ptr<Color>;
+		*retInst = std::make_shared<Color>();
+		*(*retInst) = (*inst)->color;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -3073,8 +2735,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Entity__get_enabled(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->enabled);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->enabled);
 		return 1;
 	}
 
@@ -3085,8 +2747,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Entity__get_visible(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->visible);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->visible);
 		return 1;
 	}
 
@@ -3097,8 +2759,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Entity__get_depthWrite(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->depthWrite);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->depthWrite);
 		return 1;
 	}
 
@@ -3109,8 +2771,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Entity__get_depthTest(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->depthTest);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->depthTest);
 		return 1;
 	}
 
@@ -3121,8 +2783,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Entity__get_colorAffectsChildren(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->colorAffectsChildren);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->colorAffectsChildren);
 		return 1;
 	}
 
@@ -3133,8 +2795,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Entity__get_visibilityAffectsChildren(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->visibilityAffectsChildren);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->visibilityAffectsChildren);
 		return 1;
 	}
 
@@ -3145,8 +2807,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Entity__get_ignoreParentMatrix(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->ignoreParentMatrix);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->ignoreParentMatrix);
 		return 1;
 	}
 
@@ -3157,8 +2819,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Entity__get_enableScissor(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->enableScissor);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->enableScissor);
 		return 1;
 	}
 
@@ -3169,9 +2831,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Entity__get_scissorBox(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Polycode::Rectangle *retInst = new Polycode::Rectangle();
-		*retInst = inst->scissorBox;
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Polycode::Rectangle> *retInst = new std::shared_ptr<Polycode::Rectangle>;
+		*retInst = std::make_shared<Polycode::Rectangle>();
+		*(*retInst) = (*inst)->scissorBox;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -3183,8 +2846,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Entity__get_editorOnly(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->editorOnly);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->editorOnly);
 		return 1;
 	}
 
@@ -3195,8 +2858,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Entity__get_id(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->id.c_str());
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->id.c_str());
 		return 1;
 	}
 
@@ -3207,9 +2870,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Entity__get_collisionShapeType(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		char *retInst = new char();
-		*retInst = inst->collisionShapeType;
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		std::shared_ptr<char> *retInst = new std::shared_ptr<char>;
+		*retInst = std::make_shared<char>();
+		*(*retInst) = (*inst)->collisionShapeType;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -3221,8 +2885,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Entity__get_processInputEvents(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->processInputEvents);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->processInputEvents);
 		return 1;
 	}
 
@@ -3233,8 +2897,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Entity__get_blockMouseInput(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->blockMouseInput);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->blockMouseInput);
 		return 1;
 	}
 
@@ -3245,8 +2909,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Entity__get_snapToPixels(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->snapToPixels);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->snapToPixels);
 		return 1;
 	}
 
@@ -3257,8 +2921,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Entity__get_mouseOver(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->mouseOver);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->mouseOver);
 		return 1;
 	}
 
@@ -3269,8 +2933,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Entity__get_rendererVis(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->rendererVis);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->rendererVis);
 		return 1;
 	}
 
@@ -3281,9 +2945,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Entity__get_layerID(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		char *retInst = new char();
-		*retInst = inst->layerID;
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		std::shared_ptr<char> *retInst = new std::shared_ptr<char>;
+		*retInst = std::make_shared<char>();
+		*(*retInst) = (*inst)->layerID;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -3295,899 +2960,706 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Entity__delete(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_initEntity(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		inst->initEntity();
-		return 0;
-	}
-
-	duk_ret_t Polycode_Entity_Render(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		GPUDrawBuffer* buffer = (GPUDrawBuffer*)duk_to_pointer(context, 1);
-		inst->Render(buffer);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		(*inst)->initEntity();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_Update(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		inst->Update();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		(*inst)->Update();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_fixedUpdate(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		inst->fixedUpdate();
-		return 0;
-	}
-
-	duk_ret_t Polycode_Entity_transformAndRender(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		GPUDrawBuffer* drawBuffer = (GPUDrawBuffer*)duk_to_pointer(context, 1);
-		Rectangle* parentScissorBox = (Rectangle*)duk_to_pointer(context, 2);
-		inst->transformAndRender(drawBuffer,parentScissorBox);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Entity_renderChildren(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		GPUDrawBuffer* buffer = (GPUDrawBuffer*)duk_to_pointer(context, 1);
-		Rectangle* parentScissorBox = (Rectangle*)duk_to_pointer(context, 2);
-		inst->renderChildren(buffer,parentScissorBox);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Entity_Clone(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		bool deepClone = duk_to_boolean(context, 1);
-		bool ignoreEditorOnly = duk_to_boolean(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->Clone(deepClone,ignoreEditorOnly);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Entity_applyClone(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Entity* clone = (Entity*)duk_to_pointer(context, 1);
-		bool deepClone = duk_to_boolean(context, 2);
-		bool ignoreEditorOnly = duk_to_boolean(context, 3);
-		inst->applyClone(clone,deepClone,ignoreEditorOnly);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		(*inst)->fixedUpdate();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_dirtyMatrix(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		bool val = duk_to_boolean(context, 1);
-		inst->dirtyMatrix(val);
+		(*inst)->dirtyMatrix(val);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_rebuildTransformMatrix(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		inst->rebuildTransformMatrix();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		(*inst)->rebuildTransformMatrix();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_updateEntityMatrix(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		inst->updateEntityMatrix();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		(*inst)->updateEntityMatrix();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_getTransformMatrix(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->getTransformMatrix();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*(*retInst) = (*inst)->getTransformMatrix();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_getConcatenatedMatrix(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->getConcatenatedMatrix();
-		duk_push_pointer(context, (void*)retInst);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Entity_getConcatenatedMatrixRelativeTo(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Entity* relativeEntity = (Entity*)duk_to_pointer(context, 1);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->getConcatenatedMatrixRelativeTo(relativeEntity);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*(*retInst) = (*inst)->getConcatenatedMatrix();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_getAnchorAdjustedMatrix(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->getAnchorAdjustedMatrix();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*(*retInst) = (*inst)->getAnchorAdjustedMatrix();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_getConcatenatedRollMatrix(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->getConcatenatedRollMatrix();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*(*retInst) = (*inst)->getConcatenatedRollMatrix();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_setTransformByMatrixPure(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Matrix4 matrix = *(Matrix4*)duk_to_pointer(context, 1);
-		inst->setTransformByMatrixPure(matrix);
+		(*inst)->setTransformByMatrixPure(matrix);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_getLookAtMatrix(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Vector3 loc = *(Vector3*)duk_to_pointer(context, 1);
 		Vector3 upVector = *(Vector3*)duk_to_pointer(context, 2);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->getLookAtMatrix(loc,upVector);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*(*retInst) = (*inst)->getLookAtMatrix(loc,upVector);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
-	duk_ret_t Polycode_Entity_addChild(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Entity* newChild = (Entity*)duk_to_pointer(context, 1);
-		inst->addChild(newChild);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Entity_removeChild(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Entity* entityToRemove = (Entity*)duk_to_pointer(context, 1);
-		inst->removeChild(entityToRemove);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Entity_moveChildUp(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Entity* child = (Entity*)duk_to_pointer(context, 1);
-		inst->moveChildUp(child);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Entity_moveChildDown(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Entity* child = (Entity*)duk_to_pointer(context, 1);
-		inst->moveChildDown(child);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Entity_moveChildTop(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Entity* child = (Entity*)duk_to_pointer(context, 1);
-		inst->moveChildTop(child);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Entity_moveChildBottom(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Entity* child = (Entity*)duk_to_pointer(context, 1);
-		inst->moveChildBottom(child);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Entity_setParentEntity(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Entity* entity = (Entity*)duk_to_pointer(context, 1);
-		inst->setParentEntity(entity);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Entity_getParentEntity(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getParentEntity();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
 	duk_ret_t Polycode_Entity_getNumChildren(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumChildren());
-		return 1;
-	}
-
-	duk_ret_t Polycode_Entity_getChildAtIndex(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getChildAtIndex(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumChildren());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_setOwnsChildrenRecursive(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		bool val = duk_to_boolean(context, 1);
-		inst->setOwnsChildrenRecursive(val);
+		(*inst)->setOwnsChildrenRecursive(val);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_getPosition(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->getPosition();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->getPosition();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_getPosition2D(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Vector2 *retInst = new Vector2();
-		*retInst = inst->getPosition2D();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector2> *retInst = new std::shared_ptr<Vector2>;
+		*(*retInst) = (*inst)->getPosition2D();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_getCombinedPosition(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->getCombinedPosition();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->getCombinedPosition();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_setPosition(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
 		Number z = duk_to_number(context, 3);
-		inst->setPosition(x,y,z);
+		(*inst)->setPosition(x,y,z);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_setPositionX(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
-		inst->setPositionX(x);
+		(*inst)->setPositionX(x);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_setPositionY(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Number y = duk_to_number(context, 1);
-		inst->setPositionY(y);
+		(*inst)->setPositionY(y);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_Translate(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
 		Number z = duk_to_number(context, 3);
-		inst->Translate(x,y,z);
+		(*inst)->Translate(x,y,z);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_setPositionZ(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Number z = duk_to_number(context, 1);
-		inst->setPositionZ(z);
+		(*inst)->setPositionZ(z);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_setScaleX(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
-		inst->setScaleX(x);
+		(*inst)->setScaleX(x);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_setScaleY(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Number y = duk_to_number(context, 1);
-		inst->setScaleY(y);
+		(*inst)->setScaleY(y);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_setScaleZ(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Number z = duk_to_number(context, 1);
-		inst->setScaleZ(z);
+		(*inst)->setScaleZ(z);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_Scale(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
 		Number z = duk_to_number(context, 3);
-		inst->Scale(x,y,z);
+		(*inst)->Scale(x,y,z);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_setScale(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
 		Number z = duk_to_number(context, 3);
-		inst->setScale(x,y,z);
+		(*inst)->setScale(x,y,z);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_getCompoundScale(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->getCompoundScale();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->getCompoundScale();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_getScale(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->getScale();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->getScale();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_getRotationEuler(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->getRotationEuler();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->getRotationEuler();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_getCombinedPitch(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getCombinedPitch());
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getCombinedPitch());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_getCombinedYaw(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getCombinedYaw());
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getCombinedYaw());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_getCombinedRoll(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getCombinedRoll());
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getCombinedRoll());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_rebuildRotation(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		inst->rebuildRotation();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		(*inst)->rebuildRotation();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_setRotationEuler(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Vector3 rotation = *(Vector3*)duk_to_pointer(context, 1);
-		inst->setRotationEuler(rotation);
+		(*inst)->setRotationEuler(rotation);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_setPitch(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Number pitch = duk_to_number(context, 1);
-		inst->setPitch(pitch);
+		(*inst)->setPitch(pitch);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_setYaw(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Number yaw = duk_to_number(context, 1);
-		inst->setYaw(yaw);
+		(*inst)->setYaw(yaw);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_setRoll(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Number roll = duk_to_number(context, 1);
-		inst->setRoll(roll);
+		(*inst)->setRoll(roll);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_Roll(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Number roll = duk_to_number(context, 1);
-		inst->Roll(roll);
+		(*inst)->Roll(roll);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_Yaw(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Number yaw = duk_to_number(context, 1);
-		inst->Yaw(yaw);
+		(*inst)->Yaw(yaw);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_Pitch(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Number pitch = duk_to_number(context, 1);
-		inst->Pitch(pitch);
+		(*inst)->Pitch(pitch);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_getPitch(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getPitch());
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getPitch());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_getYaw(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getYaw());
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getYaw());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_getRoll(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getRoll());
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getRoll());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_getWidth(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getWidth());
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getWidth());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_getHeight(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getHeight());
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getHeight());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_getDepth(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getDepth());
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getDepth());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_setWidth(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Number width = duk_to_number(context, 1);
-		inst->setWidth(width);
+		(*inst)->setWidth(width);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_setHeight(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Number height = duk_to_number(context, 1);
-		inst->setHeight(height);
+		(*inst)->setHeight(height);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_setDepth(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Number depth = duk_to_number(context, 1);
-		inst->setDepth(depth);
+		(*inst)->setDepth(depth);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_setRotationQuat(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Number w = duk_to_number(context, 1);
 		Number x = duk_to_number(context, 2);
 		Number y = duk_to_number(context, 3);
 		Number z = duk_to_number(context, 4);
-		inst->setRotationQuat(w,x,y,z);
+		(*inst)->setRotationQuat(w,x,y,z);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_setRotationByQuaternion(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Quaternion quaternion = *(Quaternion*)duk_to_pointer(context, 1);
-		inst->setRotationByQuaternion(quaternion);
+		(*inst)->setRotationByQuaternion(quaternion);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_getRotationQuat(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Quaternion *retInst = new Quaternion();
-		*retInst = inst->getRotationQuat();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Quaternion> *retInst = new std::shared_ptr<Quaternion>;
+		*(*retInst) = (*inst)->getRotationQuat();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_getConcatenatedQuat(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Quaternion *retInst = new Quaternion();
-		*retInst = inst->getConcatenatedQuat();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Quaternion> *retInst = new std::shared_ptr<Quaternion>;
+		*(*retInst) = (*inst)->getConcatenatedQuat();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_lookAt(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Vector3 loc = *(Vector3*)duk_to_pointer(context, 1);
 		Vector3 upVector = *(Vector3*)duk_to_pointer(context, 2);
-		inst->lookAt(loc,upVector);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Entity_lookAtEntity(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Entity* entity = (Entity*)duk_to_pointer(context, 1);
-		Vector3 upVector = *(Vector3*)duk_to_pointer(context, 2);
-		inst->lookAtEntity(entity,upVector);
+		(*inst)->lookAt(loc,upVector);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_getCombinedColor(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Color *retInst = new Color();
-		*retInst = inst->getCombinedColor();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *retInst = new std::shared_ptr<Color>;
+		*(*retInst) = (*inst)->getCombinedColor();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_setColor(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Number r = duk_to_number(context, 1);
 		Number g = duk_to_number(context, 2);
 		Number b = duk_to_number(context, 3);
 		Number a = duk_to_number(context, 4);
-		inst->setColor(r,g,b,a);
+		(*inst)->setColor(r,g,b,a);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_setColorInt(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		int r = duk_to_int(context, 1);
 		int g = duk_to_int(context, 2);
 		int b = duk_to_int(context, 3);
 		int a = duk_to_int(context, 4);
-		inst->setColorInt(r,g,b,a);
+		(*inst)->setColorInt(r,g,b,a);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_setAnchorPoint(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Vector3 anchorPoint = *(Vector3*)duk_to_pointer(context, 1);
-		inst->setAnchorPoint(anchorPoint);
+		(*inst)->setAnchorPoint(anchorPoint);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_getAnchorPoint(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->getAnchorPoint();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->getAnchorPoint();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_onMouseDown(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Ray ray = *(Ray*)duk_to_pointer(context, 1);
 		int mouseButton = duk_to_int(context, 2);
 		int timestamp = duk_to_int(context, 3);
-		MouseEventResult *retInst = new MouseEventResult();
-		*retInst = inst->onMouseDown(ray,mouseButton,timestamp);
+		std::shared_ptr<MouseEventResult> *retInst = new std::shared_ptr<MouseEventResult>;
+		*(*retInst) = (*inst)->onMouseDown(ray,mouseButton,timestamp);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_onMouseUp(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Ray ray = *(Ray*)duk_to_pointer(context, 1);
 		int mouseButton = duk_to_int(context, 2);
 		int timestamp = duk_to_int(context, 3);
-		MouseEventResult *retInst = new MouseEventResult();
-		*retInst = inst->onMouseUp(ray,mouseButton,timestamp);
+		std::shared_ptr<MouseEventResult> *retInst = new std::shared_ptr<MouseEventResult>;
+		*(*retInst) = (*inst)->onMouseUp(ray,mouseButton,timestamp);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_onMouseMove(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Ray ray = *(Ray*)duk_to_pointer(context, 1);
 		int timestamp = duk_to_int(context, 2);
-		MouseEventResult *retInst = new MouseEventResult();
-		*retInst = inst->onMouseMove(ray,timestamp);
+		std::shared_ptr<MouseEventResult> *retInst = new std::shared_ptr<MouseEventResult>;
+		*(*retInst) = (*inst)->onMouseMove(ray,timestamp);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_onMouseWheelUp(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Ray ray = *(Ray*)duk_to_pointer(context, 1);
 		int timestamp = duk_to_int(context, 2);
-		MouseEventResult *retInst = new MouseEventResult();
-		*retInst = inst->onMouseWheelUp(ray,timestamp);
+		std::shared_ptr<MouseEventResult> *retInst = new std::shared_ptr<MouseEventResult>;
+		*(*retInst) = (*inst)->onMouseWheelUp(ray,timestamp);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_onMouseWheelDown(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Ray ray = *(Ray*)duk_to_pointer(context, 1);
 		int timestamp = duk_to_int(context, 2);
-		MouseEventResult *retInst = new MouseEventResult();
-		*retInst = inst->onMouseWheelDown(ray,timestamp);
+		std::shared_ptr<MouseEventResult> *retInst = new std::shared_ptr<MouseEventResult>;
+		*(*retInst) = (*inst)->onMouseWheelDown(ray,timestamp);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_setDepthOnly(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		bool val = duk_to_boolean(context, 1);
-		inst->setDepthOnly(val);
+		(*inst)->setDepthOnly(val);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_getDepthOnly(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->getDepthOnly());
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->getDepthOnly());
 		return 1;
 	}
 
-	duk_ret_t Polycode_Entity_setUserData(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		void* userData = (void*)duk_to_pointer(context, 1);
-		inst->setUserData(userData);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Entity_getUserData(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		inst->getUserData();
-		return 0;
-	}
-
 	duk_ret_t Polycode_Entity_setBlendingMode(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		int newBlendingMode = duk_to_int(context, 1);
-		inst->setBlendingMode(newBlendingMode);
+		(*inst)->setBlendingMode(newBlendingMode);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_getBlendingMode(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getBlendingMode());
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getBlendingMode());
 		return 1;
-	}
-
-	duk_ret_t Polycode_Entity_getEntityById(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		String id = duk_to_string(context, 1);
-		bool recursive = duk_to_boolean(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getEntityById(id,recursive);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Entity_getEntitiesByTag(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		String tag = duk_to_string(context, 1);
-		bool recursive = duk_to_boolean(context, 2);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Entity_getEntitiesByLayerID(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		char layerID = *(char*)duk_to_pointer(context, 1);
-		bool recursive = duk_to_boolean(context, 2);
-		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_getEntityProp(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		String propName = duk_to_string(context, 1);
-		duk_push_string(context, inst->getEntityProp(propName).c_str());
+		duk_push_string(context, (*inst)->getEntityProp(propName).c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_setEntityProp(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		String propName = duk_to_string(context, 1);
 		String propValue = duk_to_string(context, 2);
-		inst->setEntityProp(propName,propValue);
+		(*inst)->setEntityProp(propName,propValue);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_setInverseY(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		bool val = duk_to_boolean(context, 1);
-		inst->setInverseY(val);
+		(*inst)->setInverseY(val);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_getInverseY(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->getInverseY());
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->getInverseY());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_doUpdates(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		inst->doUpdates();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		(*inst)->doUpdates();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_doFixedUpdates(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		inst->doFixedUpdates();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		(*inst)->doFixedUpdates();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_buildPositionMatrix(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->buildPositionMatrix();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*(*retInst) = (*inst)->buildPositionMatrix();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
-	duk_ret_t Polycode_Entity_setRenderer(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Renderer* renderer = (Renderer*)duk_to_pointer(context, 1);
-		inst->setRenderer(renderer);
-		return 0;
-	}
-
 	duk_ret_t Polycode_Entity_customHitDetection(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Ray ray = *(Ray*)duk_to_pointer(context, 1);
-		duk_push_boolean(context, inst->customHitDetection(ray));
+		duk_push_boolean(context, (*inst)->customHitDetection(ray));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_getNumTags(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumTags());
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumTags());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_getTagAtIndex(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		duk_push_string(context, inst->getTagAtIndex(index).c_str());
+		duk_push_string(context, (*inst)->getTagAtIndex(index).c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_hasTag(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		String tag = duk_to_string(context, 1);
-		duk_push_boolean(context, inst->hasTag(tag));
+		duk_push_boolean(context, (*inst)->hasTag(tag));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_clearTags(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		inst->clearTags();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		(*inst)->clearTags();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_addTag(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		String tag = duk_to_string(context, 1);
-		inst->addTag(tag);
+		(*inst)->addTag(tag);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_getScreenPosition(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Matrix4 projectionMatrix = *(Matrix4*)duk_to_pointer(context, 1);
 		Matrix4 cameraMatrix = *(Matrix4*)duk_to_pointer(context, 2);
-		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 3);
-		Vector2 *retInst = new Vector2();
-		*retInst = inst->getScreenPosition(projectionMatrix,cameraMatrix,viewport);
+		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 3);
+		std::shared_ptr<Vector2> *retInst = new std::shared_ptr<Vector2>;
+		*(*retInst) = (*inst)->getScreenPosition(projectionMatrix,cameraMatrix,viewport);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_recalculateAABBAllChildren(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		inst->recalculateAABBAllChildren();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		(*inst)->recalculateAABBAllChildren();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_recalculateAABB(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		inst->recalculateAABB();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		(*inst)->recalculateAABB();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_getWorldAABB(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		AABB *retInst = new AABB();
-		*retInst = inst->getWorldAABB();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		std::shared_ptr<AABB> *retInst = new std::shared_ptr<AABB>;
+		*(*retInst) = (*inst)->getWorldAABB();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_getLocalBoundingBox(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->getLocalBoundingBox();
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->getLocalBoundingBox();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_setLocalBoundingBox(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Vector3 box = *(Vector3*)duk_to_pointer(context, 1);
-		inst->setLocalBoundingBox(box);
+		(*inst)->setLocalBoundingBox(box);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_setLocalBoundingBoxX(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
-		inst->setLocalBoundingBoxX(x);
+		(*inst)->setLocalBoundingBoxX(x);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_setLocalBoundingBoxY(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Number y = duk_to_number(context, 1);
-		inst->setLocalBoundingBoxY(y);
+		(*inst)->setLocalBoundingBoxY(y);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_setLocalBoundingBoxZ(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		Number z = duk_to_number(context, 1);
-		inst->setLocalBoundingBoxZ(z);
+		(*inst)->setLocalBoundingBoxZ(z);
 		return 0;
-	}
-
-	duk_ret_t Polycode_Entity_setContainerScene(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Scene* scene = (Scene*)duk_to_pointer(context, 1);
-		inst->setContainerScene(scene);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Entity_getContainerScene(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getContainerScene();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
 	}
 
 	duk_ret_t Polycode_Entity_attachScript(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		shared_ptr<Script> script = *(shared_ptr<Script>*)duk_to_pointer(context, 1);
-		inst->attachScript(script);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Entity_detachScript(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		Script* script = (Script*)duk_to_pointer(context, 1);
-		inst->detachScript(script);
+		(*inst)->attachScript(script);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Entity_getNumScripts(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumScripts());
-		return 1;
-	}
-
-	duk_ret_t Polycode_Entity_getScriptAtIndex(duk_context *context) {
-		Entity *inst = (Entity*)duk_to_pointer(context, 0);
-		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getScriptAtIndex(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumScripts());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Event(duk_context *context) {
-		Event *inst = new Event();
+		std::shared_ptr<Event> *inst = new std::shared_ptr<Event>;
+		(*inst) = std::make_shared<Event>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Event__get_deleteOnDispatch(duk_context *context) {
-		Event *inst = (Event*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->deleteOnDispatch);
+		std::shared_ptr<Event> *inst = (std::shared_ptr<Event>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->deleteOnDispatch);
 		return 1;
 	}
 
@@ -4198,8 +3670,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Event__get_cancelEventFlag(duk_context *context) {
-		Event *inst = (Event*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->cancelEventFlag);
+		std::shared_ptr<Event> *inst = (std::shared_ptr<Event>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->cancelEventFlag);
 		return 1;
 	}
 
@@ -4210,139 +3682,64 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Event__delete(duk_context *context) {
-		Event *inst = (Event*)duk_to_pointer(context, 0);
+		std::shared_ptr<Event> *inst = (std::shared_ptr<Event>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Event_getEventCode(duk_context *context) {
-		Event *inst = (Event*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getEventCode());
-		return 1;
-	}
-
-	duk_ret_t Polycode_Event_getDispatcher(duk_context *context) {
-		Event *inst = (Event*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getDispatcher();
-		duk_push_pointer(context, (void*)ptrRetVal);
+		std::shared_ptr<Event> *inst = (std::shared_ptr<Event>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getEventCode());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Event_setEventCode(duk_context *context) {
-		Event *inst = (Event*)duk_to_pointer(context, 0);
+		std::shared_ptr<Event> *inst = (std::shared_ptr<Event>*)duk_to_pointer(context, 0);
 		int eventCode = duk_to_int(context, 1);
-		inst->setEventCode(eventCode);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Event_setDispatcher(duk_context *context) {
-		Event *inst = (Event*)duk_to_pointer(context, 0);
-		EventDispatcher* dispatcher = (EventDispatcher*)duk_to_pointer(context, 1);
-		inst->setDispatcher(dispatcher);
+		(*inst)->setEventCode(eventCode);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Event_getEventType(duk_context *context) {
-		Event *inst = (Event*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->getEventType().c_str());
+		std::shared_ptr<Event> *inst = (std::shared_ptr<Event>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->getEventType().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Event_cancelEvent(duk_context *context) {
-		Event *inst = (Event*)duk_to_pointer(context, 0);
-		inst->cancelEvent();
+		std::shared_ptr<Event> *inst = (std::shared_ptr<Event>*)duk_to_pointer(context, 0);
+		(*inst)->cancelEvent();
 		return 0;
 	}
 
 	duk_ret_t Polycode_EventDispatcher(duk_context *context) {
-		EventDispatcher *inst = new EventDispatcher();
+		std::shared_ptr<EventDispatcher> *inst = new std::shared_ptr<EventDispatcher>;
+		(*inst) = std::make_shared<EventDispatcher>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_EventDispatcher__delete(duk_context *context) {
-		EventDispatcher *inst = (EventDispatcher*)duk_to_pointer(context, 0);
+		std::shared_ptr<EventDispatcher> *inst = (std::shared_ptr<EventDispatcher>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_EventDispatcher_removeAllHandlers(duk_context *context) {
-		EventDispatcher *inst = (EventDispatcher*)duk_to_pointer(context, 0);
-		inst->removeAllHandlers();
-		return 0;
-	}
-
-	duk_ret_t Polycode_EventDispatcher_removeAllHandlersForListener(duk_context *context) {
-		EventDispatcher *inst = (EventDispatcher*)duk_to_pointer(context, 0);
-		EventHandler* handler = (EventHandler*)duk_to_pointer(context, 1);
-		inst->removeAllHandlersForListener(handler);
-		return 0;
-	}
-
-	duk_ret_t Polycode_EventDispatcher_addEventListener(duk_context *context) {
-		EventDispatcher *inst = (EventDispatcher*)duk_to_pointer(context, 0);
-		EventHandler* handler = (EventHandler*)duk_to_pointer(context, 1);
-		int eventCode = duk_to_int(context, 2);
-		inst->addEventListener(handler,eventCode);
-		return 0;
-	}
-
-	duk_ret_t Polycode_EventDispatcher_addEventListenerUnique(duk_context *context) {
-		EventDispatcher *inst = (EventDispatcher*)duk_to_pointer(context, 0);
-		EventHandler* handler = (EventHandler*)duk_to_pointer(context, 1);
-		int eventCode = duk_to_int(context, 2);
-		inst->addEventListenerUnique(handler,eventCode);
-		return 0;
-	}
-
-	duk_ret_t Polycode_EventDispatcher_hasEventListener(duk_context *context) {
-		EventDispatcher *inst = (EventDispatcher*)duk_to_pointer(context, 0);
-		EventHandler* handler = (EventHandler*)duk_to_pointer(context, 1);
-		int eventCode = duk_to_int(context, 2);
-		duk_push_boolean(context, inst->hasEventListener(handler,eventCode));
-		return 1;
-	}
-
-	duk_ret_t Polycode_EventDispatcher_removeEventListener(duk_context *context) {
-		EventDispatcher *inst = (EventDispatcher*)duk_to_pointer(context, 0);
-		EventHandler* handler = (EventHandler*)duk_to_pointer(context, 1);
-		int eventCode = duk_to_int(context, 2);
-		inst->removeEventListener(handler,eventCode);
-		return 0;
-	}
-
-	duk_ret_t Polycode_EventDispatcher___dispatchEvent(duk_context *context) {
-		EventDispatcher *inst = (EventDispatcher*)duk_to_pointer(context, 0);
-		Event* event = (Event*)duk_to_pointer(context, 1);
-		int eventCode = duk_to_int(context, 2);
-		inst->__dispatchEvent(event,eventCode);
-		return 0;
-	}
-
-	duk_ret_t Polycode_EventDispatcher_dispatchEvent(duk_context *context) {
-		EventDispatcher *inst = (EventDispatcher*)duk_to_pointer(context, 0);
-		Event* event = (Event*)duk_to_pointer(context, 1);
-		int eventCode = duk_to_int(context, 2);
-		inst->dispatchEvent(event,eventCode);
-		return 0;
-	}
-
-	duk_ret_t Polycode_EventDispatcher_dispatchEventNoDelete(duk_context *context) {
-		EventDispatcher *inst = (EventDispatcher*)duk_to_pointer(context, 0);
-		Event* event = (Event*)duk_to_pointer(context, 1);
-		int eventCode = duk_to_int(context, 2);
-		inst->dispatchEventNoDelete(event,eventCode);
+		std::shared_ptr<EventDispatcher> *inst = (std::shared_ptr<EventDispatcher>*)duk_to_pointer(context, 0);
+		(*inst)->removeAllHandlers();
 		return 0;
 	}
 
 	duk_ret_t Polycode_EventHandler(duk_context *context) {
-		EventHandler *inst = new EventHandler();
+		std::shared_ptr<EventHandler> *inst = new std::shared_ptr<EventHandler>;
+		(*inst) = std::make_shared<EventHandler>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_EventHandler__delete(duk_context *context) {
-		EventHandler *inst = (EventHandler*)duk_to_pointer(context, 0);
+		std::shared_ptr<EventHandler> *inst = (std::shared_ptr<EventHandler>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
@@ -4350,14 +3747,15 @@ namespace Polycode {
 	duk_ret_t Polycode_Font(duk_context *context) {
 		String fileName = duk_to_string(context, 0);
 		FT_Library FTLibrary = *(FT_Library*)duk_to_pointer(context, 1);
-		Font *inst = new Font(fileName,FTLibrary);
+		std::shared_ptr<Font> *inst = new std::shared_ptr<Font>;
+		(*inst) = std::make_shared<Font>(fileName,FTLibrary);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Font__get_loaded(duk_context *context) {
-		Font *inst = (Font*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->loaded);
+		std::shared_ptr<Font> *inst = (std::shared_ptr<Font>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->loaded);
 		return 1;
 	}
 
@@ -4368,53 +3766,54 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Font__delete(duk_context *context) {
-		Font *inst = (Font*)duk_to_pointer(context, 0);
+		std::shared_ptr<Font> *inst = (std::shared_ptr<Font>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Font_getFace(duk_context *context) {
-		Font *inst = (Font*)duk_to_pointer(context, 0);
-		FT_Face *retInst = new FT_Face();
-		*retInst = inst->getFace();
+		std::shared_ptr<Font> *inst = (std::shared_ptr<Font>*)duk_to_pointer(context, 0);
+		std::shared_ptr<FT_Face> *retInst = new std::shared_ptr<FT_Face>;
+		*(*retInst) = (*inst)->getFace();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Font_isValid(duk_context *context) {
-		Font *inst = (Font*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->isValid());
+		std::shared_ptr<Font> *inst = (std::shared_ptr<Font>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->isValid());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Font_setFontName(duk_context *context) {
-		Font *inst = (Font*)duk_to_pointer(context, 0);
+		std::shared_ptr<Font> *inst = (std::shared_ptr<Font>*)duk_to_pointer(context, 0);
 		String fontName = duk_to_string(context, 1);
-		inst->setFontName(fontName);
+		(*inst)->setFontName(fontName);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Font_getFontName(duk_context *context) {
-		Font *inst = (Font*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->getFontName().c_str());
+		std::shared_ptr<Font> *inst = (std::shared_ptr<Font>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->getFontName().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Font_getFontPath(duk_context *context) {
-		Font *inst = (Font*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->getFontPath().c_str());
+		std::shared_ptr<Font> *inst = (std::shared_ptr<Font>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->getFontPath().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_LightInfo(duk_context *context) {
-		LightInfo *inst = new LightInfo();
+		std::shared_ptr<LightInfo> *inst = new std::shared_ptr<LightInfo>;
+		(*inst) = std::make_shared<LightInfo>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_LightInfo__get_importance(duk_context *context) {
-		LightInfo *inst = (LightInfo*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->importance);
+		std::shared_ptr<LightInfo> *inst = (std::shared_ptr<LightInfo>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->importance);
 		return 1;
 	}
 
@@ -4425,9 +3824,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_LightInfo__get_position(duk_context *context) {
-		LightInfo *inst = (LightInfo*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->position;
+		std::shared_ptr<LightInfo> *inst = (std::shared_ptr<LightInfo>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*retInst = std::make_shared<Vector3>();
+		*(*retInst) = (*inst)->position;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -4439,9 +3839,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_LightInfo__get_direction(duk_context *context) {
-		LightInfo *inst = (LightInfo*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->direction;
+		std::shared_ptr<LightInfo> *inst = (std::shared_ptr<LightInfo>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*retInst = std::make_shared<Vector3>();
+		*(*retInst) = (*inst)->direction;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -4453,8 +3854,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_LightInfo__get_type(duk_context *context) {
-		LightInfo *inst = (LightInfo*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->type);
+		std::shared_ptr<LightInfo> *inst = (std::shared_ptr<LightInfo>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->type);
 		return 1;
 	}
 
@@ -4465,9 +3866,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_LightInfo__get_diffuseColor(duk_context *context) {
-		LightInfo *inst = (LightInfo*)duk_to_pointer(context, 0);
-		Color *retInst = new Color();
-		*retInst = inst->diffuseColor;
+		std::shared_ptr<LightInfo> *inst = (std::shared_ptr<LightInfo>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *retInst = new std::shared_ptr<Color>;
+		*retInst = std::make_shared<Color>();
+		*(*retInst) = (*inst)->diffuseColor;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -4479,9 +3881,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_LightInfo__get_specularColor(duk_context *context) {
-		LightInfo *inst = (LightInfo*)duk_to_pointer(context, 0);
-		Color *retInst = new Color();
-		*retInst = inst->specularColor;
+		std::shared_ptr<LightInfo> *inst = (std::shared_ptr<LightInfo>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *retInst = new std::shared_ptr<Color>;
+		*retInst = std::make_shared<Color>();
+		*(*retInst) = (*inst)->specularColor;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -4493,8 +3896,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_LightInfo__get_constantAttenuation(duk_context *context) {
-		LightInfo *inst = (LightInfo*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->constantAttenuation);
+		std::shared_ptr<LightInfo> *inst = (std::shared_ptr<LightInfo>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->constantAttenuation);
 		return 1;
 	}
 
@@ -4505,8 +3908,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_LightInfo__get_linearAttenuation(duk_context *context) {
-		LightInfo *inst = (LightInfo*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->linearAttenuation);
+		std::shared_ptr<LightInfo> *inst = (std::shared_ptr<LightInfo>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->linearAttenuation);
 		return 1;
 	}
 
@@ -4517,8 +3920,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_LightInfo__get_quadraticAttenuation(duk_context *context) {
-		LightInfo *inst = (LightInfo*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->quadraticAttenuation);
+		std::shared_ptr<LightInfo> *inst = (std::shared_ptr<LightInfo>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->quadraticAttenuation);
 		return 1;
 	}
 
@@ -4529,8 +3932,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_LightInfo__get_intensity(duk_context *context) {
-		LightInfo *inst = (LightInfo*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->intensity);
+		std::shared_ptr<LightInfo> *inst = (std::shared_ptr<LightInfo>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->intensity);
 		return 1;
 	}
 
@@ -4541,8 +3944,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_LightInfo__get_spotlightCutoff(duk_context *context) {
-		LightInfo *inst = (LightInfo*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->spotlightCutoff);
+		std::shared_ptr<LightInfo> *inst = (std::shared_ptr<LightInfo>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->spotlightCutoff);
 		return 1;
 	}
 
@@ -4553,8 +3956,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_LightInfo__get_spotlightExponent(duk_context *context) {
-		LightInfo *inst = (LightInfo*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->spotlightExponent);
+		std::shared_ptr<LightInfo> *inst = (std::shared_ptr<LightInfo>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->spotlightExponent);
 		return 1;
 	}
 
@@ -4565,8 +3968,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_LightInfo__get_shadowsEnabled(duk_context *context) {
-		LightInfo *inst = (LightInfo*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->shadowsEnabled);
+		std::shared_ptr<LightInfo> *inst = (std::shared_ptr<LightInfo>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->shadowsEnabled);
 		return 1;
 	}
 
@@ -4577,9 +3980,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_LightInfo__get_lightViewMatrix(duk_context *context) {
-		LightInfo *inst = (LightInfo*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->lightViewMatrix;
+		std::shared_ptr<LightInfo> *inst = (std::shared_ptr<LightInfo>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*retInst = std::make_shared<Matrix4>();
+		*(*retInst) = (*inst)->lightViewMatrix;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -4591,21 +3995,23 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_LightInfo__delete(duk_context *context) {
-		LightInfo *inst = (LightInfo*)duk_to_pointer(context, 0);
+		std::shared_ptr<LightInfo> *inst = (std::shared_ptr<LightInfo>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_GPUDrawCall(duk_context *context) {
-		GPUDrawCall *inst = new GPUDrawCall();
+		std::shared_ptr<GPUDrawCall> *inst = new std::shared_ptr<GPUDrawCall>;
+		(*inst) = std::make_shared<GPUDrawCall>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_GPUDrawCall__get_options(duk_context *context) {
-		GPUDrawCall *inst = (GPUDrawCall*)duk_to_pointer(context, 0);
-		GPUDrawOptions *retInst = new GPUDrawOptions();
-		*retInst = inst->options;
+		std::shared_ptr<GPUDrawCall> *inst = (std::shared_ptr<GPUDrawCall>*)duk_to_pointer(context, 0);
+		std::shared_ptr<GPUDrawOptions> *retInst = new std::shared_ptr<GPUDrawOptions>;
+		*retInst = std::make_shared<GPUDrawOptions>();
+		*(*retInst) = (*inst)->options;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -4617,9 +4023,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_GPUDrawCall__get_modelMatrix(duk_context *context) {
-		GPUDrawCall *inst = (GPUDrawCall*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->modelMatrix;
+		std::shared_ptr<GPUDrawCall> *inst = (std::shared_ptr<GPUDrawCall>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*retInst = std::make_shared<Matrix4>();
+		*(*retInst) = (*inst)->modelMatrix;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -4631,20 +4038,21 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_GPUDrawCall__delete(duk_context *context) {
-		GPUDrawCall *inst = (GPUDrawCall*)duk_to_pointer(context, 0);
+		std::shared_ptr<GPUDrawCall> *inst = (std::shared_ptr<GPUDrawCall>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_GPUDrawOptions(duk_context *context) {
-		GPUDrawOptions *inst = new GPUDrawOptions();
+		std::shared_ptr<GPUDrawOptions> *inst = new std::shared_ptr<GPUDrawOptions>;
+		(*inst) = std::make_shared<GPUDrawOptions>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_GPUDrawOptions__get_depthTest(duk_context *context) {
-		GPUDrawOptions *inst = (GPUDrawOptions*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->depthTest);
+		std::shared_ptr<GPUDrawOptions> *inst = (std::shared_ptr<GPUDrawOptions>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->depthTest);
 		return 1;
 	}
 
@@ -4655,8 +4063,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_GPUDrawOptions__get_depthWrite(duk_context *context) {
-		GPUDrawOptions *inst = (GPUDrawOptions*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->depthWrite);
+		std::shared_ptr<GPUDrawOptions> *inst = (std::shared_ptr<GPUDrawOptions>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->depthWrite);
 		return 1;
 	}
 
@@ -4667,8 +4075,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_GPUDrawOptions__get_linePointSize(duk_context *context) {
-		GPUDrawOptions *inst = (GPUDrawOptions*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->linePointSize);
+		std::shared_ptr<GPUDrawOptions> *inst = (std::shared_ptr<GPUDrawOptions>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->linePointSize);
 		return 1;
 	}
 
@@ -4679,8 +4087,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_GPUDrawOptions__get_alphaTest(duk_context *context) {
-		GPUDrawOptions *inst = (GPUDrawOptions*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->alphaTest);
+		std::shared_ptr<GPUDrawOptions> *inst = (std::shared_ptr<GPUDrawOptions>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->alphaTest);
 		return 1;
 	}
 
@@ -4691,8 +4099,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_GPUDrawOptions__get_backfaceCull(duk_context *context) {
-		GPUDrawOptions *inst = (GPUDrawOptions*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->backfaceCull);
+		std::shared_ptr<GPUDrawOptions> *inst = (std::shared_ptr<GPUDrawOptions>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->backfaceCull);
 		return 1;
 	}
 
@@ -4703,8 +4111,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_GPUDrawOptions__get_depthOnly(duk_context *context) {
-		GPUDrawOptions *inst = (GPUDrawOptions*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->depthOnly);
+		std::shared_ptr<GPUDrawOptions> *inst = (std::shared_ptr<GPUDrawOptions>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->depthOnly);
 		return 1;
 	}
 
@@ -4715,8 +4123,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_GPUDrawOptions__get_forceMaterial(duk_context *context) {
-		GPUDrawOptions *inst = (GPUDrawOptions*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->forceMaterial);
+		std::shared_ptr<GPUDrawOptions> *inst = (std::shared_ptr<GPUDrawOptions>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->forceMaterial);
 		return 1;
 	}
 
@@ -4727,8 +4135,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_GPUDrawOptions__get_blendingMode(duk_context *context) {
-		GPUDrawOptions *inst = (GPUDrawOptions*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->blendingMode);
+		std::shared_ptr<GPUDrawOptions> *inst = (std::shared_ptr<GPUDrawOptions>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->blendingMode);
 		return 1;
 	}
 
@@ -4739,9 +4147,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_GPUDrawOptions__get_scissorBox(duk_context *context) {
-		GPUDrawOptions *inst = (GPUDrawOptions*)duk_to_pointer(context, 0);
-		Polycode::Rectangle *retInst = new Polycode::Rectangle();
-		*retInst = inst->scissorBox;
+		std::shared_ptr<GPUDrawOptions> *inst = (std::shared_ptr<GPUDrawOptions>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Polycode::Rectangle> *retInst = new std::shared_ptr<Polycode::Rectangle>;
+		*retInst = std::make_shared<Polycode::Rectangle>();
+		*(*retInst) = (*inst)->scissorBox;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -4753,8 +4162,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_GPUDrawOptions__get_enableScissor(duk_context *context) {
-		GPUDrawOptions *inst = (GPUDrawOptions*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->enableScissor);
+		std::shared_ptr<GPUDrawOptions> *inst = (std::shared_ptr<GPUDrawOptions>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->enableScissor);
 		return 1;
 	}
 
@@ -4765,9 +4174,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_GPUDrawOptions__get_drawColor(duk_context *context) {
-		GPUDrawOptions *inst = (GPUDrawOptions*)duk_to_pointer(context, 0);
-		Color *retInst = new Color();
-		*retInst = inst->drawColor;
+		std::shared_ptr<GPUDrawOptions> *inst = (std::shared_ptr<GPUDrawOptions>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *retInst = new std::shared_ptr<Color>;
+		*retInst = std::make_shared<Color>();
+		*(*retInst) = (*inst)->drawColor;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -4779,21 +4189,23 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_GPUDrawOptions__delete(duk_context *context) {
-		GPUDrawOptions *inst = (GPUDrawOptions*)duk_to_pointer(context, 0);
+		std::shared_ptr<GPUDrawOptions> *inst = (std::shared_ptr<GPUDrawOptions>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_GPUDrawBuffer(duk_context *context) {
-		GPUDrawBuffer *inst = new GPUDrawBuffer();
+		std::shared_ptr<GPUDrawBuffer> *inst = new std::shared_ptr<GPUDrawBuffer>;
+		(*inst) = std::make_shared<GPUDrawBuffer>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_GPUDrawBuffer__get_projectionMatrix(duk_context *context) {
-		GPUDrawBuffer *inst = (GPUDrawBuffer*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->projectionMatrix;
+		std::shared_ptr<GPUDrawBuffer> *inst = (std::shared_ptr<GPUDrawBuffer>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*retInst = std::make_shared<Matrix4>();
+		*(*retInst) = (*inst)->projectionMatrix;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -4805,9 +4217,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_GPUDrawBuffer__get_viewMatrix(duk_context *context) {
-		GPUDrawBuffer *inst = (GPUDrawBuffer*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->viewMatrix;
+		std::shared_ptr<GPUDrawBuffer> *inst = (std::shared_ptr<GPUDrawBuffer>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*retInst = std::make_shared<Matrix4>();
+		*(*retInst) = (*inst)->viewMatrix;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -4819,9 +4232,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_GPUDrawBuffer__get_cameraMatrix(duk_context *context) {
-		GPUDrawBuffer *inst = (GPUDrawBuffer*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->cameraMatrix;
+		std::shared_ptr<GPUDrawBuffer> *inst = (std::shared_ptr<GPUDrawBuffer>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*retInst = std::make_shared<Matrix4>();
+		*(*retInst) = (*inst)->cameraMatrix;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -4833,9 +4247,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_GPUDrawBuffer__get_clearColor(duk_context *context) {
-		GPUDrawBuffer *inst = (GPUDrawBuffer*)duk_to_pointer(context, 0);
-		Color *retInst = new Color();
-		*retInst = inst->clearColor;
+		std::shared_ptr<GPUDrawBuffer> *inst = (std::shared_ptr<GPUDrawBuffer>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *retInst = new std::shared_ptr<Color>;
+		*retInst = std::make_shared<Color>();
+		*(*retInst) = (*inst)->clearColor;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -4847,8 +4262,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_GPUDrawBuffer__get_clearDepthBuffer(duk_context *context) {
-		GPUDrawBuffer *inst = (GPUDrawBuffer*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->clearDepthBuffer);
+		std::shared_ptr<GPUDrawBuffer> *inst = (std::shared_ptr<GPUDrawBuffer>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->clearDepthBuffer);
 		return 1;
 	}
 
@@ -4859,8 +4274,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_GPUDrawBuffer__get_clearColorBuffer(duk_context *context) {
-		GPUDrawBuffer *inst = (GPUDrawBuffer*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->clearColorBuffer);
+		std::shared_ptr<GPUDrawBuffer> *inst = (std::shared_ptr<GPUDrawBuffer>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->clearColorBuffer);
 		return 1;
 	}
 
@@ -4871,9 +4286,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_GPUDrawBuffer__get_backingResolutionScale(duk_context *context) {
-		GPUDrawBuffer *inst = (GPUDrawBuffer*)duk_to_pointer(context, 0);
-		Vector2 *retInst = new Vector2();
-		*retInst = inst->backingResolutionScale;
+		std::shared_ptr<GPUDrawBuffer> *inst = (std::shared_ptr<GPUDrawBuffer>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector2> *retInst = new std::shared_ptr<Vector2>;
+		*retInst = std::make_shared<Vector2>();
+		*(*retInst) = (*inst)->backingResolutionScale;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -4885,9 +4301,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_GPUDrawBuffer__get_viewport(duk_context *context) {
-		GPUDrawBuffer *inst = (GPUDrawBuffer*)duk_to_pointer(context, 0);
-		Polycode::Rectangle *retInst = new Polycode::Rectangle();
-		*retInst = inst->viewport;
+		std::shared_ptr<GPUDrawBuffer> *inst = (std::shared_ptr<GPUDrawBuffer>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Polycode::Rectangle> *retInst = new std::shared_ptr<Polycode::Rectangle>;
+		*retInst = std::make_shared<Polycode::Rectangle>();
+		*(*retInst) = (*inst)->viewport;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -4899,265 +4316,212 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_GPUDrawBuffer__delete(duk_context *context) {
-		GPUDrawBuffer *inst = (GPUDrawBuffer*)duk_to_pointer(context, 0);
+		std::shared_ptr<GPUDrawBuffer> *inst = (std::shared_ptr<GPUDrawBuffer>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Image(duk_context *context) {
 		String fileName = duk_to_string(context, 0);
-		Image *inst = new Image(fileName);
+		std::shared_ptr<Image> *inst = new std::shared_ptr<Image>;
+		(*inst) = std::make_shared<Image>(fileName);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Image__delete(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
+		std::shared_ptr<Image> *inst = (std::shared_ptr<Image>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_Image_BlankImage(duk_context *context) {
-		int width = duk_to_int(context, 0);
-		int height = duk_to_int(context, 1);
-		int type = duk_to_int(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)Image::BlankImage(width,height,type);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
 	duk_ret_t Polycode_Image_loadImage(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
+		std::shared_ptr<Image> *inst = (std::shared_ptr<Image>*)duk_to_pointer(context, 0);
 		String fileName = duk_to_string(context, 1);
-		duk_push_boolean(context, inst->loadImage(fileName));
+		duk_push_boolean(context, (*inst)->loadImage(fileName));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Image_saveImage(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
+		std::shared_ptr<Image> *inst = (std::shared_ptr<Image>*)duk_to_pointer(context, 0);
 		String fileName = duk_to_string(context, 1);
-		duk_push_boolean(context, inst->saveImage(fileName));
+		duk_push_boolean(context, (*inst)->saveImage(fileName));
 		return 1;
 	}
 
-	duk_ret_t Polycode_Image_pasteImage(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
-		Image* image = (Image*)duk_to_pointer(context, 1);
-		int x = duk_to_int(context, 2);
-		int y = duk_to_int(context, 3);
-		int blendingMode = duk_to_int(context, 4);
-		Number blendAmount = duk_to_number(context, 5);
-		Color blendColor = *(Color*)duk_to_pointer(context, 6);
-		inst->pasteImage(image,x,y,blendingMode,blendAmount,blendColor);
-		return 0;
-	}
-
 	duk_ret_t Polycode_Image_createEmpty(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
+		std::shared_ptr<Image> *inst = (std::shared_ptr<Image>*)duk_to_pointer(context, 0);
 		int width = duk_to_int(context, 1);
 		int height = duk_to_int(context, 2);
 		Color fillColor = *(Color*)duk_to_pointer(context, 3);
-		inst->createEmpty(width,height,fillColor);
+		(*inst)->createEmpty(width,height,fillColor);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Image_fill(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
+		std::shared_ptr<Image> *inst = (std::shared_ptr<Image>*)duk_to_pointer(context, 0);
 		Color color = *(Color*)duk_to_pointer(context, 1);
-		inst->fill(color);
+		(*inst)->fill(color);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Image_setPixel(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
+		std::shared_ptr<Image> *inst = (std::shared_ptr<Image>*)duk_to_pointer(context, 0);
 		int x = duk_to_int(context, 1);
 		int y = duk_to_int(context, 2);
 		Number r = duk_to_number(context, 3);
 		Number g = duk_to_number(context, 4);
 		Number b = duk_to_number(context, 5);
 		Number a = duk_to_number(context, 6);
-		inst->setPixel(x,y,r,g,b,a);
+		(*inst)->setPixel(x,y,r,g,b,a);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Image_getPixel(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
+		std::shared_ptr<Image> *inst = (std::shared_ptr<Image>*)duk_to_pointer(context, 0);
 		int x = duk_to_int(context, 1);
 		int y = duk_to_int(context, 2);
-		Color *retInst = new Color();
-		*retInst = inst->getPixel(x,y);
+		std::shared_ptr<Color> *retInst = new std::shared_ptr<Color>;
+		*(*retInst) = (*inst)->getPixel(x,y);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
-	duk_ret_t Polycode_Image_swap(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
-		int* v1 = (int*)duk_to_pointer(context, 1);
-		int* v2 = (int*)duk_to_pointer(context, 2);
-		inst->swap(v1,v2);
-		return 0;
-	}
-
 	duk_ret_t Polycode_Image_drawLine(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
+		std::shared_ptr<Image> *inst = (std::shared_ptr<Image>*)duk_to_pointer(context, 0);
 		int x0 = duk_to_int(context, 1);
 		int y0 = duk_to_int(context, 2);
 		int x1 = duk_to_int(context, 3);
 		int y1 = duk_to_int(context, 4);
 		Color col = *(Color*)duk_to_pointer(context, 5);
-		inst->drawLine(x0,y0,x1,y1,col);
+		(*inst)->drawLine(x0,y0,x1,y1,col);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Image_moveBrushTo(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
+		std::shared_ptr<Image> *inst = (std::shared_ptr<Image>*)duk_to_pointer(context, 0);
 		int x = duk_to_int(context, 1);
 		int y = duk_to_int(context, 2);
-		inst->moveBrushTo(x,y);
+		(*inst)->moveBrushTo(x,y);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Image_moveBrush(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
+		std::shared_ptr<Image> *inst = (std::shared_ptr<Image>*)duk_to_pointer(context, 0);
 		int x = duk_to_int(context, 1);
 		int y = duk_to_int(context, 2);
-		inst->moveBrush(x,y);
+		(*inst)->moveBrush(x,y);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Image_drawLineTo(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
+		std::shared_ptr<Image> *inst = (std::shared_ptr<Image>*)duk_to_pointer(context, 0);
 		int x = duk_to_int(context, 1);
 		int y = duk_to_int(context, 2);
 		Color col = *(Color*)duk_to_pointer(context, 3);
-		inst->drawLineTo(x,y,col);
+		(*inst)->drawLineTo(x,y,col);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Image_fillRect(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
+		std::shared_ptr<Image> *inst = (std::shared_ptr<Image>*)duk_to_pointer(context, 0);
 		int x = duk_to_int(context, 1);
 		int y = duk_to_int(context, 2);
 		int w = duk_to_int(context, 3);
 		int h = duk_to_int(context, 4);
 		Color col = *(Color*)duk_to_pointer(context, 5);
-		inst->fillRect(x,y,w,h,col);
+		(*inst)->fillRect(x,y,w,h,col);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Image_perlinNoise(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
+		std::shared_ptr<Image> *inst = (std::shared_ptr<Image>*)duk_to_pointer(context, 0);
 		int seed = duk_to_int(context, 1);
 		bool alpha = duk_to_boolean(context, 2);
-		inst->perlinNoise(seed,alpha);
+		(*inst)->perlinNoise(seed,alpha);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Image_fastBlur(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
+		std::shared_ptr<Image> *inst = (std::shared_ptr<Image>*)duk_to_pointer(context, 0);
 		int blurSize = duk_to_int(context, 1);
-		inst->fastBlur(blurSize);
+		(*inst)->fastBlur(blurSize);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Image_fastBlurVert(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
+		std::shared_ptr<Image> *inst = (std::shared_ptr<Image>*)duk_to_pointer(context, 0);
 		int blurSize = duk_to_int(context, 1);
-		inst->fastBlurVert(blurSize);
+		(*inst)->fastBlurVert(blurSize);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Image_fastBlurHor(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
+		std::shared_ptr<Image> *inst = (std::shared_ptr<Image>*)duk_to_pointer(context, 0);
 		int blurSize = duk_to_int(context, 1);
-		inst->fastBlurHor(blurSize);
+		(*inst)->fastBlurHor(blurSize);
 		return 0;
 	}
 
-	duk_ret_t Polycode_Image_getPixelsInRect(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
-		int x = duk_to_int(context, 1);
-		int y = duk_to_int(context, 2);
-		int width = duk_to_int(context, 3);
-		int height = duk_to_int(context, 4);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getPixelsInRect(x,y,width,height);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Image_getImagePart(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
-		Rectangle subRect = *(Rectangle*)duk_to_pointer(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getImagePart(subRect);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
 	duk_ret_t Polycode_Image_getBrushX(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getBrushX());
+		std::shared_ptr<Image> *inst = (std::shared_ptr<Image>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getBrushX());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Image_getBrushY(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getBrushY());
+		std::shared_ptr<Image> *inst = (std::shared_ptr<Image>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getBrushY());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Image_isLoaded(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->isLoaded());
+		std::shared_ptr<Image> *inst = (std::shared_ptr<Image>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->isLoaded());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Image_getType(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getType());
+		std::shared_ptr<Image> *inst = (std::shared_ptr<Image>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getType());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Image_getWidth(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getWidth());
+		std::shared_ptr<Image> *inst = (std::shared_ptr<Image>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getWidth());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Image_getHeight(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getHeight());
-		return 1;
-	}
-
-	duk_ret_t Polycode_Image_getPixels(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getPixels();
-		duk_push_pointer(context, (void*)ptrRetVal);
+		std::shared_ptr<Image> *inst = (std::shared_ptr<Image>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getHeight());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Image_premultiplyAlpha(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
-		inst->premultiplyAlpha();
+		std::shared_ptr<Image> *inst = (std::shared_ptr<Image>*)duk_to_pointer(context, 0);
+		(*inst)->premultiplyAlpha();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Image_savePNG(duk_context *context) {
-		Image *inst = (Image*)duk_to_pointer(context, 0);
+		std::shared_ptr<Image> *inst = (std::shared_ptr<Image>*)duk_to_pointer(context, 0);
 		String fileName = duk_to_string(context, 1);
-		duk_push_boolean(context, inst->savePNG(fileName));
+		duk_push_boolean(context, (*inst)->savePNG(fileName));
 		return 1;
 	}
 
 	duk_ret_t Polycode_TouchInfo(duk_context *context) {
-		TouchInfo *inst = new TouchInfo();
+		std::shared_ptr<TouchInfo> *inst = new std::shared_ptr<TouchInfo>;
+		(*inst) = std::make_shared<TouchInfo>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_TouchInfo__get_id(duk_context *context) {
-		TouchInfo *inst = (TouchInfo*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->id);
+		std::shared_ptr<TouchInfo> *inst = (std::shared_ptr<TouchInfo>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->id);
 		return 1;
 	}
 
@@ -5168,9 +4532,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_TouchInfo__get_position(duk_context *context) {
-		TouchInfo *inst = (TouchInfo*)duk_to_pointer(context, 0);
-		Vector2 *retInst = new Vector2();
-		*retInst = inst->position;
+		std::shared_ptr<TouchInfo> *inst = (std::shared_ptr<TouchInfo>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector2> *retInst = new std::shared_ptr<Vector2>;
+		*retInst = std::make_shared<Vector2>();
+		*(*retInst) = (*inst)->position;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -5182,8 +4547,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_TouchInfo__get_type(duk_context *context) {
-		TouchInfo *inst = (TouchInfo*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->type);
+		std::shared_ptr<TouchInfo> *inst = (std::shared_ptr<TouchInfo>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->type);
 		return 1;
 	}
 
@@ -5194,20 +4559,21 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_TouchInfo__delete(duk_context *context) {
-		TouchInfo *inst = (TouchInfo*)duk_to_pointer(context, 0);
+		std::shared_ptr<TouchInfo> *inst = (std::shared_ptr<TouchInfo>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_InputEvent(duk_context *context) {
-		InputEvent *inst = new InputEvent();
+		std::shared_ptr<InputEvent> *inst = new std::shared_ptr<InputEvent>;
+		(*inst) = std::make_shared<InputEvent>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_InputEvent__get_mouseButton(duk_context *context) {
-		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->mouseButton);
+		std::shared_ptr<InputEvent> *inst = (std::shared_ptr<InputEvent>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->mouseButton);
 		return 1;
 	}
 
@@ -5218,9 +4584,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_InputEvent__get_mousePosition(duk_context *context) {
-		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
-		Vector2 *retInst = new Vector2();
-		*retInst = inst->mousePosition;
+		std::shared_ptr<InputEvent> *inst = (std::shared_ptr<InputEvent>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector2> *retInst = new std::shared_ptr<Vector2>;
+		*retInst = std::make_shared<Vector2>();
+		*(*retInst) = (*inst)->mousePosition;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -5232,8 +4599,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_InputEvent__get_key(duk_context *context) {
-		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->key);
+		std::shared_ptr<InputEvent> *inst = (std::shared_ptr<InputEvent>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->key);
 		return 1;
 	}
 
@@ -5244,8 +4611,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_InputEvent__get_timestamp(duk_context *context) {
-		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->timestamp);
+		std::shared_ptr<InputEvent> *inst = (std::shared_ptr<InputEvent>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->timestamp);
 		return 1;
 	}
 
@@ -5256,8 +4623,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_InputEvent__get_text(duk_context *context) {
-		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->text.c_str());
+		std::shared_ptr<InputEvent> *inst = (std::shared_ptr<InputEvent>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->text.c_str());
 		return 1;
 	}
 
@@ -5268,9 +4635,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_InputEvent__get_touch(duk_context *context) {
-		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
-		TouchInfo *retInst = new TouchInfo();
-		*retInst = inst->touch;
+		std::shared_ptr<InputEvent> *inst = (std::shared_ptr<InputEvent>*)duk_to_pointer(context, 0);
+		std::shared_ptr<TouchInfo> *retInst = new std::shared_ptr<TouchInfo>;
+		*retInst = std::make_shared<TouchInfo>();
+		*(*retInst) = (*inst)->touch;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -5282,8 +4650,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_InputEvent__get_touchType(duk_context *context) {
-		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->touchType);
+		std::shared_ptr<InputEvent> *inst = (std::shared_ptr<InputEvent>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->touchType);
 		return 1;
 	}
 
@@ -5294,8 +4662,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_InputEvent__get_joystickDeviceID(duk_context *context) {
-		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->joystickDeviceID);
+		std::shared_ptr<InputEvent> *inst = (std::shared_ptr<InputEvent>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->joystickDeviceID);
 		return 1;
 	}
 
@@ -5306,8 +4674,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_InputEvent__get_joystickAxisValue(duk_context *context) {
-		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->joystickAxisValue);
+		std::shared_ptr<InputEvent> *inst = (std::shared_ptr<InputEvent>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->joystickAxisValue);
 		return 1;
 	}
 
@@ -5318,8 +4686,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_InputEvent__get_joystickButton(duk_context *context) {
-		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->joystickButton);
+		std::shared_ptr<InputEvent> *inst = (std::shared_ptr<InputEvent>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->joystickButton);
 		return 1;
 	}
 
@@ -5330,8 +4698,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_InputEvent__get_joystickAxis(duk_context *context) {
-		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->joystickAxis);
+		std::shared_ptr<InputEvent> *inst = (std::shared_ptr<InputEvent>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->joystickAxis);
 		return 1;
 	}
 
@@ -5342,8 +4710,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_InputEvent__get_joystickIndex(duk_context *context) {
-		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->joystickIndex);
+		std::shared_ptr<InputEvent> *inst = (std::shared_ptr<InputEvent>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->joystickIndex);
 		return 1;
 	}
 
@@ -5354,8 +4722,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_InputEvent__get_hitDistance(duk_context *context) {
-		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->hitDistance);
+		std::shared_ptr<InputEvent> *inst = (std::shared_ptr<InputEvent>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->hitDistance);
 		return 1;
 	}
 
@@ -5366,73 +4734,49 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_InputEvent__delete(duk_context *context) {
-		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
+		std::shared_ptr<InputEvent> *inst = (std::shared_ptr<InputEvent>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_InputEvent_getMousePosition(duk_context *context) {
-		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
-		Vector2 *retInst = new Vector2();
-		*retInst = inst->getMousePosition();
+		std::shared_ptr<InputEvent> *inst = (std::shared_ptr<InputEvent>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector2> *retInst = new std::shared_ptr<Vector2>;
+		*(*retInst) = (*inst)->getMousePosition();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_InputEvent_getKey(duk_context *context) {
-		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getKey());
+		std::shared_ptr<InputEvent> *inst = (std::shared_ptr<InputEvent>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getKey());
 		return 1;
 	}
 
 	duk_ret_t Polycode_InputEvent_getMouseButton(duk_context *context) {
-		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getMouseButton());
+		std::shared_ptr<InputEvent> *inst = (std::shared_ptr<InputEvent>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getMouseButton());
 		return 1;
 	}
 
 	duk_ret_t Polycode_InputEvent_keyCode(duk_context *context) {
-		InputEvent *inst = (InputEvent*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->keyCode());
+		std::shared_ptr<InputEvent> *inst = (std::shared_ptr<InputEvent>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->keyCode());
 		return 1;
 	}
 
 	duk_ret_t Polycode_GlyphData(duk_context *context) {
-		GlyphData *inst = new GlyphData();
+		std::shared_ptr<GlyphData> *inst = new std::shared_ptr<GlyphData>;
+		(*inst) = std::make_shared<GlyphData>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
-	duk_ret_t Polycode_GlyphData__get_glyphs(duk_context *context) {
-		GlyphData *inst = (GlyphData*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->glyphs;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_GlyphData__set_glyphs(duk_context *context) {
-		GlyphData *inst = (GlyphData*)duk_to_pointer(context, 0);
-		inst->glyphs = (FT_Glyph*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_GlyphData__get_positions(duk_context *context) {
-		GlyphData *inst = (GlyphData*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->positions;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_GlyphData__set_positions(duk_context *context) {
-		GlyphData *inst = (GlyphData*)duk_to_pointer(context, 0);
-		inst->positions = (FT_Vector*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_GlyphData__get_num_glyphs(duk_context *context) {
-		GlyphData *inst = (GlyphData*)duk_to_pointer(context, 0);
-		FT_UInt *retInst = new FT_UInt();
-		*retInst = inst->num_glyphs;
+		std::shared_ptr<GlyphData> *inst = (std::shared_ptr<GlyphData>*)duk_to_pointer(context, 0);
+		std::shared_ptr<FT_UInt> *retInst = new std::shared_ptr<FT_UInt>;
+		*retInst = std::make_shared<FT_UInt>();
+		*(*retInst) = (*inst)->num_glyphs;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -5444,8 +4788,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_GlyphData__get_trailingAdvance(duk_context *context) {
-		GlyphData *inst = (GlyphData*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->trailingAdvance);
+		std::shared_ptr<GlyphData> *inst = (std::shared_ptr<GlyphData>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->trailingAdvance);
 		return 1;
 	}
 
@@ -5456,14 +4800,14 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_GlyphData__delete(duk_context *context) {
-		GlyphData *inst = (GlyphData*)duk_to_pointer(context, 0);
+		std::shared_ptr<GlyphData> *inst = (std::shared_ptr<GlyphData>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_GlyphData_clearData(duk_context *context) {
-		GlyphData *inst = (GlyphData*)duk_to_pointer(context, 0);
-		inst->clearData();
+		std::shared_ptr<GlyphData> *inst = (std::shared_ptr<GlyphData>*)duk_to_pointer(context, 0);
+		(*inst)->clearData();
 		return 0;
 	}
 
@@ -5471,15 +4815,17 @@ namespace Polycode {
 		Color color = *(Color*)duk_to_pointer(context, 0);
 		int rangeStart = duk_to_int(context, 1);
 		int rangeEnd = duk_to_int(context, 2);
-		ColorRange *inst = new ColorRange(color,rangeStart,rangeEnd);
+		std::shared_ptr<ColorRange> *inst = new std::shared_ptr<ColorRange>;
+		(*inst) = std::make_shared<ColorRange>(color,rangeStart,rangeEnd);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ColorRange__get_color(duk_context *context) {
-		ColorRange *inst = (ColorRange*)duk_to_pointer(context, 0);
-		Color *retInst = new Color();
-		*retInst = inst->color;
+		std::shared_ptr<ColorRange> *inst = (std::shared_ptr<ColorRange>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *retInst = new std::shared_ptr<Color>;
+		*retInst = std::make_shared<Color>();
+		*(*retInst) = (*inst)->color;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -5491,8 +4837,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ColorRange__get_rangeStart(duk_context *context) {
-		ColorRange *inst = (ColorRange*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->rangeStart);
+		std::shared_ptr<ColorRange> *inst = (std::shared_ptr<ColorRange>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->rangeStart);
 		return 1;
 	}
 
@@ -5503,8 +4849,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ColorRange__get_rangeEnd(duk_context *context) {
-		ColorRange *inst = (ColorRange*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->rangeEnd);
+		std::shared_ptr<ColorRange> *inst = (std::shared_ptr<ColorRange>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->rangeEnd);
 		return 1;
 	}
 
@@ -5515,7 +4861,7 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ColorRange__delete(duk_context *context) {
-		ColorRange *inst = (ColorRange*)duk_to_pointer(context, 0);
+		std::shared_ptr<ColorRange> *inst = (std::shared_ptr<ColorRange>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
@@ -5528,194 +4874,196 @@ namespace Polycode {
 		bool premultiplyAlpha = duk_to_boolean(context, 4);
 		Color backgroundColor = *(Color*)duk_to_pointer(context, 5);
 		Color foregroundColor = *(Color*)duk_to_pointer(context, 6);
-		Label *inst = new Label(font,text,size,antiAliasMode,premultiplyAlpha,backgroundColor,foregroundColor);
+		std::shared_ptr<Label> *inst = new std::shared_ptr<Label>;
+		(*inst) = std::make_shared<Label>(font,text,size,antiAliasMode,premultiplyAlpha,backgroundColor,foregroundColor);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Label__delete(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Label_setText(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
 		String text = duk_to_string(context, 1);
-		inst->setText(text);
+		(*inst)->setText(text);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Label_getText(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->getText().c_str());
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->getText().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Label_getTextWidthForString(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
 		String text = duk_to_string(context, 1);
-		duk_push_int(context, inst->getTextWidthForString(text));
+		duk_push_int(context, (*inst)->getTextWidthForString(text));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Label_getTextHeightForString(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
 		String text = duk_to_string(context, 1);
-		duk_push_int(context, inst->getTextHeightForString(text));
+		duk_push_int(context, (*inst)->getTextHeightForString(text));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Label_getTextWidth(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getTextWidth());
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getTextWidth());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Label_getTextHeight(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getTextHeight());
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getTextHeight());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Label_setColorForRange(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
 		Color color = *(Color*)duk_to_pointer(context, 1);
 		int rangeStart = duk_to_int(context, 2);
 		int rangeEnd = duk_to_int(context, 3);
-		inst->setColorForRange(color,rangeStart,rangeEnd);
+		(*inst)->setColorForRange(color,rangeStart,rangeEnd);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Label_clearColors(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
-		inst->clearColors();
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
+		(*inst)->clearColors();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Label_getColorForIndex(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		Color *retInst = new Color();
-		*retInst = inst->getColorForIndex(index);
+		std::shared_ptr<Color> *retInst = new std::shared_ptr<Color>;
+		*(*retInst) = (*inst)->getColorForIndex(index);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Label_getPremultiplyAlpha(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->getPremultiplyAlpha());
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->getPremultiplyAlpha());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Label_setPremultiplyAlpha(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
 		bool val = duk_to_boolean(context, 1);
-		inst->setPremultiplyAlpha(val);
+		(*inst)->setPremultiplyAlpha(val);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Label_setFont(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
 		shared_ptr<Font> newFont = *(shared_ptr<Font>*)duk_to_pointer(context, 1);
-		inst->setFont(newFont);
+		(*inst)->setFont(newFont);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Label_getFont(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
-		shared_ptr<Font> *retInst = new shared_ptr<Font>();
-		*retInst = inst->getFont();
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
+		std::shared_ptr<shared_ptr<Font>> *retInst = new std::shared_ptr<shared_ptr<Font>>;
+		*(*retInst) = (*inst)->getFont();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Label_setSize(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
 		int newSize = duk_to_int(context, 1);
-		inst->setSize(newSize);
+		(*inst)->setSize(newSize);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Label_getSize(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getSize());
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getSize());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Label_getAntialiasMode(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getAntialiasMode());
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getAntialiasMode());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Label_setAntialiasMode(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
 		int newMode = duk_to_int(context, 1);
-		inst->setAntialiasMode(newMode);
+		(*inst)->setAntialiasMode(newMode);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Label_getBaselineAdjust(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getBaselineAdjust());
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getBaselineAdjust());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Label_setBackgroundColor(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
 		Color color = *(Color*)duk_to_pointer(context, 1);
-		inst->setBackgroundColor(color);
+		(*inst)->setBackgroundColor(color);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Label_setForegroundColor(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
 		Color color = *(Color*)duk_to_pointer(context, 1);
-		inst->setForegroundColor(color);
+		(*inst)->setForegroundColor(color);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Label_setColors(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
 		Color backgroundColor = *(Color*)duk_to_pointer(context, 1);
 		Color foregroundColor = *(Color*)duk_to_pointer(context, 2);
-		inst->setColors(backgroundColor,foregroundColor);
+		(*inst)->setColors(backgroundColor,foregroundColor);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Label_getBackgroundColor(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
-		Color *retInst = new Color();
-		*retInst = inst->getBackgroundColor();
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *retInst = new std::shared_ptr<Color>;
+		*(*retInst) = (*inst)->getBackgroundColor();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Label_getForegroundColor(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
-		Color *retInst = new Color();
-		*retInst = inst->getForegroundColor();
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *retInst = new std::shared_ptr<Color>;
+		*(*retInst) = (*inst)->getForegroundColor();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Label_optionsChanged(duk_context *context) {
-		Label *inst = (Label*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->optionsChanged());
+		std::shared_ptr<Label> *inst = (std::shared_ptr<Label>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->optionsChanged());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Material(duk_context *context) {
 		String name = duk_to_string(context, 0);
-		Material *inst = new Material(name);
+		std::shared_ptr<Material> *inst = new std::shared_ptr<Material>;
+		(*inst) = std::make_shared<Material>(name);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Material__get_fp16RenderTargets(duk_context *context) {
-		Material *inst = (Material*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->fp16RenderTargets);
+		std::shared_ptr<Material> *inst = (std::shared_ptr<Material>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->fp16RenderTargets);
 		return 1;
 	}
 
@@ -5726,8 +5074,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Material__get_blendingMode(duk_context *context) {
-		Material *inst = (Material*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->blendingMode);
+		std::shared_ptr<Material> *inst = (std::shared_ptr<Material>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->blendingMode);
 		return 1;
 	}
 
@@ -5738,8 +5086,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Material__get_screenMaterial(duk_context *context) {
-		Material *inst = (Material*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->screenMaterial);
+		std::shared_ptr<Material> *inst = (std::shared_ptr<Material>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->screenMaterial);
 		return 1;
 	}
 
@@ -5750,142 +5098,121 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Material__delete(duk_context *context) {
-		Material *inst = (Material*)duk_to_pointer(context, 0);
+		std::shared_ptr<Material> *inst = (std::shared_ptr<Material>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Material_addShaderPass(duk_context *context) {
-		Material *inst = (Material*)duk_to_pointer(context, 0);
+		std::shared_ptr<Material> *inst = (std::shared_ptr<Material>*)duk_to_pointer(context, 0);
 		ShaderPass pass = *(ShaderPass*)duk_to_pointer(context, 1);
-		inst->addShaderPass(pass);
+		(*inst)->addShaderPass(pass);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Material_addShaderPassAtIndex(duk_context *context) {
-		Material *inst = (Material*)duk_to_pointer(context, 0);
+		std::shared_ptr<Material> *inst = (std::shared_ptr<Material>*)duk_to_pointer(context, 0);
 		ShaderPass pass = *(ShaderPass*)duk_to_pointer(context, 1);
 		int shaderIndex = duk_to_int(context, 2);
-		inst->addShaderPassAtIndex(pass,shaderIndex);
+		(*inst)->addShaderPassAtIndex(pass,shaderIndex);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Material_getNumShaderPasses(duk_context *context) {
-		Material *inst = (Material*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumShaderPasses());
+		std::shared_ptr<Material> *inst = (std::shared_ptr<Material>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumShaderPasses());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Material_removeShaderPass(duk_context *context) {
-		Material *inst = (Material*)duk_to_pointer(context, 0);
+		std::shared_ptr<Material> *inst = (std::shared_ptr<Material>*)duk_to_pointer(context, 0);
 		int shaderIndex = duk_to_int(context, 1);
-		inst->removeShaderPass(shaderIndex);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Material_addShaderRenderTarget(duk_context *context) {
-		Material *inst = (Material*)duk_to_pointer(context, 0);
-		ShaderRenderTarget* newTarget = (ShaderRenderTarget*)duk_to_pointer(context, 1);
-		inst->addShaderRenderTarget(newTarget);
+		(*inst)->removeShaderPass(shaderIndex);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Material_getNumShaderRenderTargets(duk_context *context) {
-		Material *inst = (Material*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumShaderRenderTargets());
-		return 1;
-	}
-
-	duk_ret_t Polycode_Material_getShaderRenderTarget(duk_context *context) {
-		Material *inst = (Material*)duk_to_pointer(context, 0);
-		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getShaderRenderTarget(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		std::shared_ptr<Material> *inst = (std::shared_ptr<Material>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumShaderRenderTargets());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Material_removeShaderRenderTarget(duk_context *context) {
-		Material *inst = (Material*)duk_to_pointer(context, 0);
+		std::shared_ptr<Material> *inst = (std::shared_ptr<Material>*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		inst->removeShaderRenderTarget(index);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Material_recreateRenderTarget(duk_context *context) {
-		Material *inst = (Material*)duk_to_pointer(context, 0);
-		ShaderRenderTarget* renderTarget = (ShaderRenderTarget*)duk_to_pointer(context, 1);
-		inst->recreateRenderTarget(renderTarget);
+		(*inst)->removeShaderRenderTarget(index);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Material_recreateRenderTargets(duk_context *context) {
-		Material *inst = (Material*)duk_to_pointer(context, 0);
-		inst->recreateRenderTargets();
+		std::shared_ptr<Material> *inst = (std::shared_ptr<Material>*)duk_to_pointer(context, 0);
+		(*inst)->recreateRenderTargets();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Material_getName(duk_context *context) {
-		Material *inst = (Material*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->getName().c_str());
+		std::shared_ptr<Material> *inst = (std::shared_ptr<Material>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->getName().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Material_getShaderPass(duk_context *context) {
-		Material *inst = (Material*)duk_to_pointer(context, 0);
+		std::shared_ptr<Material> *inst = (std::shared_ptr<Material>*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		ShaderPass *retInst = new ShaderPass();
-		*retInst = inst->getShaderPass(index);
+		std::shared_ptr<ShaderPass> *retInst = new std::shared_ptr<ShaderPass>;
+		*(*retInst) = (*inst)->getShaderPass(index);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Material_getShaderBinding(duk_context *context) {
-		Material *inst = (Material*)duk_to_pointer(context, 0);
+		std::shared_ptr<Material> *inst = (std::shared_ptr<Material>*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		shared_ptr<ShaderBinding> *retInst = new shared_ptr<ShaderBinding>();
-		*retInst = inst->getShaderBinding(index);
+		std::shared_ptr<shared_ptr<ShaderBinding>> *retInst = new std::shared_ptr<shared_ptr<ShaderBinding>>;
+		*(*retInst) = (*inst)->getShaderBinding(index);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Material_getShader(duk_context *context) {
-		Material *inst = (Material*)duk_to_pointer(context, 0);
+		std::shared_ptr<Material> *inst = (std::shared_ptr<Material>*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		shared_ptr<Shader> *retInst = new shared_ptr<Shader>();
-		*retInst = inst->getShader(index);
+		std::shared_ptr<shared_ptr<Shader>> *retInst = new std::shared_ptr<shared_ptr<Shader>>;
+		*(*retInst) = (*inst)->getShader(index);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Material_loadMaterial(duk_context *context) {
-		Material *inst = (Material*)duk_to_pointer(context, 0);
+		std::shared_ptr<Material> *inst = (std::shared_ptr<Material>*)duk_to_pointer(context, 0);
 		String fileName = duk_to_string(context, 1);
-		inst->loadMaterial(fileName);
+		(*inst)->loadMaterial(fileName);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Material_setName(duk_context *context) {
-		Material *inst = (Material*)duk_to_pointer(context, 0);
+		std::shared_ptr<Material> *inst = (std::shared_ptr<Material>*)duk_to_pointer(context, 0);
 		String name = duk_to_string(context, 1);
-		inst->setName(name);
+		(*inst)->setName(name);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Material_clearShaders(duk_context *context) {
-		Material *inst = (Material*)duk_to_pointer(context, 0);
-		inst->clearShaders();
+		std::shared_ptr<Material> *inst = (std::shared_ptr<Material>*)duk_to_pointer(context, 0);
+		(*inst)->clearShaders();
 		return 0;
 	}
 
 	duk_ret_t Polycode_ShaderPass(duk_context *context) {
-		ShaderPass *inst = new ShaderPass();
+		std::shared_ptr<ShaderPass> *inst = new std::shared_ptr<ShaderPass>;
+		(*inst) = std::make_shared<ShaderPass>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ShaderPass__get_wireframe(duk_context *context) {
-		ShaderPass *inst = (ShaderPass*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->wireframe);
+		std::shared_ptr<ShaderPass> *inst = (std::shared_ptr<ShaderPass>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->wireframe);
 		return 1;
 	}
 
@@ -5896,8 +5223,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ShaderPass__get_blendingMode(duk_context *context) {
-		ShaderPass *inst = (ShaderPass*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->blendingMode);
+		std::shared_ptr<ShaderPass> *inst = (std::shared_ptr<ShaderPass>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->blendingMode);
 		return 1;
 	}
 
@@ -5908,221 +5235,193 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ShaderPass__delete(duk_context *context) {
-		ShaderPass *inst = (ShaderPass*)duk_to_pointer(context, 0);
+		std::shared_ptr<ShaderPass> *inst = (std::shared_ptr<ShaderPass>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_ShaderPass_getShaderBinding(duk_context *context) {
-		ShaderPass *inst = (ShaderPass*)duk_to_pointer(context, 0);
-		shared_ptr<ShaderBinding> *retInst = new shared_ptr<ShaderBinding>();
-		*retInst = inst->getShaderBinding();
+		std::shared_ptr<ShaderPass> *inst = (std::shared_ptr<ShaderPass>*)duk_to_pointer(context, 0);
+		std::shared_ptr<shared_ptr<ShaderBinding>> *retInst = new std::shared_ptr<shared_ptr<ShaderBinding>>;
+		*(*retInst) = (*inst)->getShaderBinding();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Matrix4(duk_context *context) {
-		Matrix4 *inst = new Matrix4();
+		std::shared_ptr<Matrix4> *inst = new std::shared_ptr<Matrix4>;
+		(*inst) = std::make_shared<Matrix4>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Matrix4__delete(duk_context *context) {
-		Matrix4 *inst = (Matrix4*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *inst = (std::shared_ptr<Matrix4>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Matrix4_identity(duk_context *context) {
-		Matrix4 *inst = (Matrix4*)duk_to_pointer(context, 0);
-		inst->identity();
+		std::shared_ptr<Matrix4> *inst = (std::shared_ptr<Matrix4>*)duk_to_pointer(context, 0);
+		(*inst)->identity();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Matrix4_rotateVector(duk_context *context) {
-		Matrix4 *inst = (Matrix4*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *inst = (std::shared_ptr<Matrix4>*)duk_to_pointer(context, 0);
 		Vector3 v2 = *(Vector3*)duk_to_pointer(context, 1);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->rotateVector(v2);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->rotateVector(v2);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Matrix4_getPosition(duk_context *context) {
-		Matrix4 *inst = (Matrix4*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->getPosition();
+		std::shared_ptr<Matrix4> *inst = (std::shared_ptr<Matrix4>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->getPosition();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Matrix4_multiplyWithPerspective(duk_context *context) {
-		Matrix4 *inst = (Matrix4*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *inst = (std::shared_ptr<Matrix4>*)duk_to_pointer(context, 0);
 		Vector3 v2 = *(Vector3*)duk_to_pointer(context, 1);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->multiplyWithPerspective(v2);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->multiplyWithPerspective(v2);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Matrix4_multVector3(duk_context *context) {
-		Matrix4 *inst = (Matrix4*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *inst = (std::shared_ptr<Matrix4>*)duk_to_pointer(context, 0);
 		Vector3 v2 = *(Vector3*)duk_to_pointer(context, 1);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->multVector3(v2);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->multVector3(v2);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Matrix4_multVector4(duk_context *context) {
-		Matrix4 *inst = (Matrix4*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *inst = (std::shared_ptr<Matrix4>*)duk_to_pointer(context, 0);
 		Vector4 v2 = *(Vector4*)duk_to_pointer(context, 1);
-		Vector4 *retInst = new Vector4();
-		*retInst = inst->multVector4(v2);
+		std::shared_ptr<Vector4> *retInst = new std::shared_ptr<Vector4>;
+		*(*retInst) = (*inst)->multVector4(v2);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Matrix4_Translate(duk_context *context) {
-		Matrix4 *inst = (Matrix4*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *inst = (std::shared_ptr<Matrix4>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
 		Number z = duk_to_number(context, 3);
-		inst->Translate(x,y,z);
+		(*inst)->Translate(x,y,z);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Matrix4_setPosition(duk_context *context) {
-		Matrix4 *inst = (Matrix4*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *inst = (std::shared_ptr<Matrix4>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
 		Number z = duk_to_number(context, 3);
-		inst->setPosition(x,y,z);
+		(*inst)->setPosition(x,y,z);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Matrix4_setScale(duk_context *context) {
-		Matrix4 *inst = (Matrix4*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *inst = (std::shared_ptr<Matrix4>*)duk_to_pointer(context, 0);
 		Vector3 scale = *(Vector3*)duk_to_pointer(context, 1);
-		inst->setScale(scale);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Matrix4_getEulerAngles(duk_context *context) {
-		Matrix4 *inst = (Matrix4*)duk_to_pointer(context, 0);
-		Number* ax = (Number*)duk_to_pointer(context, 1);
-		Number* ay = (Number*)duk_to_pointer(context, 2);
-		Number* az = (Number*)duk_to_pointer(context, 3);
-		inst->getEulerAngles(ax,ay,az);
+		(*inst)->setScale(scale);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Matrix4_transpose(duk_context *context) {
-		Matrix4 *inst = (Matrix4*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->transpose();
+		std::shared_ptr<Matrix4> *inst = (std::shared_ptr<Matrix4>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*(*retInst) = (*inst)->transpose();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Matrix4_Inverse(duk_context *context) {
-		Matrix4 *inst = (Matrix4*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->Inverse();
+		std::shared_ptr<Matrix4> *inst = (std::shared_ptr<Matrix4>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*(*retInst) = (*inst)->Inverse();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Matrix4_inverseAffine(duk_context *context) {
-		Matrix4 *inst = (Matrix4*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->inverseAffine();
+		std::shared_ptr<Matrix4> *inst = (std::shared_ptr<Matrix4>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*(*retInst) = (*inst)->inverseAffine();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Matrix4_determinant(duk_context *context) {
-		Matrix4 *inst = (Matrix4*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->determinant());
-		return 1;
-	}
-
-	duk_ret_t Polycode_Matrix4_generalDeterminant(duk_context *context) {
-		Number** a = (Number**)duk_to_pointer(context, 0);
-		int n = duk_to_int(context, 1);
-		duk_push_number(context, Matrix4::generalDeterminant(a,n));
+		std::shared_ptr<Matrix4> *inst = (std::shared_ptr<Matrix4>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->determinant());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Matrix4_setOrthoProjection(duk_context *context) {
-		Matrix4 *inst = (Matrix4*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *inst = (std::shared_ptr<Matrix4>*)duk_to_pointer(context, 0);
 		Number left = duk_to_number(context, 1);
 		Number right = duk_to_number(context, 2);
 		Number bottom = duk_to_number(context, 3);
 		Number top = duk_to_number(context, 4);
 		Number zNear = duk_to_number(context, 5);
 		Number zFar = duk_to_number(context, 6);
-		inst->setOrthoProjection(left,right,bottom,top,zNear,zFar);
+		(*inst)->setOrthoProjection(left,right,bottom,top,zNear,zFar);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Matrix4_setProjectionFrustum(duk_context *context) {
-		Matrix4 *inst = (Matrix4*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *inst = (std::shared_ptr<Matrix4>*)duk_to_pointer(context, 0);
 		Number left = duk_to_number(context, 1);
 		Number right = duk_to_number(context, 2);
 		Number bottom = duk_to_number(context, 3);
 		Number top = duk_to_number(context, 4);
 		Number zNear = duk_to_number(context, 5);
 		Number zFar = duk_to_number(context, 6);
-		inst->setProjectionFrustum(left,right,bottom,top,zNear,zFar);
+		(*inst)->setProjectionFrustum(left,right,bottom,top,zNear,zFar);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Matrix4_setProjection(duk_context *context) {
-		Matrix4 *inst = (Matrix4*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *inst = (std::shared_ptr<Matrix4>*)duk_to_pointer(context, 0);
 		Number fov = duk_to_number(context, 1);
 		Number aspect = duk_to_number(context, 2);
 		Number zNear = duk_to_number(context, 3);
 		Number zFar = duk_to_number(context, 4);
-		inst->setProjection(fov,aspect,zNear,zFar);
+		(*inst)->setProjection(fov,aspect,zNear,zFar);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Mesh(duk_context *context) {
-		Mesh *inst = new Mesh();
+		std::shared_ptr<Mesh> *inst = new std::shared_ptr<Mesh>;
+		(*inst) = std::make_shared<Mesh>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Mesh__delete(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+		std::shared_ptr<Mesh> *inst = (std::shared_ptr<Mesh>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_Mesh_MeshFromFileName(duk_context *context) {
-		String fileName = duk_to_string(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)Mesh::MeshFromFileName(fileName);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Mesh_Copy(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->Copy();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
 	duk_ret_t Polycode_Mesh_loadMesh(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+		std::shared_ptr<Mesh> *inst = (std::shared_ptr<Mesh>*)duk_to_pointer(context, 0);
 		String fileName = duk_to_string(context, 1);
-		inst->loadMesh(fileName);
+		(*inst)->loadMesh(fileName);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Mesh_saveToFile(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+		std::shared_ptr<Mesh> *inst = (std::shared_ptr<Mesh>*)duk_to_pointer(context, 0);
 		String fileName = duk_to_string(context, 1);
 		bool writeNormals = duk_to_boolean(context, 2);
 		bool writeTangents = duk_to_boolean(context, 3);
@@ -6130,84 +5429,78 @@ namespace Polycode {
 		bool writeBoneWeights = duk_to_boolean(context, 5);
 		bool writeUVs = duk_to_boolean(context, 6);
 		bool writeSecondaryUVs = duk_to_boolean(context, 7);
-		inst->saveToFile(fileName,writeNormals,writeTangents,writeColors,writeBoneWeights,writeUVs,writeSecondaryUVs);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Mesh_loadFromFile(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
-		CoreFile* inFile = (CoreFile*)duk_to_pointer(context, 1);
-		inst->loadFromFile(inFile);
+		(*inst)->saveToFile(fileName,writeNormals,writeTangents,writeColors,writeBoneWeights,writeUVs,writeSecondaryUVs);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Mesh_addSubmesh(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+		std::shared_ptr<Mesh> *inst = (std::shared_ptr<Mesh>*)duk_to_pointer(context, 0);
 		MeshGeometry newSubmesh = *(MeshGeometry*)duk_to_pointer(context, 1);
-		inst->addSubmesh(newSubmesh);
+		(*inst)->addSubmesh(newSubmesh);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Mesh_removeSubmeshAtIndex(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+		std::shared_ptr<Mesh> *inst = (std::shared_ptr<Mesh>*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		inst->removeSubmeshAtIndex(index);
+		(*inst)->removeSubmeshAtIndex(index);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Mesh_getNumSubmeshes(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumSubmeshes());
+		std::shared_ptr<Mesh> *inst = (std::shared_ptr<Mesh>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumSubmeshes());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Mesh_getSubmeshAtIndex(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+		std::shared_ptr<Mesh> *inst = (std::shared_ptr<Mesh>*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		MeshGeometry *retInst = new MeshGeometry();
-		*retInst = inst->getSubmeshAtIndex(index);
+		std::shared_ptr<MeshGeometry> *retInst = new std::shared_ptr<MeshGeometry>;
+		*(*retInst) = (*inst)->getSubmeshAtIndex(index);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Mesh_getSubmeshPointer(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
+		std::shared_ptr<Mesh> *inst = (std::shared_ptr<Mesh>*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		shared_ptr<MeshGeometry> *retInst = new shared_ptr<MeshGeometry>();
-		*retInst = inst->getSubmeshPointer(index);
+		std::shared_ptr<shared_ptr<MeshGeometry>> *retInst = new std::shared_ptr<shared_ptr<MeshGeometry>>;
+		*(*retInst) = (*inst)->getSubmeshPointer(index);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Mesh_clearMesh(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
-		inst->clearMesh();
+		std::shared_ptr<Mesh> *inst = (std::shared_ptr<Mesh>*)duk_to_pointer(context, 0);
+		(*inst)->clearMesh();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Mesh_calculateBBox(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->calculateBBox();
+		std::shared_ptr<Mesh> *inst = (std::shared_ptr<Mesh>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->calculateBBox();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Mesh_getRadius(duk_context *context) {
-		Mesh *inst = (Mesh*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getRadius());
+		std::shared_ptr<Mesh> *inst = (std::shared_ptr<Mesh>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getRadius());
 		return 1;
 	}
 
 	duk_ret_t Polycode_MeshGeometry(duk_context *context) {
-		MeshGeometry *inst = new MeshGeometry();
+		std::shared_ptr<MeshGeometry> *inst = new std::shared_ptr<MeshGeometry>;
+		(*inst) = std::make_shared<MeshGeometry>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_MeshGeometry__get_meshType(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->meshType);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->meshType);
 		return 1;
 	}
 
@@ -6218,8 +5511,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_MeshGeometry__get_dataChanged(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->dataChanged);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->dataChanged);
 		return 1;
 	}
 
@@ -6230,8 +5523,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_MeshGeometry__get_indexedMesh(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->indexedMesh);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->indexedMesh);
 		return 1;
 	}
 
@@ -6242,149 +5535,149 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_MeshGeometry__delete(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_clearMesh(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
-		inst->clearMesh();
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
+		(*inst)->clearMesh();
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_getVertexCount(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getVertexCount());
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getVertexCount());
 		return 1;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_createPlane(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		Number w = duk_to_number(context, 1);
 		Number h = duk_to_number(context, 2);
 		Number tilingValue = duk_to_number(context, 3);
-		inst->createPlane(w,h,tilingValue);
+		(*inst)->createPlane(w,h,tilingValue);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_createVPlane(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		Number w = duk_to_number(context, 1);
 		Number h = duk_to_number(context, 2);
 		Number tilingValue = duk_to_number(context, 3);
-		inst->createVPlane(w,h,tilingValue);
+		(*inst)->createVPlane(w,h,tilingValue);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_createCircle(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		Number w = duk_to_number(context, 1);
 		Number h = duk_to_number(context, 2);
 		int numSegments = duk_to_int(context, 3);
 		Number tilingValue = duk_to_number(context, 4);
-		inst->createCircle(w,h,numSegments,tilingValue);
+		(*inst)->createCircle(w,h,numSegments,tilingValue);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_createLineCircle(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		Number w = duk_to_number(context, 1);
 		Number h = duk_to_number(context, 2);
 		int numSegments = duk_to_int(context, 3);
 		Number tilingValue = duk_to_number(context, 4);
-		inst->createLineCircle(w,h,numSegments,tilingValue);
+		(*inst)->createLineCircle(w,h,numSegments,tilingValue);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_createTorus(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		Number radius = duk_to_number(context, 1);
 		Number tubeRadius = duk_to_number(context, 2);
 		int segmentsW = duk_to_int(context, 3);
 		int segmentsH = duk_to_int(context, 4);
 		Number tilingValue = duk_to_number(context, 5);
-		inst->createTorus(radius,tubeRadius,segmentsW,segmentsH,tilingValue);
+		(*inst)->createTorus(radius,tubeRadius,segmentsW,segmentsH,tilingValue);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_createBox(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		Number w = duk_to_number(context, 1);
 		Number d = duk_to_number(context, 2);
 		Number h = duk_to_number(context, 3);
 		Number tilingValue = duk_to_number(context, 4);
-		inst->createBox(w,d,h,tilingValue);
+		(*inst)->createBox(w,d,h,tilingValue);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_createSphere(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		Number radius = duk_to_number(context, 1);
 		int numRings = duk_to_int(context, 2);
 		int numSegments = duk_to_int(context, 3);
 		Number tilingValue = duk_to_number(context, 4);
-		inst->createSphere(radius,numRings,numSegments,tilingValue);
+		(*inst)->createSphere(radius,numRings,numSegments,tilingValue);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_createIcosphere(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		Number radius = duk_to_number(context, 1);
 		int subdivisions = duk_to_int(context, 2);
-		inst->createIcosphere(radius,subdivisions);
+		(*inst)->createIcosphere(radius,subdivisions);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_createOctosphere(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		Number radius = duk_to_number(context, 1);
 		int subdivisions = duk_to_int(context, 2);
-		inst->createOctosphere(radius,subdivisions);
+		(*inst)->createOctosphere(radius,subdivisions);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_createCylinder(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		Number height = duk_to_number(context, 1);
 		Number radius = duk_to_number(context, 2);
 		int numSegments = duk_to_int(context, 3);
 		bool capped = duk_to_boolean(context, 4);
 		Number tilingValue = duk_to_number(context, 5);
-		inst->createCylinder(height,radius,numSegments,capped,tilingValue);
+		(*inst)->createCylinder(height,radius,numSegments,capped,tilingValue);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_createCone(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		Number height = duk_to_number(context, 1);
 		Number radius = duk_to_number(context, 2);
 		int numSegments = duk_to_int(context, 3);
 		Number tilingValue = duk_to_number(context, 4);
-		inst->createCone(height,radius,numSegments,tilingValue);
+		(*inst)->createCone(height,radius,numSegments,tilingValue);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_recenterMesh(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->recenterMesh();
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->recenterMesh();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_setVertexAtOffset(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		int offset = duk_to_int(context, 1);
 		Number x = duk_to_number(context, 2);
 		Number y = duk_to_number(context, 3);
 		Number z = duk_to_number(context, 4);
-		inst->setVertexAtOffset(offset,x,y,z);
+		(*inst)->setVertexAtOffset(offset,x,y,z);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_addVertexWithUVAndNormal(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
 		Number z = duk_to_number(context, 3);
@@ -6393,66 +5686,66 @@ namespace Polycode {
 		Number nx = duk_to_number(context, 6);
 		Number ny = duk_to_number(context, 7);
 		Number nz = duk_to_number(context, 8);
-		inst->addVertexWithUVAndNormal(x,y,z,u,v,nx,ny,nz);
+		(*inst)->addVertexWithUVAndNormal(x,y,z,u,v,nx,ny,nz);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_addTexCoord(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		Number u = duk_to_number(context, 1);
 		Number v = duk_to_number(context, 2);
-		inst->addTexCoord(u,v);
+		(*inst)->addTexCoord(u,v);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_addTexCoord2(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		Number u = duk_to_number(context, 1);
 		Number v = duk_to_number(context, 2);
-		inst->addTexCoord2(u,v);
+		(*inst)->addTexCoord2(u,v);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_addTangent(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
 		Number z = duk_to_number(context, 3);
-		inst->addTangent(x,y,z);
+		(*inst)->addTangent(x,y,z);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_addVertexWithUV(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
 		Number z = duk_to_number(context, 3);
 		Number u = duk_to_number(context, 4);
 		Number v = duk_to_number(context, 5);
-		inst->addVertexWithUV(x,y,z,u,v);
+		(*inst)->addVertexWithUV(x,y,z,u,v);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_addVertex(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
 		Number z = duk_to_number(context, 3);
-		inst->addVertex(x,y,z);
+		(*inst)->addVertex(x,y,z);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_addNormal(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		Number nx = duk_to_number(context, 1);
 		Number ny = duk_to_number(context, 2);
 		Number nz = duk_to_number(context, 3);
-		inst->addNormal(nx,ny,nz);
+		(*inst)->addNormal(nx,ny,nz);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_addBoneAssignments(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		Number b1Weight = duk_to_number(context, 1);
 		int b1Index = duk_to_int(context, 2);
 		Number b2Weight = duk_to_number(context, 3);
@@ -6461,155 +5754,148 @@ namespace Polycode {
 		int b3Index = duk_to_int(context, 6);
 		Number b4Weight = duk_to_number(context, 7);
 		int b4Index = duk_to_int(context, 8);
-		inst->addBoneAssignments(b1Weight,b1Index,b2Weight,b2Index,b3Weight,b3Index,b4Weight,b4Index);
+		(*inst)->addBoneAssignments(b1Weight,b1Index,b2Weight,b2Index,b3Weight,b3Index,b4Weight,b4Index);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_addColor(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		Number r = duk_to_number(context, 1);
 		Number g = duk_to_number(context, 2);
 		Number b = duk_to_number(context, 3);
 		Number a = duk_to_number(context, 4);
-		inst->addColor(r,g,b,a);
+		(*inst)->addColor(r,g,b,a);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_getVertexPosition(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		int vertexOffset = duk_to_int(context, 1);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->getVertexPosition(vertexOffset);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->getVertexPosition(vertexOffset);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_getVertexPositionAtIndex(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->getVertexPositionAtIndex(index);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->getVertexPositionAtIndex(index);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_getVertexTexCoord(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		int vertexOffset = duk_to_int(context, 1);
-		Vector2 *retInst = new Vector2();
-		*retInst = inst->getVertexTexCoord(vertexOffset);
+		std::shared_ptr<Vector2> *retInst = new std::shared_ptr<Vector2>;
+		*(*retInst) = (*inst)->getVertexTexCoord(vertexOffset);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_getVertexTexCoordAtIndex(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		Vector2 *retInst = new Vector2();
-		*retInst = inst->getVertexTexCoordAtIndex(index);
+		std::shared_ptr<Vector2> *retInst = new std::shared_ptr<Vector2>;
+		*(*retInst) = (*inst)->getVertexTexCoordAtIndex(index);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
-	duk_ret_t Polycode_MeshGeometry_Copy(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->Copy();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
 	duk_ret_t Polycode_MeshGeometry_getRadius(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getRadius());
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getRadius());
 		return 1;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_calculateNormals(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
-		inst->calculateNormals();
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
+		(*inst)->calculateNormals();
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_calculateTangents(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
-		inst->calculateTangents();
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
+		(*inst)->calculateTangents();
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_getMeshType(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getMeshType());
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getMeshType());
 		return 1;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_setMeshType(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		int newType = duk_to_int(context, 1);
-		inst->setMeshType(newType);
+		(*inst)->setMeshType(newType);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_getIndexGroupSize(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getIndexGroupSize());
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getIndexGroupSize());
 		return 1;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_calculateBBox(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->calculateBBox();
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->calculateBBox();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_addIndexedFace(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		int i1 = duk_to_int(context, 1);
 		int i2 = duk_to_int(context, 2);
-		inst->addIndexedFace(i1,i2);
+		(*inst)->addIndexedFace(i1,i2);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_addIndex(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		inst->addIndex(index);
+		(*inst)->addIndex(index);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_removeVertexRange(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		int beginRemoveVertex = duk_to_int(context, 1);
 		int vertexRemovalCount = duk_to_int(context, 2);
-		inst->removeVertexRange(beginRemoveVertex,vertexRemovalCount);
+		(*inst)->removeVertexRange(beginRemoveVertex,vertexRemovalCount);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_removeFace(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		int faceIndex = duk_to_int(context, 1);
-		inst->removeFace(faceIndex);
+		(*inst)->removeFace(faceIndex);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_removeUnusedVertices(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->removeUnusedVertices());
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->removeUnusedVertices());
 		return 1;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_getIndexCount(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getIndexCount());
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getIndexCount());
 		return 1;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_subdivideToRadius(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		Number radius = duk_to_number(context, 1);
 		int subdivisions = duk_to_int(context, 2);
-		inst->subdivideToRadius(radius,subdivisions);
+		(*inst)->subdivideToRadius(radius,subdivisions);
 		return 0;
 	}
 
@@ -6620,34 +5906,35 @@ namespace Polycode {
 		Vector2 texCoord1 = *(Vector2*)duk_to_pointer(context, 3);
 		Vector2 texCoord2 = *(Vector2*)duk_to_pointer(context, 4);
 		Vector2 texCoord3 = *(Vector2*)duk_to_pointer(context, 5);
-		Vector3 *retInst = new Vector3();
-		*retInst = MeshGeometry::calculateFaceTangent(v1,v2,v3,texCoord1,texCoord2,texCoord3);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = MeshGeometry::calculateFaceTangent(v1,v2,v3,texCoord1,texCoord2,texCoord3);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_saveAsOBJ(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
 		String fileName = duk_to_string(context, 1);
-		inst->saveAsOBJ(fileName);
+		(*inst)->saveAsOBJ(fileName);
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshGeometry_normalizeBoneWeights(duk_context *context) {
-		MeshGeometry *inst = (MeshGeometry*)duk_to_pointer(context, 0);
-		inst->normalizeBoneWeights();
+		std::shared_ptr<MeshGeometry> *inst = (std::shared_ptr<MeshGeometry>*)duk_to_pointer(context, 0);
+		(*inst)->normalizeBoneWeights();
 		return 0;
 	}
 
 	duk_ret_t Polycode_ObjectEntry(duk_context *context) {
-		ObjectEntry *inst = new ObjectEntry();
+		std::shared_ptr<ObjectEntry> *inst = new std::shared_ptr<ObjectEntry>;
+		(*inst) = std::make_shared<ObjectEntry>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ObjectEntry__get_type(duk_context *context) {
-		ObjectEntry *inst = (ObjectEntry*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->type);
+		std::shared_ptr<ObjectEntry> *inst = (std::shared_ptr<ObjectEntry>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->type);
 		return 1;
 	}
 
@@ -6658,8 +5945,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ObjectEntry__get_name(duk_context *context) {
-		ObjectEntry *inst = (ObjectEntry*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->name.c_str());
+		std::shared_ptr<ObjectEntry> *inst = (std::shared_ptr<ObjectEntry>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->name.c_str());
 		return 1;
 	}
 
@@ -6670,8 +5957,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ObjectEntry__get_NumberVal(duk_context *context) {
-		ObjectEntry *inst = (ObjectEntry*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->NumberVal);
+		std::shared_ptr<ObjectEntry> *inst = (std::shared_ptr<ObjectEntry>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->NumberVal);
 		return 1;
 	}
 
@@ -6682,8 +5969,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ObjectEntry__get_intVal(duk_context *context) {
-		ObjectEntry *inst = (ObjectEntry*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->intVal);
+		std::shared_ptr<ObjectEntry> *inst = (std::shared_ptr<ObjectEntry>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->intVal);
 		return 1;
 	}
 
@@ -6694,8 +5981,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ObjectEntry__get_stringVal(duk_context *context) {
-		ObjectEntry *inst = (ObjectEntry*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->stringVal.c_str());
+		std::shared_ptr<ObjectEntry> *inst = (std::shared_ptr<ObjectEntry>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->stringVal.c_str());
 		return 1;
 	}
 
@@ -6706,8 +5993,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ObjectEntry__get_boolVal(duk_context *context) {
-		ObjectEntry *inst = (ObjectEntry*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->boolVal);
+		std::shared_ptr<ObjectEntry> *inst = (std::shared_ptr<ObjectEntry>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->boolVal);
 		return 1;
 	}
 
@@ -6718,8 +6005,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ObjectEntry__get_length(duk_context *context) {
-		ObjectEntry *inst = (ObjectEntry*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->length);
+		std::shared_ptr<ObjectEntry> *inst = (std::shared_ptr<ObjectEntry>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->length);
 		return 1;
 	}
 
@@ -6730,146 +6017,42 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ObjectEntry__delete(duk_context *context) {
-		ObjectEntry *inst = (ObjectEntry*)duk_to_pointer(context, 0);
+		std::shared_ptr<ObjectEntry> *inst = (std::shared_ptr<ObjectEntry>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_ObjectEntry_readNumber(duk_context *context) {
-		ObjectEntry *inst = (ObjectEntry*)duk_to_pointer(context, 0);
-		String key = duk_to_string(context, 1);
-		Number* out = (Number*)duk_to_pointer(context, 2);
-		duk_push_boolean(context, inst->readNumber(key,out));
-		return 1;
-	}
-
-	duk_ret_t Polycode_ObjectEntry_readString(duk_context *context) {
-		ObjectEntry *inst = (ObjectEntry*)duk_to_pointer(context, 0);
-		String key = duk_to_string(context, 1);
-		String* out = (String*)duk_to_pointer(context, 2);
-		duk_push_boolean(context, inst->readString(key,out));
-		return 1;
-	}
-
-	duk_ret_t Polycode_ObjectEntry_readBool(duk_context *context) {
-		ObjectEntry *inst = (ObjectEntry*)duk_to_pointer(context, 0);
-		String key = duk_to_string(context, 1);
-		bool* out = (bool*)duk_to_pointer(context, 2);
-		duk_push_boolean(context, inst->readBool(key,out));
-		return 1;
-	}
-
-	duk_ret_t Polycode_ObjectEntry_addChild(duk_context *context) {
-		ObjectEntry *inst = (ObjectEntry*)duk_to_pointer(context, 0);
-		String name = duk_to_string(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->addChild(name);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
 	duk_ret_t Polycode_ObjectEntry_getTypedName(duk_context *context) {
-		ObjectEntry *inst = (ObjectEntry*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->getTypedName().c_str());
+		std::shared_ptr<ObjectEntry> *inst = (std::shared_ptr<ObjectEntry>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->getTypedName().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_ObjectEntry_setTypedName(duk_context *context) {
-		ObjectEntry *inst = (ObjectEntry*)duk_to_pointer(context, 0);
+		std::shared_ptr<ObjectEntry> *inst = (std::shared_ptr<ObjectEntry>*)duk_to_pointer(context, 0);
 		String str = duk_to_string(context, 1);
-		inst->setTypedName(str);
+		(*inst)->setTypedName(str);
 		return 0;
 	}
 
 	duk_ret_t Polycode_ObjectEntry_Clear(duk_context *context) {
-		ObjectEntry *inst = (ObjectEntry*)duk_to_pointer(context, 0);
-		inst->Clear();
+		std::shared_ptr<ObjectEntry> *inst = (std::shared_ptr<ObjectEntry>*)duk_to_pointer(context, 0);
+		(*inst)->Clear();
 		return 0;
-	}
-
-	duk_ret_t Polycode_BinaryObjectReader(duk_context *context) {
-		String fileName = duk_to_string(context, 0);
-		Object* object = (Object*)duk_to_pointer(context, 1);
-		BinaryObjectReader *inst = new BinaryObjectReader(fileName,object);
-		duk_push_pointer(context, (void*)inst);
-		return 1;
-	}
-
-	duk_ret_t Polycode_BinaryObjectReader__get_success(duk_context *context) {
-		BinaryObjectReader *inst = (BinaryObjectReader*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->success);
-		return 1;
-	}
-
-	duk_ret_t Polycode_BinaryObjectReader__set_success(duk_context *context) {
-		BinaryObjectReader *inst = (BinaryObjectReader*)duk_to_pointer(context, 0);
-		inst->success = duk_to_boolean(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_BinaryObjectReader__delete(duk_context *context) {
-		BinaryObjectReader *inst = (BinaryObjectReader*)duk_to_pointer(context, 0);
-		delete inst;
-		return 0;
-	}
-
-	duk_ret_t Polycode_BinaryObjectWriter(duk_context *context) {
-		Object* object = (Object*)duk_to_pointer(context, 0);
-		BinaryObjectWriter *inst = new BinaryObjectWriter(object);
-		duk_push_pointer(context, (void*)inst);
-		return 1;
-	}
-
-	duk_ret_t Polycode_BinaryObjectWriter__delete(duk_context *context) {
-		BinaryObjectWriter *inst = (BinaryObjectWriter*)duk_to_pointer(context, 0);
-		delete inst;
-		return 0;
-	}
-
-	duk_ret_t Polycode_BinaryObjectWriter_parseKeysFromObjectEntry(duk_context *context) {
-		BinaryObjectWriter *inst = (BinaryObjectWriter*)duk_to_pointer(context, 0);
-		ObjectEntry* entry = (ObjectEntry*)duk_to_pointer(context, 1);
-		inst->parseKeysFromObjectEntry(entry);
-		return 0;
-	}
-
-	duk_ret_t Polycode_BinaryObjectWriter_writeEntryToFile(duk_context *context) {
-		BinaryObjectWriter *inst = (BinaryObjectWriter*)duk_to_pointer(context, 0);
-		ObjectEntry* entry = (ObjectEntry*)duk_to_pointer(context, 1);
-		inst->writeEntryToFile(entry);
-		return 0;
-	}
-
-	duk_ret_t Polycode_BinaryObjectWriter_addKey(duk_context *context) {
-		BinaryObjectWriter *inst = (BinaryObjectWriter*)duk_to_pointer(context, 0);
-		String key = duk_to_string(context, 1);
-		duk_push_int(context, inst->addKey(key));
-		return 1;
-	}
-
-	duk_ret_t Polycode_BinaryObjectWriter_getKeyIndex(duk_context *context) {
-		BinaryObjectWriter *inst = (BinaryObjectWriter*)duk_to_pointer(context, 0);
-		String key = duk_to_string(context, 1);
-		duk_push_int(context, inst->getKeyIndex(key));
-		return 1;
-	}
-
-	duk_ret_t Polycode_BinaryObjectWriter_writeToFile(duk_context *context) {
-		BinaryObjectWriter *inst = (BinaryObjectWriter*)duk_to_pointer(context, 0);
-		String fileName = duk_to_string(context, 1);
-		duk_push_boolean(context, inst->writeToFile(fileName));
-		return 1;
 	}
 
 	duk_ret_t Polycode_ShaderPlatformData(duk_context *context) {
-		ShaderPlatformData *inst = new ShaderPlatformData();
+		std::shared_ptr<ShaderPlatformData> *inst = new std::shared_ptr<ShaderPlatformData>;
+		(*inst) = std::make_shared<ShaderPlatformData>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ShaderPlatformData__get_shaderID(duk_context *context) {
-		ShaderPlatformData *inst = (ShaderPlatformData*)duk_to_pointer(context, 0);
-		GLuint *retInst = new GLuint();
-		*retInst = inst->shaderID;
+		std::shared_ptr<ShaderPlatformData> *inst = (std::shared_ptr<ShaderPlatformData>*)duk_to_pointer(context, 0);
+		std::shared_ptr<GLuint> *retInst = new std::shared_ptr<GLuint>;
+		*retInst = std::make_shared<GLuint>();
+		*(*retInst) = (*inst)->shaderID;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -6881,9 +6064,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ShaderPlatformData__get_vertexProgramID(duk_context *context) {
-		ShaderPlatformData *inst = (ShaderPlatformData*)duk_to_pointer(context, 0);
-		GLuint *retInst = new GLuint();
-		*retInst = inst->vertexProgramID;
+		std::shared_ptr<ShaderPlatformData> *inst = (std::shared_ptr<ShaderPlatformData>*)duk_to_pointer(context, 0);
+		std::shared_ptr<GLuint> *retInst = new std::shared_ptr<GLuint>;
+		*retInst = std::make_shared<GLuint>();
+		*(*retInst) = (*inst)->vertexProgramID;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -6895,9 +6079,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ShaderPlatformData__get_fragmentProgramID(duk_context *context) {
-		ShaderPlatformData *inst = (ShaderPlatformData*)duk_to_pointer(context, 0);
-		GLuint *retInst = new GLuint();
-		*retInst = inst->fragmentProgramID;
+		std::shared_ptr<ShaderPlatformData> *inst = (std::shared_ptr<ShaderPlatformData>*)duk_to_pointer(context, 0);
+		std::shared_ptr<GLuint> *retInst = new std::shared_ptr<GLuint>;
+		*retInst = std::make_shared<GLuint>();
+		*(*retInst) = (*inst)->fragmentProgramID;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -6909,20 +6094,21 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ShaderPlatformData__delete(duk_context *context) {
-		ShaderPlatformData *inst = (ShaderPlatformData*)duk_to_pointer(context, 0);
+		std::shared_ptr<ShaderPlatformData> *inst = (std::shared_ptr<ShaderPlatformData>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticle(duk_context *context) {
-		SceneParticle *inst = new SceneParticle();
+		std::shared_ptr<SceneParticle> *inst = new std::shared_ptr<SceneParticle>;
+		(*inst) = std::make_shared<SceneParticle>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneParticle__get_lifetime(duk_context *context) {
-		SceneParticle *inst = (SceneParticle*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->lifetime);
+		std::shared_ptr<SceneParticle> *inst = (std::shared_ptr<SceneParticle>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->lifetime);
 		return 1;
 	}
 
@@ -6933,9 +6119,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneParticle__get_position(duk_context *context) {
-		SceneParticle *inst = (SceneParticle*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->position;
+		std::shared_ptr<SceneParticle> *inst = (std::shared_ptr<SceneParticle>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*retInst = std::make_shared<Vector3>();
+		*(*retInst) = (*inst)->position;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -6947,9 +6134,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneParticle__get_velocity(duk_context *context) {
-		SceneParticle *inst = (SceneParticle*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->velocity;
+		std::shared_ptr<SceneParticle> *inst = (std::shared_ptr<SceneParticle>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*retInst = std::make_shared<Vector3>();
+		*(*retInst) = (*inst)->velocity;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -6961,9 +6149,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneParticle__get_perlinPos(duk_context *context) {
-		SceneParticle *inst = (SceneParticle*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->perlinPos;
+		std::shared_ptr<SceneParticle> *inst = (std::shared_ptr<SceneParticle>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*retInst = std::make_shared<Vector3>();
+		*(*retInst) = (*inst)->perlinPos;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -6975,9 +6164,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneParticle__get_rotation(duk_context *context) {
-		SceneParticle *inst = (SceneParticle*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->rotation;
+		std::shared_ptr<SceneParticle> *inst = (std::shared_ptr<SceneParticle>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*retInst = std::make_shared<Vector3>();
+		*(*retInst) = (*inst)->rotation;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -6989,8 +6179,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneParticle__get_brightnessDeviation(duk_context *context) {
-		SceneParticle *inst = (SceneParticle*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->brightnessDeviation);
+		std::shared_ptr<SceneParticle> *inst = (std::shared_ptr<SceneParticle>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->brightnessDeviation);
 		return 1;
 	}
 
@@ -7001,8 +6191,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneParticle__get_scale(duk_context *context) {
-		SceneParticle *inst = (SceneParticle*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->scale);
+		std::shared_ptr<SceneParticle> *inst = (std::shared_ptr<SceneParticle>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->scale);
 		return 1;
 	}
 
@@ -7013,9 +6203,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneParticle__get_color(duk_context *context) {
-		SceneParticle *inst = (SceneParticle*)duk_to_pointer(context, 0);
-		Color *retInst = new Color();
-		*retInst = inst->color;
+		std::shared_ptr<SceneParticle> *inst = (std::shared_ptr<SceneParticle>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *retInst = new std::shared_ptr<Color>;
+		*retInst = std::make_shared<Color>();
+		*(*retInst) = (*inst)->color;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -7027,8 +6218,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneParticle__get_varianceIndex(duk_context *context) {
-		SceneParticle *inst = (SceneParticle*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->varianceIndex);
+		std::shared_ptr<SceneParticle> *inst = (std::shared_ptr<SceneParticle>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->varianceIndex);
 		return 1;
 	}
 
@@ -7039,7 +6230,7 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneParticle__delete(duk_context *context) {
-		SceneParticle *inst = (SceneParticle*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneParticle> *inst = (std::shared_ptr<SceneParticle>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
@@ -7048,14 +6239,15 @@ namespace Polycode {
 		int particleCount = duk_to_int(context, 0);
 		Number lifetime = duk_to_number(context, 1);
 		Number speed = duk_to_number(context, 2);
-		SceneParticleEmitter *inst = new SceneParticleEmitter(particleCount,lifetime,speed);
+		std::shared_ptr<SceneParticleEmitter> *inst = new std::shared_ptr<SceneParticleEmitter>;
+		(*inst) = std::make_shared<SceneParticleEmitter>(particleCount,lifetime,speed);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter__get_useScaleCurve(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->useScaleCurve);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->useScaleCurve);
 		return 1;
 	}
 
@@ -7066,9 +6258,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter__get_scaleCurve(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		BezierCurve *retInst = new BezierCurve();
-		*retInst = inst->scaleCurve;
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		std::shared_ptr<BezierCurve> *retInst = new std::shared_ptr<BezierCurve>;
+		*retInst = std::make_shared<BezierCurve>();
+		*(*retInst) = (*inst)->scaleCurve;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -7080,8 +6273,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter__get_useColorCurves(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->useColorCurves);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->useColorCurves);
 		return 1;
 	}
 
@@ -7092,9 +6285,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter__get_colorCurveR(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		BezierCurve *retInst = new BezierCurve();
-		*retInst = inst->colorCurveR;
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		std::shared_ptr<BezierCurve> *retInst = new std::shared_ptr<BezierCurve>;
+		*retInst = std::make_shared<BezierCurve>();
+		*(*retInst) = (*inst)->colorCurveR;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -7106,9 +6300,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter__get_colorCurveG(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		BezierCurve *retInst = new BezierCurve();
-		*retInst = inst->colorCurveG;
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		std::shared_ptr<BezierCurve> *retInst = new std::shared_ptr<BezierCurve>;
+		*retInst = std::make_shared<BezierCurve>();
+		*(*retInst) = (*inst)->colorCurveG;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -7120,9 +6315,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter__get_colorCurveB(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		BezierCurve *retInst = new BezierCurve();
-		*retInst = inst->colorCurveB;
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		std::shared_ptr<BezierCurve> *retInst = new std::shared_ptr<BezierCurve>;
+		*retInst = std::make_shared<BezierCurve>();
+		*(*retInst) = (*inst)->colorCurveB;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -7134,9 +6330,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter__get_colorCurveA(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		BezierCurve *retInst = new BezierCurve();
-		*retInst = inst->colorCurveA;
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		std::shared_ptr<BezierCurve> *retInst = new std::shared_ptr<BezierCurve>;
+		*retInst = std::make_shared<BezierCurve>();
+		*(*retInst) = (*inst)->colorCurveA;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -7148,9 +6345,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter__get_colorDeviation(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		Color *retInst = new Color();
-		*retInst = inst->colorDeviation;
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *retInst = new std::shared_ptr<Color>;
+		*retInst = std::make_shared<Color>();
+		*(*retInst) = (*inst)->colorDeviation;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -7162,316 +6360,269 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter__delete(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_setParticleCount(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
 		int newParticleCount = duk_to_int(context, 1);
-		inst->setParticleCount(newParticleCount);
+		(*inst)->setParticleCount(newParticleCount);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_getParticleCount(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getParticleCount());
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getParticleCount());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_setParticleLifetime(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
 		Number lifetime = duk_to_number(context, 1);
-		inst->setParticleLifetime(lifetime);
+		(*inst)->setParticleLifetime(lifetime);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_getParticleLifetime(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getParticleLifetime());
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getParticleLifetime());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_setDirectionDeviation(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
 		Vector3 newDeviation = *(Vector3*)duk_to_pointer(context, 1);
-		inst->setDirectionDeviation(newDeviation);
+		(*inst)->setDirectionDeviation(newDeviation);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_getDirectionDeviation(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->getDirectionDeviation();
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->getDirectionDeviation();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_setEmitterSize(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
 		Vector3 newSize = *(Vector3*)duk_to_pointer(context, 1);
-		inst->setEmitterSize(newSize);
+		(*inst)->setEmitterSize(newSize);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_getEmitterSize(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->getEmitterSize();
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->getEmitterSize();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_setGravity(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
 		Vector3 newGravity = *(Vector3*)duk_to_pointer(context, 1);
-		inst->setGravity(newGravity);
+		(*inst)->setGravity(newGravity);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_getGravity(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->getGravity();
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->getGravity();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_fixedUpdate(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		inst->fixedUpdate();
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneParticleEmitter_Render(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		GPUDrawBuffer* buffer = (GPUDrawBuffer*)duk_to_pointer(context, 1);
-		inst->Render(buffer);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		(*inst)->fixedUpdate();
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_updateParticles(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		inst->updateParticles();
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneParticleEmitter_rebuildParticles(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		GPUDrawBuffer* buffer = (GPUDrawBuffer*)duk_to_pointer(context, 1);
-		inst->rebuildParticles(buffer);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		(*inst)->updateParticles();
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_triggerParticles(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
 		bool allAtOnce = duk_to_boolean(context, 1);
-		inst->triggerParticles(allAtOnce);
+		(*inst)->triggerParticles(allAtOnce);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_enableParticleSystem(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
 		bool val = duk_to_boolean(context, 1);
-		inst->enableParticleSystem(val);
+		(*inst)->enableParticleSystem(val);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_setUseFloorPlane(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
 		bool val = duk_to_boolean(context, 1);
-		inst->setUseFloorPlane(val);
+		(*inst)->setUseFloorPlane(val);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_setFloorPlaneOffset(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
 		Number floorPlaneOffset = duk_to_number(context, 1);
-		inst->setFloorPlaneOffset(floorPlaneOffset);
+		(*inst)->setFloorPlaneOffset(floorPlaneOffset);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_setFloorDamping(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
 		Number floorDamping = duk_to_number(context, 1);
-		inst->setFloorDamping(floorDamping);
+		(*inst)->setFloorDamping(floorDamping);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_setParticlesInWorldSpace(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
 		bool val = duk_to_boolean(context, 1);
-		inst->setParticlesInWorldSpace(val);
+		(*inst)->setParticlesInWorldSpace(val);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_getParticlesInWorldSpace(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->getParticlesInWorldSpace());
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->getParticlesInWorldSpace());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_setPerlinEnabled(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
 		bool val = duk_to_boolean(context, 1);
-		inst->setPerlinEnabled(val);
+		(*inst)->setPerlinEnabled(val);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_getPerlinEnabled(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->getPerlinEnabled());
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->getPerlinEnabled());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_getParticleSpeed(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getParticleSpeed());
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getParticleSpeed());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_setParticleSpeed(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
 		Number speed = duk_to_number(context, 1);
-		inst->setParticleSpeed(speed);
+		(*inst)->setParticleSpeed(speed);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_setPerlinValue(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
 		Vector3 perlinValue = *(Vector3*)duk_to_pointer(context, 1);
-		inst->setPerlinValue(perlinValue);
+		(*inst)->setPerlinValue(perlinValue);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_getPerlinValue(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->getPerlinValue();
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->getPerlinValue();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_setParticleType(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
 		int particleType = duk_to_int(context, 1);
-		inst->setParticleType(particleType);
+		(*inst)->setParticleType(particleType);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_getParticleType(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getParticleType());
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getParticleType());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_setParticleSize(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
 		Number particleSize = duk_to_number(context, 1);
-		inst->setParticleSize(particleSize);
+		(*inst)->setParticleSize(particleSize);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_getParticleSize(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getParticleSize());
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getParticleSize());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_setParticleRotationSpeed(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
 		Vector3 rotationSpeed = *(Vector3*)duk_to_pointer(context, 1);
-		inst->setParticleRotationSpeed(rotationSpeed);
+		(*inst)->setParticleRotationSpeed(rotationSpeed);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_getParticleRotationSpeed(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->getParticleRotationSpeed();
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->getParticleRotationSpeed();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_setParticleDirection(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
 		Vector3 direction = *(Vector3*)duk_to_pointer(context, 1);
-		inst->setParticleDirection(direction);
+		(*inst)->setParticleDirection(direction);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_getParticleDirection(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->getParticleDirection();
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->getParticleDirection();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_setLoopParticles(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
 		bool val = duk_to_boolean(context, 1);
-		inst->setLoopParticles(val);
+		(*inst)->setLoopParticles(val);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_getLoopParticles(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->getLoopParticles());
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->getLoopParticles());
 		return 1;
-	}
-
-	duk_ret_t Polycode_SceneParticleEmitter_addSourceMesh(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		Mesh* mesh = (Mesh*)duk_to_pointer(context, 1);
-		inst->addSourceMesh(mesh);
-		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_getNumSourceMeshes(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumSourceMeshes());
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneParticleEmitter_getSourcesMeshAtIndex(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getSourcesMeshAtIndex(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumSourceMeshes());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_removeSourceMeshAtIndex(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		inst->removeSourceMeshAtIndex(index);
+		(*inst)->removeSourceMeshAtIndex(index);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneParticleEmitter_positionParticle(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneParticleEmitter> *inst = (std::shared_ptr<SceneParticleEmitter>*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		inst->positionParticle(index);
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneParticleEmitter_Clone(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		bool deepClone = duk_to_boolean(context, 1);
-		bool ignoreEditorOnly = duk_to_boolean(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->Clone(deepClone,ignoreEditorOnly);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneParticleEmitter_applyClone(duk_context *context) {
-		SceneParticleEmitter *inst = (SceneParticleEmitter*)duk_to_pointer(context, 0);
-		Entity* clone = (Entity*)duk_to_pointer(context, 1);
-		bool deepClone = duk_to_boolean(context, 2);
-		bool ignoreEditorOnly = duk_to_boolean(context, 3);
-		inst->applyClone(clone,deepClone,ignoreEditorOnly);
+		(*inst)->positionParticle(index);
 		return 0;
 	}
 
@@ -7480,48 +6631,49 @@ namespace Polycode {
 		Number freq = duk_to_number(context, 1);
 		Number amp = duk_to_number(context, 2);
 		int seed = duk_to_int(context, 3);
-		Perlin *inst = new Perlin(octaves,freq,amp,seed);
+		std::shared_ptr<Perlin> *inst = new std::shared_ptr<Perlin>;
+		(*inst) = std::make_shared<Perlin>(octaves,freq,amp,seed);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Perlin__delete(duk_context *context) {
-		Perlin *inst = (Perlin*)duk_to_pointer(context, 0);
+		std::shared_ptr<Perlin> *inst = (std::shared_ptr<Perlin>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Perlin_Get2DTiledX(duk_context *context) {
-		Perlin *inst = (Perlin*)duk_to_pointer(context, 0);
+		std::shared_ptr<Perlin> *inst = (std::shared_ptr<Perlin>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
 		Number t = duk_to_number(context, 3);
-		duk_push_number(context, inst->Get2DTiledX(x,y,t));
+		duk_push_number(context, (*inst)->Get2DTiledX(x,y,t));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Perlin_Get(duk_context *context) {
-		Perlin *inst = (Perlin*)duk_to_pointer(context, 0);
+		std::shared_ptr<Perlin> *inst = (std::shared_ptr<Perlin>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
-		duk_push_number(context, inst->Get(x,y));
+		duk_push_number(context, (*inst)->Get(x,y));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Perlin_Get2D(duk_context *context) {
-		Perlin *inst = (Perlin*)duk_to_pointer(context, 0);
+		std::shared_ptr<Perlin> *inst = (std::shared_ptr<Perlin>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
-		duk_push_number(context, inst->Get2D(x,y));
+		duk_push_number(context, (*inst)->Get2D(x,y));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Perlin_Get3D(duk_context *context) {
-		Perlin *inst = (Perlin*)duk_to_pointer(context, 0);
+		std::shared_ptr<Perlin> *inst = (std::shared_ptr<Perlin>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
 		Number z = duk_to_number(context, 3);
-		duk_push_number(context, inst->Get3D(x,y,z));
+		duk_push_number(context, (*inst)->Get3D(x,y,z));
 		return 1;
 	}
 
@@ -7530,14 +6682,15 @@ namespace Polycode {
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
 		Number z = duk_to_number(context, 3);
-		Quaternion *inst = new Quaternion(w,x,y,z);
+		std::shared_ptr<Quaternion> *inst = new std::shared_ptr<Quaternion>;
+		(*inst) = std::make_shared<Quaternion>(w,x,y,z);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Quaternion__get_x(duk_context *context) {
-		Quaternion *inst = (Quaternion*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->x);
+		std::shared_ptr<Quaternion> *inst = (std::shared_ptr<Quaternion>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->x);
 		return 1;
 	}
 
@@ -7548,8 +6701,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Quaternion__get_y(duk_context *context) {
-		Quaternion *inst = (Quaternion*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->y);
+		std::shared_ptr<Quaternion> *inst = (std::shared_ptr<Quaternion>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->y);
 		return 1;
 	}
 
@@ -7560,8 +6713,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Quaternion__get_z(duk_context *context) {
-		Quaternion *inst = (Quaternion*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->z);
+		std::shared_ptr<Quaternion> *inst = (std::shared_ptr<Quaternion>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->z);
 		return 1;
 	}
 
@@ -7572,8 +6725,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Quaternion__get_w(duk_context *context) {
-		Quaternion *inst = (Quaternion*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->w);
+		std::shared_ptr<Quaternion> *inst = (std::shared_ptr<Quaternion>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->w);
 		return 1;
 	}
 
@@ -7584,15 +6737,15 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Quaternion__delete(duk_context *context) {
-		Quaternion *inst = (Quaternion*)duk_to_pointer(context, 0);
+		std::shared_ptr<Quaternion> *inst = (std::shared_ptr<Quaternion>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Quaternion_setFromMatrix(duk_context *context) {
-		Quaternion *inst = (Quaternion*)duk_to_pointer(context, 0);
+		std::shared_ptr<Quaternion> *inst = (std::shared_ptr<Quaternion>*)duk_to_pointer(context, 0);
 		Matrix4 _mat = *(Matrix4*)duk_to_pointer(context, 1);
-		inst->setFromMatrix(_mat);
+		(*inst)->setFromMatrix(_mat);
 		return 0;
 	}
 
@@ -7601,59 +6754,59 @@ namespace Polycode {
 		Quaternion rkP = *(Quaternion*)duk_to_pointer(context, 1);
 		Quaternion rkQ = *(Quaternion*)duk_to_pointer(context, 2);
 		bool shortestPath = duk_to_boolean(context, 3);
-		Quaternion *retInst = new Quaternion();
-		*retInst = Quaternion::Slerp(fT,rkP,rkQ,shortestPath);
+		std::shared_ptr<Quaternion> *retInst = new std::shared_ptr<Quaternion>;
+		*(*retInst) = Quaternion::Slerp(fT,rkP,rkQ,shortestPath);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Quaternion_Dot(duk_context *context) {
-		Quaternion *inst = (Quaternion*)duk_to_pointer(context, 0);
+		std::shared_ptr<Quaternion> *inst = (std::shared_ptr<Quaternion>*)duk_to_pointer(context, 0);
 		Quaternion rkQ = *(Quaternion*)duk_to_pointer(context, 1);
-		duk_push_number(context, inst->Dot(rkQ));
+		duk_push_number(context, (*inst)->Dot(rkQ));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Quaternion_Log(duk_context *context) {
-		Quaternion *inst = (Quaternion*)duk_to_pointer(context, 0);
-		Quaternion *retInst = new Quaternion();
-		*retInst = inst->Log();
+		std::shared_ptr<Quaternion> *inst = (std::shared_ptr<Quaternion>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Quaternion> *retInst = new std::shared_ptr<Quaternion>;
+		*(*retInst) = (*inst)->Log();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Quaternion_Exp(duk_context *context) {
-		Quaternion *inst = (Quaternion*)duk_to_pointer(context, 0);
-		Quaternion *retInst = new Quaternion();
-		*retInst = inst->Exp();
+		std::shared_ptr<Quaternion> *inst = (std::shared_ptr<Quaternion>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Quaternion> *retInst = new std::shared_ptr<Quaternion>;
+		*(*retInst) = (*inst)->Exp();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Quaternion_Norm(duk_context *context) {
-		Quaternion *inst = (Quaternion*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->Norm());
+		std::shared_ptr<Quaternion> *inst = (std::shared_ptr<Quaternion>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->Norm());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Quaternion_Normalize(duk_context *context) {
-		Quaternion *inst = (Quaternion*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->Normalize());
+		std::shared_ptr<Quaternion> *inst = (std::shared_ptr<Quaternion>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->Normalize());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Quaternion_lookAt(duk_context *context) {
-		Quaternion *inst = (Quaternion*)duk_to_pointer(context, 0);
+		std::shared_ptr<Quaternion> *inst = (std::shared_ptr<Quaternion>*)duk_to_pointer(context, 0);
 		Vector3 D = *(Vector3*)duk_to_pointer(context, 1);
 		Vector3 upVector = *(Vector3*)duk_to_pointer(context, 2);
-		inst->lookAt(D,upVector);
+		(*inst)->lookAt(D,upVector);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Quaternion_createFromMatrix(duk_context *context) {
-		Quaternion *inst = (Quaternion*)duk_to_pointer(context, 0);
+		std::shared_ptr<Quaternion> *inst = (std::shared_ptr<Quaternion>*)duk_to_pointer(context, 0);
 		Matrix4 matrix = *(Matrix4*)duk_to_pointer(context, 1);
-		inst->createFromMatrix(matrix);
+		(*inst)->createFromMatrix(matrix);
 		return 0;
 	}
 
@@ -7664,107 +6817,109 @@ namespace Polycode {
 		Quaternion rkB = *(Quaternion*)duk_to_pointer(context, 3);
 		Quaternion rkQ = *(Quaternion*)duk_to_pointer(context, 4);
 		bool shortestPath = duk_to_boolean(context, 5);
-		Quaternion *retInst = new Quaternion();
-		*retInst = Quaternion::Squad(fT,rkP,rkA,rkB,rkQ,shortestPath);
+		std::shared_ptr<Quaternion> *retInst = new std::shared_ptr<Quaternion>;
+		*(*retInst) = Quaternion::Squad(fT,rkP,rkA,rkB,rkQ,shortestPath);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Quaternion_Inverse(duk_context *context) {
-		Quaternion *inst = (Quaternion*)duk_to_pointer(context, 0);
-		Quaternion *retInst = new Quaternion();
-		*retInst = inst->Inverse();
+		std::shared_ptr<Quaternion> *inst = (std::shared_ptr<Quaternion>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Quaternion> *retInst = new std::shared_ptr<Quaternion>;
+		*(*retInst) = (*inst)->Inverse();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Quaternion_set(duk_context *context) {
-		Quaternion *inst = (Quaternion*)duk_to_pointer(context, 0);
+		std::shared_ptr<Quaternion> *inst = (std::shared_ptr<Quaternion>*)duk_to_pointer(context, 0);
 		Number w = duk_to_number(context, 1);
 		Number x = duk_to_number(context, 2);
 		Number y = duk_to_number(context, 3);
 		Number z = duk_to_number(context, 4);
-		inst->set(w,x,y,z);
+		(*inst)->set(w,x,y,z);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Quaternion_InvSqrt(duk_context *context) {
-		Quaternion *inst = (Quaternion*)duk_to_pointer(context, 0);
+		std::shared_ptr<Quaternion> *inst = (std::shared_ptr<Quaternion>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
-		duk_push_number(context, inst->InvSqrt(x));
+		duk_push_number(context, (*inst)->InvSqrt(x));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Quaternion_fromAxes(duk_context *context) {
-		Quaternion *inst = (Quaternion*)duk_to_pointer(context, 0);
+		std::shared_ptr<Quaternion> *inst = (std::shared_ptr<Quaternion>*)duk_to_pointer(context, 0);
 		Number az = duk_to_number(context, 1);
 		Number ay = duk_to_number(context, 2);
 		Number ax = duk_to_number(context, 3);
-		inst->fromAxes(az,ay,ax);
+		(*inst)->fromAxes(az,ay,ax);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Quaternion_fromAngleAxis(duk_context *context) {
-		Quaternion *inst = (Quaternion*)duk_to_pointer(context, 0);
+		std::shared_ptr<Quaternion> *inst = (std::shared_ptr<Quaternion>*)duk_to_pointer(context, 0);
 		Number rfAngle = duk_to_number(context, 1);
 		Vector3 rkAxis = *(Vector3*)duk_to_pointer(context, 2);
-		inst->fromAngleAxis(rfAngle,rkAxis);
+		(*inst)->fromAngleAxis(rfAngle,rkAxis);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Quaternion_toEulerAngles(duk_context *context) {
-		Quaternion *inst = (Quaternion*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->toEulerAngles();
+		std::shared_ptr<Quaternion> *inst = (std::shared_ptr<Quaternion>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->toEulerAngles();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Quaternion_toAngleAxis(duk_context *context) {
-		Quaternion *inst = (Quaternion*)duk_to_pointer(context, 0);
+		std::shared_ptr<Quaternion> *inst = (std::shared_ptr<Quaternion>*)duk_to_pointer(context, 0);
 		Number rfAngle = duk_to_number(context, 1);
 		Vector3 rkAxis = *(Vector3*)duk_to_pointer(context, 2);
-		inst->toAngleAxis(rfAngle,rkAxis);
+		(*inst)->toAngleAxis(rfAngle,rkAxis);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Quaternion_createFromAxisAngle(duk_context *context) {
-		Quaternion *inst = (Quaternion*)duk_to_pointer(context, 0);
+		std::shared_ptr<Quaternion> *inst = (std::shared_ptr<Quaternion>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
 		Number z = duk_to_number(context, 3);
 		Number degrees = duk_to_number(context, 4);
-		inst->createFromAxisAngle(x,y,z,degrees);
+		(*inst)->createFromAxisAngle(x,y,z,degrees);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Quaternion_createMatrix(duk_context *context) {
-		Quaternion *inst = (Quaternion*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->createMatrix();
+		std::shared_ptr<Quaternion> *inst = (std::shared_ptr<Quaternion>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*(*retInst) = (*inst)->createMatrix();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Quaternion_applyTo(duk_context *context) {
-		Quaternion *inst = (Quaternion*)duk_to_pointer(context, 0);
+		std::shared_ptr<Quaternion> *inst = (std::shared_ptr<Quaternion>*)duk_to_pointer(context, 0);
 		Vector3 v = *(Vector3*)duk_to_pointer(context, 1);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->applyTo(v);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->applyTo(v);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_QuatTriple(duk_context *context) {
-		QuatTriple *inst = new QuatTriple();
+		std::shared_ptr<QuatTriple> *inst = new std::shared_ptr<QuatTriple>;
+		(*inst) = std::make_shared<QuatTriple>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_QuatTriple__get_q1(duk_context *context) {
-		QuatTriple *inst = (QuatTriple*)duk_to_pointer(context, 0);
-		Quaternion *retInst = new Quaternion();
-		*retInst = inst->q1;
+		std::shared_ptr<QuatTriple> *inst = (std::shared_ptr<QuatTriple>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Quaternion> *retInst = new std::shared_ptr<Quaternion>;
+		*retInst = std::make_shared<Quaternion>();
+		*(*retInst) = (*inst)->q1;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -7776,9 +6931,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_QuatTriple__get_q2(duk_context *context) {
-		QuatTriple *inst = (QuatTriple*)duk_to_pointer(context, 0);
-		Quaternion *retInst = new Quaternion();
-		*retInst = inst->q2;
+		std::shared_ptr<QuatTriple> *inst = (std::shared_ptr<QuatTriple>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Quaternion> *retInst = new std::shared_ptr<Quaternion>;
+		*retInst = std::make_shared<Quaternion>();
+		*(*retInst) = (*inst)->q2;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -7790,9 +6946,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_QuatTriple__get_q3(duk_context *context) {
-		QuatTriple *inst = (QuatTriple*)duk_to_pointer(context, 0);
-		Quaternion *retInst = new Quaternion();
-		*retInst = inst->q3;
+		std::shared_ptr<QuatTriple> *inst = (std::shared_ptr<QuatTriple>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Quaternion> *retInst = new std::shared_ptr<Quaternion>;
+		*retInst = std::make_shared<Quaternion>();
+		*(*retInst) = (*inst)->q3;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -7804,8 +6961,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_QuatTriple__get_time(duk_context *context) {
-		QuatTriple *inst = (QuatTriple*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->time);
+		std::shared_ptr<QuatTriple> *inst = (std::shared_ptr<QuatTriple>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->time);
 		return 1;
 	}
 
@@ -7816,57 +6973,23 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_QuatTriple__delete(duk_context *context) {
-		QuatTriple *inst = (QuatTriple*)duk_to_pointer(context, 0);
+		std::shared_ptr<QuatTriple> *inst = (std::shared_ptr<QuatTriple>*)duk_to_pointer(context, 0);
 		delete inst;
-		return 0;
-	}
-
-	duk_ret_t Polycode_QuaternionCurve(duk_context *context) {
-		BezierCurve* wCurve = (BezierCurve*)duk_to_pointer(context, 0);
-		BezierCurve* xCurve = (BezierCurve*)duk_to_pointer(context, 1);
-		BezierCurve* yCurve = (BezierCurve*)duk_to_pointer(context, 2);
-		BezierCurve* zCurve = (BezierCurve*)duk_to_pointer(context, 3);
-		QuaternionCurve *inst = new QuaternionCurve(wCurve,xCurve,yCurve,zCurve);
-		duk_push_pointer(context, (void*)inst);
-		return 1;
-	}
-
-	duk_ret_t Polycode_QuaternionCurve__delete(duk_context *context) {
-		QuaternionCurve *inst = (QuaternionCurve*)duk_to_pointer(context, 0);
-		delete inst;
-		return 0;
-	}
-
-	duk_ret_t Polycode_QuaternionCurve_interpolate(duk_context *context) {
-		QuaternionCurve *inst = (QuaternionCurve*)duk_to_pointer(context, 0);
-		Number t = duk_to_number(context, 1);
-		bool useShortestPath = duk_to_boolean(context, 2);
-		Quaternion *retInst = new Quaternion();
-		*retInst = inst->interpolate(t,useShortestPath);
-		duk_push_pointer(context, (void*)retInst);
-		return 1;
-	}
-
-	duk_ret_t Polycode_QuaternionCurve_generatePointsFromCurves(duk_context *context) {
-		QuaternionCurve *inst = (QuaternionCurve*)duk_to_pointer(context, 0);
-		BezierCurve* wCurve = (BezierCurve*)duk_to_pointer(context, 1);
-		BezierCurve* xCurve = (BezierCurve*)duk_to_pointer(context, 2);
-		BezierCurve* yCurve = (BezierCurve*)duk_to_pointer(context, 3);
-		BezierCurve* zCurve = (BezierCurve*)duk_to_pointer(context, 4);
-		inst->generatePointsFromCurves(wCurve,xCurve,yCurve,zCurve);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Ray(duk_context *context) {
-		Ray *inst = new Ray();
+		std::shared_ptr<Ray> *inst = new std::shared_ptr<Ray>;
+		(*inst) = std::make_shared<Ray>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Ray__get_origin(duk_context *context) {
-		Ray *inst = (Ray*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->origin;
+		std::shared_ptr<Ray> *inst = (std::shared_ptr<Ray>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*retInst = std::make_shared<Vector3>();
+		*(*retInst) = (*inst)->origin;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -7878,9 +7001,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Ray__get_direction(duk_context *context) {
-		Ray *inst = (Ray*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->direction;
+		std::shared_ptr<Ray> *inst = (std::shared_ptr<Ray>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*retInst = std::make_shared<Vector3>();
+		*(*retInst) = (*inst)->direction;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -7892,9 +7016,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Ray__get_inv_direction(duk_context *context) {
-		Ray *inst = (Ray*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->inv_direction;
+		std::shared_ptr<Ray> *inst = (std::shared_ptr<Ray>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*retInst = std::make_shared<Vector3>();
+		*(*retInst) = (*inst)->inv_direction;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -7906,76 +7031,68 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Ray__delete(duk_context *context) {
-		Ray *inst = (Ray*)duk_to_pointer(context, 0);
+		std::shared_ptr<Ray> *inst = (std::shared_ptr<Ray>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Ray_boxIntersect(duk_context *context) {
-		Ray *inst = (Ray*)duk_to_pointer(context, 0);
+		std::shared_ptr<Ray> *inst = (std::shared_ptr<Ray>*)duk_to_pointer(context, 0);
 		Vector3 box = *(Vector3*)duk_to_pointer(context, 1);
 		Matrix4 transformMatrix = *(Matrix4*)duk_to_pointer(context, 2);
 		Number vnear = duk_to_number(context, 3);
 		Number vfar = duk_to_number(context, 4);
-		duk_push_number(context, inst->boxIntersect(box,transformMatrix,vnear,vfar));
+		duk_push_number(context, (*inst)->boxIntersect(box,transformMatrix,vnear,vfar));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Ray_planeIntersectPoint(duk_context *context) {
-		Ray *inst = (Ray*)duk_to_pointer(context, 0);
+		std::shared_ptr<Ray> *inst = (std::shared_ptr<Ray>*)duk_to_pointer(context, 0);
 		Vector3 planeNormal = *(Vector3*)duk_to_pointer(context, 1);
 		Number planeDistance = duk_to_number(context, 2);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->planeIntersectPoint(planeNormal,planeDistance);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->planeIntersectPoint(planeNormal,planeDistance);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Ray_tranformByMatrix(duk_context *context) {
-		Ray *inst = (Ray*)duk_to_pointer(context, 0);
+		std::shared_ptr<Ray> *inst = (std::shared_ptr<Ray>*)duk_to_pointer(context, 0);
 		Matrix4 matrix = *(Matrix4*)duk_to_pointer(context, 1);
-		Ray *retInst = new Ray();
-		*retInst = inst->tranformByMatrix(matrix);
+		std::shared_ptr<Ray> *retInst = new std::shared_ptr<Ray>;
+		*(*retInst) = (*inst)->tranformByMatrix(matrix);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Ray_closestPointOnRay(duk_context *context) {
-		Ray *inst = (Ray*)duk_to_pointer(context, 0);
+		std::shared_ptr<Ray> *inst = (std::shared_ptr<Ray>*)duk_to_pointer(context, 0);
 		Vector3 point = *(Vector3*)duk_to_pointer(context, 1);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->closestPointOnRay(point);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->closestPointOnRay(point);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
-	duk_ret_t Polycode_Ray_closestPointsBetween(duk_context *context) {
-		Ray *inst = (Ray*)duk_to_pointer(context, 0);
-		Ray ray2 = *(Ray*)duk_to_pointer(context, 1);
-		Vector3* point1 = (Vector3*)duk_to_pointer(context, 2);
-		Vector3* point2 = (Vector3*)duk_to_pointer(context, 3);
-		duk_push_boolean(context, inst->closestPointsBetween(ray2,point1,point2));
-		return 1;
-	}
-
 	duk_ret_t Polycode_Ray_polygonIntersect(duk_context *context) {
-		Ray *inst = (Ray*)duk_to_pointer(context, 0);
+		std::shared_ptr<Ray> *inst = (std::shared_ptr<Ray>*)duk_to_pointer(context, 0);
 		Vector3 v1 = *(Vector3*)duk_to_pointer(context, 1);
 		Vector3 v2 = *(Vector3*)duk_to_pointer(context, 2);
 		Vector3 v3 = *(Vector3*)duk_to_pointer(context, 3);
-		duk_push_boolean(context, inst->polygonIntersect(v1,v2,v3));
+		duk_push_boolean(context, (*inst)->polygonIntersect(v1,v2,v3));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Rectangle(duk_context *context) {
-		Rectangle *inst = new Rectangle();
+		std::shared_ptr<Rectangle> *inst = new std::shared_ptr<Rectangle>;
+		(*inst) = std::make_shared<Rectangle>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Rectangle__get_x(duk_context *context) {
-		Rectangle *inst = (Rectangle*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->x);
+		std::shared_ptr<Rectangle> *inst = (std::shared_ptr<Rectangle>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->x);
 		return 1;
 	}
 
@@ -7986,8 +7103,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Rectangle__get_y(duk_context *context) {
-		Rectangle *inst = (Rectangle*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->y);
+		std::shared_ptr<Rectangle> *inst = (std::shared_ptr<Rectangle>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->y);
 		return 1;
 	}
 
@@ -7998,8 +7115,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Rectangle__get_w(duk_context *context) {
-		Rectangle *inst = (Rectangle*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->w);
+		std::shared_ptr<Rectangle> *inst = (std::shared_ptr<Rectangle>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->w);
 		return 1;
 	}
 
@@ -8010,8 +7127,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Rectangle__get_h(duk_context *context) {
-		Rectangle *inst = (Rectangle*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->h);
+		std::shared_ptr<Rectangle> *inst = (std::shared_ptr<Rectangle>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->h);
 		return 1;
 	}
 
@@ -8022,64 +7139,65 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Rectangle__delete(duk_context *context) {
-		Rectangle *inst = (Rectangle*)duk_to_pointer(context, 0);
+		std::shared_ptr<Rectangle> *inst = (std::shared_ptr<Rectangle>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Rectangle_setRect(duk_context *context) {
-		Rectangle *inst = (Rectangle*)duk_to_pointer(context, 0);
+		std::shared_ptr<Rectangle> *inst = (std::shared_ptr<Rectangle>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
 		Number w = duk_to_number(context, 3);
 		Number h = duk_to_number(context, 4);
-		inst->setRect(x,y,w,h);
+		(*inst)->setRect(x,y,w,h);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Rectangle_Clipped(duk_context *context) {
-		Rectangle *inst = (Rectangle*)duk_to_pointer(context, 0);
-		Rectangle rect = *(Rectangle*)duk_to_pointer(context, 1);
-		Polycode::Rectangle *retInst = new Polycode::Rectangle();
-		*retInst = inst->Clipped(rect);
+		std::shared_ptr<Rectangle> *inst = (std::shared_ptr<Rectangle>*)duk_to_pointer(context, 0);
+		Polycode::Rectangle rect = *(Polycode::Rectangle*)duk_to_pointer(context, 1);
+		std::shared_ptr<Polycode::Rectangle> *retInst = new std::shared_ptr<Polycode::Rectangle>;
+		*(*retInst) = (*inst)->Clipped(rect);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Rectangle_minX(duk_context *context) {
-		Rectangle *inst = (Rectangle*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->minX());
+		std::shared_ptr<Rectangle> *inst = (std::shared_ptr<Rectangle>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->minX());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Rectangle_maxX(duk_context *context) {
-		Rectangle *inst = (Rectangle*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->maxX());
+		std::shared_ptr<Rectangle> *inst = (std::shared_ptr<Rectangle>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->maxX());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Rectangle_minY(duk_context *context) {
-		Rectangle *inst = (Rectangle*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->minY());
+		std::shared_ptr<Rectangle> *inst = (std::shared_ptr<Rectangle>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->minY());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Rectangle_maxY(duk_context *context) {
-		Rectangle *inst = (Rectangle*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->maxY());
+		std::shared_ptr<Rectangle> *inst = (std::shared_ptr<Rectangle>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->maxY());
 		return 1;
 	}
 
 	duk_ret_t Polycode_RenderDataArray(duk_context *context) {
 		int type = duk_to_int(context, 0);
-		RenderDataArray *inst = new RenderDataArray(type);
+		std::shared_ptr<RenderDataArray> *inst = new std::shared_ptr<RenderDataArray>;
+		(*inst) = std::make_shared<RenderDataArray>(type);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_RenderDataArray__get_type(duk_context *context) {
-		RenderDataArray *inst = (RenderDataArray*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->type);
+		std::shared_ptr<RenderDataArray> *inst = (std::shared_ptr<RenderDataArray>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->type);
 		return 1;
 	}
 
@@ -8090,8 +7208,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_RenderDataArray__get_customArrayName(duk_context *context) {
-		RenderDataArray *inst = (RenderDataArray*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->customArrayName.c_str());
+		std::shared_ptr<RenderDataArray> *inst = (std::shared_ptr<RenderDataArray>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->customArrayName.c_str());
 		return 1;
 	}
 
@@ -8102,68 +7220,82 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_RenderDataArray__delete(duk_context *context) {
-		RenderDataArray *inst = (RenderDataArray*)duk_to_pointer(context, 0);
+		std::shared_ptr<RenderDataArray> *inst = (std::shared_ptr<RenderDataArray>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_RenderDataArray_getArrayData(duk_context *context) {
-		RenderDataArray *inst = (RenderDataArray*)duk_to_pointer(context, 0);
-		inst->getArrayData();
-		return 0;
-	}
-
 	duk_ret_t Polycode_RenderDataArray_getDataSize(duk_context *context) {
-		RenderDataArray *inst = (RenderDataArray*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getDataSize());
+		std::shared_ptr<RenderDataArray> *inst = (std::shared_ptr<RenderDataArray>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getDataSize());
 		return 1;
 	}
 
 	duk_ret_t Polycode_LightShadowInfoBinding(duk_context *context) {
-		LightShadowInfoBinding *inst = new LightShadowInfoBinding();
+		std::shared_ptr<LightShadowInfoBinding> *inst = new std::shared_ptr<LightShadowInfoBinding>;
+		(*inst) = std::make_shared<LightShadowInfoBinding>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_LightShadowInfoBinding__delete(duk_context *context) {
-		LightShadowInfoBinding *inst = (LightShadowInfoBinding*)duk_to_pointer(context, 0);
+		std::shared_ptr<LightShadowInfoBinding> *inst = (std::shared_ptr<LightShadowInfoBinding>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_LightInfoBinding(duk_context *context) {
-		LightInfoBinding *inst = new LightInfoBinding();
+		std::shared_ptr<LightInfoBinding> *inst = new std::shared_ptr<LightInfoBinding>;
+		(*inst) = std::make_shared<LightInfoBinding>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_LightInfoBinding__delete(duk_context *context) {
-		LightInfoBinding *inst = (LightInfoBinding*)duk_to_pointer(context, 0);
+		std::shared_ptr<LightInfoBinding> *inst = (std::shared_ptr<LightInfoBinding>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_RenderFrame(duk_context *context) {
-		RenderFrame *inst = new RenderFrame();
+		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 0);
+		std::shared_ptr<RenderFrame> *inst = new std::shared_ptr<RenderFrame>;
+		(*inst) = std::make_shared<RenderFrame>(viewport);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
-	duk_ret_t Polycode_RenderFrame__delete(duk_context *context) {
+	duk_ret_t Polycode_RenderFrame__get_viewport(duk_context *context) {
+		std::shared_ptr<RenderFrame> *inst = (std::shared_ptr<RenderFrame>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Polycode::Rectangle> *retInst = new std::shared_ptr<Polycode::Rectangle>;
+		*retInst = std::make_shared<Polycode::Rectangle>();
+		*(*retInst) = (*inst)->viewport;
+		duk_push_pointer(context, (void*)retInst);
+		return 1;
+	}
+
+	duk_ret_t Polycode_RenderFrame__set_viewport(duk_context *context) {
 		RenderFrame *inst = (RenderFrame*)duk_to_pointer(context, 0);
+		inst->viewport = *(Rectangle*)duk_to_pointer(context, 1);
+		return 0;
+	}
+
+	duk_ret_t Polycode_RenderFrame__delete(duk_context *context) {
+		std::shared_ptr<RenderFrame> *inst = (std::shared_ptr<RenderFrame>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_RendererThreadJob(duk_context *context) {
-		RendererThreadJob *inst = new RendererThreadJob();
+		std::shared_ptr<RendererThreadJob> *inst = new std::shared_ptr<RendererThreadJob>;
+		(*inst) = std::make_shared<RendererThreadJob>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_RendererThreadJob__get_jobType(duk_context *context) {
-		RendererThreadJob *inst = (RendererThreadJob*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->jobType);
+		std::shared_ptr<RendererThreadJob> *inst = (std::shared_ptr<RendererThreadJob>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->jobType);
 		return 1;
 	}
 
@@ -8174,128 +7306,97 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_RendererThreadJob__delete(duk_context *context) {
-		RendererThreadJob *inst = (RendererThreadJob*)duk_to_pointer(context, 0);
+		std::shared_ptr<RendererThreadJob> *inst = (std::shared_ptr<RendererThreadJob>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_RenderThread(duk_context *context) {
-		RenderThread *inst = new RenderThread();
+		std::shared_ptr<RenderThread> *inst = new std::shared_ptr<RenderThread>;
+		(*inst) = std::make_shared<RenderThread>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_RenderThread__delete(duk_context *context) {
-		RenderThread *inst = (RenderThread*)duk_to_pointer(context, 0);
+		std::shared_ptr<RenderThread> *inst = (std::shared_ptr<RenderThread>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_RenderThread_setGraphicsInterface(duk_context *context) {
-		RenderThread *inst = (RenderThread*)duk_to_pointer(context, 0);
-		Core* core = (Core*)duk_to_pointer(context, 1);
-		GraphicsInterface* graphicsInterface = (GraphicsInterface*)duk_to_pointer(context, 2);
-		inst->setGraphicsInterface(core,graphicsInterface);
+	duk_ret_t Polycode_RenderThread_runThread(duk_context *context) {
+		std::shared_ptr<RenderThread> *inst = (std::shared_ptr<RenderThread>*)duk_to_pointer(context, 0);
+		(*inst)->runThread();
 		return 0;
 	}
 
-	duk_ret_t Polycode_RenderThread_runThread(duk_context *context) {
-		RenderThread *inst = (RenderThread*)duk_to_pointer(context, 0);
-		inst->runThread();
+	duk_ret_t Polycode_RenderThread_beginFrame(duk_context *context) {
+		std::shared_ptr<RenderThread> *inst = (std::shared_ptr<RenderThread>*)duk_to_pointer(context, 0);
+		(*inst)->beginFrame();
+		return 0;
+	}
+
+	duk_ret_t Polycode_RenderThread_endFrame(duk_context *context) {
+		std::shared_ptr<RenderThread> *inst = (std::shared_ptr<RenderThread>*)duk_to_pointer(context, 0);
+		(*inst)->endFrame();
 		return 0;
 	}
 
 	duk_ret_t Polycode_RenderThread_updateRenderThread(duk_context *context) {
-		RenderThread *inst = (RenderThread*)duk_to_pointer(context, 0);
-		inst->updateRenderThread();
-		return 0;
-	}
-
-	duk_ret_t Polycode_RenderThread_enqueueFrame(duk_context *context) {
-		RenderThread *inst = (RenderThread*)duk_to_pointer(context, 0);
-		RenderFrame* frame = (RenderFrame*)duk_to_pointer(context, 1);
-		inst->enqueueFrame(frame);
-		return 0;
-	}
-
-	duk_ret_t Polycode_RenderThread_enqueueJob(duk_context *context) {
-		RenderThread *inst = (RenderThread*)duk_to_pointer(context, 0);
-		int jobType = duk_to_int(context, 1);
-		void* data = (void*)duk_to_pointer(context, 2);
-		void* data2 = (void*)duk_to_pointer(context, 3);
-		inst->enqueueJob(jobType,data,data2);
+		std::shared_ptr<RenderThread> *inst = (std::shared_ptr<RenderThread>*)duk_to_pointer(context, 0);
+		(*inst)->updateRenderThread();
 		return 0;
 	}
 
 	duk_ret_t Polycode_RenderThread_processJob(duk_context *context) {
-		RenderThread *inst = (RenderThread*)duk_to_pointer(context, 0);
+		std::shared_ptr<RenderThread> *inst = (std::shared_ptr<RenderThread>*)duk_to_pointer(context, 0);
 		RendererThreadJob job = *(RendererThreadJob*)duk_to_pointer(context, 1);
-		inst->processJob(job);
+		(*inst)->processJob(job);
 		return 0;
 	}
 
 	duk_ret_t Polycode_RenderThread_clearFrameQueue(duk_context *context) {
-		RenderThread *inst = (RenderThread*)duk_to_pointer(context, 0);
-		inst->clearFrameQueue();
-		return 0;
-	}
-
-	duk_ret_t Polycode_RenderThread_getShaderBinding(duk_context *context) {
-		RenderThread *inst = (RenderThread*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getShaderBinding();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_RenderThread_processDrawBufferLights(duk_context *context) {
-		RenderThread *inst = (RenderThread*)duk_to_pointer(context, 0);
-		GPUDrawBuffer* buffer = (GPUDrawBuffer*)duk_to_pointer(context, 1);
-		inst->processDrawBufferLights(buffer);
-		return 0;
-	}
-
-	duk_ret_t Polycode_RenderThread_processDrawBuffer(duk_context *context) {
-		RenderThread *inst = (RenderThread*)duk_to_pointer(context, 0);
-		GPUDrawBuffer* buffer = (GPUDrawBuffer*)duk_to_pointer(context, 1);
-		inst->processDrawBuffer(buffer);
+		std::shared_ptr<RenderThread> *inst = (std::shared_ptr<RenderThread>*)duk_to_pointer(context, 0);
+		(*inst)->clearFrameQueue();
 		return 0;
 	}
 
 	duk_ret_t Polycode_RenderThread_getFrameInfo(duk_context *context) {
-		RenderThread *inst = (RenderThread*)duk_to_pointer(context, 0);
-		RenderThreadDebugInfo *retInst = new RenderThreadDebugInfo();
-		*retInst = inst->getFrameInfo();
+		std::shared_ptr<RenderThread> *inst = (std::shared_ptr<RenderThread>*)duk_to_pointer(context, 0);
+		std::shared_ptr<RenderThreadDebugInfo> *retInst = new std::shared_ptr<RenderThreadDebugInfo>;
+		*(*retInst) = (*inst)->getFrameInfo();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_RenderThread_initGlobals(duk_context *context) {
-		RenderThread *inst = (RenderThread*)duk_to_pointer(context, 0);
-		inst->initGlobals();
+		std::shared_ptr<RenderThread> *inst = (std::shared_ptr<RenderThread>*)duk_to_pointer(context, 0);
+		(*inst)->initGlobals();
 		return 0;
 	}
 
 	duk_ret_t Polycode_RenderThread_lockRenderMutex(duk_context *context) {
-		RenderThread *inst = (RenderThread*)duk_to_pointer(context, 0);
-		inst->lockRenderMutex();
+		std::shared_ptr<RenderThread> *inst = (std::shared_ptr<RenderThread>*)duk_to_pointer(context, 0);
+		(*inst)->lockRenderMutex();
 		return 0;
 	}
 
 	duk_ret_t Polycode_RenderThread_unlockRenderMutex(duk_context *context) {
-		RenderThread *inst = (RenderThread*)duk_to_pointer(context, 0);
-		inst->unlockRenderMutex();
+		std::shared_ptr<RenderThread> *inst = (std::shared_ptr<RenderThread>*)duk_to_pointer(context, 0);
+		(*inst)->unlockRenderMutex();
 		return 0;
 	}
 
 	duk_ret_t Polycode_RenderThreadDebugInfo(duk_context *context) {
-		RenderThreadDebugInfo *inst = new RenderThreadDebugInfo();
+		std::shared_ptr<RenderThreadDebugInfo> *inst = new std::shared_ptr<RenderThreadDebugInfo>;
+		(*inst) = std::make_shared<RenderThreadDebugInfo>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_RenderThreadDebugInfo__get_buffersProcessed(duk_context *context) {
-		RenderThreadDebugInfo *inst = (RenderThreadDebugInfo*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->buffersProcessed);
+		std::shared_ptr<RenderThreadDebugInfo> *inst = (std::shared_ptr<RenderThreadDebugInfo>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->buffersProcessed);
 		return 1;
 	}
 
@@ -8306,8 +7407,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_RenderThreadDebugInfo__get_drawCallsProcessed(duk_context *context) {
-		RenderThreadDebugInfo *inst = (RenderThreadDebugInfo*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->drawCallsProcessed);
+		std::shared_ptr<RenderThreadDebugInfo> *inst = (std::shared_ptr<RenderThreadDebugInfo>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->drawCallsProcessed);
 		return 1;
 	}
 
@@ -8318,8 +7419,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_RenderThreadDebugInfo__get_timeTaken(duk_context *context) {
-		RenderThreadDebugInfo *inst = (RenderThreadDebugInfo*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->timeTaken);
+		std::shared_ptr<RenderThreadDebugInfo> *inst = (std::shared_ptr<RenderThreadDebugInfo>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->timeTaken);
 		return 1;
 	}
 
@@ -8330,120 +7431,47 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_RenderThreadDebugInfo__delete(duk_context *context) {
-		RenderThreadDebugInfo *inst = (RenderThreadDebugInfo*)duk_to_pointer(context, 0);
+		std::shared_ptr<RenderThreadDebugInfo> *inst = (std::shared_ptr<RenderThreadDebugInfo>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Renderer__delete(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
+		std::shared_ptr<Renderer> *inst = (std::shared_ptr<Renderer>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_Renderer_setGraphicsInterface(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		Core* core = (Core*)duk_to_pointer(context, 1);
-		GraphicsInterface* graphicsInterface = (GraphicsInterface*)duk_to_pointer(context, 2);
-		inst->setGraphicsInterface(core,graphicsInterface);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Renderer_getRenderThread(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getRenderThread();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Renderer_processDrawBuffer(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		GPUDrawBuffer* buffer = (GPUDrawBuffer*)duk_to_pointer(context, 1);
-		inst->processDrawBuffer(buffer);
-		return 0;
-	}
-
 	duk_ret_t Polycode_Renderer_setBackingResolutionScale(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
+		std::shared_ptr<Renderer> *inst = (std::shared_ptr<Renderer>*)duk_to_pointer(context, 0);
 		Number xScale = duk_to_number(context, 1);
 		Number yScale = duk_to_number(context, 2);
-		inst->setBackingResolutionScale(xScale,yScale);
+		(*inst)->setBackingResolutionScale(xScale,yScale);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Renderer_getBackingResolutionScaleX(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getBackingResolutionScaleX());
+		std::shared_ptr<Renderer> *inst = (std::shared_ptr<Renderer>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getBackingResolutionScaleX());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Renderer_getBackingResolutionScaleY(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getBackingResolutionScaleY());
+		std::shared_ptr<Renderer> *inst = (std::shared_ptr<Renderer>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getBackingResolutionScaleY());
 		return 1;
 	}
 
-	duk_ret_t Polycode_Renderer_enqueueFrameJob(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		int jobType = duk_to_int(context, 1);
-		void* data = (void*)duk_to_pointer(context, 2);
-		inst->enqueueFrameJob(jobType,data);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Renderer_destroyRenderBufferPlatformData(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		void* platformData = (void*)duk_to_pointer(context, 1);
-		inst->destroyRenderBufferPlatformData(platformData);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Renderer_destroyTexturePlatformData(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		void* platformData = (void*)duk_to_pointer(context, 1);
-		inst->destroyTexturePlatformData(platformData);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Renderer_destroyProgramPlatformData(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		void* platformData = (void*)duk_to_pointer(context, 1);
-		inst->destroyProgramPlatformData(platformData);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Renderer_destroyShaderPlatformData(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		void* platformData = (void*)duk_to_pointer(context, 1);
-		inst->destroyShaderPlatformData(platformData);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Renderer_destroySubmeshPlatformData(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		void* platformData = (void*)duk_to_pointer(context, 1);
-		inst->destroySubmeshPlatformData(platformData);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Renderer_setTextureParam(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		LocalShaderParam* param = (LocalShaderParam*)duk_to_pointer(context, 1);
-		Texture* texture = (Texture*)duk_to_pointer(context, 2);
-		inst->setTextureParam(param,texture);
-		return 0;
-	}
-
 	duk_ret_t Polycode_Renderer_setAnisotropyAmount(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
+		std::shared_ptr<Renderer> *inst = (std::shared_ptr<Renderer>*)duk_to_pointer(context, 0);
 		Number amount = duk_to_number(context, 1);
-		inst->setAnisotropyAmount(amount);
+		(*inst)->setAnisotropyAmount(amount);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Renderer_getAnisotropyAmount(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getAnisotropyAmount());
+		std::shared_ptr<Renderer> *inst = (std::shared_ptr<Renderer>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getAnisotropyAmount());
 		return 1;
 	}
 
@@ -8451,9 +7479,9 @@ namespace Polycode {
 		Vector3 position = *(Vector3*)duk_to_pointer(context, 0);
 		Matrix4 modelMatrix = *(Matrix4*)duk_to_pointer(context, 1);
 		Matrix4 projectionMatrix = *(Matrix4*)duk_to_pointer(context, 2);
-		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 3);
-		Vector3 *retInst = new Vector3();
-		*retInst = Renderer::unProject(position,modelMatrix,projectionMatrix,viewport);
+		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 3);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = Renderer::unProject(position,modelMatrix,projectionMatrix,viewport);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -8462,35 +7490,24 @@ namespace Polycode {
 		Vector3 position = *(Vector3*)duk_to_pointer(context, 0);
 		Matrix4 modelMatrix = *(Matrix4*)duk_to_pointer(context, 1);
 		Matrix4 projectionMatrix = *(Matrix4*)duk_to_pointer(context, 2);
-		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 3);
-		Vector3 *retInst = new Vector3();
-		*retInst = Renderer::project(position,modelMatrix,projectionMatrix,viewport);
+		Polycode::Rectangle viewport = *(Polycode::Rectangle*)duk_to_pointer(context, 3);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = Renderer::project(position,modelMatrix,projectionMatrix,viewport);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
-	duk_ret_t Polycode_Renderer_beginFrame(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		inst->beginFrame();
-		return 0;
-	}
-
-	duk_ret_t Polycode_Renderer_endFrame(duk_context *context) {
-		Renderer *inst = (Renderer*)duk_to_pointer(context, 0);
-		inst->endFrame();
-		return 0;
-	}
-
 	duk_ret_t Polycode_Resource(duk_context *context) {
 		int type = duk_to_int(context, 0);
-		Resource *inst = new Resource(type);
+		std::shared_ptr<Resource> *inst = new std::shared_ptr<Resource>;
+		(*inst) = std::make_shared<Resource>(type);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Resource__get_reloadOnFileModify(duk_context *context) {
-		Resource *inst = (Resource*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->reloadOnFileModify);
+		std::shared_ptr<Resource> *inst = (std::shared_ptr<Resource>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->reloadOnFileModify);
 		return 1;
 	}
 
@@ -8501,9 +7518,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Resource__get_resourceFileTime(duk_context *context) {
-		Resource *inst = (Resource*)duk_to_pointer(context, 0);
-		size_t *retInst = new size_t();
-		*retInst = inst->resourceFileTime;
+		std::shared_ptr<Resource> *inst = (std::shared_ptr<Resource>*)duk_to_pointer(context, 0);
+		std::shared_ptr<size_t> *retInst = new std::shared_ptr<size_t>;
+		*retInst = std::make_shared<size_t>();
+		*(*retInst) = (*inst)->resourceFileTime;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -8515,82 +7533,72 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Resource__delete(duk_context *context) {
-		Resource *inst = (Resource*)duk_to_pointer(context, 0);
+		std::shared_ptr<Resource> *inst = (std::shared_ptr<Resource>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Resource_reloadResource(duk_context *context) {
-		Resource *inst = (Resource*)duk_to_pointer(context, 0);
-		inst->reloadResource();
+		std::shared_ptr<Resource> *inst = (std::shared_ptr<Resource>*)duk_to_pointer(context, 0);
+		(*inst)->reloadResource();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Resource_getResourceName(duk_context *context) {
-		Resource *inst = (Resource*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->getResourceName().c_str());
+		std::shared_ptr<Resource> *inst = (std::shared_ptr<Resource>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->getResourceName().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Resource_getResourceType(duk_context *context) {
-		Resource *inst = (Resource*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getResourceType());
+		std::shared_ptr<Resource> *inst = (std::shared_ptr<Resource>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getResourceType());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Resource_setResourceName(duk_context *context) {
-		Resource *inst = (Resource*)duk_to_pointer(context, 0);
+		std::shared_ptr<Resource> *inst = (std::shared_ptr<Resource>*)duk_to_pointer(context, 0);
 		String newName = duk_to_string(context, 1);
-		inst->setResourceName(newName);
+		(*inst)->setResourceName(newName);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Resource_setResourcePath(duk_context *context) {
-		Resource *inst = (Resource*)duk_to_pointer(context, 0);
+		std::shared_ptr<Resource> *inst = (std::shared_ptr<Resource>*)duk_to_pointer(context, 0);
 		String path = duk_to_string(context, 1);
-		inst->setResourcePath(path);
+		(*inst)->setResourcePath(path);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Resource_getResourcePath(duk_context *context) {
-		Resource *inst = (Resource*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->getResourcePath().c_str());
+		std::shared_ptr<Resource> *inst = (std::shared_ptr<Resource>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->getResourcePath().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_ScriptResourceLoader(duk_context *context) {
-		ScriptResourceLoader *inst = new ScriptResourceLoader();
+		std::shared_ptr<ScriptResourceLoader> *inst = new std::shared_ptr<ScriptResourceLoader>;
+		(*inst) = std::make_shared<ScriptResourceLoader>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ScriptResourceLoader__delete(duk_context *context) {
-		ScriptResourceLoader *inst = (ScriptResourceLoader*)duk_to_pointer(context, 0);
+		std::shared_ptr<ScriptResourceLoader> *inst = (std::shared_ptr<ScriptResourceLoader>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_ScriptResourceLoader_loadResource(duk_context *context) {
-		ScriptResourceLoader *inst = (ScriptResourceLoader*)duk_to_pointer(context, 0);
-		String path = duk_to_string(context, 1);
-		ResourcePool* targetPool = (ResourcePool*)duk_to_pointer(context, 2);
-		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
-		*retInst = inst->loadResource(path,targetPool);
-		duk_push_pointer(context, (void*)retInst);
-		return 1;
-	}
-
 	duk_ret_t Polycode_ResourcePool(duk_context *context) {
-		String name = duk_to_string(context, 0);
-		ResourcePool* fallbackPool = (ResourcePool*)duk_to_pointer(context, 1);
-		ResourcePool *inst = new ResourcePool(name,fallbackPool);
+		std::shared_ptr<ResourcePool> *inst = new std::shared_ptr<ResourcePool>;
+		(*inst) = std::make_shared<ResourcePool>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ResourcePool__get_reloadResourcesOnModify(duk_context *context) {
-		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->reloadResourcesOnModify);
+		std::shared_ptr<ResourcePool> *inst = (std::shared_ptr<ResourcePool>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->reloadResourcesOnModify);
 		return 1;
 	}
 
@@ -8601,8 +7609,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ResourcePool__get_dispatchChangeEvents(duk_context *context) {
-		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->dispatchChangeEvents);
+		std::shared_ptr<ResourcePool> *inst = (std::shared_ptr<ResourcePool>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->dispatchChangeEvents);
 		return 1;
 	}
 
@@ -8613,8 +7621,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ResourcePool__get_resourceSubscribers(duk_context *context) {
-		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->resourceSubscribers);
+		std::shared_ptr<ResourcePool> *inst = (std::shared_ptr<ResourcePool>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->resourceSubscribers);
 		return 1;
 	}
 
@@ -8625,8 +7633,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ResourcePool__get_deleteOnUnsubscribe(duk_context *context) {
-		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->deleteOnUnsubscribe);
+		std::shared_ptr<ResourcePool> *inst = (std::shared_ptr<ResourcePool>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->deleteOnUnsubscribe);
 		return 1;
 	}
 
@@ -8637,298 +7645,202 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ResourcePool__delete(duk_context *context) {
-		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
+		std::shared_ptr<ResourcePool> *inst = (std::shared_ptr<ResourcePool>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_ResourcePool_setFallbackPool(duk_context *context) {
-		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
-		ResourcePool* pool = (ResourcePool*)duk_to_pointer(context, 1);
-		inst->setFallbackPool(pool);
-		return 0;
-	}
-
 	duk_ret_t Polycode_ResourcePool_addResource(duk_context *context) {
-		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
+		std::shared_ptr<ResourcePool> *inst = (std::shared_ptr<ResourcePool>*)duk_to_pointer(context, 0);
 		shared_ptr<Resource> resource = *(shared_ptr<Resource>*)duk_to_pointer(context, 1);
-		inst->addResource(resource);
+		(*inst)->addResource(resource);
 		return 0;
 	}
 
 	duk_ret_t Polycode_ResourcePool_removeResource(duk_context *context) {
-		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
+		std::shared_ptr<ResourcePool> *inst = (std::shared_ptr<ResourcePool>*)duk_to_pointer(context, 0);
 		shared_ptr<Resource> resource = *(shared_ptr<Resource>*)duk_to_pointer(context, 1);
-		inst->removeResource(resource);
+		(*inst)->removeResource(resource);
 		return 0;
 	}
 
 	duk_ret_t Polycode_ResourcePool_hasResource(duk_context *context) {
-		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
+		std::shared_ptr<ResourcePool> *inst = (std::shared_ptr<ResourcePool>*)duk_to_pointer(context, 0);
 		shared_ptr<Resource> resource = *(shared_ptr<Resource>*)duk_to_pointer(context, 1);
-		duk_push_boolean(context, inst->hasResource(resource));
+		duk_push_boolean(context, (*inst)->hasResource(resource));
 		return 1;
 	}
 
 	duk_ret_t Polycode_ResourcePool_loadResourcesFromFolder(duk_context *context) {
-		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
+		std::shared_ptr<ResourcePool> *inst = (std::shared_ptr<ResourcePool>*)duk_to_pointer(context, 0);
 		String folder = duk_to_string(context, 1);
 		bool recursive = duk_to_boolean(context, 2);
-		inst->loadResourcesFromFolder(folder,recursive);
+		(*inst)->loadResourcesFromFolder(folder,recursive);
 		return 0;
 	}
 
 	duk_ret_t Polycode_ResourcePool_loadResourcesFromMaterialFile(duk_context *context) {
-		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
+		std::shared_ptr<ResourcePool> *inst = (std::shared_ptr<ResourcePool>*)duk_to_pointer(context, 0);
 		String path = duk_to_string(context, 1);
-		inst->loadResourcesFromMaterialFile(path);
+		(*inst)->loadResourcesFromMaterialFile(path);
 		return 0;
 	}
 
 	duk_ret_t Polycode_ResourcePool_loadResource(duk_context *context) {
-		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
+		std::shared_ptr<ResourcePool> *inst = (std::shared_ptr<ResourcePool>*)duk_to_pointer(context, 0);
 		String path = duk_to_string(context, 1);
-		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
-		*retInst = inst->loadResource(path);
+		std::shared_ptr<shared_ptr<Resource>> *retInst = new std::shared_ptr<shared_ptr<Resource>>;
+		*(*retInst) = (*inst)->loadResource(path);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ResourcePool_loadResourceWithName(duk_context *context) {
-		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
+		std::shared_ptr<ResourcePool> *inst = (std::shared_ptr<ResourcePool>*)duk_to_pointer(context, 0);
 		String path = duk_to_string(context, 1);
 		String name = duk_to_string(context, 2);
-		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
-		*retInst = inst->loadResourceWithName(path,name);
+		std::shared_ptr<shared_ptr<Resource>> *retInst = new std::shared_ptr<shared_ptr<Resource>>;
+		*(*retInst) = (*inst)->loadResourceWithName(path,name);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ResourcePool_getResource(duk_context *context) {
-		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
+		std::shared_ptr<ResourcePool> *inst = (std::shared_ptr<ResourcePool>*)duk_to_pointer(context, 0);
 		int resourceType = duk_to_int(context, 1);
 		String resourceName = duk_to_string(context, 2);
-		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
-		*retInst = inst->getResource(resourceType,resourceName);
+		std::shared_ptr<shared_ptr<Resource>> *retInst = new std::shared_ptr<shared_ptr<Resource>>;
+		*(*retInst) = (*inst)->getResource(resourceType,resourceName);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ResourcePool_getName(duk_context *context) {
-		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->getName().c_str());
+		std::shared_ptr<ResourcePool> *inst = (std::shared_ptr<ResourcePool>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->getName().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_ResourcePool_setName(duk_context *context) {
-		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
+		std::shared_ptr<ResourcePool> *inst = (std::shared_ptr<ResourcePool>*)duk_to_pointer(context, 0);
 		String name = duk_to_string(context, 1);
-		inst->setName(name);
+		(*inst)->setName(name);
 		return 0;
 	}
 
 	duk_ret_t Polycode_ResourcePool_loadFont(duk_context *context) {
-		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
+		std::shared_ptr<ResourcePool> *inst = (std::shared_ptr<ResourcePool>*)duk_to_pointer(context, 0);
 		String name = duk_to_string(context, 1);
 		String path = duk_to_string(context, 2);
-		shared_ptr<Font> *retInst = new shared_ptr<Font>();
-		*retInst = inst->loadFont(name,path);
+		std::shared_ptr<shared_ptr<Font>> *retInst = new std::shared_ptr<shared_ptr<Font>>;
+		*(*retInst) = (*inst)->loadFont(name,path);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ResourcePool_getResourceByPath(duk_context *context) {
-		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
+		std::shared_ptr<ResourcePool> *inst = (std::shared_ptr<ResourcePool>*)duk_to_pointer(context, 0);
 		String resourcePath = duk_to_string(context, 1);
-		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
-		*retInst = inst->getResourceByPath(resourcePath);
+		std::shared_ptr<shared_ptr<Resource>> *retInst = new std::shared_ptr<shared_ptr<Resource>>;
+		*(*retInst) = (*inst)->getResourceByPath(resourcePath);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ResourcePool_Update(duk_context *context) {
-		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
+		std::shared_ptr<ResourcePool> *inst = (std::shared_ptr<ResourcePool>*)duk_to_pointer(context, 0);
 		int elapsed = duk_to_int(context, 1);
-		inst->Update(elapsed);
+		(*inst)->Update(elapsed);
 		return 0;
 	}
 
 	duk_ret_t Polycode_ResourcePool_getResources(duk_context *context) {
-		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
+		std::shared_ptr<ResourcePool> *inst = (std::shared_ptr<ResourcePool>*)duk_to_pointer(context, 0);
 		int resourceType = duk_to_int(context, 1);
 		return 0;
 	}
 
 	duk_ret_t Polycode_ResourcePool_checkForChangedFiles(duk_context *context) {
-		ResourcePool *inst = (ResourcePool*)duk_to_pointer(context, 0);
-		inst->checkForChangedFiles();
+		std::shared_ptr<ResourcePool> *inst = (std::shared_ptr<ResourcePool>*)duk_to_pointer(context, 0);
+		(*inst)->checkForChangedFiles();
 		return 0;
 	}
 
 	duk_ret_t Polycode_ResourceManager(duk_context *context) {
-		ResourceManager *inst = new ResourceManager();
+		std::shared_ptr<ResourceManager> *inst = new std::shared_ptr<ResourceManager>;
+		(*inst) = std::make_shared<ResourceManager>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ResourceManager__delete(duk_context *context) {
-		ResourceManager *inst = (ResourceManager*)duk_to_pointer(context, 0);
+		std::shared_ptr<ResourceManager> *inst = (std::shared_ptr<ResourceManager>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_ResourceManager_getGlobalPool(duk_context *context) {
-		ResourceManager *inst = (ResourceManager*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getGlobalPool();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_ResourceManager_getResourcePoolByName(duk_context *context) {
-		ResourceManager *inst = (ResourceManager*)duk_to_pointer(context, 0);
-		String name = duk_to_string(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getResourcePoolByName(name);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_ResourceManager_addResourceLoader(duk_context *context) {
-		ResourceManager *inst = (ResourceManager*)duk_to_pointer(context, 0);
-		ResourceLoader* loader = (ResourceLoader*)duk_to_pointer(context, 1);
-		inst->addResourceLoader(loader);
-		return 0;
-	}
-
-	duk_ret_t Polycode_ResourceManager_getResourceLoaderForExtension(duk_context *context) {
-		ResourceManager *inst = (ResourceManager*)duk_to_pointer(context, 0);
-		String extension = duk_to_string(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getResourceLoaderForExtension(extension);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_ResourceManager_removeResourceLoader(duk_context *context) {
-		ResourceManager *inst = (ResourceManager*)duk_to_pointer(context, 0);
-		ResourceLoader* loader = (ResourceLoader*)duk_to_pointer(context, 1);
-		inst->removeResourceLoader(loader);
-		return 0;
-	}
-
 	duk_ret_t Polycode_ResourceManager_getNumResourceLoaders(duk_context *context) {
-		ResourceManager *inst = (ResourceManager*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumResourceLoaders());
+		std::shared_ptr<ResourceManager> *inst = (std::shared_ptr<ResourceManager>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumResourceLoaders());
 		return 1;
-	}
-
-	duk_ret_t Polycode_ResourceManager_getResourceLoaderAtIndex(duk_context *context) {
-		ResourceManager *inst = (ResourceManager*)duk_to_pointer(context, 0);
-		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getResourceLoaderAtIndex(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_ResourceManager_addResourcePool(duk_context *context) {
-		ResourceManager *inst = (ResourceManager*)duk_to_pointer(context, 0);
-		ResourcePool* pool = (ResourcePool*)duk_to_pointer(context, 1);
-		inst->addResourcePool(pool);
-		return 0;
-	}
-
-	duk_ret_t Polycode_ResourceManager_removeResourcePool(duk_context *context) {
-		ResourceManager *inst = (ResourceManager*)duk_to_pointer(context, 0);
-		ResourcePool* pool = (ResourcePool*)duk_to_pointer(context, 1);
-		inst->removeResourcePool(pool);
-		return 0;
 	}
 
 	duk_ret_t Polycode_ResourceManager_getResources(duk_context *context) {
-		ResourceManager *inst = (ResourceManager*)duk_to_pointer(context, 0);
+		std::shared_ptr<ResourceManager> *inst = (std::shared_ptr<ResourceManager>*)duk_to_pointer(context, 0);
 		int resourceType = duk_to_int(context, 1);
 		return 0;
 	}
 
 	duk_ret_t Polycode_ResourceManager_removeResource(duk_context *context) {
-		ResourceManager *inst = (ResourceManager*)duk_to_pointer(context, 0);
+		std::shared_ptr<ResourceManager> *inst = (std::shared_ptr<ResourceManager>*)duk_to_pointer(context, 0);
 		shared_ptr<Resource> resource = *(shared_ptr<Resource>*)duk_to_pointer(context, 1);
-		inst->removeResource(resource);
-		return 0;
-	}
-
-	duk_ret_t Polycode_ResourceManager_subscribeToResourcePool(duk_context *context) {
-		ResourceManager *inst = (ResourceManager*)duk_to_pointer(context, 0);
-		ResourcePool* pool = (ResourcePool*)duk_to_pointer(context, 1);
-		inst->subscribeToResourcePool(pool);
-		return 0;
-	}
-
-	duk_ret_t Polycode_ResourceManager_unsubscibeFromResourcePool(duk_context *context) {
-		ResourceManager *inst = (ResourceManager*)duk_to_pointer(context, 0);
-		ResourcePool* pool = (ResourcePool*)duk_to_pointer(context, 1);
-		inst->unsubscibeFromResourcePool(pool);
+		(*inst)->removeResource(resource);
 		return 0;
 	}
 
 	duk_ret_t Polycode_ResourceManager_Update(duk_context *context) {
-		ResourceManager *inst = (ResourceManager*)duk_to_pointer(context, 0);
+		std::shared_ptr<ResourceManager> *inst = (std::shared_ptr<ResourceManager>*)duk_to_pointer(context, 0);
 		int elapsed = duk_to_int(context, 1);
-		inst->Update(elapsed);
+		(*inst)->Update(elapsed);
 		return 0;
 	}
 
 	duk_ret_t Polycode_FontResourceLoader(duk_context *context) {
-		FontResourceLoader *inst = new FontResourceLoader();
+		std::shared_ptr<FontResourceLoader> *inst = new std::shared_ptr<FontResourceLoader>;
+		(*inst) = std::make_shared<FontResourceLoader>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_FontResourceLoader__delete(duk_context *context) {
-		FontResourceLoader *inst = (FontResourceLoader*)duk_to_pointer(context, 0);
+		std::shared_ptr<FontResourceLoader> *inst = (std::shared_ptr<FontResourceLoader>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_FontResourceLoader_loadResource(duk_context *context) {
-		FontResourceLoader *inst = (FontResourceLoader*)duk_to_pointer(context, 0);
-		String path = duk_to_string(context, 1);
-		ResourcePool* targetPool = (ResourcePool*)duk_to_pointer(context, 2);
-		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
-		*retInst = inst->loadResource(path,targetPool);
-		duk_push_pointer(context, (void*)retInst);
-		return 1;
-	}
-
 	duk_ret_t Polycode_ProgramResourceLoader(duk_context *context) {
-		ProgramResourceLoader *inst = new ProgramResourceLoader();
+		std::shared_ptr<ProgramResourceLoader> *inst = new std::shared_ptr<ProgramResourceLoader>;
+		(*inst) = std::make_shared<ProgramResourceLoader>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ProgramResourceLoader__delete(duk_context *context) {
-		ProgramResourceLoader *inst = (ProgramResourceLoader*)duk_to_pointer(context, 0);
+		std::shared_ptr<ProgramResourceLoader> *inst = (std::shared_ptr<ProgramResourceLoader>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_ProgramResourceLoader_loadResource(duk_context *context) {
-		ProgramResourceLoader *inst = (ProgramResourceLoader*)duk_to_pointer(context, 0);
-		String path = duk_to_string(context, 1);
-		ResourcePool* targetPool = (ResourcePool*)duk_to_pointer(context, 2);
-		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
-		*retInst = inst->loadResource(path,targetPool);
-		duk_push_pointer(context, (void*)retInst);
-		return 1;
-	}
-
 	duk_ret_t Polycode_DebugBackTraceEntry(duk_context *context) {
-		DebugBackTraceEntry *inst = new DebugBackTraceEntry();
+		std::shared_ptr<DebugBackTraceEntry> *inst = new std::shared_ptr<DebugBackTraceEntry>;
+		(*inst) = std::make_shared<DebugBackTraceEntry>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_DebugBackTraceEntry__get_fileName(duk_context *context) {
-		DebugBackTraceEntry *inst = (DebugBackTraceEntry*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->fileName.c_str());
+		std::shared_ptr<DebugBackTraceEntry> *inst = (std::shared_ptr<DebugBackTraceEntry>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->fileName.c_str());
 		return 1;
 	}
 
@@ -8939,8 +7851,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_DebugBackTraceEntry__get_lineNumber(duk_context *context) {
-		DebugBackTraceEntry *inst = (DebugBackTraceEntry*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->lineNumber);
+		std::shared_ptr<DebugBackTraceEntry> *inst = (std::shared_ptr<DebugBackTraceEntry>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->lineNumber);
 		return 1;
 	}
 
@@ -8951,89 +7863,63 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_DebugBackTraceEntry__delete(duk_context *context) {
-		DebugBackTraceEntry *inst = (DebugBackTraceEntry*)duk_to_pointer(context, 0);
+		std::shared_ptr<DebugBackTraceEntry> *inst = (std::shared_ptr<DebugBackTraceEntry>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_MeshResourceLoader(duk_context *context) {
-		MeshResourceLoader *inst = new MeshResourceLoader();
+		std::shared_ptr<MeshResourceLoader> *inst = new std::shared_ptr<MeshResourceLoader>;
+		(*inst) = std::make_shared<MeshResourceLoader>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_MeshResourceLoader__delete(duk_context *context) {
-		MeshResourceLoader *inst = (MeshResourceLoader*)duk_to_pointer(context, 0);
+		std::shared_ptr<MeshResourceLoader> *inst = (std::shared_ptr<MeshResourceLoader>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_MeshResourceLoader_loadResource(duk_context *context) {
-		MeshResourceLoader *inst = (MeshResourceLoader*)duk_to_pointer(context, 0);
-		String path = duk_to_string(context, 1);
-		ResourcePool* targetPool = (ResourcePool*)duk_to_pointer(context, 2);
-		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
-		*retInst = inst->loadResource(path,targetPool);
-		duk_push_pointer(context, (void*)retInst);
-		return 1;
-	}
-
 	duk_ret_t Polycode_MaterialResourceLoader(duk_context *context) {
-		MaterialResourceLoader *inst = new MaterialResourceLoader();
+		std::shared_ptr<MaterialResourceLoader> *inst = new std::shared_ptr<MaterialResourceLoader>;
+		(*inst) = std::make_shared<MaterialResourceLoader>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_MaterialResourceLoader__delete(duk_context *context) {
-		MaterialResourceLoader *inst = (MaterialResourceLoader*)duk_to_pointer(context, 0);
+		std::shared_ptr<MaterialResourceLoader> *inst = (std::shared_ptr<MaterialResourceLoader>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_MaterialResourceLoader_loadResource(duk_context *context) {
-		MaterialResourceLoader *inst = (MaterialResourceLoader*)duk_to_pointer(context, 0);
-		String path = duk_to_string(context, 1);
-		ResourcePool* targetPool = (ResourcePool*)duk_to_pointer(context, 2);
-		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
-		*retInst = inst->loadResource(path,targetPool);
-		duk_push_pointer(context, (void*)retInst);
-		return 1;
-	}
-
 	duk_ret_t Polycode_TextureResourceLoader(duk_context *context) {
-		TextureResourceLoader *inst = new TextureResourceLoader();
+		std::shared_ptr<TextureResourceLoader> *inst = new std::shared_ptr<TextureResourceLoader>;
+		(*inst) = std::make_shared<TextureResourceLoader>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_TextureResourceLoader__delete(duk_context *context) {
-		TextureResourceLoader *inst = (TextureResourceLoader*)duk_to_pointer(context, 0);
+		std::shared_ptr<TextureResourceLoader> *inst = (std::shared_ptr<TextureResourceLoader>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_TextureResourceLoader_loadResource(duk_context *context) {
-		TextureResourceLoader *inst = (TextureResourceLoader*)duk_to_pointer(context, 0);
-		String path = duk_to_string(context, 1);
-		ResourcePool* targetPool = (ResourcePool*)duk_to_pointer(context, 2);
-		shared_ptr<Resource> *retInst = new shared_ptr<Resource>();
-		*retInst = inst->loadResource(path,targetPool);
-		duk_push_pointer(context, (void*)retInst);
-		return 1;
-	}
-
 	duk_ret_t Polycode_Scene(duk_context *context) {
 		int sceneType = duk_to_int(context, 0);
-		bool virtualScene = duk_to_boolean(context, 1);
-		Scene *inst = new Scene(sceneType,virtualScene);
+		std::shared_ptr<Scene> *inst = new std::shared_ptr<Scene>;
+		(*inst) = std::make_shared<Scene>(sceneType);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Scene__get_clearColor(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		Color *retInst = new Color();
-		*retInst = inst->clearColor;
+		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *retInst = new std::shared_ptr<Color>;
+		*retInst = std::make_shared<Color>();
+		*(*retInst) = (*inst)->clearColor;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -9045,8 +7931,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Scene__get_useClearColor(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->useClearColor);
+		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->useClearColor);
 		return 1;
 	}
 
@@ -9057,8 +7943,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Scene__get_useClearDepth(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->useClearDepth);
+		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->useClearDepth);
 		return 1;
 	}
 
@@ -9069,9 +7955,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Scene__get_ambientColor(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		Color *retInst = new Color();
-		*retInst = inst->ambientColor;
+		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *retInst = new std::shared_ptr<Color>;
+		*retInst = std::make_shared<Color>();
+		*(*retInst) = (*inst)->ambientColor;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -9083,9 +7970,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Scene__get_fogColor(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		Color *retInst = new Color();
-		*retInst = inst->fogColor;
+		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *retInst = new std::shared_ptr<Color>;
+		*retInst = std::make_shared<Color>();
+		*(*retInst) = (*inst)->fogColor;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -9097,8 +7985,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Scene__get_enabled(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->enabled);
+		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->enabled);
 		return 1;
 	}
 
@@ -9109,8 +7997,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Scene__get_ownsChildren(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->ownsChildren);
+		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->ownsChildren);
 		return 1;
 	}
 
@@ -9121,9 +8009,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Scene__get_rootEntity(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		Entity *retInst = new Entity();
-		*retInst = inst->rootEntity;
+		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Entity> *retInst = new std::shared_ptr<Entity>;
+		*retInst = std::make_shared<Entity>();
+		*(*retInst) = (*inst)->rootEntity;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -9135,9 +8024,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Scene__get_sceneMouseRect(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		Polycode::Rectangle *retInst = new Polycode::Rectangle();
-		*retInst = inst->sceneMouseRect;
+		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Polycode::Rectangle> *retInst = new std::shared_ptr<Polycode::Rectangle>;
+		*retInst = std::make_shared<Polycode::Rectangle>();
+		*(*retInst) = (*inst)->sceneMouseRect;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -9149,8 +8039,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Scene__get_remapMouse(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->remapMouse);
+		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->remapMouse);
 		return 1;
 	}
 
@@ -9161,8 +8051,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Scene__get_constrainPickingToViewport(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->constrainPickingToViewport);
+		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->constrainPickingToViewport);
 		return 1;
 	}
 
@@ -9173,221 +8063,117 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Scene__delete(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
+		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_Scene_addEntity(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		Entity* entity = (Entity*)duk_to_pointer(context, 1);
-		inst->addEntity(entity);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Scene_addChild(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		Entity* entity = (Entity*)duk_to_pointer(context, 1);
-		inst->addChild(entity);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Scene_removeEntity(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		Entity* entity = (Entity*)duk_to_pointer(context, 1);
-		inst->removeEntity(entity);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Scene_getDefaultCamera(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getDefaultCamera();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Scene_getActiveCamera(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getActiveCamera();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Scene_setActiveCamera(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		Camera* camera = (Camera*)duk_to_pointer(context, 1);
-		inst->setActiveCamera(camera);
-		return 0;
-	}
-
 	duk_ret_t Polycode_Scene_enableFog(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
+		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
 		bool enable = duk_to_boolean(context, 1);
-		inst->enableFog(enable);
+		(*inst)->enableFog(enable);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Scene_setFogProperties(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
+		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
 		int fogMode = duk_to_int(context, 1);
 		Color color = *(Color*)duk_to_pointer(context, 2);
 		Number density = duk_to_number(context, 3);
 		Number startDepth = duk_to_number(context, 4);
 		Number endDepth = duk_to_number(context, 5);
-		inst->setFogProperties(fogMode,color,density,startDepth,endDepth);
+		(*inst)->setFogProperties(fogMode,color,density,startDepth,endDepth);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Scene_setSceneType(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
+		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
 		int newType = duk_to_int(context, 1);
-		inst->setSceneType(newType);
+		(*inst)->setSceneType(newType);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Scene_fixedUpdate(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		inst->fixedUpdate();
+		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
+		(*inst)->fixedUpdate();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Scene_Update(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		inst->Update();
+		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
+		(*inst)->Update();
 		return 0;
-	}
-
-	duk_ret_t Polycode_Scene_setVirtual(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		bool val = duk_to_boolean(context, 1);
-		inst->setVirtual(val);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Scene_isVirtual(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->isVirtual());
-		return 1;
 	}
 
 	duk_ret_t Polycode_Scene_isEnabled(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->isEnabled());
+		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->isEnabled());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Scene_setEnabled(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
+		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
 		bool enabled = duk_to_boolean(context, 1);
-		inst->setEnabled(enabled);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Scene_Render(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		Camera* targetCamera = (Camera*)duk_to_pointer(context, 1);
-		shared_ptr<RenderBuffer> targetFramebuffer = *(shared_ptr<RenderBuffer>*)duk_to_pointer(context, 2);
-		shared_ptr<Material> overrideMaterial = *(shared_ptr<Material>*)duk_to_pointer(context, 3);
-		bool sendLights = duk_to_boolean(context, 4);
-		inst->Render(targetCamera,targetFramebuffer,overrideMaterial,sendLights);
+		(*inst)->setEnabled(enabled);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Scene_setOverrideMaterial(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
+		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
 		shared_ptr<Material> material = *(shared_ptr<Material>*)duk_to_pointer(context, 1);
-		inst->setOverrideMaterial(material);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Scene_projectRayFromCameraAndViewportCoordinate(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		Camera* camera = (Camera*)duk_to_pointer(context, 1);
-		Vector2 coordinate = *(Vector2*)duk_to_pointer(context, 2);
-		Ray *retInst = new Ray();
-		*retInst = inst->projectRayFromCameraAndViewportCoordinate(camera,coordinate);
-		duk_push_pointer(context, (void*)retInst);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Scene_addLight(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		SceneLight* light = (SceneLight*)duk_to_pointer(context, 1);
-		inst->addLight(light);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Scene_removeLight(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		SceneLight* light = (SceneLight*)duk_to_pointer(context, 1);
-		inst->removeLight(light);
+		(*inst)->setOverrideMaterial(material);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Scene_getNumLights(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumLights());
-		return 1;
-	}
-
-	duk_ret_t Polycode_Scene_getLight(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getLight(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumLights());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Scene_doVisibilityChecking(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
+		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
 		bool val = duk_to_boolean(context, 1);
-		inst->doVisibilityChecking(val);
+		(*inst)->doVisibilityChecking(val);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Scene_doesVisibilityChecking(duk_context *context) {
-		Scene *inst = (Scene*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->doesVisibilityChecking());
+		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->doesVisibilityChecking());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneEntityInstanceResourceEntry(duk_context *context) {
-		SceneEntityInstance* instance = (SceneEntityInstance*)duk_to_pointer(context, 0);
-		SceneEntityInstanceResourceEntry *inst = new SceneEntityInstanceResourceEntry(instance);
+		std::shared_ptr<SceneEntityInstanceResourceEntry> *inst = new std::shared_ptr<SceneEntityInstanceResourceEntry>;
+		(*inst) = std::make_shared<SceneEntityInstanceResourceEntry>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneEntityInstanceResourceEntry__delete(duk_context *context) {
-		SceneEntityInstanceResourceEntry *inst = (SceneEntityInstanceResourceEntry*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneEntityInstanceResourceEntry> *inst = (std::shared_ptr<SceneEntityInstanceResourceEntry>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_SceneEntityInstanceResourceEntry_getInstance(duk_context *context) {
-		SceneEntityInstanceResourceEntry *inst = (SceneEntityInstanceResourceEntry*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getInstance();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
 	duk_ret_t Polycode_SceneEntityInstanceResourceEntry_reloadResource(duk_context *context) {
-		SceneEntityInstanceResourceEntry *inst = (SceneEntityInstanceResourceEntry*)duk_to_pointer(context, 0);
-		inst->reloadResource();
+		std::shared_ptr<SceneEntityInstanceResourceEntry> *inst = (std::shared_ptr<SceneEntityInstanceResourceEntry>*)duk_to_pointer(context, 0);
+		(*inst)->reloadResource();
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneEntityInstance(duk_context *context) {
-		Scene* parentScene = (Scene*)duk_to_pointer(context, 0);
-		String fileName = duk_to_string(context, 1);
-		SceneEntityInstance *inst = new SceneEntityInstance(parentScene,fileName);
+		String fileName = duk_to_string(context, 0);
+		std::shared_ptr<SceneEntityInstance> *inst = new std::shared_ptr<SceneEntityInstance>;
+		(*inst) = std::make_shared<SceneEntityInstance>(fileName);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneEntityInstance__get_cloneUsingReload(duk_context *context) {
-		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->cloneUsingReload);
+		std::shared_ptr<SceneEntityInstance> *inst = (std::shared_ptr<SceneEntityInstance>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->cloneUsingReload);
 		return 1;
 	}
 
@@ -9398,8 +8184,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneEntityInstance__get_fileName(duk_context *context) {
-		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->fileName.c_str());
+		std::shared_ptr<SceneEntityInstance> *inst = (std::shared_ptr<SceneEntityInstance>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->fileName.c_str());
 		return 1;
 	}
 
@@ -9410,177 +8196,73 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneEntityInstance__delete(duk_context *context) {
-		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneEntityInstance> *inst = (std::shared_ptr<SceneEntityInstance>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_SceneEntityInstance_BlankSceneEntityInstance(duk_context *context) {
-		Scene* parentScene = (Scene*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)SceneEntityInstance::BlankSceneEntityInstance(parentScene);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneEntityInstance_Clone(duk_context *context) {
-		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
-		bool deepClone = duk_to_boolean(context, 1);
-		bool ignoreEditorOnly = duk_to_boolean(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->Clone(deepClone,ignoreEditorOnly);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneEntityInstance_applyClone(duk_context *context) {
-		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
-		Entity* clone = (Entity*)duk_to_pointer(context, 1);
-		bool deepClone = duk_to_boolean(context, 2);
-		bool ignoreEditorOnly = duk_to_boolean(context, 3);
-		inst->applyClone(clone,deepClone,ignoreEditorOnly);
-		return 0;
-	}
-
 	duk_ret_t Polycode_SceneEntityInstance_reloadEntityInstance(duk_context *context) {
-		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
-		inst->reloadEntityInstance();
+		std::shared_ptr<SceneEntityInstance> *inst = (std::shared_ptr<SceneEntityInstance>*)duk_to_pointer(context, 0);
+		(*inst)->reloadEntityInstance();
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneEntityInstance_clearInstance(duk_context *context) {
-		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
-		inst->clearInstance();
+		std::shared_ptr<SceneEntityInstance> *inst = (std::shared_ptr<SceneEntityInstance>*)duk_to_pointer(context, 0);
+		(*inst)->clearInstance();
 		return 0;
-	}
-
-	duk_ret_t Polycode_SceneEntityInstance_parseObjectIntoCurve(duk_context *context) {
-		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
-		ObjectEntry* entry = (ObjectEntry*)duk_to_pointer(context, 1);
-		BezierCurve* curve = (BezierCurve*)duk_to_pointer(context, 2);
-		inst->parseObjectIntoCurve(entry,curve);
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneEntityInstance_loadObjectEntryIntoEntity(duk_context *context) {
-		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
-		ObjectEntry* entry = (ObjectEntry*)duk_to_pointer(context, 1);
-		Entity* targetEntity = (Entity*)duk_to_pointer(context, 2);
-		int entityFileVersion = duk_to_int(context, 3);
-		PolyBase *ptrRetVal = (PolyBase*)inst->loadObjectEntryIntoEntity(entry,targetEntity,entityFileVersion);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
 	}
 
 	duk_ret_t Polycode_SceneEntityInstance_loadFromFile(duk_context *context) {
-		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneEntityInstance> *inst = (std::shared_ptr<SceneEntityInstance>*)duk_to_pointer(context, 0);
 		String fileName = duk_to_string(context, 1);
-		duk_push_boolean(context, inst->loadFromFile(fileName));
+		duk_push_boolean(context, (*inst)->loadFromFile(fileName));
 		return 1;
-	}
-
-	duk_ret_t Polycode_SceneEntityInstance_applySceneMesh(duk_context *context) {
-		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
-		ObjectEntry* entry = (ObjectEntry*)duk_to_pointer(context, 1);
-		SceneMesh* sceneMesh = (SceneMesh*)duk_to_pointer(context, 2);
-		inst->applySceneMesh(entry,sceneMesh);
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneEntityInstance_linkResourcePool(duk_context *context) {
-		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
-		ResourcePool* pool = (ResourcePool*)duk_to_pointer(context, 1);
-		inst->linkResourcePool(pool);
-		return 0;
 	}
 
 	duk_ret_t Polycode_SceneEntityInstance_getNumLinkedResourePools(duk_context *context) {
-		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumLinkedResourePools());
+		std::shared_ptr<SceneEntityInstance> *inst = (std::shared_ptr<SceneEntityInstance>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumLinkedResourePools());
 		return 1;
-	}
-
-	duk_ret_t Polycode_SceneEntityInstance_getLinkedResourcePoolAtIndex(duk_context *context) {
-		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
-		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getLinkedResourcePoolAtIndex(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneEntityInstance_unlinkResourcePool(duk_context *context) {
-		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
-		ResourcePool* pool = (ResourcePool*)duk_to_pointer(context, 1);
-		inst->unlinkResourcePool(pool);
-		return 0;
 	}
 
 	duk_ret_t Polycode_SceneEntityInstance_getResourceEntry(duk_context *context) {
-		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
-		shared_ptr<SceneEntityInstanceResourceEntry> *retInst = new shared_ptr<SceneEntityInstanceResourceEntry>();
-		*retInst = inst->getResourceEntry();
+		std::shared_ptr<SceneEntityInstance> *inst = (std::shared_ptr<SceneEntityInstance>*)duk_to_pointer(context, 0);
+		std::shared_ptr<shared_ptr<SceneEntityInstanceResourceEntry>> *retInst = new std::shared_ptr<shared_ptr<SceneEntityInstanceResourceEntry>>;
+		*(*retInst) = (*inst)->getResourceEntry();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
-	duk_ret_t Polycode_SceneEntityInstance_getTopLevelResourcePool(duk_context *context) {
-		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getTopLevelResourcePool();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
 	duk_ret_t Polycode_SceneEntityInstance_hasLayerID(duk_context *context) {
-		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneEntityInstance> *inst = (std::shared_ptr<SceneEntityInstance>*)duk_to_pointer(context, 0);
 		char layerID = *(char*)duk_to_pointer(context, 1);
-		duk_push_boolean(context, inst->hasLayerID(layerID));
+		duk_push_boolean(context, (*inst)->hasLayerID(layerID));
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneEntityInstance_getNumLayers(duk_context *context) {
-		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumLayers());
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneEntityInstance_getLayerAtIndex(duk_context *context) {
-		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
-		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getLayerAtIndex(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneEntityInstance_removeLayer(duk_context *context) {
-		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
-		SceneEntityInstanceLayer* layer = (SceneEntityInstanceLayer*)duk_to_pointer(context, 1);
-		inst->removeLayer(layer);
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneEntityInstance_createNewLayer(duk_context *context) {
-		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
-		String name = duk_to_string(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->createNewLayer(name);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		std::shared_ptr<SceneEntityInstance> *inst = (std::shared_ptr<SceneEntityInstance>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumLayers());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneEntityInstance_getFileName(duk_context *context) {
-		SceneEntityInstance *inst = (SceneEntityInstance*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->getFileName().c_str());
+		std::shared_ptr<SceneEntityInstance> *inst = (std::shared_ptr<SceneEntityInstance>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->getFileName().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneEntityInstanceLayer(duk_context *context) {
-		SceneEntityInstance* instance = (SceneEntityInstance*)duk_to_pointer(context, 0);
-		String name = duk_to_string(context, 1);
-		SceneEntityInstanceLayer *inst = new SceneEntityInstanceLayer(instance,name);
+		std::shared_ptr<SceneEntityInstanceLayer> *inst = new std::shared_ptr<SceneEntityInstanceLayer>;
+		(*inst) = std::make_shared<SceneEntityInstanceLayer>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneEntityInstanceLayer__get_name(duk_context *context) {
-		SceneEntityInstanceLayer *inst = (SceneEntityInstanceLayer*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->name.c_str());
+		std::shared_ptr<SceneEntityInstanceLayer> *inst = (std::shared_ptr<SceneEntityInstanceLayer>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->name.c_str());
 		return 1;
 	}
 
@@ -9591,9 +8273,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneEntityInstanceLayer__get_layerID(duk_context *context) {
-		SceneEntityInstanceLayer *inst = (SceneEntityInstanceLayer*)duk_to_pointer(context, 0);
-		char *retInst = new char();
-		*retInst = inst->layerID;
+		std::shared_ptr<SceneEntityInstanceLayer> *inst = (std::shared_ptr<SceneEntityInstanceLayer>*)duk_to_pointer(context, 0);
+		std::shared_ptr<char> *retInst = new std::shared_ptr<char>;
+		*retInst = std::make_shared<char>();
+		*(*retInst) = (*inst)->layerID;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -9605,8 +8288,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneEntityInstanceLayer__get_visible(duk_context *context) {
-		SceneEntityInstanceLayer *inst = (SceneEntityInstanceLayer*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->visible);
+		std::shared_ptr<SceneEntityInstanceLayer> *inst = (std::shared_ptr<SceneEntityInstanceLayer>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->visible);
 		return 1;
 	}
 
@@ -9616,29 +8299,16 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_SceneEntityInstanceLayer__get_instance(duk_context *context) {
-		SceneEntityInstanceLayer *inst = (SceneEntityInstanceLayer*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->instance;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneEntityInstanceLayer__set_instance(duk_context *context) {
-		SceneEntityInstanceLayer *inst = (SceneEntityInstanceLayer*)duk_to_pointer(context, 0);
-		inst->instance = (SceneEntityInstance*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_SceneEntityInstanceLayer__delete(duk_context *context) {
-		SceneEntityInstanceLayer *inst = (SceneEntityInstanceLayer*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneEntityInstanceLayer> *inst = (std::shared_ptr<SceneEntityInstanceLayer>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneEntityInstanceLayer_setLayerVisibility(duk_context *context) {
-		SceneEntityInstanceLayer *inst = (SceneEntityInstanceLayer*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneEntityInstanceLayer> *inst = (std::shared_ptr<SceneEntityInstanceLayer>*)duk_to_pointer(context, 0);
 		bool val = duk_to_boolean(context, 1);
-		inst->setLayerVisibility(val);
+		(*inst)->setLayerVisibility(val);
 		return 0;
 	}
 
@@ -9648,14 +8318,15 @@ namespace Polycode {
 		String fontName = duk_to_string(context, 2);
 		int amode = duk_to_int(context, 3);
 		Number actualHeight = duk_to_number(context, 4);
-		SceneLabel *inst = new SceneLabel(text,size,fontName,amode,actualHeight);
+		std::shared_ptr<SceneLabel> *inst = new std::shared_ptr<SceneLabel>;
+		(*inst) = std::make_shared<SceneLabel>(text,size,fontName,amode,actualHeight);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneLabel__get_positionAtBaseline(duk_context *context) {
-		SceneLabel *inst = (SceneLabel*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->positionAtBaseline);
+		std::shared_ptr<SceneLabel> *inst = (std::shared_ptr<SceneLabel>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->positionAtBaseline);
 		return 1;
 	}
 
@@ -9666,326 +8337,249 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneLabel__delete(duk_context *context) {
-		SceneLabel *inst = (SceneLabel*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneLabel> *inst = (std::shared_ptr<SceneLabel>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneLabel_getText(duk_context *context) {
-		SceneLabel *inst = (SceneLabel*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->getText().c_str());
+		std::shared_ptr<SceneLabel> *inst = (std::shared_ptr<SceneLabel>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->getText().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneLabel_setLabelActualHeight(duk_context *context) {
-		SceneLabel *inst = (SceneLabel*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneLabel> *inst = (std::shared_ptr<SceneLabel>*)duk_to_pointer(context, 0);
 		Number actualHeight = duk_to_number(context, 1);
-		inst->setLabelActualHeight(actualHeight);
+		(*inst)->setLabelActualHeight(actualHeight);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneLabel_getLabelActualHeight(duk_context *context) {
-		SceneLabel *inst = (SceneLabel*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getLabelActualHeight());
+		std::shared_ptr<SceneLabel> *inst = (std::shared_ptr<SceneLabel>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getLabelActualHeight());
 		return 1;
 	}
 
-	duk_ret_t Polycode_SceneLabel_Render(duk_context *context) {
-		SceneLabel *inst = (SceneLabel*)duk_to_pointer(context, 0);
-		GPUDrawBuffer* buffer = (GPUDrawBuffer*)duk_to_pointer(context, 1);
-		inst->Render(buffer);
-		return 0;
-	}
-
 	duk_ret_t Polycode_SceneLabel_getTextWidthForString(duk_context *context) {
-		SceneLabel *inst = (SceneLabel*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneLabel> *inst = (std::shared_ptr<SceneLabel>*)duk_to_pointer(context, 0);
 		String text = duk_to_string(context, 1);
-		duk_push_int(context, inst->getTextWidthForString(text));
+		duk_push_int(context, (*inst)->getTextWidthForString(text));
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneLabel_setText(duk_context *context) {
-		SceneLabel *inst = (SceneLabel*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneLabel> *inst = (std::shared_ptr<SceneLabel>*)duk_to_pointer(context, 0);
 		String newText = duk_to_string(context, 1);
-		inst->setText(newText);
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneLabel_Clone(duk_context *context) {
-		SceneLabel *inst = (SceneLabel*)duk_to_pointer(context, 0);
-		bool deepClone = duk_to_boolean(context, 1);
-		bool ignoreEditorOnly = duk_to_boolean(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->Clone(deepClone,ignoreEditorOnly);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneLabel_applyClone(duk_context *context) {
-		SceneLabel *inst = (SceneLabel*)duk_to_pointer(context, 0);
-		Entity* clone = (Entity*)duk_to_pointer(context, 1);
-		bool deepClone = duk_to_boolean(context, 2);
-		bool ignoreEditorOnly = duk_to_boolean(context, 3);
-		inst->applyClone(clone,deepClone,ignoreEditorOnly);
+		(*inst)->setText(newText);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneLabel_updateFromLabel(duk_context *context) {
-		SceneLabel *inst = (SceneLabel*)duk_to_pointer(context, 0);
-		inst->updateFromLabel();
+		std::shared_ptr<SceneLabel> *inst = (std::shared_ptr<SceneLabel>*)duk_to_pointer(context, 0);
+		(*inst)->updateFromLabel();
 		return 0;
-	}
-
-	duk_ret_t Polycode_SceneLabel_getLabel(duk_context *context) {
-		SceneLabel *inst = (SceneLabel*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getLabel();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
 	}
 
 	duk_ret_t Polycode_SceneLight(duk_context *context) {
 		int type = duk_to_int(context, 0);
-		Scene* parentScene = (Scene*)duk_to_pointer(context, 1);
-		Number intensity = duk_to_number(context, 2);
-		Number constantAttenuation = duk_to_number(context, 3);
-		Number linearAttenuation = duk_to_number(context, 4);
-		Number quadraticAttenuation = duk_to_number(context, 5);
-		SceneLight *inst = new SceneLight(type,parentScene,intensity,constantAttenuation,linearAttenuation,quadraticAttenuation);
+		Number intensity = duk_to_number(context, 1);
+		Number constantAttenuation = duk_to_number(context, 2);
+		Number linearAttenuation = duk_to_number(context, 3);
+		Number quadraticAttenuation = duk_to_number(context, 4);
+		std::shared_ptr<SceneLight> *inst = new std::shared_ptr<SceneLight>;
+		(*inst) = std::make_shared<SceneLight>(type,intensity,constantAttenuation,linearAttenuation,quadraticAttenuation);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneLight__delete(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneLight_getIntensity(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getIntensity());
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getIntensity());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneLight_setIntensity(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
 		Number newIntensity = duk_to_number(context, 1);
-		inst->setIntensity(newIntensity);
+		(*inst)->setIntensity(newIntensity);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneLight_setAttenuation(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
 		Number constantAttenuation = duk_to_number(context, 1);
 		Number linearAttenuation = duk_to_number(context, 2);
 		Number quadraticAttenuation = duk_to_number(context, 3);
-		inst->setAttenuation(constantAttenuation,linearAttenuation,quadraticAttenuation);
+		(*inst)->setAttenuation(constantAttenuation,linearAttenuation,quadraticAttenuation);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneLight_getConstantAttenuation(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getConstantAttenuation());
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getConstantAttenuation());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneLight_getLinearAttenuation(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getLinearAttenuation());
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getLinearAttenuation());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneLight_getQuadraticAttenuation(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getQuadraticAttenuation());
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getQuadraticAttenuation());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneLight_getType(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getType());
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getType());
 		return 1;
 	}
 
-	duk_ret_t Polycode_SceneLight_renderDepthMap(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
-		Scene* scene = (Scene*)duk_to_pointer(context, 1);
-		inst->renderDepthMap(scene);
-		return 0;
-	}
-
 	duk_ret_t Polycode_SceneLight_getZBufferTexture(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
-		shared_ptr<Texture> *retInst = new shared_ptr<Texture>();
-		*retInst = inst->getZBufferTexture();
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
+		std::shared_ptr<shared_ptr<Texture>> *retInst = new std::shared_ptr<shared_ptr<Texture>>;
+		*(*retInst) = (*inst)->getZBufferTexture();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneLight_setSpecularLightColor(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
 		Number r = duk_to_number(context, 1);
 		Number g = duk_to_number(context, 2);
 		Number b = duk_to_number(context, 3);
 		Number a = duk_to_number(context, 4);
-		inst->setSpecularLightColor(r,g,b,a);
+		(*inst)->setSpecularLightColor(r,g,b,a);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneLight_setDiffuseLightColor(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
 		Number r = duk_to_number(context, 1);
 		Number g = duk_to_number(context, 2);
 		Number b = duk_to_number(context, 3);
 		Number a = duk_to_number(context, 4);
-		inst->setDiffuseLightColor(r,g,b,a);
+		(*inst)->setDiffuseLightColor(r,g,b,a);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneLight_setLightColor(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
 		Number r = duk_to_number(context, 1);
 		Number g = duk_to_number(context, 2);
 		Number b = duk_to_number(context, 3);
 		Number a = duk_to_number(context, 4);
-		inst->setLightColor(r,g,b,a);
+		(*inst)->setLightColor(r,g,b,a);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneLight_setSpotlightProperties(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
 		Number spotlightCutoff = duk_to_number(context, 1);
 		Number spotlightExponent = duk_to_number(context, 2);
-		inst->setSpotlightProperties(spotlightCutoff,spotlightExponent);
+		(*inst)->setSpotlightProperties(spotlightCutoff,spotlightExponent);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneLight_getSpotlightCutoff(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getSpotlightCutoff());
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getSpotlightCutoff());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneLight_getSpotlightExponent(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getSpotlightExponent());
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getSpotlightExponent());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneLight_enableShadows(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
 		bool val = duk_to_boolean(context, 1);
 		int resolution = duk_to_int(context, 2);
-		inst->enableShadows(val,resolution);
+		(*inst)->enableShadows(val,resolution);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneLight_setShadowMapFOV(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
 		Number fov = duk_to_number(context, 1);
-		inst->setShadowMapFOV(fov);
+		(*inst)->setShadowMapFOV(fov);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneLight_getShadowMapFOV(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getShadowMapFOV());
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getShadowMapFOV());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneLight_getShadowMapResolution(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getShadowMapResolution());
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getShadowMapResolution());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneLight_areShadowsEnabled(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->areShadowsEnabled());
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->areShadowsEnabled());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneLight_getLightType(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getLightType());
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getLightType());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneLight_setLightImportance(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
 		int newImportance = duk_to_int(context, 1);
-		inst->setLightImportance(newImportance);
+		(*inst)->setLightImportance(newImportance);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneLight_getLightImportance(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getLightImportance());
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getLightImportance());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneLight_setLightType(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
 		int lightType = duk_to_int(context, 1);
-		inst->setLightType(lightType);
+		(*inst)->setLightType(lightType);
 		return 0;
-	}
-
-	duk_ret_t Polycode_SceneLight_Clone(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
-		bool deepClone = duk_to_boolean(context, 1);
-		bool ignoreEditorOnly = duk_to_boolean(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->Clone(deepClone,ignoreEditorOnly);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneLight_applyClone(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
-		Entity* clone = (Entity*)duk_to_pointer(context, 1);
-		bool deepClone = duk_to_boolean(context, 2);
-		bool ignoreEditorOnly = duk_to_boolean(context, 3);
-		inst->applyClone(clone,deepClone,ignoreEditorOnly);
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneLight_getParentScene(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getParentScene();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneLight_setParentScene(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
-		Scene* scene = (Scene*)duk_to_pointer(context, 1);
-		inst->setParentScene(scene);
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneLight_getSpotlightCamera(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getSpotlightCamera();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
 	}
 
 	duk_ret_t Polycode_SceneLight_getLightInfo(duk_context *context) {
-		SceneLight *inst = (SceneLight*)duk_to_pointer(context, 0);
-		LightInfo *retInst = new LightInfo();
-		*retInst = inst->getLightInfo();
+		std::shared_ptr<SceneLight> *inst = (std::shared_ptr<SceneLight>*)duk_to_pointer(context, 0);
+		std::shared_ptr<LightInfo> *retInst = new std::shared_ptr<LightInfo>;
+		*(*retInst) = (*inst)->getLightInfo();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneCurve(duk_context *context) {
-		SceneCurve *inst = new SceneCurve();
+		std::shared_ptr<SceneCurve> *inst = new std::shared_ptr<SceneCurve>;
+		(*inst) = std::make_shared<SceneCurve>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneCurve__get_renderCurve(duk_context *context) {
-		SceneCurve *inst = (SceneCurve*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->renderCurve);
+		std::shared_ptr<SceneCurve> *inst = (std::shared_ptr<SceneCurve>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->renderCurve);
 		return 1;
 	}
 
@@ -9996,8 +8590,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneCurve__get_curveResolution(duk_context *context) {
-		SceneCurve *inst = (SceneCurve*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->curveResolution);
+		std::shared_ptr<SceneCurve> *inst = (std::shared_ptr<SceneCurve>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->curveResolution);
 		return 1;
 	}
 
@@ -10008,182 +8602,72 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneCurve__delete(duk_context *context) {
-		SceneCurve *inst = (SceneCurve*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneCurve> *inst = (std::shared_ptr<SceneCurve>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_SceneCurve_SceneCurveWithCurve(duk_context *context) {
-		BezierCurve* curve = (BezierCurve*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)SceneCurve::SceneCurveWithCurve(curve);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
 	duk_ret_t Polycode_SceneCurve_getWorldPointAt(duk_context *context) {
-		SceneCurve *inst = (SceneCurve*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneCurve> *inst = (std::shared_ptr<SceneCurve>*)duk_to_pointer(context, 0);
 		Number t = duk_to_number(context, 1);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->getWorldPointAt(t);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->getWorldPointAt(t);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneCurve_Update(duk_context *context) {
-		SceneCurve *inst = (SceneCurve*)duk_to_pointer(context, 0);
-		inst->Update();
+		std::shared_ptr<SceneCurve> *inst = (std::shared_ptr<SceneCurve>*)duk_to_pointer(context, 0);
+		(*inst)->Update();
 		return 0;
-	}
-
-	duk_ret_t Polycode_SceneCurve_Clone(duk_context *context) {
-		SceneCurve *inst = (SceneCurve*)duk_to_pointer(context, 0);
-		bool deepClone = duk_to_boolean(context, 1);
-		bool ignoreEditorOnly = duk_to_boolean(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->Clone(deepClone,ignoreEditorOnly);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneCurve_applyClone(duk_context *context) {
-		SceneCurve *inst = (SceneCurve*)duk_to_pointer(context, 0);
-		Entity* clone = (Entity*)duk_to_pointer(context, 1);
-		bool deepClone = duk_to_boolean(context, 2);
-		bool ignoreEditorOnly = duk_to_boolean(context, 3);
-		inst->applyClone(clone,deepClone,ignoreEditorOnly);
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneCurve_getCurve(duk_context *context) {
-		SceneCurve *inst = (SceneCurve*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getCurve();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
 	}
 
 	duk_ret_t Polycode_SceneLine(duk_context *context) {
-		Entity* ent1 = (Entity*)duk_to_pointer(context, 0);
-		Entity* ent2 = (Entity*)duk_to_pointer(context, 1);
-		SceneLine *inst = new SceneLine(ent1,ent2);
+		Vector3 startp = *(Vector3*)duk_to_pointer(context, 0);
+		Vector3 endp = *(Vector3*)duk_to_pointer(context, 1);
+		std::shared_ptr<SceneLine> *inst = new std::shared_ptr<SceneLine>;
+		(*inst) = std::make_shared<SceneLine>(startp,endp);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneLine__delete(duk_context *context) {
-		SceneLine *inst = (SceneLine*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneLine> *inst = (std::shared_ptr<SceneLine>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_SceneLine_SceneLineWithPositions(duk_context *context) {
-		Vector3 startp = *(Vector3*)duk_to_pointer(context, 0);
-		Vector3 endp = *(Vector3*)duk_to_pointer(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)SceneLine::SceneLineWithPositions(startp,endp);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
 	duk_ret_t Polycode_SceneLine_setStart(duk_context *context) {
-		SceneLine *inst = (SceneLine*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneLine> *inst = (std::shared_ptr<SceneLine>*)duk_to_pointer(context, 0);
 		Vector3 startp = *(Vector3*)duk_to_pointer(context, 1);
-		inst->setStart(startp);
+		(*inst)->setStart(startp);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneLine_setEnd(duk_context *context) {
-		SceneLine *inst = (SceneLine*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneLine> *inst = (std::shared_ptr<SceneLine>*)duk_to_pointer(context, 0);
 		Vector3 endp = *(Vector3*)duk_to_pointer(context, 1);
-		inst->setEnd(endp);
+		(*inst)->setEnd(endp);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneLine_Update(duk_context *context) {
-		SceneLine *inst = (SceneLine*)duk_to_pointer(context, 0);
-		inst->Update();
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneManager(duk_context *context) {
-		SceneManager *inst = new SceneManager();
-		duk_push_pointer(context, (void*)inst);
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneManager__delete(duk_context *context) {
-		SceneManager *inst = (SceneManager*)duk_to_pointer(context, 0);
-		delete inst;
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneManager_addScene(duk_context *context) {
-		SceneManager *inst = (SceneManager*)duk_to_pointer(context, 0);
-		Scene* newScene = (Scene*)duk_to_pointer(context, 1);
-		inst->addScene(newScene);
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneManager_removeScene(duk_context *context) {
-		SceneManager *inst = (SceneManager*)duk_to_pointer(context, 0);
-		Scene* scene = (Scene*)duk_to_pointer(context, 1);
-		inst->removeScene(scene);
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneManager_Update(duk_context *context) {
-		SceneManager *inst = (SceneManager*)duk_to_pointer(context, 0);
-		inst->Update();
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneManager_fixedUpdate(duk_context *context) {
-		SceneManager *inst = (SceneManager*)duk_to_pointer(context, 0);
-		inst->fixedUpdate();
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneManager_Render(duk_context *context) {
-		SceneManager *inst = (SceneManager*)duk_to_pointer(context, 0);
-		Rectangle viewport = *(Rectangle*)duk_to_pointer(context, 1);
-		inst->Render(viewport);
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneManager_renderVirtual(duk_context *context) {
-		SceneManager *inst = (SceneManager*)duk_to_pointer(context, 0);
-		inst->renderVirtual();
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneManager_registerRenderTexture(duk_context *context) {
-		SceneManager *inst = (SceneManager*)duk_to_pointer(context, 0);
-		SceneRenderTexture* renderTexture = (SceneRenderTexture*)duk_to_pointer(context, 1);
-		inst->registerRenderTexture(renderTexture);
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneManager_unregisterRenderTexture(duk_context *context) {
-		SceneManager *inst = (SceneManager*)duk_to_pointer(context, 0);
-		SceneRenderTexture* renderTexture = (SceneRenderTexture*)duk_to_pointer(context, 1);
-		inst->unregisterRenderTexture(renderTexture);
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneManager_setRenderer(duk_context *context) {
-		SceneManager *inst = (SceneManager*)duk_to_pointer(context, 0);
-		Renderer* renderer = (Renderer*)duk_to_pointer(context, 1);
-		inst->setRenderer(renderer);
+		std::shared_ptr<SceneLine> *inst = (std::shared_ptr<SceneLine>*)duk_to_pointer(context, 0);
+		(*inst)->Update();
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneMesh(duk_context *context) {
 		String fileName = duk_to_string(context, 0);
-		SceneMesh *inst = new SceneMesh(fileName);
+		std::shared_ptr<SceneMesh> *inst = new std::shared_ptr<SceneMesh>;
+		(*inst) = std::make_shared<SceneMesh>(fileName);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneMesh__get_lineWidth(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->lineWidth);
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->lineWidth);
 		return 1;
 	}
 
@@ -10194,8 +8678,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneMesh__get_lineSmooth(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->lineSmooth);
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->lineSmooth);
 		return 1;
 	}
 
@@ -10206,8 +8690,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneMesh__get_pointSmooth(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->pointSmooth);
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->pointSmooth);
 		return 1;
 	}
 
@@ -10218,8 +8702,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneMesh__get_useGeometryHitDetection(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->useGeometryHitDetection);
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->useGeometryHitDetection);
 		return 1;
 	}
 
@@ -10230,8 +8714,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneMesh__get_alphaTest(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->alphaTest);
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->alphaTest);
 		return 1;
 	}
 
@@ -10242,8 +8726,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneMesh__get_backfaceCulled(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->backfaceCulled);
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->backfaceCulled);
 		return 1;
 	}
 
@@ -10254,8 +8738,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneMesh__get_sendBoneMatricesToMaterial(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->sendBoneMatricesToMaterial);
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->sendBoneMatricesToMaterial);
 		return 1;
 	}
 
@@ -10266,185 +8750,145 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneMesh__delete(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_SceneMesh_SceneMeshFromMesh(duk_context *context) {
-		shared_ptr<Mesh> mesh = *(shared_ptr<Mesh>*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)SceneMesh::SceneMeshFromMesh(mesh);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneMesh_Render(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		GPUDrawBuffer* buffer = (GPUDrawBuffer*)duk_to_pointer(context, 1);
-		inst->Render(buffer);
-		return 0;
-	}
-
 	duk_ret_t Polycode_SceneMesh_getShaderPass(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		ShaderPass *retInst = new ShaderPass();
-		*retInst = inst->getShaderPass(index);
+		std::shared_ptr<ShaderPass> *retInst = new std::shared_ptr<ShaderPass>;
+		*(*retInst) = (*inst)->getShaderPass(index);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneMesh_getNumShaderPasses(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumShaderPasses());
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumShaderPasses());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneMesh_addShaderPass(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
 		ShaderPass pass = *(ShaderPass*)duk_to_pointer(context, 1);
-		inst->addShaderPass(pass);
+		(*inst)->addShaderPass(pass);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneMesh_removeShaderPass(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
 		int shaderIndex = duk_to_int(context, 1);
-		inst->removeShaderPass(shaderIndex);
+		(*inst)->removeShaderPass(shaderIndex);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneMesh_getMesh(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		shared_ptr<Mesh> *retInst = new shared_ptr<Mesh>();
-		*retInst = inst->getMesh();
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
+		std::shared_ptr<shared_ptr<Mesh>> *retInst = new std::shared_ptr<shared_ptr<Mesh>>;
+		*(*retInst) = (*inst)->getMesh();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneMesh_getMaterial(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		shared_ptr<Material> *retInst = new shared_ptr<Material>();
-		*retInst = inst->getMaterial();
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
+		std::shared_ptr<shared_ptr<Material>> *retInst = new std::shared_ptr<shared_ptr<Material>>;
+		*(*retInst) = (*inst)->getMaterial();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneMesh_loadSkeleton(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
 		String fileName = duk_to_string(context, 1);
-		shared_ptr<Skeleton> *retInst = new shared_ptr<Skeleton>();
-		*retInst = inst->loadSkeleton(fileName);
+		std::shared_ptr<shared_ptr<Skeleton>> *retInst = new std::shared_ptr<shared_ptr<Skeleton>>;
+		*(*retInst) = (*inst)->loadSkeleton(fileName);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneMesh_clearMaterial(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		inst->clearMaterial();
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
+		(*inst)->clearMaterial();
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneMesh_setMaterial(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
 		shared_ptr<Material> material = *(shared_ptr<Material>*)duk_to_pointer(context, 1);
-		inst->setMaterial(material);
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneMesh_setMaterialByName(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		String materialName = duk_to_string(context, 1);
-		ResourcePool* resourcePool = (ResourcePool*)duk_to_pointer(context, 2);
-		inst->setMaterialByName(materialName,resourcePool);
+		(*inst)->setMaterial(material);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneMesh_setMesh(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
 		shared_ptr<Mesh> mesh = *(shared_ptr<Mesh>*)duk_to_pointer(context, 1);
-		inst->setMesh(mesh);
+		(*inst)->setMesh(mesh);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneMesh_setSkeleton(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
 		shared_ptr<Skeleton> skeleton = *(shared_ptr<Skeleton>*)duk_to_pointer(context, 1);
-		inst->setSkeleton(skeleton);
+		(*inst)->setSkeleton(skeleton);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneMesh_getSkeleton(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		shared_ptr<Skeleton> *retInst = new shared_ptr<Skeleton>();
-		*retInst = inst->getSkeleton();
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
+		std::shared_ptr<shared_ptr<Skeleton>> *retInst = new std::shared_ptr<shared_ptr<Skeleton>>;
+		*(*retInst) = (*inst)->getSkeleton();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneMesh_setLineWidth(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
 		Number newWidth = duk_to_number(context, 1);
-		inst->setLineWidth(newWidth);
+		(*inst)->setLineWidth(newWidth);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneMesh_getFilename(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->getFilename().c_str());
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->getFilename().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneMesh_setFilename(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
 		String fileName = duk_to_string(context, 1);
-		inst->setFilename(fileName);
+		(*inst)->setFilename(fileName);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneMesh_loadFromFile(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
 		String fileName = duk_to_string(context, 1);
-		inst->loadFromFile(fileName);
+		(*inst)->loadFromFile(fileName);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneMesh_customHitDetection(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
 		Ray ray = *(Ray*)duk_to_pointer(context, 1);
-		duk_push_boolean(context, inst->customHitDetection(ray));
+		duk_push_boolean(context, (*inst)->customHitDetection(ray));
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneMesh_setForceMaterial(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
 		bool forceMaterial = duk_to_boolean(context, 1);
-		inst->setForceMaterial(forceMaterial);
+		(*inst)->setForceMaterial(forceMaterial);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneMesh_getForceMaterial(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->getForceMaterial());
+		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->getForceMaterial());
 		return 1;
-	}
-
-	duk_ret_t Polycode_SceneMesh_Clone(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		bool deepClone = duk_to_boolean(context, 1);
-		bool ignoreEditorOnly = duk_to_boolean(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->Clone(deepClone,ignoreEditorOnly);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneMesh_applyClone(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		Entity* clone = (Entity*)duk_to_pointer(context, 1);
-		bool deepClone = duk_to_boolean(context, 2);
-		bool ignoreEditorOnly = duk_to_boolean(context, 3);
-		inst->applyClone(clone,deepClone,ignoreEditorOnly);
-		return 0;
 	}
 
 	duk_ret_t Polycode_ScenePrimitive(duk_context *context) {
@@ -10454,103 +8898,85 @@ namespace Polycode {
 		Number v3 = duk_to_number(context, 3);
 		Number v4 = duk_to_number(context, 4);
 		Number v5 = duk_to_number(context, 5);
-		ScenePrimitive *inst = new ScenePrimitive(type,v1,v2,v3,v4,v5);
+		std::shared_ptr<ScenePrimitive> *inst = new std::shared_ptr<ScenePrimitive>;
+		(*inst) = std::make_shared<ScenePrimitive>(type,v1,v2,v3,v4,v5);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ScenePrimitive__delete(duk_context *context) {
-		ScenePrimitive *inst = (ScenePrimitive*)duk_to_pointer(context, 0);
+		std::shared_ptr<ScenePrimitive> *inst = (std::shared_ptr<ScenePrimitive>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_ScenePrimitive_setPrimitiveOptions(duk_context *context) {
-		ScenePrimitive *inst = (ScenePrimitive*)duk_to_pointer(context, 0);
+		std::shared_ptr<ScenePrimitive> *inst = (std::shared_ptr<ScenePrimitive>*)duk_to_pointer(context, 0);
 		int type = duk_to_int(context, 1);
 		Number v1 = duk_to_number(context, 2);
 		Number v2 = duk_to_number(context, 3);
 		Number v3 = duk_to_number(context, 4);
 		Number v4 = duk_to_number(context, 5);
 		Number v5 = duk_to_number(context, 6);
-		inst->setPrimitiveOptions(type,v1,v2,v3,v4,v5);
+		(*inst)->setPrimitiveOptions(type,v1,v2,v3,v4,v5);
 		return 0;
 	}
 
 	duk_ret_t Polycode_ScenePrimitive_recreatePrimitive(duk_context *context) {
-		ScenePrimitive *inst = (ScenePrimitive*)duk_to_pointer(context, 0);
-		inst->recreatePrimitive();
+		std::shared_ptr<ScenePrimitive> *inst = (std::shared_ptr<ScenePrimitive>*)duk_to_pointer(context, 0);
+		(*inst)->recreatePrimitive();
 		return 0;
 	}
 
 	duk_ret_t Polycode_ScenePrimitive_getPrimitiveType(duk_context *context) {
-		ScenePrimitive *inst = (ScenePrimitive*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getPrimitiveType());
+		std::shared_ptr<ScenePrimitive> *inst = (std::shared_ptr<ScenePrimitive>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getPrimitiveType());
 		return 1;
 	}
 
 	duk_ret_t Polycode_ScenePrimitive_getPrimitiveParameter1(duk_context *context) {
-		ScenePrimitive *inst = (ScenePrimitive*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getPrimitiveParameter1());
+		std::shared_ptr<ScenePrimitive> *inst = (std::shared_ptr<ScenePrimitive>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getPrimitiveParameter1());
 		return 1;
 	}
 
 	duk_ret_t Polycode_ScenePrimitive_getPrimitiveParameter2(duk_context *context) {
-		ScenePrimitive *inst = (ScenePrimitive*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getPrimitiveParameter2());
+		std::shared_ptr<ScenePrimitive> *inst = (std::shared_ptr<ScenePrimitive>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getPrimitiveParameter2());
 		return 1;
 	}
 
 	duk_ret_t Polycode_ScenePrimitive_getPrimitiveParameter3(duk_context *context) {
-		ScenePrimitive *inst = (ScenePrimitive*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getPrimitiveParameter3());
+		std::shared_ptr<ScenePrimitive> *inst = (std::shared_ptr<ScenePrimitive>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getPrimitiveParameter3());
 		return 1;
 	}
 
 	duk_ret_t Polycode_ScenePrimitive_getPrimitiveParameter4(duk_context *context) {
-		ScenePrimitive *inst = (ScenePrimitive*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getPrimitiveParameter4());
+		std::shared_ptr<ScenePrimitive> *inst = (std::shared_ptr<ScenePrimitive>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getPrimitiveParameter4());
 		return 1;
 	}
 
 	duk_ret_t Polycode_ScenePrimitive_getPrimitiveParameter5(duk_context *context) {
-		ScenePrimitive *inst = (ScenePrimitive*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getPrimitiveParameter5());
+		std::shared_ptr<ScenePrimitive> *inst = (std::shared_ptr<ScenePrimitive>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getPrimitiveParameter5());
 		return 1;
-	}
-
-	duk_ret_t Polycode_ScenePrimitive_Clone(duk_context *context) {
-		ScenePrimitive *inst = (ScenePrimitive*)duk_to_pointer(context, 0);
-		bool deepClone = duk_to_boolean(context, 1);
-		bool ignoreEditorOnly = duk_to_boolean(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->Clone(deepClone,ignoreEditorOnly);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_ScenePrimitive_applyClone(duk_context *context) {
-		ScenePrimitive *inst = (ScenePrimitive*)duk_to_pointer(context, 0);
-		Entity* clone = (Entity*)duk_to_pointer(context, 1);
-		bool deepClone = duk_to_boolean(context, 2);
-		bool ignoreEditorOnly = duk_to_boolean(context, 3);
-		inst->applyClone(clone,deepClone,ignoreEditorOnly);
-		return 0;
 	}
 
 	duk_ret_t Polycode_SceneRenderTexture(duk_context *context) {
-		Scene* targetScene = (Scene*)duk_to_pointer(context, 0);
-		Camera* targetCamera = (Camera*)duk_to_pointer(context, 1);
-		int renderWidth = duk_to_int(context, 2);
-		int renderHeight = duk_to_int(context, 3);
-		bool floatingPoint = duk_to_boolean(context, 4);
-		SceneRenderTexture *inst = new SceneRenderTexture(targetScene,targetCamera,renderWidth,renderHeight,floatingPoint);
+		int renderWidth = duk_to_int(context, 0);
+		int renderHeight = duk_to_int(context, 1);
+		bool floatingPoint = duk_to_boolean(context, 2);
+		std::shared_ptr<SceneRenderTexture> *inst = new std::shared_ptr<SceneRenderTexture>;
+		(*inst) = std::make_shared<SceneRenderTexture>(renderWidth,renderHeight,floatingPoint);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneRenderTexture__get_enabled(duk_context *context) {
-		SceneRenderTexture *inst = (SceneRenderTexture*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->enabled);
+		std::shared_ptr<SceneRenderTexture> *inst = (std::shared_ptr<SceneRenderTexture>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->enabled);
 		return 1;
 	}
 
@@ -10561,52 +8987,25 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SceneRenderTexture__delete(duk_context *context) {
-		SceneRenderTexture *inst = (SceneRenderTexture*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneRenderTexture> *inst = (std::shared_ptr<SceneRenderTexture>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneRenderTexture_getTargetTexture(duk_context *context) {
-		SceneRenderTexture *inst = (SceneRenderTexture*)duk_to_pointer(context, 0);
-		shared_ptr<Texture> *retInst = new shared_ptr<Texture>();
-		*retInst = inst->getTargetTexture();
+		std::shared_ptr<SceneRenderTexture> *inst = (std::shared_ptr<SceneRenderTexture>*)duk_to_pointer(context, 0);
+		std::shared_ptr<shared_ptr<Texture>> *retInst = new std::shared_ptr<shared_ptr<Texture>>;
+		*(*retInst) = (*inst)->getTargetTexture();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
-	duk_ret_t Polycode_SceneRenderTexture_Render(duk_context *context) {
-		SceneRenderTexture *inst = (SceneRenderTexture*)duk_to_pointer(context, 0);
-		inst->Render();
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneRenderTexture_saveToImage(duk_context *context) {
-		SceneRenderTexture *inst = (SceneRenderTexture*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->saveToImage();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
 	duk_ret_t Polycode_SceneRenderTexture_resizeRenderTexture(duk_context *context) {
-		SceneRenderTexture *inst = (SceneRenderTexture*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneRenderTexture> *inst = (std::shared_ptr<SceneRenderTexture>*)duk_to_pointer(context, 0);
 		int newWidth = duk_to_int(context, 1);
 		int newHeight = duk_to_int(context, 2);
-		inst->resizeRenderTexture(newWidth,newHeight);
+		(*inst)->resizeRenderTexture(newWidth,newHeight);
 		return 0;
-	}
-
-	duk_ret_t Polycode_SceneRenderTexture_getTargetScene(duk_context *context) {
-		SceneRenderTexture *inst = (SceneRenderTexture*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getTargetScene();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneRenderTexture_getTargetCamera(duk_context *context) {
-		SceneRenderTexture *inst = (SceneRenderTexture*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getTargetCamera();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
 	}
 
 	duk_ret_t Polycode_SceneSound(duk_context *context) {
@@ -10614,473 +9013,353 @@ namespace Polycode {
 		Number referenceDistance = duk_to_number(context, 1);
 		Number maxDistance = duk_to_number(context, 2);
 		bool directionalSound = duk_to_boolean(context, 3);
-		SceneSound *inst = new SceneSound(fileName,referenceDistance,maxDistance,directionalSound);
+		std::shared_ptr<SceneSound> *inst = new std::shared_ptr<SceneSound>;
+		(*inst) = std::make_shared<SceneSound>(fileName,referenceDistance,maxDistance,directionalSound);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneSound__delete(duk_context *context) {
-		SceneSound *inst = (SceneSound*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneSound> *inst = (std::shared_ptr<SceneSound>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneSound_Update(duk_context *context) {
-		SceneSound *inst = (SceneSound*)duk_to_pointer(context, 0);
-		inst->Update();
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneSound_Clone(duk_context *context) {
-		SceneSound *inst = (SceneSound*)duk_to_pointer(context, 0);
-		bool deepClone = duk_to_boolean(context, 1);
-		bool ignoreEditorOnly = duk_to_boolean(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->Clone(deepClone,ignoreEditorOnly);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneSound_applyClone(duk_context *context) {
-		SceneSound *inst = (SceneSound*)duk_to_pointer(context, 0);
-		Entity* clone = (Entity*)duk_to_pointer(context, 1);
-		bool deepClone = duk_to_boolean(context, 2);
-		bool ignoreEditorOnly = duk_to_boolean(context, 3);
-		inst->applyClone(clone,deepClone,ignoreEditorOnly);
+		std::shared_ptr<SceneSound> *inst = (std::shared_ptr<SceneSound>*)duk_to_pointer(context, 0);
+		(*inst)->Update();
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneSound_isDirectionalSound(duk_context *context) {
-		SceneSound *inst = (SceneSound*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->isDirectionalSound());
+		std::shared_ptr<SceneSound> *inst = (std::shared_ptr<SceneSound>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->isDirectionalSound());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneSound_setDirectionalSound(duk_context *context) {
-		SceneSound *inst = (SceneSound*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneSound> *inst = (std::shared_ptr<SceneSound>*)duk_to_pointer(context, 0);
 		bool val = duk_to_boolean(context, 1);
-		inst->setDirectionalSound(val);
+		(*inst)->setDirectionalSound(val);
 		return 0;
 	}
 
-	duk_ret_t Polycode_SceneSound_getSound(duk_context *context) {
-		SceneSound *inst = (SceneSound*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getSound();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
 	duk_ret_t Polycode_SceneSound_setLoopOnLoad(duk_context *context) {
-		SceneSound *inst = (SceneSound*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneSound> *inst = (std::shared_ptr<SceneSound>*)duk_to_pointer(context, 0);
 		bool val = duk_to_boolean(context, 1);
-		inst->setLoopOnLoad(val);
+		(*inst)->setLoopOnLoad(val);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneSound_getLoopOnLoad(duk_context *context) {
-		SceneSound *inst = (SceneSound*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->getLoopOnLoad());
+		std::shared_ptr<SceneSound> *inst = (std::shared_ptr<SceneSound>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->getLoopOnLoad());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneSoundListener(duk_context *context) {
-		SceneSoundListener *inst = new SceneSoundListener();
+		std::shared_ptr<SceneSoundListener> *inst = new std::shared_ptr<SceneSoundListener>;
+		(*inst) = std::make_shared<SceneSoundListener>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneSoundListener__delete(duk_context *context) {
-		SceneSoundListener *inst = (SceneSoundListener*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneSoundListener> *inst = (std::shared_ptr<SceneSoundListener>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneSoundListener_Update(duk_context *context) {
-		SceneSoundListener *inst = (SceneSoundListener*)duk_to_pointer(context, 0);
-		inst->Update();
+		std::shared_ptr<SceneSoundListener> *inst = (std::shared_ptr<SceneSoundListener>*)duk_to_pointer(context, 0);
+		(*inst)->Update();
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneSprite(duk_context *context) {
-		SpriteSet* spriteSet = (SpriteSet*)duk_to_pointer(context, 0);
-		SceneSprite *inst = new SceneSprite(spriteSet);
+		std::shared_ptr<SceneSprite> *inst = new std::shared_ptr<SceneSprite>;
+		(*inst) = std::make_shared<SceneSprite>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneSprite__delete(duk_context *context) {
-		SceneSprite *inst = (SceneSprite*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneSprite> *inst = (std::shared_ptr<SceneSprite>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_SceneSprite_Clone(duk_context *context) {
-		SceneSprite *inst = (SceneSprite*)duk_to_pointer(context, 0);
-		bool deepClone = duk_to_boolean(context, 1);
-		bool ignoreEditorOnly = duk_to_boolean(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->Clone(deepClone,ignoreEditorOnly);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneSprite_applyClone(duk_context *context) {
-		SceneSprite *inst = (SceneSprite*)duk_to_pointer(context, 0);
-		Entity* clone = (Entity*)duk_to_pointer(context, 1);
-		bool deepClone = duk_to_boolean(context, 2);
-		bool ignoreEditorOnly = duk_to_boolean(context, 3);
-		inst->applyClone(clone,deepClone,ignoreEditorOnly);
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneSprite_getSpriteSet(duk_context *context) {
-		SceneSprite *inst = (SceneSprite*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getSpriteSet();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
 	duk_ret_t Polycode_SceneSprite_getCurrentSprite(duk_context *context) {
-		SceneSprite *inst = (SceneSprite*)duk_to_pointer(context, 0);
-		shared_ptr<Sprite> *retInst = new shared_ptr<Sprite>();
-		*retInst = inst->getCurrentSprite();
+		std::shared_ptr<SceneSprite> *inst = (std::shared_ptr<SceneSprite>*)duk_to_pointer(context, 0);
+		std::shared_ptr<shared_ptr<Sprite>> *retInst = new std::shared_ptr<shared_ptr<Sprite>>;
+		*(*retInst) = (*inst)->getCurrentSprite();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
-	duk_ret_t Polycode_SceneSprite_setSpriteSet(duk_context *context) {
-		SceneSprite *inst = (SceneSprite*)duk_to_pointer(context, 0);
-		SpriteSet* spriteSet = (SpriteSet*)duk_to_pointer(context, 1);
-		inst->setSpriteSet(spriteSet);
-		return 0;
-	}
-
 	duk_ret_t Polycode_SceneSprite_setSpriteByName(duk_context *context) {
-		SceneSprite *inst = (SceneSprite*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneSprite> *inst = (std::shared_ptr<SceneSprite>*)duk_to_pointer(context, 0);
 		String spriteName = duk_to_string(context, 1);
-		inst->setSpriteByName(spriteName);
+		(*inst)->setSpriteByName(spriteName);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneSprite_setCurrentFrame(duk_context *context) {
-		SceneSprite *inst = (SceneSprite*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneSprite> *inst = (std::shared_ptr<SceneSprite>*)duk_to_pointer(context, 0);
 		int frameIndex = duk_to_int(context, 1);
-		inst->setCurrentFrame(frameIndex);
+		(*inst)->setCurrentFrame(frameIndex);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneSprite_getCurrentFrame(duk_context *context) {
-		SceneSprite *inst = (SceneSprite*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getCurrentFrame());
+		std::shared_ptr<SceneSprite> *inst = (std::shared_ptr<SceneSprite>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getCurrentFrame());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneSprite_Update(duk_context *context) {
-		SceneSprite *inst = (SceneSprite*)duk_to_pointer(context, 0);
-		inst->Update();
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneSprite_Render(duk_context *context) {
-		SceneSprite *inst = (SceneSprite*)duk_to_pointer(context, 0);
-		GPUDrawBuffer* buffer = (GPUDrawBuffer*)duk_to_pointer(context, 1);
-		inst->Render(buffer);
+		std::shared_ptr<SceneSprite> *inst = (std::shared_ptr<SceneSprite>*)duk_to_pointer(context, 0);
+		(*inst)->Update();
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneSprite_getSpriteBoundingBox(duk_context *context) {
-		SceneSprite *inst = (SceneSprite*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->getSpriteBoundingBox();
+		std::shared_ptr<SceneSprite> *inst = (std::shared_ptr<SceneSprite>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->getSpriteBoundingBox();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneSprite_setPaused(duk_context *context) {
-		SceneSprite *inst = (SceneSprite*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneSprite> *inst = (std::shared_ptr<SceneSprite>*)duk_to_pointer(context, 0);
 		bool val = duk_to_boolean(context, 1);
-		inst->setPaused(val);
+		(*inst)->setPaused(val);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneSprite_isPaused(duk_context *context) {
-		SceneSprite *inst = (SceneSprite*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->isPaused());
+		std::shared_ptr<SceneSprite> *inst = (std::shared_ptr<SceneSprite>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->isPaused());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneSprite_setSprite(duk_context *context) {
-		SceneSprite *inst = (SceneSprite*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneSprite> *inst = (std::shared_ptr<SceneSprite>*)duk_to_pointer(context, 0);
 		shared_ptr<Sprite> spriteEntry = *(shared_ptr<Sprite>*)duk_to_pointer(context, 1);
-		inst->setSprite(spriteEntry);
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneSprite_setSpriteState(duk_context *context) {
-		SceneSprite *inst = (SceneSprite*)duk_to_pointer(context, 0);
-		SpriteState* spriteState = (SpriteState*)duk_to_pointer(context, 1);
-		int startingFrame = duk_to_int(context, 2);
-		bool playOnce = duk_to_boolean(context, 3);
-		inst->setSpriteState(spriteState,startingFrame,playOnce);
+		(*inst)->setSprite(spriteEntry);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SceneSprite_setSpriteStateByName(duk_context *context) {
-		SceneSprite *inst = (SceneSprite*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneSprite> *inst = (std::shared_ptr<SceneSprite>*)duk_to_pointer(context, 0);
 		String name = duk_to_string(context, 1);
 		int startingFrame = duk_to_int(context, 2);
 		bool playOnce = duk_to_boolean(context, 3);
-		inst->setSpriteStateByName(name,startingFrame,playOnce);
+		(*inst)->setSpriteStateByName(name,startingFrame,playOnce);
 		return 0;
 	}
 
-	duk_ret_t Polycode_SceneSprite_getCurrentSpriteState(duk_context *context) {
-		SceneSprite *inst = (SceneSprite*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getCurrentSpriteState();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
 	duk_ret_t Polycode_SceneSprite_getStartOnRandomFrame(duk_context *context) {
-		SceneSprite *inst = (SceneSprite*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->getStartOnRandomFrame());
+		std::shared_ptr<SceneSprite> *inst = (std::shared_ptr<SceneSprite>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->getStartOnRandomFrame());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SceneSprite_setStartOnRandomFrame(duk_context *context) {
-		SceneSprite *inst = (SceneSprite*)duk_to_pointer(context, 0);
+		std::shared_ptr<SceneSprite> *inst = (std::shared_ptr<SceneSprite>*)duk_to_pointer(context, 0);
 		bool val = duk_to_boolean(context, 1);
-		inst->setStartOnRandomFrame(val);
+		(*inst)->setStartOnRandomFrame(val);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Sprite(duk_context *context) {
 		String name = duk_to_string(context, 0);
-		Sprite *inst = new Sprite(name);
+		std::shared_ptr<Sprite> *inst = new std::shared_ptr<Sprite>;
+		(*inst) = std::make_shared<Sprite>(name);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Sprite__delete(duk_context *context) {
-		Sprite *inst = (Sprite*)duk_to_pointer(context, 0);
+		std::shared_ptr<Sprite> *inst = (std::shared_ptr<Sprite>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Sprite_getName(duk_context *context) {
-		Sprite *inst = (Sprite*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->getName().c_str());
+		std::shared_ptr<Sprite> *inst = (std::shared_ptr<Sprite>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->getName().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Sprite_setName(duk_context *context) {
-		Sprite *inst = (Sprite*)duk_to_pointer(context, 0);
+		std::shared_ptr<Sprite> *inst = (std::shared_ptr<Sprite>*)duk_to_pointer(context, 0);
 		String name = duk_to_string(context, 1);
-		inst->setName(name);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Sprite_addSpriteState(duk_context *context) {
-		Sprite *inst = (Sprite*)duk_to_pointer(context, 0);
-		SpriteState* state = (SpriteState*)duk_to_pointer(context, 1);
-		inst->addSpriteState(state);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Sprite_removeSpriteState(duk_context *context) {
-		Sprite *inst = (Sprite*)duk_to_pointer(context, 0);
-		SpriteState* state = (SpriteState*)duk_to_pointer(context, 1);
-		inst->removeSpriteState(state);
+		(*inst)->setName(name);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Sprite_getNumStates(duk_context *context) {
-		Sprite *inst = (Sprite*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumStates());
-		return 1;
-	}
-
-	duk_ret_t Polycode_Sprite_getState(duk_context *context) {
-		Sprite *inst = (Sprite*)duk_to_pointer(context, 0);
-		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getState(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Sprite_getStateByName(duk_context *context) {
-		Sprite *inst = (Sprite*)duk_to_pointer(context, 0);
-		String name = duk_to_string(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getStateByName(name);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Sprite_setParentSpritSet(duk_context *context) {
-		Sprite *inst = (Sprite*)duk_to_pointer(context, 0);
-		SpriteSet* spriteSet = (SpriteSet*)duk_to_pointer(context, 1);
-		inst->setParentSpritSet(spriteSet);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Sprite_getParentSpriteSet(duk_context *context) {
-		Sprite *inst = (Sprite*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getParentSpriteSet();
-		duk_push_pointer(context, (void*)ptrRetVal);
+		std::shared_ptr<Sprite> *inst = (std::shared_ptr<Sprite>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumStates());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SpriteSet(duk_context *context) {
-		String fileName = duk_to_string(context, 0);
-		ResourcePool* parentPool = (ResourcePool*)duk_to_pointer(context, 1);
-		SpriteSet *inst = new SpriteSet(fileName,parentPool);
+		std::shared_ptr<SpriteSet> *inst = new std::shared_ptr<SpriteSet>;
+		(*inst) = std::make_shared<SpriteSet>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SpriteSet__delete(duk_context *context) {
-		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteSet> *inst = (std::shared_ptr<SpriteSet>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_SpriteSet_setTexture(duk_context *context) {
-		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteSet> *inst = (std::shared_ptr<SpriteSet>*)duk_to_pointer(context, 0);
 		shared_ptr<Texture> texture = *(shared_ptr<Texture>*)duk_to_pointer(context, 1);
-		inst->setTexture(texture);
+		(*inst)->setTexture(texture);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SpriteSet_getTexture(duk_context *context) {
-		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
-		shared_ptr<Texture> *retInst = new shared_ptr<Texture>();
-		*retInst = inst->getTexture();
+		std::shared_ptr<SpriteSet> *inst = (std::shared_ptr<SpriteSet>*)duk_to_pointer(context, 0);
+		std::shared_ptr<shared_ptr<Texture>> *retInst = new std::shared_ptr<shared_ptr<Texture>>;
+		*(*retInst) = (*inst)->getTexture();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SpriteSet_addSpriteEntry(duk_context *context) {
-		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteSet> *inst = (std::shared_ptr<SpriteSet>*)duk_to_pointer(context, 0);
 		shared_ptr<Sprite> newEntry = *(shared_ptr<Sprite>*)duk_to_pointer(context, 1);
-		inst->addSpriteEntry(newEntry);
+		(*inst)->addSpriteEntry(newEntry);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SpriteSet_getNumSpriteEntries(duk_context *context) {
-		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumSpriteEntries());
+		std::shared_ptr<SpriteSet> *inst = (std::shared_ptr<SpriteSet>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumSpriteEntries());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SpriteSet_getSpriteEntry(duk_context *context) {
-		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteSet> *inst = (std::shared_ptr<SpriteSet>*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		shared_ptr<Sprite> *retInst = new shared_ptr<Sprite>();
-		*retInst = inst->getSpriteEntry(index);
+		std::shared_ptr<shared_ptr<Sprite>> *retInst = new std::shared_ptr<shared_ptr<Sprite>>;
+		*(*retInst) = (*inst)->getSpriteEntry(index);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SpriteSet_removeSprite(duk_context *context) {
-		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteSet> *inst = (std::shared_ptr<SpriteSet>*)duk_to_pointer(context, 0);
 		shared_ptr<Sprite> sprite = *(shared_ptr<Sprite>*)duk_to_pointer(context, 1);
-		inst->removeSprite(sprite);
+		(*inst)->removeSprite(sprite);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SpriteSet_loadSpriteSet(duk_context *context) {
-		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteSet> *inst = (std::shared_ptr<SpriteSet>*)duk_to_pointer(context, 0);
 		String fileName = duk_to_string(context, 1);
-		inst->loadSpriteSet(fileName);
+		(*inst)->loadSpriteSet(fileName);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SpriteSet_addSpriteFrame(duk_context *context) {
-		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteSet> *inst = (std::shared_ptr<SpriteSet>*)duk_to_pointer(context, 0);
 		SpriteFrame frame = *(SpriteFrame*)duk_to_pointer(context, 1);
 		bool assignID = duk_to_boolean(context, 2);
-		inst->addSpriteFrame(frame,assignID);
+		(*inst)->addSpriteFrame(frame,assignID);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SpriteSet_getNumFrames(duk_context *context) {
-		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumFrames());
+		std::shared_ptr<SpriteSet> *inst = (std::shared_ptr<SpriteSet>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumFrames());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SpriteSet_getSpriteFrame(duk_context *context) {
-		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteSet> *inst = (std::shared_ptr<SpriteSet>*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		SpriteFrame *retInst = new SpriteFrame();
-		*retInst = inst->getSpriteFrame(index);
+		std::shared_ptr<SpriteFrame> *retInst = new std::shared_ptr<SpriteFrame>;
+		*(*retInst) = (*inst)->getSpriteFrame(index);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SpriteSet_getSpriteFrameByID(duk_context *context) {
-		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteSet> *inst = (std::shared_ptr<SpriteSet>*)duk_to_pointer(context, 0);
 		int frameID = duk_to_int(context, 1);
-		SpriteFrame *retInst = new SpriteFrame();
-		*retInst = inst->getSpriteFrameByID(frameID);
+		std::shared_ptr<SpriteFrame> *retInst = new std::shared_ptr<SpriteFrame>;
+		*(*retInst) = (*inst)->getSpriteFrameByID(frameID);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SpriteSet_removeFrameByID(duk_context *context) {
-		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteSet> *inst = (std::shared_ptr<SpriteSet>*)duk_to_pointer(context, 0);
 		int frameID = duk_to_int(context, 1);
-		inst->removeFrameByID(frameID);
+		(*inst)->removeFrameByID(frameID);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SpriteSet_setSpriteFrame(duk_context *context) {
-		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteSet> *inst = (std::shared_ptr<SpriteSet>*)duk_to_pointer(context, 0);
 		SpriteFrame frame = *(SpriteFrame*)duk_to_pointer(context, 1);
-		inst->setSpriteFrame(frame);
+		(*inst)->setSpriteFrame(frame);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SpriteSet_clearFrames(duk_context *context) {
-		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
-		inst->clearFrames();
+		std::shared_ptr<SpriteSet> *inst = (std::shared_ptr<SpriteSet>*)duk_to_pointer(context, 0);
+		(*inst)->clearFrames();
 		return 0;
 	}
 
 	duk_ret_t Polycode_SpriteSet_createGridFrames(duk_context *context) {
-		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteSet> *inst = (std::shared_ptr<SpriteSet>*)duk_to_pointer(context, 0);
 		int xCount = duk_to_int(context, 1);
 		int yCount = duk_to_int(context, 2);
 		Vector2 defaultAnchor = *(Vector2*)duk_to_pointer(context, 3);
-		inst->createGridFrames(xCount,yCount,defaultAnchor);
+		(*inst)->createGridFrames(xCount,yCount,defaultAnchor);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SpriteSet_createFramesFromIslands(duk_context *context) {
-		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteSet> *inst = (std::shared_ptr<SpriteSet>*)duk_to_pointer(context, 0);
 		int minDistance = duk_to_int(context, 1);
 		Vector2 defaultAnchor = *(Vector2*)duk_to_pointer(context, 2);
-		inst->createFramesFromIslands(minDistance,defaultAnchor);
+		(*inst)->createFramesFromIslands(minDistance,defaultAnchor);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SpriteSet_getSpriteByName(duk_context *context) {
-		SpriteSet *inst = (SpriteSet*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteSet> *inst = (std::shared_ptr<SpriteSet>*)duk_to_pointer(context, 0);
 		String spriteName = duk_to_string(context, 1);
-		shared_ptr<Sprite> *retInst = new shared_ptr<Sprite>();
-		*retInst = inst->getSpriteByName(spriteName);
+		std::shared_ptr<shared_ptr<Sprite>> *retInst = new std::shared_ptr<shared_ptr<Sprite>>;
+		*(*retInst) = (*inst)->getSpriteByName(spriteName);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SpriteFrame(duk_context *context) {
-		SpriteFrame *inst = new SpriteFrame();
+		std::shared_ptr<SpriteFrame> *inst = new std::shared_ptr<SpriteFrame>;
+		(*inst) = std::make_shared<SpriteFrame>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SpriteFrame__get_coordinates(duk_context *context) {
-		SpriteFrame *inst = (SpriteFrame*)duk_to_pointer(context, 0);
-		Polycode::Rectangle *retInst = new Polycode::Rectangle();
-		*retInst = inst->coordinates;
+		std::shared_ptr<SpriteFrame> *inst = (std::shared_ptr<SpriteFrame>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Polycode::Rectangle> *retInst = new std::shared_ptr<Polycode::Rectangle>;
+		*retInst = std::make_shared<Polycode::Rectangle>();
+		*(*retInst) = (*inst)->coordinates;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -11092,9 +9371,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SpriteFrame__get_anchorPoint(duk_context *context) {
-		SpriteFrame *inst = (SpriteFrame*)duk_to_pointer(context, 0);
-		Vector2 *retInst = new Vector2();
-		*retInst = inst->anchorPoint;
+		std::shared_ptr<SpriteFrame> *inst = (std::shared_ptr<SpriteFrame>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector2> *retInst = new std::shared_ptr<Vector2>;
+		*retInst = std::make_shared<Vector2>();
+		*(*retInst) = (*inst)->anchorPoint;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -11106,8 +9386,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SpriteFrame__get_frameID(duk_context *context) {
-		SpriteFrame *inst = (SpriteFrame*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->frameID);
+		std::shared_ptr<SpriteFrame> *inst = (std::shared_ptr<SpriteFrame>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->frameID);
 		return 1;
 	}
 
@@ -11118,185 +9398,173 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_SpriteFrame__delete(duk_context *context) {
-		SpriteFrame *inst = (SpriteFrame*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteFrame> *inst = (std::shared_ptr<SpriteFrame>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_SpriteState(duk_context *context) {
-		SpriteSet* spriteSet = (SpriteSet*)duk_to_pointer(context, 0);
-		String name = duk_to_string(context, 1);
-		SpriteState *inst = new SpriteState(spriteSet,name);
+		std::shared_ptr<SpriteState> *inst = new std::shared_ptr<SpriteState>;
+		(*inst) = std::make_shared<SpriteState>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SpriteState__delete(duk_context *context) {
-		SpriteState *inst = (SpriteState*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteState> *inst = (std::shared_ptr<SpriteState>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_SpriteState_setName(duk_context *context) {
-		SpriteState *inst = (SpriteState*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteState> *inst = (std::shared_ptr<SpriteState>*)duk_to_pointer(context, 0);
 		String name = duk_to_string(context, 1);
-		inst->setName(name);
+		(*inst)->setName(name);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SpriteState_getName(duk_context *context) {
-		SpriteState *inst = (SpriteState*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->getName().c_str());
+		std::shared_ptr<SpriteState> *inst = (std::shared_ptr<SpriteState>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->getName().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SpriteState_getNumFrameIDs(duk_context *context) {
-		SpriteState *inst = (SpriteState*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumFrameIDs());
+		std::shared_ptr<SpriteState> *inst = (std::shared_ptr<SpriteState>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumFrameIDs());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SpriteState_getFrameIDAtIndex(duk_context *context) {
-		SpriteState *inst = (SpriteState*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteState> *inst = (std::shared_ptr<SpriteState>*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		duk_push_int(context, inst->getFrameIDAtIndex(index));
+		duk_push_int(context, (*inst)->getFrameIDAtIndex(index));
 		return 1;
 	}
 
 	duk_ret_t Polycode_SpriteState_getMeshForFrameIndex(duk_context *context) {
-		SpriteState *inst = (SpriteState*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteState> *inst = (std::shared_ptr<SpriteState>*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		shared_ptr<Mesh> *retInst = new shared_ptr<Mesh>();
-		*retInst = inst->getMeshForFrameIndex(index);
+		std::shared_ptr<shared_ptr<Mesh>> *retInst = new std::shared_ptr<shared_ptr<Mesh>>;
+		*(*retInst) = (*inst)->getMeshForFrameIndex(index);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SpriteState_insertFrame(duk_context *context) {
-		SpriteState *inst = (SpriteState*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteState> *inst = (std::shared_ptr<SpriteState>*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
 		int frameID = duk_to_int(context, 2);
-		inst->insertFrame(index,frameID);
+		(*inst)->insertFrame(index,frameID);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SpriteState_removeFrameByIndex(duk_context *context) {
-		SpriteState *inst = (SpriteState*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteState> *inst = (std::shared_ptr<SpriteState>*)duk_to_pointer(context, 0);
 		int frameIndex = duk_to_int(context, 1);
-		inst->removeFrameByIndex(frameIndex);
+		(*inst)->removeFrameByIndex(frameIndex);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SpriteState_clearFrames(duk_context *context) {
-		SpriteState *inst = (SpriteState*)duk_to_pointer(context, 0);
-		inst->clearFrames();
+		std::shared_ptr<SpriteState> *inst = (std::shared_ptr<SpriteState>*)duk_to_pointer(context, 0);
+		(*inst)->clearFrames();
 		return 0;
 	}
 
 	duk_ret_t Polycode_SpriteState_setPixelsPerUnit(duk_context *context) {
-		SpriteState *inst = (SpriteState*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteState> *inst = (std::shared_ptr<SpriteState>*)duk_to_pointer(context, 0);
 		Number ppu = duk_to_number(context, 1);
-		inst->setPixelsPerUnit(ppu);
+		(*inst)->setPixelsPerUnit(ppu);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SpriteState_getPixelsPerUnit(duk_context *context) {
-		SpriteState *inst = (SpriteState*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getPixelsPerUnit());
+		std::shared_ptr<SpriteState> *inst = (std::shared_ptr<SpriteState>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getPixelsPerUnit());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SpriteState_rebuildStateMeshes(duk_context *context) {
-		SpriteState *inst = (SpriteState*)duk_to_pointer(context, 0);
-		inst->rebuildStateMeshes();
+		std::shared_ptr<SpriteState> *inst = (std::shared_ptr<SpriteState>*)duk_to_pointer(context, 0);
+		(*inst)->rebuildStateMeshes();
 		return 0;
 	}
 
 	duk_ret_t Polycode_SpriteState_setStateFPS(duk_context *context) {
-		SpriteState *inst = (SpriteState*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteState> *inst = (std::shared_ptr<SpriteState>*)duk_to_pointer(context, 0);
 		Number fps = duk_to_number(context, 1);
-		inst->setStateFPS(fps);
+		(*inst)->setStateFPS(fps);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SpriteState_getStateFPS(duk_context *context) {
-		SpriteState *inst = (SpriteState*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getStateFPS());
+		std::shared_ptr<SpriteState> *inst = (std::shared_ptr<SpriteState>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getStateFPS());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SpriteState_getLargestFrameBoundingBox(duk_context *context) {
-		SpriteState *inst = (SpriteState*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->getLargestFrameBoundingBox();
+		std::shared_ptr<SpriteState> *inst = (std::shared_ptr<SpriteState>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->getLargestFrameBoundingBox();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SpriteState_setBoundingBox(duk_context *context) {
-		SpriteState *inst = (SpriteState*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteState> *inst = (std::shared_ptr<SpriteState>*)duk_to_pointer(context, 0);
 		Vector2 boundingBox = *(Vector2*)duk_to_pointer(context, 1);
-		inst->setBoundingBox(boundingBox);
+		(*inst)->setBoundingBox(boundingBox);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SpriteState_getBoundingBox(duk_context *context) {
-		SpriteState *inst = (SpriteState*)duk_to_pointer(context, 0);
-		Vector2 *retInst = new Vector2();
-		*retInst = inst->getBoundingBox();
+		std::shared_ptr<SpriteState> *inst = (std::shared_ptr<SpriteState>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector2> *retInst = new std::shared_ptr<Vector2>;
+		*(*retInst) = (*inst)->getBoundingBox();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SpriteState_getSpriteOffset(duk_context *context) {
-		SpriteState *inst = (SpriteState*)duk_to_pointer(context, 0);
-		Vector2 *retInst = new Vector2();
-		*retInst = inst->getSpriteOffset();
+		std::shared_ptr<SpriteState> *inst = (std::shared_ptr<SpriteState>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector2> *retInst = new std::shared_ptr<Vector2>;
+		*(*retInst) = (*inst)->getSpriteOffset();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SpriteState_setSpriteOffset(duk_context *context) {
-		SpriteState *inst = (SpriteState*)duk_to_pointer(context, 0);
+		std::shared_ptr<SpriteState> *inst = (std::shared_ptr<SpriteState>*)duk_to_pointer(context, 0);
 		Vector2 offset = *(Vector2*)duk_to_pointer(context, 1);
-		inst->setSpriteOffset(offset);
+		(*inst)->setSpriteOffset(offset);
 		return 0;
 	}
 
 	duk_ret_t Polycode_ScriptInstance(duk_context *context) {
-		ScriptInstance *inst = new ScriptInstance();
+		std::shared_ptr<ScriptInstance> *inst = new std::shared_ptr<ScriptInstance>;
+		(*inst) = std::make_shared<ScriptInstance>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
-	duk_ret_t Polycode_ScriptInstance__get_script(duk_context *context) {
-		ScriptInstance *inst = (ScriptInstance*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->script;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_ScriptInstance__set_script(duk_context *context) {
-		ScriptInstance *inst = (ScriptInstance*)duk_to_pointer(context, 0);
-		inst->script = (Script*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_ScriptInstance__delete(duk_context *context) {
-		ScriptInstance *inst = (ScriptInstance*)duk_to_pointer(context, 0);
+		std::shared_ptr<ScriptInstance> *inst = (std::shared_ptr<ScriptInstance>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_ProgramParam(duk_context *context) {
-		ProgramParam *inst = new ProgramParam();
+		std::shared_ptr<ProgramParam> *inst = new std::shared_ptr<ProgramParam>;
+		(*inst) = std::make_shared<ProgramParam>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ProgramParam__get_name(duk_context *context) {
-		ProgramParam *inst = (ProgramParam*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->name.c_str());
+		std::shared_ptr<ProgramParam> *inst = (std::shared_ptr<ProgramParam>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->name.c_str());
 		return 1;
 	}
 
@@ -11307,8 +9575,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ProgramParam__get_type(duk_context *context) {
-		ProgramParam *inst = (ProgramParam*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->type);
+		std::shared_ptr<ProgramParam> *inst = (std::shared_ptr<ProgramParam>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->type);
 		return 1;
 	}
 
@@ -11318,40 +9586,22 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_ProgramParam__get_globalParam(duk_context *context) {
-		ProgramParam *inst = (ProgramParam*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->globalParam;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_ProgramParam__set_globalParam(duk_context *context) {
-		ProgramParam *inst = (ProgramParam*)duk_to_pointer(context, 0);
-		inst->globalParam = (LocalShaderParam*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_ProgramParam__delete(duk_context *context) {
-		ProgramParam *inst = (ProgramParam*)duk_to_pointer(context, 0);
+		std::shared_ptr<ProgramParam> *inst = (std::shared_ptr<ProgramParam>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_ProgramParam_createParamData(duk_context *context) {
-		int type = duk_to_int(context, 0);
-		ProgramParam::createParamData(type);
-		return 0;
-	}
-
 	duk_ret_t Polycode_ProgramAttribute(duk_context *context) {
-		ProgramAttribute *inst = new ProgramAttribute();
+		std::shared_ptr<ProgramAttribute> *inst = new std::shared_ptr<ProgramAttribute>;
+		(*inst) = std::make_shared<ProgramAttribute>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ProgramAttribute__get_size(duk_context *context) {
-		ProgramAttribute *inst = (ProgramAttribute*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->size);
+		std::shared_ptr<ProgramAttribute> *inst = (std::shared_ptr<ProgramAttribute>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->size);
 		return 1;
 	}
 
@@ -11362,8 +9612,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ProgramAttribute__get_name(duk_context *context) {
-		ProgramAttribute *inst = (ProgramAttribute*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->name.c_str());
+		std::shared_ptr<ProgramAttribute> *inst = (std::shared_ptr<ProgramAttribute>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->name.c_str());
 		return 1;
 	}
 
@@ -11374,8 +9624,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ProgramAttribute__get_arrayType(duk_context *context) {
-		ProgramAttribute *inst = (ProgramAttribute*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->arrayType);
+		std::shared_ptr<ProgramAttribute> *inst = (std::shared_ptr<ProgramAttribute>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->arrayType);
 		return 1;
 	}
 
@@ -11386,20 +9636,21 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ProgramAttribute__delete(duk_context *context) {
-		ProgramAttribute *inst = (ProgramAttribute*)duk_to_pointer(context, 0);
+		std::shared_ptr<ProgramAttribute> *inst = (std::shared_ptr<ProgramAttribute>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_ShaderRenderTarget(duk_context *context) {
-		ShaderRenderTarget *inst = new ShaderRenderTarget();
+		std::shared_ptr<ShaderRenderTarget> *inst = new std::shared_ptr<ShaderRenderTarget>;
+		(*inst) = std::make_shared<ShaderRenderTarget>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ShaderRenderTarget__get_id(duk_context *context) {
-		ShaderRenderTarget *inst = (ShaderRenderTarget*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->id.c_str());
+		std::shared_ptr<ShaderRenderTarget> *inst = (std::shared_ptr<ShaderRenderTarget>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->id.c_str());
 		return 1;
 	}
 
@@ -11410,8 +9661,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ShaderRenderTarget__get_width(duk_context *context) {
-		ShaderRenderTarget *inst = (ShaderRenderTarget*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->width);
+		std::shared_ptr<ShaderRenderTarget> *inst = (std::shared_ptr<ShaderRenderTarget>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->width);
 		return 1;
 	}
 
@@ -11422,8 +9673,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ShaderRenderTarget__get_height(duk_context *context) {
-		ShaderRenderTarget *inst = (ShaderRenderTarget*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->height);
+		std::shared_ptr<ShaderRenderTarget> *inst = (std::shared_ptr<ShaderRenderTarget>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->height);
 		return 1;
 	}
 
@@ -11434,8 +9685,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ShaderRenderTarget__get_sizeMode(duk_context *context) {
-		ShaderRenderTarget *inst = (ShaderRenderTarget*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->sizeMode);
+		std::shared_ptr<ShaderRenderTarget> *inst = (std::shared_ptr<ShaderRenderTarget>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->sizeMode);
 		return 1;
 	}
 
@@ -11446,8 +9697,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ShaderRenderTarget__get_normalizedWidth(duk_context *context) {
-		ShaderRenderTarget *inst = (ShaderRenderTarget*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->normalizedWidth);
+		std::shared_ptr<ShaderRenderTarget> *inst = (std::shared_ptr<ShaderRenderTarget>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->normalizedWidth);
 		return 1;
 	}
 
@@ -11458,8 +9709,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ShaderRenderTarget__get_normalizedHeight(duk_context *context) {
-		ShaderRenderTarget *inst = (ShaderRenderTarget*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->normalizedHeight);
+		std::shared_ptr<ShaderRenderTarget> *inst = (std::shared_ptr<ShaderRenderTarget>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->normalizedHeight);
 		return 1;
 	}
 
@@ -11470,20 +9721,21 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ShaderRenderTarget__delete(duk_context *context) {
-		ShaderRenderTarget *inst = (ShaderRenderTarget*)duk_to_pointer(context, 0);
+		std::shared_ptr<ShaderRenderTarget> *inst = (std::shared_ptr<ShaderRenderTarget>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_RenderTargetBinding(duk_context *context) {
-		RenderTargetBinding *inst = new RenderTargetBinding();
+		std::shared_ptr<RenderTargetBinding> *inst = new std::shared_ptr<RenderTargetBinding>;
+		(*inst) = std::make_shared<RenderTargetBinding>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_RenderTargetBinding__get_id(duk_context *context) {
-		RenderTargetBinding *inst = (RenderTargetBinding*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->id.c_str());
+		std::shared_ptr<RenderTargetBinding> *inst = (std::shared_ptr<RenderTargetBinding>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->id.c_str());
 		return 1;
 	}
 
@@ -11494,8 +9746,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_RenderTargetBinding__get_name(duk_context *context) {
-		RenderTargetBinding *inst = (RenderTargetBinding*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->name.c_str());
+		std::shared_ptr<RenderTargetBinding> *inst = (std::shared_ptr<RenderTargetBinding>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->name.c_str());
 		return 1;
 	}
 
@@ -11506,8 +9758,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_RenderTargetBinding__get_mode(duk_context *context) {
-		RenderTargetBinding *inst = (RenderTargetBinding*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->mode);
+		std::shared_ptr<RenderTargetBinding> *inst = (std::shared_ptr<RenderTargetBinding>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->mode);
 		return 1;
 	}
 
@@ -11518,14 +9770,14 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_RenderTargetBinding__delete(duk_context *context) {
-		RenderTargetBinding *inst = (RenderTargetBinding*)duk_to_pointer(context, 0);
+		std::shared_ptr<RenderTargetBinding> *inst = (std::shared_ptr<RenderTargetBinding>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Shader__get_numSpotLights(duk_context *context) {
-		Shader *inst = (Shader*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->numSpotLights);
+		std::shared_ptr<Shader> *inst = (std::shared_ptr<Shader>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->numSpotLights);
 		return 1;
 	}
 
@@ -11536,8 +9788,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Shader__get_numPointLights(duk_context *context) {
-		Shader *inst = (Shader*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->numPointLights);
+		std::shared_ptr<Shader> *inst = (std::shared_ptr<Shader>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->numPointLights);
 		return 1;
 	}
 
@@ -11548,8 +9800,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Shader__get_screenShader(duk_context *context) {
-		Shader *inst = (Shader*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->screenShader);
+		std::shared_ptr<Shader> *inst = (std::shared_ptr<Shader>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->screenShader);
 		return 1;
 	}
 
@@ -11560,8 +9812,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Shader__get_name(duk_context *context) {
-		Shader *inst = (Shader*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->name.c_str());
+		std::shared_ptr<Shader> *inst = (std::shared_ptr<Shader>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->name.c_str());
 		return 1;
 	}
 
@@ -11572,68 +9824,53 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Shader__delete(duk_context *context) {
-		Shader *inst = (Shader*)duk_to_pointer(context, 0);
+		std::shared_ptr<Shader> *inst = (std::shared_ptr<Shader>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Shader_getType(duk_context *context) {
-		Shader *inst = (Shader*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getType());
+		std::shared_ptr<Shader> *inst = (std::shared_ptr<Shader>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getType());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Shader_setName(duk_context *context) {
-		Shader *inst = (Shader*)duk_to_pointer(context, 0);
+		std::shared_ptr<Shader> *inst = (std::shared_ptr<Shader>*)duk_to_pointer(context, 0);
 		String name = duk_to_string(context, 1);
-		inst->setName(name);
+		(*inst)->setName(name);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Shader_getName(duk_context *context) {
-		Shader *inst = (Shader*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->getName().c_str());
-		return 1;
-	}
-
-	duk_ret_t Polycode_Shader_getParamPointer(duk_context *context) {
-		Shader *inst = (Shader*)duk_to_pointer(context, 0);
-		String name = duk_to_string(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getParamPointer(name);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Shader_getAttribPointer(duk_context *context) {
-		Shader *inst = (Shader*)duk_to_pointer(context, 0);
-		String name = duk_to_string(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getAttribPointer(name);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		std::shared_ptr<Shader> *inst = (std::shared_ptr<Shader>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->getName().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Shader_reload(duk_context *context) {
-		Shader *inst = (Shader*)duk_to_pointer(context, 0);
-		inst->reload();
+		std::shared_ptr<Shader> *inst = (std::shared_ptr<Shader>*)duk_to_pointer(context, 0);
+		(*inst)->reload();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Shader_getExpectedParamType(duk_context *context) {
-		Shader *inst = (Shader*)duk_to_pointer(context, 0);
+		std::shared_ptr<Shader> *inst = (std::shared_ptr<Shader>*)duk_to_pointer(context, 0);
 		String name = duk_to_string(context, 1);
-		duk_push_int(context, inst->getExpectedParamType(name));
+		duk_push_int(context, (*inst)->getExpectedParamType(name));
 		return 1;
 	}
 
 	duk_ret_t Polycode_LocalShaderParam(duk_context *context) {
-		LocalShaderParam *inst = new LocalShaderParam();
+		std::shared_ptr<LocalShaderParam> *inst = new std::shared_ptr<LocalShaderParam>;
+		(*inst) = std::make_shared<LocalShaderParam>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_LocalShaderParam__get_name(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->name.c_str());
+		std::shared_ptr<LocalShaderParam> *inst = (std::shared_ptr<LocalShaderParam>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->name.c_str());
 		return 1;
 	}
 
@@ -11644,8 +9881,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_LocalShaderParam__get_type(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->type);
+		std::shared_ptr<LocalShaderParam> *inst = (std::shared_ptr<LocalShaderParam>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->type);
 		return 1;
 	}
 
@@ -11656,8 +9893,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_LocalShaderParam__get_ownsPointer(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->ownsPointer);
+		std::shared_ptr<LocalShaderParam> *inst = (std::shared_ptr<LocalShaderParam>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->ownsPointer);
 		return 1;
 	}
 
@@ -11668,8 +9905,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_LocalShaderParam__get_arraySize(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->arraySize);
+		std::shared_ptr<LocalShaderParam> *inst = (std::shared_ptr<LocalShaderParam>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->arraySize);
 		return 1;
 	}
 
@@ -11679,174 +9916,149 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_LocalShaderParam__get_param(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->param;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_LocalShaderParam__set_param(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
-		inst->param = (ProgramParam*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_LocalShaderParam__get_accessMutex(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->accessMutex;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_LocalShaderParam__set_accessMutex(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
-		inst->accessMutex = (CoreMutex*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_LocalShaderParam__delete(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
+		std::shared_ptr<LocalShaderParam> *inst = (std::shared_ptr<LocalShaderParam>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_LocalShaderParam_Copy(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
-		shared_ptr<LocalShaderParam> *retInst = new shared_ptr<LocalShaderParam>();
-		*retInst = inst->Copy();
+		std::shared_ptr<LocalShaderParam> *inst = (std::shared_ptr<LocalShaderParam>*)duk_to_pointer(context, 0);
+		std::shared_ptr<shared_ptr<LocalShaderParam>> *retInst = new std::shared_ptr<shared_ptr<LocalShaderParam>>;
+		*(*retInst) = (*inst)->Copy();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_LocalShaderParam_getNumber(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getNumber());
+		std::shared_ptr<LocalShaderParam> *inst = (std::shared_ptr<LocalShaderParam>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getNumber());
 		return 1;
 	}
 
 	duk_ret_t Polycode_LocalShaderParam_getVector2(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
-		Vector2 *retInst = new Vector2();
-		*retInst = inst->getVector2();
+		std::shared_ptr<LocalShaderParam> *inst = (std::shared_ptr<LocalShaderParam>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector2> *retInst = new std::shared_ptr<Vector2>;
+		*(*retInst) = (*inst)->getVector2();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_LocalShaderParam_getVector3(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->getVector3();
+		std::shared_ptr<LocalShaderParam> *inst = (std::shared_ptr<LocalShaderParam>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->getVector3();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_LocalShaderParam_getMatrix4(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
-		Matrix4 *retInst = new Matrix4();
-		*retInst = inst->getMatrix4();
+		std::shared_ptr<LocalShaderParam> *inst = (std::shared_ptr<LocalShaderParam>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Matrix4> *retInst = new std::shared_ptr<Matrix4>;
+		*(*retInst) = (*inst)->getMatrix4();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_LocalShaderParam_getColor(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
-		Color *retInst = new Color();
-		*retInst = inst->getColor();
+		std::shared_ptr<LocalShaderParam> *inst = (std::shared_ptr<LocalShaderParam>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Color> *retInst = new std::shared_ptr<Color>;
+		*(*retInst) = (*inst)->getColor();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_LocalShaderParam_setNumber(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
+		std::shared_ptr<LocalShaderParam> *inst = (std::shared_ptr<LocalShaderParam>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
-		inst->setNumber(x);
+		(*inst)->setNumber(x);
 		return 0;
 	}
 
 	duk_ret_t Polycode_LocalShaderParam_setVector2(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
+		std::shared_ptr<LocalShaderParam> *inst = (std::shared_ptr<LocalShaderParam>*)duk_to_pointer(context, 0);
 		Vector2 x = *(Vector2*)duk_to_pointer(context, 1);
-		inst->setVector2(x);
+		(*inst)->setVector2(x);
 		return 0;
 	}
 
 	duk_ret_t Polycode_LocalShaderParam_setVector3(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
+		std::shared_ptr<LocalShaderParam> *inst = (std::shared_ptr<LocalShaderParam>*)duk_to_pointer(context, 0);
 		Vector3 x = *(Vector3*)duk_to_pointer(context, 1);
-		inst->setVector3(x);
+		(*inst)->setVector3(x);
 		return 0;
 	}
 
 	duk_ret_t Polycode_LocalShaderParam_setMatrix4(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
+		std::shared_ptr<LocalShaderParam> *inst = (std::shared_ptr<LocalShaderParam>*)duk_to_pointer(context, 0);
 		Matrix4 x = *(Matrix4*)duk_to_pointer(context, 1);
-		inst->setMatrix4(x);
+		(*inst)->setMatrix4(x);
 		return 0;
 	}
 
 	duk_ret_t Polycode_LocalShaderParam_setMatrix4Array(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
+		std::shared_ptr<LocalShaderParam> *inst = (std::shared_ptr<LocalShaderParam>*)duk_to_pointer(context, 0);
 		vector<Matrix4> x = *(vector<Matrix4>*)duk_to_pointer(context, 1);
-		inst->setMatrix4Array(x);
+		(*inst)->setMatrix4Array(x);
 		return 0;
 	}
 
 	duk_ret_t Polycode_LocalShaderParam_setColor(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
+		std::shared_ptr<LocalShaderParam> *inst = (std::shared_ptr<LocalShaderParam>*)duk_to_pointer(context, 0);
 		Color x = *(Color*)duk_to_pointer(context, 1);
-		inst->setColor(x);
+		(*inst)->setColor(x);
 		return 0;
 	}
 
 	duk_ret_t Polycode_LocalShaderParam_setTexture(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
+		std::shared_ptr<LocalShaderParam> *inst = (std::shared_ptr<LocalShaderParam>*)duk_to_pointer(context, 0);
 		shared_ptr<Texture> texture = *(shared_ptr<Texture>*)duk_to_pointer(context, 1);
-		inst->setTexture(texture);
+		(*inst)->setTexture(texture);
 		return 0;
 	}
 
 	duk_ret_t Polycode_LocalShaderParam_getTexture(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
-		shared_ptr<Texture> *retInst = new shared_ptr<Texture>();
-		*retInst = inst->getTexture();
+		std::shared_ptr<LocalShaderParam> *inst = (std::shared_ptr<LocalShaderParam>*)duk_to_pointer(context, 0);
+		std::shared_ptr<shared_ptr<Texture>> *retInst = new std::shared_ptr<shared_ptr<Texture>>;
+		*(*retInst) = (*inst)->getTexture();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_LocalShaderParam_setCubemap(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
+		std::shared_ptr<LocalShaderParam> *inst = (std::shared_ptr<LocalShaderParam>*)duk_to_pointer(context, 0);
 		shared_ptr<Cubemap> cubemap = *(shared_ptr<Cubemap>*)duk_to_pointer(context, 1);
-		inst->setCubemap(cubemap);
+		(*inst)->setCubemap(cubemap);
 		return 0;
 	}
 
 	duk_ret_t Polycode_LocalShaderParam_getCubemap(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
-		shared_ptr<Cubemap> *retInst = new shared_ptr<Cubemap>();
-		*retInst = inst->getCubemap();
+		std::shared_ptr<LocalShaderParam> *inst = (std::shared_ptr<LocalShaderParam>*)duk_to_pointer(context, 0);
+		std::shared_ptr<shared_ptr<Cubemap>> *retInst = new std::shared_ptr<shared_ptr<Cubemap>>;
+		*(*retInst) = (*inst)->getCubemap();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_LocalShaderParam_setParamValueFromString(duk_context *context) {
-		LocalShaderParam *inst = (LocalShaderParam*)duk_to_pointer(context, 0);
+		std::shared_ptr<LocalShaderParam> *inst = (std::shared_ptr<LocalShaderParam>*)duk_to_pointer(context, 0);
 		int type = duk_to_int(context, 1);
 		String pvalue = duk_to_string(context, 2);
-		inst->setParamValueFromString(type,pvalue);
+		(*inst)->setParamValueFromString(type,pvalue);
 		return 0;
 	}
 
 	duk_ret_t Polycode_ShaderProgram(duk_context *context) {
 		String fileName = duk_to_string(context, 0);
-		ShaderProgram *inst = new ShaderProgram(fileName);
+		std::shared_ptr<ShaderProgram> *inst = new std::shared_ptr<ShaderProgram>;
+		(*inst) = std::make_shared<ShaderProgram>(fileName);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ShaderProgram__get_type(duk_context *context) {
-		ShaderProgram *inst = (ShaderProgram*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->type);
+		std::shared_ptr<ShaderProgram> *inst = (std::shared_ptr<ShaderProgram>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->type);
 		return 1;
 	}
 
@@ -11857,32 +10069,33 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_ShaderProgram__delete(duk_context *context) {
-		ShaderProgram *inst = (ShaderProgram*)duk_to_pointer(context, 0);
+		std::shared_ptr<ShaderProgram> *inst = (std::shared_ptr<ShaderProgram>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_ShaderProgram_reloadProgram(duk_context *context) {
-		ShaderProgram *inst = (ShaderProgram*)duk_to_pointer(context, 0);
-		inst->reloadProgram();
+		std::shared_ptr<ShaderProgram> *inst = (std::shared_ptr<ShaderProgram>*)duk_to_pointer(context, 0);
+		(*inst)->reloadProgram();
 		return 0;
 	}
 
 	duk_ret_t Polycode_ShaderProgram_reloadResource(duk_context *context) {
-		ShaderProgram *inst = (ShaderProgram*)duk_to_pointer(context, 0);
-		inst->reloadResource();
+		std::shared_ptr<ShaderProgram> *inst = (std::shared_ptr<ShaderProgram>*)duk_to_pointer(context, 0);
+		(*inst)->reloadResource();
 		return 0;
 	}
 
 	duk_ret_t Polycode_AttributeBinding(duk_context *context) {
-		AttributeBinding *inst = new AttributeBinding();
+		std::shared_ptr<AttributeBinding> *inst = new std::shared_ptr<AttributeBinding>;
+		(*inst) = std::make_shared<AttributeBinding>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_AttributeBinding__get_name(duk_context *context) {
-		AttributeBinding *inst = (AttributeBinding*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->name.c_str());
+		std::shared_ptr<AttributeBinding> *inst = (std::shared_ptr<AttributeBinding>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->name.c_str());
 		return 1;
 	}
 
@@ -11892,35 +10105,9 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_AttributeBinding__get_vertexData(duk_context *context) {
-		AttributeBinding *inst = (AttributeBinding*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->vertexData;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_AttributeBinding__set_vertexData(duk_context *context) {
-		AttributeBinding *inst = (AttributeBinding*)duk_to_pointer(context, 0);
-		inst->vertexData = (VertexDataArray*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_AttributeBinding__get_attribute(duk_context *context) {
-		AttributeBinding *inst = (AttributeBinding*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->attribute;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_AttributeBinding__set_attribute(duk_context *context) {
-		AttributeBinding *inst = (AttributeBinding*)duk_to_pointer(context, 0);
-		inst->attribute = (ProgramAttribute*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_AttributeBinding__get_enabled(duk_context *context) {
-		AttributeBinding *inst = (AttributeBinding*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->enabled);
+		std::shared_ptr<AttributeBinding> *inst = (std::shared_ptr<AttributeBinding>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->enabled);
 		return 1;
 	}
 
@@ -11931,627 +10118,340 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_AttributeBinding__delete(duk_context *context) {
-		AttributeBinding *inst = (AttributeBinding*)duk_to_pointer(context, 0);
+		std::shared_ptr<AttributeBinding> *inst = (std::shared_ptr<AttributeBinding>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_ShaderBinding(duk_context *context) {
-		ShaderBinding *inst = new ShaderBinding();
+		std::shared_ptr<ShaderBinding> *inst = new std::shared_ptr<ShaderBinding>;
+		(*inst) = std::make_shared<ShaderBinding>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
-	duk_ret_t Polycode_ShaderBinding__get_accessMutex(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->accessMutex;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_ShaderBinding__set_accessMutex(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
-		inst->accessMutex = (CoreMutex*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_ShaderBinding__delete(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
+		std::shared_ptr<ShaderBinding> *inst = (std::shared_ptr<ShaderBinding>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_ShaderBinding_copyTo(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
-		ShaderBinding* targetBinding = (ShaderBinding*)duk_to_pointer(context, 1);
-		inst->copyTo(targetBinding);
-		return 0;
-	}
-
 	duk_ret_t Polycode_ShaderBinding_addParam(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
+		std::shared_ptr<ShaderBinding> *inst = (std::shared_ptr<ShaderBinding>*)duk_to_pointer(context, 0);
 		int type = duk_to_int(context, 1);
 		String name = duk_to_string(context, 2);
-		shared_ptr<LocalShaderParam> *retInst = new shared_ptr<LocalShaderParam>();
-		*retInst = inst->addParam(type,name);
-		duk_push_pointer(context, (void*)retInst);
-		return 1;
-	}
-
-	duk_ret_t Polycode_ShaderBinding_addParamPointer(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
-		int type = duk_to_int(context, 1);
-		String name = duk_to_string(context, 2);
-		void* ptr = (void*)duk_to_pointer(context, 3);
-		shared_ptr<LocalShaderParam> *retInst = new shared_ptr<LocalShaderParam>();
-		*retInst = inst->addParamPointer(type,name,ptr);
+		std::shared_ptr<shared_ptr<LocalShaderParam>> *retInst = new std::shared_ptr<shared_ptr<LocalShaderParam>>;
+		*(*retInst) = (*inst)->addParam(type,name);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ShaderBinding_addParamFromData(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
+		std::shared_ptr<ShaderBinding> *inst = (std::shared_ptr<ShaderBinding>*)duk_to_pointer(context, 0);
 		String name = duk_to_string(context, 1);
 		String data = duk_to_string(context, 2);
-		shared_ptr<LocalShaderParam> *retInst = new shared_ptr<LocalShaderParam>();
-		*retInst = inst->addParamFromData(name,data);
+		std::shared_ptr<shared_ptr<LocalShaderParam>> *retInst = new std::shared_ptr<shared_ptr<LocalShaderParam>>;
+		*(*retInst) = (*inst)->addParamFromData(name,data);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ShaderBinding_getNumLocalParams(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumLocalParams());
+		std::shared_ptr<ShaderBinding> *inst = (std::shared_ptr<ShaderBinding>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumLocalParams());
 		return 1;
 	}
 
 	duk_ret_t Polycode_ShaderBinding_getLocalParam(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
+		std::shared_ptr<ShaderBinding> *inst = (std::shared_ptr<ShaderBinding>*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		shared_ptr<LocalShaderParam> *retInst = new shared_ptr<LocalShaderParam>();
-		*retInst = inst->getLocalParam(index);
+		std::shared_ptr<shared_ptr<LocalShaderParam>> *retInst = new std::shared_ptr<shared_ptr<LocalShaderParam>>;
+		*(*retInst) = (*inst)->getLocalParam(index);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ShaderBinding_getLocalParamByName(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
+		std::shared_ptr<ShaderBinding> *inst = (std::shared_ptr<ShaderBinding>*)duk_to_pointer(context, 0);
 		String name = duk_to_string(context, 1);
-		shared_ptr<LocalShaderParam> *retInst = new shared_ptr<LocalShaderParam>();
-		*retInst = inst->getLocalParamByName(name);
+		std::shared_ptr<shared_ptr<LocalShaderParam>> *retInst = new std::shared_ptr<shared_ptr<LocalShaderParam>>;
+		*(*retInst) = (*inst)->getLocalParamByName(name);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ShaderBinding_removeParam(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
+		std::shared_ptr<ShaderBinding> *inst = (std::shared_ptr<ShaderBinding>*)duk_to_pointer(context, 0);
 		String name = duk_to_string(context, 1);
-		inst->removeParam(name);
+		(*inst)->removeParam(name);
 		return 0;
 	}
 
 	duk_ret_t Polycode_ShaderBinding_loadTextureForParam(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
+		std::shared_ptr<ShaderBinding> *inst = (std::shared_ptr<ShaderBinding>*)duk_to_pointer(context, 0);
 		String paramName = duk_to_string(context, 1);
 		String fileName = duk_to_string(context, 2);
-		shared_ptr<Texture> *retInst = new shared_ptr<Texture>();
-		*retInst = inst->loadTextureForParam(paramName,fileName);
+		std::shared_ptr<shared_ptr<Texture>> *retInst = new std::shared_ptr<shared_ptr<Texture>>;
+		*(*retInst) = (*inst)->loadTextureForParam(paramName,fileName);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_ShaderBinding_setTextureForParam(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
+		std::shared_ptr<ShaderBinding> *inst = (std::shared_ptr<ShaderBinding>*)duk_to_pointer(context, 0);
 		String paramName = duk_to_string(context, 1);
 		shared_ptr<Texture> texture = *(shared_ptr<Texture>*)duk_to_pointer(context, 2);
-		inst->setTextureForParam(paramName,texture);
+		(*inst)->setTextureForParam(paramName,texture);
 		return 0;
 	}
 
 	duk_ret_t Polycode_ShaderBinding_setCubemapForParam(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
+		std::shared_ptr<ShaderBinding> *inst = (std::shared_ptr<ShaderBinding>*)duk_to_pointer(context, 0);
 		String paramName = duk_to_string(context, 1);
 		shared_ptr<Cubemap> cubemap = *(shared_ptr<Cubemap>*)duk_to_pointer(context, 2);
-		inst->setCubemapForParam(paramName,cubemap);
+		(*inst)->setCubemapForParam(paramName,cubemap);
 		return 0;
 	}
 
 	duk_ret_t Polycode_ShaderBinding_getNumAttributeBindings(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumAttributeBindings());
+		std::shared_ptr<ShaderBinding> *inst = (std::shared_ptr<ShaderBinding>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumAttributeBindings());
 		return 1;
-	}
-
-	duk_ret_t Polycode_ShaderBinding_getAttributeBinding(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
-		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getAttributeBinding(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_ShaderBinding_addAttributeBinding(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
-		String name = duk_to_string(context, 1);
-		VertexDataArray* dataArray = (VertexDataArray*)duk_to_pointer(context, 2);
-		PolyBase *ptrRetVal = (PolyBase*)inst->addAttributeBinding(name,dataArray);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_ShaderBinding_getAttributeBindingByName(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
-		String name = duk_to_string(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getAttributeBindingByName(name);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_ShaderBinding_addRenderTargetBinding(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
-		RenderTargetBinding* binding = (RenderTargetBinding*)duk_to_pointer(context, 1);
-		inst->addRenderTargetBinding(binding);
-		return 0;
-	}
-
-	duk_ret_t Polycode_ShaderBinding_removeRenderTargetBinding(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
-		RenderTargetBinding* binding = (RenderTargetBinding*)duk_to_pointer(context, 1);
-		inst->removeRenderTargetBinding(binding);
-		return 0;
 	}
 
 	duk_ret_t Polycode_ShaderBinding_getNumRenderTargetBindings(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumRenderTargetBindings());
-		return 1;
-	}
-
-	duk_ret_t Polycode_ShaderBinding_getRenderTargetBinding(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
-		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getRenderTargetBinding(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		std::shared_ptr<ShaderBinding> *inst = (std::shared_ptr<ShaderBinding>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumRenderTargetBindings());
 		return 1;
 	}
 
 	duk_ret_t Polycode_ShaderBinding_getNumInTargetBindings(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumInTargetBindings());
-		return 1;
-	}
-
-	duk_ret_t Polycode_ShaderBinding_getInTargetBinding(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
-		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getInTargetBinding(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		std::shared_ptr<ShaderBinding> *inst = (std::shared_ptr<ShaderBinding>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumInTargetBindings());
 		return 1;
 	}
 
 	duk_ret_t Polycode_ShaderBinding_getNumColorTargetBindings(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumColorTargetBindings());
-		return 1;
-	}
-
-	duk_ret_t Polycode_ShaderBinding_getColorTargetBinding(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
-		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getColorTargetBinding(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		std::shared_ptr<ShaderBinding> *inst = (std::shared_ptr<ShaderBinding>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumColorTargetBindings());
 		return 1;
 	}
 
 	duk_ret_t Polycode_ShaderBinding_getNumDepthTargetBindings(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumDepthTargetBindings());
-		return 1;
-	}
-
-	duk_ret_t Polycode_ShaderBinding_getDepthTargetBinding(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
-		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getDepthTargetBinding(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		std::shared_ptr<ShaderBinding> *inst = (std::shared_ptr<ShaderBinding>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumDepthTargetBindings());
 		return 1;
 	}
 
 	duk_ret_t Polycode_ShaderBinding_getNumOutTargetBindings(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumOutTargetBindings());
-		return 1;
-	}
-
-	duk_ret_t Polycode_ShaderBinding_getOutTargetBinding(duk_context *context) {
-		ShaderBinding *inst = (ShaderBinding*)duk_to_pointer(context, 0);
-		int index = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getOutTargetBinding(index);
-		duk_push_pointer(context, (void*)ptrRetVal);
+		std::shared_ptr<ShaderBinding> *inst = (std::shared_ptr<ShaderBinding>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumOutTargetBindings());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SkeletonAnimation(duk_context *context) {
 		String name = duk_to_string(context, 0);
 		Number duration = duk_to_number(context, 1);
-		SkeletonAnimation *inst = new SkeletonAnimation(name,duration);
+		std::shared_ptr<SkeletonAnimation> *inst = new std::shared_ptr<SkeletonAnimation>;
+		(*inst) = std::make_shared<SkeletonAnimation>(name,duration);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SkeletonAnimation__delete(duk_context *context) {
-		SkeletonAnimation *inst = (SkeletonAnimation*)duk_to_pointer(context, 0);
+		std::shared_ptr<SkeletonAnimation> *inst = (std::shared_ptr<SkeletonAnimation>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_SkeletonAnimation_addBoneTrack(duk_context *context) {
-		SkeletonAnimation *inst = (SkeletonAnimation*)duk_to_pointer(context, 0);
-		BoneTrack* boneTrack = (BoneTrack*)duk_to_pointer(context, 1);
-		inst->addBoneTrack(boneTrack);
-		return 0;
-	}
-
 	duk_ret_t Polycode_SkeletonAnimation_getName(duk_context *context) {
-		SkeletonAnimation *inst = (SkeletonAnimation*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->getName().c_str());
+		std::shared_ptr<SkeletonAnimation> *inst = (std::shared_ptr<SkeletonAnimation>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->getName().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SkeletonAnimation_Play(duk_context *context) {
-		SkeletonAnimation *inst = (SkeletonAnimation*)duk_to_pointer(context, 0);
+		std::shared_ptr<SkeletonAnimation> *inst = (std::shared_ptr<SkeletonAnimation>*)duk_to_pointer(context, 0);
 		bool once = duk_to_boolean(context, 1);
-		inst->Play(once);
+		(*inst)->Play(once);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SkeletonAnimation_Stop(duk_context *context) {
-		SkeletonAnimation *inst = (SkeletonAnimation*)duk_to_pointer(context, 0);
-		inst->Stop();
+		std::shared_ptr<SkeletonAnimation> *inst = (std::shared_ptr<SkeletonAnimation>*)duk_to_pointer(context, 0);
+		(*inst)->Stop();
 		return 0;
 	}
 
 	duk_ret_t Polycode_SkeletonAnimation_Reset(duk_context *context) {
-		SkeletonAnimation *inst = (SkeletonAnimation*)duk_to_pointer(context, 0);
-		inst->Reset();
+		std::shared_ptr<SkeletonAnimation> *inst = (std::shared_ptr<SkeletonAnimation>*)duk_to_pointer(context, 0);
+		(*inst)->Reset();
 		return 0;
 	}
 
 	duk_ret_t Polycode_SkeletonAnimation_Update(duk_context *context) {
-		SkeletonAnimation *inst = (SkeletonAnimation*)duk_to_pointer(context, 0);
-		inst->Update();
+		std::shared_ptr<SkeletonAnimation> *inst = (std::shared_ptr<SkeletonAnimation>*)duk_to_pointer(context, 0);
+		(*inst)->Update();
 		return 0;
 	}
 
 	duk_ret_t Polycode_SkeletonAnimation_setSpeed(duk_context *context) {
-		SkeletonAnimation *inst = (SkeletonAnimation*)duk_to_pointer(context, 0);
+		std::shared_ptr<SkeletonAnimation> *inst = (std::shared_ptr<SkeletonAnimation>*)duk_to_pointer(context, 0);
 		Number speed = duk_to_number(context, 1);
-		inst->setSpeed(speed);
+		(*inst)->setSpeed(speed);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SkeletonAnimation_setWeight(duk_context *context) {
-		SkeletonAnimation *inst = (SkeletonAnimation*)duk_to_pointer(context, 0);
+		std::shared_ptr<SkeletonAnimation> *inst = (std::shared_ptr<SkeletonAnimation>*)duk_to_pointer(context, 0);
 		Number newWeight = duk_to_number(context, 1);
-		inst->setWeight(newWeight);
+		(*inst)->setWeight(newWeight);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SkeletonAnimation_getWeight(duk_context *context) {
-		SkeletonAnimation *inst = (SkeletonAnimation*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getWeight());
+		std::shared_ptr<SkeletonAnimation> *inst = (std::shared_ptr<SkeletonAnimation>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getWeight());
 		return 1;
 	}
 
 	duk_ret_t Polycode_SkeletonAnimation_isPlaying(duk_context *context) {
-		SkeletonAnimation *inst = (SkeletonAnimation*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->isPlaying());
+		std::shared_ptr<SkeletonAnimation> *inst = (std::shared_ptr<SkeletonAnimation>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->isPlaying());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Skeleton(duk_context *context) {
 		String fileName = duk_to_string(context, 0);
-		Skeleton *inst = new Skeleton(fileName);
+		std::shared_ptr<Skeleton> *inst = new std::shared_ptr<Skeleton>;
+		(*inst) = std::make_shared<Skeleton>(fileName);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Skeleton__delete(duk_context *context) {
-		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
+		std::shared_ptr<Skeleton> *inst = (std::shared_ptr<Skeleton>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_Skeleton_BlankSkeleton(duk_context *context) {
-		PolyBase *ptrRetVal = (PolyBase*)Skeleton::BlankSkeleton();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
 	duk_ret_t Polycode_Skeleton_loadSkeleton(duk_context *context) {
-		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
+		std::shared_ptr<Skeleton> *inst = (std::shared_ptr<Skeleton>*)duk_to_pointer(context, 0);
 		String fileName = duk_to_string(context, 1);
-		inst->loadSkeleton(fileName);
+		(*inst)->loadSkeleton(fileName);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Skeleton_playAnimationByName(duk_context *context) {
-		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
+		std::shared_ptr<Skeleton> *inst = (std::shared_ptr<Skeleton>*)duk_to_pointer(context, 0);
 		String animName = duk_to_string(context, 1);
 		Number weight = duk_to_number(context, 2);
 		bool once = duk_to_boolean(context, 3);
 		bool restartIfPlaying = duk_to_boolean(context, 4);
-		inst->playAnimationByName(animName,weight,once,restartIfPlaying);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Skeleton_playAnimation(duk_context *context) {
-		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
-		SkeletonAnimation* animation = (SkeletonAnimation*)duk_to_pointer(context, 1);
-		Number weight = duk_to_number(context, 2);
-		bool once = duk_to_boolean(context, 3);
-		bool restartIfPlaying = duk_to_boolean(context, 4);
-		inst->playAnimation(animation,weight,once,restartIfPlaying);
+		(*inst)->playAnimationByName(animName,weight,once,restartIfPlaying);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Skeleton_setBaseAnimationByName(duk_context *context) {
-		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
+		std::shared_ptr<Skeleton> *inst = (std::shared_ptr<Skeleton>*)duk_to_pointer(context, 0);
 		String animName = duk_to_string(context, 1);
-		inst->setBaseAnimationByName(animName);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Skeleton_setBaseAnimation(duk_context *context) {
-		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
-		SkeletonAnimation* animation = (SkeletonAnimation*)duk_to_pointer(context, 1);
-		inst->setBaseAnimation(animation);
+		(*inst)->setBaseAnimationByName(animName);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Skeleton_stopAllAnimations(duk_context *context) {
-		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
-		inst->stopAllAnimations();
+		std::shared_ptr<Skeleton> *inst = (std::shared_ptr<Skeleton>*)duk_to_pointer(context, 0);
+		(*inst)->stopAllAnimations();
 		return 0;
-	}
-
-	duk_ret_t Polycode_Skeleton_getBaseAnimation(duk_context *context) {
-		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getBaseAnimation();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
 	}
 
 	duk_ret_t Polycode_Skeleton_addAnimation(duk_context *context) {
-		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
+		std::shared_ptr<Skeleton> *inst = (std::shared_ptr<Skeleton>*)duk_to_pointer(context, 0);
 		String name = duk_to_string(context, 1);
 		String fileName = duk_to_string(context, 2);
-		inst->addAnimation(name,fileName);
+		(*inst)->addAnimation(name,fileName);
 		return 0;
-	}
-
-	duk_ret_t Polycode_Skeleton_getAnimation(duk_context *context) {
-		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
-		String name = duk_to_string(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getAnimation(name);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
 	}
 
 	duk_ret_t Polycode_Skeleton_stopAnimationByName(duk_context *context) {
-		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
+		std::shared_ptr<Skeleton> *inst = (std::shared_ptr<Skeleton>*)duk_to_pointer(context, 0);
 		String name = duk_to_string(context, 1);
-		inst->stopAnimationByName(name);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Skeleton_stopAnimation(duk_context *context) {
-		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
-		SkeletonAnimation* animation = (SkeletonAnimation*)duk_to_pointer(context, 1);
-		inst->stopAnimation(animation);
+		(*inst)->stopAnimationByName(name);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Skeleton_Update(duk_context *context) {
-		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
-		inst->Update();
+		std::shared_ptr<Skeleton> *inst = (std::shared_ptr<Skeleton>*)duk_to_pointer(context, 0);
+		(*inst)->Update();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Skeleton_getBoneByName(duk_context *context) {
-		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
+		std::shared_ptr<Skeleton> *inst = (std::shared_ptr<Skeleton>*)duk_to_pointer(context, 0);
 		String name = duk_to_string(context, 1);
-		shared_ptr<Bone> *retInst = new shared_ptr<Bone>();
-		*retInst = inst->getBoneByName(name);
+		std::shared_ptr<shared_ptr<Bone>> *retInst = new std::shared_ptr<shared_ptr<Bone>>;
+		*(*retInst) = (*inst)->getBoneByName(name);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Skeleton_bonesVisible(duk_context *context) {
-		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
+		std::shared_ptr<Skeleton> *inst = (std::shared_ptr<Skeleton>*)duk_to_pointer(context, 0);
 		bool val = duk_to_boolean(context, 1);
-		inst->bonesVisible(val);
+		(*inst)->bonesVisible(val);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Skeleton_getNumBones(duk_context *context) {
-		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumBones());
+		std::shared_ptr<Skeleton> *inst = (std::shared_ptr<Skeleton>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumBones());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Skeleton_getBone(duk_context *context) {
-		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
+		std::shared_ptr<Skeleton> *inst = (std::shared_ptr<Skeleton>*)duk_to_pointer(context, 0);
 		int index = duk_to_int(context, 1);
-		shared_ptr<Bone> *retInst = new shared_ptr<Bone>();
-		*retInst = inst->getBone(index);
+		std::shared_ptr<shared_ptr<Bone>> *retInst = new std::shared_ptr<shared_ptr<Bone>>;
+		*(*retInst) = (*inst)->getBone(index);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Skeleton_addBone(duk_context *context) {
-		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
+		std::shared_ptr<Skeleton> *inst = (std::shared_ptr<Skeleton>*)duk_to_pointer(context, 0);
 		shared_ptr<Bone> bone = *(shared_ptr<Bone>*)duk_to_pointer(context, 1);
-		inst->addBone(bone);
+		(*inst)->addBone(bone);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Skeleton_removeBone(duk_context *context) {
-		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
+		std::shared_ptr<Skeleton> *inst = (std::shared_ptr<Skeleton>*)duk_to_pointer(context, 0);
 		shared_ptr<Bone> bone = *(shared_ptr<Bone>*)duk_to_pointer(context, 1);
-		inst->removeBone(bone);
+		(*inst)->removeBone(bone);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Skeleton_getBoneIndexByBone(duk_context *context) {
-		Skeleton *inst = (Skeleton*)duk_to_pointer(context, 0);
+		std::shared_ptr<Skeleton> *inst = (std::shared_ptr<Skeleton>*)duk_to_pointer(context, 0);
 		shared_ptr<Bone> bone = *(shared_ptr<Bone>*)duk_to_pointer(context, 1);
-		duk_push_int(context, inst->getBoneIndexByBone(bone));
+		duk_push_int(context, (*inst)->getBoneIndexByBone(bone));
 		return 1;
 	}
 
 	duk_ret_t Polycode_BoneTrack(duk_context *context) {
 		shared_ptr<Bone> bone = *(shared_ptr<Bone>*)duk_to_pointer(context, 0);
 		Number length = duk_to_number(context, 1);
-		BoneTrack *inst = new BoneTrack(bone,length);
+		std::shared_ptr<BoneTrack> *inst = new std::shared_ptr<BoneTrack>;
+		(*inst) = std::make_shared<BoneTrack>(bone,length);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
-	duk_ret_t Polycode_BoneTrack__get_scaleX(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->scaleX;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_BoneTrack__set_scaleX(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		inst->scaleX = (BezierCurve*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_BoneTrack__get_scaleY(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->scaleY;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_BoneTrack__set_scaleY(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		inst->scaleY = (BezierCurve*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_BoneTrack__get_scaleZ(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->scaleZ;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_BoneTrack__set_scaleZ(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		inst->scaleZ = (BezierCurve*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_BoneTrack__get_QuatW(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->QuatW;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_BoneTrack__set_QuatW(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		inst->QuatW = (BezierCurve*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_BoneTrack__get_QuatX(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->QuatX;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_BoneTrack__set_QuatX(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		inst->QuatX = (BezierCurve*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_BoneTrack__get_QuatY(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->QuatY;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_BoneTrack__set_QuatY(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		inst->QuatY = (BezierCurve*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_BoneTrack__get_QuatZ(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->QuatZ;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_BoneTrack__set_QuatZ(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		inst->QuatZ = (BezierCurve*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_BoneTrack__get_LocX(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->LocX;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_BoneTrack__set_LocX(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		inst->LocX = (BezierCurve*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_BoneTrack__get_LocY(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->LocY;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_BoneTrack__set_LocY(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		inst->LocY = (BezierCurve*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_BoneTrack__get_LocZ(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->LocZ;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_BoneTrack__set_LocZ(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		inst->LocZ = (BezierCurve*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_BoneTrack__get_position(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->position;
+		std::shared_ptr<BoneTrack> *inst = (std::shared_ptr<BoneTrack>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*retInst = std::make_shared<Vector3>();
+		*(*retInst) = (*inst)->position;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -12563,9 +10463,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_BoneTrack__get_scale(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->scale;
+		std::shared_ptr<BoneTrack> *inst = (std::shared_ptr<BoneTrack>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*retInst = std::make_shared<Vector3>();
+		*(*retInst) = (*inst)->scale;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -12577,9 +10478,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_BoneTrack__get_boneQuat(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		Quaternion *retInst = new Quaternion();
-		*retInst = inst->boneQuat;
+		std::shared_ptr<BoneTrack> *inst = (std::shared_ptr<BoneTrack>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Quaternion> *retInst = new std::shared_ptr<Quaternion>;
+		*retInst = std::make_shared<Quaternion>();
+		*(*retInst) = (*inst)->boneQuat;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -12590,22 +10492,9 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_BoneTrack__get_quatCurve(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->quatCurve;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_BoneTrack__set_quatCurve(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		inst->quatCurve = (QuaternionCurve*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_BoneTrack__get_weight(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->weight);
+		std::shared_ptr<BoneTrack> *inst = (std::shared_ptr<BoneTrack>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->weight);
 		return 1;
 	}
 
@@ -12616,313 +10505,305 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_BoneTrack__delete(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
+		std::shared_ptr<BoneTrack> *inst = (std::shared_ptr<BoneTrack>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_BoneTrack_Play(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
+		std::shared_ptr<BoneTrack> *inst = (std::shared_ptr<BoneTrack>*)duk_to_pointer(context, 0);
 		bool once = duk_to_boolean(context, 1);
-		inst->Play(once);
+		(*inst)->Play(once);
 		return 0;
 	}
 
 	duk_ret_t Polycode_BoneTrack_Stop(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		inst->Stop();
+		std::shared_ptr<BoneTrack> *inst = (std::shared_ptr<BoneTrack>*)duk_to_pointer(context, 0);
+		(*inst)->Stop();
 		return 0;
 	}
 
 	duk_ret_t Polycode_BoneTrack_Update(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
+		std::shared_ptr<BoneTrack> *inst = (std::shared_ptr<BoneTrack>*)duk_to_pointer(context, 0);
 		Number elapsed = duk_to_number(context, 1);
-		inst->Update(elapsed);
+		(*inst)->Update(elapsed);
 		return 0;
 	}
 
 	duk_ret_t Polycode_BoneTrack_Reset(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
-		inst->Reset();
+		std::shared_ptr<BoneTrack> *inst = (std::shared_ptr<BoneTrack>*)duk_to_pointer(context, 0);
+		(*inst)->Reset();
 		return 0;
 	}
 
 	duk_ret_t Polycode_BoneTrack_setSpeed(duk_context *context) {
-		BoneTrack *inst = (BoneTrack*)duk_to_pointer(context, 0);
+		std::shared_ptr<BoneTrack> *inst = (std::shared_ptr<BoneTrack>*)duk_to_pointer(context, 0);
 		Number speed = duk_to_number(context, 1);
-		inst->setSpeed(speed);
+		(*inst)->setSpeed(speed);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Sound(duk_context *context) {
 		String fileName = duk_to_string(context, 0);
-		Sound *inst = new Sound(fileName);
+		std::shared_ptr<Sound> *inst = new std::shared_ptr<Sound>;
+		(*inst) = std::make_shared<Sound>(fileName);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Sound__delete(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Sound_getSampleAsNumber(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
 		int offset = duk_to_int(context, 1);
 		int channel = duk_to_int(context, 2);
 		Vector3 position = *(Vector3*)duk_to_pointer(context, 3);
 		Quaternion orientation = *(Quaternion*)duk_to_pointer(context, 4);
-		duk_push_number(context, inst->getSampleAsNumber(offset,channel,position,orientation));
+		duk_push_number(context, (*inst)->getSampleAsNumber(offset,channel,position,orientation));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Sound_loadFile(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
 		String fileName = duk_to_string(context, 1);
-		inst->loadFile(fileName);
+		(*inst)->loadFile(fileName);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Sound_Play(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
 		bool loop = duk_to_boolean(context, 1);
 		bool restartSound = duk_to_boolean(context, 2);
-		inst->Play(loop,restartSound);
+		(*inst)->Play(loop,restartSound);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Sound_Stop(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
-		inst->Stop();
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
+		(*inst)->Stop();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Sound_setVolume(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
 		Number newVolume = duk_to_number(context, 1);
-		inst->setVolume(newVolume);
+		(*inst)->setVolume(newVolume);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Sound_getVolume(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getVolume());
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getVolume());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Sound_setPitch(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
 		Number newPitch = duk_to_number(context, 1);
-		inst->setPitch(newPitch);
+		(*inst)->setPitch(newPitch);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Sound_getPitch(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getPitch());
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getPitch());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Sound_isPlaying(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->isPlaying());
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->isPlaying());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Sound_isLooped(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->isLooped());
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->isLooped());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Sound_setIsPositional(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
 		bool isPositional = duk_to_boolean(context, 1);
-		inst->setIsPositional(isPositional);
+		(*inst)->setIsPositional(isPositional);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Sound_setSoundPosition(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
 		Vector3 position = *(Vector3*)duk_to_pointer(context, 1);
-		inst->setSoundPosition(position);
+		(*inst)->setSoundPosition(position);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Sound_setSoundVelocity(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
 		Vector3 velocity = *(Vector3*)duk_to_pointer(context, 1);
-		inst->setSoundVelocity(velocity);
+		(*inst)->setSoundVelocity(velocity);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Sound_setSoundDirection(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
 		Vector3 direction = *(Vector3*)duk_to_pointer(context, 1);
-		inst->setSoundDirection(direction);
+		(*inst)->setSoundDirection(direction);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Sound_setOffset(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
 		int offset = duk_to_int(context, 1);
-		inst->setOffset(offset);
+		(*inst)->setOffset(offset);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Sound_getFileName(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->getFileName().c_str());
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->getFileName().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Sound_getPlaybackDuration(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getPlaybackDuration());
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getPlaybackDuration());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Sound_getPlaybackTime(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getPlaybackTime());
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getPlaybackTime());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Sound_seekTo(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
 		Number time = duk_to_number(context, 1);
-		inst->seekTo(time);
+		(*inst)->seekTo(time);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Sound_getOffset(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getOffset());
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getOffset());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Sound_getSampleLength(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getSampleLength());
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getSampleLength());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Sound_getFrequency(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getFrequency());
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getFrequency());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Sound_setPositionalProperties(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
 		Number referenceDistance = duk_to_number(context, 1);
 		Number maxDistance = duk_to_number(context, 2);
-		inst->setPositionalProperties(referenceDistance,maxDistance);
+		(*inst)->setPositionalProperties(referenceDistance,maxDistance);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Sound_setReferenceDistance(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
 		Number referenceDistance = duk_to_number(context, 1);
-		inst->setReferenceDistance(referenceDistance);
+		(*inst)->setReferenceDistance(referenceDistance);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Sound_setMaxDistance(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
 		Number maxDistance = duk_to_number(context, 1);
-		inst->setMaxDistance(maxDistance);
+		(*inst)->setMaxDistance(maxDistance);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Sound_getReferenceDistance(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getReferenceDistance());
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getReferenceDistance());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Sound_getMaxDistance(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getMaxDistance());
-		return 1;
-	}
-
-	duk_ret_t Polycode_Sound_loadBytes(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
-		char* data = (char*)duk_to_pointer(context, 1);
-		int size = duk_to_int(context, 2);
-		int channels = duk_to_int(context, 3);
-		int freq = duk_to_int(context, 4);
-		SoundFormat format = *(SoundFormat*)duk_to_pointer(context, 5);
-		duk_push_boolean(context, inst->loadBytes(data,size,channels,freq,format));
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getMaxDistance());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Sound_loadWAV(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
 		String fileName = duk_to_string(context, 1);
-		duk_push_boolean(context, inst->loadWAV(fileName));
+		duk_push_boolean(context, (*inst)->loadWAV(fileName));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Sound_loadOGG(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
 		String fileName = duk_to_string(context, 1);
-		duk_push_boolean(context, inst->loadOGG(fileName));
+		duk_push_boolean(context, (*inst)->loadOGG(fileName));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Sound_soundCheck(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
 		bool result = duk_to_boolean(context, 1);
 		String err = duk_to_string(context, 2);
-		inst->soundCheck(result,err);
+		(*inst)->soundCheck(result,err);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Sound_updateStream(duk_context *context) {
-		Sound *inst = (Sound*)duk_to_pointer(context, 0);
+		std::shared_ptr<Sound> *inst = (std::shared_ptr<Sound>*)duk_to_pointer(context, 0);
 		int streamCount = duk_to_int(context, 1);
-		inst->updateStream(streamCount);
+		(*inst)->updateStream(streamCount);
 		return 0;
 	}
 
 	duk_ret_t Polycode_AudioStreamingSource(duk_context *context) {
 		int channels = duk_to_int(context, 0);
 		int freq = duk_to_int(context, 1);
-		AudioStreamingSource *inst = new AudioStreamingSource(channels,freq);
+		std::shared_ptr<AudioStreamingSource> *inst = new std::shared_ptr<AudioStreamingSource>;
+		(*inst) = std::make_shared<AudioStreamingSource>(channels,freq);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_AudioStreamingSource__delete(duk_context *context) {
-		AudioStreamingSource *inst = (AudioStreamingSource*)duk_to_pointer(context, 0);
+		std::shared_ptr<AudioStreamingSource> *inst = (std::shared_ptr<AudioStreamingSource>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_AudioStreamingSource_getNumChannels(duk_context *context) {
-		AudioStreamingSource *inst = (AudioStreamingSource*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getNumChannels());
+		std::shared_ptr<AudioStreamingSource> *inst = (std::shared_ptr<AudioStreamingSource>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getNumChannels());
 		return 1;
 	}
 
 	duk_ret_t Polycode_AudioStreamingSource_getFrequency(duk_context *context) {
-		AudioStreamingSource *inst = (AudioStreamingSource*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getFrequency());
+		std::shared_ptr<AudioStreamingSource> *inst = (std::shared_ptr<AudioStreamingSource>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getFrequency());
 		return 1;
 	}
 
 	duk_ret_t Polycode_AudioMixer(duk_context *context) {
-		AudioMixer *inst = new AudioMixer();
+		std::shared_ptr<AudioMixer> *inst = new std::shared_ptr<AudioMixer>;
+		(*inst) = std::make_shared<AudioMixer>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_AudioMixer__get_globalVolume(duk_context *context) {
-		AudioMixer *inst = (AudioMixer*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->globalVolume);
+		std::shared_ptr<AudioMixer> *inst = (std::shared_ptr<AudioMixer>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->globalVolume);
 		return 1;
 	}
 
@@ -12933,9 +10814,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_AudioMixer__get_listenerPosition(duk_context *context) {
-		AudioMixer *inst = (AudioMixer*)duk_to_pointer(context, 0);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->listenerPosition;
+		std::shared_ptr<AudioMixer> *inst = (std::shared_ptr<AudioMixer>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*retInst = std::make_shared<Vector3>();
+		*(*retInst) = (*inst)->listenerPosition;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -12947,9 +10829,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_AudioMixer__get_listenerOrientation(duk_context *context) {
-		AudioMixer *inst = (AudioMixer*)duk_to_pointer(context, 0);
-		Quaternion *retInst = new Quaternion();
-		*retInst = inst->listenerOrientation;
+		std::shared_ptr<AudioMixer> *inst = (std::shared_ptr<AudioMixer>*)duk_to_pointer(context, 0);
+		std::shared_ptr<Quaternion> *retInst = new std::shared_ptr<Quaternion>;
+		*retInst = std::make_shared<Quaternion>();
+		*(*retInst) = (*inst)->listenerOrientation;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -12960,119 +10843,72 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_AudioMixer__get_mixerMutex(duk_context *context) {
-		AudioMixer *inst = (AudioMixer*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->mixerMutex;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_AudioMixer__set_mixerMutex(duk_context *context) {
-		AudioMixer *inst = (AudioMixer*)duk_to_pointer(context, 0);
-		inst->mixerMutex = (CoreMutex*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_AudioMixer__delete(duk_context *context) {
-		AudioMixer *inst = (AudioMixer*)duk_to_pointer(context, 0);
+		std::shared_ptr<AudioMixer> *inst = (std::shared_ptr<AudioMixer>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
-	duk_ret_t Polycode_AudioMixer_mixIntoBuffer(duk_context *context) {
-		AudioMixer *inst = (AudioMixer*)duk_to_pointer(context, 0);
-		int16_t* buffer = (int16_t*)duk_to_pointer(context, 1);
-		int numSamples = duk_to_int(context, 2);
-		inst->mixIntoBuffer(buffer,numSamples);
-		return 0;
-	}
-
 	duk_ret_t Polycode_SoundManager(duk_context *context) {
-		SoundManager *inst = new SoundManager();
+		std::shared_ptr<SoundManager> *inst = new std::shared_ptr<SoundManager>;
+		(*inst) = std::make_shared<SoundManager>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_SoundManager__delete(duk_context *context) {
-		SoundManager *inst = (SoundManager*)duk_to_pointer(context, 0);
+		std::shared_ptr<SoundManager> *inst = (std::shared_ptr<SoundManager>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_SoundManager_setListenerPosition(duk_context *context) {
-		SoundManager *inst = (SoundManager*)duk_to_pointer(context, 0);
+		std::shared_ptr<SoundManager> *inst = (std::shared_ptr<SoundManager>*)duk_to_pointer(context, 0);
 		Vector3 position = *(Vector3*)duk_to_pointer(context, 1);
-		inst->setListenerPosition(position);
+		(*inst)->setListenerPosition(position);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SoundManager_setListenerOrientation(duk_context *context) {
-		SoundManager *inst = (SoundManager*)duk_to_pointer(context, 0);
+		std::shared_ptr<SoundManager> *inst = (std::shared_ptr<SoundManager>*)duk_to_pointer(context, 0);
 		Quaternion orientation = *(Quaternion*)duk_to_pointer(context, 1);
-		inst->setListenerOrientation(orientation);
+		(*inst)->setListenerOrientation(orientation);
 		return 0;
 	}
 
 	duk_ret_t Polycode_SoundManager_recordSound(duk_context *context) {
-		SoundManager *inst = (SoundManager*)duk_to_pointer(context, 0);
+		std::shared_ptr<SoundManager> *inst = (std::shared_ptr<SoundManager>*)duk_to_pointer(context, 0);
 		int rate = duk_to_int(context, 1);
 		int sampleSize = duk_to_int(context, 2);
-		duk_push_boolean(context, inst->recordSound(rate,sampleSize));
+		duk_push_boolean(context, (*inst)->recordSound(rate,sampleSize));
 		return 1;
-	}
-
-	duk_ret_t Polycode_SoundManager_stopRecording(duk_context *context) {
-		SoundManager *inst = (SoundManager*)duk_to_pointer(context, 0);
-		bool generateFloatBuffer = duk_to_boolean(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->stopRecording(generateFloatBuffer);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_SoundManager_setAudioInterface(duk_context *context) {
-		SoundManager *inst = (SoundManager*)duk_to_pointer(context, 0);
-		AudioInterface* audioInterface = (AudioInterface*)duk_to_pointer(context, 1);
-		inst->setAudioInterface(audioInterface);
-		return 0;
 	}
 
 	duk_ret_t Polycode_SoundManager_Update(duk_context *context) {
-		SoundManager *inst = (SoundManager*)duk_to_pointer(context, 0);
-		inst->Update();
+		std::shared_ptr<SoundManager> *inst = (std::shared_ptr<SoundManager>*)duk_to_pointer(context, 0);
+		(*inst)->Update();
 		return 0;
 	}
 
 	duk_ret_t Polycode_SoundManager_setGlobalVolume(duk_context *context) {
-		SoundManager *inst = (SoundManager*)duk_to_pointer(context, 0);
+		std::shared_ptr<SoundManager> *inst = (std::shared_ptr<SoundManager>*)duk_to_pointer(context, 0);
 		Number globalVolume = duk_to_number(context, 1);
-		inst->setGlobalVolume(globalVolume);
-		return 0;
-	}
-
-	duk_ret_t Polycode_SoundManager_registerSound(duk_context *context) {
-		SoundManager *inst = (SoundManager*)duk_to_pointer(context, 0);
-		Sound* sound = (Sound*)duk_to_pointer(context, 1);
-		inst->registerSound(sound);
-		return 0;
-	}
-
-	duk_ret_t Polycode_SoundManager_unregisterSound(duk_context *context) {
-		SoundManager *inst = (SoundManager*)duk_to_pointer(context, 0);
-		Sound* sound = (Sound*)duk_to_pointer(context, 1);
-		inst->unregisterSound(sound);
+		(*inst)->setGlobalVolume(globalVolume);
 		return 0;
 	}
 
 	duk_ret_t Polycode_String(duk_context *context) {
-		String *inst = new String();
+		std::shared_ptr<String> *inst = new std::shared_ptr<String>;
+		(*inst) = std::make_shared<String>();
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_String__get_contents(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
-		string *retInst = new string();
-		*retInst = inst->contents;
+		std::shared_ptr<String> *inst = (std::shared_ptr<String>*)duk_to_pointer(context, 0);
+		std::shared_ptr<string> *retInst = new std::shared_ptr<string>;
+		*retInst = std::make_shared<string>();
+		*(*retInst) = (*inst)->contents;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -13084,9 +10920,10 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_String__get_w_contents(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
-		wstring *retInst = new wstring();
-		*retInst = inst->w_contents;
+		std::shared_ptr<String> *inst = (std::shared_ptr<String>*)duk_to_pointer(context, 0);
+		std::shared_ptr<wstring> *retInst = new std::shared_ptr<wstring>;
+		*retInst = std::make_shared<wstring>();
+		*(*retInst) = (*inst)->w_contents;
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
@@ -13098,108 +10935,108 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_String__delete(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
+		std::shared_ptr<String> *inst = (std::shared_ptr<String>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_String_size(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
-		size_t *retInst = new size_t();
-		*retInst = inst->size();
+		std::shared_ptr<String> *inst = (std::shared_ptr<String>*)duk_to_pointer(context, 0);
+		std::shared_ptr<size_t> *retInst = new std::shared_ptr<size_t>;
+		*(*retInst) = (*inst)->size();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_String_length(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
-		size_t *retInst = new size_t();
-		*retInst = inst->length();
+		std::shared_ptr<String> *inst = (std::shared_ptr<String>*)duk_to_pointer(context, 0);
+		std::shared_ptr<size_t> *retInst = new std::shared_ptr<size_t>;
+		*(*retInst) = (*inst)->length();
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_String_substr(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
+		std::shared_ptr<String> *inst = (std::shared_ptr<String>*)duk_to_pointer(context, 0);
 		size_t pos = *(size_t*)duk_to_pointer(context, 1);
 		size_t n = *(size_t*)duk_to_pointer(context, 2);
-		duk_push_string(context, inst->substr(pos,n).c_str());
+		duk_push_string(context, (*inst)->substr(pos,n).c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_String_rfind(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
+		std::shared_ptr<String> *inst = (std::shared_ptr<String>*)duk_to_pointer(context, 0);
 		String str = duk_to_string(context, 1);
 		size_t pos = *(size_t*)duk_to_pointer(context, 2);
-		size_t *retInst = new size_t();
-		*retInst = inst->rfind(str,pos);
+		std::shared_ptr<size_t> *retInst = new std::shared_ptr<size_t>;
+		*(*retInst) = (*inst)->rfind(str,pos);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_String_find(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
+		std::shared_ptr<String> *inst = (std::shared_ptr<String>*)duk_to_pointer(context, 0);
 		String str = duk_to_string(context, 1);
 		size_t pos = *(size_t*)duk_to_pointer(context, 2);
-		size_t *retInst = new size_t();
-		*retInst = inst->find(str,pos);
+		std::shared_ptr<size_t> *retInst = new std::shared_ptr<size_t>;
+		*(*retInst) = (*inst)->find(str,pos);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_String_find_last_of(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
+		std::shared_ptr<String> *inst = (std::shared_ptr<String>*)duk_to_pointer(context, 0);
 		String str = duk_to_string(context, 1);
 		size_t pos = *(size_t*)duk_to_pointer(context, 2);
-		size_t *retInst = new size_t();
-		*retInst = inst->find_last_of(str,pos);
+		std::shared_ptr<size_t> *retInst = new std::shared_ptr<size_t>;
+		*(*retInst) = (*inst)->find_last_of(str,pos);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_String_find_first_of(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
+		std::shared_ptr<String> *inst = (std::shared_ptr<String>*)duk_to_pointer(context, 0);
 		String str = duk_to_string(context, 1);
 		size_t pos = *(size_t*)duk_to_pointer(context, 2);
-		size_t *retInst = new size_t();
-		*retInst = inst->find_first_of(str,pos);
+		std::shared_ptr<size_t> *retInst = new std::shared_ptr<size_t>;
+		*(*retInst) = (*inst)->find_first_of(str,pos);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_String_find_first_not_of(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
+		std::shared_ptr<String> *inst = (std::shared_ptr<String>*)duk_to_pointer(context, 0);
 		String str = duk_to_string(context, 1);
 		size_t pos = *(size_t*)duk_to_pointer(context, 2);
-		size_t *retInst = new size_t();
-		*retInst = inst->find_first_not_of(str,pos);
+		std::shared_ptr<size_t> *retInst = new std::shared_ptr<size_t>;
+		*(*retInst) = (*inst)->find_first_not_of(str,pos);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_String_toLowerCase(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->toLowerCase().c_str());
+		std::shared_ptr<String> *inst = (std::shared_ptr<String>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->toLowerCase().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_String_toUpperCase(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
-		duk_push_string(context, inst->toUpperCase().c_str());
+		std::shared_ptr<String> *inst = (std::shared_ptr<String>*)duk_to_pointer(context, 0);
+		duk_push_string(context, (*inst)->toUpperCase().c_str());
 		return 1;
 	}
 
 	duk_ret_t Polycode_String_split(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
+		std::shared_ptr<String> *inst = (std::shared_ptr<String>*)duk_to_pointer(context, 0);
 		String delim = duk_to_string(context, 1);
 		return 0;
 	}
 
 	duk_ret_t Polycode_String_replace(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
+		std::shared_ptr<String> *inst = (std::shared_ptr<String>*)duk_to_pointer(context, 0);
 		String what = duk_to_string(context, 1);
 		String withWhat = duk_to_string(context, 2);
-		duk_push_string(context, inst->replace(what,withWhat).c_str());
+		duk_push_string(context, (*inst)->replace(what,withWhat).c_str());
 		return 1;
 	}
 
@@ -13211,14 +11048,14 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_String_toNumber(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->toNumber());
+		std::shared_ptr<String> *inst = (std::shared_ptr<String>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->toNumber());
 		return 1;
 	}
 
 	duk_ret_t Polycode_String_toInteger(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->toInteger());
+		std::shared_ptr<String> *inst = (std::shared_ptr<String>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->toInteger());
 		return 1;
 	}
 
@@ -13228,62 +11065,31 @@ namespace Polycode {
 		return 1;
 	}
 
-	duk_ret_t Polycode_String_c_str(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->c_str();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_String_getDataWithEncoding(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
-		int encoding = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getDataWithEncoding(encoding);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_String_getWDataWithEncoding(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
-		int encoding = duk_to_int(context, 1);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getWDataWithEncoding(encoding);
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
 	duk_ret_t Polycode_String_append(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
+		std::shared_ptr<String> *inst = (std::shared_ptr<String>*)duk_to_pointer(context, 0);
 		char c = *(char*)duk_to_pointer(context, 1);
-		inst->append(c);
+		(*inst)->append(c);
 		return 0;
 	}
 
 	duk_ret_t Polycode_String_getDataSizeWithEncoding(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
+		std::shared_ptr<String> *inst = (std::shared_ptr<String>*)duk_to_pointer(context, 0);
 		int encoding = duk_to_int(context, 1);
-		size_t *retInst = new size_t();
-		*retInst = inst->getDataSizeWithEncoding(encoding);
+		std::shared_ptr<size_t> *retInst = new std::shared_ptr<size_t>;
+		*(*retInst) = (*inst)->getDataSizeWithEncoding(encoding);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
-	duk_ret_t Polycode_String_setDataWithEncoding(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
-		char* data = (char*)duk_to_pointer(context, 1);
-		int encoding = duk_to_int(context, 2);
-		inst->setDataWithEncoding(data,encoding);
-		return 0;
-	}
-
 	duk_ret_t Polycode_String_isNumber(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->isNumber());
+		std::shared_ptr<String> *inst = (std::shared_ptr<String>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->isNumber());
 		return 1;
 	}
 
 	duk_ret_t Polycode_String_isInteger(duk_context *context) {
-		String *inst = (String*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->isInteger());
+		std::shared_ptr<String> *inst = (std::shared_ptr<String>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->isInteger());
 		return 1;
 	}
 
@@ -13292,32 +11098,33 @@ namespace Polycode {
 		int height = duk_to_int(context, 1);
 		bool attachDepthBuffer = duk_to_boolean(context, 2);
 		bool floatingPoint = duk_to_boolean(context, 3);
-		RenderBuffer *inst = new RenderBuffer(width,height,attachDepthBuffer,floatingPoint);
+		std::shared_ptr<RenderBuffer> *inst = new std::shared_ptr<RenderBuffer>;
+		(*inst) = std::make_shared<RenderBuffer>(width,height,attachDepthBuffer,floatingPoint);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_RenderBuffer__delete(duk_context *context) {
-		RenderBuffer *inst = (RenderBuffer*)duk_to_pointer(context, 0);
+		std::shared_ptr<RenderBuffer> *inst = (std::shared_ptr<RenderBuffer>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_RenderBuffer_getWidth(duk_context *context) {
-		RenderBuffer *inst = (RenderBuffer*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getWidth());
+		std::shared_ptr<RenderBuffer> *inst = (std::shared_ptr<RenderBuffer>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getWidth());
 		return 1;
 	}
 
 	duk_ret_t Polycode_RenderBuffer_getHeight(duk_context *context) {
-		RenderBuffer *inst = (RenderBuffer*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getHeight());
+		std::shared_ptr<RenderBuffer> *inst = (std::shared_ptr<RenderBuffer>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getHeight());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Texture__get_clamp(duk_context *context) {
-		Texture *inst = (Texture*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->clamp);
+		std::shared_ptr<Texture> *inst = (std::shared_ptr<Texture>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->clamp);
 		return 1;
 	}
 
@@ -13327,22 +11134,9 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_Texture__get_textureData(duk_context *context) {
-		Texture *inst = (Texture*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->textureData;
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
-	}
-
-	duk_ret_t Polycode_Texture__set_textureData(duk_context *context) {
-		Texture *inst = (Texture*)duk_to_pointer(context, 0);
-		inst->textureData = (char*)duk_to_pointer(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_Texture__get_type(duk_context *context) {
-		Texture *inst = (Texture*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->type);
+		std::shared_ptr<Texture> *inst = (std::shared_ptr<Texture>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->type);
 		return 1;
 	}
 
@@ -13353,8 +11147,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Texture__get_filteringMode(duk_context *context) {
-		Texture *inst = (Texture*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->filteringMode);
+		std::shared_ptr<Texture> *inst = (std::shared_ptr<Texture>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->filteringMode);
 		return 1;
 	}
 
@@ -13365,8 +11159,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Texture__get_createMipmaps(duk_context *context) {
-		Texture *inst = (Texture*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->createMipmaps);
+		std::shared_ptr<Texture> *inst = (std::shared_ptr<Texture>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->createMipmaps);
 		return 1;
 	}
 
@@ -13377,8 +11171,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Texture__get_anisotropy(duk_context *context) {
-		Texture *inst = (Texture*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->anisotropy);
+		std::shared_ptr<Texture> *inst = (std::shared_ptr<Texture>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->anisotropy);
 		return 1;
 	}
 
@@ -13389,8 +11183,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Texture__get_framebufferTexture(duk_context *context) {
-		Texture *inst = (Texture*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->framebufferTexture);
+		std::shared_ptr<Texture> *inst = (std::shared_ptr<Texture>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->framebufferTexture);
 		return 1;
 	}
 
@@ -13401,8 +11195,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Texture__get_depthTexture(duk_context *context) {
-		Texture *inst = (Texture*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->depthTexture);
+		std::shared_ptr<Texture> *inst = (std::shared_ptr<Texture>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->depthTexture);
 		return 1;
 	}
 
@@ -13413,132 +11207,120 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Texture__delete(duk_context *context) {
-		Texture *inst = (Texture*)duk_to_pointer(context, 0);
+		std::shared_ptr<Texture> *inst = (std::shared_ptr<Texture>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Texture_reloadResource(duk_context *context) {
-		Texture *inst = (Texture*)duk_to_pointer(context, 0);
-		inst->reloadResource();
+		std::shared_ptr<Texture> *inst = (std::shared_ptr<Texture>*)duk_to_pointer(context, 0);
+		(*inst)->reloadResource();
 		return 0;
-	}
-
-	duk_ret_t Polycode_Texture_setImageData(duk_context *context) {
-		Texture *inst = (Texture*)duk_to_pointer(context, 0);
-		Image* data = (Image*)duk_to_pointer(context, 1);
-		inst->setImageData(data);
-		return 0;
-	}
-
-	duk_ret_t Polycode_Texture_getTextureData(duk_context *context) {
-		Texture *inst = (Texture*)duk_to_pointer(context, 0);
-		PolyBase *ptrRetVal = (PolyBase*)inst->getTextureData();
-		duk_push_pointer(context, (void*)ptrRetVal);
-		return 1;
 	}
 
 	duk_ret_t Polycode_Texture_getWidth(duk_context *context) {
-		Texture *inst = (Texture*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getWidth());
+		std::shared_ptr<Texture> *inst = (std::shared_ptr<Texture>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getWidth());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Texture_getHeight(duk_context *context) {
-		Texture *inst = (Texture*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getHeight());
+		std::shared_ptr<Texture> *inst = (std::shared_ptr<Texture>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getHeight());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Texture_setCreateMipmaps(duk_context *context) {
-		Texture *inst = (Texture*)duk_to_pointer(context, 0);
+		std::shared_ptr<Texture> *inst = (std::shared_ptr<Texture>*)duk_to_pointer(context, 0);
 		bool createMipmapsIn = duk_to_boolean(context, 1);
-		inst->setCreateMipmaps(createMipmapsIn);
+		(*inst)->setCreateMipmaps(createMipmapsIn);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Texture_getCreateMipmaps(duk_context *context) {
-		Texture *inst = (Texture*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->getCreateMipmaps());
+		std::shared_ptr<Texture> *inst = (std::shared_ptr<Texture>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->getCreateMipmaps());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Timer(duk_context *context) {
 		bool triggerMode = duk_to_boolean(context, 0);
 		int msecs = duk_to_int(context, 1);
-		Timer *inst = new Timer(triggerMode,msecs);
+		std::shared_ptr<Timer> *inst = new std::shared_ptr<Timer>;
+		(*inst) = std::make_shared<Timer>(triggerMode,msecs);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Timer__delete(duk_context *context) {
-		Timer *inst = (Timer*)duk_to_pointer(context, 0);
+		std::shared_ptr<Timer> *inst = (std::shared_ptr<Timer>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Timer_Pause(duk_context *context) {
-		Timer *inst = (Timer*)duk_to_pointer(context, 0);
+		std::shared_ptr<Timer> *inst = (std::shared_ptr<Timer>*)duk_to_pointer(context, 0);
 		bool paused = duk_to_boolean(context, 1);
-		inst->Pause(paused);
+		(*inst)->Pause(paused);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Timer_isPaused(duk_context *context) {
-		Timer *inst = (Timer*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->isPaused());
+		std::shared_ptr<Timer> *inst = (std::shared_ptr<Timer>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->isPaused());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Timer_getTicks(duk_context *context) {
-		Timer *inst = (Timer*)duk_to_pointer(context, 0);
-		duk_push_int(context, inst->getTicks());
+		std::shared_ptr<Timer> *inst = (std::shared_ptr<Timer>*)duk_to_pointer(context, 0);
+		duk_push_int(context, (*inst)->getTicks());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Timer_Update(duk_context *context) {
-		Timer *inst = (Timer*)duk_to_pointer(context, 0);
+		std::shared_ptr<Timer> *inst = (std::shared_ptr<Timer>*)duk_to_pointer(context, 0);
 		int ticks = duk_to_int(context, 1);
-		inst->Update(ticks);
+		(*inst)->Update(ticks);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Timer_Reset(duk_context *context) {
-		Timer *inst = (Timer*)duk_to_pointer(context, 0);
-		inst->Reset();
+		std::shared_ptr<Timer> *inst = (std::shared_ptr<Timer>*)duk_to_pointer(context, 0);
+		(*inst)->Reset();
 		return 0;
 	}
 
 	duk_ret_t Polycode_Timer_hasElapsed(duk_context *context) {
-		Timer *inst = (Timer*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, inst->hasElapsed());
+		std::shared_ptr<Timer> *inst = (std::shared_ptr<Timer>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->hasElapsed());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Timer_getElapsedf(duk_context *context) {
-		Timer *inst = (Timer*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->getElapsedf());
+		std::shared_ptr<Timer> *inst = (std::shared_ptr<Timer>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->getElapsedf());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Timer_setTimerInterval(duk_context *context) {
-		Timer *inst = (Timer*)duk_to_pointer(context, 0);
+		std::shared_ptr<Timer> *inst = (std::shared_ptr<Timer>*)duk_to_pointer(context, 0);
 		int msecs = duk_to_int(context, 1);
-		inst->setTimerInterval(msecs);
+		(*inst)->setTimerInterval(msecs);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Vector2(duk_context *context) {
 		Number x = duk_to_number(context, 0);
 		Number y = duk_to_number(context, 1);
-		Vector2 *inst = new Vector2(x,y);
+		std::shared_ptr<Vector2> *inst = new std::shared_ptr<Vector2>;
+		(*inst) = std::make_shared<Vector2>(x,y);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Vector2__get_x(duk_context *context) {
-		Vector2 *inst = (Vector2*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->x);
+		std::shared_ptr<Vector2> *inst = (std::shared_ptr<Vector2>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->x);
 		return 1;
 	}
 
@@ -13549,8 +11331,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Vector2__get_y(duk_context *context) {
-		Vector2 *inst = (Vector2*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->y);
+		std::shared_ptr<Vector2> *inst = (std::shared_ptr<Vector2>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->y);
 		return 1;
 	}
 
@@ -13561,56 +11343,56 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Vector2__delete(duk_context *context) {
-		Vector2 *inst = (Vector2*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector2> *inst = (std::shared_ptr<Vector2>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Vector2_set(duk_context *context) {
-		Vector2 *inst = (Vector2*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector2> *inst = (std::shared_ptr<Vector2>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
-		inst->set(x,y);
+		(*inst)->set(x,y);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Vector2_distance(duk_context *context) {
-		Vector2 *inst = (Vector2*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector2> *inst = (std::shared_ptr<Vector2>*)duk_to_pointer(context, 0);
 		Vector2 vec2 = *(Vector2*)duk_to_pointer(context, 1);
-		duk_push_number(context, inst->distance(vec2));
+		duk_push_number(context, (*inst)->distance(vec2));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Vector2_length(duk_context *context) {
-		Vector2 *inst = (Vector2*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->length());
+		std::shared_ptr<Vector2> *inst = (std::shared_ptr<Vector2>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->length());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Vector2_dot(duk_context *context) {
-		Vector2 *inst = (Vector2*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector2> *inst = (std::shared_ptr<Vector2>*)duk_to_pointer(context, 0);
 		Vector2 u = *(Vector2*)duk_to_pointer(context, 1);
-		duk_push_number(context, inst->dot(u));
+		duk_push_number(context, (*inst)->dot(u));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Vector2_crossProduct(duk_context *context) {
-		Vector2 *inst = (Vector2*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector2> *inst = (std::shared_ptr<Vector2>*)duk_to_pointer(context, 0);
 		Vector2 vec2 = *(Vector2*)duk_to_pointer(context, 1);
-		duk_push_number(context, inst->crossProduct(vec2));
+		duk_push_number(context, (*inst)->crossProduct(vec2));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Vector2_angle(duk_context *context) {
-		Vector2 *inst = (Vector2*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector2> *inst = (std::shared_ptr<Vector2>*)duk_to_pointer(context, 0);
 		Vector2 vec2 = *(Vector2*)duk_to_pointer(context, 1);
-		duk_push_number(context, inst->angle(vec2));
+		duk_push_number(context, (*inst)->angle(vec2));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Vector2_Normalize(duk_context *context) {
-		Vector2 *inst = (Vector2*)duk_to_pointer(context, 0);
-		inst->Normalize();
+		std::shared_ptr<Vector2> *inst = (std::shared_ptr<Vector2>*)duk_to_pointer(context, 0);
+		(*inst)->Normalize();
 		return 0;
 	}
 
@@ -13618,14 +11400,15 @@ namespace Polycode {
 		Number x = duk_to_number(context, 0);
 		Number y = duk_to_number(context, 1);
 		Number z = duk_to_number(context, 2);
-		Vector3 *inst = new Vector3(x,y,z);
+		std::shared_ptr<Vector3> *inst = new std::shared_ptr<Vector3>;
+		(*inst) = std::make_shared<Vector3>(x,y,z);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Vector3__get_x(duk_context *context) {
-		Vector3 *inst = (Vector3*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->x);
+		std::shared_ptr<Vector3> *inst = (std::shared_ptr<Vector3>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->x);
 		return 1;
 	}
 
@@ -13636,8 +11419,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Vector3__get_y(duk_context *context) {
-		Vector3 *inst = (Vector3*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->y);
+		std::shared_ptr<Vector3> *inst = (std::shared_ptr<Vector3>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->y);
 		return 1;
 	}
 
@@ -13648,8 +11431,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Vector3__get_z(duk_context *context) {
-		Vector3 *inst = (Vector3*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->z);
+		std::shared_ptr<Vector3> *inst = (std::shared_ptr<Vector3>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->z);
 		return 1;
 	}
 
@@ -13660,74 +11443,74 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Vector3__delete(duk_context *context) {
-		Vector3 *inst = (Vector3*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *inst = (std::shared_ptr<Vector3>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Vector3_set(duk_context *context) {
-		Vector3 *inst = (Vector3*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *inst = (std::shared_ptr<Vector3>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
 		Number z = duk_to_number(context, 3);
-		inst->set(x,y,z);
+		(*inst)->set(x,y,z);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Vector3_distance(duk_context *context) {
-		Vector3 *inst = (Vector3*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *inst = (std::shared_ptr<Vector3>*)duk_to_pointer(context, 0);
 		Vector3 vec2 = *(Vector3*)duk_to_pointer(context, 1);
-		duk_push_number(context, inst->distance(vec2));
+		duk_push_number(context, (*inst)->distance(vec2));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Vector3_angleBetween(duk_context *context) {
-		Vector3 *inst = (Vector3*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *inst = (std::shared_ptr<Vector3>*)duk_to_pointer(context, 0);
 		Vector3 dest = *(Vector3*)duk_to_pointer(context, 1);
-		duk_push_number(context, inst->angleBetween(dest));
+		duk_push_number(context, (*inst)->angleBetween(dest));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Vector3_length(duk_context *context) {
-		Vector3 *inst = (Vector3*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->length());
+		std::shared_ptr<Vector3> *inst = (std::shared_ptr<Vector3>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->length());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Vector3_lengthSquared(duk_context *context) {
-		Vector3 *inst = (Vector3*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->lengthSquared());
+		std::shared_ptr<Vector3> *inst = (std::shared_ptr<Vector3>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->lengthSquared());
 		return 1;
 	}
 
 	duk_ret_t Polycode_Vector3_setLength(duk_context *context) {
-		Vector3 *inst = (Vector3*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *inst = (std::shared_ptr<Vector3>*)duk_to_pointer(context, 0);
 		Number newLength = duk_to_number(context, 1);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->setLength(newLength);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->setLength(newLength);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Vector3_dot(duk_context *context) {
-		Vector3 *inst = (Vector3*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *inst = (std::shared_ptr<Vector3>*)duk_to_pointer(context, 0);
 		Vector3 u = *(Vector3*)duk_to_pointer(context, 1);
-		duk_push_number(context, inst->dot(u));
+		duk_push_number(context, (*inst)->dot(u));
 		return 1;
 	}
 
 	duk_ret_t Polycode_Vector3_crossProduct(duk_context *context) {
-		Vector3 *inst = (Vector3*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector3> *inst = (std::shared_ptr<Vector3>*)duk_to_pointer(context, 0);
 		Vector3 vec2 = *(Vector3*)duk_to_pointer(context, 1);
-		Vector3 *retInst = new Vector3();
-		*retInst = inst->crossProduct(vec2);
+		std::shared_ptr<Vector3> *retInst = new std::shared_ptr<Vector3>;
+		*(*retInst) = (*inst)->crossProduct(vec2);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Vector3_Normalize(duk_context *context) {
-		Vector3 *inst = (Vector3*)duk_to_pointer(context, 0);
-		inst->Normalize();
+		std::shared_ptr<Vector3> *inst = (std::shared_ptr<Vector3>*)duk_to_pointer(context, 0);
+		(*inst)->Normalize();
 		return 0;
 	}
 
@@ -13736,14 +11519,15 @@ namespace Polycode {
 		Number y = duk_to_number(context, 1);
 		Number z = duk_to_number(context, 2);
 		Number w = duk_to_number(context, 3);
-		Vector4 *inst = new Vector4(x,y,z,w);
+		std::shared_ptr<Vector4> *inst = new std::shared_ptr<Vector4>;
+		(*inst) = std::make_shared<Vector4>(x,y,z,w);
 		duk_push_pointer(context, (void*)inst);
 		return 1;
 	}
 
 	duk_ret_t Polycode_Vector4__get_x(duk_context *context) {
-		Vector4 *inst = (Vector4*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->x);
+		std::shared_ptr<Vector4> *inst = (std::shared_ptr<Vector4>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->x);
 		return 1;
 	}
 
@@ -13754,8 +11538,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Vector4__get_y(duk_context *context) {
-		Vector4 *inst = (Vector4*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->y);
+		std::shared_ptr<Vector4> *inst = (std::shared_ptr<Vector4>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->y);
 		return 1;
 	}
 
@@ -13766,8 +11550,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Vector4__get_z(duk_context *context) {
-		Vector4 *inst = (Vector4*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->z);
+		std::shared_ptr<Vector4> *inst = (std::shared_ptr<Vector4>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->z);
 		return 1;
 	}
 
@@ -13778,8 +11562,8 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Vector4__get_w(duk_context *context) {
-		Vector4 *inst = (Vector4*)duk_to_pointer(context, 0);
-		duk_push_number(context, inst->w);
+		std::shared_ptr<Vector4> *inst = (std::shared_ptr<Vector4>*)duk_to_pointer(context, 0);
+		duk_push_number(context, (*inst)->w);
 		return 1;
 	}
 
@@ -13790,25 +11574,25 @@ namespace Polycode {
 	}
 
 	duk_ret_t Polycode_Vector4__delete(duk_context *context) {
-		Vector4 *inst = (Vector4*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector4> *inst = (std::shared_ptr<Vector4>*)duk_to_pointer(context, 0);
 		delete inst;
 		return 0;
 	}
 
 	duk_ret_t Polycode_Vector4_set(duk_context *context) {
-		Vector4 *inst = (Vector4*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector4> *inst = (std::shared_ptr<Vector4>*)duk_to_pointer(context, 0);
 		Number x = duk_to_number(context, 1);
 		Number y = duk_to_number(context, 2);
 		Number z = duk_to_number(context, 3);
 		Number w = duk_to_number(context, 4);
-		inst->set(x,y,z,w);
+		(*inst)->set(x,y,z,w);
 		return 0;
 	}
 
 	duk_ret_t Polycode_Vector4_dot(duk_context *context) {
-		Vector4 *inst = (Vector4*)duk_to_pointer(context, 0);
+		std::shared_ptr<Vector4> *inst = (std::shared_ptr<Vector4>*)duk_to_pointer(context, 0);
 		Vector4 u = *(Vector4*)duk_to_pointer(context, 1);
-		duk_push_number(context, inst->dot(u));
+		duk_push_number(context, (*inst)->dot(u));
 		return 1;
 	}
 

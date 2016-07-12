@@ -101,7 +101,7 @@ MeshGeometry.prototype.createCone = function(height,radius,numSegments,tilingVal
 }
 
 MeshGeometry.prototype.recenterMesh = function() {
-	var retVal = new Vector3()
+	var retVal = new Vector3("__skip_ptr__")
 	retVal.__ptr = Polycode.MeshGeometry_recenterMesh(this.__ptr)
 	return retVal
 }
@@ -147,32 +147,26 @@ MeshGeometry.prototype.addColor = function(r,g,b,a) {
 }
 
 MeshGeometry.prototype.getVertexPosition = function(vertexOffset) {
-	var retVal = new Vector3()
+	var retVal = new Vector3("__skip_ptr__")
 	retVal.__ptr = Polycode.MeshGeometry_getVertexPosition(this.__ptr, vertexOffset)
 	return retVal
 }
 
 MeshGeometry.prototype.getVertexPositionAtIndex = function(index) {
-	var retVal = new Vector3()
+	var retVal = new Vector3("__skip_ptr__")
 	retVal.__ptr = Polycode.MeshGeometry_getVertexPositionAtIndex(this.__ptr, index)
 	return retVal
 }
 
 MeshGeometry.prototype.getVertexTexCoord = function(vertexOffset) {
-	var retVal = new Vector2()
+	var retVal = new Vector2("__skip_ptr__")
 	retVal.__ptr = Polycode.MeshGeometry_getVertexTexCoord(this.__ptr, vertexOffset)
 	return retVal
 }
 
 MeshGeometry.prototype.getVertexTexCoordAtIndex = function(index) {
-	var retVal = new Vector2()
+	var retVal = new Vector2("__skip_ptr__")
 	retVal.__ptr = Polycode.MeshGeometry_getVertexTexCoordAtIndex(this.__ptr, index)
-	return retVal
-}
-
-MeshGeometry.prototype.Copy = function() {
-	var retVal = new MeshGeometry()
-	retVal.__ptr = Polycode.MeshGeometry_Copy(this.__ptr)
 	return retVal
 }
 
@@ -201,7 +195,7 @@ MeshGeometry.prototype.getIndexGroupSize = function() {
 }
 
 MeshGeometry.prototype.calculateBBox = function() {
-	var retVal = new Vector3()
+	var retVal = new Vector3("__skip_ptr__")
 	retVal.__ptr = Polycode.MeshGeometry_calculateBBox(this.__ptr)
 	return retVal
 }
@@ -235,7 +229,7 @@ MeshGeometry.prototype.subdivideToRadius = function(radius,subdivisions) {
 }
 
 MeshGeometry.prototype.calculateFaceTangent = function(v1,v2,v3,texCoord1,texCoord2,texCoord3) {
-	var retVal = new Vector3()
+	var retVal = new Vector3("__skip_ptr__")
 	retVal.__ptr = Polycode.MeshGeometry_calculateFaceTangent(v1, v2, v3, texCoord1, texCoord2, texCoord3)
 	return retVal
 }

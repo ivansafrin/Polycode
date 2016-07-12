@@ -10,18 +10,6 @@ function LocalShaderParam:__getvar(name)
 		return Polycode.LocalShaderParam_get_ownsPointer(self.__ptr)
 	elseif name == "arraySize" then
 		return Polycode.LocalShaderParam_get_arraySize(self.__ptr)
-	elseif name == "param" then
-		local retVal = Polycode.LocalShaderParam_get_param(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["ProgramParam"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
-	elseif name == "accessMutex" then
-		local retVal = Polycode.LocalShaderParam_get_accessMutex(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["CoreMutex"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
 	end
 end
 
@@ -37,12 +25,6 @@ function LocalShaderParam:__setvar(name,value)
 		return true
 	elseif name == "arraySize" then
 		Polycode.LocalShaderParam_set_arraySize(self.__ptr, value)
-		return true
-	elseif name == "param" then
-		Polycode.LocalShaderParam_set_param(self.__ptr, value.__ptr)
-		return true
-	elseif name == "accessMutex" then
-		Polycode.LocalShaderParam_set_accessMutex(self.__ptr, value.__ptr)
 		return true
 	end
 	return false

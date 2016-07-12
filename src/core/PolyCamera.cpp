@@ -35,10 +35,9 @@
 
 using namespace Polycode;
 			
-Camera::Camera(Scene *parentScene) : Entity() {
+Camera::Camera() : Entity() {
 	projectionMode = PERSPECTIVE_FOV;
 	renderer = CoreServices::getInstance()->getRenderer();
-	setParentScene(parentScene);
 	setFOV(45.0f);
 	filterShaderMaterial = NULL;
 	originalFramebuffer = NULL;
@@ -279,7 +278,7 @@ void Camera::buildFrustumPlanes() {
 }
 
 Entity *Camera::Clone(bool deepClone, bool ignoreEditorOnly) const {
-	Camera *newCamera = new Camera(NULL);
+	Camera *newCamera = new Camera();
 	applyClone(newCamera, deepClone, ignoreEditorOnly);
 	return newCamera;
 }
@@ -296,13 +295,6 @@ void Camera::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) co
 	cloneCamera->setClippingPlanes(nearClipPlane, farClipPlane);
 }
 
-Scene *Camera::getParentScene() const {
-	return parentScene;
-}
-
-void Camera::setParentScene(Scene *parentScene) {
-	this->parentScene = parentScene;
-}
 
 void Camera::setPostFilterByName(const String& materialName) {
 	std::shared_ptr<Material> shaderMaterial = std::static_pointer_cast<Material>(Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, materialName));
@@ -414,11 +406,11 @@ void Camera::renderFullScreenQuad(GPUDrawBuffer *drawBuffer, int shaderPass) {
 	drawBuffer->drawCalls.push_back(drawCall);
 }
 
-void Camera::drawFilter(std::shared_ptr<RenderBuffer> targetBuffer) {
+void Camera::drawFilter(RenderFrame *frame, std::shared_ptr<RenderBuffer> targetBuffer, Scene *targetScene) {
 	if(!filterShaderMaterial)
 		return;
 	
-	parentScene->Render(this, originalFramebuffer, NULL, true);
+	targetScene->Render(frame, this, originalFramebuffer, NULL, true);
 	
 	for(int i=0; i < shaderPasses.size(); i++) {
 		
@@ -437,7 +429,7 @@ void Camera::drawFilter(std::shared_ptr<RenderBuffer> targetBuffer) {
 				drawBuffer->viewport = getViewport();
 			}
 			renderFullScreenQuad(drawBuffer, i);
-			renderer->processDrawBuffer(drawBuffer);
+			frame->addDrawBuffer(drawBuffer);
 		} else {			
 			for(int j=0; j < materialBinding->getNumOutTargetBindings(); j++) {
 				std::shared_ptr<RenderBuffer> bindingBuffer = materialBinding->getOutTargetBinding(j)->buffer;
@@ -448,8 +440,8 @@ void Camera::drawFilter(std::shared_ptr<RenderBuffer> targetBuffer) {
 					drawBuffer->globalMaterial = NULL;
 					drawBuffer->viewport.setRect(0.0, 0.0, bindingBuffer->getWidth(), bindingBuffer->getHeight());
 					drawBuffer->targetFramebuffer = bindingBuffer;
-					renderFullScreenQuad(drawBuffer, i);					
-					renderer->processDrawBuffer(drawBuffer);
+					renderFullScreenQuad(drawBuffer, i);
+					frame->addDrawBuffer(drawBuffer);
 				}
 			}		
 		}

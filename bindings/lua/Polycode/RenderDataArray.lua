@@ -47,14 +47,6 @@ function RenderDataArray:RenderDataArray(...)
 	end
 end
 
-function RenderDataArray:getArrayData()
-	local retVal =  Polycode.RenderDataArray_getArrayData(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["void"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function RenderDataArray:getDataSize()
 	local retVal =  Polycode.RenderDataArray_getDataSize(self.__ptr)
 	return retVal

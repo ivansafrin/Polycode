@@ -556,18 +556,18 @@ PostPreviewBox::PostPreviewBox() : UIElement() {
 	label->setPosition(10, 3);
 
 	currentMaterial = NULL;
-	previewScene = new Scene(Scene::SCENE_3D, true);	
+	previewScene = new Scene(Scene::SCENE_3D);
 	
-	renderTexture = new SceneRenderTexture(previewScene, previewScene->getDefaultCamera(), 256, 256, true);
+	renderTexture = new SceneRenderTexture(256, 256, true);
 
 	previewScene->clearColor.setColor(0.0, 0.0, 0.0, 1.0);	
 	previewScene->ambientColor.setColor(0.0, 0.0, 0.0, 1.0);
 
-	mainLight = new SceneLight(SceneLight::POINT_LIGHT, previewScene, 90.0);
+	mainLight = new SceneLight(SceneLight::POINT_LIGHT, 90.0);
 	mainLight->setPosition(-6,6,6);
 	previewScene->addLight(mainLight);
 
-	secondLight = new SceneLight(SceneLight::POINT_LIGHT, previewScene, 90.0);
+	secondLight = new SceneLight(SceneLight::POINT_LIGHT, 90.0);
 	secondLight->setPosition(6,-6,6);
 	previewScene->addLight(secondLight);
 
@@ -704,9 +704,9 @@ void PostPreviewBox::handleEvent(Event *event) {
 
 MaterialPreviewBox::MaterialPreviewBox() : UIElement() {
 	currentMaterial = NULL;
-	previewScene = new Scene(Scene::SCENE_3D, true);	
+	previewScene = new Scene(Scene::SCENE_3D);
 	
-	renderTexture = new SceneRenderTexture(previewScene, previewScene->getDefaultCamera(), 512, 512, false);
+	renderTexture = new SceneRenderTexture(512, 512, false);
 	
 	ScenePrimitive *previewBg = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 15.0, 15.0, 15.0);
 	previewBg->Yaw(45.0);
@@ -744,11 +744,11 @@ MaterialPreviewBox::MaterialPreviewBox() : UIElement() {
 	shapePrimitives.push_back(previewPrimitive);	
 
 	
-	mainLight = new SceneLight(SceneLight::POINT_LIGHT, previewScene, 290.0);
+	mainLight = new SceneLight(SceneLight::POINT_LIGHT, 290.0);
 	mainLight->setPosition(-10,10,10);
 	previewScene->addLight(mainLight);
 
-	secondLight = new SceneLight(SceneLight::POINT_LIGHT, previewScene, 250.0);
+	secondLight = new SceneLight(SceneLight::POINT_LIGHT,  250.0);
 	secondLight->setPosition(10,-10,10);
 	previewScene->addLight(secondLight);
 
@@ -782,6 +782,10 @@ MaterialPreviewBox::MaterialPreviewBox() : UIElement() {
 	}
 
 	showPrimitive(0);
+}
+
+void MaterialPreviewBox::Render(GPUDrawBuffer *buffer) {
+	renderTexture->Render(buffer->renderFrame, previewScene, previewScene->getDefaultCamera());
 }
 
 void MaterialPreviewBox::clearMaterial() {

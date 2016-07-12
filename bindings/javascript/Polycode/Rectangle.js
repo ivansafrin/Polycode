@@ -55,7 +55,7 @@ Rectangle.prototype.setRect = function(x,y,w,h) {
 }
 
 Rectangle.prototype.Clipped = function(rect) {
-	var retVal = new Rectangle()
+	var retVal = new Rectangle("__skip_ptr__")
 	retVal.__ptr = Polycode.Rectangle_Clipped(this.__ptr, rect)
 	return retVal
 }

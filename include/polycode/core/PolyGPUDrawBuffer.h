@@ -33,6 +33,7 @@
 namespace Polycode {
 	
 	class RenderBuffer;
+	class RenderFrame;
 	
 	class _PolyExport LightInfo {
 		public:
@@ -68,7 +69,6 @@ namespace Polycode {
 		Color drawColor;
 	};
 	
-	
 	class _PolyExport GPUDrawCall {
 	public:
 		std::shared_ptr<MeshGeometry> submesh;
@@ -97,5 +97,6 @@ namespace Polycode {
 		
 		Polycode::Rectangle viewport;
 		std::vector<GPUDrawCall> drawCalls;
+		RenderFrame *renderFrame;
 	};
 }

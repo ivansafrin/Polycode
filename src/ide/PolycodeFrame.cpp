@@ -80,7 +80,7 @@ EditPoint::EditPoint(BezierPoint *point, unsigned int type) : Entity() {
 		controlHandle1->enabled = false;		
 		connectorLine1 = NULL;
 	} else {
-		connectorLine1 = new SceneLine(pointHandle, controlHandle1);
+		connectorLine1 = new SceneLine(Vector3(), Vector3());
 		addChild(connectorLine1);
 		connectorLine1->setColorInt(39, 212, 255, 100);
 		connectorLine1->setLineWidth(2.0);
@@ -93,7 +93,7 @@ EditPoint::EditPoint(BezierPoint *point, unsigned int type) : Entity() {
 		controlHandle2->enabled = false;		
 		connectorLine2 = NULL;
 	} else {
-		connectorLine2 = new SceneLine(pointHandle, controlHandle2);
+		connectorLine2 = new SceneLine(Vector3(), Vector3());
 		addChild(connectorLine2);
 		connectorLine2->setColorInt(39, 212, 255, 100);
 		connectorLine2->setLineWidth(2.0);
@@ -918,7 +918,6 @@ void EditorHolder::Resize(Number width, Number height) {
 			currentFileSelector->Resize(width - 100, currentFileSelector->getHeight());			
 		}
 	}
-		
 	
 	if(currentEditor) {
 		currentEditor->setPosition(0, 30);

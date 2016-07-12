@@ -29,11 +29,11 @@
 
 namespace Polycode {
 
-	class Scene;
 	class Material;
 	class ShaderBinding;
 	class Texture;
 	class GPUDrawCall;
+	class RenderFrame;
 
 	/**
 	* Camera in a 3D scene. Cameras can be added to a scene and changed between dynamically. You can also set a shader to a camera that will run as a screen shader for post-processing effects.
@@ -67,7 +67,7 @@ namespace Polycode {
 			* Constructor.
 			* @param parentScene Scene to add the camera to.
 			*/
-			explicit Camera(Scene *parentScene);
+			explicit Camera();
 			virtual ~Camera();
 			
 			/**
@@ -164,19 +164,6 @@ namespace Polycode {
 			 * @return Far clipping plane of the camera.
 			 */
 			Number getFarClippingPlane();
-		
-			/**
-			 * Sets the parent scene of the camera.
-			 * @param parentScene New parent scene.
-			 */
-			void setParentScene(Scene *parentScene);
-		
-			/**
-			 * Returns the camera's parent scene.
-			 * @return The camera's parent scene.
-			 */
-			Scene *getParentScene() const;
-			
 
 			Matrix4 createProjectionMatrix();
 
@@ -189,7 +176,7 @@ namespace Polycode {
 			/**
 			 * Binds target buffers and renders the scene in multiple passes based on the post filter material.
 			 */
-			void drawFilter(std::shared_ptr<RenderBuffer> targetBuffer);
+			void drawFilter(RenderFrame *frame, std::shared_ptr<RenderBuffer> targetBuffer, Scene *targetScene);
 
 			/**
 			* Sets the post-processing shader for the camera.
@@ -305,8 +292,6 @@ namespace Polycode {
 			Number leftFrustum,rightFrustum,topFrustum,bottomFrustum;
 
 			Vector4 frustumPlanes[6];
-
-			Scene *parentScene;
 
 			std::shared_ptr<Material> filterShaderMaterial;
 			std::shared_ptr<RenderBuffer> originalFramebuffer;

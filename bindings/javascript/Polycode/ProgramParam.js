@@ -4,8 +4,7 @@ function ProgramParam() {
 	}
 	Object.defineProperties(this, {
 		'name': { enumerable: true, configurable: true, get: ProgramParam.prototype.__get_name, set: ProgramParam.prototype.__set_name},
-		'type': { enumerable: true, configurable: true, get: ProgramParam.prototype.__get_type, set: ProgramParam.prototype.__set_type},
-		'globalParam': { enumerable: true, configurable: true, get: ProgramParam.prototype.__get_globalParam, set: ProgramParam.prototype.__set_globalParam}
+		'type': { enumerable: true, configurable: true, get: ProgramParam.prototype.__get_type, set: ProgramParam.prototype.__set_type}
 	})
 }
 
@@ -34,23 +33,9 @@ ProgramParam.prototype.__set_type = function(val) {
 	Polycode.ProgramParam__set_type(this.__ptr, val)
 }
 
-ProgramParam.prototype.__get_globalParam = function() {
-	var retVal = new LocalShaderParam()
-	retVal.__ptr = 	Polycode.ProgramParam__get_globalParam(this.__ptr)
-	return retVal
-}
-
-ProgramParam.prototype.__set_globalParam = function(val) {
-	Polycode.ProgramParam__set_globalParam(this.__ptr, val.__ptr)
-}
-
 Duktape.fin(ProgramParam.prototype, function (x) {
 	if (x === ProgramParam.prototype) {
 		return;
 	}
 	Polycode.ProgramParam__delete(x.__ptr)
 })
-
-ProgramParam.prototype.createParamData = function(type) {
-	Polycode.ProgramParam_createParamData(type)
-}

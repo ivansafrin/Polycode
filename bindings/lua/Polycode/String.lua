@@ -149,30 +149,6 @@ function String:IntToString(value)
 	return retVal
 end
 
-function String:c_str()
-	local retVal =  Polycode.String_c_str(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["char"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function String:getDataWithEncoding(encoding)
-	local retVal = Polycode.String_getDataWithEncoding(self.__ptr, encoding)
-	if retVal == nil then return nil end
-	local __c = _G["char"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function String:getWDataWithEncoding(encoding)
-	local retVal = Polycode.String_getWDataWithEncoding(self.__ptr, encoding)
-	if retVal == nil then return nil end
-	local __c = _G["wchar_t"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function String:append(c)
 	local retVal = Polycode.String_append(self.__ptr, c.__ptr)
 end
@@ -183,10 +159,6 @@ function String:getDataSizeWithEncoding(encoding)
 	local __c = _G["size_t"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
-end
-
-function String:setDataWithEncoding(data, encoding)
-	local retVal = Polycode.String_setDataWithEncoding(self.__ptr, data.__ptr, encoding)
 end
 
 function String:isNumber()

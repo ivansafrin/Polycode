@@ -23,14 +23,6 @@ function Config:saveConfig(configNamespace, fileName)
 	local retVal = Polycode.Config_saveConfig(self.__ptr, configNamespace, fileName)
 end
 
-function Config:getEntry(configNamespace, key)
-	local retVal = Polycode.Config_getEntry(self.__ptr, configNamespace, key)
-	if retVal == nil then return nil end
-	local __c = _G["ConfigEntry"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function Config:setStringValue(configNamespace, key, value)
 	local retVal = Polycode.Config_setStringValue(self.__ptr, configNamespace, key, value)
 end

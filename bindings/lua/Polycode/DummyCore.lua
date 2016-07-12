@@ -23,10 +23,6 @@ function DummyCore:DummyCore(...)
 	end
 end
 
-function DummyCore:Render()
-	local retVal =  Polycode.DummyCore_Render(self.__ptr)
-end
-
 function DummyCore:systemUpdate()
 	local retVal =  Polycode.DummyCore_systemUpdate(self.__ptr)
 	return retVal
@@ -34,18 +30,6 @@ end
 
 function DummyCore:setCursor(cursorType)
 	local retVal = Polycode.DummyCore_setCursor(self.__ptr, cursorType)
-end
-
-function DummyCore:createThread(target)
-	local retVal = Polycode.DummyCore_createThread(self.__ptr, target.__ptr)
-end
-
-function DummyCore:createMutex()
-	local retVal =  Polycode.DummyCore_createMutex(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["CoreMutex"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
 end
 
 function DummyCore:copyStringToClipboard(str)
@@ -92,10 +76,6 @@ end
 function DummyCore:saveFilePicker(extensions)
 	local retVal = Polycode.DummyCore_saveFilePicker(self.__ptr, extensions.__ptr)
 	return retVal
-end
-
-function DummyCore:handleVideoModeChange(modeInfo)
-	local retVal = Polycode.DummyCore_handleVideoModeChange(self.__ptr, modeInfo.__ptr)
 end
 
 function DummyCore:flushRenderContext()

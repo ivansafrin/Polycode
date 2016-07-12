@@ -54,7 +54,7 @@ InputEvent.prototype.__set_mouseButton = function(val) {
 }
 
 InputEvent.prototype.__get_mousePosition = function() {
-	var retVal = new Vector2()
+	var retVal = new Vector2("__skip_ptr__")
 	retVal.__ptr = 	Polycode.InputEvent__get_mousePosition(this.__ptr)
 	return retVal
 }
@@ -88,7 +88,7 @@ InputEvent.prototype.__set_text = function(val) {
 }
 
 InputEvent.prototype.__get_touch = function() {
-	var retVal = new TouchInfo()
+	var retVal = new TouchInfo("__skip_ptr__")
 	retVal.__ptr = 	Polycode.InputEvent__get_touch(this.__ptr)
 	return retVal
 }
@@ -161,7 +161,7 @@ Duktape.fin(InputEvent.prototype, function (x) {
 })
 
 InputEvent.prototype.getMousePosition = function() {
-	var retVal = new Vector2()
+	var retVal = new Vector2("__skip_ptr__")
 	retVal.__ptr = Polycode.InputEvent_getMousePosition(this.__ptr)
 	return retVal
 }

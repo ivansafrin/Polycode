@@ -56,6 +56,7 @@ namespace Polycode {
 	
 	class _PolyExport ResourcePool : public EventDispatcher {
 		public:
+			ResourcePool();
 			ResourcePool(const String &name, ResourcePool *fallbackPool);
 			~ResourcePool();
 		

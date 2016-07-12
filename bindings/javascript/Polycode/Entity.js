@@ -49,7 +49,7 @@ Entity.prototype.__set_billboardMode = function(val) {
 }
 
 Entity.prototype.__get_color = function() {
-	var retVal = new Color()
+	var retVal = new Color("__skip_ptr__")
 	retVal.__ptr = 	Polycode.Entity__get_color(this.__ptr)
 	return retVal
 }
@@ -123,7 +123,7 @@ Entity.prototype.__set_enableScissor = function(val) {
 }
 
 Entity.prototype.__get_scissorBox = function() {
-	var retVal = new Rectangle()
+	var retVal = new Rectangle("__skip_ptr__")
 	retVal.__ptr = 	Polycode.Entity__get_scissorBox(this.__ptr)
 	return retVal
 }
@@ -149,7 +149,7 @@ Entity.prototype.__set_id = function(val) {
 }
 
 Entity.prototype.__get_collisionShapeType = function() {
-	var retVal = new char()
+	var retVal = new char("__skip_ptr__")
 	retVal.__ptr = 	Polycode.Entity__get_collisionShapeType(this.__ptr)
 	return retVal
 }
@@ -199,7 +199,7 @@ Entity.prototype.__set_rendererVis = function(val) {
 }
 
 Entity.prototype.__get_layerID = function() {
-	var retVal = new char()
+	var retVal = new char("__skip_ptr__")
 	retVal.__ptr = 	Polycode.Entity__get_layerID(this.__ptr)
 	return retVal
 }
@@ -213,34 +213,12 @@ Entity.prototype.initEntity = function() {
 	Polycode.Entity_initEntity(this.__ptr)
 }
 
-Entity.prototype.Render = function(buffer) {
-	Polycode.Entity_Render(this.__ptr, buffer.__ptr)
-}
-
 Entity.prototype.Update = function() {
 	Polycode.Entity_Update(this.__ptr)
 }
 
 Entity.prototype.fixedUpdate = function() {
 	Polycode.Entity_fixedUpdate(this.__ptr)
-}
-
-Entity.prototype.transformAndRender = function(drawBuffer,parentScissorBox) {
-	Polycode.Entity_transformAndRender(this.__ptr, drawBuffer.__ptr, parentScissorBox.__ptr)
-}
-
-Entity.prototype.renderChildren = function(buffer,parentScissorBox) {
-	Polycode.Entity_renderChildren(this.__ptr, buffer.__ptr, parentScissorBox.__ptr)
-}
-
-Entity.prototype.Clone = function(deepClone,ignoreEditorOnly) {
-	var retVal = new Entity()
-	retVal.__ptr = Polycode.Entity_Clone(this.__ptr, deepClone, ignoreEditorOnly)
-	return retVal
-}
-
-Entity.prototype.applyClone = function(clone,deepClone,ignoreEditorOnly) {
-	Polycode.Entity_applyClone(this.__ptr, clone.__ptr, deepClone, ignoreEditorOnly)
 }
 
 Entity.prototype.dirtyMatrix = function(val) {
@@ -256,31 +234,25 @@ Entity.prototype.updateEntityMatrix = function() {
 }
 
 Entity.prototype.getTransformMatrix = function() {
-	var retVal = new Matrix4()
+	var retVal = new Matrix4("__skip_ptr__")
 	retVal.__ptr = Polycode.Entity_getTransformMatrix(this.__ptr)
 	return retVal
 }
 
 Entity.prototype.getConcatenatedMatrix = function() {
-	var retVal = new Matrix4()
+	var retVal = new Matrix4("__skip_ptr__")
 	retVal.__ptr = Polycode.Entity_getConcatenatedMatrix(this.__ptr)
 	return retVal
 }
 
-Entity.prototype.getConcatenatedMatrixRelativeTo = function(relativeEntity) {
-	var retVal = new Matrix4()
-	retVal.__ptr = Polycode.Entity_getConcatenatedMatrixRelativeTo(this.__ptr, relativeEntity.__ptr)
-	return retVal
-}
-
 Entity.prototype.getAnchorAdjustedMatrix = function() {
-	var retVal = new Matrix4()
+	var retVal = new Matrix4("__skip_ptr__")
 	retVal.__ptr = Polycode.Entity_getAnchorAdjustedMatrix(this.__ptr)
 	return retVal
 }
 
 Entity.prototype.getConcatenatedRollMatrix = function() {
-	var retVal = new Matrix4()
+	var retVal = new Matrix4("__skip_ptr__")
 	retVal.__ptr = Polycode.Entity_getConcatenatedRollMatrix(this.__ptr)
 	return retVal
 }
@@ -290,42 +262,8 @@ Entity.prototype.setTransformByMatrixPure = function(matrix) {
 }
 
 Entity.prototype.getLookAtMatrix = function(loc,upVector) {
-	var retVal = new Matrix4()
+	var retVal = new Matrix4("__skip_ptr__")
 	retVal.__ptr = Polycode.Entity_getLookAtMatrix(this.__ptr, loc, upVector)
-	return retVal
-}
-
-Entity.prototype.addChild = function(newChild) {
-	Polycode.Entity_addChild(this.__ptr, newChild.__ptr)
-}
-
-Entity.prototype.removeChild = function(entityToRemove) {
-	Polycode.Entity_removeChild(this.__ptr, entityToRemove.__ptr)
-}
-
-Entity.prototype.moveChildUp = function(child) {
-	Polycode.Entity_moveChildUp(this.__ptr, child.__ptr)
-}
-
-Entity.prototype.moveChildDown = function(child) {
-	Polycode.Entity_moveChildDown(this.__ptr, child.__ptr)
-}
-
-Entity.prototype.moveChildTop = function(child) {
-	Polycode.Entity_moveChildTop(this.__ptr, child.__ptr)
-}
-
-Entity.prototype.moveChildBottom = function(child) {
-	Polycode.Entity_moveChildBottom(this.__ptr, child.__ptr)
-}
-
-Entity.prototype.setParentEntity = function(entity) {
-	Polycode.Entity_setParentEntity(this.__ptr, entity.__ptr)
-}
-
-Entity.prototype.getParentEntity = function() {
-	var retVal = new Entity()
-	retVal.__ptr = Polycode.Entity_getParentEntity(this.__ptr)
 	return retVal
 }
 
@@ -333,30 +271,24 @@ Entity.prototype.getNumChildren = function() {
 	return Polycode.Entity_getNumChildren(this.__ptr)
 }
 
-Entity.prototype.getChildAtIndex = function(index) {
-	var retVal = new Entity()
-	retVal.__ptr = Polycode.Entity_getChildAtIndex(this.__ptr, index)
-	return retVal
-}
-
 Entity.prototype.setOwnsChildrenRecursive = function(val) {
 	Polycode.Entity_setOwnsChildrenRecursive(this.__ptr, val)
 }
 
 Entity.prototype.getPosition = function() {
-	var retVal = new Vector3()
+	var retVal = new Vector3("__skip_ptr__")
 	retVal.__ptr = Polycode.Entity_getPosition(this.__ptr)
 	return retVal
 }
 
 Entity.prototype.getPosition2D = function() {
-	var retVal = new Vector2()
+	var retVal = new Vector2("__skip_ptr__")
 	retVal.__ptr = Polycode.Entity_getPosition2D(this.__ptr)
 	return retVal
 }
 
 Entity.prototype.getCombinedPosition = function() {
-	var retVal = new Vector3()
+	var retVal = new Vector3("__skip_ptr__")
 	retVal.__ptr = Polycode.Entity_getCombinedPosition(this.__ptr)
 	return retVal
 }
@@ -402,19 +334,19 @@ Entity.prototype.setScale = function(x,y,z) {
 }
 
 Entity.prototype.getCompoundScale = function() {
-	var retVal = new Vector3()
+	var retVal = new Vector3("__skip_ptr__")
 	retVal.__ptr = Polycode.Entity_getCompoundScale(this.__ptr)
 	return retVal
 }
 
 Entity.prototype.getScale = function() {
-	var retVal = new Vector3()
+	var retVal = new Vector3("__skip_ptr__")
 	retVal.__ptr = Polycode.Entity_getScale(this.__ptr)
 	return retVal
 }
 
 Entity.prototype.getRotationEuler = function() {
-	var retVal = new Vector3()
+	var retVal = new Vector3("__skip_ptr__")
 	retVal.__ptr = Polycode.Entity_getRotationEuler(this.__ptr)
 	return retVal
 }
@@ -508,13 +440,13 @@ Entity.prototype.setRotationByQuaternion = function(quaternion) {
 }
 
 Entity.prototype.getRotationQuat = function() {
-	var retVal = new Quaternion()
+	var retVal = new Quaternion("__skip_ptr__")
 	retVal.__ptr = Polycode.Entity_getRotationQuat(this.__ptr)
 	return retVal
 }
 
 Entity.prototype.getConcatenatedQuat = function() {
-	var retVal = new Quaternion()
+	var retVal = new Quaternion("__skip_ptr__")
 	retVal.__ptr = Polycode.Entity_getConcatenatedQuat(this.__ptr)
 	return retVal
 }
@@ -523,12 +455,8 @@ Entity.prototype.lookAt = function(loc,upVector) {
 	Polycode.Entity_lookAt(this.__ptr, loc, upVector)
 }
 
-Entity.prototype.lookAtEntity = function(entity,upVector) {
-	Polycode.Entity_lookAtEntity(this.__ptr, entity.__ptr, upVector)
-}
-
 Entity.prototype.getCombinedColor = function() {
-	var retVal = new Color()
+	var retVal = new Color("__skip_ptr__")
 	retVal.__ptr = Polycode.Entity_getCombinedColor(this.__ptr)
 	return retVal
 }
@@ -546,37 +474,37 @@ Entity.prototype.setAnchorPoint = function(anchorPoint) {
 }
 
 Entity.prototype.getAnchorPoint = function() {
-	var retVal = new Vector3()
+	var retVal = new Vector3("__skip_ptr__")
 	retVal.__ptr = Polycode.Entity_getAnchorPoint(this.__ptr)
 	return retVal
 }
 
 Entity.prototype.onMouseDown = function(ray,mouseButton,timestamp) {
-	var retVal = new MouseEventResult()
+	var retVal = new MouseEventResult("__skip_ptr__")
 	retVal.__ptr = Polycode.Entity_onMouseDown(this.__ptr, ray, mouseButton, timestamp)
 	return retVal
 }
 
 Entity.prototype.onMouseUp = function(ray,mouseButton,timestamp) {
-	var retVal = new MouseEventResult()
+	var retVal = new MouseEventResult("__skip_ptr__")
 	retVal.__ptr = Polycode.Entity_onMouseUp(this.__ptr, ray, mouseButton, timestamp)
 	return retVal
 }
 
 Entity.prototype.onMouseMove = function(ray,timestamp) {
-	var retVal = new MouseEventResult()
+	var retVal = new MouseEventResult("__skip_ptr__")
 	retVal.__ptr = Polycode.Entity_onMouseMove(this.__ptr, ray, timestamp)
 	return retVal
 }
 
 Entity.prototype.onMouseWheelUp = function(ray,timestamp) {
-	var retVal = new MouseEventResult()
+	var retVal = new MouseEventResult("__skip_ptr__")
 	retVal.__ptr = Polycode.Entity_onMouseWheelUp(this.__ptr, ray, timestamp)
 	return retVal
 }
 
 Entity.prototype.onMouseWheelDown = function(ray,timestamp) {
-	var retVal = new MouseEventResult()
+	var retVal = new MouseEventResult("__skip_ptr__")
 	retVal.__ptr = Polycode.Entity_onMouseWheelDown(this.__ptr, ray, timestamp)
 	return retVal
 }
@@ -589,34 +517,12 @@ Entity.prototype.getDepthOnly = function() {
 	return Polycode.Entity_getDepthOnly(this.__ptr)
 }
 
-Entity.prototype.setUserData = function(userData) {
-	Polycode.Entity_setUserData(this.__ptr, userData.__ptr)
-}
-
-Entity.prototype.getUserData = function() {
-	Polycode.Entity_getUserData(this.__ptr)
-}
-
 Entity.prototype.setBlendingMode = function(newBlendingMode) {
 	Polycode.Entity_setBlendingMode(this.__ptr, newBlendingMode)
 }
 
 Entity.prototype.getBlendingMode = function() {
 	return Polycode.Entity_getBlendingMode(this.__ptr)
-}
-
-Entity.prototype.getEntityById = function(id,recursive) {
-	var retVal = new Entity()
-	retVal.__ptr = Polycode.Entity_getEntityById(this.__ptr, id, recursive)
-	return retVal
-}
-
-Entity.prototype.getEntitiesByTag = function(tag,recursive) {
-	Polycode.Entity_getEntitiesByTag(this.__ptr, tag, recursive)
-}
-
-Entity.prototype.getEntitiesByLayerID = function(layerID,recursive) {
-	Polycode.Entity_getEntitiesByLayerID(this.__ptr, layerID, recursive)
 }
 
 Entity.prototype.getEntityProp = function(propName) {
@@ -644,13 +550,9 @@ Entity.prototype.doFixedUpdates = function() {
 }
 
 Entity.prototype.buildPositionMatrix = function() {
-	var retVal = new Matrix4()
+	var retVal = new Matrix4("__skip_ptr__")
 	retVal.__ptr = Polycode.Entity_buildPositionMatrix(this.__ptr)
 	return retVal
-}
-
-Entity.prototype.setRenderer = function(renderer) {
-	Polycode.Entity_setRenderer(this.__ptr, renderer.__ptr)
 }
 
 Entity.prototype.customHitDetection = function(ray) {
@@ -678,7 +580,7 @@ Entity.prototype.addTag = function(tag) {
 }
 
 Entity.prototype.getScreenPosition = function(projectionMatrix,cameraMatrix,viewport) {
-	var retVal = new Vector2()
+	var retVal = new Vector2("__skip_ptr__")
 	retVal.__ptr = Polycode.Entity_getScreenPosition(this.__ptr, projectionMatrix, cameraMatrix, viewport)
 	return retVal
 }
@@ -692,13 +594,13 @@ Entity.prototype.recalculateAABB = function() {
 }
 
 Entity.prototype.getWorldAABB = function() {
-	var retVal = new AABB()
+	var retVal = new AABB("__skip_ptr__")
 	retVal.__ptr = Polycode.Entity_getWorldAABB(this.__ptr)
 	return retVal
 }
 
 Entity.prototype.getLocalBoundingBox = function() {
-	var retVal = new Vector3()
+	var retVal = new Vector3("__skip_ptr__")
 	retVal.__ptr = Polycode.Entity_getLocalBoundingBox(this.__ptr)
 	return retVal
 }
@@ -719,30 +621,10 @@ Entity.prototype.setLocalBoundingBoxZ = function(z) {
 	Polycode.Entity_setLocalBoundingBoxZ(this.__ptr, z)
 }
 
-Entity.prototype.setContainerScene = function(scene) {
-	Polycode.Entity_setContainerScene(this.__ptr, scene.__ptr)
-}
-
-Entity.prototype.getContainerScene = function() {
-	var retVal = new Scene()
-	retVal.__ptr = Polycode.Entity_getContainerScene(this.__ptr)
-	return retVal
-}
-
 Entity.prototype.attachScript = function(script) {
 	Polycode.Entity_attachScript(this.__ptr, script)
 }
 
-Entity.prototype.detachScript = function(script) {
-	Polycode.Entity_detachScript(this.__ptr, script.__ptr)
-}
-
 Entity.prototype.getNumScripts = function() {
 	return Polycode.Entity_getNumScripts(this.__ptr)
-}
-
-Entity.prototype.getScriptAtIndex = function(index) {
-	var retVal = new ScriptInstance()
-	retVal.__ptr = Polycode.Entity_getScriptAtIndex(this.__ptr, index)
-	return retVal
 }

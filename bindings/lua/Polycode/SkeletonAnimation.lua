@@ -15,10 +15,6 @@ function SkeletonAnimation:SkeletonAnimation(...)
 	end
 end
 
-function SkeletonAnimation:addBoneTrack(boneTrack)
-	local retVal = Polycode.SkeletonAnimation_addBoneTrack(self.__ptr, boneTrack.__ptr)
-end
-
 function SkeletonAnimation:getName()
 	local retVal =  Polycode.SkeletonAnimation_getName(self.__ptr)
 	return retVal

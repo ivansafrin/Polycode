@@ -123,8 +123,12 @@ namespace Polycode {
 	
 	class _PolyExport RenderFrame : public PolyBase {
 	public:
+		RenderFrame(const Polycode::Rectangle &viewport);
 		~RenderFrame();
-		std::queue<RendererThreadJob> jobQueue;
+		void addDrawBuffer(GPUDrawBuffer *buffer);
+		
+		std::queue<GPUDrawBuffer*> drawBuffers;
+		Polycode::Rectangle viewport;
 	};
 	
 	class _PolyExport RenderThread : public Threaded {
@@ -132,6 +136,9 @@ namespace Polycode {
 			RenderThread();
 			 void setGraphicsInterface(Core *core, GraphicsInterface *graphicsInterface);
 			virtual void runThread();
+		
+			void beginFrame();
+			void endFrame();
 		
 			void updateRenderThread();
 			void enqueueFrame(RenderFrame *frame);
@@ -153,9 +160,6 @@ namespace Polycode {
 			void unlockRenderMutex();
 		
 			static const int JOB_REQUEST_CONTEXT_CHANGE = 0;
-			static const int JOB_PROCESS_DRAW_BUFFER = 2;
-			static const int JOB_END_FRAME = 3;
-			static const int JOB_BEGIN_FRAME = 6;
 			static const int JOB_DESTROY_TEXTURE = 8;
 			static const int JOB_DESTROY_SHADER = 9;
 			static const int JOB_DESTROY_PROGRAM = 10;
@@ -196,14 +200,10 @@ namespace Polycode {
 		void setGraphicsInterface(Core *core, GraphicsInterface *graphicsInterface);
 		
 		RenderThread *getRenderThread();
-
-		void processDrawBuffer(GPUDrawBuffer *buffer);
 		
 		void setBackingResolutionScale(Number xScale, Number yScale);
 		Number getBackingResolutionScaleX();
 		Number getBackingResolutionScaleY();
-		
-		void enqueueFrameJob(int jobType, void *data);
 		
 		void destroyRenderBufferPlatformData(void *platformData);
 		void destroyTexturePlatformData(void *platformData);
@@ -220,8 +220,7 @@ namespace Polycode {
 		static Vector3 project(const Vector3 &position, const Matrix4 &modelMatrix, const Matrix4 &projectionMatrix, const Polycode::Rectangle &viewport);
 		
 		
-		void beginFrame();
-		void endFrame();
+		void submitRenderFrame(RenderFrame *newFrame);
 		
 		static const int BLEND_MODE_NONE = 0;
 		static const int BLEND_MODE_NORMAL = 1;
@@ -234,10 +233,8 @@ namespace Polycode {
 		static const int DEPTH_FUNCTION_GREATER = 0;
 		static const int DEPTH_FUNCTION_LEQUAL = 1;
 		
-		
 	protected:
-	  
-		RenderFrame *currentFrame;
+		
 		
 		Number backingResolutionScaleX;
 		Number backingResolutionScaleY;

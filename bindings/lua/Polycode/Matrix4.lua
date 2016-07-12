@@ -71,10 +71,6 @@ function Matrix4:setScale(scale)
 	local retVal = Polycode.Matrix4_setScale(self.__ptr, scale.__ptr)
 end
 
-function Matrix4:getEulerAngles(ax, ay, az)
-	local retVal = Polycode.Matrix4_getEulerAngles(self.__ptr, ax.__ptr, ay.__ptr, az.__ptr)
-end
-
 function Matrix4:transpose()
 	local retVal =  Polycode.Matrix4_transpose(self.__ptr)
 	if retVal == nil then return nil end
@@ -101,11 +97,6 @@ end
 
 function Matrix4:determinant()
 	local retVal =  Polycode.Matrix4_determinant(self.__ptr)
-	return retVal
-end
-
-function Matrix4:generalDeterminant(a, n)
-	local retVal = Polycode.Matrix4_generalDeterminant(self.__ptr, a.__ptr, n)
 	return retVal
 end
 

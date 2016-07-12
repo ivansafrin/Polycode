@@ -492,6 +492,10 @@ CameraPreviewWindow::CameraPreviewWindow() : UIElement() {
 	aspectCombo->setSelectedIndex(0);
 }
 
+void CameraPreviewWindow::Render(GPUDrawBuffer *buffer) {
+	renderTexture->Render(buffer->renderFrame, scene, camera);
+}
+
 bool CameraPreviewWindow::isPinned() {
 	return pinned;
 }
@@ -506,7 +510,7 @@ void CameraPreviewWindow::Resize(Number width, Number height) {
 		if(renderTexture) {
 			delete renderTexture;
 		}
-		renderTexture = new SceneRenderTexture(scene, camera, previewRect->getWidth(), previewRect->getHeight(), false);
+		renderTexture = new SceneRenderTexture(previewRect->getWidth(), previewRect->getHeight(), false);
 		previewRect->setTexture(renderTexture->getTargetTexture());
 	}
 	pinButton->setPosition(width-70, 3);
@@ -563,7 +567,7 @@ void CameraPreviewWindow::setCamera(Scene *scene, Camera *camera) {
 		if(renderTexture) {
 			delete renderTexture;
 		}
-		renderTexture = new SceneRenderTexture(scene, camera, previewRect->getWidth(), previewRect->getHeight(), false);
+		renderTexture = new SceneRenderTexture(previewRect->getWidth(), previewRect->getHeight(), false);
 		previewRect->setTexture(renderTexture->getTargetTexture());
 		
 	} else {
@@ -583,12 +587,12 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
 	setOwnsChildrenRecursive(true);
 	
 	this->editor = editor;
-	mainScene = new Scene(Scene::SCENE_3D, true);
+	mainScene = new Scene(Scene::SCENE_3D);
 	
 //	  mainScene->getDefaultCamera()->frustumCulling = false;
 //	  mainScene->doVisibilityChecking(false);
 	
-	renderTexture = new SceneRenderTexture(mainScene, mainScene->getDefaultCamera(), 512, 512, false);
+	renderTexture = new SceneRenderTexture(512, 512, false);
 	mainScene->clearColor.setColor(0.2, 0.2, 0.2, 1.0); 
 	mainScene->useClearColor = true;
 	mainScene->rootEntity.processInputEvents = true;
@@ -598,13 +602,13 @@ EntityEditorMainView::EntityEditorMainView(PolycodeEditor *editor) {
 	   
 	Number customFalloff = 0.006;
 	// setup custom lights for disabled lighting
-	customLight1 = new SceneLight(SceneLight::POINT_LIGHT, mainScene,999999, customFalloff, customFalloff, customFalloff);
+	customLight1 = new SceneLight(SceneLight::POINT_LIGHT, 999999, customFalloff, customFalloff, customFalloff);
 	customLight1->editorOnly = true;
 	customLight1->setPosition(-9999, 9999, 9999);
 	mainScene->addLight(customLight1);
 	customLight1->enabled = false;
 
-	customLight2 = new SceneLight(SceneLight::POINT_LIGHT, mainScene,999999, customFalloff, customFalloff, customFalloff);
+	customLight2 = new SceneLight(SceneLight::POINT_LIGHT, 999999, customFalloff, customFalloff, customFalloff);
 	customLight2->editorOnly = true;
 	customLight2->setPosition(8999, -8999, -8999);
 	mainScene->addLight(customLight2);
@@ -967,7 +971,13 @@ bool EntityDistanceSorter::operator() (MultiselectorEntry i,MultiselectorEntry j
 	}
 }
 
+void EntityEditorMainView::Update() {
+	mainScene->Update();
+}
+
 void EntityEditorMainView::fixedUpdate() {
+	
+	mainScene->fixedUpdate();
 	
 	// update dummy target if trasnforming dummy entity
 	
@@ -1009,16 +1019,12 @@ void EntityEditorMainView::fixedUpdate() {
 		
 		
 		Entity *parentEntity = (Entity*) icons[i]->getUserData();
-		
 		if(!parentEntity->visible) {
 			icons[i]->visible = false;
 		} else {
 			icons[i]->visible = true;
-			
 			Vector2 screenPos = parentEntity->getScreenPosition(mainScene->getDefaultCamera()->getProjectionMatrix(), mainScene->getDefaultCamera()->getConcatenatedMatrix().Inverse(), mainScene->getDefaultCamera()->getViewport());
-			
 			icons[i]->setPosition(screenPos.x, (mainScene->getDefaultCamera()->getViewport().h - screenPos.y) + 30);
-			
 			// RENDERER_TODO:
 			// check if icon is behind the camera and hide it now that the icons are in screenspace
 
@@ -1116,10 +1122,14 @@ void EntityEditorMainView::setEditorProps(Entity *entity) {
 	if(sceneLight) {
 		createIcon(entity, "light_icon.png");
 		LightDisplay *lightVis = new LightDisplay(sceneLight);
+		
+		// TODO: fix this
+		/*
 		if(!sceneLight->getParentScene()) {
 			sceneLight->setParentScene(mainScene);
 			mainScene->addLight(sceneLight);
 		}
+		 */
 	}
 	
 	SceneCurve *sceneCurve = dynamic_cast<SceneCurve*>(entity);
@@ -1207,7 +1217,7 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
 	}
 
 	if(command == "add_camera") {
-		Camera *newCamera = new Camera(mainScene);
+		Camera *newCamera = new Camera();
 		sceneObjectRoot->addChild(newCamera);
 		setEditorProps(newCamera);
 		newCamera->setPosition(cursorPosition);
@@ -1256,7 +1266,7 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
 	}
 	
 	if(command == "add_light") {
-		SceneLight *newLight = new SceneLight(SceneLight::POINT_LIGHT, mainScene, 1.0);
+		SceneLight *newLight = new SceneLight(SceneLight::POINT_LIGHT, 1.0);
 		sceneObjectRoot->addChild(newLight);
 		mainScene->addLight(newLight);
 		newLight->enabled = !lightsDisabled;		
@@ -1513,7 +1523,7 @@ void EntityEditorMainView::handleEvent(Event *event) {
 					selectEntity(newSprite, false, false);
 				}
 			} else if(assetSelectType == "entity") {
-				SceneEntityInstance *newEntity = new SceneEntityInstance(mainScene, globalFrame->assetBrowser->getSelectedAssetPath());
+				SceneEntityInstance *newEntity = new SceneEntityInstance(globalFrame->assetBrowser->getSelectedAssetPath());
 				sceneObjectRoot->addChild(newEntity);
 				setEditorProps(newEntity);
 				newEntity->setPosition(cursorPosition);
@@ -2137,7 +2147,7 @@ PolycodeEntityEditor::~PolycodeEntityEditor() {
 bool PolycodeEntityEditor::openFile(OSFileEntry filePath) { 
 	PolycodeEditor::openFile(filePath);
 //	  return true;
-	loadedInstance = new SceneEntityInstance(mainView->getMainScene(), filePath.fullPath);
+	loadedInstance = new SceneEntityInstance(filePath.fullPath);
 	
 	// disable sounds :)
 	for(int i=0; i < loadedInstance->getNumChildren(); i++) {
@@ -2533,6 +2543,10 @@ void PolycodeEntityEditor::Paste(void *data, String clipboardType) {
 	if(clipboardType == "Entity") {
 		mainView->Paste((EntityEditorClipboardData*)data);
 	}
+}
+
+void PolycodeEntityEditor::Render(GPUDrawBuffer *buffer) {
+	mainView->getRenderTexture()->Render(buffer->renderFrame, mainView->getMainScene(), mainView->getMainScene()->getDefaultCamera());
 }
 
 void PolycodeEntityEditor::saveFile() {

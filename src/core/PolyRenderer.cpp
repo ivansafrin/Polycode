@@ -34,15 +34,20 @@
 
 using namespace Polycode;
 
+RenderFrame::RenderFrame(const Polycode::Rectangle &viewport) : viewport(viewport) {
+	
+}
+
 RenderFrame::~RenderFrame() {
-	while(jobQueue.size() > 0) {
-		RendererThreadJob frameJob = jobQueue.front();
-		if(frameJob.jobType == RenderThread::JOB_PROCESS_DRAW_BUFFER)  {
-			GPUDrawBuffer *buffer = (GPUDrawBuffer*) frameJob.data;
-			delete buffer;
-		}
-		jobQueue.pop();
+	while(drawBuffers.size() > 0) {
+		GPUDrawBuffer *buffer = drawBuffers.front();
+		delete buffer;
+		drawBuffers.pop();
 	}
+}
+
+void RenderFrame::addDrawBuffer(GPUDrawBuffer *buffer) {
+	drawBuffers.push(buffer);
 }
 
 GraphicsInterface::GraphicsInterface() {
@@ -120,16 +125,22 @@ void RenderThread::updateRenderThread() {
 	jobQueueMutex->unlock();
 
 	if (nextFrame) {
-		while (nextFrame->jobQueue.size() > 0) {
+		
+		beginFrame();
+		
+		while (nextFrame->drawBuffers.size() > 0) {
 			#if PLATFORM == PLATFORM_ANDROID
 				if(!core->isWindowInitialized()){
 					break;
 				}
 			#endif
-			RendererThreadJob frameJob = nextFrame->jobQueue.front();
-			nextFrame->jobQueue.pop();
-			processJob(frameJob);
+			GPUDrawBuffer *drawBuffer = nextFrame->drawBuffers.front();
+			nextFrame->drawBuffers.pop();
+			processDrawBuffer(drawBuffer);
 		}
+		
+		endFrame();
+		
 		delete nextFrame;
 	}
 	
@@ -232,7 +243,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
 		if(buffer->drawCalls[i].options.enableScissor) {
 			graphicsInterface->enableScissor(true);
 			Polycode::Rectangle scissorBox = buffer->drawCalls[i].options.scissorBox;
-			
+						
 			scissorBox.x *= buffer->backingResolutionScale.x;
 			scissorBox.w *= buffer->backingResolutionScale.x;
 			scissorBox.h *= buffer->backingResolutionScale.y;
@@ -408,29 +419,6 @@ void RenderThread::processJob(const RendererThreadJob &job) {
 			graphicsInterface->destroyProgramData(job.data);
 		}
 		break;
-		case JOB_PROCESS_DRAW_BUFFER:
-		{
-			GPUDrawBuffer *buffer = (GPUDrawBuffer*) job.data;
-			processDrawBuffer(buffer);
-			delete buffer;
-		}
-		break;
-		case JOB_BEGIN_FRAME:
-		{
-			currentDebugFrameInfo.buffersProcessed = 0;
-			currentDebugFrameInfo.drawCallsProcessed = 0;
-			currentDebugFrameInfo.timeTaken = 0;
-			frameStart = Services()->getCore()->getTicks();
-			core->prepareRenderContext();
-		}
-		break;
-		case JOB_END_FRAME:
-		{
-			core->flushRenderContext();
-			currentDebugFrameInfo.timeTaken = Services()->getCore()->getTicks() - frameStart;
-			lastFrameDebugInfo = currentDebugFrameInfo;
-		}
-		break;
 		case JOB_SET_TEXTURE_PARAM:
 		{
 			LocalShaderParam *param = (LocalShaderParam*) job.data;
@@ -447,6 +435,21 @@ void RenderThread::processJob(const RendererThreadJob &job) {
 	}
 	unlockRenderMutex();
 }
+
+void RenderThread::beginFrame() {
+	currentDebugFrameInfo.buffersProcessed = 0;
+	currentDebugFrameInfo.drawCallsProcessed = 0;
+	currentDebugFrameInfo.timeTaken = 0;
+	frameStart = Services()->getCore()->getTicks();
+	core->prepareRenderContext();
+}
+
+void RenderThread::endFrame() {
+	core->flushRenderContext();
+	currentDebugFrameInfo.timeTaken = Services()->getCore()->getTicks() - frameStart;
+	lastFrameDebugInfo = currentDebugFrameInfo;
+}
+
 
 RenderThreadDebugInfo RenderThread::getFrameInfo() {
 	RenderThreadDebugInfo info;
@@ -486,8 +489,8 @@ Renderer::Renderer(RenderThread *customThread) :
 	backingResolutionScaleX(1.0),
 	backingResolutionScaleY(1.0),
 	cpuBufferIndex(0),
-	gpuBufferIndex(1),
-	currentFrame(NULL) {
+	gpuBufferIndex(1)
+{
 	   
 	if(!customThread) {
 		renderThread = new RenderThread();
@@ -530,28 +533,8 @@ void Renderer::setAnisotropyAmount(Number amount) {
 	anisotropy = amount;
 }
 
-void Renderer::processDrawBuffer(GPUDrawBuffer *buffer) {
-	buffer->backingResolutionScale.x = backingResolutionScaleX;
-	buffer->backingResolutionScale.y = backingResolutionScaleY;
-	enqueueFrameJob(RenderThread::JOB_PROCESS_DRAW_BUFFER, buffer);
-}
-
-void Renderer::enqueueFrameJob(int jobType, void *data) {
-	RendererThreadJob job;
-	job.jobType = jobType;
-	job.data = data;
-	currentFrame->jobQueue.push(job);
-}
-
-void Renderer::beginFrame() {
-	currentFrame = new RenderFrame();
-	enqueueFrameJob(RenderThread::JOB_BEGIN_FRAME, NULL);
-}
-
-void Renderer::endFrame() {
-	enqueueFrameJob(RenderThread::JOB_END_FRAME, NULL);
-	renderThread->enqueueFrame(currentFrame);
-	currentFrame = NULL;
+void Renderer::submitRenderFrame(RenderFrame *newFrame) {
+	renderThread->enqueueFrame(newFrame);
 }
 
 void Renderer::destroyRenderBufferPlatformData(void *platformData) {

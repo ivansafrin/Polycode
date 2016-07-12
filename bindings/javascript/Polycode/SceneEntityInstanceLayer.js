@@ -1,12 +1,11 @@
-function SceneEntityInstanceLayer(instance,name) {
+function SceneEntityInstanceLayer() {
 	if(arguments[0] != "__skip_ptr__") {
-		this.__ptr = Polycode.SceneEntityInstanceLayer(instance,name)
+		this.__ptr = Polycode.SceneEntityInstanceLayer()
 	}
 	Object.defineProperties(this, {
 		'name': { enumerable: true, configurable: true, get: SceneEntityInstanceLayer.prototype.__get_name, set: SceneEntityInstanceLayer.prototype.__set_name},
 		'layerID': { enumerable: true, configurable: true, get: SceneEntityInstanceLayer.prototype.__get_layerID, set: SceneEntityInstanceLayer.prototype.__set_layerID},
-		'visible': { enumerable: true, configurable: true, get: SceneEntityInstanceLayer.prototype.__get_visible, set: SceneEntityInstanceLayer.prototype.__set_visible},
-		'instance': { enumerable: true, configurable: true, get: SceneEntityInstanceLayer.prototype.__get_instance, set: SceneEntityInstanceLayer.prototype.__set_instance}
+		'visible': { enumerable: true, configurable: true, get: SceneEntityInstanceLayer.prototype.__get_visible, set: SceneEntityInstanceLayer.prototype.__set_visible}
 	})
 }
 
@@ -20,7 +19,7 @@ SceneEntityInstanceLayer.prototype.__set_name = function(val) {
 }
 
 SceneEntityInstanceLayer.prototype.__get_layerID = function() {
-	var retVal = new char()
+	var retVal = new char("__skip_ptr__")
 	retVal.__ptr = 	Polycode.SceneEntityInstanceLayer__get_layerID(this.__ptr)
 	return retVal
 }
@@ -35,16 +34,6 @@ SceneEntityInstanceLayer.prototype.__get_visible = function() {
 
 SceneEntityInstanceLayer.prototype.__set_visible = function(val) {
 	Polycode.SceneEntityInstanceLayer__set_visible(this.__ptr, val)
-}
-
-SceneEntityInstanceLayer.prototype.__get_instance = function() {
-	var retVal = new SceneEntityInstance()
-	retVal.__ptr = 	Polycode.SceneEntityInstanceLayer__get_instance(this.__ptr)
-	return retVal
-}
-
-SceneEntityInstanceLayer.prototype.__set_instance = function(val) {
-	Polycode.SceneEntityInstanceLayer__set_instance(this.__ptr, val.__ptr)
 }
 
 Duktape.fin(SceneEntityInstanceLayer.prototype, function (x) {

@@ -93,8 +93,9 @@ class JSBindingsGenerator(object):
 				self.wrappersHeaderBody += "\t\t%s %s = %s(context, %d);\n" % (outtype, p["name"], outfunc, idx)
 				idx += 1
 
-			self.wrappersHeaderBody += "\t\t%s *inst = new %s(%s);\n" % (c["name"], c["name"], params)
-					
+			self.wrappersHeaderBody += "\t\tstd::shared_ptr<%s> *inst = new std::shared_ptr<%s>;\n" % (c["name"], c["name"])
+			self.wrappersHeaderBody += "\t\t(*inst) = std::make_shared<%s>(%s);\n" % (c["name"], params)
+
 			self.wrappersHeaderBody += "\t\tduk_push_pointer(context, (void*)inst);\n"
 			self.wrappersHeaderBody += "\t\treturn 1;\n"
 			self.wrappersHeaderBody += "\t}\n\n"
@@ -122,7 +123,7 @@ class JSBindingsGenerator(object):
 		self.cppRegisterOut += "\t\t\t{\"%s__delete\", %s_%s__delete, 1},\n" % (c["name"], self.libName, c["name"])
 
 		self.wrappersHeaderBody += "\tduk_ret_t %s_%s__delete(duk_context *context) {\n" % (self.libName, c["name"])
-		self.wrappersHeaderBody += "\t\t%s *inst = (%s*)duk_to_pointer(context, 0);\n" % (c["name"], c["name"])
+		self.wrappersHeaderBody += "\t\tstd::shared_ptr<%s> *inst = (std::shared_ptr<%s>*)duk_to_pointer(context, 0);\n" % (c["name"], c["name"])
 		self.wrappersHeaderBody += "\t\tdelete inst;\n"
 		self.wrappersHeaderBody += "\t\treturn 0;\n"
 		self.wrappersHeaderBody += "\t}\n\n"
@@ -145,7 +146,7 @@ class JSBindingsGenerator(object):
 				self.cppRegisterOut += "\t\t\t{\"%s__get_%s\", %s_%s__get_%s, 1},\n" % (c["name"], pp["name"], self.libName, c["name"], pp["name"])
 
 				self.wrappersHeaderBody += "\tduk_ret_t %s_%s__get_%s(duk_context *context) {\n" % (self.libName, c["name"], pp["name"])
-				self.wrappersHeaderBody += "\t\t%s *inst = (%s*)duk_to_pointer(context, 0);\n" % (c["name"], c["name"])
+				self.wrappersHeaderBody += "\t\tstd::shared_ptr<%s> *inst = (std::shared_ptr<%s>*)duk_to_pointer(context, 0);\n" % (c["name"], c["name"])
 
 				outfunc = "this_shouldnt_happen"
 				retFunc = ""
@@ -160,14 +161,14 @@ class JSBindingsGenerator(object):
 					outfunc = "duk_push_boolean"
 
 				if pp["type"].find("*") > -1: # Returned var is definitely a pointer.
-					self.wrappersHeaderBody += "\t\tPolyBase *ptrRetVal = (PolyBase*)inst->%s%s;\n" % (pp["name"], retFunc)
+					self.wrappersHeaderBody += "\t\tPolyBase *ptrRetVal = NULL;//(PolyBase*)inst->%s%s; //TODO: disable direct pointer access\n" % (pp["name"], retFunc)
 					self.wrappersHeaderBody += "\t\tduk_push_pointer(context, (void*)ptrRetVal);\n"
-					self.jsClassOut += "\tvar retVal = new %s()\n\tretVal.__ptr = " % (pp["cleanType"])
+					self.jsClassOut += "\tvar retVal = new %s(\"__skip_ptr__\")\n\tretVal.__ptr = " % (pp["cleanType"])
 					self.jsClassOut += "\t%s.%s__get_%s(this.__ptr)\n" % (self.libName, c["name"], pp["name"]) 
 					self.jsClassOut += "\treturn retVal\n"
 					self.jsClassOut += "}\n\n"
 				elif self.isBasicType(pp["type"])  == True:
-					self.wrappersHeaderBody += "\t\t%s(context, inst->%s%s);\n" % (outfunc, pp["name"], retFunc);
+					self.wrappersHeaderBody += "\t\t%s(context, (*inst)->%s%s);\n" % (outfunc, pp["name"], retFunc);
 					self.jsClassOut += "\treturn %s.%s__get_%s(this.__ptr)\n" % (self.libName, c["name"], pp["name"])
 					self.jsClassOut += "}\n\n"
 				else: 
@@ -178,10 +179,11 @@ class JSBindingsGenerator(object):
 						className = "Polycode::Rectangle"
 					if className == "Polycode : : Rectangle":
 						className = "Polycode::Rectangle"
-					self.wrappersHeaderBody += "\t\t%s *retInst = new %s();\n" % (className, className)
-					self.wrappersHeaderBody += "\t\t*retInst = inst->%s%s;\n" % (pp["name"], retFunc)
+					self.wrappersHeaderBody += "\t\tstd::shared_ptr<%s> *retInst = new std::shared_ptr<%s>;\n" % (className, className)
+					self.wrappersHeaderBody += "\t\t*retInst = std::make_shared<%s>();\n" % (className)
+					self.wrappersHeaderBody += "\t\t*(*retInst) = (*inst)->%s%s;\n" % (pp["name"], retFunc)
 					self.wrappersHeaderBody += "\t\tduk_push_pointer(context, (void*)retInst);\n"
-					self.jsClassOut += "\tvar retVal = new %s()\n\tretVal.__ptr = " % (pp["cleanType"])
+					self.jsClassOut += "\tvar retVal = new %s(\"__skip_ptr__\")\n\tretVal.__ptr = " % (pp["cleanType"])
 					self.jsClassOut += "\t%s.%s__get_%s(this.__ptr)\n" % (self.libName, c["name"], pp["name"]) 
 					self.jsClassOut += "\treturn retVal\n"
 					self.jsClassOut += "}\n\n"
@@ -248,15 +250,15 @@ class JSBindingsGenerator(object):
 				self.wrappersHeaderBody += "\tduk_ret_t %s_%s_%s(duk_context *context) {\n" % (self.libName, c["name"], method["name"])
 
 				if not method["isStatic"]:
-					self.wrappersHeaderBody += "\t\t%s *inst = (%s*)duk_to_pointer(context, 0);\n" % (c["name"], c["name"])
+					self.wrappersHeaderBody += "\t\tstd::shared_ptr<%s> *inst = (std::shared_ptr<%s>*)duk_to_pointer(context, 0);\n" % (c["name"], c["name"])
 
 				idx = 1
 				if method["isStatic"]:
 					idx = 0
 				for p in method["parameters"]:
 					if "*" in p["type"]:
-						outfunc = "(%s)duk_to_pointer" % (p["type"])
-						outtype = "%s" % p["type"]
+						outfunc = "*(std::shared_ptr<%s>*)duk_to_pointer" % (p["cleanType"])
+						outtype = "std::shared_ptr<%s>" % p["cleanType"]
 					else:
 						outfunc = "*(%s*)duk_to_pointer" % (p["type"])
 						outtype = "%s" % p["type"]
@@ -286,7 +288,7 @@ class JSBindingsGenerator(object):
 					if method["isStatic"]:
 						self.wrappersHeaderBody += "\t\t%s::%s(%s);\n" % (c["name"], method["name"], params)
 					else:
-						self.wrappersHeaderBody += "\t\tinst->%s(%s);\n" % (method["name"], params)
+						self.wrappersHeaderBody += "\t\t(*inst)->%s(%s);\n" % (method["name"], params)
 					self.wrappersHeaderBody += "\t\treturn 0;\n"
 				else:
 					outfunc = "this_shouldnt_happen"
@@ -305,15 +307,15 @@ class JSBindingsGenerator(object):
 						if method["isStatic"]:
 							self.wrappersHeaderBody += "\t\tPolyBase *ptrRetVal = (PolyBase*)%s::%s(%s)%s;\n" % (c["name"], method["name"], params, retFunc)
 						else:
-							self.wrappersHeaderBody += "\t\tPolyBase *ptrRetVal = (PolyBase*)inst->%s(%s)%s;\n" % (method["name"], params, retFunc)
+							self.wrappersHeaderBody += "\t\tPolyBase *ptrRetVal = (PolyBase*)(*inst)->%s(%s)%s;\n" % (method["name"], params, retFunc)
 						self.wrappersHeaderBody += "\t\tduk_push_pointer(context, (void*)ptrRetVal);\n"
-						jsRet = "var retVal = new %s()\n\tretVal.__ptr = " % (method["cleanType"])
+						jsRet = "var retVal = new %s(\"__skip_ptr__\")\n\tretVal.__ptr = " % (method["cleanType"])
 						finalOut = "\treturn retVal\n"
 					elif self.isBasicType(method["type"])  == True:
 						if method["isStatic"]:
 							self.wrappersHeaderBody += "\t\t%s(context, %s::%s(%s)%s);\n" % (outfunc, c["name"], method["name"], params, retFunc);
 						else:
-							self.wrappersHeaderBody += "\t\t%s(context, inst->%s(%s)%s);\n" % (outfunc, method["name"], params, retFunc);
+							self.wrappersHeaderBody += "\t\t%s(context, (*inst)->%s(%s)%s);\n" % (outfunc, method["name"], params, retFunc);
 						jsRet = "return "
 					else: 
 						className = method["type"].replace("const", "").replace("&", "").replace("inline", "").replace("virtual", "").replace("static", "")
@@ -323,13 +325,14 @@ class JSBindingsGenerator(object):
 							className = "Polycode::Rectangle"
 						if className == "Polycode : : Rectangle":
 							className = "Polycode::Rectangle"
-						self.wrappersHeaderBody += "\t\t%s *retInst = new %s();\n" % (className, className)
+						self.wrappersHeaderBody += "\t\tstd::shared_ptr<%s> *retInst = new std::shared_ptr<%s>;\n" % (className, className)
+
 						if method["isStatic"]:
-							self.wrappersHeaderBody += "\t\t*retInst = %s::%s(%s)%s;\n" % (c["name"], method["name"], params, retFunc)
+							self.wrappersHeaderBody += "\t\t*(*retInst) = %s::%s(%s)%s;\n" % (c["name"], method["name"], params, retFunc)
 						else:
-							self.wrappersHeaderBody += "\t\t*retInst = inst->%s(%s)%s;\n" % (method["name"], params, retFunc)
+							self.wrappersHeaderBody += "\t\t*(*retInst) = (*inst)->%s(%s)%s;\n" % (method["name"], params, retFunc)
 						self.wrappersHeaderBody += "\t\tduk_push_pointer(context, (void*)retInst);\n"
-						jsRet = "var retVal = new %s()\n\tretVal.__ptr = " % (method["cleanType"])
+						jsRet = "var retVal = new %s(\"__skip_ptr__\")\n\tretVal.__ptr = " % (method["cleanType"])
 						finalOut = "\treturn retVal\n"
 					self.wrappersHeaderBody += "\t\treturn 1;\n"
 

@@ -12,7 +12,7 @@ function QuatTriple() {
 
 
 QuatTriple.prototype.__get_q1 = function() {
-	var retVal = new Quaternion()
+	var retVal = new Quaternion("__skip_ptr__")
 	retVal.__ptr = 	Polycode.QuatTriple__get_q1(this.__ptr)
 	return retVal
 }
@@ -22,7 +22,7 @@ QuatTriple.prototype.__set_q1 = function(val) {
 }
 
 QuatTriple.prototype.__get_q2 = function() {
-	var retVal = new Quaternion()
+	var retVal = new Quaternion("__skip_ptr__")
 	retVal.__ptr = 	Polycode.QuatTriple__get_q2(this.__ptr)
 	return retVal
 }
@@ -32,7 +32,7 @@ QuatTriple.prototype.__set_q2 = function(val) {
 }
 
 QuatTriple.prototype.__get_q3 = function() {
-	var retVal = new Quaternion()
+	var retVal = new Quaternion("__skip_ptr__")
 	retVal.__ptr = 	Polycode.QuatTriple__get_q3(this.__ptr)
 	return retVal
 }

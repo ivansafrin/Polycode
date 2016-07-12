@@ -15,14 +15,6 @@ function TextureResourceLoader:TextureResourceLoader(...)
 	end
 end
 
-function TextureResourceLoader:loadResource(path, targetPool)
-	local retVal = Polycode.TextureResourceLoader_loadResource(self.__ptr, path, targetPool.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["shared_ptr<Resource>"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function TextureResourceLoader:__delete()
 	if self then Polycode.delete_TextureResourceLoader(self.__ptr) end
 end

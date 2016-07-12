@@ -131,6 +131,7 @@ protected:
 	bool runNextFrame;
 
 	Object configFile;
+	Scene *mainScene;
 
 	bool willRunProject;
 	PolycodeFrame *frame;

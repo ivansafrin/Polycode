@@ -8,12 +8,6 @@ Texture.FILTERING_LINEAR = 1
 function Texture:__getvar(name)
 	if name == "clamp" then
 		return Polycode.Texture_get_clamp(self.__ptr)
-	elseif name == "textureData" then
-		local retVal = Polycode.Texture_get_textureData(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["char"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
 	elseif name == "type" then
 		return Polycode.Texture_get_type(self.__ptr)
 	elseif name == "filteringMode" then
@@ -35,9 +29,6 @@ end
 function Texture:__setvar(name,value)
 	if name == "clamp" then
 		Polycode.Texture_set_clamp(self.__ptr, value)
-		return true
-	elseif name == "textureData" then
-		Polycode.Texture_set_textureData(self.__ptr, value.__ptr)
 		return true
 	elseif name == "type" then
 		Polycode.Texture_set_type(self.__ptr, value)
@@ -66,18 +57,6 @@ function Texture:__setvar(name,value)
 end
 function Texture:reloadResource()
 	local retVal =  Polycode.Texture_reloadResource(self.__ptr)
-end
-
-function Texture:setImageData(data)
-	local retVal = Polycode.Texture_setImageData(self.__ptr, data.__ptr)
-end
-
-function Texture:getTextureData()
-	local retVal =  Polycode.Texture_getTextureData(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["char"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
 end
 
 function Texture:getWidth()

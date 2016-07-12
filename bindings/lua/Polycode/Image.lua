@@ -18,14 +18,6 @@ function Image:Image(...)
 	end
 end
 
-function Image:BlankImage(width, height, type)
-	local retVal = Polycode.Image_BlankImage(self.__ptr, width, height, type)
-	if retVal == nil then return nil end
-	local __c = _G["Image"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function Image:loadImage(fileName)
 	local retVal = Polycode.Image_loadImage(self.__ptr, fileName)
 	return retVal
@@ -34,10 +26,6 @@ end
 function Image:saveImage(fileName)
 	local retVal = Polycode.Image_saveImage(self.__ptr, fileName)
 	return retVal
-end
-
-function Image:pasteImage(image, x, y, blendingMode, blendAmount, blendColor)
-	local retVal = Polycode.Image_pasteImage(self.__ptr, image.__ptr, x, y, blendingMode, blendAmount, blendColor.__ptr)
 end
 
 function Image:createEmpty(width, height, fillColor)
@@ -58,10 +46,6 @@ function Image:getPixel(x, y)
 	local __c = _G["Color"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
-end
-
-function Image:swap(v1, v2)
-	local retVal = Polycode.Image_swap(self.__ptr, v1.__ptr, v2.__ptr)
 end
 
 function Image:drawLine(x0, y0, x1, y1, col)
@@ -100,22 +84,6 @@ function Image:fastBlurHor(blurSize)
 	local retVal = Polycode.Image_fastBlurHor(self.__ptr, blurSize)
 end
 
-function Image:getPixelsInRect(x, y, width, height)
-	local retVal = Polycode.Image_getPixelsInRect(self.__ptr, x, y, width, height)
-	if retVal == nil then return nil end
-	local __c = _G["char"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function Image:getImagePart(subRect)
-	local retVal = Polycode.Image_getImagePart(self.__ptr, subRect.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["Image"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function Image:getBrushX()
 	local retVal =  Polycode.Image_getBrushX(self.__ptr)
 	return retVal
@@ -144,14 +112,6 @@ end
 function Image:getHeight()
 	local retVal =  Polycode.Image_getHeight(self.__ptr)
 	return retVal
-end
-
-function Image:getPixels()
-	local retVal =  Polycode.Image_getPixels(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["char"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
 end
 
 function Image:premultiplyAlpha()

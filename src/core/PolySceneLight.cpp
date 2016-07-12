@@ -33,7 +33,7 @@
 
 using namespace Polycode;
 
-SceneLight::SceneLight(int type, Scene *parentScene, Number intensity, Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation) : Entity() {
+SceneLight::SceneLight(int type, Number intensity, Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation) : Entity() {
 	lightInfo.type = type;
 	lightInfo.intensity = intensity;
 	lightInfo.constantAttenuation = constantAttenuation;
@@ -51,7 +51,6 @@ SceneLight::SceneLight(int type, Scene *parentScene, Number intensity, Number co
 	shadowMapFOV = 60.0f;
 	lightInfo.shadowMapTexture = NULL;
 	spotCamera = NULL;
-	this->parentScene = parentScene;
 	lightInfo.shadowsEnabled = false;
 	lightInfo.diffuseColor.setColor(1.0f,1.0f,1.0f,1.0f);
 	setSpotlightProperties(40,0.1);
@@ -80,7 +79,7 @@ void SceneLight::enableShadows(bool val, unsigned int resolution) {
 		shadowMapRenderBuffer = std::make_shared<RenderBuffer>(resolution, resolution, true, false);
 		
 		if(!spotCamera) {
-			spotCamera = new Camera(parentScene);
+			spotCamera = new Camera();
 			spotCamera->editorOnly = true;
 			spotCamera->setClippingPlanes(0.01, 50.0);
 			addChild(spotCamera);	
@@ -118,13 +117,8 @@ Number SceneLight::getShadowMapFOV() const {
 }
 
 SceneLight::~SceneLight() {
-	
 	if(!ownsChildren) {
 		delete spotCamera;
-	}
-	
-	if(parentScene) {
-		parentScene->removeLight(this);
 	}
 }
 
@@ -132,13 +126,13 @@ unsigned int SceneLight::getShadowMapResolution() const {
 	return shadowMapRes;
 }
 
-void SceneLight::renderDepthMap(Scene *scene) {
+void SceneLight::renderDepthMap(RenderFrame *frame, Scene *scene) {
 	if(!unlitMaterial) {
 		return;
 	}
 	spotCamera->setFOV(shadowMapFOV);
 	spotCamera->setViewport(Polycode::Rectangle(0, 0, shadowMapRes, shadowMapRes));
-	scene->Render(spotCamera, shadowMapRenderBuffer, unlitMaterial, false);
+	scene->Render(frame, spotCamera, shadowMapRenderBuffer, unlitMaterial, false);
 	
 	Matrix4 matTexAdj(0.5f, 0.0f,	0.0f,	0.0f,
 					  0.0f, 0.5f,	0.0f,	0.0f,
@@ -154,7 +148,7 @@ LightInfo SceneLight::getLightInfo() const {
 }
 
 Entity *SceneLight::Clone(bool deepClone, bool ignoreEditorOnly) const {
-	SceneLight *newLight = new SceneLight(lightInfo.type, NULL, lightInfo.intensity, lightInfo.constantAttenuation, lightInfo.linearAttenuation, lightInfo.quadraticAttenuation);
+	SceneLight *newLight = new SceneLight(lightInfo.type, lightInfo.intensity, lightInfo.constantAttenuation, lightInfo.linearAttenuation, lightInfo.quadraticAttenuation);
 	applyClone(newLight, deepClone, ignoreEditorOnly);
 	return newLight;
 }
@@ -198,19 +192,8 @@ Number SceneLight::getSpotlightExponent() const{
 	return lightInfo.spotlightExponent;
 }
 
-Scene *SceneLight::getParentScene() const {
-	return parentScene;
-}
-
 int SceneLight::getLightType() const {
 	return lightInfo.type;
-}
-
-void SceneLight::setParentScene(Scene *scene) {
-	parentScene = scene;
-	if(spotCamera) {
-		spotCamera->setParentScene(scene);
-	}
 }
 
 Camera *SceneLight::getSpotlightCamera() {

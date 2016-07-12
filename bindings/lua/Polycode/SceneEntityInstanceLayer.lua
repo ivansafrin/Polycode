@@ -12,12 +12,6 @@ function SceneEntityInstanceLayer:__getvar(name)
 		return __c
 	elseif name == "visible" then
 		return Polycode.SceneEntityInstanceLayer_get_visible(self.__ptr)
-	elseif name == "instance" then
-		local retVal = Polycode.SceneEntityInstanceLayer_get_instance(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["SceneEntityInstance"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
 	end
 end
 
@@ -30,9 +24,6 @@ function SceneEntityInstanceLayer:__setvar(name,value)
 		return true
 	elseif name == "visible" then
 		Polycode.SceneEntityInstanceLayer_set_visible(self.__ptr, value)
-		return true
-	elseif name == "instance" then
-		Polycode.SceneEntityInstanceLayer_set_instance(self.__ptr, value.__ptr)
 		return true
 	end
 	return false

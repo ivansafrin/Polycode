@@ -84,24 +84,6 @@ Duktape.fin(ObjectEntry.prototype, function (x) {
 	Polycode.ObjectEntry__delete(x.__ptr)
 })
 
-ObjectEntry.prototype.readNumber = function(key,out) {
-	return Polycode.ObjectEntry_readNumber(this.__ptr, key, out.__ptr)
-}
-
-ObjectEntry.prototype.readString = function(key,out) {
-	return Polycode.ObjectEntry_readString(this.__ptr, key, out.__ptr)
-}
-
-ObjectEntry.prototype.readBool = function(key,out) {
-	return Polycode.ObjectEntry_readBool(this.__ptr, key, out.__ptr)
-}
-
-ObjectEntry.prototype.addChild = function(name) {
-	var retVal = new ObjectEntry()
-	retVal.__ptr = Polycode.ObjectEntry_addChild(this.__ptr, name)
-	return retVal
-}
-
 ObjectEntry.prototype.getTypedName = function() {
 	return Polycode.ObjectEntry_getTypedName(this.__ptr)
 }

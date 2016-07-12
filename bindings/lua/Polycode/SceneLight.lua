@@ -58,10 +58,6 @@ function SceneLight:getType()
 	return retVal
 end
 
-function SceneLight:renderDepthMap(scene)
-	local retVal = Polycode.SceneLight_renderDepthMap(self.__ptr, scene.__ptr)
-end
-
 function SceneLight:getZBufferTexture()
 	local retVal =  Polycode.SceneLight_getZBufferTexture(self.__ptr)
 	if retVal == nil then return nil end
@@ -135,38 +131,6 @@ end
 
 function SceneLight:setLightType(lightType)
 	local retVal = Polycode.SceneLight_setLightType(self.__ptr, lightType)
-end
-
-function SceneLight:Clone(deepClone, ignoreEditorOnly)
-	local retVal = Polycode.SceneLight_Clone(self.__ptr, deepClone, ignoreEditorOnly)
-	if retVal == nil then return nil end
-	local __c = _G["Entity"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function SceneLight:applyClone(clone, deepClone, ignoreEditorOnly)
-	local retVal = Polycode.SceneLight_applyClone(self.__ptr, clone.__ptr, deepClone, ignoreEditorOnly)
-end
-
-function SceneLight:getParentScene()
-	local retVal =  Polycode.SceneLight_getParentScene(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["Scene"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function SceneLight:setParentScene(scene)
-	local retVal = Polycode.SceneLight_setParentScene(self.__ptr, scene.__ptr)
-end
-
-function SceneLight:getSpotlightCamera()
-	local retVal =  Polycode.SceneLight_getSpotlightCamera(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["Camera"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
 end
 
 function SceneLight:getLightInfo()

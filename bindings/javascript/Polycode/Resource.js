@@ -32,7 +32,7 @@ Resource.prototype.__set_reloadOnFileModify = function(val) {
 }
 
 Resource.prototype.__get_resourceFileTime = function() {
-	var retVal = new size_t()
+	var retVal = new size_t("__skip_ptr__")
 	retVal.__ptr = 	Polycode.Resource__get_resourceFileTime(this.__ptr)
 	return retVal
 }

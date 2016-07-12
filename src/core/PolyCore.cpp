@@ -197,7 +197,6 @@ namespace Polycode {
 		this->yRes = yRes;
 		coreResized = true;
 		renderer->getRenderThread()->clearFrameQueue();
-		Render();
 	}
 	
 	void Core::loseFocus() {
@@ -230,10 +229,12 @@ namespace Polycode {
 		}
 	}
 	
-	bool Core::updateAndRender() {
-		bool ret = Update();
-		Render();
-		return ret;
+	Renderer *Core::getRenderer() {
+		return renderer;
+	}
+	
+	Polycode::Rectangle Core::getViewport() {
+		return Polycode::Rectangle(0, 0, getBackingXRes(), getBackingYRes());
 	}
 	
 	bool Core::fixedUpdate() {
@@ -412,7 +413,6 @@ namespace Polycode {
 	}
 	
 	DummyCore::~DummyCore() {}
-	void DummyCore::Render() {}
 	bool DummyCore::systemUpdate()	{
 		if(!running)
 			return false;

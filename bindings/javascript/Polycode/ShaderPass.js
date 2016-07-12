@@ -33,7 +33,7 @@ Duktape.fin(ShaderPass.prototype, function (x) {
 })
 
 ShaderPass.prototype.getShaderBinding = function() {
-	var retVal = new ShaderBinding()
+	var retVal = new ShaderBinding("__skip_ptr__")
 	retVal.__ptr = Polycode.ShaderPass_getShaderBinding(this.__ptr)
 	return retVal
 }

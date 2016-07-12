@@ -11,7 +11,7 @@ function BezierPoint(p1x,p1y,p1z,p2x,p2y,p2z,p3x,p3y,p3z) {
 
 
 BezierPoint.prototype.__get_p1 = function() {
-	var retVal = new Vector3()
+	var retVal = new Vector3("__skip_ptr__")
 	retVal.__ptr = 	Polycode.BezierPoint__get_p1(this.__ptr)
 	return retVal
 }
@@ -21,7 +21,7 @@ BezierPoint.prototype.__set_p1 = function(val) {
 }
 
 BezierPoint.prototype.__get_p2 = function() {
-	var retVal = new Vector3()
+	var retVal = new Vector3("__skip_ptr__")
 	retVal.__ptr = 	Polycode.BezierPoint__get_p2(this.__ptr)
 	return retVal
 }
@@ -31,7 +31,7 @@ BezierPoint.prototype.__set_p2 = function(val) {
 }
 
 BezierPoint.prototype.__get_p3 = function() {
-	var retVal = new Vector3()
+	var retVal = new Vector3("__skip_ptr__")
 	retVal.__ptr = 	Polycode.BezierPoint__get_p3(this.__ptr)
 	return retVal
 }

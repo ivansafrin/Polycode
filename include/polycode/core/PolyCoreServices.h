@@ -32,7 +32,6 @@ namespace Polycode {
 	class PolycodeModule;
 	class Renderer;
 	class Config;
-	class SceneManager;
 	class TimerManager;
 	class TweenManager;
 	class ResourceManager;
@@ -68,7 +67,6 @@ namespace Polycode {
 			
 			void Update(int elapsed);
 			void fixedUpdate();
-			void Render(const Polycode::Rectangle &viewport);
 			
 			void setCore(Core *core);
 		
@@ -87,14 +85,7 @@ namespace Polycode {
 			CoreInput *getInput();
 			
 			void handleEvent(Event *event);		
-			
-			/**
-			* Returns the scene manager. The screen manager is responsible for maintaining and rendering 3D scenes.
-			* @return Scene Manager
-			* @see SceneManager
-			*/						
-			SceneManager *getSceneManager();
-			
+		
 			/**
 			* Returns the timer manager. The timer manager is responsible for updating timers in the framework.
 			* @return Timer Manager
@@ -152,7 +143,6 @@ namespace Polycode {
 					
 			Core *core;
 			Config *config;
-			SceneManager *sceneManager;
 			Logger *logger;
 			TimerManager *timerManager;
 			TweenManager *tweenManager;

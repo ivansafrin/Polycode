@@ -48,14 +48,6 @@ function SceneCurve:SceneCurve(...)
 	end
 end
 
-function SceneCurve:SceneCurveWithCurve(curve)
-	local retVal = Polycode.SceneCurve_SceneCurveWithCurve(self.__ptr, curve.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["SceneCurve"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function SceneCurve:getWorldPointAt(t)
 	local retVal = Polycode.SceneCurve_getWorldPointAt(self.__ptr, t)
 	if retVal == nil then return nil end
@@ -66,26 +58,6 @@ end
 
 function SceneCurve:Update()
 	local retVal =  Polycode.SceneCurve_Update(self.__ptr)
-end
-
-function SceneCurve:Clone(deepClone, ignoreEditorOnly)
-	local retVal = Polycode.SceneCurve_Clone(self.__ptr, deepClone, ignoreEditorOnly)
-	if retVal == nil then return nil end
-	local __c = _G["Entity"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function SceneCurve:applyClone(clone, deepClone, ignoreEditorOnly)
-	local retVal = Polycode.SceneCurve_applyClone(self.__ptr, clone.__ptr, deepClone, ignoreEditorOnly)
-end
-
-function SceneCurve:getCurve()
-	local retVal =  Polycode.SceneCurve_getCurve(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["BezierCurve"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
 end
 
 function SceneCurve:__delete()

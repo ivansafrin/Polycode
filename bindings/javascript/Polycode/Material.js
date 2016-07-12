@@ -55,26 +55,12 @@ Material.prototype.removeShaderPass = function(shaderIndex) {
 	Polycode.Material_removeShaderPass(this.__ptr, shaderIndex)
 }
 
-Material.prototype.addShaderRenderTarget = function(newTarget) {
-	Polycode.Material_addShaderRenderTarget(this.__ptr, newTarget.__ptr)
-}
-
 Material.prototype.getNumShaderRenderTargets = function() {
 	return Polycode.Material_getNumShaderRenderTargets(this.__ptr)
 }
 
-Material.prototype.getShaderRenderTarget = function(index) {
-	var retVal = new ShaderRenderTarget()
-	retVal.__ptr = Polycode.Material_getShaderRenderTarget(this.__ptr, index)
-	return retVal
-}
-
 Material.prototype.removeShaderRenderTarget = function(index) {
 	Polycode.Material_removeShaderRenderTarget(this.__ptr, index)
-}
-
-Material.prototype.recreateRenderTarget = function(renderTarget) {
-	Polycode.Material_recreateRenderTarget(this.__ptr, renderTarget.__ptr)
 }
 
 Material.prototype.recreateRenderTargets = function() {
@@ -86,19 +72,19 @@ Material.prototype.getName = function() {
 }
 
 Material.prototype.getShaderPass = function(index) {
-	var retVal = new ShaderPass()
+	var retVal = new ShaderPass("__skip_ptr__")
 	retVal.__ptr = Polycode.Material_getShaderPass(this.__ptr, index)
 	return retVal
 }
 
 Material.prototype.getShaderBinding = function(index) {
-	var retVal = new ShaderBinding()
+	var retVal = new ShaderBinding("__skip_ptr__")
 	retVal.__ptr = Polycode.Material_getShaderBinding(this.__ptr, index)
 	return retVal
 }
 
 Material.prototype.getShader = function(index) {
-	var retVal = new Shader()
+	var retVal = new Shader("__skip_ptr__")
 	retVal.__ptr = Polycode.Material_getShader(this.__ptr, index)
 	return retVal
 }

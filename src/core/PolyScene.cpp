@@ -32,30 +32,29 @@
 #include "polycode/core/PolySceneLight.h"
 #include "polycode/core/PolyInputEvent.h"
 #include "polycode/core/PolySceneMesh.h"
+#include "polycode/core/PolyTexture.h"
 #include "polycode/core/PolyRay.h"
-#include "polycode/core/PolySceneManager.h"
 
 using std::vector;
 using namespace Polycode;
 
 Scene::Scene() : EventDispatcher() {
-	initScene(SCENE_3D, false);
+	initScene(SCENE_3D);
 }
 
-Scene::Scene(int sceneType, bool virtualScene) : EventDispatcher() {
-	initScene(sceneType, virtualScene);
+Scene::Scene(int sceneType) : EventDispatcher() {
+	initScene(sceneType);
 }
 
-void Scene::initScene(int sceneType, bool virtualScene) {
+void Scene::initScene(int sceneType) {
 
 	rootEntity.setContainerScene(this);
 	core = CoreServices::getInstance()->getCore();
 	this->sceneType = sceneType;
-	defaultCamera = new Camera(this);
+	defaultCamera = new Camera();
 	activeCamera = defaultCamera;
 	overrideMaterial = NULL;
 	enabled = true;
-	isSceneVirtual = virtualScene;	
 	hasLightmaps = false;
 	clearColor.setColor(0.13f,0.13f,0.13f,1.0f); 
 	ambientColor.setColor(0.0,0.0,0.0,1.0); 
@@ -67,10 +66,7 @@ void Scene::initScene(int sceneType, bool virtualScene) {
 	constrainPickingToViewport = true;
 	renderer = CoreServices::getInstance()->getRenderer();
 	rootEntity.setRenderer(renderer);
-	CoreServices::getInstance()->getSceneManager()->addScene(this);
-	
-	setSceneType(sceneType);
-	
+	setSceneType(sceneType);	
 	core->addEventListener(this, Core::EVENT_CORE_RESIZE);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEUP);
@@ -114,14 +110,6 @@ Camera *Scene::getActiveCamera() {
 	return activeCamera;
 }
 
-void Scene::setVirtual(bool val) {
-	isSceneVirtual = val;
-}
-
-bool Scene::isVirtual() {
-	return isSceneVirtual;
-}
-
 void Scene::setEnabled(bool enabled) {
 	this->enabled = enabled;
 }
@@ -142,8 +130,7 @@ void Scene::fixedUpdate() {
 
 Scene::~Scene() {
 	core->getInput()->removeAllHandlersForListener(this);
-	core->removeAllHandlersForListener(this);
-	CoreServices::getInstance()->getSceneManager()->removeScene(this);	
+	core->removeAllHandlersForListener(this);	
 	delete defaultCamera;
 }
 
@@ -207,19 +194,29 @@ void Scene::setEntityVisibility(Entity *entity, Camera *camera) {
 	}
 }
 
-void Scene::Render(Camera *targetCamera, std::shared_ptr<RenderBuffer> targetFramebuffer, std::shared_ptr<Material> overrideMaterial, bool sendLights) {
+void Scene::Render(RenderFrame *frame, Camera *targetCamera, std::shared_ptr<RenderBuffer> targetFramebuffer, std::shared_ptr<Material> overrideMaterial, bool sendLights) {
 	if(!targetCamera && !activeCamera)
 		return;
 	
 	if(!targetCamera)
 		targetCamera = activeCamera;
 	
+	
+	if(targetFramebuffer) {
+		targetCamera->setViewport(Polycode::Rectangle(0.0, 0.0, targetFramebuffer->getWidth(), targetFramebuffer->getHeight()));
+	} else {
+		targetCamera->setViewport(frame->viewport);
+	}
+
+	
 	GPUDrawBuffer *drawBuffer = new GPUDrawBuffer();
+	drawBuffer->renderFrame = frame;
 	drawBuffer->clearColor = clearColor;
 	drawBuffer->clearColorBuffer = useClearColor;
 	drawBuffer->clearDepthBuffer = useClearDepth;
 	drawBuffer->targetFramebuffer = targetFramebuffer;
 	drawBuffer->viewport = targetCamera->getViewport();
+	drawBuffer->backingResolutionScale = Vector2(1.0, 1.0);
 	
 	if(overrideMaterial) {
 		drawBuffer->globalMaterial = overrideMaterial;
@@ -253,7 +250,7 @@ void Scene::Render(Camera *targetCamera, std::shared_ptr<RenderBuffer> targetFra
 			
 			if(light->areShadowsEnabled()) {
 				if(light->getType() == SceneLight::SPOT_LIGHT) {
-					light->renderDepthMap(this);
+					light->renderDepthMap(frame, this);
 				}
 			}
 			
@@ -275,7 +272,7 @@ void Scene::Render(Camera *targetCamera, std::shared_ptr<RenderBuffer> targetFra
 	}
 */
 	rootEntity.transformAndRender(drawBuffer, NULL);
-	renderer->processDrawBuffer(drawBuffer);
+	frame->addDrawBuffer(drawBuffer);
 }
 
 Ray Scene::projectRayFromCameraAndViewportCoordinate(Camera *camera, Vector2 coordinate) {

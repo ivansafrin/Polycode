@@ -23,14 +23,6 @@ function SceneLine:SceneLine(...)
 	end
 end
 
-function SceneLine:SceneLineWithPositions(startp, endp)
-	local retVal = Polycode.SceneLine_SceneLineWithPositions(self.__ptr, startp.__ptr, endp.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["SceneLine"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function SceneLine:setStart(startp)
 	local retVal = Polycode.SceneLine_setStart(self.__ptr, startp.__ptr)
 end

@@ -42,10 +42,10 @@ class SceneEntityInstanceResourceEntry;
 class SceneEntityInstance : public Entity {
 	public:
 	
-		SceneEntityInstance(Scene *parentScene, const String& fileName);
-		explicit SceneEntityInstance(Scene *parentScene);
+		SceneEntityInstance(const String& fileName);
+		explicit SceneEntityInstance();
 		
-		static SceneEntityInstance *BlankSceneEntityInstance(Scene *parentScene);
+		static SceneEntityInstance *BlankSceneEntityInstance();
 
 		virtual ~SceneEntityInstance();
 	
@@ -91,13 +91,13 @@ class SceneEntityInstance : public Entity {
 	
 		ResourcePool *topLevelResourcePool;
 		std::vector<ResourcePool*> resourcePools;
-		Scene *parentScene;
 		std::shared_ptr<SceneEntityInstanceResourceEntry> resourceEntry;
 		
 };
 	
 class SceneEntityInstanceLayer {
 	public:
+		SceneEntityInstanceLayer();
 		SceneEntityInstanceLayer(SceneEntityInstance *instance,String name);
 	
 		void setLayerVisibility(bool val);
@@ -111,6 +111,7 @@ class SceneEntityInstanceLayer {
 
 class SceneEntityInstanceResourceEntry : public Resource {
 	public:
+		SceneEntityInstanceResourceEntry();
 		SceneEntityInstanceResourceEntry(SceneEntityInstance *instance);
 		virtual ~SceneEntityInstanceResourceEntry();
 		

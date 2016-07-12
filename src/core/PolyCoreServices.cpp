@@ -28,7 +28,6 @@
 #include "polycode/core/PolyResourceManager.h"
 #include "polycode/core/PolyRenderer.h"
 #include "polycode/core/PolyConfig.h"
-#include "polycode/core/PolySceneManager.h"
 #include "polycode/core/PolyTimerManager.h"
 #include "polycode/core/PolyTweenManager.h"
 #include "polycode/core/PolySoundManager.h"
@@ -83,14 +82,12 @@ CoreServices::CoreServices() : EventDispatcher() {
 	logger = Logger::getInstance();
 	resourceManager = new ResourceManager();	
 	config = new Config();
-	sceneManager = new SceneManager();
 	timerManager = new TimerManager();
 	tweenManager = new TweenManager();
 	soundManager = new SoundManager();
 }
 
 CoreServices::~CoreServices() {
-	delete sceneManager;
 	delete timerManager;
 	delete tweenManager;
 	delete resourceManager;
@@ -120,39 +117,26 @@ CoreInput *CoreServices::getInput() {
 
 void CoreServices::setRenderer(Renderer *renderer) {
 	this->renderer = renderer;
-	sceneManager->setRenderer(renderer);
 }
 
 Renderer *CoreServices::getRenderer() {
 	return renderer;
 }
 
-void CoreServices::Render(const Polycode::Rectangle &viewport) {
-
-//	renderer->setPerspectiveDefaults();
-	sceneManager->renderVirtual();
-	sceneManager->Render(viewport);
-//	renderer->clearLights();
-}
 
 void CoreServices::fixedUpdate() {
-	sceneManager->fixedUpdate();
+
 }
 
 void CoreServices::Update(int elapsed) {
 	resourceManager->Update(elapsed);
 	timerManager->Update(); 
 	tweenManager->Update(elapsed);		
-	sceneManager->Update();
-	soundManager->Update();
+		soundManager->Update();
 }
 
 SoundManager *CoreServices::getSoundManager() {
 	return soundManager;
-}
-
-SceneManager *CoreServices::getSceneManager() {
-	return sceneManager;
 }
 
 TweenManager *CoreServices::getTweenManager() {

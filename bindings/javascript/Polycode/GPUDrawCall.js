@@ -10,7 +10,7 @@ function GPUDrawCall() {
 
 
 GPUDrawCall.prototype.__get_options = function() {
-	var retVal = new GPUDrawOptions()
+	var retVal = new GPUDrawOptions("__skip_ptr__")
 	retVal.__ptr = 	Polycode.GPUDrawCall__get_options(this.__ptr)
 	return retVal
 }
@@ -20,7 +20,7 @@ GPUDrawCall.prototype.__set_options = function(val) {
 }
 
 GPUDrawCall.prototype.__get_modelMatrix = function() {
-	var retVal = new Matrix4()
+	var retVal = new Matrix4("__skip_ptr__")
 	retVal.__ptr = 	Polycode.GPUDrawCall__get_modelMatrix(this.__ptr)
 	return retVal
 }

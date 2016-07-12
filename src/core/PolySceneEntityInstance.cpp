@@ -33,6 +33,9 @@
 
 using namespace Polycode;
 
+SceneEntityInstanceResourceEntry::SceneEntityInstanceResourceEntry()  : Resource(Resource::RESOURCE_ENTITY_INSTANCE), instance(NULL) {
+}
+
 SceneEntityInstanceResourceEntry::SceneEntityInstanceResourceEntry(SceneEntityInstance *instance)  : Resource(Resource::RESOURCE_ENTITY_INSTANCE) {
 	this->instance = instance;
 }
@@ -50,13 +53,12 @@ void SceneEntityInstanceResourceEntry::reloadResource() {
 	Resource::reloadResource();
 }
 
-SceneEntityInstance *SceneEntityInstance::BlankSceneEntityInstance(Scene *parentScene) {
-	return new SceneEntityInstance(parentScene);
+SceneEntityInstance *SceneEntityInstance::BlankSceneEntityInstance() {
+	return new SceneEntityInstance();
 }
 
-SceneEntityInstance::SceneEntityInstance(Scene *parentScene, const String& fileName) : Entity() {
+SceneEntityInstance::SceneEntityInstance(const String& fileName) : Entity() {
 	createNewLayer("default");
-	this->parentScene = parentScene;
 	resourceEntry = std::make_shared<SceneEntityInstanceResourceEntry>(this);
 	topLevelResourcePool = CoreServices::getInstance()->getResourceManager()->getGlobalPool();
 	loadFromFile(fileName);
@@ -66,9 +68,8 @@ SceneEntityInstance::SceneEntityInstance(Scene *parentScene, const String& fileN
 	ownsChildren = true;
 }
 
-SceneEntityInstance::SceneEntityInstance(Scene *parentScene) : Entity() {
+SceneEntityInstance::SceneEntityInstance() : Entity() {
 	createNewLayer("default");
-	this->parentScene = parentScene;
 	cloneUsingReload = true;
 	ownsChildren = true;
 	topLevelResourcePool = CoreServices::getInstance()->getResourceManager()->getGlobalPool();	  
@@ -96,9 +97,9 @@ std::shared_ptr<SceneEntityInstanceResourceEntry> SceneEntityInstance::getResour
 Entity *SceneEntityInstance::Clone(bool deepClone, bool ignoreEditorOnly) const {
 	SceneEntityInstance *newEntity;
 	if(cloneUsingReload) {
-		newEntity = new SceneEntityInstance(parentScene, fileName);
+		newEntity = new SceneEntityInstance(fileName);
 	} else {
-		newEntity = new SceneEntityInstance(parentScene);
+		newEntity = new SceneEntityInstance();
 	}
 	applyClone(newEntity, deepClone, ignoreEditorOnly);
 	return newEntity;
@@ -291,7 +292,7 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 		if(entityType->stringVal == "SceneEntityInstance") {
 			ObjectEntry *instanceEntry = (*entry)["SceneEntityInstance"];
 			String filePath = (*instanceEntry)["filePath"]->stringVal;
-			SceneEntityInstance *instance = new SceneEntityInstance(parentScene, filePath);
+			SceneEntityInstance *instance = new SceneEntityInstance(filePath);
 			entity = instance;
 		 } else if(entityType->stringVal == "SceneCurve") {
 			ObjectEntry *curveEntry = (*entry)["SceneCurve"];
@@ -396,7 +397,7 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 			ObjectEntry *lightEntry = (*entry)["SceneLight"];
 			if(lightEntry) {
 				int lightType = (*lightEntry)["type"]->intVal;
-				SceneLight *newLight  = new SceneLight(lightType, parentScene, 0);
+				SceneLight *newLight  = new SceneLight(lightType, 0);
 				
 				newLight->setIntensity((*lightEntry)["intensity"]->NumberVal);
 				
@@ -419,10 +420,9 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 					}
 				}
 				
-				parentScene->addLight(newLight);
+				//parentScene->addLight(newLight);
 				entity = newLight;
 			}
- 
 		} else if(entityType->stringVal == "ScenePrimitive") {
 			ObjectEntry *scenePrimitiveEntry = (*entry)["ScenePrimitive"];
 			int pType = (*scenePrimitiveEntry)["type"]->intVal;
@@ -471,7 +471,7 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 		} else if(entityType->stringVal == "Camera") {
 			ObjectEntry *cameraEntry = (*entry)["Camera"];
 			
-			Camera *camera = new Camera(parentScene);
+			Camera *camera = new Camera();
 			
 			camera->setClippingPlanes((*cameraEntry)["nearClip"]->NumberVal, (*cameraEntry)["farClip"]->NumberVal);
 			camera->setOrthoMode((*cameraEntry)["ortho"]->boolVal);
@@ -590,6 +590,10 @@ bool SceneEntityInstance::hasLayerID(unsigned char layerID) const {
 		}
 	}
 	return false;
+}
+
+SceneEntityInstanceLayer::SceneEntityInstanceLayer() : instance(NULL), visible(true) {
+	
 }
 
 SceneEntityInstanceLayer::SceneEntityInstanceLayer(SceneEntityInstance *instance, String name) {

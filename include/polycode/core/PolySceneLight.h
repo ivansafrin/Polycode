@@ -32,7 +32,7 @@ namespace Polycode {
 	class Camera;
 	class Mesh;
 	class Texture;
-//	class ScenePrimitive;
+	class RenderFrame;
 	
 	/**
 	* 3D light source. Lights can be point or spot lights and can be set to different colors. 
@@ -49,7 +49,7 @@ namespace Polycode {
 			* @param linearAttenuation Linear falloff attenuation value 
 			* @param quadraticAttenuation Quadratic falloff attenuation value				
 			*/ 
-			SceneLight(int type, Scene *parentScene, Number intensity, Number constantAttenuation=1, Number linearAttenuation=1, Number quadraticAttenuation=1);
+			SceneLight(int type, Number intensity, Number constantAttenuation=1, Number linearAttenuation=1, Number quadraticAttenuation=1);
 			virtual ~SceneLight();
 		
 			/*
@@ -81,7 +81,7 @@ namespace Polycode {
 			*/			
 			int getType() const;
 			
-			void renderDepthMap(Scene *scene);
+			void renderDepthMap(RenderFrame *frame, Scene *scene);
 			
 			static const int POINT_LIGHT = 0;
 			static const int SPOT_LIGHT = 1;
@@ -180,9 +180,6 @@ namespace Polycode {
 			virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;
 			virtual void applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) const;
 		
-			Scene *getParentScene() const;
-			void setParentScene(Scene *scene);
-		
 			Camera *getSpotlightCamera();
 		
 			LightInfo getLightInfo() const;
@@ -193,9 +190,7 @@ namespace Polycode {
 
 			std::shared_ptr<RenderBuffer> shadowMapRenderBuffer;
 			std::shared_ptr<Material> unlitMaterial;
-			Camera *spotCamera;
-			Scene *parentScene;
-		
+			Camera *spotCamera;		
 			unsigned int shadowMapRes;
 			Number shadowMapFOV;
 			Number distance;

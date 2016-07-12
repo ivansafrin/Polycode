@@ -48,26 +48,6 @@ function SceneEntityInstance:SceneEntityInstance(...)
 	end
 end
 
-function SceneEntityInstance:BlankSceneEntityInstance(parentScene)
-	local retVal = Polycode.SceneEntityInstance_BlankSceneEntityInstance(self.__ptr, parentScene.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["SceneEntityInstance"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function SceneEntityInstance:Clone(deepClone, ignoreEditorOnly)
-	local retVal = Polycode.SceneEntityInstance_Clone(self.__ptr, deepClone, ignoreEditorOnly)
-	if retVal == nil then return nil end
-	local __c = _G["Entity"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function SceneEntityInstance:applyClone(clone, deepClone, ignoreEditorOnly)
-	local retVal = Polycode.SceneEntityInstance_applyClone(self.__ptr, clone.__ptr, deepClone, ignoreEditorOnly)
-end
-
 function SceneEntityInstance:reloadEntityInstance()
 	local retVal =  Polycode.SceneEntityInstance_reloadEntityInstance(self.__ptr)
 end
@@ -76,29 +56,9 @@ function SceneEntityInstance:clearInstance()
 	local retVal =  Polycode.SceneEntityInstance_clearInstance(self.__ptr)
 end
 
-function SceneEntityInstance:parseObjectIntoCurve(entry, curve)
-	local retVal = Polycode.SceneEntityInstance_parseObjectIntoCurve(self.__ptr, entry.__ptr, curve.__ptr)
-end
-
-function SceneEntityInstance:loadObjectEntryIntoEntity(entry, targetEntity, entityFileVersion)
-	local retVal = Polycode.SceneEntityInstance_loadObjectEntryIntoEntity(self.__ptr, entry.__ptr, targetEntity.__ptr, entityFileVersion)
-	if retVal == nil then return nil end
-	local __c = _G["Entity"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function SceneEntityInstance:loadFromFile(fileName)
 	local retVal = Polycode.SceneEntityInstance_loadFromFile(self.__ptr, fileName)
 	return retVal
-end
-
-function SceneEntityInstance:applySceneMesh(entry, sceneMesh)
-	local retVal = Polycode.SceneEntityInstance_applySceneMesh(self.__ptr, entry.__ptr, sceneMesh.__ptr)
-end
-
-function SceneEntityInstance:linkResourcePool(pool)
-	local retVal = Polycode.SceneEntityInstance_linkResourcePool(self.__ptr, pool.__ptr)
 end
 
 function SceneEntityInstance:getNumLinkedResourePools()
@@ -106,30 +66,10 @@ function SceneEntityInstance:getNumLinkedResourePools()
 	return retVal
 end
 
-function SceneEntityInstance:getLinkedResourcePoolAtIndex(index)
-	local retVal = Polycode.SceneEntityInstance_getLinkedResourcePoolAtIndex(self.__ptr, index)
-	if retVal == nil then return nil end
-	local __c = _G["ResourcePool"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function SceneEntityInstance:unlinkResourcePool(pool)
-	local retVal = Polycode.SceneEntityInstance_unlinkResourcePool(self.__ptr, pool.__ptr)
-end
-
 function SceneEntityInstance:getResourceEntry()
 	local retVal =  Polycode.SceneEntityInstance_getResourceEntry(self.__ptr)
 	if retVal == nil then return nil end
 	local __c = _G["shared_ptr<SceneEntityInstanceResourceEntry>"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function SceneEntityInstance:getTopLevelResourcePool()
-	local retVal =  Polycode.SceneEntityInstance_getTopLevelResourcePool(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["ResourcePool"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
 end
@@ -142,26 +82,6 @@ end
 function SceneEntityInstance:getNumLayers()
 	local retVal =  Polycode.SceneEntityInstance_getNumLayers(self.__ptr)
 	return retVal
-end
-
-function SceneEntityInstance:getLayerAtIndex(index)
-	local retVal = Polycode.SceneEntityInstance_getLayerAtIndex(self.__ptr, index)
-	if retVal == nil then return nil end
-	local __c = _G["SceneEntityInstanceLayer"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function SceneEntityInstance:removeLayer(layer)
-	local retVal = Polycode.SceneEntityInstance_removeLayer(self.__ptr, layer.__ptr)
-end
-
-function SceneEntityInstance:createNewLayer(name)
-	local retVal = Polycode.SceneEntityInstance_createNewLayer(self.__ptr, name)
-	if retVal == nil then return nil end
-	local __c = _G["SceneEntityInstanceLayer"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
 end
 
 function SceneEntityInstance:getFileName()

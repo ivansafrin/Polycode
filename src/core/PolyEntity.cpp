@@ -733,7 +733,7 @@ Matrix4 Entity::getConcatenatedMatrix() {
 	if(matrixDirty) {
 		rebuildTransformMatrix();
 	}
-	
+
 	if(parentEntity != NULL && !ignoreParentMatrix) 
 		return transformMatrix * parentEntity->getConcatenatedMatrix();
 	else

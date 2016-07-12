@@ -79,11 +79,6 @@ function Ray:closestPointOnRay(point)
 	return __c
 end
 
-function Ray:closestPointsBetween(ray2, point1, point2)
-	local retVal = Polycode.Ray_closestPointsBetween(self.__ptr, ray2.__ptr, point1.__ptr, point2.__ptr)
-	return retVal
-end
-
 function Ray:polygonIntersect(v1, v2, v3)
 	local retVal = Polycode.Ray_polygonIntersect(self.__ptr, v1.__ptr, v2.__ptr, v3.__ptr)
 	return retVal

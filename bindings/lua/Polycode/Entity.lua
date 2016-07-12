@@ -163,36 +163,12 @@ function Entity:initEntity()
 	local retVal =  Polycode.Entity_initEntity(self.__ptr)
 end
 
-function Entity:Render(buffer)
-	local retVal = Polycode.Entity_Render(self.__ptr, buffer.__ptr)
-end
-
 function Entity:Update()
 	local retVal =  Polycode.Entity_Update(self.__ptr)
 end
 
 function Entity:fixedUpdate()
 	local retVal =  Polycode.Entity_fixedUpdate(self.__ptr)
-end
-
-function Entity:transformAndRender(drawBuffer, parentScissorBox)
-	local retVal = Polycode.Entity_transformAndRender(self.__ptr, drawBuffer.__ptr, parentScissorBox.__ptr)
-end
-
-function Entity:renderChildren(buffer, parentScissorBox)
-	local retVal = Polycode.Entity_renderChildren(self.__ptr, buffer.__ptr, parentScissorBox.__ptr)
-end
-
-function Entity:Clone(deepClone, ignoreEditorOnly)
-	local retVal = Polycode.Entity_Clone(self.__ptr, deepClone, ignoreEditorOnly)
-	if retVal == nil then return nil end
-	local __c = _G["Entity"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function Entity:applyClone(clone, deepClone, ignoreEditorOnly)
-	local retVal = Polycode.Entity_applyClone(self.__ptr, clone.__ptr, deepClone, ignoreEditorOnly)
 end
 
 function Entity:dirtyMatrix(val)
@@ -217,14 +193,6 @@ end
 
 function Entity:getConcatenatedMatrix()
 	local retVal =  Polycode.Entity_getConcatenatedMatrix(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["Matrix4"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function Entity:getConcatenatedMatrixRelativeTo(relativeEntity)
-	local retVal = Polycode.Entity_getConcatenatedMatrixRelativeTo(self.__ptr, relativeEntity.__ptr)
 	if retVal == nil then return nil end
 	local __c = _G["Matrix4"]("__skip_ptr__")
 	__c.__ptr = retVal
@@ -259,53 +227,9 @@ function Entity:getLookAtMatrix(loc, upVector)
 	return __c
 end
 
-function Entity:addChild(newChild)
-	local retVal = Polycode.Entity_addChild(self.__ptr, newChild.__ptr)
-end
-
-function Entity:removeChild(entityToRemove)
-	local retVal = Polycode.Entity_removeChild(self.__ptr, entityToRemove.__ptr)
-end
-
-function Entity:moveChildUp(child)
-	local retVal = Polycode.Entity_moveChildUp(self.__ptr, child.__ptr)
-end
-
-function Entity:moveChildDown(child)
-	local retVal = Polycode.Entity_moveChildDown(self.__ptr, child.__ptr)
-end
-
-function Entity:moveChildTop(child)
-	local retVal = Polycode.Entity_moveChildTop(self.__ptr, child.__ptr)
-end
-
-function Entity:moveChildBottom(child)
-	local retVal = Polycode.Entity_moveChildBottom(self.__ptr, child.__ptr)
-end
-
-function Entity:setParentEntity(entity)
-	local retVal = Polycode.Entity_setParentEntity(self.__ptr, entity.__ptr)
-end
-
-function Entity:getParentEntity()
-	local retVal =  Polycode.Entity_getParentEntity(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["Entity"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function Entity:getNumChildren()
 	local retVal =  Polycode.Entity_getNumChildren(self.__ptr)
 	return retVal
-end
-
-function Entity:getChildAtIndex(index)
-	local retVal = Polycode.Entity_getChildAtIndex(self.__ptr, index)
-	if retVal == nil then return nil end
-	local __c = _G["Entity"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
 end
 
 function Entity:setOwnsChildrenRecursive(val)
@@ -517,10 +441,6 @@ function Entity:lookAt(loc, upVector)
 	local retVal = Polycode.Entity_lookAt(self.__ptr, loc.__ptr, upVector.__ptr)
 end
 
-function Entity:lookAtEntity(entity, upVector)
-	local retVal = Polycode.Entity_lookAtEntity(self.__ptr, entity.__ptr, upVector.__ptr)
-end
-
 function Entity:getCombinedColor()
 	local retVal =  Polycode.Entity_getCombinedColor(self.__ptr)
 	if retVal == nil then return nil end
@@ -598,54 +518,12 @@ function Entity:getDepthOnly()
 	return retVal
 end
 
-function Entity:setUserData(userData)
-	local retVal = Polycode.Entity_setUserData(self.__ptr, userData.__ptr)
-end
-
-function Entity:getUserData()
-	local retVal =  Polycode.Entity_getUserData(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["void"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function Entity:setBlendingMode(newBlendingMode)
 	local retVal = Polycode.Entity_setBlendingMode(self.__ptr, newBlendingMode)
 end
 
 function Entity:getBlendingMode()
 	local retVal =  Polycode.Entity_getBlendingMode(self.__ptr)
-	return retVal
-end
-
-function Entity:getEntityById(id, recursive)
-	local retVal = Polycode.Entity_getEntityById(self.__ptr, id, recursive)
-	if retVal == nil then return nil end
-	local __c = _G["Entity"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function Entity:getEntitiesByTag(tag, recursive)
-	local retVal = Polycode.Entity_getEntitiesByTag(self.__ptr, tag, recursive)
-	if retVal == nil then return nil end
-	for i=1,count(retVal) do
-		local __c  = _G["Entity"]("__skip_ptr__")
-		__c.__ptr = retVal[i]
-		retVal[i] = __c
-	end
-	return retVal
-end
-
-function Entity:getEntitiesByLayerID(layerID, recursive)
-	local retVal = Polycode.Entity_getEntitiesByLayerID(self.__ptr, layerID.__ptr, recursive)
-	if retVal == nil then return nil end
-	for i=1,count(retVal) do
-		local __c  = _G["Entity"]("__skip_ptr__")
-		__c.__ptr = retVal[i]
-		retVal[i] = __c
-	end
 	return retVal
 end
 
@@ -681,10 +559,6 @@ function Entity:buildPositionMatrix()
 	local __c = _G["Matrix4"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
-end
-
-function Entity:setRenderer(renderer)
-	local retVal = Polycode.Entity_setRenderer(self.__ptr, renderer.__ptr)
 end
 
 function Entity:customHitDetection(ray)
@@ -763,37 +637,13 @@ function Entity:setLocalBoundingBoxZ(z)
 	local retVal = Polycode.Entity_setLocalBoundingBoxZ(self.__ptr, z)
 end
 
-function Entity:setContainerScene(scene)
-	local retVal = Polycode.Entity_setContainerScene(self.__ptr, scene.__ptr)
-end
-
-function Entity:getContainerScene()
-	local retVal =  Polycode.Entity_getContainerScene(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["Scene"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function Entity:attachScript(script)
 	local retVal = Polycode.Entity_attachScript(self.__ptr, script.__ptr)
-end
-
-function Entity:detachScript(script)
-	local retVal = Polycode.Entity_detachScript(self.__ptr, script.__ptr)
 end
 
 function Entity:getNumScripts()
 	local retVal =  Polycode.Entity_getNumScripts(self.__ptr)
 	return retVal
-end
-
-function Entity:getScriptAtIndex(index)
-	local retVal = Polycode.Entity_getScriptAtIndex(self.__ptr, index)
-	if retVal == nil then return nil end
-	local __c = _G["ScriptInstance"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
 end
 
 function Entity:__delete()

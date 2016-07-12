@@ -386,6 +386,8 @@ class MaterialProp : public PropProp {
 		MaterialProp(const String &caption);
 		~MaterialProp();
 	
+		void Render(GPUDrawBuffer *buffer);
+	
 		void setEntityInstance(SceneEntityInstance *instance);
 		void set(std::shared_ptr<Material> material);
 		std::shared_ptr<Material> get();

@@ -54,13 +54,13 @@ Duktape.fin(Color.prototype, function (x) {
 })
 
 Color.prototype.ColorWithInts = function(r,g,b,a) {
-	var retVal = new Color()
+	var retVal = new Color("__skip_ptr__")
 	retVal.__ptr = Polycode.Color_ColorWithInts(r, g, b, a)
 	return retVal
 }
 
 Color.prototype.ColorWithHex = function(hex) {
-	var retVal = new Color()
+	var retVal = new Color("__skip_ptr__")
 	retVal.__ptr = Polycode.Color_ColorWithHex(hex)
 	return retVal
 }
@@ -98,7 +98,7 @@ Color.prototype.setColor = function(r,g,b,a) {
 }
 
 Color.prototype.blendColor = function(c2,mode,amount,c3) {
-	var retVal = new Color()
+	var retVal = new Color("__skip_ptr__")
 	retVal.__ptr = Polycode.Color_blendColor(this.__ptr, c2, mode, amount, c3)
 	return retVal
 }

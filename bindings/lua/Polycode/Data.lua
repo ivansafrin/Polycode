@@ -34,14 +34,6 @@ function Data:saveToFile(fileName)
 	return retVal
 end
 
-function Data:getData()
-	local retVal =  Polycode.Data_getData(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["char"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function Data:__delete()
 	if self then Polycode.delete_Data(self.__ptr) end
 end

@@ -11,9 +11,3 @@ Duktape.fin(ProgramResourceLoader.prototype, function (x) {
 	}
 	Polycode.ProgramResourceLoader__delete(x.__ptr)
 })
-
-ProgramResourceLoader.prototype.loadResource = function(path,targetPool) {
-	var retVal = new Resource()
-	retVal.__ptr = Polycode.ProgramResourceLoader_loadResource(this.__ptr, path, targetPool.__ptr)
-	return retVal
-}

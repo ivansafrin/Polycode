@@ -14,12 +14,6 @@ function ProgramParam:__getvar(name)
 		return Polycode.ProgramParam_get_name(self.__ptr)
 	elseif name == "type" then
 		return Polycode.ProgramParam_get_type(self.__ptr)
-	elseif name == "globalParam" then
-		local retVal = Polycode.ProgramParam_get_globalParam(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["LocalShaderParam"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
 	end
 end
 
@@ -29,9 +23,6 @@ function ProgramParam:__setvar(name,value)
 		return true
 	elseif name == "type" then
 		Polycode.ProgramParam_set_type(self.__ptr, value)
-		return true
-	elseif name == "globalParam" then
-		Polycode.ProgramParam_set_globalParam(self.__ptr, value.__ptr)
 		return true
 	end
 	return false
@@ -48,14 +39,6 @@ function ProgramParam:ProgramParam(...)
 	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
 		self.__ptr = Polycode.ProgramParam(unpack(arg))
 	end
-end
-
-function ProgramParam:createParamData(type)
-	local retVal = Polycode.ProgramParam_createParamData(self.__ptr, type)
-	if retVal == nil then return nil end
-	local __c = _G["void"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
 end
 
 function ProgramParam:__delete()

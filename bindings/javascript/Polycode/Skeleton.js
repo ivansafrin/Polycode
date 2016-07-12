@@ -16,12 +16,6 @@ Duktape.fin(Skeleton.prototype, function (x) {
 	Polycode.Skeleton__delete(x.__ptr)
 })
 
-Skeleton.prototype.BlankSkeleton = function() {
-	var retVal = new Skeleton()
-	retVal.__ptr = Polycode.Skeleton_BlankSkeleton()
-	return retVal
-}
-
 Skeleton.prototype.loadSkeleton = function(fileName) {
 	Polycode.Skeleton_loadSkeleton(this.__ptr, fileName)
 }
@@ -30,44 +24,20 @@ Skeleton.prototype.playAnimationByName = function(animName,weight,once,restartIf
 	Polycode.Skeleton_playAnimationByName(this.__ptr, animName, weight, once, restartIfPlaying)
 }
 
-Skeleton.prototype.playAnimation = function(animation,weight,once,restartIfPlaying) {
-	Polycode.Skeleton_playAnimation(this.__ptr, animation.__ptr, weight, once, restartIfPlaying)
-}
-
 Skeleton.prototype.setBaseAnimationByName = function(animName) {
 	Polycode.Skeleton_setBaseAnimationByName(this.__ptr, animName)
-}
-
-Skeleton.prototype.setBaseAnimation = function(animation) {
-	Polycode.Skeleton_setBaseAnimation(this.__ptr, animation.__ptr)
 }
 
 Skeleton.prototype.stopAllAnimations = function() {
 	Polycode.Skeleton_stopAllAnimations(this.__ptr)
 }
 
-Skeleton.prototype.getBaseAnimation = function() {
-	var retVal = new SkeletonAnimation()
-	retVal.__ptr = Polycode.Skeleton_getBaseAnimation(this.__ptr)
-	return retVal
-}
-
 Skeleton.prototype.addAnimation = function(name,fileName) {
 	Polycode.Skeleton_addAnimation(this.__ptr, name, fileName)
 }
 
-Skeleton.prototype.getAnimation = function(name) {
-	var retVal = new SkeletonAnimation()
-	retVal.__ptr = Polycode.Skeleton_getAnimation(this.__ptr, name)
-	return retVal
-}
-
 Skeleton.prototype.stopAnimationByName = function(name) {
 	Polycode.Skeleton_stopAnimationByName(this.__ptr, name)
-}
-
-Skeleton.prototype.stopAnimation = function(animation) {
-	Polycode.Skeleton_stopAnimation(this.__ptr, animation.__ptr)
 }
 
 Skeleton.prototype.Update = function() {
@@ -75,7 +45,7 @@ Skeleton.prototype.Update = function() {
 }
 
 Skeleton.prototype.getBoneByName = function(name) {
-	var retVal = new Bone()
+	var retVal = new Bone("__skip_ptr__")
 	retVal.__ptr = Polycode.Skeleton_getBoneByName(this.__ptr, name)
 	return retVal
 }
@@ -89,7 +59,7 @@ Skeleton.prototype.getNumBones = function() {
 }
 
 Skeleton.prototype.getBone = function(index) {
-	var retVal = new Bone()
+	var retVal = new Bone("__skip_ptr__")
 	retVal.__ptr = Polycode.Skeleton_getBone(this.__ptr, index)
 	return retVal
 }

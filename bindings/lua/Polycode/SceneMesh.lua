@@ -73,18 +73,6 @@ function SceneMesh:SceneMesh(...)
 	end
 end
 
-function SceneMesh:SceneMeshFromMesh(mesh)
-	local retVal = Polycode.SceneMesh_SceneMeshFromMesh(self.__ptr, mesh.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["SceneMesh"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function SceneMesh:Render(buffer)
-	local retVal = Polycode.SceneMesh_Render(self.__ptr, buffer.__ptr)
-end
-
 function SceneMesh:getShaderPass(index)
 	local retVal = Polycode.SceneMesh_getShaderPass(self.__ptr, index)
 	if retVal == nil then return nil end
@@ -138,10 +126,6 @@ function SceneMesh:setMaterial(material)
 	local retVal = Polycode.SceneMesh_setMaterial(self.__ptr, material.__ptr)
 end
 
-function SceneMesh:setMaterialByName(materialName, resourcePool)
-	local retVal = Polycode.SceneMesh_setMaterialByName(self.__ptr, materialName, resourcePool.__ptr)
-end
-
 function SceneMesh:setMesh(mesh)
 	local retVal = Polycode.SceneMesh_setMesh(self.__ptr, mesh.__ptr)
 end
@@ -187,18 +171,6 @@ end
 function SceneMesh:getForceMaterial()
 	local retVal =  Polycode.SceneMesh_getForceMaterial(self.__ptr)
 	return retVal
-end
-
-function SceneMesh:Clone(deepClone, ignoreEditorOnly)
-	local retVal = Polycode.SceneMesh_Clone(self.__ptr, deepClone, ignoreEditorOnly)
-	if retVal == nil then return nil end
-	local __c = _G["Entity"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function SceneMesh:applyClone(clone, deepClone, ignoreEditorOnly)
-	local retVal = Polycode.SceneMesh_applyClone(self.__ptr, clone.__ptr, deepClone, ignoreEditorOnly)
 end
 
 function SceneMesh:__delete()

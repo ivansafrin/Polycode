@@ -75,18 +75,8 @@ SceneMesh.prototype.__set_sendBoneMatricesToMaterial = function(val) {
 }
 
 
-SceneMesh.prototype.SceneMeshFromMesh = function(mesh) {
-	var retVal = new SceneMesh()
-	retVal.__ptr = Polycode.SceneMesh_SceneMeshFromMesh(mesh)
-	return retVal
-}
-
-SceneMesh.prototype.Render = function(buffer) {
-	Polycode.SceneMesh_Render(this.__ptr, buffer.__ptr)
-}
-
 SceneMesh.prototype.getShaderPass = function(index) {
-	var retVal = new ShaderPass()
+	var retVal = new ShaderPass("__skip_ptr__")
 	retVal.__ptr = Polycode.SceneMesh_getShaderPass(this.__ptr, index)
 	return retVal
 }
@@ -104,19 +94,19 @@ SceneMesh.prototype.removeShaderPass = function(shaderIndex) {
 }
 
 SceneMesh.prototype.getMesh = function() {
-	var retVal = new Mesh()
+	var retVal = new Mesh("__skip_ptr__")
 	retVal.__ptr = Polycode.SceneMesh_getMesh(this.__ptr)
 	return retVal
 }
 
 SceneMesh.prototype.getMaterial = function() {
-	var retVal = new Material()
+	var retVal = new Material("__skip_ptr__")
 	retVal.__ptr = Polycode.SceneMesh_getMaterial(this.__ptr)
 	return retVal
 }
 
 SceneMesh.prototype.loadSkeleton = function(fileName) {
-	var retVal = new Skeleton()
+	var retVal = new Skeleton("__skip_ptr__")
 	retVal.__ptr = Polycode.SceneMesh_loadSkeleton(this.__ptr, fileName)
 	return retVal
 }
@@ -129,10 +119,6 @@ SceneMesh.prototype.setMaterial = function(material) {
 	Polycode.SceneMesh_setMaterial(this.__ptr, material)
 }
 
-SceneMesh.prototype.setMaterialByName = function(materialName,resourcePool) {
-	Polycode.SceneMesh_setMaterialByName(this.__ptr, materialName, resourcePool.__ptr)
-}
-
 SceneMesh.prototype.setMesh = function(mesh) {
 	Polycode.SceneMesh_setMesh(this.__ptr, mesh)
 }
@@ -142,7 +128,7 @@ SceneMesh.prototype.setSkeleton = function(skeleton) {
 }
 
 SceneMesh.prototype.getSkeleton = function() {
-	var retVal = new Skeleton()
+	var retVal = new Skeleton("__skip_ptr__")
 	retVal.__ptr = Polycode.SceneMesh_getSkeleton(this.__ptr)
 	return retVal
 }
@@ -173,14 +159,4 @@ SceneMesh.prototype.setForceMaterial = function(forceMaterial) {
 
 SceneMesh.prototype.getForceMaterial = function() {
 	return Polycode.SceneMesh_getForceMaterial(this.__ptr)
-}
-
-SceneMesh.prototype.Clone = function(deepClone,ignoreEditorOnly) {
-	var retVal = new Entity()
-	retVal.__ptr = Polycode.SceneMesh_Clone(this.__ptr, deepClone, ignoreEditorOnly)
-	return retVal
-}
-
-SceneMesh.prototype.applyClone = function(clone,deepClone,ignoreEditorOnly) {
-	Polycode.SceneMesh_applyClone(this.__ptr, clone.__ptr, deepClone, ignoreEditorOnly)
 }

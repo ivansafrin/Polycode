@@ -52,22 +52,6 @@ function Shader:getName()
 	return retVal
 end
 
-function Shader:getParamPointer(name)
-	local retVal = Polycode.Shader_getParamPointer(self.__ptr, name)
-	if retVal == nil then return nil end
-	local __c = _G["ProgramParam"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function Shader:getAttribPointer(name)
-	local retVal = Polycode.Shader_getAttribPointer(self.__ptr, name)
-	if retVal == nil then return nil end
-	local __c = _G["ProgramAttribute"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function Shader:reload()
 	local retVal =  Polycode.Shader_reload(self.__ptr)
 end

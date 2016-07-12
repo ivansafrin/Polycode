@@ -3,7 +3,6 @@ require('Polycode/Resource')
 function Texture() {
 	Object.defineProperties(this, {
 		'clamp': { enumerable: true, configurable: true, get: Texture.prototype.__get_clamp, set: Texture.prototype.__set_clamp},
-		'textureData': { enumerable: true, configurable: true, get: Texture.prototype.__get_textureData, set: Texture.prototype.__set_textureData},
 		'type': { enumerable: true, configurable: true, get: Texture.prototype.__get_type, set: Texture.prototype.__set_type},
 		'filteringMode': { enumerable: true, configurable: true, get: Texture.prototype.__get_filteringMode, set: Texture.prototype.__set_filteringMode},
 		'createMipmaps': { enumerable: true, configurable: true, get: Texture.prototype.__get_createMipmaps, set: Texture.prototype.__set_createMipmaps},
@@ -24,16 +23,6 @@ Texture.prototype.__get_clamp = function() {
 
 Texture.prototype.__set_clamp = function(val) {
 	Polycode.Texture__set_clamp(this.__ptr, val)
-}
-
-Texture.prototype.__get_textureData = function() {
-	var retVal = new char()
-	retVal.__ptr = 	Polycode.Texture__get_textureData(this.__ptr)
-	return retVal
-}
-
-Texture.prototype.__set_textureData = function(val) {
-	Polycode.Texture__set_textureData(this.__ptr, val.__ptr)
 }
 
 Texture.prototype.__get_type = function() {
@@ -87,16 +76,6 @@ Texture.prototype.__set_depthTexture = function(val) {
 
 Texture.prototype.reloadResource = function() {
 	Polycode.Texture_reloadResource(this.__ptr)
-}
-
-Texture.prototype.setImageData = function(data) {
-	Polycode.Texture_setImageData(this.__ptr, data.__ptr)
-}
-
-Texture.prototype.getTextureData = function() {
-	var retVal = new char()
-	retVal.__ptr = Polycode.Texture_getTextureData(this.__ptr)
-	return retVal
 }
 
 Texture.prototype.getWidth = function() {

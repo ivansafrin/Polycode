@@ -57,10 +57,6 @@ function SceneLabel:getLabelActualHeight()
 	return retVal
 end
 
-function SceneLabel:Render(buffer)
-	local retVal = Polycode.SceneLabel_Render(self.__ptr, buffer.__ptr)
-end
-
 function SceneLabel:getTextWidthForString(text)
 	local retVal = Polycode.SceneLabel_getTextWidthForString(self.__ptr, text)
 	return retVal
@@ -70,28 +66,8 @@ function SceneLabel:setText(newText)
 	local retVal = Polycode.SceneLabel_setText(self.__ptr, newText)
 end
 
-function SceneLabel:Clone(deepClone, ignoreEditorOnly)
-	local retVal = Polycode.SceneLabel_Clone(self.__ptr, deepClone, ignoreEditorOnly)
-	if retVal == nil then return nil end
-	local __c = _G["Entity"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function SceneLabel:applyClone(clone, deepClone, ignoreEditorOnly)
-	local retVal = Polycode.SceneLabel_applyClone(self.__ptr, clone.__ptr, deepClone, ignoreEditorOnly)
-end
-
 function SceneLabel:updateFromLabel()
 	local retVal =  Polycode.SceneLabel_updateFromLabel(self.__ptr)
-end
-
-function SceneLabel:getLabel()
-	local retVal =  Polycode.SceneLabel_getLabel(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["Label"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
 end
 
 function SceneLabel:__delete()

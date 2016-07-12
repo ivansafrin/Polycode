@@ -58,10 +58,6 @@ function ResourcePool:ResourcePool(...)
 	end
 end
 
-function ResourcePool:setFallbackPool(pool)
-	local retVal = Polycode.ResourcePool_setFallbackPool(self.__ptr, pool.__ptr)
-end
-
 function ResourcePool:addResource(resource)
 	local retVal = Polycode.ResourcePool_addResource(self.__ptr, resource.__ptr)
 end

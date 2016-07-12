@@ -128,18 +128,6 @@ function Camera:getFarClippingPlane()
 	return retVal
 end
 
-function Camera:setParentScene(parentScene)
-	local retVal = Polycode.Camera_setParentScene(self.__ptr, parentScene.__ptr)
-end
-
-function Camera:getParentScene()
-	local retVal =  Polycode.Camera_getParentScene(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["Scene"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function Camera:createProjectionMatrix()
 	local retVal =  Polycode.Camera_createProjectionMatrix(self.__ptr)
 	if retVal == nil then return nil end
@@ -151,10 +139,6 @@ end
 function Camera:hasFilterShader()
 	local retVal =  Polycode.Camera_hasFilterShader(self.__ptr)
 	return retVal
-end
-
-function Camera:drawFilter(targetBuffer)
-	local retVal = Polycode.Camera_drawFilter(self.__ptr, targetBuffer.__ptr)
 end
 
 function Camera:setPostFilter(material)
@@ -175,18 +159,6 @@ function Camera:getScreenShaderMaterial()
 	local __c = _G["shared_ptr<Material>"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
-end
-
-function Camera:Clone(deepClone, ignoreEditorOnly)
-	local retVal = Polycode.Camera_Clone(self.__ptr, deepClone, ignoreEditorOnly)
-	if retVal == nil then return nil end
-	local __c = _G["Entity"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function Camera:applyClone(clone, deepClone, ignoreEditorOnly)
-	local retVal = Polycode.Camera_applyClone(self.__ptr, clone.__ptr, deepClone, ignoreEditorOnly)
 end
 
 function Camera:getProjectionMatrix()
@@ -237,10 +209,6 @@ function Camera:projectRayFrom2DCoordinate(coordinate, viewport)
 	local __c = _G["Vector3"]("__skip_ptr__")
 	__c.__ptr = retVal
 	return __c
-end
-
-function Camera:renderFullScreenQuad(drawBuffer, shaderPass)
-	local retVal = Polycode.Camera_renderFullScreenQuad(self.__ptr, drawBuffer.__ptr, shaderPass)
 end
 
 function Camera:getShaderPass(index)

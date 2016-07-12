@@ -41,6 +41,7 @@ namespace Polycode {
 	
 	class SpriteState {
 	public:
+		SpriteState() {}
 		SpriteState(SpriteSet *spriteSet, String name);
 		
 		void setName(String name);
@@ -119,6 +120,7 @@ namespace Polycode {
 	
 	class SpriteSet : public ResourcePool {
 	public:
+		SpriteSet(){}
 		SpriteSet(const String &fileName, ResourcePool *parentPool = CoreServices::getInstance()->getResourceManager()->getGlobalPool());
 		~SpriteSet();
 		
@@ -160,6 +162,7 @@ namespace Polycode {
 	
 	class SceneSprite : public SceneMesh {
 	public:
+		SceneSprite(){}
 		SceneSprite(SpriteSet *spriteSet);
 		~SceneSprite();
 		

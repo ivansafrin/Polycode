@@ -177,6 +177,7 @@ class CameraPreviewWindow : public UIElement {
 	
 		void handleEvent(Event *event);
 		void Resize(Number width, Number height);
+		void Render(GPUDrawBuffer *buffer);
 	
 		void setCamera(Scene *scene, Camera *camera);
 	
@@ -227,6 +228,7 @@ class EntityEditorMainView : public UIElement {
 			void handleEvent(Event *event);
 			void Resize(Number width, Number height);
 			void fixedUpdate();
+			void Update();
 			void addEntityFromMenu(String command);
 	
 			void doEntityDeselect(Entity *targetEntity);
@@ -379,6 +381,8 @@ class PolycodeEntityEditor : public PolycodeEditor {
 	
 		void Activate();
 		void Deactivate();
+	
+		void Render(GPUDrawBuffer *buffer);
 	
 		void saveFile();
 		void saveCurveToObject(ObjectEntry *entry, BezierCurve *curve);

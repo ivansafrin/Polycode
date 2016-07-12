@@ -53,7 +53,8 @@ class MaterialPreviewBox : public UIElement {
 		void setMaterial(std::shared_ptr<Material> material);		
 		void showPrimitive(unsigned int index);
 		void clearMaterial();
-		
+		void Render(GPUDrawBuffer *buffer);
+	
 		void handleEvent(Event *event);
 		
 		Scene *previewScene;

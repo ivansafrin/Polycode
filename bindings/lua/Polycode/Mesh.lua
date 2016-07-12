@@ -23,32 +23,12 @@ function Mesh:Mesh(...)
 	end
 end
 
-function Mesh:MeshFromFileName(fileName)
-	local retVal = Polycode.Mesh_MeshFromFileName(self.__ptr, fileName)
-	if retVal == nil then return nil end
-	local __c = _G["Mesh"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
-function Mesh:Copy()
-	local retVal =  Polycode.Mesh_Copy(self.__ptr)
-	if retVal == nil then return nil end
-	local __c = _G["Mesh"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function Mesh:loadMesh(fileName)
 	local retVal = Polycode.Mesh_loadMesh(self.__ptr, fileName)
 end
 
 function Mesh:saveToFile(fileName, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs)
 	local retVal = Polycode.Mesh_saveToFile(self.__ptr, fileName, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs)
-end
-
-function Mesh:loadFromFile(inFile)
-	local retVal = Polycode.Mesh_loadFromFile(self.__ptr, inFile.__ptr)
 end
 
 function Mesh:addSubmesh(newSubmesh)

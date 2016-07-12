@@ -28,7 +28,7 @@ Duktape.fin(Font.prototype, function (x) {
 })
 
 Font.prototype.getFace = function() {
-	var retVal = new FT_Face()
+	var retVal = new FT_Face("__skip_ptr__")
 	retVal.__ptr = Polycode.Font_getFace(this.__ptr)
 	return retVal
 }

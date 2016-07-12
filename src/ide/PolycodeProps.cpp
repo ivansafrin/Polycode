@@ -1234,7 +1234,7 @@ MaterialProp::MaterialProp(const String &caption) : PropProp(caption, "Material"
 	materialLabel->setPosition(-100, 32);
 	materialLabel->color.a = 1.0;
 	
-	previewScene = new Scene(Scene::SCENE_3D, true);
+	previewScene = new Scene(Scene::SCENE_3D);
 	
 	previewScene->rootEntity.setOwnsChildrenRecursive(true);
 	
@@ -1251,7 +1251,7 @@ MaterialProp::MaterialProp(const String &caption) : PropProp(caption, "Material"
 	}
 	previewScene->addChild(previewBg);
 	
-	renderTexture = new SceneRenderTexture(previewScene, previewScene->getDefaultCamera(), 48*2, 48*2, false);
+	renderTexture = new SceneRenderTexture(48*2, 48*2, false);
 	
 	previewScene->clearColor.setColor(0.1, 0.1, 0.1, 0.0);
 	previewScene->ambientColor.setColor(0.2, 0.2, 0.2, 1.0);
@@ -1260,11 +1260,11 @@ MaterialProp::MaterialProp(const String &caption) : PropProp(caption, "Material"
 	previewScene->addChild(previewPrimitive);
 
 	
-	mainLight = new SceneLight(SceneLight::POINT_LIGHT, previewScene, 290.0);
+	mainLight = new SceneLight(SceneLight::POINT_LIGHT, 290.0);
 	mainLight->setPosition(-10,10,10);
 	previewScene->addLight(mainLight);
 	
-	secondLight = new SceneLight(SceneLight::POINT_LIGHT, previewScene, 250.0);
+	secondLight = new SceneLight(SceneLight::POINT_LIGHT, 250.0);
 	secondLight->setPosition(10,-10,10);
 	previewScene->addLight(secondLight);
 	
@@ -1276,6 +1276,10 @@ MaterialProp::MaterialProp(const String &caption) : PropProp(caption, "Material"
 	
 	
 	setHeight(60);
+}
+
+void MaterialProp::Render(GPUDrawBuffer *buffer) {
+	renderTexture->Render(buffer->renderFrame, previewScene, previewScene->getDefaultCamera());
 }
 
 void MaterialProp::setEntityInstance(SceneEntityInstance *instance) {

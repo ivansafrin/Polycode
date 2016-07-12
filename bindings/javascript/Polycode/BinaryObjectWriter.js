@@ -1,6 +1,6 @@
-function BinaryObjectWriter(object) {
+function BinaryObjectWriter() {
 	if(arguments[0] != "__skip_ptr__") {
-		this.__ptr = Polycode.BinaryObjectWriter(object)
+		this.__ptr = Polycode.BinaryObjectWriter()
 	}
 }
 
@@ -11,14 +11,6 @@ Duktape.fin(BinaryObjectWriter.prototype, function (x) {
 	}
 	Polycode.BinaryObjectWriter__delete(x.__ptr)
 })
-
-BinaryObjectWriter.prototype.parseKeysFromObjectEntry = function(entry) {
-	Polycode.BinaryObjectWriter_parseKeysFromObjectEntry(this.__ptr, entry.__ptr)
-}
-
-BinaryObjectWriter.prototype.writeEntryToFile = function(entry) {
-	Polycode.BinaryObjectWriter_writeEntryToFile(this.__ptr, entry.__ptr)
-}
 
 BinaryObjectWriter.prototype.addKey = function(key) {
 	return Polycode.BinaryObjectWriter_addKey(this.__ptr, key)

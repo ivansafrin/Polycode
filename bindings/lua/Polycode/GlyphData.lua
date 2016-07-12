@@ -2,19 +2,7 @@ class "GlyphData"
 
 
 function GlyphData:__getvar(name)
-	if name == "glyphs" then
-		local retVal = Polycode.GlyphData_get_glyphs(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["FT_Glyph"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
-	elseif name == "positions" then
-		local retVal = Polycode.GlyphData_get_positions(self.__ptr)
-		if retVal == nil then return nil end
-		local __c = _G["FT_Vector"]("__skip_ptr__")
-		__c.__ptr = retVal
-		return __c
-	elseif name == "num_glyphs" then
+	if name == "num_glyphs" then
 		local retVal = Polycode.GlyphData_get_num_glyphs(self.__ptr)
 		if retVal == nil then return nil end
 		local __c = _G["FT_UInt"]("__skip_ptr__")
@@ -26,13 +14,7 @@ function GlyphData:__getvar(name)
 end
 
 function GlyphData:__setvar(name,value)
-	if name == "glyphs" then
-		Polycode.GlyphData_set_glyphs(self.__ptr, value.__ptr)
-		return true
-	elseif name == "positions" then
-		Polycode.GlyphData_set_positions(self.__ptr, value.__ptr)
-		return true
-	elseif name == "num_glyphs" then
+	if name == "num_glyphs" then
 		Polycode.GlyphData_set_num_glyphs(self.__ptr, value.__ptr)
 		return true
 	elseif name == "trailingAdvance" then

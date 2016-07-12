@@ -43,8 +43,11 @@ using namespace Polycode;
 
 bool ResourcePool::defaultReloadResourcesOnModify = false;
 
-ResourcePool::ResourcePool(const String &name, ResourcePool *fallbackPool) {
+ResourcePool::ResourcePool() : fallbackPool(NULL), resourceSubscribers(0), ticksSinceCheck(0), deleteOnUnsubscribe(false), dispatchChangeEvents(false) {
 	
+}
+
+ResourcePool::ResourcePool(const String &name, ResourcePool *fallbackPool) {
 	this->name = name;
 	this->fallbackPool = fallbackPool;
 	dispatchChangeEvents = false;
