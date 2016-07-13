@@ -51,6 +51,7 @@ namespace Polycode {
 	class _PolyExport AudioInterface {
 		public:
 			AudioInterface();
+			virtual ~AudioInterface();
 			//void addToBuffer(int16_t *data, unsigned int count);
 			virtual void setMixer(AudioMixer *mixer);
 			AudioMixer *getMixer();		   

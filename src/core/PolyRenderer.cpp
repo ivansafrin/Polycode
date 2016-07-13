@@ -380,6 +380,14 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
 	
 }
 
+RenderThread::~RenderThread() {
+	clearFrameQueue();
+	renderMutex->unlock();
+	delete renderMutex;
+	jobQueueMutex->unlock();
+	delete jobQueueMutex;
+}
+
 void RenderThread::lockRenderMutex() {
 	Services()->getCore()->lockMutex(renderMutex);
 }
@@ -417,13 +425,6 @@ void RenderThread::processJob(const RendererThreadJob &job) {
 		case JOB_DESTROY_PROGRAM:
 		{
 			graphicsInterface->destroyProgramData(job.data);
-		}
-		break;
-		case JOB_SET_TEXTURE_PARAM:
-		{
-			LocalShaderParam *param = (LocalShaderParam*) job.data;
-			Texture *texture = (Texture*) job.data2;
-			param->data = (void*) texture;
 		}
 		break;
 		case JOB_DESTROY_SUBMESH_BUFFER:
@@ -501,7 +502,10 @@ Renderer::Renderer(RenderThread *customThread) :
 }
 
 Renderer::~Renderer() {
-	
+	// finish up and quit
+	renderThread->threadRunning = false;
+	while(!renderThread->scheduledForRemoval) {}
+	delete renderThread;
 }
 
 void Renderer::setGraphicsInterface(Core *core, GraphicsInterface *graphicsInterface) {
@@ -547,10 +551,6 @@ void Renderer::destroyTexturePlatformData(void *platformData) {
 
 void Renderer::destroyProgramPlatformData(void *platformData) {
 	renderThread->enqueueJob(RenderThread::JOB_DESTROY_PROGRAM, platformData);
-}
-
-void Renderer::setTextureParam(LocalShaderParam *param, Texture *texture) {
-	renderThread->enqueueJob(RenderThread::JOB_SET_TEXTURE_PARAM, (void*)param, (void*)texture);
 }
 
 

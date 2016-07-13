@@ -29,26 +29,37 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    app = new PolycodeTemplateApp(mainView);
-    timer = [NSTimer timerWithTimeInterval:(1.0f/60.0f)
-                                    target:self
-                                  selector:@selector(animationTimer:)
-                                  userInfo:nil
-                                   repeats:YES];
-    [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
-    [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSEventTrackingRunLoopMode];
+	app = new PolycodeTemplateApp(mainView);
+	timer = [NSTimer timerWithTimeInterval:(1.0f/60.0f)
+									target:self
+								  selector:@selector(animationTimer:)
+								  userInfo:nil
+								   repeats:YES];
+	[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
+	[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSEventTrackingRunLoopMode];
+}
+
+- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)theApplication
+{
+	delete app;
+	app = NULL;
+	return NSTerminateNow;
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication
 {
-    return YES;
+	delete app;
+	app = NULL;
+	return YES;
 }
 
 - (void)animationTimer:(NSTimer *)timer
 {
-    if(!app->Update()) {
-        [[NSApplication sharedApplication] stop:self];
-    }
+	if(app) {
+		if(!app->Update()) {
+			[[NSApplication sharedApplication] stop:self];
+		}
+	}
 }
 
 @end

@@ -6,7 +6,6 @@ RenderThread.JOB_DESTROY_SHADER = 9
 RenderThread.JOB_DESTROY_PROGRAM = 10
 RenderThread.JOB_DESTROY_SUBMESH_BUFFER = 11
 RenderThread.JOB_DESTROY_RENDER_BUFFER = 13
-RenderThread.JOB_SET_TEXTURE_PARAM = 14
 
 function RenderThread:RenderThread(...)
 	local arg = {...}

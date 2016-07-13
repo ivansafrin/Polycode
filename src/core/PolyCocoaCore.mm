@@ -135,8 +135,9 @@ CocoaCore::CocoaCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, 
     renderer->setGraphicsInterface(this, interface);
     services->setRenderer(renderer);
     setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
-    
-    services->getSoundManager()->setAudioInterface(new PAAudioInterface());
+	
+	audioInterface = new PAAudioInterface();
+    services->getSoundManager()->setAudioInterface(audioInterface);
 }
 
 void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport) {
@@ -332,6 +333,7 @@ String CocoaCore::executeExternalCommand(String command,  String args, String in
 
 CocoaCore::~CocoaCore() {
 	printf("Shutting down cocoa core\n");
+	delete renderer;
 	[glView setCore:nil];	
 	shutdownGamepad();
 	if(fullScreen) {

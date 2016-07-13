@@ -173,6 +173,7 @@ namespace Polycode {
 		
 	protected:
 	
+		PAAudioInterface *audioInterface;
 		PolycodeView *glView;
 		uint64_t initTime;
 		bool retinaSupport;

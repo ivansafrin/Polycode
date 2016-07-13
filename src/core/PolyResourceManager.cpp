@@ -919,9 +919,13 @@ ScriptResourceLoader::ScriptResourceLoader() {
 
 ScriptResourceLoader::~ScriptResourceLoader() {
 #ifndef NO_LUA
-	lua_close(luaState);
+	if(luaState) {
+		lua_close(luaState);
+	}
 #endif
-	duk_destroy_heap(duktapeContext);
+	if(duktapeContext) {
+		duk_destroy_heap(duktapeContext);
+	}
 }
 
 std::shared_ptr<Resource> ScriptResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {

@@ -14,7 +14,6 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
 
     core->addFileSource("archive", "hdr.pak");
     globalPool->loadResourcesFromFolder("hdr", true);
-
 	
 	scene = new Scene(Scene::SCENE_2D);
 	scene->useClearColor = true;
@@ -33,7 +32,7 @@ void PolycodeTemplateApp::handleEvent(Event *event) {
 }
 
 PolycodeTemplateApp::~PolycodeTemplateApp() {
-    
+	delete core;
 }
 
 bool PolycodeTemplateApp::Update() {

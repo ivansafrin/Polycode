@@ -63,6 +63,7 @@ namespace Polycode {
 		getScreenInfo(&defaultScreenWidth, &defaultScreenHeight, &_hz);
 	
 		coreResized = false;
+		renderer = NULL;
 		
 		this->aaLevel = aaLevel;
 		this->anisotropyLevel = anisotropyLevel;

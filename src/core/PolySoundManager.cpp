@@ -129,6 +129,9 @@ void SoundManager::setAudioInterface(AudioInterface *audioInterface) {
 }
 
 
+AudioInterface::~AudioInterface() {
+}
+
 AudioInterface::AudioInterface() {
 }
 

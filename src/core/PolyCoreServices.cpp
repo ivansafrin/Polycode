@@ -94,7 +94,6 @@ CoreServices::~CoreServices() {
 	delete soundManager;
 	delete logger;
 	delete config;
-	delete renderer;
 
 	instanceMap.clear();
 	overrideInstance = NULL;

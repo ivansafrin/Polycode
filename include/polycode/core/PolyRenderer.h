@@ -135,6 +135,7 @@ namespace Polycode {
 		public:
 			RenderThread();
 			 void setGraphicsInterface(Core *core, GraphicsInterface *graphicsInterface);
+			~RenderThread();
 			virtual void runThread();
 		
 			void beginFrame();
@@ -165,7 +166,6 @@ namespace Polycode {
 			static const int JOB_DESTROY_PROGRAM = 10;
 			static const int JOB_DESTROY_SUBMESH_BUFFER = 11;
 			static const int JOB_DESTROY_RENDER_BUFFER = 13;
-			static const int JOB_SET_TEXTURE_PARAM = 14;
 		
 		protected:
 		
@@ -210,8 +210,6 @@ namespace Polycode {
 		void destroyProgramPlatformData(void *platformData);
 		void destroyShaderPlatformData(void *platformData);
 		void destroySubmeshPlatformData(void *platformData);
-		
-		void setTextureParam(LocalShaderParam *param, Texture *texture);
 		
 		void setAnisotropyAmount(Number amount);
 		Number getAnisotropyAmount();
