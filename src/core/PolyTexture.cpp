@@ -133,9 +133,11 @@ Texture::Texture(Image *image, bool clamp, bool createMipmaps) : Resource(Resour
 		case Image::IMAGE_RGBA:
 			pixelSize = 4;
 			break;
+#ifndef NO_FP16
 		case Image::IMAGE_FP16:
 			pixelSize = 6;
 			break;
+#endif
 		default:
 			pixelSize = 4;
 			break;

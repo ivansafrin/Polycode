@@ -594,6 +594,10 @@ std::shared_ptr<Resource> ResourcePool::getResource(int resourceType, const Stri
 	} else {
 		Logger::log("Could not find resource [%s] in pool [%s]\n", resourceName.c_str(), name.c_str());
 		
+		if (resourceType == Resource::RESOURCE_FONT && resourceName != "sans") {
+			return getResource(Resource::RESOURCE_FONT, "sans");
+		}
+
 		return NULL;
 	}
 }

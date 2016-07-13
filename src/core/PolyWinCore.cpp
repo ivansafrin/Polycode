@@ -170,11 +170,11 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 }
 
 Number Win32Core::getBackingXRes() {
-	return getXRes() *scaleFactor;
+	return getXRes() * scaleFactor;
 }
 
 Number Win32Core::getBackingYRes() {
-	return getYRes() *scaleFactor;
+	return getYRes() * scaleFactor;
 }
 
 Win32Core::~Win32Core() {
@@ -233,13 +233,6 @@ unsigned int Win32Core::getTicks() {
 	QueryPerformanceCounter(&li);
 	return (unsigned int)(li.QuadPart / pcFreq);
 }
-
-void Win32Core::Render() {
-	renderer->beginFrame();
-	services->Render(Polycode::Rectangle(0, 0, getBackingXRes(), getBackingYRes()));
-	renderer->endFrame();
-}
-
 
 void  Win32Core::flushRenderContext() {
 	SwapBuffers(hDC);
@@ -386,6 +379,8 @@ void Win32Core::handleVideoModeChange(VideoModeChangeInfo *modeInfo) {
 
 	setVSync(modeInfo->vSync);
 	renderer->setAnisotropyAmount(modeInfo->anisotropyLevel);
+
+	coreResized = true;
 }
 
 void Win32Core::initContext(int aaLevel) {
@@ -632,7 +627,7 @@ void Win32Core::initKeymap() {
 void Win32Core::handleViewResize(int width, int height) {
 	this->xRes = width;
 	this->yRes = height;
-	dispatchEvent(new Event(), EVENT_CORE_RESIZE);
+	coreResized = true;
 }
 
 PolyKEY Win32Core::mapKey(LPARAM lParam, WPARAM wParam) {
@@ -875,6 +870,14 @@ void Win32Core::handleTextInput(LPARAM lParam, WPARAM wParam) {
 	lockMutex(eventMutex);
 	win32Events.push_back(newEvent);
 	unlockMutex(eventMutex);
+}
+
+void Win32Core::handleFocusChange(bool gain) {
+	if (gain) {
+		gainFocus();
+	} else {
+		loseFocus();
+	}
 }
 
 bool Win32Core::checkSpecialKeyEvents(PolyKEY key) {

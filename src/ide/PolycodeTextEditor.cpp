@@ -813,7 +813,7 @@ void PolycodeTextEditor::saveFile() {
 
 void PolycodeTextEditor::Resize(int x, int y) {
 
-	findBar->setBarWidth(x);	
+	findBar->setBarWidth(x);
 	
 	if(findBar->visible) {
 		textInput->Resize(x,y-findBar->getHeight());
@@ -872,7 +872,7 @@ FindBar::FindBar() : UIElement() {
 	addChild(closeButton);
 }
 
-void FindBar::onKeyDown(PolyKEY key, wchar_t charCode) {
+void FindBar::onKeyDown(PolyKEY key) {
 	if(key == KEY_TAB) {
 		focusNextChild();
 	}

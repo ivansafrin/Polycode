@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PolycodeCore", "PolycodeCore\PolycodeCore.vcxproj", "{92C7971A-F305-4B93-A9DC-6B01AF222FF9}"
 EndProject
@@ -56,6 +56,7 @@ Global
 		{E09F38FA-C860-4E70-8FA4-45DD7165778B}.Release|Win32.ActiveCfg = Release|Win32
 		{E09F38FA-C860-4E70-8FA4-45DD7165778B}.Release|Win32.Build.0 = Release|Win32
 		{E09F38FA-C860-4E70-8FA4-45DD7165778B}.Release|x64.ActiveCfg = Release|x64
+		{E09F38FA-C860-4E70-8FA4-45DD7165778B}.Release|x64.Build.0 = Release|x64
 		{A9A71037-BC64-45D6-B872-90EF22ABB23A}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
 		{A9A71037-BC64-45D6-B872-90EF22ABB23A}.Debug|Mixed Platforms.Build.0 = Debug|Win32
 		{A9A71037-BC64-45D6-B872-90EF22ABB23A}.Debug|Win32.ActiveCfg = Debug|Win32
@@ -67,6 +68,7 @@ Global
 		{A9A71037-BC64-45D6-B872-90EF22ABB23A}.Release|Win32.ActiveCfg = Release|Win32
 		{A9A71037-BC64-45D6-B872-90EF22ABB23A}.Release|Win32.Build.0 = Release|Win32
 		{A9A71037-BC64-45D6-B872-90EF22ABB23A}.Release|x64.ActiveCfg = Release|x64
+		{A9A71037-BC64-45D6-B872-90EF22ABB23A}.Release|x64.Build.0 = Release|x64
 		{3E46FB61-BF79-46C9-8D1A-A6FFF1EA49FA}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
 		{3E46FB61-BF79-46C9-8D1A-A6FFF1EA49FA}.Debug|Mixed Platforms.Build.0 = Debug|Win32
 		{3E46FB61-BF79-46C9-8D1A-A6FFF1EA49FA}.Debug|Win32.ActiveCfg = Debug|Win32
@@ -78,6 +80,7 @@ Global
 		{3E46FB61-BF79-46C9-8D1A-A6FFF1EA49FA}.Release|Win32.ActiveCfg = Release|Win32
 		{3E46FB61-BF79-46C9-8D1A-A6FFF1EA49FA}.Release|Win32.Build.0 = Release|Win32
 		{3E46FB61-BF79-46C9-8D1A-A6FFF1EA49FA}.Release|x64.ActiveCfg = Release|x64
+		{3E46FB61-BF79-46C9-8D1A-A6FFF1EA49FA}.Release|x64.Build.0 = Release|x64
 		{8467AAFE-8DB1-464E-8929-56D6747ADA81}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
 		{8467AAFE-8DB1-464E-8929-56D6747ADA81}.Debug|Mixed Platforms.Build.0 = Debug|Win32
 		{8467AAFE-8DB1-464E-8929-56D6747ADA81}.Debug|Win32.ActiveCfg = Debug|Win32

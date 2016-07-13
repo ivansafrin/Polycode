@@ -50,11 +50,7 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 	CoreServices::getInstance()->getResourceManager()->getGlobalPool()->reloadResourcesOnModify = true;
 	
 	runNextFrame = false;
-	
-	core->addEventListener(this, Core::EVENT_CORE_RESIZE);
-	core->addEventListener(this, Core::EVENT_LOST_FOCUS);
-	core->addEventListener(this, Core::EVENT_GAINED_FOCUS);
-			
+				
 	globalClipboard = new PolycodeClipboard();
 	
 	ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
@@ -234,7 +230,13 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 	
 	quittingApp = false;
 	
-	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
+	core->pauseOnLoseFocus = true;
+	
+
+	core->addEventListener(this, Core::EVENT_CORE_RESIZE);
+	core->addEventListener(this, Core::EVENT_LOST_FOCUS);
+	core->addEventListener(this, Core::EVENT_GAINED_FOCUS);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 	
 	applyFinalConfig();
 	
@@ -1414,9 +1416,8 @@ bool PolycodeIDEApp::Update() {
 		frame->getConsoleSizer()->enabled = true;
 	} else {
 		frame->welcomeEntity->enabled =	 true;
-		frame->getConsoleSizer()->enabled = false;		
+		frame->getConsoleSizer()->enabled = false;
 	}
-
 
 	bool result = core->systemUpdate();
 	

@@ -24,7 +24,6 @@
 #include "polycode/view/linux/PolycodeView.h"
 #include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyCoreInput.h"
-#include "polycode/core/PolyMaterialManager.h"
 #include "polycode/core/PolyThreaded.h"
 #include "polycode/core/PolyLogger.h"
 

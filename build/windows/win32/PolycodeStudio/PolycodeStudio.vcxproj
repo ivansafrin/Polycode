@@ -68,21 +68,20 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>..\..\..\..\lib\win32\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(WindowsSdkDir)\Lib\winv6.3\km\$(PlatformTarget)\;..\..\..\..\lib\win32\$(PlatformShortName);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>..\..\..\..\include;.;$(IncludePath)</IncludePath>
-    <LibraryPath>..\..\..\..\lib\win32\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(WindowsSdkDir)\Lib\winv6.3\km\$(PlatformTarget)\;..\..\..\..\lib\win32\$(PlatformShortName);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>..\..\..\..\lib\win32\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(WindowsSdkDir)\Lib\winv6.3\km\$(PlatformTarget)\;..\..\..\..\lib\win32\$(PlatformShortName);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>..\..\..\..\include;.;$(IncludePath)</IncludePath>
-    <LibraryPath>..\..\..\..\lib\win32\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(WindowsSdkDir)\Lib\winv6.3\km\$(PlatformTarget)\;..\..\..\..\lib\win32\$(PlatformShortName);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

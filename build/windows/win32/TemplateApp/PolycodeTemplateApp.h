@@ -19,6 +19,7 @@ public:
 private:
 	ScenePrimitive *test;
 	Core *core;
+	Scene *scene;
 	std::vector<ScenePrimitive*> tests;
 	SceneLabel *fpsLabel;
 };

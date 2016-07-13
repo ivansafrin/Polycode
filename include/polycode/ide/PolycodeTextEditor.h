@@ -46,7 +46,7 @@ class FindBar : public UIElement {
 		~FindBar();
 		
 		void setBarWidth(int width);
-		void onKeyDown(PolyKEY key, wchar_t charCode);
+		void onKeyDown(PolyKEY key);
 		
 		UITextInput *findInput;
 		UITextInput *replaceInput;		

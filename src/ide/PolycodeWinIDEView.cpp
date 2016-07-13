@@ -256,6 +256,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
+	case WM_KILLFOCUS:
+		core->handleFocusChange(false);
+		break;
+	case WM_SETFOCUS:
+		core->handleFocusChange(true);
+		break;
 	default:
 		useDefault = true;
 		break;

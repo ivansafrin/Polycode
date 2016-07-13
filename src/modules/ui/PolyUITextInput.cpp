@@ -2161,9 +2161,7 @@ void UITextInput::onTextInput(String newText){
 	
 	if(!isNumberOnly || (isNumberOnly && newText.isNumber())) {
 		String ctext = lines[actualLineOffset].text;
-		//if(!isNumberOrCharacter(charCode)) { 
-			/*saveUndoState();
-		} else */
+
 		if (!isTypingWord) {
 			saveUndoState();
 			isTypingWord = 1;

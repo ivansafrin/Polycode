@@ -18,7 +18,7 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
 
 	// Write your code here!
 
-	Scene *scene = new Scene(Scene::SCENE_2D);
+	scene = new Scene(Scene::SCENE_2D);
 	scene->useClearColor = true;
 	scene->clearColor.setColor(0.2, 0.2, 0.2, 1.0);
 
@@ -79,5 +79,15 @@ bool PolycodeTemplateApp::Update() {
 		//fpsLabel->setText("FPS:" + String::IntToString(1000 / Services()->getRenderer()->getRenderThread()->getFrameInfo().timeTaken));
 	}
 
-	return core->updateAndRender();
+	bool result = core->systemUpdate();
+
+	scene->Update();
+	while (core->fixedUpdate()) {
+		scene->fixedUpdate();
+	}
+
+	RenderFrame *renderFrame = new RenderFrame(core->getViewport());
+	scene->Render(renderFrame);
+	core->getRenderer()->submitRenderFrame(renderFrame);
+	return result;
 }

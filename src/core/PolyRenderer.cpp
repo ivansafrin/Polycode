@@ -27,8 +27,10 @@
 #include "polycode/core/PolyTexture.h"
 #include "polycode/core/PolyVector4.h"
 #include "polycode/core/PolyLogger.h"
-#if PLATFORM == PLATFORM_ANDROID
-	#include <unistd.h>
+#if PLATFORM == PLATFORM_WINDOWS
+#include <windows.h>
+#else
+#include <unistd.h>
 #endif
 
 
@@ -89,8 +91,22 @@ void RenderThread::initGlobals() {
 }
 
 void RenderThread::updateRenderThread() {
+	if (core->paused) {
+		int timeToSleep = 500;
+#if PLATFORM == PLATFORM_WINDOWS
+		Sleep(timeToSleep);
+#else
+		usleep(timeToSleep * 1000);
+#endif
+		jobQueueMutex->lock();
+		if (frameQueue.size() > 0) {
+			frameQueue.pop();
+		}
+		jobQueueMutex->unlock();
+		return;
+	}
 	jobQueueMutex->lock();
-		
+
 	while (jobQueue.size() > 0) {
 		RendererThreadJob nextJob = jobQueue.front();
 		jobQueue.pop();
