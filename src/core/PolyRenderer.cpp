@@ -137,6 +137,7 @@ void RenderThread::updateRenderThread() {
 			GPUDrawBuffer *drawBuffer = nextFrame->drawBuffers.front();
 			nextFrame->drawBuffers.pop();
 			processDrawBuffer(drawBuffer);
+			delete drawBuffer;
 		}
 		
 		endFrame();

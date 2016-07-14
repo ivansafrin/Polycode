@@ -222,9 +222,6 @@
     <ClCompile Include="..\..\..\..\src\core\PolySceneLine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\core\PolySceneManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\core\PolySceneMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -354,9 +351,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneLine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneMesh.h">

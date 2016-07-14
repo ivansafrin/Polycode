@@ -23,7 +23,15 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PolycodeUI", "PolycodeUI\Po
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Polycode3DPhysics", "Polycode3DPhysics\Polycode3DPhysics.vcxproj", "{8467AAFE-8DB1-464E-8929-56D6747ADA81}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{011F81E4-4185-4FBB-BCE6-644B5B1792DC}"
+	ProjectSection(SolutionItems) = preProject
+		Performance1.psess = Performance1.psess
+	EndProjectSection
+EndProject
 Global
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
 		Debug|Win32 = Debug|Win32

@@ -234,13 +234,6 @@ unsigned int Win32Core::getTicks() {
 	return (unsigned int)(li.QuadPart / pcFreq);
 }
 
-void Win32Core::Render() {
-	renderer->beginFrame();
-	services->Render(Polycode::Rectangle(0, 0, getBackingXRes(), getBackingYRes()));
-	renderer->endFrame();
-}
-
-
 void  Win32Core::flushRenderContext() {
 	SwapBuffers(hDC);
 }

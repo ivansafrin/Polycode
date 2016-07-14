@@ -194,7 +194,6 @@ public:
 		void warpCursor(int x, int y);
 		unsigned int getTicks();		
 		bool systemUpdate();
-		void Render();
 		void setVSync(bool vSyncVal);
 
 		void handleKeyDown(LPARAM lParam, WPARAM wParam);
