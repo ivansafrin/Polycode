@@ -23,10 +23,6 @@ function SceneEntityInstanceResourceEntry:SceneEntityInstanceResourceEntry(...)
 	end
 end
 
-function SceneEntityInstanceResourceEntry:reloadResource()
-	local retVal =  Polycode.SceneEntityInstanceResourceEntry_reloadResource(self.__ptr)
-end
-
 function SceneEntityInstanceResourceEntry:__delete()
 	if self then Polycode.delete_SceneEntityInstanceResourceEntry(self.__ptr) end
 end

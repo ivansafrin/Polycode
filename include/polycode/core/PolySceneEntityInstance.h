@@ -42,7 +42,8 @@ class SceneEntityInstanceResourceEntry;
 class SceneEntityInstance : public Entity {
 	public:
 	
-		SceneEntityInstance(const String& fileName);
+		SceneEntityInstance(Core *core, const String& fileName);
+		SceneEntityInstance(Core *core);
 		explicit SceneEntityInstance();
 		
 		static SceneEntityInstance *BlankSceneEntityInstance();
@@ -86,7 +87,9 @@ class SceneEntityInstance : public Entity {
 		
 	protected:
 		
-		std::vector<SceneEntityInstanceLayer*> layers;	
+        Core *core;
+    
+		std::vector<SceneEntityInstanceLayer*> layers;
 		void rebuildResourceLinks();
 	
 		ResourcePool *topLevelResourcePool;
@@ -116,7 +119,7 @@ class SceneEntityInstanceResourceEntry : public Resource {
 		virtual ~SceneEntityInstanceResourceEntry();
 		
 		SceneEntityInstance *getInstance();
-		void reloadResource();
+		void reloadResource(Core *core);
 		
 	protected:
 		SceneEntityInstance* instance;

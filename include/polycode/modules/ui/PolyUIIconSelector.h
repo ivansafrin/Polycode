@@ -35,7 +35,7 @@ using namespace Polycode;
 
 class UIIconSelector : public UIElement {
 	public:
-		UIIconSelector(Number height = 0.0);
+		UIIconSelector(Core *core, ResourcePool *resourcePool, Number height = 0.0);
 		~UIIconSelector();
 	
 		void handleEvent(Event *event);
@@ -49,7 +49,7 @@ class UIIconSelector : public UIElement {
 	protected:
 	
 		std::vector<UIImageButton*> icons;
-	
+		ResourcePool *resourcePool;
 		UIBox *bgRect;
 		UIBox *selectorRect;
 		int selectedIndex;

@@ -4,30 +4,6 @@ Image.IMAGE_RGB = 0
 Image.IMAGE_RGBA = 1
 Image.IMAGE_FP16 = 2
 
-function Image:Image(...)
-	local arg = {...}
-	for k,v in pairs(arg) do
-		if type(v) == "table" then
-			if v.__ptr ~= nil then
-				arg[k] = v.__ptr
-			end
-		end
-	end
-	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
-		self.__ptr = Polycode.Image(unpack(arg))
-	end
-end
-
-function Image:loadImage(fileName)
-	local retVal = Polycode.Image_loadImage(self.__ptr, fileName)
-	return retVal
-end
-
-function Image:saveImage(fileName)
-	local retVal = Polycode.Image_saveImage(self.__ptr, fileName)
-	return retVal
-end
-
 function Image:createEmpty(width, height, fillColor)
 	local retVal = Polycode.Image_createEmpty(self.__ptr, width, height, fillColor.__ptr)
 end
@@ -116,11 +92,6 @@ end
 
 function Image:premultiplyAlpha()
 	local retVal =  Polycode.Image_premultiplyAlpha(self.__ptr)
-end
-
-function Image:savePNG(fileName)
-	local retVal = Polycode.Image_savePNG(self.__ptr, fileName)
-	return retVal
 end
 
 function Image:__delete()

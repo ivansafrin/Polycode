@@ -120,8 +120,9 @@ namespace Polycode {
 	
 	class SpriteSet : public ResourcePool {
 	public:
-		SpriteSet(){}
-		SpriteSet(const String &fileName, ResourcePool *parentPool = CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+        SpriteSet(){}
+        SpriteSet(Core *core);
+		SpriteSet(Core *core, const String &fileName, ResourcePool *parentPool);
 		~SpriteSet();
 		
 		void setTexture(std::shared_ptr<Texture> texture);

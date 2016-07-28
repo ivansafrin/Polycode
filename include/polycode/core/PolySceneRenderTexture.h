@@ -75,7 +75,6 @@ namespace Polycode {
 			
 		protected:		
 			bool floatingPoint;
-			Renderer *renderer;
 			std::shared_ptr<RenderBuffer> targetFramebuffer;
 	};
 }

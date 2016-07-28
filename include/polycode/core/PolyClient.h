@@ -24,7 +24,6 @@ THE SOFTWARE.
 #include "polycode/core/PolyLogger.h"
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyPeer.h"
-#include "polycode/core/PolyTimer.h"
 #include "polycode/core/PolyEvent.h"
 
 namespace Polycode {
@@ -50,25 +49,20 @@ namespace Polycode {
 	
 	class _PolyExport Client : public Peer {
 	public:
-		Client(unsigned int port, int rate);
+		Client(Core *core, unsigned int port, int rate);
 		~Client();
 		
-		void updatePeer();
+		void updateClient();
 		void Connect(std::string ipAddress, unsigned int port);
 		void Disconnect();
-		void setPersistentData(void *data, unsigned int size);
-		
+		void sendClientData(char *data, uint32_t datasize);
 		unsigned int getClientID();
-		
 		void sendReliableDataToServer(char *data, unsigned int size, unsigned short type);
-		
 		void handlePacket(Packet *packet, PeerConnection *connection);
 		
-		void handleEvent(Event *event);
 	private:
 		
 		int clientID;
-		
 		void *data;
 		unsigned int dataSize;
 		Timer *rateTimer;

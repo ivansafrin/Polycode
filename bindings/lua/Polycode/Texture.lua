@@ -55,10 +55,6 @@ function Texture:__setvar(name,value)
 		return false
 	end
 end
-function Texture:reloadResource()
-	local retVal =  Polycode.Texture_reloadResource(self.__ptr)
-end
-
 function Texture:getWidth()
 	local retVal =  Polycode.Texture_getWidth(self.__ptr)
 	return retVal

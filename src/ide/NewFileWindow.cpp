@@ -22,15 +22,15 @@
  
 #include "polycode/ide/NewFileWindow.h"
 
-NewFileWindow::NewFileWindow() : UIWindow(L"Create New File", 580, 280) {
+NewFileWindow::NewFileWindow(Core *core, ResourcePool *pool) : UIWindow(core, pool, L"Create New File", 580, 280) {
 	defaultTemplateTree = NULL;
 	
-	Config *conf = CoreServices::getInstance()->getConfig();	
+	ConfigRef conf = core->getConfig();
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
 	
 	closeOnEscape = true;	
 	
-	templateContainer = new UITreeContainer("boxIcon.png", L"File Templates", 250, 300-topPadding-padding-padding); 
+	templateContainer = new UITreeContainer(core, pool, "boxIcon.png", L"File Templates", 250, 300-topPadding-padding-padding);
 	
 	FileTemplateUserData *data = new FileTemplateUserData();
 	data->type = 0;
@@ -44,7 +44,7 @@ NewFileWindow::NewFileWindow() : UIWindow(L"Create New File", 580, 280) {
 	templateContainer->getRootNode()->addEventListener(this, UITreeEvent::EXECUTED_EVENT);
 	
 	
-	vector<OSFileEntry> templates = Services()->getCore()->parseFolder(RESOURCE_PATH"FileTemplates", false);
+	vector<OSFileEntry> templates = core->parseFolder(RESOURCE_PATH"FileTemplates", false);
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {
@@ -57,7 +57,7 @@ NewFileWindow::NewFileWindow() : UIWindow(L"Create New File", 580, 280) {
 		}
 	}	
 	
-	UILabel *label2 = new UILabel(L"NEW FILE NAME (NO EXTENSION)", 18, "section", Label::ANTIALIAS_FULL);
+	UILabel *label2 = new UILabel(core, pool, L"NEW FILE NAME (NO EXTENSION)", 18, "section", Label::ANTIALIAS_FULL);
 	label2->color.a = 1.0;
 	label2->getLabel()->setColorForRange(Color(),0, 12);
 	label2->getLabel()->setColorForRange(Color(0.6, 0.6, 0.6, 1.0),12, 40);
@@ -66,17 +66,17 @@ NewFileWindow::NewFileWindow() : UIWindow(L"Create New File", 580, 280) {
 	addChild(label2);
 	label2->setPosition(padding+270, templateContainer->getPosition().y-5);			
 	
-	fileNameInput = new UITextInput(false, 550-padding-210-padding-padding, 12);	
+	fileNameInput = new UITextInput(core, pool, false, 550-padding-210-padding-padding, 12);
 	addFocusChild(fileNameInput);
 	fileNameInput->setPosition(label2->getPosition().x, label2->getPosition().y+30);
 	
 	
-	cancelButton = new UIButton(L"Cancel", 100);
+	cancelButton = new UIButton(core, pool, L"Cancel", 100);
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addFocusChild(cancelButton);
 	cancelButton->setPosition(600-100-padding-100-10, 265);
 			
-	okButton = new UIButton(L"Create File", 100);
+	okButton = new UIButton(core, pool, L"Create File", 100);
 	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addFocusChild(okButton);
 	okButton->setPosition(600-100-padding, 265);	
@@ -139,7 +139,7 @@ void NewFileWindow::handleEvent(Event *event) {
 
 
 void NewFileWindow::parseTemplatesIntoTree(UITree *tree, OSFileEntry folder) {
-	vector<OSFileEntry> templates = Services()->getCore()->parseFolder(folder.fullPath, false);
+	vector<OSFileEntry> templates = core->parseFolder(folder.fullPath, false);
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];	
 		if(entry.type != OSFileEntry::TYPE_FOLDER) {

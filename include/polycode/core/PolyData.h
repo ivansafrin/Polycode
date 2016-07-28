@@ -25,6 +25,8 @@
 #include "polycode/core/PolyString.h"
 
 namespace Polycode {
+    
+    class Core;
 
 	/**
 	* Stores, saves and loads data. This class can save and load arbitrary data to and from disk and convert it to strings.
@@ -42,7 +44,7 @@ namespace Polycode {
 		* @param fileName Path to the file to load data from.
 		* @return True if susccessful, false if not
 		*/						
-		bool loadFromFile(const String& fileName);
+		bool loadFromFile(Core *core, const String& fileName);
 		
 		/**
 		* Retuns data as a string with the specified encoding.
@@ -63,7 +65,7 @@ namespace Polycode {
 		* @param fileName Path to the file to save data to.
 		* @return Returns true if successful or false if otherwise.
 		*/								
-		bool saveToFile(const String& fileName) const;
+		bool saveToFile(Core *core, const String& fileName) const;
 		
 		/**
 		* Returns pointer to the data.

@@ -1,10 +1,10 @@
 /*
- Copyright (C) 2011 by Ivan Safrin
+ Copyright (C) 2016 by Ivan Safrin
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or se ll
  copies of the Software, and to permit persons to whom the Software is
  furnished to do so, subject to the following conditions:
  
@@ -18,42 +18,28 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
-*/
+ */
 
-#include "polycode/core/PolyResource.h"
-#include "polycode/core/PolyResourceManager.h"
+#pragma once
 
-using namespace Polycode;
+namespace Polycode {
 
-bool Resource::defaultReloadOnFileModify = false;
-
-Resource::Resource(int type) : EventDispatcher(), type(type), reloadOnFileModify(defaultReloadOnFileModify), resourceFileTime(0)
-{
-}
-
-Resource::~Resource() {
-}
-
-void Resource::reloadResource(Core *core) {
-	dispatchEvent(new Event(), Event::RESOURCE_RELOAD_EVENT);
-}
-
-const String& Resource::getResourceName() const {
-	return name;
-}
-
-int Resource::getResourceType() const {
-	return type;
-}
-
-void Resource::setResourceName(const String& newName) {
-	name = newName;
-}
-
-void Resource::setResourcePath(const String& path) {
-	resourcePath = path;
-}
-
-const String& Resource::getResourcePath() const {
-	return resourcePath;
+	class Renderer;
+	
+	class RendererPlatformData {
+	public:
+		RendererPlatformData();
+		~RendererPlatformData();
+		
+		static const int PLATFORM_DATA_NONE = 0;
+		static const int PLATFORM_DATA_TEXTURE = 1;
+		static const int PLATFORM_DATA_RENDER_BUFFER = 2;
+		static const int PLATFORM_DATA_PROGRAM = 3;
+		static const int PLATFORM_DATA_SHADER = 4;
+		static const int PLATFORM_DATA_SUBMESH = 5;
+		
+		int type;
+		Renderer *renderer;
+		void *data;
+	};
 }

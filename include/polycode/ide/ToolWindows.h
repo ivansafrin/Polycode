@@ -30,7 +30,7 @@ using namespace Polycode;
 
 class TextInputPopup : public UIWindow {
 	public:
-		TextInputPopup();
+		TextInputPopup(Core *core, ResourcePool *pool);
 		~TextInputPopup();
 		
 		void setCaption(String caption);
@@ -52,7 +52,7 @@ class TextInputPopup : public UIWindow {
 
 class MessagePopup : public UIWindow {
 	public:
-	MessagePopup();
+	MessagePopup(Core *core, ResourcePool *pool);
 	~MessagePopup();
 	
 	void setCaption(String caption);
@@ -68,7 +68,7 @@ class MessagePopup : public UIWindow {
 
 class YesNoPopup : public UIWindow {
 	public:
-		YesNoPopup();
+		YesNoPopup(Core *core, ResourcePool *pool);
 		~YesNoPopup();
 		
 		void setCaption(String caption);
@@ -88,7 +88,7 @@ class YesNoPopup : public UIWindow {
 
 class YesNoCancelPopup : public UIWindow {
 	public:
-		YesNoCancelPopup();
+		YesNoCancelPopup(Core *core, ResourcePool *pool);
 		~YesNoCancelPopup();
 		
 		void setCaption(String caption);
@@ -108,7 +108,7 @@ class YesNoCancelPopup : public UIWindow {
 
 class AssetImporterWindow : public UIWindow {
 	public:
-		AssetImporterWindow();
+		AssetImporterWindow(Core *core, ResourcePool *pool);
 		~AssetImporterWindow();
 
 		void clearFiles();
@@ -123,6 +123,8 @@ class AssetImporterWindow : public UIWindow {
 		void handleEvent(Event *event); 
 			
 	protected:
+	
+		ResourcePool *pool;
 
 		String file;
 		String folder;

@@ -39,9 +39,9 @@ namespace Polycode {
 	class _PolyExport SceneLabel : public ScenePrimitive {
 		public:
 		
-			SceneLabel(const String& text, int size, const String& fontName, int amode = 0, Number actualHeight = 0.0);
+			SceneLabel(std::shared_ptr<Material> material, const String& text, int size, std::shared_ptr<Font> font, int amode = 0, Number actualHeight = 0.0);
 			
-			SceneLabel(const String& text, int size, const String& fontName, int amode, Number actualHeight, bool premultiplyAlpha, const Color &backgroundColor, const Color &foregroundColor);
+			SceneLabel(std::shared_ptr<Material> material, const String& text, int size, std::shared_ptr<Font> font, int amode, Number actualHeight, bool premultiplyAlpha, const Color &backgroundColor, const Color &foregroundColor);
 			
 			String getText();
 		

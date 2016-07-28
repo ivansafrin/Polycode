@@ -25,13 +25,13 @@
 extern SyntaxHighlightTheme *globalSyntaxTheme;
 extern UIGlobalMenu *globalMenu;
 
-void SyntaxHighlightTheme::loadFromFile(String themeName) {
+void SyntaxHighlightTheme::loadFromFile(Core *core, String themeName) {
 	String filePath = "SyntaxThemes/"+themeName+".xml";
 	
 	this->name =themeName;
 	
 	Object themeObject;
-	if(themeObject.loadFromXML(filePath)) {
+	if(themeObject.loadFromXML(core, filePath)) {
 
 		ObjectEntry *hintingEntry = themeObject.root["useStrongHinting"];
 		if(hintingEntry) {
@@ -618,7 +618,7 @@ std::vector<SyntaxHighlightToken> PolycodeSyntaxHighlighter::parseJS(String text
 	return tokens;
 }
 
-PolycodeTextEditor::PolycodeTextEditor() : PolycodeEditor(true){
+PolycodeTextEditor::PolycodeTextEditor(Core *core, ResourcePool *pool) : PolycodeEditor(core, pool, true){
 	firstTimeResize = true;
 	editorType = "PolycodeTextEditor";
 }
@@ -637,7 +637,7 @@ bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 	
 	isLoading = true;
 	
-	textInput = new UITextInput(true, 100, 100);
+	textInput = new UITextInput(core, resourcePool, true, 100, 100);
 	addChild(textInput);
 	textInput->setBackgroundColor(globalSyntaxTheme->bgColor);
 	textInput->setCursorColor(globalSyntaxTheme->cursorColor);
@@ -648,7 +648,7 @@ bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 	
 	textInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
-	findBar = new FindBar();
+	findBar = new FindBar(core, resourcePool);
 	findBar->visible = false;
 	addChild(findBar);
 	
@@ -671,7 +671,7 @@ bool PolycodeTextEditor::openFile(OSFileEntry filePath) {
 	}
 	
 	Data *data = new Data();
-	if(data->loadFromFile(filePath.fullPath)) {
+	if(data->loadFromFile(core, filePath.fullPath)) {
 		textInput->setText(data->getAsString(String::ENCODING_UTF8).replace("\r\n", "\n"));
 	}
 	delete data;
@@ -806,7 +806,7 @@ void PolycodeTextEditor::highlightLine(unsigned int lineNumber) {
 void PolycodeTextEditor::saveFile() {
 	Data *data = new Data();
 	data->setFromString(textInput->getText(), String::ENCODING_UTF8);
-	data->saveToFile(filePath);
+	data->saveToFile(core, filePath);
 	delete data;
 	setHasChanges(false);
 }
@@ -829,46 +829,46 @@ void PolycodeTextEditor::Resize(int x, int y) {
 	PolycodeEditor::Resize(x,y);
 }
 
-FindBar::FindBar() : UIElement() {
-	barBg = new UIRect(30,30);
+FindBar::FindBar(Core *core, ResourcePool *pool) : UIElement(core) {
+	barBg = new UIRect(core, pool, 30,30);
 	barBg->setAnchorPoint(-1.0, -1.0, 0.0);
-	barBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+	barBg->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	addChild(barBg);
 	setHeight(30);
 	
-	UILabel *findLabel = new UILabel("FIND", 18, "section");
+	UILabel *findLabel = new UILabel(core, pool, "FIND", 18, "section");
 	addChild(findLabel);
 	findLabel->setColor(1.0, 1.0, 1.0, 0.6);
 	findLabel->setPosition(10,3);
 
-	UILabel *replaceLabel = new UILabel("REPLACE", 18, "section");
+	UILabel *replaceLabel = new UILabel(core, pool, "REPLACE", 18, "section");
 	addChild(replaceLabel);
 	replaceLabel->setColor(1.0, 1.0, 1.0, 0.6);
 	replaceLabel->setPosition(200,3);
 	
 	processInputEvents = true;
 	
-	findInput = new UITextInput(false, 120, 12);
+	findInput = new UITextInput(core, pool, false, 120, 12);
 	addFocusChild(findInput);
 	findInput->setPosition(60, 4);
 
-	replaceInput = new UITextInput(false, 120, 12);
+	replaceInput = new UITextInput(core, pool, false, 120, 12);
 	addFocusChild(replaceInput);
 	replaceInput->setPosition(280, 4);
 	
-	replaceAllButton = new UIButton("Replace All", 100);
+	replaceAllButton = new UIButton(core, pool, "Replace All", 100);
 	addFocusChild(replaceAllButton);
 	replaceAllButton->setPosition(420, 3);
 
-	UIImage *functionIcon = new UIImage("main/function_icon.png", 11, 17);
+	UIImage *functionIcon = new UIImage(core, pool, "main/function_icon.png", 11, 17);
 	addChild(functionIcon);
 	functionIcon->setPosition(540, 6);
 	
-	functionList = new UIComboBox(globalMenu, 200);
+	functionList = new UIComboBox(core, pool, globalMenu, 200);
 	addChild(functionList);
 	functionList->setPosition(560, 4);	
 		
-	closeButton = new UIImageButton("main/barClose.png", 1.0, 17, 17);
+	closeButton = new UIImageButton(core, pool, "main/barClose.png", 1.0, 17, 17);
 	addChild(closeButton);
 }
 

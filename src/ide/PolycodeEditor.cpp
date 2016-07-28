@@ -46,7 +46,8 @@ void PolycodeEditor::setFilePath(String newPath) {
 	filePath = newPath;
 }
 
-PolycodeEditor::PolycodeEditor(bool _isReadOnly) : UIElement(), ClipboardProvider() {
+PolycodeEditor::PolycodeEditor(Core *core, ResourcePool *resourcePool, bool _isReadOnly) : UIElement(core), ClipboardProvider(), resourcePool(resourcePool), core(core)
+{
 	this->_isReadOnly = _isReadOnly;
 	enableScissor = true;
 	processInputEvents = true;
@@ -55,8 +56,6 @@ PolycodeEditor::PolycodeEditor(bool _isReadOnly) : UIElement(), ClipboardProvide
 	editorHolder = NULL;
 	
 	currentUndoPosition = -1;
-	
-	Core *core = CoreServices::getInstance()->getCore();
 	
 	core->addEventListener(this, Core::EVENT_COPY);
 	core->addEventListener(this, Core::EVENT_PASTE);
@@ -83,7 +82,7 @@ EditorHolder *PolycodeEditor::getEditorHolder() {
 
 void PolycodeEditor::handleEvent(Event *event) {	
 	
-	if(event->getDispatcher() == CoreServices::getInstance()->getCore() && enabled) {
+	if(event->getDispatcher() == core && enabled) {
 		switch(event->getEventCode()) {
 
 			// Only copypaste of more complex IDE entities is handled here.
@@ -188,8 +187,7 @@ PolycodeEditor::~PolycodeEditor() {
 		destroyClipboardData(globalClipboard->getData(), globalClipboard->getType());
 		globalClipboard->setCurrentProvider(NULL);
 	}
-	
-	Core *core = CoreServices::getInstance()->getCore();
+
 	core->removeAllHandlersForListener(this);
 }
 

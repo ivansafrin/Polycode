@@ -4,7 +4,8 @@ function RenderDataArray(type) {
 	}
 	Object.defineProperties(this, {
 		'type': { enumerable: true, configurable: true, get: RenderDataArray.prototype.__get_type, set: RenderDataArray.prototype.__set_type},
-		'customArrayName': { enumerable: true, configurable: true, get: RenderDataArray.prototype.__get_customArrayName, set: RenderDataArray.prototype.__set_customArrayName}
+		'customArrayName': { enumerable: true, configurable: true, get: RenderDataArray.prototype.__get_customArrayName, set: RenderDataArray.prototype.__set_customArrayName},
+		'platformData': { enumerable: true, configurable: true, get: RenderDataArray.prototype.__get_platformData, set: RenderDataArray.prototype.__set_platformData}
 	})
 }
 
@@ -37,6 +38,16 @@ RenderDataArray.prototype.__get_customArrayName = function() {
 
 RenderDataArray.prototype.__set_customArrayName = function(val) {
 	Polycode.RenderDataArray__set_customArrayName(this.__ptr, val)
+}
+
+RenderDataArray.prototype.__get_platformData = function() {
+	var retVal = new RendererPlatformData("__skip_ptr__")
+	retVal.__ptr = 	Polycode.RenderDataArray__get_platformData(this.__ptr)
+	return retVal
+}
+
+RenderDataArray.prototype.__set_platformData = function(val) {
+	Polycode.RenderDataArray__set_platformData(this.__ptr, val.__ptr)
 }
 
 Duktape.fin(RenderDataArray.prototype, function (x) {

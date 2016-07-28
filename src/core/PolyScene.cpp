@@ -22,7 +22,6 @@
 
 #include "polycode/core/PolyScene.h"
 #include "polycode/core/PolyCamera.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyLogger.h"
 #include "polycode/core/PolyMaterial.h"
 #include "polycode/core/PolyMesh.h"
@@ -38,18 +37,16 @@
 using std::vector;
 using namespace Polycode;
 
-Scene::Scene() : EventDispatcher() {
+Scene::Scene(Core *core) : core(core), EventDispatcher() {
 	initScene(SCENE_3D);
 }
 
-Scene::Scene(int sceneType) : EventDispatcher() {
+Scene::Scene(Core *core, int sceneType) : core(core), EventDispatcher() {
 	initScene(sceneType);
 }
 
 void Scene::initScene(int sceneType) {
-
 	rootEntity.setContainerScene(this);
-	core = CoreServices::getInstance()->getCore();
 	this->sceneType = sceneType;
 	defaultCamera = new Camera();
 	activeCamera = defaultCamera;
@@ -64,8 +61,6 @@ void Scene::initScene(int sceneType) {
 	remapMouse = false;
 	_doVisibilityChecking = true;
 	constrainPickingToViewport = true;
-	renderer = CoreServices::getInstance()->getRenderer();
-	rootEntity.setRenderer(renderer);
 	setSceneType(sceneType);	
 	core->addEventListener(this, Core::EVENT_CORE_RESIZE);
 	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
@@ -93,7 +88,7 @@ void Scene::setSceneType(int newType) {
 			defaultCamera->setOrthoSizeMode(Camera::ORTHO_SIZE_VIEWPORT);
 			defaultCamera->topLeftOrtho = true;
 			rootEntity.setInverseY(true);
-			rootEntity.setPositionY(-CoreServices::getInstance()->getCore()->getYRes());
+			rootEntity.setPositionY(-core->getYRes());
 			break;
 		case SCENE_3D:
 			defaultCamera->setClippingPlanes(1.0, 1000.0);
@@ -118,9 +113,9 @@ bool Scene::isEnabled() {
 	return enabled;
 }
 
-void Scene::Update() {
+void Scene::Update(Number elapsed) {
 	rootEntity.updateEntityMatrix();
-	rootEntity.doUpdates();
+	rootEntity.doUpdates(elapsed);
 }
 
 void Scene::fixedUpdate() {
@@ -280,11 +275,11 @@ Ray Scene::projectRayFromCameraAndViewportCoordinate(Camera *camera, Vector2 coo
 	Polycode::Rectangle viewport = camera->getViewport();
 	
 	if(remapMouse) {
-		viewport.x = sceneMouseRect.x * renderer->getBackingResolutionScaleX();
-		viewport.y = sceneMouseRect.y * renderer->getBackingResolutionScaleY();
+		viewport.x = sceneMouseRect.x * core->getRenderer()->getBackingResolutionScaleX();
+		viewport.y = sceneMouseRect.y * core->getRenderer()->getBackingResolutionScaleY();
 	}
 	
-	Vector3 dir =  camera->projectRayFrom2DCoordinate(Vector2(coordinate.x *  renderer->getBackingResolutionScaleX(), coordinate.y	* renderer->getBackingResolutionScaleY()), viewport);
+	Vector3 dir =  camera->projectRayFrom2DCoordinate(Vector2(coordinate.x *  core->getRenderer()->getBackingResolutionScaleX(), coordinate.y	* core->getRenderer()->getBackingResolutionScaleY()), viewport);
 	Vector3 pos;
 	
 	switch(sceneType) {
@@ -337,7 +332,7 @@ Ray Scene::projectRayFromCameraAndViewportCoordinate(Camera *camera, Vector2 coo
 void Scene::handleEvent(Event *event) {
 	if(event->getDispatcher() == core) {
 		if(sceneType == SCENE_2D_TOPLEFT) {
-			rootEntity.setPositionY(-CoreServices::getInstance()->getCore()->getYRes());
+			rootEntity.setPositionY(-core->getYRes());
 		}
 	} else if(event->getDispatcher() == core->getInput() && rootEntity.processInputEvents) {
 		InputEvent *inputEvent = (InputEvent*) event;
@@ -349,7 +344,7 @@ void Scene::handleEvent(Event *event) {
 				v.y = sceneMouseRect.y;
 			}
 			
-			if(inputEvent->mousePosition.x < v.x || inputEvent->mousePosition.x > v.x+(v.w / renderer->getBackingResolutionScaleX()) || inputEvent->mousePosition.y < v.y || inputEvent->mousePosition.y > v.y + (v.h/renderer->getBackingResolutionScaleY())) {
+			if(inputEvent->mousePosition.x < v.x || inputEvent->mousePosition.x > v.x+(v.w / core->getRenderer()->getBackingResolutionScaleX()) || inputEvent->mousePosition.y < v.y || inputEvent->mousePosition.y > v.y + (v.h/core->getRenderer()->getBackingResolutionScaleY())) {
 					return;
 			}
 		}

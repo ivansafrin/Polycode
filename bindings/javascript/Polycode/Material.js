@@ -63,8 +63,8 @@ Material.prototype.removeShaderRenderTarget = function(index) {
 	Polycode.Material_removeShaderRenderTarget(this.__ptr, index)
 }
 
-Material.prototype.recreateRenderTargets = function() {
-	Polycode.Material_recreateRenderTargets(this.__ptr)
+Material.prototype.recreateRenderTargets = function(screenSize) {
+	Polycode.Material_recreateRenderTargets(this.__ptr, screenSize)
 }
 
 Material.prototype.getName = function() {

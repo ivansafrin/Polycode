@@ -22,7 +22,6 @@
 
 #include "polycode/core/PolySceneSprite.h"
 #include "polycode/core/PolyCore.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyMesh.h"
 #include "polycode/core/PolyTexture.h"
 #include "polycode/core/PolyLogger.h"
@@ -33,14 +32,12 @@ using namespace Polycode;
 
 
 SceneSprite::SceneSprite(SpriteSet *spriteSet) : SceneMesh() {
-	setMaterialByName("Unlit");	   
 	currentSprite = NULL;
 	currentSpriteState = NULL;
 	this->spriteSet = NULL;
 	setSpriteSet(spriteSet);
 	defaultMesh = mesh;
 	currentFrame = 0;
-	core = Services()->getCore();
 	spriteTimer = 0.0;
 	paused = false;
 	playOnce = false;
@@ -515,16 +512,19 @@ void Sprite::setName(String name) {
 	this->name = name;
 }
 
+SpriteSet::SpriteSet(Core *core) : ResourcePool(core) {
+    
+}
 
-SpriteSet::SpriteSet(const String &fileName, ResourcePool *parentPool) : ResourcePool(fileName, parentPool) {
+SpriteSet::SpriteSet(Core *core, const String &fileName, ResourcePool *parentPool) : ResourcePool(core, fileName, parentPool) {
 	nextFrameIDIndex = 0;
 	loadSpriteSet(fileName);
 }
 
 void SpriteSet::loadSpriteSet(String fileName) {
 	Object loadObject;
-	if(!loadObject.loadFromBinary(fileName)) {
-		if(!loadObject.loadFromXML(fileName)) {
+	if(!loadObject.loadFromBinary(core, fileName)) {
+		if(!loadObject.loadFromXML(core, fileName)) {
 			Logger::log("Error loading sprite sheet: %s.\n", fileName.c_str());
 			return;
 		}
@@ -843,7 +843,7 @@ bool rectIntersect(const Polycode::Rectangle &r1, const Polycode::Rectangle &r2,
 void SpriteSet::createFramesFromIslands(unsigned int minDistance, const Vector2 &defaultAnchor) {
 	String imageFileName = getTexture()->getResourcePath();
 	
-	Image *image = new Image(imageFileName);
+	Image *image = new Image(core, imageFileName);
 	
 	
 	std::vector<Polycode::Rectangle> rects;

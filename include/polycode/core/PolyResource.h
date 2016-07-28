@@ -25,9 +25,12 @@ THE SOFTWARE.
 #include "polycode/core/PolyString.h"
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyEventDispatcher.h"
+#include "polycode/core/PolyRendererPlatformData.h"
 
 namespace Polycode {
 
+    class Core;
+	
 	/**
 	* Base class for resources. All resources that are managed by the ResourceManager subclass this.
 	*/
@@ -43,7 +46,7 @@ namespace Polycode {
 			Resource(int type);
 			virtual ~Resource();
 			
-			virtual void reloadResource();
+			virtual void reloadResource(Core *core);
 			
 			const String& getResourceName() const;
 			int getResourceType() const;
@@ -70,11 +73,10 @@ namespace Polycode {
 						
 			//@}
 			
-			void *platformData;
+			RendererPlatformData platformData;
 		
 		protected:
 
-			
 			int type;
 			String resourcePath;
 			String name;

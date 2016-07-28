@@ -1,8 +1,8 @@
 require('Polycode/Entity')
 
-function SceneSound(fileName,referenceDistance,maxDistance,directionalSound) {
+function SceneSound() {
 	if(arguments[0] != "__skip_ptr__") {
-		this.__ptr = Polycode.SceneSound(fileName,referenceDistance,maxDistance,directionalSound)
+		this.__ptr = Polycode.SceneSound()
 	}
 }
 

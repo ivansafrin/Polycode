@@ -25,6 +25,8 @@ THE SOFTWARE.
 #include "polycode/core/PolyString.h"
 
 namespace Polycode {
+    
+    class Core;
 
 	class ConfigEntry : public PolyBase {
 	public:
@@ -42,8 +44,9 @@ namespace Polycode {
 	public:
 		/**
 		* Default constructor.
-		*/ 
-		Config();
+		*/
+		Config(){}
+		Config(Core *core);
 		~Config();		
 
 		/**
@@ -58,9 +61,10 @@ namespace Polycode {
 		* @param configNamespace Namespace of the config to save data from.
 		* @param fileName Path to the file to save data to.
 		*/		
-		void saveConfig(const String& configNamespace, const String& fileName);
+		void saveConfig(const String& configNamespace, const String& fileName)  const;
 
-		ConfigEntry *getEntry(const String& configNamespace, const String& key);
+		ConfigEntry *getEntry(const String& configNamespace, const String& key) const;
+		ConfigEntry *getEntryOrAdd(const String& configNamespace, const String& key);
 
 		/**
 		* Sets a string value into the specified config namespace.
@@ -83,14 +87,14 @@ namespace Polycode {
 		* @param configNamespace Namespace to get the value from.
 		* @param key String key of the value.
 		*/				
-		Number getNumericValue(const String& configNamespace, const String& key);
+		Number getNumericValue(const String& configNamespace, const String& key) const;
 		
 		/**
 		* Returns a string value by a string key.
 		* @param configNamespace Namespace to get the value from.
 		* @param key String key of the value.
 		*/						
-		const String& getStringValue(const String& configNamespace, const String& key);
+		const String& getStringValue(const String& configNamespace, const String& key) const;
 
 		/**
 		* Sets a string value that represents boolean (true|false) key.
@@ -105,11 +109,14 @@ namespace Polycode {
 		* @param configNamespace Namespace to get the value from.
 		* @param key String key of the value.
 		*/
-		bool getBoolValue(const String& configNamespace, const String& key);
+		bool getBoolValue(const String& configNamespace, const String& key) const;
 		
 	private:
 		
+		Core *core;
 		std::vector<ConfigEntry*> entries;
 		
 	};
+	
+	typedef std::shared_ptr<Config> ConfigRef;
 }

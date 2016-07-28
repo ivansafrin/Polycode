@@ -163,8 +163,8 @@ function Entity:initEntity()
 	local retVal =  Polycode.Entity_initEntity(self.__ptr)
 end
 
-function Entity:Update()
-	local retVal =  Polycode.Entity_Update(self.__ptr)
+function Entity:Update(elapsed)
+	local retVal = Polycode.Entity_Update(self.__ptr, elapsed)
 end
 
 function Entity:fixedUpdate()
@@ -545,8 +545,8 @@ function Entity:getInverseY()
 	return retVal
 end
 
-function Entity:doUpdates()
-	local retVal =  Polycode.Entity_doUpdates(self.__ptr)
+function Entity:doUpdates(elapsed)
+	local retVal = Polycode.Entity_doUpdates(self.__ptr, elapsed)
 end
 
 function Entity:doFixedUpdates()

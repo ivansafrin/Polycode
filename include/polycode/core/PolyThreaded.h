@@ -23,11 +23,11 @@ THE SOFTWARE.
 #pragma once
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyEventDispatcher.h"
+#include <mutex>
 
 namespace Polycode{
 
 	class Core;
-	class CoreMutex;
 	
 	/**
 	* An easy way to create threaded processes. If you subclass this class, you can implement the updateThread method, which will be called in its own thread repeatedly until threadRunning is false once the thread is created. If you only need to run through something once, make sure to set threadRunning to avoid it being called again. 
@@ -60,7 +60,7 @@ namespace Polycode{
 		
 		bool scheduledForRemoval;
 		
-		CoreMutex *eventMutex;		
+        std::mutex eventMutex;
 		std::vector<Event*> eventQueue;
 	};
 	

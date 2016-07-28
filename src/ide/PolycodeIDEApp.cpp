@@ -47,7 +47,7 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 	ResourcePool::defaultReloadResourcesOnModify = true;
 	Resource::defaultReloadOnFileModify = true;
 	
-	CoreServices::getInstance()->getResourceManager()->getGlobalPool()->reloadResourcesOnModify = true;
+	core->getResourceManager()->getGlobalPool()->reloadResourcesOnModify = true;
 	
 	runNextFrame = false;
 	
@@ -57,7 +57,7 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 			
 	globalClipboard = new PolycodeClipboard();
 	
-	ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
+	ResourcePool *globalPool = core->getResourceManager()->getGlobalPool();
 	
 	//TODO: this results in doubling "sans" in the font browsers, need to fix
 	globalPool->loadResourceWithName("Fonts/Lato-Semibold.ttf", "sans");
@@ -80,7 +80,7 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 
 	loadConfigFile();
 
-	String themeName = CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiTheme");
+	String themeName = core->getConfig()->getStringValue("Polycode", "uiTheme");
 	
 	if(core->getBackingXRes() == core->getXRes()) {
 		core->addFileSource("folder", "Images");
@@ -99,7 +99,7 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 	
 	printf("LOADING THEME: %s\n", themeName.c_str());
 	
-	CoreServices::getInstance()->getConfig()->loadConfig("Polycode", "UIThemes/"+themeName+"/theme.xml");
+	core->getConfig()->loadConfig("Polycode", "UIThemes/"+themeName+"/theme.xml");
 	
 	core->addFileSource("folder", "UIThemes/"+themeName+"/");
 	
@@ -111,11 +111,10 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 	SceneLabel::defaultSnapToPixels = true;
 	SceneLabel::createMipmapsForLabels = false;
 			
-	globalMenu	= new UIGlobalMenu();
+	globalMenu	= new UIGlobalMenu(core, globalPool);
 	UITextInput::setMenuSingleton(globalMenu);
-			
 	
-	mainScene = new Scene(Scene::SCENE_2D_TOPLEFT);
+	mainScene = new Scene(core, Scene::SCENE_2D_TOPLEFT);
 	
 	mainScene->doVisibilityChecking(false);
 	mainScene->getDefaultCamera()->frustumCulling = false;
@@ -125,13 +124,13 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 	mainScene->rootEntity.processInputEvents = true;
 //	screen->rootEntity.setDefaultScreenOptions(true);
 
-	mainScene->clearColor.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiBgColor"));
+	mainScene->clearColor.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiBgColor"));
 	mainScene->useClearColor = true;
 	
-	editorManager = new PolycodeEditorManager();
+	editorManager = new PolycodeEditorManager(core, globalPool);
 	globalEditorManager = editorManager;
 	
-	frame = new PolycodeFrame(editorManager);
+	frame = new PolycodeFrame(core, globalPool, editorManager);
 	frame->setAnchorPoint(-1.0, -1.0, 0.0);
 
 	editorManager->addEventListener(frame, Event::CHANGE_EVENT);
@@ -160,7 +159,7 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 	frame->addEventListener(this, Event::CHANGE_EVENT); 
 	mainScene->addChild(frame);
 	
-	projectManager = new PolycodeProjectManager();
+	projectManager = new PolycodeProjectManager(core);
 	editorManager->setProjectManager(projectManager);
 		
 	frame->projectManager = projectManager;
@@ -169,7 +168,7 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 			
 //	frame->Resize(core->getXRes(), core->getYRes());	
 	
-	debugger = new PolycodeRemoteDebugger(projectManager);
+	debugger = new PolycodeRemoteDebugger(core, projectManager);
 	frame->console->setDebugger(debugger);
 	
 	editorManager->registerEditorFactory(new PolycodeImageEditorFactory());
@@ -234,7 +233,7 @@ core = new POLYCODE_CORE((PolycodeView*)view, 1100, 700,false,false, 0, 0,60, -1
 	
 	quittingApp = false;
 	
-	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 	
 	applyFinalConfig();
 	
@@ -437,7 +436,7 @@ void PolycodeIDEApp::openProject() {
 #ifdef USE_POLYCODEUI_FILE_DIALOGS
 	std::vector<String> exts;
 	exts.push_back("polyproject");
-	frame->showFileBrowser(CoreServices::getInstance()->getCore()->getUserHomeDirectory(),	false, exts, false);
+	frame->showFileBrowser(core->getUserHomeDirectory(),	false, exts, false);
 	frame->fileDialog->addEventListener(this, UIEvent::OK_EVENT);
 	frame->fileDialog->action = "openProject";
 #else
@@ -491,8 +490,8 @@ void PolycodeIDEApp::doRunProject() {
 	frame->showConsole();
 
 	String outPath = PolycodeToolLauncher::generateTempPath(projectManager->getActiveProject()) + ".polyapp";
-	PolycodeToolLauncher::buildProject(projectManager->getActiveProject(), outPath, false);
-	PolycodeToolLauncher::runPolyapp(outPath);
+	PolycodeToolLauncher::buildProject(core, projectManager->getActiveProject(), outPath, false);
+	PolycodeToolLauncher::runPolyapp(core, outPath);
 }
 
 bool PolycodeIDEApp::quitApp() {	
@@ -591,7 +590,7 @@ void PolycodeIDEApp::importAssets() {
 		exts.push_back(extensions[i].extension);
 	}
 
-	frame->showFileBrowser(CoreServices::getInstance()->getCore()->getUserHomeDirectory(),	false, exts, false);
+	frame->showFileBrowser(core->getUserHomeDirectory(),	false, exts, false);
 	frame->fileDialog->addEventListener(this, UIEvent::OK_EVENT);
 	frame->fileDialog->action = "openImportAssets";
 	
@@ -609,7 +608,7 @@ void PolycodeIDEApp::addFiles() {
 	if(projectManager->getActiveProject()) {
 #ifdef USE_POLYCODEUI_FILE_DIALOGS
 		std::vector<String> exts;
-		frame->showFileBrowser(CoreServices::getInstance()->getCore()->getUserHomeDirectory(),	false, exts, false);
+		frame->showFileBrowser(core->getUserHomeDirectory(),	false, exts, false);
 		frame->fileDialog->addEventListener(this, UIEvent::OK_EVENT);
 		frame->fileDialog->action = "addFiles";
 #else	
@@ -662,7 +661,7 @@ void PolycodeIDEApp::openProject(String projectFile) {
 
 void PolycodeIDEApp::openDocs() {
 	
-	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
+	String polycodeBasePath = core->getDefaultWorkingDirectory();
 #if defined(__APPLE__) && defined(__MACH__)
 	String docsURL = "file://localhost"+polycodeBasePath+"/Standalone/Docs/html/index.html";
 	core->openURL(docsURL);
@@ -675,16 +674,16 @@ void PolycodeIDEApp::openDocs() {
 
 void PolycodeIDEApp::openFileInProject(PolycodeProject *project, String filePath) {
 	OSFileEntry fileEntry = OSFileEntry(project->getRootFolder()+"/"+filePath, OSFileEntry::TYPE_FILE); 
-	Polycode::CoreFile *file = Services()->getCore()->openFile(project->getRootFolder()+"/"+filePath,"r");
+	Polycode::CoreFile *file = core->openFile(project->getRootFolder()+"/"+filePath,"r");
 	
 	if(file) {
-		Services()->getCore()->closeFile(file);
+		core->closeFile(file);
 		openFile(fileEntry);		
 	} else {
 		fileEntry = OSFileEntry(filePath, OSFileEntry::TYPE_FILE);	
-		file = Services()->getCore()->openFile(filePath,"r");
+		file = core->openFile(filePath,"r");
 		if(file) {
-			 Services()->getCore()->closeFile(file);
+			 core->closeFile(file);
 			openFile(fileEntry);							
 		} else {
 			PolycodeConsole::print("File not available.\n");
@@ -697,12 +696,11 @@ void PolycodeIDEApp::openFile(OSFileEntry file) {
 
 	PolycodeEditorFactory *factory = editorManager->getEditorFactoryForExtension(file.extension);
 	if(dynamic_cast<PolycodeTextEditorFactory*>(factory)) {
-		CoreServices *core = CoreServices::getInstance();
-		Config *config = core->getConfig(); 
+		ConfigRef config = core->getConfig();
 		bool useExternalTextEditor = (config->getStringValue("Polycode", "useExternalTextEditor") == "true") && (config->getStringValue("Polycode", "externalTextEditorCommand") != "");
 		
 		if(useExternalTextEditor) {
-			PolycodeToolLauncher::openExternalEditor(config->getStringValue("Polycode", "externalTextEditorCommand"), file.fullPath, projectManager->getActiveProject()->getRootFolder());
+			PolycodeToolLauncher::openExternalEditor(core, config->getStringValue("Polycode", "externalTextEditorCommand"), file.fullPath, projectManager->getActiveProject()->getRootFolder());
 			return;
 		}	
 	}
@@ -1072,7 +1070,7 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == frame->settingsWindow) {
 		if(event->getEventType() == "UIEvent") {
-			Config *config = CoreServices::getInstance()->getConfig();
+			ConfigRef config = core->getConfig();
 			SettingsWindow *settingsWindow = frame->settingsWindow;
 
 			if(event->getEventCode() == UIEvent::OK_EVENT) {
@@ -1139,7 +1137,7 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 	*/
 	
 	// open an editor/file if project browser has focus and user hits enter or right-arrow key
-	if (event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {
+	if (event->getDispatcher() == core->getInput()) {
 		if(frame->getActiveProjectFrame()) {
 			if (event->getEventCode() == InputEvent::EVENT_KEYDOWN && frame->getCurrentProjectBrowser()->treeContainer->hasFocus) {
 				InputEvent *inEvent = (InputEvent*)event;
@@ -1154,7 +1152,7 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 }
 
 void PolycodeIDEApp::saveConfigFile() {
-	Config *config = CoreServices::getInstance()->getConfig();
+	ConfigRef config = core->getConfig();
 	Object configFile;
 	configFile.root.name = "config";
 	configFile.root.addChild("open_projects");
@@ -1191,10 +1189,10 @@ void PolycodeIDEApp::saveConfigFile() {
 
 #if defined(__APPLE__) && defined(__MACH__)
 	core->createFolder(core->getUserHomeDirectory()+"/Library/Application Support/Polycode");
-	configFile.saveToXML(core->getUserHomeDirectory()+"/Library/Application Support/Polycode/config.xml");	
+	configFile.saveToXML(core, core->getUserHomeDirectory()+"/Library/Application Support/Polycode/config.xml");
 #else
 	core->createFolder(core->getUserHomeDirectory()+"/.polycode");
-	configFile.saveToXML(core->getUserHomeDirectory()+"/.polycode/config.xml"); 
+	configFile.saveToXML(core, core->getUserHomeDirectory()+"/.polycode/config.xml");
 
 #endif
 }
@@ -1202,12 +1200,12 @@ void PolycodeIDEApp::saveConfigFile() {
 void PolycodeIDEApp::loadConfigFile() {
 	// TODO: Make a crossplatform core method to get application data path
 #if defined(__APPLE__) && defined(__MACH__)
-	configFile.loadFromXML(core->getUserHomeDirectory()+"/Library/Application Support/Polycode/config.xml");
+	configFile.loadFromXML(core, core->getUserHomeDirectory()+"/Library/Application Support/Polycode/config.xml");
 #else
-	configFile.loadFromXML(core->getUserHomeDirectory()+"/.polycode/config.xml");
+	configFile.loadFromXML(core, core->getUserHomeDirectory()+"/.polycode/config.xml");
 #endif	
 
-	Config *config = CoreServices::getInstance()->getConfig();
+	ConfigRef config = core->getConfig();
 
 	globalSyntaxTheme = new SyntaxHighlightTheme();
 	
@@ -1234,7 +1232,7 @@ void PolycodeIDEApp::loadConfigFile() {
 	if(syntaxTheme) {
 		themeName = syntaxTheme->stringVal;
 	}
-	globalSyntaxTheme->loadFromFile(themeName);
+	globalSyntaxTheme->loadFromFile(core, themeName);
 
 	if(configFile.root["open_projects"]) {
 		ObjectEntry *projects = configFile.root["open_projects"];
@@ -1410,17 +1408,18 @@ bool PolycodeIDEApp::Update() {
 	
 	if(projectManager->getProjectCount() > 0) {
 		frame->welcomeEntity->enabled =	 false;
-		
+		frame->welcomeEntity->visible =	 false;
 		frame->getConsoleSizer()->enabled = true;
 	} else {
 		frame->welcomeEntity->enabled =	 true;
+		frame->welcomeEntity->visible =	 true;
 		frame->getConsoleSizer()->enabled = false;		
 	}
 
 
 	bool result = core->systemUpdate();
 	
-	mainScene->Update();
+	mainScene->Update(core->getElapsed());
 	while(core->fixedUpdate()) {
 		mainScene->fixedUpdate();
 	}

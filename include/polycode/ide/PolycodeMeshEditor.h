@@ -33,7 +33,7 @@ using namespace Polycode;
 class PolycodeMeshEditor : public PolycodeEditor {
 	public:
 	
-		PolycodeMeshEditor();
+		PolycodeMeshEditor(Core *core, ResourcePool *pool);
 		virtual ~PolycodeMeshEditor();
 	
 		void handleEvent(Event *event);
@@ -46,6 +46,8 @@ class PolycodeMeshEditor : public PolycodeEditor {
 		void Resize(int x, int y);
 	
 	protected:
+	
+		ResourcePool localResourcePool;
 	
 		Scene *previewScene;
 		
@@ -64,5 +66,5 @@ class PolycodeMeshEditor : public PolycodeEditor {
 class PolycodeMeshEditorFactory : public PolycodeEditorFactory {
 	public:
 		PolycodeMeshEditorFactory() : PolycodeEditorFactory() { extensions.push_back("mesh"); }
-		PolycodeEditor *createEditor() { return new PolycodeMeshEditor(); }
+		PolycodeEditor *createEditor(Core *core, ResourcePool *pool) { return new PolycodeMeshEditor(core, pool); }
 };

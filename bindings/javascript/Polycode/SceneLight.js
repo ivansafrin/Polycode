@@ -1,8 +1,8 @@
 require('Polycode/Entity')
 
-function SceneLight(type,intensity,constantAttenuation,linearAttenuation,quadraticAttenuation) {
+function SceneLight(type,intensity,constantAttenuation,linearAttenuation,quadraticAttenuation,depthMapMaterial) {
 	if(arguments[0] != "__skip_ptr__") {
-		this.__ptr = Polycode.SceneLight(type,intensity,constantAttenuation,linearAttenuation,quadraticAttenuation)
+		this.__ptr = Polycode.SceneLight(type,intensity,constantAttenuation,linearAttenuation,quadraticAttenuation,depthMapMaterial)
 	}
 }
 

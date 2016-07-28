@@ -33,7 +33,7 @@ using namespace Polycode;
 
 class ProjectFontEntry : public UIElement {
 	public:
-		ProjectFontEntry(String fontPath, String fontName);
+		ProjectFontEntry(Core *core, ResourcePool *pool, String fontPath, String fontName);
 		~ProjectFontEntry();
 		
 		void handleEvent(Event *event);
@@ -42,13 +42,13 @@ class ProjectFontEntry : public UIElement {
 		UILabel *fontFileLabel;
 		
 		UIImageButton *removeButton;
-		
+		ResourcePool *pool;
 		String fontPath;
 };
 
 class PolycodeProjectEditor : public PolycodeEditor {
 	public:
-	PolycodeProjectEditor(PolycodeProjectManager *projectManager);
+	PolycodeProjectEditor(Core *core, ResourcePool *pool, PolycodeProjectManager *projectManager);
 	virtual ~PolycodeProjectEditor();
 	
 	void handleEvent(Event *event);
@@ -98,7 +98,7 @@ class PolycodeProjectEditor : public PolycodeEditor {
 class PolycodeProjectEditorFactory : public PolycodeEditorFactory {
 	public:
 		PolycodeProjectEditorFactory(PolycodeProjectManager *projectManager);
-		PolycodeEditor *createEditor();
+		PolycodeEditor *createEditor(Core *core, ResourcePool *pool);
 		
 	protected:
 		PolycodeProjectManager *projectManager; 

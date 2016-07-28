@@ -68,8 +68,8 @@ namespace Polycode {
 			int getNumShaderRenderTargets();
 			ShaderRenderTarget *getShaderRenderTarget(unsigned int index);
 			void removeShaderRenderTarget(int index);
-			void recreateRenderTarget(ShaderRenderTarget *renderTarget);
-			void recreateRenderTargets();
+			void recreateRenderTarget(ShaderRenderTarget *renderTarget, const Vector2 &screenSize);
+			void recreateRenderTargets(const Vector2 &screenSize);
 						
 			const String& getName() const;
 			ShaderPass getShaderPass(unsigned int index) const;

@@ -43,18 +43,20 @@ namespace Polycode {
 	class _PolyExport SceneMesh : public Entity {
 		public:
 		
+        
+            SceneMesh();
+        
 			/**
 			* Construct a scene mesh from a mesh file.
 			* @param fileName Path to mesh file to load.
 			*/
-			explicit SceneMesh(const String& fileName);
+			explicit SceneMesh(ResourcePool *pool, const String& fileName);
 			
 			/**
 			* Construct scene mesh from an existing Mesh instance.
 			*/
 			explicit SceneMesh(std::shared_ptr<Mesh> mesh);
-		
-			SceneMesh();
+
 			
 			/**
 			* Construct scene mesh from an existing Mesh instance.
@@ -85,7 +87,7 @@ namespace Polycode {
 			* Loads a skeleton from a file and applies it to the scene mesh.
 			* @param fileName Filename to load the skeleton from.
 			*/
-			std::shared_ptr<Skeleton> loadSkeleton(const String& fileName);
+			std::shared_ptr<Skeleton> loadSkeleton(Core *core, const String& fileName);
 
 			/**
 			* Clears the currently applied material
@@ -97,12 +99,6 @@ namespace Polycode {
 			* @param material Material to apply.
 			*/												
 			void setMaterial(std::shared_ptr<Material> material);
-			
-			/**
-			* Set material by name. You can create materials in material files and name them there, then use this to set a material by name to a scene mesh.
-			* @param materialName Name of material to apply.
-			*/									
-			void setMaterialByName(const String& materialName, ResourcePool *resourcePool = NULL);
 			
 			/**
 			* Set the mesh this scene mesh renders.
@@ -139,7 +135,7 @@ namespace Polycode {
 			/**
 			 * Loads mesh from file. Deletes current mesh if ownsMesh is set to true.
 			 */
-			void loadFromFile(const String &fileName);
+			void loadFromFile(ResourcePool *pool, const String &fileName);
 		
 			/**
 			 * Line width for line-based meshes.

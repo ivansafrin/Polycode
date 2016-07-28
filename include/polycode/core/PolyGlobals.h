@@ -27,7 +27,9 @@ THE SOFTWARE.
 // Compile support for lua bindings.
 //#define _COMPILE_LUA
 
-#define POLYCODE_VERSION_STRING "0.8.4"
+#define POLYCODE_VERSION_STRING "0.8.5_dev"
+
+#define USE_POSIX_MUTEX 1
 
 #define COMPILE_GL_RENDERER
 typedef float PolyRendererVertexType;
@@ -62,8 +64,6 @@ typedef unsigned int PolyRendererIndexType;
 
 #define TODEGREES 57.2957795
 #define TORADIANS 0.0174532925
-
-//#define COMPILE_SDL_CORE		1
 
 #define PLATFORM_WINDOWS  1
 #define PLATFORM_MAC	  2

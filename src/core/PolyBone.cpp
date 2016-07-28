@@ -21,7 +21,6 @@
 */
 
 #include "polycode/core/PolyBone.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyLabel.h"
 #include "polycode/core/PolyMesh.h"
 #include "polycode/core/PolyRenderer.h"

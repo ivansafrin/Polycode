@@ -23,10 +23,6 @@ function Skeleton:Skeleton(...)
 	end
 end
 
-function Skeleton:loadSkeleton(fileName)
-	local retVal = Polycode.Skeleton_loadSkeleton(self.__ptr, fileName)
-end
-
 function Skeleton:playAnimationByName(animName, weight, once, restartIfPlaying)
 	local retVal = Polycode.Skeleton_playAnimationByName(self.__ptr, animName, weight, once, restartIfPlaying)
 end
@@ -39,16 +35,12 @@ function Skeleton:stopAllAnimations()
 	local retVal =  Polycode.Skeleton_stopAllAnimations(self.__ptr)
 end
 
-function Skeleton:addAnimation(name, fileName)
-	local retVal = Polycode.Skeleton_addAnimation(self.__ptr, name, fileName)
-end
-
 function Skeleton:stopAnimationByName(name)
 	local retVal = Polycode.Skeleton_stopAnimationByName(self.__ptr, name)
 end
 
-function Skeleton:Update()
-	local retVal =  Polycode.Skeleton_Update(self.__ptr)
+function Skeleton:Update(elapsed)
+	local retVal = Polycode.Skeleton_Update(self.__ptr, elapsed)
 end
 
 function Skeleton:getBoneByName(name)

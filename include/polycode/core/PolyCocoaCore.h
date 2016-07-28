@@ -46,13 +46,6 @@ using std::vector;
 
 namespace Polycode {
 	
-	class _PolyExport PosixMutex : public CoreMutex {
-	public:
-		void lock();
-		void unlock();
-		pthread_mutex_t pMutex;
-	};
-	
 	class CocoaEvent {
 	public:
 		int eventGroup;
@@ -148,8 +141,6 @@ namespace Polycode {
 		void shutdownGamepad();
 		
 		void makeApplicationMain();
-		
-		CoreMutex *createMutex();		
 		
 		void checkEvents();		
 		

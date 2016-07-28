@@ -31,7 +31,7 @@ namespace Polycode {
 	
 	class _PolyExport UIBox : public UIElement {
 	public:
-		UIBox(String imageFile, Number t, Number r, Number b, Number l, Number boxWidth, Number boxHeight);
+		UIBox(Core *core, ResourcePool *pool, String imageFile, Number t, Number r, Number b, Number l, Number boxWidth, Number boxHeight);
 		virtual ~UIBox();
 									
 		void setMaterial(std::shared_ptr<Material> material);

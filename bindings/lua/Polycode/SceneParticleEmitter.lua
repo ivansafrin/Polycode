@@ -163,8 +163,8 @@ function SceneParticleEmitter:fixedUpdate()
 	local retVal =  Polycode.SceneParticleEmitter_fixedUpdate(self.__ptr)
 end
 
-function SceneParticleEmitter:updateParticles()
-	local retVal =  Polycode.SceneParticleEmitter_updateParticles(self.__ptr)
+function SceneParticleEmitter:updateParticles(elapsed)
+	local retVal = Polycode.SceneParticleEmitter_updateParticles(self.__ptr, elapsed)
 end
 
 function SceneParticleEmitter:triggerParticles(allAtOnce)

@@ -24,23 +24,22 @@
 #include "polycode/core/PolyConfig.h"
 #include "polycode/core/PolyInputEvent.h"
 #include "polycode/core/PolyLabel.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyCore.h"
 
 using namespace Polycode;
 
-UITreeContainer::UITreeContainer(String icon, String text, Number treeWidth, Number treeHeight) : UIElement() {
+UITreeContainer::UITreeContainer(Core *core, ResourcePool *resourcePool, String icon, String text, Number treeWidth, Number treeHeight) : UIElement(core) {
 	
-	Config *conf = CoreServices::getInstance()->getConfig();
+	ConfigRef conf = core->getConfig();
 	
 	Number st = conf->getNumericValue("Polycode", "uiTreeContainerSkinT");
 	Number sr = conf->getNumericValue("Polycode", "uiTreeContainerSkinR");
 	Number sb = conf->getNumericValue("Polycode", "uiTreeContainerSkinB");
-	Number sl = conf->getNumericValue("Polycode", "uiTreeContainerSkinL");	
+	Number sl = conf->getNumericValue("Polycode", "uiTreeContainerSkinL");
 	
 //	Number scrollBarOffset = conf->getNumericValue("Polycode", "uiTreeContainerScrollBarOffset");	
 	
-	bgBox = new UIBox(conf->getStringValue("Polycode", "uiTreeContainerSkin"),
+	bgBox = new UIBox(core, resourcePool, conf->getStringValue("Polycode", "uiTreeContainerSkin"),
 						  st,sr,sb,sl,
 						  treeWidth, treeHeight);
 	
@@ -52,11 +51,11 @@ UITreeContainer::UITreeContainer(String icon, String text, Number treeWidth, Num
 	scrollChild = new Entity();
 	scrollChild->processInputEvents = true;
 	
-	rootNode = new UITree(icon, text, treeWidth,0);		
+	rootNode = new UITree(core, resourcePool, icon, text, treeWidth,0);
 	rootNode->addEventListener(this, UITreeEvent::NEED_REFRESH_EVENT);	
 	scrollChild->addChild(rootNode);
 	
-	mainContainer = new UIScrollContainer(scrollChild, false, true, treeWidth-conf->getNumericValue("Polycode", "uiScrollDefaultSize"), treeHeight);
+	mainContainer = new UIScrollContainer(core, resourcePool, scrollChild, false, true, treeWidth-conf->getNumericValue("Polycode", "uiScrollDefaultSize"), treeHeight);
 	addChild(mainContainer);
 	
 	setWidth(treeWidth);
@@ -64,7 +63,7 @@ UITreeContainer::UITreeContainer(String icon, String text, Number treeWidth, Num
 	
 	Resize(getWidth(), getHeight());
 
-	CoreServices::getInstance()->getCore()->getInput()->addEventListenerUnique(this, InputEvent::EVENT_KEYDOWN);
+	core->getInput()->addEventListenerUnique(this, InputEvent::EVENT_KEYDOWN);
 	this->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	this->addEventListener(this, InputEvent::EVENT_MOUSEOVER);
 	this->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);	
@@ -88,7 +87,7 @@ UIScrollContainer *UITreeContainer::getScrollContainer() {
 
 void UITreeContainer::handleEvent(Event *event) {
 
-	if(event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {
+	if(event->getDispatcher() == core->getInput()) {
 		InputEvent *inputEvent = (InputEvent*) event;
 		if(event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
 			onKeyDown(inputEvent->key);
@@ -104,14 +103,14 @@ void UITreeContainer::handleEvent(Event *event) {
 	if(event->getDispatcher() == this) {
 
 		if (event->getEventCode() == InputEvent::EVENT_MOUSEMOVE) {
-				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);			
+				core->setCursor(Core::CURSOR_ARROW);
 		}
 		
 		if (!hasFocus) {
 			if (event->getEventCode() == InputEvent::EVENT_MOUSEDOWN) {
 				focusSelf();
 			} else if (event->getEventCode() == InputEvent::EVENT_MOUSEOVER) {
-				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);
+				core->setCursor(Core::CURSOR_ARROW);
 			}
 		}
 	}
@@ -129,7 +128,7 @@ UITreeContainer::~UITreeContainer() {
 		delete rootNode;
 		delete mainContainer;
 	}
-	CoreServices::getInstance()->getCore()->getInput()->removeAllHandlersForListener(this); 
+	core->getInput()->removeAllHandlersForListener(this);
 }
 
 void UITreeContainer::onGainFocus() {

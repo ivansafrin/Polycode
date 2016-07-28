@@ -79,8 +79,8 @@ function Material:removeShaderRenderTarget(index)
 	local retVal = Polycode.Material_removeShaderRenderTarget(self.__ptr, index)
 end
 
-function Material:recreateRenderTargets()
-	local retVal =  Polycode.Material_recreateRenderTargets(self.__ptr)
+function Material:recreateRenderTargets(screenSize)
+	local retVal = Polycode.Material_recreateRenderTargets(self.__ptr, screenSize.__ptr)
 end
 
 function Material:getName()

@@ -25,64 +25,64 @@
 
 extern PolycodeFrame *globalFrame;
 
-ExportProjectWindow::ExportProjectWindow() : UIWindow(L"Publish Project", 400, 360) {
+ExportProjectWindow::ExportProjectWindow(Core *core, ResourcePool *pool) : UIWindow(core, pool, L"Publish Project", 400, 360) {
 
 	closeOnEscape = true;
 
-	UILabel *label = new UILabel("LOCATION", 22, "section", Label::ANTIALIAS_FULL);
+	UILabel *label = new UILabel(core, pool, "LOCATION", 22, "section", Label::ANTIALIAS_FULL);
 	addChild(label);
 	label->color.a = 1.0;	
 	label->setPosition(padding, 50);
 
-	projectLocationInput = new UITextInput(false, 420-(padding*2.0), 12);	
+	projectLocationInput = new UITextInput(core, pool, false, 420-(padding*2.0), 12);
 	addChild(projectLocationInput);
 	projectLocationInput->setPosition(padding, 80);
 
 	
-	locationSelectButton = new UIButton(L"Choose...", 100);
+	locationSelectButton = new UIButton(core, pool, L"Choose...", 100);
 	locationSelectButton->addEventListener(this, UIEvent::CLICK_EVENT); 
 	addChild(locationSelectButton);
 	locationSelectButton->setPosition(padding, projectLocationInput->getPosition().y+projectLocationInput->getHeight()+5);
 
 
-	label = new UILabel("PLATFORMS", 22, "section", Label::ANTIALIAS_FULL);
+	label = new UILabel(core, pool, "PLATFORMS", 22, "section", Label::ANTIALIAS_FULL);
 	addChild(label);
 	label->color.a = 1.0;	
 	label->setPosition(padding, 150);
 
-	macCheckBox = new UICheckBox("MacOS X (Intel 64-bit)", false);
+	macCheckBox = new UICheckBox(core, pool, "MacOS X (Intel 64-bit)", false);
 	addChild(macCheckBox);
 	macCheckBox->setPosition(padding, 185);
 
-	winCheckBox = new UICheckBox("Microsoft Windows (32-bit)", false);
+	winCheckBox = new UICheckBox(core, pool, "Microsoft Windows (32-bit)", false);
 	addChild(winCheckBox);
 	winCheckBox->setPosition(padding, 205);
 
-	linCheckBox = new UICheckBox("Linux (Intel 32-bit)", false);
+	linCheckBox = new UICheckBox(core, pool, "Linux (Intel 32-bit)", false);
 	addChild(linCheckBox);
 	linCheckBox->setPosition(padding, 225);
 
-	label = new UILabel("OPTIONS", 22, "section", Label::ANTIALIAS_FULL);
+	label = new UILabel(core, pool, "OPTIONS", 22, "section", Label::ANTIALIAS_FULL);
 	addChild(label);
 	label->color.a = 1.0;	
 	label->setPosition(padding, 260);
 
-	compileCheckBox = new UICheckBox("Compile Scripts", false);
+	compileCheckBox = new UICheckBox(core, pool, "Compile Scripts", false);
 	addChild(compileCheckBox);
 	compileCheckBox->setPosition(padding, 295);
 
-	cancelButton = new UIButton(L"Cancel", 100);
+	cancelButton = new UIButton(core, pool, L"Cancel", 100);
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(cancelButton);
 	cancelButton->setPosition(400-75-padding-100-10, 360-15);
 		
 	
-	okButton = new UIButton(L"Publish", 100);
+	okButton = new UIButton(core, pool, L"Publish", 100);
 	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(okButton);
 	okButton->setPosition(400-75-padding, 360-15);
 	
-	projectLocationInput->setText(CoreServices::getInstance()->getCore()->getUserHomeDirectory()+"/Documents/Polycode");
+	projectLocationInput->setText(core->getUserHomeDirectory()+"/Documents/Polycode");
 	
 }
 
@@ -92,7 +92,7 @@ ExportProjectWindow::~ExportProjectWindow() {
 
 void ExportProjectWindow::resetForm() {
 /*
-	projectLocationInput->setText(CoreServices::getInstance()->getCore()->getUserHomeDirectory()+"/Documents/Polycode");
+	projectLocationInput->setText(core->getUserHomeDirectory()+"/Documents/Polycode");
 	macCheckBox->setChecked(false);
 	winCheckBox->setChecked(false);
 	linCheckBox->setChecked(false); 
@@ -122,10 +122,10 @@ void ExportProjectWindow::handleEvent(Event *event) {
 			if(event->getDispatcher() == locationSelectButton) {
 #ifdef USE_POLYCODEUI_FILE_DIALOGS
 				std::vector<String> exts;
-				globalFrame->showFileBrowser(CoreServices::getInstance()->getCore()->getUserHomeDirectory(),  true, exts, false);
+				globalFrame->showFileBrowser(core->getUserHomeDirectory(),  true, exts, false);
 				globalFrame->fileDialog->addEventListener(this, UIEvent::OK_EVENT);
 #else
-				String pathName = CoreServices::getInstance()->getCore()->openFolderPicker();
+				String pathName = core->openFolderPicker();
 				if(pathName != "")
 					projectLocationInput->setText(pathName);
 #endif

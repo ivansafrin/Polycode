@@ -22,7 +22,6 @@
 
 #include "polycode/modules/ui/PolyUIElement.h"
 #include "polycode/core/PolyRenderer.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyResourceManager.h"
 #include "polycode/core/PolyTexture.h"
 #include "polycode/core/PolyConfig.h"
@@ -36,7 +35,8 @@ using namespace Polycode;
 
 UIElement *UIElement::globalFocusedChild = NULL;
 
-UIMultilineLabel::UIMultilineLabel(const String& text, int size, int spacing, const String& fontName, int amode) : UIElement() {
+UIMultilineLabel::UIMultilineLabel(Core *core, ResourcePool *resourcePool, const String& text, int size, int spacing, const String& fontName, int amode) : resourcePool(resourcePool), UIElement(core)
+{
 	labelSize = size;
 	labelFontName = fontName;
 	labelAAMode = amode;
@@ -56,7 +56,7 @@ void UIMultilineLabel::setText(const String& text) {
 		if(lines[i] == "") {
 			yPos += lineSize + spacing;
 		} else {
-			UILabel *label = new UILabel(lines[i], labelSize, labelFontName, labelAAMode);
+			UILabel *label = new UILabel(core, resourcePool, lines[i], labelSize, labelFontName, labelAAMode);
 			lineSize = label->getHeight();
 			label->setPositionY(yPos);
 			yPos += label->getHeight() + spacing;
@@ -128,26 +128,27 @@ UIMultilineLabel::~UIMultilineLabel() {
 	}
 }
 
-UILabel::UILabel(const String& text, int size, const String& fontName, int amode) : UIElement() {
-
-	Config *conf = CoreServices::getInstance()->getConfig();
+UILabel::UILabel(Core *core, ResourcePool *pool, const String& text, int size, const String& fontName, int amode) : UIElement(core) {
 	
+	ConfigRef conf = core->getConfig();
 	if(size == -1) {
 		size = conf->getNumericValue("Polycode", "uiDefaultFontSize");
 	}
-	
-	label = new SceneLabel(text, size, fontName, amode);
+	Color fontColor;
+	fontColor.setColorHexFromString(conf->getStringValue("Polycode", "uiDefaultFontColor"));
+
+	label = new SceneLabel(pool->getMaterial("Unlit"), text, size, pool->getFont(fontName), amode);
 	label->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	label->positionAtBaseline = true;
 	label->setAnchorPoint(-1.0, -1.0, 0.0);
 	label->snapToPixels = true;
 	label->depthTest = false;
 	label->depthWrite = false;
-	
-	label->color.setColorHexFromString(conf->getStringValue("Polycode", "uiDefaultFontColor"));
+	label->color = fontColor;
 	addChild(label);
 	setLocalBoundingBox(label->getLocalBoundingBox());
 }
+
 
 void UILabel::setLabelColor(const Color &color) {
 	label->color = color;
@@ -184,7 +185,8 @@ Label *UILabel::getLabel() {
 	return label->getLabel();
 }
 
-UIRect::UIRect(String fileName, Number width, Number height) : UIElement() {
+UIRect::UIRect(Core *core, ResourcePool *pool, String fileName, Number width, Number height) : resourcePool(pool), UIElement(core)
+{
 	texture = NULL;
 	loadTexture(fileName);
 	initRect(width, height);
@@ -192,7 +194,8 @@ UIRect::UIRect(String fileName, Number width, Number height) : UIElement() {
 	imageHeight = height;
 }
 
-UIRect::UIRect(String fileName) : UIElement() {
+UIRect::UIRect(Core *core, ResourcePool *pool, String fileName) : resourcePool(pool), UIElement(core)
+{
 	texture = NULL;
 	loadTexture(fileName);
 	if(texture) {	
@@ -208,7 +211,8 @@ UIRect::UIRect(String fileName) : UIElement() {
 	setHeight(imageHeight);
 }
 
-UIRect::UIRect(Number width, Number height) : UIElement() {
+UIRect::UIRect(Core *core, ResourcePool *pool, Number width, Number height) : resourcePool(pool), UIElement(core)
+{
 	texture = NULL;
 	initRect(width, height);
 	imageWidth = 0;
@@ -289,10 +293,10 @@ void UIRect::initRect(Number width, Number height) {
 	
 	rectMesh->addSubmesh(rectMeshGeometry);
 	
-	setMaterial(std::static_pointer_cast<Material>(Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured")));
+	setMaterial(resourcePool->getMaterial("UnlitUntextured"));
 	
 	if(texture) {
-		setMaterial(std::static_pointer_cast<Material>(Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit")));
+		setMaterial(resourcePool->getMaterial("Unlit"));
 		shaderPasses[0].shaderBinding->setTextureForParam("diffuse", texture);
 	}
 }
@@ -303,16 +307,14 @@ UIRect::~UIRect() {
 
 void UIRect::loadTexture(String fileName) {
 
-	ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
 	
-	material =	std::static_pointer_cast<Material>(pool->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
-	texture = std::static_pointer_cast<Texture>(pool->loadResource(fileName));
+	material =	resourcePool->getMaterial("Unlit");
+	texture = resourcePool->loadTexture(fileName);
 	
 	if(!texture) {
-		setMaterial(std::static_pointer_cast<Material>(pool->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured")));
-
+		setMaterial(resourcePool->getMaterial("UnlitUntextured"));
 	} else {
-		setMaterial(std::static_pointer_cast<Material>(pool->getResource(Resource::RESOURCE_MATERIAL, "Unlit")));
+		setMaterial(resourcePool->getMaterial("Unlit"));
 
 	}
 	
@@ -324,9 +326,9 @@ void UIRect::loadTexture(String fileName) {
 void UIRect::setTexture(std::shared_ptr<Texture> texture) {
 	
 	if(!texture) {
-		setMaterial(std::static_pointer_cast<Material>(Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "UnlitUntextured")));
+		setMaterial(resourcePool->getMaterial("UnlitUntextured"));
 	} else {
-		setMaterial(std::static_pointer_cast<Material>(Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit")));
+		setMaterial(resourcePool->getMaterial("Unlit"));
 	}
 	
 	this->texture = texture;
@@ -390,15 +392,15 @@ void UIRect::Resize(Number width, Number height) {
 	rectMesh->addSubmesh(rectMeshGeometry);
 }
 
-UIImage::UIImage(String imagePath, int width, int height) : UIRect(imagePath, width, height) {
+UIImage::UIImage(Core *core, ResourcePool *pool, String imagePath, int width, int height) : UIRect(core, pool, imagePath, width, height) {
 	setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 }
 
-UIImage::UIImage(String imagePath) : UIRect(imagePath) {
+UIImage::UIImage(Core *core, ResourcePool *pool, String imagePath) : UIRect(core, pool, imagePath) {
 	setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 }
 
-UIElement::UIElement() : Entity() {
+UIElement::UIElement(Core *core) : core(core) {
 	snapToPixels = true;
 	setAnchorPoint(-1.0, -1.0, 0.0);
 	processInputEvents = true;
@@ -410,10 +412,10 @@ UIElement::UIElement() : Entity() {
 	dragged = false;
 	depthTest = false;
 	depthWrite = false;
-	Services()->getInput()->addEventListenerUnique(this, InputEvent::EVENT_KEYDOWN);
+	core->getInput()->addEventListenerUnique(this, InputEvent::EVENT_KEYDOWN);
 }
 
-UIElement::UIElement(Number width, Number height) : Entity() {
+UIElement::UIElement(Core *core, Number width, Number height) : core(core) {
 	setAnchorPoint(-1.0, -1.0, 0.0);
 	processInputEvents = true;
 	focusParent = NULL;
@@ -425,15 +427,15 @@ UIElement::UIElement(Number width, Number height) : Entity() {
 	depthWrite = false;		
 	setWidth(width);
 	setHeight(height);
-	Services()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 }
 
 void UIElement::handleEvent(Event *event) {
-	if(event->getDispatcher() == Services()->getInput() && event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
+	if(event->getDispatcher() == core->getInput() && event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
 		if(hasFocus && focusParent) {
 			InputEvent *inputEvent = (InputEvent*) event;
 			if(inputEvent->key == KEY_TAB) {
-				if(Services()->getInput()->getKeyState(KEY_RSHIFT) || Services()->getInput()->getKeyState(KEY_LSHIFT)) {
+				if(core->getInput()->getKeyState(KEY_RSHIFT) || core->getInput()->getKeyState(KEY_LSHIFT)) {
 					focusParent->focusPreviousChild();
 				} else {
 					focusParent->focusNextChild();
@@ -499,9 +501,7 @@ MouseEventResult UIElement::onMouseMove(const Ray &ray, int timestamp) {
 }
 
 UIElement::~UIElement() {
-	
-	Services()->getInput()->removeAllHandlersForListener(this);
-
+	core->getInput()->removeAllHandlersForListener(this);
 	if(focusParent) {
 		focusParent->unregisterFocusChild(this);
 	}
@@ -521,7 +521,7 @@ Vector2 UIElement::getScreenPositionForMainCamera() {
 			screenPos = getScreenPosition(camera->getProjectionMatrix(), camera->getConcatenatedMatrix().Inverse(), camera->getViewport());
 		}
 	}
-	screenPos.y = Services()->getCore()->getYRes() - screenPos.y;
+	screenPos.y = core->getYRes() - screenPos.y;
 	
 	return screenPos;
 }

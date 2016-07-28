@@ -286,3 +286,9 @@ Core.prototype.getUserHomeDirectory = function() {
 Core.prototype.makeApplicationMain = function() {
 	Polycode.Core_makeApplicationMain(this.__ptr)
 }
+
+Core.prototype.getConfig = function() {
+	var retVal = new ConfigRef("__skip_ptr__")
+	retVal.__ptr = Polycode.Core_getConfig(this.__ptr)
+	return retVal
+}

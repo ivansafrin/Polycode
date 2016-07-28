@@ -30,7 +30,6 @@
 #include "polycode/modules/ui/PolyUIBox.h"
 #include "polycode/modules/ui/PolyUIMenu.h"
 #include "polycode/modules/ui/PolyUIElement.h"
-#include "polycode/core/PolyTimer.h"
 #include "polycode/core/PolyCoreInput.h"
 #include "polycode/core/PolyCore.h"
 #include <vector>
@@ -145,11 +144,11 @@ namespace Polycode {
 			 * @param width The width of the element.
 			 * @param height The height of the element.
 			 */
-			UITextInput(bool multiLine, Number width, Number height, int customFontSize=-1, const String &customFont="", int customLineSpacing=-1);
+			UITextInput(Core *core, ResourcePool *resourcePool, bool multiLine, Number width, Number height, int customFontSize=-1, const String &customFont="", int customLineSpacing=-1);
 			virtual ~UITextInput();
 		
 			void handleEvent(Event *event);
-			void Update();
+			void Update(Number elapsed);
 			
 			/**
 			 * Set the text contents of the input.
@@ -379,7 +378,8 @@ namespace Polycode {
 			void updateWordWrap(int lineStart, int lineEnd);
 			
 			Number resizeTimer;
-
+			Number blinkTimer;
+		
 			Entity *lineNumberAnchor;
 		
 			void renumberLines();
@@ -490,7 +490,6 @@ namespace Polycode {
 			bool isTypingWord;
 		
 			bool multiLine;
-			Timer *blinkTimer;
 			UIBox *inputRect;
 			UIBox *inputRectSelected;
 		
@@ -518,6 +517,10 @@ namespace Polycode {
 		
 			String fontName;
 			Number fontSize;
+			ResourcePool *resourcePool;
+		
+			std::shared_ptr<Material> labelMaterial;
+			std::shared_ptr<Font> labelFont;
 		
 			Number lineHeight;
 		
@@ -529,8 +532,6 @@ namespace Polycode {
 									
 			vector<SceneLabel*> bufferLines;
 			vector<SceneLabel*> numberLines;
-			
-			Core *core;
 			
 			Number lastResizeWidth;
 			

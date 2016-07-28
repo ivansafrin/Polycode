@@ -23,8 +23,8 @@
 #include "polycode/ide/PolycodeEditorManager.h"
 
 
-PolycodeEditorManager::PolycodeEditorManager()	: EventDispatcher() {
-	currentEditor = NULL;
+PolycodeEditorManager::PolycodeEditorManager(Core *core, ResourcePool *pool) : EventDispatcher(), core(core), pool(pool), currentEditor(NULL)
+{
 }
 
 PolycodeEditorManager::~PolycodeEditorManager() {
@@ -49,7 +49,7 @@ PolycodeEditor *PolycodeEditorManager::createEditorForExtension(String extension
 	for(int i=0;i < editorFactories.size(); i++) {
 		PolycodeEditorFactory *factory = editorFactories[i];
 		if(factory->canHandleExtension(extension)) {
-			PolycodeEditor *editor = factory->createEditor();
+			PolycodeEditor *editor = factory->createEditor(core, pool);
 			openEditors.push_back(editor);
 			editor->addEventListener(this, Event::CHANGE_EVENT);
 			return editor;
@@ -73,7 +73,7 @@ PolycodeEditor *PolycodeEditorManager::openFile(OSFileEntry file) {
 
 	// NOCMAKE_TODO:
 	/*
-	if(!Services()->getCore()->fileExists(file.fullPath)) {
+	if(!core->fileExists(file.fullPath)) {
 		return NULL;
 	}
 */

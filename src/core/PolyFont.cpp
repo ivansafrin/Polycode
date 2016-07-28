@@ -23,16 +23,19 @@
 #include "polycode/core/PolyFont.h"
 #include "polycode/core/PolyLogger.h"
 #include "polycode/core/PolyCore.h"
-#include "polycode/core/PolyCoreServices.h"
 
 using namespace Polycode;
 
-Font::Font(const String& fileName, FT_Library FTLibrary) : Resource(Resource::RESOURCE_FONT) {
+Font::Font() : Resource(Resource::RESOURCE_FONT) {
+    
+}
+
+Font::Font(Core *core, const String& fileName, FT_Library FTLibrary) : Resource(Resource::RESOURCE_FONT) {
 	this->fileName = fileName;
 	
 	loaded = false;
 	buffer = NULL;
-	CoreFile *file = Services()->getCore()->openFile(fileName, "rb");
+	CoreFile *file = core->openFile(fileName, "rb");
 	if(file) {
 		file->seek(0, SEEK_END);
 		long progsize = file->tell();
@@ -41,7 +44,7 @@ Font::Font(const String& fileName, FT_Library FTLibrary) : Resource(Resource::RE
 		memset(buffer, 0, progsize);
 		file->read(buffer, progsize, 1);
 		
-		Services()->getCore()->closeFile(file);
+		core->closeFile(file);
 		valid = true;
 		if(FT_New_Memory_Face(FTLibrary, buffer, progsize, 0, &ftFace) != 0) {
 			Logger::log("Error loading font %s\n", fileName.c_str());

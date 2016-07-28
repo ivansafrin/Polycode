@@ -46,7 +46,7 @@ namespace Polycode {
 
 	class _PolyExport UIComboBox : public UIElement {
 		public:
-			UIComboBox(UIGlobalMenu *globalMenu, Number comboWidth);
+			UIComboBox(Core *core, ResourcePool *resourcePool, UIGlobalMenu *globalMenu, Number comboWidth);
 			~UIComboBox();
 			
 			void toggleDropDown();

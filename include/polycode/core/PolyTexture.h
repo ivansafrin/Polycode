@@ -37,7 +37,7 @@ namespace Polycode {
 		
 			virtual ~Texture();
 			
-			void reloadResource();
+			void reloadResource(Core *core);
 			
 			void setImageData(Image *data);
 			char *getTextureData() const { return textureData;}
@@ -76,7 +76,7 @@ namespace Polycode {
 	class _PolyExport RenderBuffer {
 		public:
 			RenderBuffer(unsigned int width, unsigned int height, bool attachDepthBuffer, bool floatingPoint);
-			~RenderBuffer();
+			virtual ~RenderBuffer();
 
 			unsigned int getWidth();
 			unsigned int getHeight();
@@ -84,8 +84,8 @@ namespace Polycode {
 			std::shared_ptr<Polycode::Texture> colorTexture;
 			std::shared_ptr<Polycode::Texture> depthTexture;
 
-			void *platformData;
-			void *depthBufferPlatformData;
+			RendererPlatformData platformData;
+			RendererPlatformData depthBufferPlatformData;
 	
 		private:
 		

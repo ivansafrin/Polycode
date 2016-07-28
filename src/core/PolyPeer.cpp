@@ -22,9 +22,9 @@ THE SOFTWARE.
 
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyPeer.h"
+#include "polycode/core/PolyThreaded.h"
 #include <string.h>
 #include "polycode/core/PolyCore.h"
-#include "polycode/core/PolyTimer.h"
 
 using namespace Polycode;
 
@@ -63,22 +63,10 @@ void PeerConnection::ackPacketsWithBitfield(unsigned int ack, unsigned int ackBi
 	}
 }
 
-#if USE_THREADED_SOCKETS == 1
-	Peer::Peer(unsigned int port) : Threaded() {
-#else
-	Peer::Peer(unsigned int port) : EventDispatcher() {
-#endif
+Peer::Peer(Core *core, unsigned int port) : Threaded(), core(core) {
 	socket = new Socket(port);
 	socket->addEventListener(this, SocketEvent::EVENT_DATA_RECEIVED);
-
-#if USE_THREADED_SOCKETS == 1
-	CoreServices::getInstance()->getCore()->createThread(this);
-	updateTimer = NULL;
-#else
-	updateTimer = new Timer(true, SOCKET_POLL_INTERVAL);
-	updateTimer->addEventListener(this, Timer::EVENT_TRIGGER);
-#endif
-
+	core->createThread(this);
 	reliableRetransmissionInverval = 1000;
 }
 
@@ -157,7 +145,7 @@ void Peer::sendReliableData(const Address &target, char *data, unsigned int size
 
 	SentPacketEntry entry;
 	entry.packet = packet;
-	entry.timestamp = CoreServices::getInstance()->getCore()->getTicks();
+	entry.timestamp = core->getTicks();
 	connection->reliablePacketQueue.push_back(entry);
 
 }
@@ -211,16 +199,14 @@ void Peer::handleEvent(Event *event) {
 					handlePacket((Packet*)socketEvent->data, connection);
 			break;
 		}
-	} else if(event->getDispatcher() == updateTimer) {
-		updateThread();
 	}
 }
 
 void Peer::updateReliableDataQueue() {
 	for(int i=0; i < peerConnections.size(); i++) {
 		for(int j=0; j < peerConnections[i]->reliablePacketQueue.size(); j++) {		
-			if(peerConnections[i]->reliablePacketQueue[j].timestamp < CoreServices::getInstance()->getCore()->getTicks() - reliableRetransmissionInverval) {
-				peerConnections[i]->reliablePacketQueue[j].timestamp = CoreServices::getInstance()->getCore()->getTicks(); 
+			if(peerConnections[i]->reliablePacketQueue[j].timestamp < core->getTicks() - reliableRetransmissionInverval) {
+				peerConnections[i]->reliablePacketQueue[j].timestamp = core->getTicks();
 				
 				Packet *oldPacket = peerConnections[i]->reliablePacketQueue[j].packet;
 				peerConnections[i]->reliablePacketQueue[j].packet = createPacket(peerConnections[i]->address, oldPacket->data, oldPacket->header.size, oldPacket->header.type);

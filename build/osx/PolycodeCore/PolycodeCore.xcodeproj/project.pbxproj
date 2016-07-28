@@ -13,6 +13,8 @@
 		8A5EF4FC1CD90E4800F8466A /* PolycodeLua.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A5EF4FB1CD90E4800F8466A /* PolycodeLua.cpp */; };
 		8A5EF4FF1CD90F0200F8466A /* PolycodeLua.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A5EF4FD1CD90F0200F8466A /* PolycodeLua.h */; };
 		8A5EF5001CD90F0200F8466A /* PolycodeLuaWrappers.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A5EF4FE1CD90F0200F8466A /* PolycodeLuaWrappers.h */; };
+		8A6010D21D4AC501009B0B35 /* PolyRendererPlatformData.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A6010D11D4AC501009B0B35 /* PolyRendererPlatformData.h */; };
+		8A6010D41D4AC516009B0B35 /* PolyRendererPlatformData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A6010D31D4AC516009B0B35 /* PolyRendererPlatformData.cpp */; };
 		8A7349081B86A53C00F660C0 /* lodepng.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A7349071B86A53C00F660C0 /* lodepng.h */; };
 		8A73490A1B86A54800F660C0 /* lodepng.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A7349091B86A54800F660C0 /* lodepng.cpp */; };
 		8A825F231B829BA70039E823 /* PolyPAAudioInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A825F221B829BA70039E823 /* PolyPAAudioInterface.h */; };
@@ -26,7 +28,6 @@
 		8A86523A1B72865C009F94DD /* PolyConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8651EF1B72865C009F94DD /* PolyConfig.h */; };
 		8A86523B1B72865C009F94DD /* PolyCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8651F01B72865C009F94DD /* PolyCore.h */; };
 		8A86523C1B72865C009F94DD /* PolyCoreInput.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8651F11B72865C009F94DD /* PolyCoreInput.h */; };
-		8A86523D1B72865C009F94DD /* PolyCoreServices.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8651F21B72865C009F94DD /* PolyCoreServices.h */; };
 		8A86523E1B72865C009F94DD /* PolyCubemap.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8651F31B72865C009F94DD /* PolyCubemap.h */; };
 		8A86523F1B72865C009F94DD /* PolyData.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8651F41B72865C009F94DD /* PolyData.h */; };
 		8A8652401B72865C009F94DD /* PolyEntity.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8651F51B72865C009F94DD /* PolyEntity.h */; };
@@ -77,10 +78,6 @@
 		8A8652731B72865C009F94DD /* PolyString.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8652281B72865C009F94DD /* PolyString.h */; };
 		8A8652741B72865C009F94DD /* PolyTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8652291B72865C009F94DD /* PolyTexture.h */; };
 		8A8652751B72865C009F94DD /* PolyThreaded.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A86522A1B72865C009F94DD /* PolyThreaded.h */; };
-		8A8652761B72865C009F94DD /* PolyTimer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A86522B1B72865C009F94DD /* PolyTimer.h */; };
-		8A8652771B72865C009F94DD /* PolyTimerManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A86522C1B72865C009F94DD /* PolyTimerManager.h */; };
-		8A8652781B72865C009F94DD /* PolyTween.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A86522D1B72865C009F94DD /* PolyTween.h */; };
-		8A8652791B72865C009F94DD /* PolyTweenManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A86522E1B72865C009F94DD /* PolyTweenManager.h */; };
 		8A86527A1B72865C009F94DD /* PolyVector2.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A86522F1B72865C009F94DD /* PolyVector2.h */; };
 		8A86527B1B72865C009F94DD /* PolyVector3.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8652301B72865C009F94DD /* PolyVector3.h */; };
 		8A86527C1B72865C009F94DD /* PolyVector4.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A8652311B72865C009F94DD /* PolyVector4.h */; };
@@ -98,7 +95,6 @@
 		8A8652DC1B72867F009F94DD /* PolyConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8652911B72867E009F94DD /* PolyConfig.cpp */; };
 		8A8652DD1B72867F009F94DD /* PolyCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8652921B72867E009F94DD /* PolyCore.cpp */; };
 		8A8652DE1B72867F009F94DD /* PolyCoreInput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8652931B72867E009F94DD /* PolyCoreInput.cpp */; };
-		8A8652DF1B72867F009F94DD /* PolyCoreServices.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8652941B72867E009F94DD /* PolyCoreServices.cpp */; };
 		8A8652E01B72867F009F94DD /* PolyCubemap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8652951B72867E009F94DD /* PolyCubemap.cpp */; };
 		8A8652E11B72867F009F94DD /* PolyData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8652961B72867E009F94DD /* PolyData.cpp */; };
 		8A8652E21B72867F009F94DD /* PolyEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8652971B72867E009F94DD /* PolyEntity.cpp */; };
@@ -146,10 +142,6 @@
 		8A8653111B72867F009F94DD /* PolyString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8652C61B72867F009F94DD /* PolyString.cpp */; };
 		8A8653121B72867F009F94DD /* PolyTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8652C71B72867F009F94DD /* PolyTexture.cpp */; };
 		8A8653131B72867F009F94DD /* PolyThreaded.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8652C81B72867F009F94DD /* PolyThreaded.cpp */; };
-		8A8653141B72867F009F94DD /* PolyTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8652C91B72867F009F94DD /* PolyTimer.cpp */; };
-		8A8653151B72867F009F94DD /* PolyTimerManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8652CA1B72867F009F94DD /* PolyTimerManager.cpp */; };
-		8A8653161B72867F009F94DD /* PolyTween.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8652CB1B72867F009F94DD /* PolyTween.cpp */; };
-		8A8653171B72867F009F94DD /* PolyTweenManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8652CC1B72867F009F94DD /* PolyTweenManager.cpp */; };
 		8A8653181B72867F009F94DD /* PolyVector2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8652CD1B72867F009F94DD /* PolyVector2.cpp */; };
 		8A8653191B72867F009F94DD /* PolyVector3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8652CE1B72867F009F94DD /* PolyVector3.cpp */; };
 		8A86531A1B72867F009F94DD /* PolyVector4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A8652CF1B72867F009F94DD /* PolyVector4.cpp */; };
@@ -177,6 +169,8 @@
 		8A5EF4FB1CD90E4800F8466A /* PolycodeLua.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolycodeLua.cpp; path = ../../../src/bindings/lua/PolycodeLua.cpp; sourceTree = "<group>"; };
 		8A5EF4FD1CD90F0200F8466A /* PolycodeLua.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeLua.h; path = ../../../include/polycode/bindings/lua/PolycodeLua.h; sourceTree = "<group>"; };
 		8A5EF4FE1CD90F0200F8466A /* PolycodeLuaWrappers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolycodeLuaWrappers.h; path = ../../../include/polycode/bindings/lua/PolycodeLuaWrappers.h; sourceTree = "<group>"; };
+		8A6010D11D4AC501009B0B35 /* PolyRendererPlatformData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyRendererPlatformData.h; path = ../../../include/polycode/core/PolyRendererPlatformData.h; sourceTree = "<group>"; };
+		8A6010D31D4AC516009B0B35 /* PolyRendererPlatformData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyRendererPlatformData.cpp; path = ../../../src/core/PolyRendererPlatformData.cpp; sourceTree = "<group>"; };
 		8A7349071B86A53C00F660C0 /* lodepng.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lodepng.h; path = ../../../include/lodepng.h; sourceTree = "<group>"; };
 		8A7349091B86A54800F660C0 /* lodepng.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = lodepng.cpp; path = ../../../src/core/lodepng.cpp; sourceTree = "<group>"; };
 		8A825F221B829BA70039E823 /* PolyPAAudioInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyPAAudioInterface.h; path = ../../../include/polycode/core/PolyPAAudioInterface.h; sourceTree = "<group>"; };
@@ -190,7 +184,6 @@
 		8A8651EF1B72865C009F94DD /* PolyConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyConfig.h; path = ../../../include/polycode/core/PolyConfig.h; sourceTree = "<group>"; };
 		8A8651F01B72865C009F94DD /* PolyCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyCore.h; path = ../../../include/polycode/core/PolyCore.h; sourceTree = "<group>"; };
 		8A8651F11B72865C009F94DD /* PolyCoreInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyCoreInput.h; path = ../../../include/polycode/core/PolyCoreInput.h; sourceTree = "<group>"; };
-		8A8651F21B72865C009F94DD /* PolyCoreServices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyCoreServices.h; path = ../../../include/polycode/core/PolyCoreServices.h; sourceTree = "<group>"; };
 		8A8651F31B72865C009F94DD /* PolyCubemap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyCubemap.h; path = ../../../include/polycode/core/PolyCubemap.h; sourceTree = "<group>"; };
 		8A8651F41B72865C009F94DD /* PolyData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyData.h; path = ../../../include/polycode/core/PolyData.h; sourceTree = "<group>"; };
 		8A8651F51B72865C009F94DD /* PolyEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyEntity.h; path = ../../../include/polycode/core/PolyEntity.h; sourceTree = "<group>"; };
@@ -241,10 +234,6 @@
 		8A8652281B72865C009F94DD /* PolyString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyString.h; path = ../../../include/polycode/core/PolyString.h; sourceTree = "<group>"; };
 		8A8652291B72865C009F94DD /* PolyTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyTexture.h; path = ../../../include/polycode/core/PolyTexture.h; sourceTree = "<group>"; };
 		8A86522A1B72865C009F94DD /* PolyThreaded.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyThreaded.h; path = ../../../include/polycode/core/PolyThreaded.h; sourceTree = "<group>"; };
-		8A86522B1B72865C009F94DD /* PolyTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyTimer.h; path = ../../../include/polycode/core/PolyTimer.h; sourceTree = "<group>"; };
-		8A86522C1B72865C009F94DD /* PolyTimerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyTimerManager.h; path = ../../../include/polycode/core/PolyTimerManager.h; sourceTree = "<group>"; };
-		8A86522D1B72865C009F94DD /* PolyTween.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyTween.h; path = ../../../include/polycode/core/PolyTween.h; sourceTree = "<group>"; };
-		8A86522E1B72865C009F94DD /* PolyTweenManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyTweenManager.h; path = ../../../include/polycode/core/PolyTweenManager.h; sourceTree = "<group>"; };
 		8A86522F1B72865C009F94DD /* PolyVector2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyVector2.h; path = ../../../include/polycode/core/PolyVector2.h; sourceTree = "<group>"; };
 		8A8652301B72865C009F94DD /* PolyVector3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyVector3.h; path = ../../../include/polycode/core/PolyVector3.h; sourceTree = "<group>"; };
 		8A8652311B72865C009F94DD /* PolyVector4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PolyVector4.h; path = ../../../include/polycode/core/PolyVector4.h; sourceTree = "<group>"; };
@@ -262,7 +251,6 @@
 		8A8652911B72867E009F94DD /* PolyConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyConfig.cpp; path = ../../../src/core/PolyConfig.cpp; sourceTree = "<group>"; };
 		8A8652921B72867E009F94DD /* PolyCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyCore.cpp; path = ../../../src/core/PolyCore.cpp; sourceTree = "<group>"; };
 		8A8652931B72867E009F94DD /* PolyCoreInput.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyCoreInput.cpp; path = ../../../src/core/PolyCoreInput.cpp; sourceTree = "<group>"; };
-		8A8652941B72867E009F94DD /* PolyCoreServices.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyCoreServices.cpp; path = ../../../src/core/PolyCoreServices.cpp; sourceTree = "<group>"; };
 		8A8652951B72867E009F94DD /* PolyCubemap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyCubemap.cpp; path = ../../../src/core/PolyCubemap.cpp; sourceTree = "<group>"; };
 		8A8652961B72867E009F94DD /* PolyData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyData.cpp; path = ../../../src/core/PolyData.cpp; sourceTree = "<group>"; };
 		8A8652971B72867E009F94DD /* PolyEntity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyEntity.cpp; path = ../../../src/core/PolyEntity.cpp; sourceTree = "<group>"; };
@@ -310,10 +298,6 @@
 		8A8652C61B72867F009F94DD /* PolyString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyString.cpp; path = ../../../src/core/PolyString.cpp; sourceTree = "<group>"; };
 		8A8652C71B72867F009F94DD /* PolyTexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyTexture.cpp; path = ../../../src/core/PolyTexture.cpp; sourceTree = "<group>"; };
 		8A8652C81B72867F009F94DD /* PolyThreaded.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyThreaded.cpp; path = ../../../src/core/PolyThreaded.cpp; sourceTree = "<group>"; };
-		8A8652C91B72867F009F94DD /* PolyTimer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyTimer.cpp; path = ../../../src/core/PolyTimer.cpp; sourceTree = "<group>"; };
-		8A8652CA1B72867F009F94DD /* PolyTimerManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyTimerManager.cpp; path = ../../../src/core/PolyTimerManager.cpp; sourceTree = "<group>"; };
-		8A8652CB1B72867F009F94DD /* PolyTween.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyTween.cpp; path = ../../../src/core/PolyTween.cpp; sourceTree = "<group>"; };
-		8A8652CC1B72867F009F94DD /* PolyTweenManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyTweenManager.cpp; path = ../../../src/core/PolyTweenManager.cpp; sourceTree = "<group>"; };
 		8A8652CD1B72867F009F94DD /* PolyVector2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyVector2.cpp; path = ../../../src/core/PolyVector2.cpp; sourceTree = "<group>"; };
 		8A8652CE1B72867F009F94DD /* PolyVector3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyVector3.cpp; path = ../../../src/core/PolyVector3.cpp; sourceTree = "<group>"; };
 		8A8652CF1B72867F009F94DD /* PolyVector4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PolyVector4.cpp; path = ../../../src/core/PolyVector4.cpp; sourceTree = "<group>"; };
@@ -374,7 +358,6 @@
 				8A8652911B72867E009F94DD /* PolyConfig.cpp */,
 				8A8652921B72867E009F94DD /* PolyCore.cpp */,
 				8A8652931B72867E009F94DD /* PolyCoreInput.cpp */,
-				8A8652941B72867E009F94DD /* PolyCoreServices.cpp */,
 				8A8652951B72867E009F94DD /* PolyCubemap.cpp */,
 				8A8652961B72867E009F94DD /* PolyData.cpp */,
 				8A8652971B72867E009F94DD /* PolyEntity.cpp */,
@@ -401,6 +384,7 @@
 				8A8652AF1B72867F009F94DD /* PolyRectangle.cpp */,
 				8A8652B01B72867F009F94DD /* PolyRenderDataArray.cpp */,
 				8A8652B11B72867F009F94DD /* PolyRenderer.cpp */,
+				8A6010D31D4AC516009B0B35 /* PolyRendererPlatformData.cpp */,
 				8A8652B21B72867F009F94DD /* PolyResource.cpp */,
 				8A8652B31B72867F009F94DD /* PolyResourceManager.cpp */,
 				8A8652B41B72867F009F94DD /* PolyScene.cpp */,
@@ -423,10 +407,6 @@
 				8A8652C61B72867F009F94DD /* PolyString.cpp */,
 				8A8652C71B72867F009F94DD /* PolyTexture.cpp */,
 				8A8652C81B72867F009F94DD /* PolyThreaded.cpp */,
-				8A8652C91B72867F009F94DD /* PolyTimer.cpp */,
-				8A8652CA1B72867F009F94DD /* PolyTimerManager.cpp */,
-				8A8652CB1B72867F009F94DD /* PolyTween.cpp */,
-				8A8652CC1B72867F009F94DD /* PolyTweenManager.cpp */,
 				8A8652CD1B72867F009F94DD /* PolyVector2.cpp */,
 				8A8652CE1B72867F009F94DD /* PolyVector3.cpp */,
 				8A8652CF1B72867F009F94DD /* PolyVector4.cpp */,
@@ -467,7 +447,6 @@
 				8A8651EF1B72865C009F94DD /* PolyConfig.h */,
 				8A8651F01B72865C009F94DD /* PolyCore.h */,
 				8A8651F11B72865C009F94DD /* PolyCoreInput.h */,
-				8A8651F21B72865C009F94DD /* PolyCoreServices.h */,
 				8A8651F31B72865C009F94DD /* PolyCubemap.h */,
 				8A8651F41B72865C009F94DD /* PolyData.h */,
 				8A8651F51B72865C009F94DD /* PolyEntity.h */,
@@ -496,6 +475,7 @@
 				8A86520F1B72865C009F94DD /* PolyRectangle.h */,
 				8A8652101B72865C009F94DD /* PolyRenderDataArray.h */,
 				8A8652111B72865C009F94DD /* PolyRenderer.h */,
+				8A6010D11D4AC501009B0B35 /* PolyRendererPlatformData.h */,
 				8A8652121B72865C009F94DD /* PolyResource.h */,
 				8A8652131B72865C009F94DD /* PolyResourceManager.h */,
 				8A8652141B72865C009F94DD /* PolyScene.h */,
@@ -519,10 +499,6 @@
 				8A8652281B72865C009F94DD /* PolyString.h */,
 				8A8652291B72865C009F94DD /* PolyTexture.h */,
 				8A86522A1B72865C009F94DD /* PolyThreaded.h */,
-				8A86522B1B72865C009F94DD /* PolyTimer.h */,
-				8A86522C1B72865C009F94DD /* PolyTimerManager.h */,
-				8A86522D1B72865C009F94DD /* PolyTween.h */,
-				8A86522E1B72865C009F94DD /* PolyTweenManager.h */,
 				8A86522F1B72865C009F94DD /* PolyVector2.h */,
 				8A8652301B72865C009F94DD /* PolyVector3.h */,
 				8A8652311B72865C009F94DD /* PolyVector4.h */,
@@ -538,7 +514,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8A86526A1B72865C009F94DD /* PolySceneSprite.h in Headers */,
-				8A8652791B72865C009F94DD /* PolyTweenManager.h in Headers */,
 				8A7349081B86A53C00F660C0 /* lodepng.h in Headers */,
 				8A86523E1B72865C009F94DD /* PolyCubemap.h in Headers */,
 				8A8652741B72865C009F94DD /* PolyTexture.h in Headers */,
@@ -574,18 +549,16 @@
 				8A8652751B72865C009F94DD /* PolyThreaded.h in Headers */,
 				8A8652691B72865C009F94DD /* PolySceneSound.h in Headers */,
 				8A8652431B72865C009F94DD /* PolyEventHandler.h in Headers */,
-				8A86523D1B72865C009F94DD /* PolyCoreServices.h in Headers */,
 				8A8652481B72865C009F94DD /* PolyGPUDrawBuffer.h in Headers */,
 				8A8652871B72866C009F94DD /* stb_image.h in Headers */,
 				8A8652711B72865C009F94DD /* PolySound.h in Headers */,
 				8A86525C1B72865C009F94DD /* PolyRenderer.h in Headers */,
 				8A86527C1B72865C009F94DD /* PolyVector4.h in Headers */,
 				8A86525D1B72865C009F94DD /* PolyResource.h in Headers */,
-				8A8652761B72865C009F94DD /* PolyTimer.h in Headers */,
 				8A86524C1B72865C009F94DD /* PolyLabel.h in Headers */,
 				8A8652881B72866C009F94DD /* tinystr.h in Headers */,
+				8A6010D21D4AC501009B0B35 /* PolyRendererPlatformData.h in Headers */,
 				8A86527B1B72865C009F94DD /* PolyVector3.h in Headers */,
-				8A8652771B72865C009F94DD /* PolyTimerManager.h in Headers */,
 				8A8652501B72865C009F94DD /* PolyMatrix4.h in Headers */,
 				8A86525B1B72865C009F94DD /* PolyRenderDataArray.h in Headers */,
 				8A8652851B72866C009F94DD /* Polycode.h in Headers */,
@@ -595,7 +568,6 @@
 				8A86523B1B72865C009F94DD /* PolyCore.h in Headers */,
 				8A8652371B72865C009F94DD /* PolyCocoaCore.h in Headers */,
 				8A8652861B72866C009F94DD /* rgbe.h in Headers */,
-				8A8652781B72865C009F94DD /* PolyTween.h in Headers */,
 				8A8652491B72865C009F94DD /* PolyImage.h in Headers */,
 				8A9D122F1CDD503C00ACD484 /* PolycodeJS.h in Headers */,
 				8A86526E1B72865C009F94DD /* PolyShader.h in Headers */,
@@ -704,7 +676,6 @@
 				8A8652E51B72867F009F94DD /* PolyEventHandler.cpp in Sources */,
 				8A8653081B72867F009F94DD /* PolySceneRenderTexture.cpp in Sources */,
 				8A8652E91B72867F009F94DD /* PolyGPUDrawBuffer.cpp in Sources */,
-				8A8652DF1B72867F009F94DD /* PolyCoreServices.cpp in Sources */,
 				8A8652FC1B72867F009F94DD /* PolyRenderer.cpp in Sources */,
 				8A8653131B72867F009F94DD /* PolyThreaded.cpp in Sources */,
 				AA5DCB931D2433BE0021D0F8 /* stb_vorbis.cpp in Sources */,
@@ -719,7 +690,6 @@
 				8A8652FF1B72867F009F94DD /* PolyScene.cpp in Sources */,
 				8A8652DB1B72867F009F94DD /* PolyColor.cpp in Sources */,
 				8A8652ED1B72867F009F94DD /* PolyLogger.cpp in Sources */,
-				8A8653151B72867F009F94DD /* PolyTimerManager.cpp in Sources */,
 				8A8652FB1B72867F009F94DD /* PolyRenderDataArray.cpp in Sources */,
 				8A8653071B72867F009F94DD /* PolyScenePrimitive.cpp in Sources */,
 				8A8652F71B72867F009F94DD /* PolyQuaternion.cpp in Sources */,
@@ -739,12 +709,10 @@
 				8A825F251B829BC20039E823 /* PolyPAAudioInterface.cpp in Sources */,
 				8A8653041B72867F009F94DD /* PolySceneLine.cpp in Sources */,
 				8A8653191B72867F009F94DD /* PolyVector3.cpp in Sources */,
-				8A8653141B72867F009F94DD /* PolyTimer.cpp in Sources */,
 				8A86530D1B72867F009F94DD /* PolySkeleton.cpp in Sources */,
 				8A86530E1B72867F009F94DD /* PolySocket.cpp in Sources */,
 				8A86531B1B72867F009F94DD /* rgbe.cpp in Sources */,
 				8A86538F1B742DCD009F94DD /* PolyBasicFileProvider.cpp in Sources */,
-				8A8653171B72867F009F94DD /* PolyTweenManager.cpp in Sources */,
 				8A8653901B742DCD009F94DD /* PolyPhysFSFileProvider.cpp in Sources */,
 				8A8652D81B72867F009F94DD /* PolyCamera.cpp in Sources */,
 				8A86530C1B72867F009F94DD /* PolyShader.cpp in Sources */,
@@ -763,10 +731,10 @@
 				8A8652F41B72867F009F94DD /* PolyParticleEmitter.cpp in Sources */,
 				8A8652F91B72867F009F94DD /* PolyRay.cpp in Sources */,
 				8A8653031B72867F009F94DD /* PolySceneLight.cpp in Sources */,
-				8A8653161B72867F009F94DD /* PolyTween.cpp in Sources */,
 				8A8652D71B72867F009F94DD /* PolyBone.cpp in Sources */,
 				8A86530F1B72867F009F94DD /* PolySound.cpp in Sources */,
 				8A8652F61B72867F009F94DD /* PolyPerlin.cpp in Sources */,
+				8A6010D41D4AC516009B0B35 /* PolyRendererPlatformData.cpp in Sources */,
 				8A8653101B72867F009F94DD /* PolySoundManager.cpp in Sources */,
 				8A8653921B7434D8009F94DD /* PolyCoreFileProvider.cpp in Sources */,
 				8A8653061B72867F009F94DD /* PolySceneMesh.cpp in Sources */,

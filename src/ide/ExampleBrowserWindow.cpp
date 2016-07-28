@@ -22,18 +22,19 @@
 
 #include "polycode/ide/ExampleBrowserWindow.h"
 
-ExampleBrowserWindow::ExampleBrowserWindow() : UIWindow(L"Example Browser", 320, 400){
+ExampleBrowserWindow::ExampleBrowserWindow(Core *core, ResourcePool *pool) : UIWindow(core, pool, L"Example Browser", 320, 400)
+{
 	
 	templateFolder = "";
 	
 	closeOnEscape = true;
 	defaultTemplateTree = NULL;
 	
-	Config *conf = CoreServices::getInstance()->getConfig();	
+	ConfigRef conf = core->getConfig();
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
 	
 	
-	templateContainer = new UITreeContainer("boxIcon.png", L"Examples", 320, 410-topPadding-padding-padding-40);	
+	templateContainer = new UITreeContainer(core, pool, "boxIcon.png", L"Examples", 320, 410-topPadding-padding-padding-40);
 	
 	ExampleTemplateUserData *data = new ExampleTemplateUserData();
 	data->type = 0;
@@ -47,7 +48,7 @@ ExampleBrowserWindow::ExampleBrowserWindow() : UIWindow(L"Example Browser", 320,
 	templateContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
 	templateContainer->getRootNode()->addEventListener(this, UITreeEvent::EXECUTED_EVENT);
 	
-	vector<OSFileEntry> templates = Services()->getCore()->parseFolder(RESOURCE_PATH"Standalone/Examples/Lua", false);
+	vector<OSFileEntry> templates = core->parseFolder(RESOURCE_PATH"Standalone/Examples/Lua", false);
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {
@@ -62,15 +63,13 @@ ExampleBrowserWindow::ExampleBrowserWindow() : UIWindow(L"Example Browser", 320,
 		}
 	}
 	
-	
-	
-	cancelButton = new UIButton(L"Cancel", 100);
+	cancelButton = new UIButton(core, pool, L"Cancel", 100);
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(cancelButton);
 	cancelButton->setPosition(330-100-padding-80-10, 375);
 		
 	
-	okButton = new UIButton(L"Open Example", 100);
+	okButton = new UIButton(core, pool, L"Open Example", 100);
 	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(okButton);
 	okButton->setPosition(330-80-padding, 375);
@@ -127,7 +126,7 @@ void ExampleBrowserWindow::handleEvent(Event *event) {
 }
 
 void ExampleBrowserWindow::parseTemplatesIntoTree(UITree *tree, OSFileEntry folder) {
-	vector<OSFileEntry> templates = Services()->getCore()->parseFolder(folder.fullPath, false);
+	vector<OSFileEntry> templates = core->parseFolder(folder.fullPath, false);
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {

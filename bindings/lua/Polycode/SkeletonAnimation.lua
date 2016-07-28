@@ -32,8 +32,8 @@ function SkeletonAnimation:Reset()
 	local retVal =  Polycode.SkeletonAnimation_Reset(self.__ptr)
 end
 
-function SkeletonAnimation:Update()
-	local retVal =  Polycode.SkeletonAnimation_Update(self.__ptr)
+function SkeletonAnimation:Update(elapsed)
+	local retVal = Polycode.SkeletonAnimation_Update(self.__ptr, elapsed)
 end
 
 function SkeletonAnimation:setSpeed(speed)

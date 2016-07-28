@@ -23,7 +23,8 @@
 #include "polycode/ide/TrackballCamera.h"
 
 
-TrackballCamera::TrackballCamera(Camera *targetCamera, Entity *trackballShape) : EventDispatcher() {
+TrackballCamera::TrackballCamera(CoreInput *coreInput, Camera *targetCamera, Entity *trackballShape) : coreInput(coreInput)
+{
 	mouseMode = MOUSE_MODE_IDLE;
 	
 	rotationDisabled = false;
@@ -43,8 +44,6 @@ TrackballCamera::TrackballCamera(Camera *targetCamera, Entity *trackballShape) :
 	trackballPanSpeed = 0.6;
 	trackballZoomSpeed = 1.0;
 	cameraDistance = 10.0;
-	
-	coreInput = CoreServices::getInstance()->getCore()->getInput();
 	
 	targetCamera->lookAt(orbitingCenter);
 	updateCamera();

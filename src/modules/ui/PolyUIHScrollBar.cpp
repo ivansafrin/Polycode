@@ -25,25 +25,24 @@
 #include "polycode/core/PolyConfig.h"
 #include "polycode/core/PolyInputEvent.h"
 #include "polycode/core/PolyLabel.h"
-#include "polycode/core/PolyCoreServices.h"
 
 using namespace Polycode;
 
-UIHScrollBar::UIHScrollBar(Number width, Number height, Number initialRatio) : UIElement() {
+UIHScrollBar::UIHScrollBar(Core *core, ResourcePool *resourcePool, Number width, Number height, Number initialRatio) : UIElement(core) {
 	
 	scrollValue = 0;
 	
-	Config *conf = CoreServices::getInstance()->getConfig();	
+	ConfigRef conf = core->getConfig();
 	
 	minHandleSize = conf->getNumericValue("Polycode", "uiScrollHandleMinSize");
 	
 	Number st = conf->getNumericValue("Polycode", "uiScrollBgSkinT");
 	Number sr = conf->getNumericValue("Polycode", "uiScrollBgSkinR");
 	Number sb = conf->getNumericValue("Polycode", "uiScrollBgSkinB");
-	Number sl = conf->getNumericValue("Polycode", "uiScrollBgSkinL");	
-	padding = conf->getNumericValue("Polycode", "uiScrollBgSkinPadding");		
+	Number sl = conf->getNumericValue("Polycode", "uiScrollBgSkinL");
+	padding = conf->getNumericValue("Polycode", "uiScrollBgSkinPadding");
 	
-	bgBox = new UIBox(conf->getStringValue("Polycode", "uiScrollBgSkin"),
+	bgBox = new UIBox(core, resourcePool, conf->getStringValue("Polycode", "uiScrollBgSkin"),
 					  st,sr,sb,sl,
 					  width, height);
 	
@@ -52,7 +51,7 @@ UIHScrollBar::UIHScrollBar(Number width, Number height, Number initialRatio) : U
 	st = conf->getNumericValue("Polycode", "uiScrollHandleSkinT");
 	sr = conf->getNumericValue("Polycode", "uiScrollHandleSkinR");
 	sb = conf->getNumericValue("Polycode", "uiScrollHandleSkinB");
-	sl = conf->getNumericValue("Polycode", "uiScrollHandleSkinL");	
+	sl = conf->getNumericValue("Polycode", "uiScrollHandleSkinL");
 	
 	if(initialRatio > 1)
 		initialRatio = 1;
@@ -62,7 +61,7 @@ UIHScrollBar::UIHScrollBar(Number width, Number height, Number initialRatio) : U
 	if(scrollHandleWidth < minHandleSize)
 		scrollHandleWidth = minHandleSize;
 	
-	handleBox = new UIBox(conf->getStringValue("Polycode", "uiScrollHandleSkin"),
+	handleBox = new UIBox(core, resourcePool, conf->getStringValue("Polycode", "uiScrollHandleSkin"),
 						  st,sr,sb,sl,
 						  scrollHandleWidth,height-(padding*2));
 	
@@ -94,7 +93,7 @@ void UIHScrollBar::Resize(int newWidth) {
 	handleBox->setDragLimits(Rectangle(padding,padding,dragRectWidth, getHeight()-(padding*2)-(getHeight()-(padding*2))));
 }
 
-void UIHScrollBar::Update() {
+void UIHScrollBar::Update(Number elapsed) {
 	if(lastPositionX != handleBox->getPosition().x) {
 		lastPositionX = handleBox->getPosition().x;
 		scrollValue = (lastPositionX-padding)/dragRectWidth;

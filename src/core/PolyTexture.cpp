@@ -23,7 +23,6 @@
 #include "string.h"
 #include "polycode/core/PolyTexture.h"
 #include "polycode/core/PolyImage.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyRenderer.h"
 #include <stdlib.h>
 
@@ -70,11 +69,11 @@ Texture::Texture(unsigned int width, unsigned int height, char *textureData,bool
 
 }
 
-void Texture::reloadResource() {
-	Image *image = new Image(getResourcePath());
+void Texture::reloadResource(Core *core) {
+	Image *image = new Image(core, getResourcePath());
 	setImageData(image);
 	delete image;
-	Resource::reloadResource(); 
+	Resource::reloadResource(core);
 }
 
 int Texture::getWidth() const {
@@ -86,9 +85,6 @@ int Texture::getHeight() const {
 }
 
 Texture::~Texture(){
-	if(platformData) {
-		Services()->getRenderer()->destroyTexturePlatformData(platformData);
-	}
 	free(textureData);
 }
 
@@ -160,7 +156,7 @@ Texture::Texture(Image *image, bool clamp, bool createMipmaps) : Resource(Resour
 
 }
 
-RenderBuffer::RenderBuffer(unsigned int width, unsigned int height, bool attachDepthBuffer, bool floatingPoint) : platformData(NULL), width(width), height(height), depthBufferPlatformData(NULL), floatingPoint(floatingPoint) {
+RenderBuffer::RenderBuffer(unsigned int width, unsigned int height, bool attachDepthBuffer, bool floatingPoint) : width(width), height(height), floatingPoint(floatingPoint) {
 	
 	int imageType = Image::IMAGE_RGBA;
 #ifndef NO_FP16
@@ -178,12 +174,15 @@ RenderBuffer::RenderBuffer(unsigned int width, unsigned int height, bool attachD
 }
 
 RenderBuffer::~RenderBuffer() {
+    // NO_CORE_SERVICES_TODO:
+    /*
 	if(platformData) {
 		Services()->getRenderer()->destroyRenderBufferPlatformData(platformData);
 	}
 	if(depthBufferPlatformData) {
 		Services()->getRenderer()->destroyRenderBufferPlatformData(depthBufferPlatformData);
 	}
+     */
 }
 
 unsigned int RenderBuffer::getWidth() {

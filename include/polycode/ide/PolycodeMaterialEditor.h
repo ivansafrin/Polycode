@@ -48,7 +48,7 @@ public:
 
 class MaterialPreviewBox : public UIElement {
 	public:
-		MaterialPreviewBox();
+		MaterialPreviewBox(Core *core, ResourcePool *pool);
 		~MaterialPreviewBox();
 		void setMaterial(std::shared_ptr<Material> material);		
 		void showPrimitive(unsigned int index);
@@ -74,20 +74,20 @@ class MaterialPreviewBox : public UIElement {
 
 class MaterialPreviewProp : public PropProp {
 	public:
-		MaterialPreviewProp();		
+		MaterialPreviewProp(Core *core, ResourcePool *pool);
 		void setPropWidth(Number width);
 		MaterialPreviewBox *previewBox;
 };
 
 class PostPreviewBox : public UIElement {
 	public:
-		PostPreviewBox();
+		PostPreviewBox(Core *core, ResourcePool *pool);
 		~PostPreviewBox();
 		void setMaterial(std::shared_ptr<Material> material);
 		void clearMaterial();		
 		void handleEvent(Event *event);
 		void Resize(Number width, Number height);
-		void Update();	
+		void Update(Number elapsed);	
 			
 		Scene *previewScene;
 		SceneRenderTexture *renderTexture;
@@ -112,7 +112,7 @@ class PostPreviewBox : public UIElement {
 
 class MaterialBrowser : public UIElement {
 	public:
-		MaterialBrowser();
+		MaterialBrowser(Core *core, ResourcePool *pool);
 		~MaterialBrowser();
 		
 		void Resize(Number width, Number height);
@@ -150,7 +150,7 @@ class MaterialBrowser : public UIElement {
 
 class CubemapEditorPane : public UIElement {
 	public:
-		CubemapEditorPane(ResourcePool *resourcePool);
+		CubemapEditorPane(Core *core, ResourcePool *resourcePool, ResourcePool *localPool);
 		~CubemapEditorPane();
 		void Resize(Number width, Number height);
 		void setCubemap(std::shared_ptr<Cubemap> cubemap);
@@ -179,7 +179,7 @@ class CubemapEditorPane : public UIElement {
 
 class PostEditorPane : public UIElement {
 	public:
-		PostEditorPane(ResourcePool *resourcePool);
+		PostEditorPane(Core *core, ResourcePool *resourcePoolm, ResourcePool *localPool);
 		~PostEditorPane();
 		void Resize(Number width, Number height);
 		void setMaterial(std::shared_ptr<Material> material);
@@ -218,7 +218,7 @@ class PostEditorPane : public UIElement {
 
 class ShaderEditorPane : public UIElement {
 	public:
-		ShaderEditorPane(ResourcePool *resourcePool);
+		ShaderEditorPane(Core *core, ResourcePool *resourcePool, ResourcePool *localPool);
 		~ShaderEditorPane();
 		void Resize(Number width, Number height);
 		void setShader(std::shared_ptr<Shader> shader);
@@ -232,7 +232,7 @@ class ShaderEditorPane : public UIElement {
 			
 	protected:
 	
-		ResourcePool *resourcePool;
+		ResourcePool *localPool;
 		bool changingShader;
 
 		bool choosingVertexProgram;
@@ -254,7 +254,7 @@ class ShaderEditorPane : public UIElement {
 
 class MaterialEditorPane : public UIElement {
 	public:
-		MaterialEditorPane();
+		MaterialEditorPane(Core *core, ResourcePool *pool, ResourcePool *localPool);
 		~MaterialEditorPane();
 	
 		void Activate();
@@ -280,13 +280,13 @@ class MaterialEditorPane : public UIElement {
 		StringProp *nameProp;
 		ComboProp *blendModeProp;
 		ComboProp *shaderProp;
-		
-		ShaderOptionsSheet *shaderOptionsSheet; 
+		ResourcePool *localPool;
+		ShaderOptionsSheet *shaderOptionsSheet;
 };
 
 class MaterialMainWindow : public UIElement {
 	public:
-	MaterialMainWindow(ResourcePool *resourcePool);
+	MaterialMainWindow(Core *core, ResourcePool *resourcePool, ResourcePool *localResourcePool);
 	~MaterialMainWindow();
 	
 	void Activate();
@@ -295,7 +295,7 @@ class MaterialMainWindow : public UIElement {
 	void Resize(Number width, Number height);
 	
 	MaterialEditorPane *materialPane;
-	ShaderEditorPane *shaderPane;	
+	ShaderEditorPane *shaderPane;
 	CubemapEditorPane *cubemapPane; 
 	PostEditorPane *postPane;	
 		
@@ -304,7 +304,7 @@ class MaterialMainWindow : public UIElement {
 
 class PolycodeMaterialEditor : public PolycodeEditor {
 	public:
-	PolycodeMaterialEditor();
+	PolycodeMaterialEditor(Core *core, ResourcePool *pool);
 	virtual ~PolycodeMaterialEditor();
 	
 	bool openFile(OSFileEntry filePath);
@@ -321,7 +321,7 @@ class PolycodeMaterialEditor : public PolycodeEditor {
 	
 	protected:
 	
-		ResourcePool *resourcePool;
+		ResourcePool *localResourcePool;
 		
 		MaterialBrowser *materialBrowser;
 		UIHSizer *mainSizer;
@@ -338,5 +338,5 @@ class PolycodeMaterialEditor : public PolycodeEditor {
 class PolycodeMaterialEditorFactory : public PolycodeEditorFactory {
 	public:
 		PolycodeMaterialEditorFactory() : PolycodeEditorFactory() { extensions.push_back("mat"); }
-		PolycodeEditor *createEditor() { return new PolycodeMaterialEditor(); }
+		PolycodeEditor *createEditor(Core *core, ResourcePool *pool) { return new PolycodeMaterialEditor(core, pool); }
 };

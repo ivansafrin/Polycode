@@ -118,10 +118,6 @@ Camera.prototype.setPostFilter = function(material) {
 	Polycode.Camera_setPostFilter(this.__ptr, material)
 }
 
-Camera.prototype.setPostFilterByName = function(shaderName) {
-	Polycode.Camera_setPostFilterByName(this.__ptr, shaderName)
-}
-
 Camera.prototype.removePostFilter = function() {
 	Polycode.Camera_removePostFilter(this.__ptr)
 }

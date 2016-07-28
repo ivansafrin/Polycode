@@ -35,7 +35,6 @@
 
 namespace Polycode {
 
-	class Renderer;
 	class Scene;
 	class Script;
 	class ScriptInstance;
@@ -96,7 +95,7 @@ namespace Polycode {
 			/**
 			* Main update method. Override this to do your updates before the render cycle.
 			*/			
-			virtual void Update();
+			virtual void Update(Number elapsed);
 		
 			virtual void fixedUpdate(){};
 		
@@ -733,10 +732,9 @@ namespace Polycode {
 			 */
 			bool getInverseY();
 			
-			void doUpdates();
+			void doUpdates(Number elapsed);
 			void doFixedUpdates();
 			virtual Matrix4 buildPositionMatrix();
-			void setRenderer(Renderer *renderer);
 			
 			/**
 			 * Implement this method to do custom ray hit detection beyond a bounding box check. Always returns true by default.
@@ -923,8 +921,6 @@ namespace Polycode {
 		
 			Matrix4 transformMatrix;
 			Entity *parentEntity;
-		
-			Renderer *renderer;
 	};
 	
 	typedef Entity SceneEntity;

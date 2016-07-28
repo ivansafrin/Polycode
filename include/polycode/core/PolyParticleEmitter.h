@@ -64,7 +64,7 @@ namespace Polycode {
 		
 			void fixedUpdate();
 			void Render(GPUDrawBuffer *buffer);
-			void updateParticles();
+			void updateParticles(Number elapsed);
 			void rebuildParticles(GPUDrawBuffer *buffer);
 		
 			void triggerParticles(bool allAtOnce);
@@ -151,7 +151,6 @@ namespace Polycode {
 			void resetParticle(unsigned int index);
 		
 			bool systemEnabled;
-			Core *core;
 			unsigned int particleCount;
 			std::vector<SceneParticle> particles;
 			Number particleSpeed;

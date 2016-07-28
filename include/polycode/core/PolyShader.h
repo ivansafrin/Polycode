@@ -30,6 +30,7 @@ THE SOFTWARE.
 #include "polycode/core/PolyResource.h"
 #include <string.h>
 #include <memory>
+#include <mutex>
 
 namespace Polycode {
 
@@ -39,7 +40,7 @@ namespace Polycode {
 	class VertexDataArray;
 	class LocalShaderParam;
 	class RenderBuffer;
-	class CoreMutex;
+    class Core;
 	
 	class _PolyExport ProgramParam {
 		public:
@@ -92,7 +93,7 @@ namespace Polycode {
 			static const int TYPE_VERT = 0;
 			static const int TYPE_FRAG = 1;
 			int type;
-			void reloadResource();
+			void reloadResource(Core *core);
 	};
 
 	class _PolyExport Shader : public Resource {
@@ -181,7 +182,7 @@ namespace Polycode {
 		
 			void setParamValueFromString(int type, String pvalue);
         
-            CoreMutex *accessMutex;
+            std::mutex POLYIGNORE accessMutex;
 	};
 	
 	class AttributeBinding : public PolyBase {
@@ -222,8 +223,7 @@ namespace Polycode {
 			std::shared_ptr<LocalShaderParam> getLocalParamByName(const String& name);
 		
 			void removeParam(const String &name);
-		
-			std::shared_ptr<Texture> loadTextureForParam(const String &paramName, const String &fileName);
+	
 			void setTextureForParam(const String &paramName, std::shared_ptr<Texture> texture);
 			void setCubemapForParam(const String &paramName, std::shared_ptr<Cubemap> cubemap);
 		
@@ -260,9 +260,8 @@ namespace Polycode {
 			std::vector<RenderTargetBinding*> colorTargetBindings;
 			std::vector<RenderTargetBinding*> depthTargetBindings;
 		
-			std::shared_ptr<Shader> targetShader;
-		
-			CoreMutex *accessMutex;
+			std::shared_ptr<Shader> targetShader;		
+            std::mutex POLYIGNORE accessMutex;
 	};
 
 }

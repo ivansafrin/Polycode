@@ -31,7 +31,6 @@ distribution.
 
 #include "tinyxml.h"
 #include "polycode/core/PolyCore.h"
-#include "polycode/core/PolyCoreServices.h"
 #include <stdarg.h>
 
 // This document has been altered from the original in the following ways:
@@ -42,9 +41,9 @@ distribution.
 bool TiXmlBase::condenseWhiteSpace = true;
 
 // Microsoft compiler security
-Polycode::CoreFile* TiXmlFOpen( const char* filename, const char* mode )
+Polycode::CoreFile* TiXmlFOpen(Polycode::Core *core, const char* filename, const char* mode )
 {
-	return Polycode::Services()->getCore()->openFile( filename, mode );
+	return core->openFile( filename, mode );
 }
 
 void TiXmlBase::EncodeString( const TIXML_STRING& str, TIXML_STRING* outString )
@@ -933,16 +932,16 @@ void TiXmlDocument::operator=( const TiXmlDocument& copy )
 }
 
 
-bool TiXmlDocument::LoadFile( TiXmlEncoding encoding )
+bool TiXmlDocument::LoadFile(Polycode::Core *core,TiXmlEncoding encoding )
 {
 	// See STL_STRING_BUG below.
 	//StringToBuffer buf( value );
 
-	return LoadFile( Value(), encoding );
+	return LoadFile(core, Value(), encoding );
 }
 
 
-bool TiXmlDocument::SaveFile() const
+bool TiXmlDocument::SaveFile(Polycode::Core *core) const
 {
 	// See STL_STRING_BUG below.
 //	StringToBuffer buf( value );
@@ -951,10 +950,10 @@ bool TiXmlDocument::SaveFile() const
 //		return true;
 //
 //	return false;
-	return SaveFile( Value() );
+	return SaveFile(core, Value() );
 }
 
-bool TiXmlDocument::LoadFile( const char* _filename, TiXmlEncoding encoding )
+bool TiXmlDocument::LoadFile(Polycode::Core *core, const char* _filename, TiXmlEncoding encoding )
 {
 	// There was a really terrifying little bug here. The code:
 	//		value = filename
@@ -970,12 +969,12 @@ bool TiXmlDocument::LoadFile( const char* _filename, TiXmlEncoding encoding )
 	value = filename;
 
 	// reading in binary mode so that tinyxml can normalize the EOL
-	Polycode::CoreFile* file = TiXmlFOpen( value.c_str (), "rb" );
+	Polycode::CoreFile* file = TiXmlFOpen(core, value.c_str (), "rb" );
 
 	if ( file )
 	{
 		bool result = LoadFile( file, encoding );
-		Polycode::Services()->getCore()->closeFile(file);
+		core->closeFile(file);
 		return result;
 	}
 	else
@@ -1100,14 +1099,14 @@ bool TiXmlDocument::LoadFile(Polycode::CoreFile* file, TiXmlEncoding encoding )
 }
 
 
-bool TiXmlDocument::SaveFile( const char * filename ) const
+bool TiXmlDocument::SaveFile(Polycode::Core *core, const char * filename ) const
 {
 	// The old c stuff lives on...
-	Polycode::CoreFile* fp = TiXmlFOpen( filename, "wb" );
+	Polycode::CoreFile* fp = TiXmlFOpen(core, filename, "wb" );
 	if ( fp )
 	{
 		SaveFile(fp);
-		Polycode::Services()->getCore()->closeFile(fp);
+		core->closeFile(fp);
 		return true;
 	}
 	return false;

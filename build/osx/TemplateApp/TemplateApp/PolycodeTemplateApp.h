@@ -20,6 +20,7 @@ private:
     Core *core;
     std::vector<SceneMesh*> tests;
     SceneLabel *fpsLabel;
+	SceneLabel *label;
     Scene *scene;
     Number counter;
     Entity *sourceEntity;

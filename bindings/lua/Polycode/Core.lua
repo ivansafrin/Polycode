@@ -315,6 +315,14 @@ function Core:makeApplicationMain()
 	local retVal =  Polycode.Core_makeApplicationMain(self.__ptr)
 end
 
+function Core:getConfig()
+	local retVal =  Polycode.Core_getConfig(self.__ptr)
+	if retVal == nil then return nil end
+	local __c = _G["ConfigRef"]("__skip_ptr__")
+	__c.__ptr = retVal
+	return __c
+end
+
 function Core:__delete()
 	if self then Polycode.delete_Core(self.__ptr) end
 end

@@ -56,14 +56,6 @@ function ShaderBinding:removeParam(name)
 	local retVal = Polycode.ShaderBinding_removeParam(self.__ptr, name)
 end
 
-function ShaderBinding:loadTextureForParam(paramName, fileName)
-	local retVal = Polycode.ShaderBinding_loadTextureForParam(self.__ptr, paramName, fileName)
-	if retVal == nil then return nil end
-	local __c = _G["shared_ptr<Texture>"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function ShaderBinding:setTextureForParam(paramName, texture)
 	local retVal = Polycode.ShaderBinding_setTextureForParam(self.__ptr, paramName, texture.__ptr)
 end

@@ -49,10 +49,6 @@ function ShaderProgram:reloadProgram()
 	local retVal =  Polycode.ShaderProgram_reloadProgram(self.__ptr)
 end
 
-function ShaderProgram:reloadResource()
-	local retVal =  Polycode.ShaderProgram_reloadResource(self.__ptr)
-end
-
 function ShaderProgram:__delete()
 	if self then Polycode.delete_ShaderProgram(self.__ptr) end
 end

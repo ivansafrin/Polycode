@@ -21,7 +21,6 @@
  */
 
 #include "polycode/modules/ui/PolyUIBox.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyConfig.h"
 #include "polycode/core/PolyRenderer.h"
 #include "polycode/core/PolyMesh.h"
@@ -30,11 +29,8 @@
 
 using namespace Polycode;
 
-UIBox::UIBox(String imageFile, Number t, Number r, Number b, Number l, Number boxWidth, Number boxHeight) : UIElement() {
+UIBox::UIBox(Core *core, ResourcePool *pool, String imageFile, Number t, Number r, Number b, Number l, Number boxWidth, Number boxHeight) : UIElement(core) {
 
-	Config *conf = CoreServices::getInstance()->getConfig();
-	Number uiScale = conf->getNumericValue("Polycode", "uiScale");
-	
 	setAnchorPoint(-1.0, -1.0, 0.0);
 	
 	setWidth(boxWidth);
@@ -42,10 +38,11 @@ UIBox::UIBox(String imageFile, Number t, Number r, Number b, Number l, Number bo
 	
 	boxMesh = new Mesh();
 	
-	setMaterial(std::static_pointer_cast<Material>(CoreServices::getInstance()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit")));
+	setMaterial(pool->getMaterial("Unlit"));
 	
-	std::shared_ptr<Texture> texture = shaderPasses[0].shaderBinding->loadTextureForParam("diffuse", imageFile);
 	
+	std::shared_ptr<Texture> texture = pool->loadTexture(imageFile);
+	shaderPasses[0].shaderBinding->setTextureForParam("diffuse", texture);
 	imageWidth = texture->getWidth();
 	imageHeight = texture->getHeight();
 	
@@ -55,9 +52,7 @@ UIBox::UIBox(String imageFile, Number t, Number r, Number b, Number l, Number bo
 	this->l = l;
 	
 	setBlendingMode(Renderer::BLEND_MODE_NORMAL);
-	
-	redrawMesh();
-	
+	redrawMesh();	
 	ownsChildren = true;	
 }
 

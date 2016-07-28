@@ -22,7 +22,6 @@
 
 
 #include "polycode/core/PolyRenderer.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyCore.h"
 #include "polycode/core/PolyTexture.h"
 #include "polycode/core/PolyVector4.h"
@@ -54,9 +53,6 @@ GraphicsInterface::GraphicsInterface() {
 }
 
 RenderThread::RenderThread() : graphicsInterface(NULL) {
-		
-	jobQueueMutex = Services()->getCore()->createMutex();
-	renderMutex = Services()->getCore()->createMutex();
 }
 
 void RenderThread::initGlobals() {
@@ -89,7 +85,7 @@ void RenderThread::initGlobals() {
 }
 
 void RenderThread::updateRenderThread() {
-	jobQueueMutex->lock();
+	jobQueueMutex.lock();
 		
 	while (jobQueue.size() > 0) {
 		RendererThreadJob nextJob = jobQueue.front();
@@ -122,7 +118,7 @@ void RenderThread::updateRenderThread() {
 		frameQueue.pop();
 	}
 
-	jobQueueMutex->unlock();
+	jobQueueMutex.unlock();
 
 	if (nextFrame) {
 		
@@ -212,11 +208,11 @@ void RenderThread::processDrawBufferLights(GPUDrawBuffer *buffer) {
 }
 
 void RenderThread::clearFrameQueue() {
-	jobQueueMutex->lock();
+	jobQueueMutex.lock();
 	while(frameQueue.size()) {
 		frameQueue.pop();
 	}
-	jobQueueMutex->unlock();
+	jobQueueMutex.unlock();
 }
 
 void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
@@ -302,7 +298,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
 				
 				
 				if(shaderPass.shader) {
-					if(!shaderPass.shader->platformData) {
+					if(!shaderPass.shader->platformData.data) {
 						graphicsInterface->createShader(&*shaderPass.shader);
 						// set renderer global params
 						for(int p=0; p < rendererShaderBinding->getNumLocalParams(); p++) {
@@ -314,7 +310,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
 								}
 							}
 						}
-						shaderPass.shader->reloadResource();
+						shaderPass.shader->reloadResource(core);
 					}
 				}
 				
@@ -330,7 +326,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
 				
 				
 				if(materialShaderBinding && materialShaderBinding != localShaderBinding) {
-					materialShaderBinding->accessMutex->lock();
+					materialShaderBinding->accessMutex.lock();
 				}
 				if(materialShaderBinding) {
 					for(int p=0; p < materialShaderBinding->getNumLocalParams(); p++) {						   
@@ -348,10 +344,10 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
 					}
 				}
 				if(materialShaderBinding  && materialShaderBinding != localShaderBinding) {
-					materialShaderBinding->accessMutex->unlock();
+					materialShaderBinding->accessMutex.unlock();
 				}
 				
-				localShaderBinding->accessMutex->lock();
+				localShaderBinding->accessMutex.lock();
 				for(int p=0; p < localShaderBinding->getNumLocalParams(); p++) {
 					std::shared_ptr<LocalShaderParam> localParam = localShaderBinding->getLocalParam(p);
 					if(localParam) {
@@ -363,7 +359,7 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
 						}
 					}
 				}
-				localShaderBinding->accessMutex->unlock();
+				localShaderBinding->accessMutex.unlock();
 				
 				if(buffer->drawCalls[i].submesh->dataChanged) {
 					graphicsInterface->createSubmeshBuffers(&*buffer->drawCalls[i].submesh);
@@ -383,18 +379,16 @@ void RenderThread::processDrawBuffer(GPUDrawBuffer *buffer) {
 
 RenderThread::~RenderThread() {
 	clearFrameQueue();
-	renderMutex->unlock();
-	delete renderMutex;
-	jobQueueMutex->unlock();
-	delete jobQueueMutex;
+	renderMutex.unlock();
+	jobQueueMutex.unlock();
 }
 
 void RenderThread::lockRenderMutex() {
-	Services()->getCore()->lockMutex(renderMutex);
+    renderMutex.lock();
 }
 
 void RenderThread::unlockRenderMutex() {
-	Services()->getCore()->unlockMutex(renderMutex);
+    renderMutex.unlock();
 }
 
 void RenderThread::processJob(const RendererThreadJob &job) {
@@ -442,44 +436,44 @@ void RenderThread::beginFrame() {
 	currentDebugFrameInfo.buffersProcessed = 0;
 	currentDebugFrameInfo.drawCallsProcessed = 0;
 	currentDebugFrameInfo.timeTaken = 0;
-	frameStart = Services()->getCore()->getTicks();
+	frameStart = core->getTicks();
 	core->prepareRenderContext();
 }
 
 void RenderThread::endFrame() {
 	core->flushRenderContext();
-	currentDebugFrameInfo.timeTaken = Services()->getCore()->getTicks() - frameStart;
+	currentDebugFrameInfo.timeTaken = core->getTicks() - frameStart;
 	lastFrameDebugInfo = currentDebugFrameInfo;
 }
 
 
 RenderThreadDebugInfo RenderThread::getFrameInfo() {
 	RenderThreadDebugInfo info;
-	Services()->getCore()->lockMutex(jobQueueMutex);
+    jobQueueMutex.lock();
 	info = lastFrameDebugInfo;
-	Services()->getCore()->unlockMutex(jobQueueMutex);
+    jobQueueMutex.unlock();
 	return info;
 }
 
 void RenderThread::enqueueFrame(RenderFrame *frame) {
-	Services()->getCore()->lockMutex(jobQueueMutex);
+    jobQueueMutex.lock();
 	frameQueue.push(frame);
 	while(frameQueue.size() > MAX_QUEUED_FRAMES) {
 		RenderFrame *nextFrame = frameQueue.front();
 		framesToDelete.push_back(nextFrame);
 		frameQueue.pop();
 	}
-	Services()->getCore()->unlockMutex(jobQueueMutex);
+    jobQueueMutex.unlock();
 }
 
 void RenderThread::enqueueJob(int jobType, void *data, void *data2) {
-	Services()->getCore()->lockMutex(jobQueueMutex);
+    jobQueueMutex.lock();
 	RendererThreadJob job;
 	job.jobType = jobType;
 	job.data = data;
 	job.data2 = data2;
 	jobQueue.push(job);
-	Services()->getCore()->unlockMutex(jobQueueMutex);
+    jobQueueMutex.unlock();
 }
 
 void RenderThread::setGraphicsInterface(Core *core, GraphicsInterface *graphicsInterface) {
@@ -487,7 +481,7 @@ void RenderThread::setGraphicsInterface(Core *core, GraphicsInterface *graphicsI
 	this->core = core;
 }
 
-Renderer::Renderer(RenderThread *customThread) :
+Renderer::Renderer(Core *core, RenderThread *customThread) :
 	backingResolutionScaleX(1.0),
 	backingResolutionScaleY(1.0),
 	cpuBufferIndex(0),
@@ -496,14 +490,13 @@ Renderer::Renderer(RenderThread *customThread) :
 	   
 	if(!customThread) {
 		renderThread = new RenderThread();
-		Services()->getCore()->createThread(renderThread);
+		core->createThread(renderThread);
 	} else {
 		renderThread = customThread;
 	}
 }
 
 Renderer::~Renderer() {
-	// finish up and quit
 	renderThread->threadRunning = false;
 	while(!renderThread->scheduledForRemoval) {}
 	delete renderThread;

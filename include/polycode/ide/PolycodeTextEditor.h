@@ -30,7 +30,7 @@ using namespace Polycode;
 
 class SyntaxHighlightTheme {
 	public:
-		void loadFromFile(String themeName);		
+		void loadFromFile(Core *core, String themeName);
 		String name;
 		Color bgColor;
 		Color selectionColor;
@@ -42,7 +42,7 @@ class SyntaxHighlightTheme {
 
 class FindBar : public UIElement {
 	public:
-		FindBar();
+		FindBar(Core *core, ResourcePool *pool);
 		~FindBar();
 		
 		void setBarWidth(int width);
@@ -87,7 +87,7 @@ class PolycodeSyntaxHighlighter : public UITextInputSyntaxHighlighter {
 
 class PolycodeTextEditor : public PolycodeEditor {
 public:
-	PolycodeTextEditor();
+	PolycodeTextEditor(Core *core, ResourcePool *pool);
 	virtual ~PolycodeTextEditor();
 	
 	bool openFile(OSFileEntry filePath);
@@ -126,5 +126,5 @@ public:
 		extensions.push_back("vert");
 		extensions.push_back("frag");				
 	}
-	PolycodeEditor *createEditor() { return new PolycodeTextEditor(); }
+	PolycodeEditor *createEditor(Core *core, ResourcePool *pool) { return new PolycodeTextEditor(core, pool); }
 };

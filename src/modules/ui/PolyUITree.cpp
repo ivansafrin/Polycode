@@ -26,19 +26,18 @@
 #include "polycode/core/PolyInputEvent.h"
 #include "polycode/core/PolyLabel.h"
 #include "polycode/core/PolyTexture.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyRenderer.h"
 
 using namespace Polycode;
 
-UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : UIElement() {
-		
+UITree::UITree(Core *core, ResourcePool *pool, String icon, String text, Number treeWidth, Number treeOffset) : UIElement(core), resourcePool(pool)
+{
 	processInputEvents = true;
 	willDrag = false;
 	isDragging = false;
 	
 	labelText = text;
-	Config *conf = CoreServices::getInstance()->getConfig();
+	ConfigRef conf = core->getConfig();
 	Number uiScale = conf->getNumericValue("Polycode", "uiScale");
 	
 	handleRotation = 0;
@@ -50,12 +49,12 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 	cellPadding = conf->getNumericValue("Polycode", "uiTreeCellPadding");
 	cellHeight = conf->getNumericValue("Polycode", "uiTreeCellHeight");
 	this->size = conf->getNumericValue("Polycode", "uiDefaultFontSize");
-	this->arrowIcon = conf->getStringValue("Polycode", "uiTreeArrowIconImage"); 
-	textLabel = new SceneLabel(
-								text,
-								size,
-								fontName,
-								Label::ANTIALIAS_FULL);
+	this->arrowIcon = conf->getStringValue("Polycode", "uiTreeArrowIconImage");
+	textLabel = new SceneLabel(pool->getMaterial("Unlit"),
+							   text,
+							   size,
+							   pool->getFont(fontName),
+							   Label::ANTIALIAS_FULL);
 	textLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	
 	textLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiTreeFontColor"));
@@ -73,23 +72,23 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 	Number sb = conf->getNumericValue("Polycode", "uiTreeCellSelectorSkinB");
 	Number sl = conf->getNumericValue("Polycode", "uiTreeCellSelectorSkinL");
 	
-	Number padding = conf->getNumericValue("Polycode", "uiTreeCellSelectorSkinPadding");	
+	Number padding = conf->getNumericValue("Polycode", "uiTreeCellSelectorSkinPadding");
 	this->padding = padding;
 	
-	selection = new UIBox(conf->getStringValue("Polycode", "uiTreeCellSelectorSkin"),
+	selection = new UIBox(core, pool, conf->getStringValue("Polycode", "uiTreeCellSelectorSkin"),
 						  st,sr,sb,sl,
 						  treeWidth+(padding*2), cellHeight+(padding*2));
 	
 	selection->setAnchorPoint(-1.0, -1.0, 0.0);
 	selection->visible = false;
 	addChild(selection);
-	arrowIconImage = new UIImage(arrowIcon);
+	arrowIconImage = new UIImage(core, pool, arrowIcon);
 	arrowIconImage->Resize(arrowIconImage->getWidth() / uiScale, arrowIconImage->getHeight() / uiScale);
 	arrowIconImage->setAnchorPoint(0.0, 0.0, 0.0);
 	arrowIconImage->setPosition(treeOffset + (arrowIconImage->getWidth()/2.0) + cellPadding, (cellHeight) / 2.0);
 	
 	addChild(arrowIconImage);
-	iconImage = new UIImage(icon);
+	iconImage = new UIImage(core, pool, icon);
 	iconImage->Resize(iconImage->getWidth() / uiScale, iconImage->getHeight() / uiScale);
 	
 	addChild(iconImage);
@@ -104,25 +103,26 @@ UITree::UITree(String icon, String text, Number treeWidth, Number treeOffset) : 
 	
 	collapsed = false;
 	treeHeight = 0;
-	toggleCollapsed();	
+	toggleCollapsed();
 	selected = false;
 	
 	parent = NULL;
 	selectedNode = NULL;
 	arrowIconImage->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
-	arrowIconImage->processInputEvents = true;	
+	arrowIconImage->processInputEvents = true;
 	
 	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEUP);
-	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
-	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);		
-	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN); 
-	bgBox->addEventListener(this, InputEvent::EVENT_DOUBLECLICK);	
+	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);
+	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
+	bgBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	bgBox->addEventListener(this, InputEvent::EVENT_DOUBLECLICK);
 	bgBox->processInputEvents = true;
-		
+	
 	setAnchorPoint(0.0, 0.0, 0.0);
 	
 	refreshTree();
 }
+
 
 void UITree::Resize(Number width) {
 	treeWidth = width;
@@ -240,8 +240,7 @@ void UITree::handleEvent(Event *event) {
 }
 
 void UITree::setIcon(String iconFile) {
-	ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
-	std::shared_ptr<Texture> texture = std::static_pointer_cast<Texture>(globalPool->loadResource(iconFile));
+	std::shared_ptr<Texture> texture = std::static_pointer_cast<Texture>(resourcePool->loadResource(iconFile));
 	iconImage->setTexture(texture);
 }
 
@@ -328,7 +327,7 @@ void UITree::clearTree() {
 	dispatchEvent(new UITreeEvent(), UITreeEvent::NEED_REFRESH_EVENT);
 }
 
-void UITree::Update() {
+void UITree::Update(Number elapsed) {
 	arrowIconImage->setRoll(-handleRotation);
 	if(treeChildren.size() > 0)
 		arrowIconImage->visible = true;
@@ -363,7 +362,8 @@ std::shared_ptr<void> UITree::getSharedUserData() {
 }
 
 UITree *UITree::addTreeChild(String icon, String text, void *userData) {
-	UITree *newTree = new UITree(icon, text, treeWidth, treeOffset+11);
+	
+	UITree *newTree = new UITree(core, resourcePool, icon, text, treeWidth, treeOffset+11);
 	newTree->setUserData(userData);
 	addChild(newTree);
 	newTree->setParent(this);

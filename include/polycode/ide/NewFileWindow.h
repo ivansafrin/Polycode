@@ -37,7 +37,7 @@ public:
 
 class NewFileWindow : public UIWindow {
 	public:
-		NewFileWindow();
+		NewFileWindow(Core *core, ResourcePool *pool);
 		~NewFileWindow();
 	
 		void resetForm();

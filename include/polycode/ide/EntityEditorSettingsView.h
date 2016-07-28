@@ -31,7 +31,7 @@ using namespace Polycode;
 
 class EntityEditorSettingsView : public UIElement {
 public:
-	EntityEditorSettingsView();
+	EntityEditorSettingsView(Core *core, ResourcePool *pool);
 	~EntityEditorSettingsView();
 	
 	void setEntityInstance(SceneEntityInstance *instance);

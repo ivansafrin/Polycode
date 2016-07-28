@@ -92,6 +92,36 @@ ResourcePool.prototype.getResource = function(resourceType,resourceName) {
 	return retVal
 }
 
+ResourcePool.prototype.getFont = function(name) {
+	var retVal = new Font("__skip_ptr__")
+	retVal.__ptr = Polycode.ResourcePool_getFont(this.__ptr, name)
+	return retVal
+}
+
+ResourcePool.prototype.getMaterial = function(name) {
+	var retVal = new Material("__skip_ptr__")
+	retVal.__ptr = Polycode.ResourcePool_getMaterial(this.__ptr, name)
+	return retVal
+}
+
+ResourcePool.prototype.getShader = function(name) {
+	var retVal = new Shader("__skip_ptr__")
+	retVal.__ptr = Polycode.ResourcePool_getShader(this.__ptr, name)
+	return retVal
+}
+
+ResourcePool.prototype.loadTexture = function(name) {
+	var retVal = new Texture("__skip_ptr__")
+	retVal.__ptr = Polycode.ResourcePool_loadTexture(this.__ptr, name)
+	return retVal
+}
+
+ResourcePool.prototype.loadMesh = function(name) {
+	var retVal = new Mesh("__skip_ptr__")
+	retVal.__ptr = Polycode.ResourcePool_loadMesh(this.__ptr, name)
+	return retVal
+}
+
 ResourcePool.prototype.getName = function() {
 	return Polycode.ResourcePool_getName(this.__ptr)
 }

@@ -15,7 +15,3 @@ Duktape.fin(SceneEntityInstanceResourceEntry.prototype, function (x) {
 	}
 	Polycode.SceneEntityInstanceResourceEntry__delete(x.__ptr)
 })
-
-SceneEntityInstanceResourceEntry.prototype.reloadResource = function() {
-	Polycode.SceneEntityInstanceResourceEntry_reloadResource(this.__ptr)
-}

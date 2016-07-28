@@ -32,10 +32,12 @@ THE SOFTWARE.
 namespace Polycode {
 	
 	class String;
+    class Core;
 
 	class _PolyExport Font : public Resource {
 		public:
-			Font(const String& fileName, FT_Library FTLibrary);
+            Font();
+			Font(Core *core, const String& fileName, FT_Library FTLibrary);
 			virtual ~Font();
 			
 			FT_Face getFace();

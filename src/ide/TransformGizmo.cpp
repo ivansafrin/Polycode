@@ -25,30 +25,30 @@
 
 extern UIGlobalMenu *globalMenu;
 
-TransformGrips::TransformGrips() : UIElement() {
+TransformGrips::TransformGrips(Core *core, ResourcePool *pool) : UIElement(core) {
 	
-	mainRect = new UIRect(1.0, 1.0);
+	mainRect = new UIRect(core, pool, 1.0, 1.0);
 	mainRect->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	mainRect->color.setColor(0.0, 0.5, 1.0, 0.2);
 	grips.push_back(mainRect);
 	
-	transformTL = new UIImage("spriteEditor/transform_corner.png", 8, 8);
+	transformTL = new UIImage(core, pool, "spriteEditor/transform_corner.png", 8, 8);
 	grips.push_back(transformTL);
-	transformT = new UIImage("spriteEditor/transform_corner.png", 8, 8);
+	transformT = new UIImage(core, pool, "spriteEditor/transform_corner.png", 8, 8);
 	grips.push_back(transformT);
-	transformTR = new UIImage("spriteEditor/transform_corner.png", 8, 8);
+	transformTR = new UIImage(core, pool, "spriteEditor/transform_corner.png", 8, 8);
 	grips.push_back(transformTR);
-	transformL = new UIImage("spriteEditor/transform_corner.png", 8, 8);
+	transformL = new UIImage(core, pool, "spriteEditor/transform_corner.png", 8, 8);
 	grips.push_back(transformL);
-	transformR = new UIImage("spriteEditor/transform_corner.png", 8, 8);
+	transformR = new UIImage(core, pool, "spriteEditor/transform_corner.png", 8, 8);
 	grips.push_back(transformR);
-	transformBL = new UIImage("spriteEditor/transform_corner.png", 8, 8);
+	transformBL = new UIImage(core, pool, "spriteEditor/transform_corner.png", 8, 8);
 	grips.push_back(transformBL);
-	transformB = new UIImage("spriteEditor/transform_corner.png", 8, 8);
+	transformB = new UIImage(core, pool, "spriteEditor/transform_corner.png", 8, 8);
 	grips.push_back(transformB);
-	transformBR = new UIImage("spriteEditor/transform_corner.png", 8, 8);
+	transformBR = new UIImage(core, pool, "spriteEditor/transform_corner.png", 8, 8);
 	grips.push_back(transformBR);
-	transformOffset = new UIImage("spriteEditor/transform_offset.png", 12, 12);
+	transformOffset = new UIImage(core, pool, "spriteEditor/transform_offset.png", 12, 12);
 	grips.push_back(transformOffset);
 	
 	for(int i=0; i < grips.size(); i++) {
@@ -63,10 +63,8 @@ TransformGrips::TransformGrips() : UIElement() {
 	}
 	
 	
-	Services()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
-	
+	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);	
 	transforming = false;
-	
 	movingTransform = NULL;
 }
 
@@ -75,10 +73,10 @@ Polycode::Rectangle TransformGrips::getGripRectangle() {
 }
 
 void TransformGrips::handleEvent(Event *event) {
-	if(event->getDispatcher() == Services()->getCore()->getInput()) {
+	if(event->getDispatcher() == core->getInput()) {
 		if(transforming) {
 			
-			Vector2 newMouse = Services()->getCore()->getInput()->getMousePosition();
+			Vector2 newMouse = core->getInput()->getMousePosition();
 			
 			if(movingTransform == mainRect) {
 				gripRectangle.x += newMouse.x - mouseBase.x;
@@ -122,7 +120,7 @@ void TransformGrips::handleEvent(Event *event) {
 			movingTransform = (UIImage*) event->getDispatcher();
 			transforming = true;
 			
-			mouseBase = Services()->getCore()->getInput()->getMousePosition();
+			mouseBase = core->getInput()->getMousePosition();
 			
 		} else {
 			transforming = false;
@@ -135,7 +133,7 @@ Vector2 TransformGrips::getAnchorPoint() {
 }
 
 TransformGrips::~TransformGrips() {
-	Services()->getCore()->getInput()->removeAllHandlersForListener(this);
+	core->getInput()->removeAllHandlersForListener(this);
 }
 
 void TransformGrips::setGripRectangle(Polycode::Rectangle rectangle, Vector2 offset) {
@@ -167,12 +165,12 @@ TrasnformGizmoEvent::TrasnformGizmoEvent(int mode) : Event() {
 	eventType = "TrasnformGizmoEvent";
 }
 
-TransformGizmoMenu::TransformGizmoMenu(TransformGizmo *gizmo) : UIElement() {
+TransformGizmoMenu::TransformGizmoMenu(Core *core, ResourcePool *pool, TransformGizmo *gizmo) : UIElement(core) {
 	processInputEvents = true;
 	
 	this->gizmo = gizmo;
 	
-	transformSelector = new UIIconSelector();
+	transformSelector = new UIIconSelector(core, pool);
 	addChild(transformSelector);
 	transformSelector->addIcon("entityEditor/move_gizmo.png");
 	transformSelector->addIcon("entityEditor/scale_gizmo.png");
@@ -180,7 +178,7 @@ TransformGizmoMenu::TransformGizmoMenu(TransformGizmo *gizmo) : UIElement() {
 	transformSelector->setPosition(4, 3.0);
 	transformSelector->addEventListener(this, UIEvent::SELECT_EVENT);
 	
-	orientationCombo = new UIComboBox(globalMenu, 100);
+	orientationCombo = new UIComboBox(core, pool, globalMenu, 100);
 	orientationCombo->addComboItem("Global");
 	orientationCombo->addComboItem("Local");
 	orientationCombo->setSelectedIndex(0);
@@ -188,7 +186,7 @@ TransformGizmoMenu::TransformGizmoMenu(TransformGizmo *gizmo) : UIElement() {
 	orientationCombo->setPosition(100, 2);
 	orientationCombo->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
-	centerSelector = new UIIconSelector();
+	centerSelector = new UIIconSelector(core, pool);
 	addChild(centerSelector);
 	centerSelector->addIcon("entityEditor/median_center.png");
 	centerSelector->addIcon("entityEditor/individual_centers.png");
@@ -239,7 +237,7 @@ void TransformGizmo::toggleOrientation() {
 		orientation = ORIENTATION_GLOBAL;
 }
 
-TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entity() {
+TransformGizmo::TransformGizmo(Core *core, ResourcePool *pool, Scene *targetScene, Camera *targetCamera) : core(core) {
 	processInputEvents = true;
 	orientation = ORIENTATION_GLOBAL;
 	startingOrientation = -1;
@@ -258,7 +256,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	centerCircle->depthTest = false;
 	centerCircle->billboardMode = true;
 	addChild(centerCircle);
-	centerCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
+	centerCircle->setLineWidth(core->getRenderer()->getBackingResolutionScaleX());
 	centerCircle->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 		  
 	trasnformDecorators = new Entity();
@@ -280,11 +278,12 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	yLineGeometry.addVertex(0.0, 0.0, 0.0);
 	yLineGeometry.addVertex(0.0, 0.75, 0.0);
 	yLine->getMesh()->addSubmesh(yLineGeometry);
+	yLine->setMaterial(pool->getMaterial("UnlitUntextured"));
 	
 	yLine->depthTest = false;
 	yLine->color.setColorHexFromString(TRANSGIZMO_Y_COLOR);
 	yLine->setLocalBoundingBox(yLine->getMesh()->calculateBBox());
-	yLine->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX() * 2.0);
+	yLine->setLineWidth(core->getRenderer()->getBackingResolutionScaleX() * 2.0);
 	transformAndScaleLines->addChild(yLine);
 	yLine->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	yLine->setForceMaterial(true);
@@ -295,11 +294,12 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	xLineGeometry.addVertex(0.0, 0.0, 0.0);
 	xLineGeometry.addVertex(0.75, 0.0, 0.0);
 	xLine->getMesh()->addSubmesh(xLineGeometry);
+	xLine->setMaterial(pool->getMaterial("UnlitUntextured"));
 	
 	xLine->depthTest = false;
 	xLine->color.setColorHexFromString(TRANSGIZMO_X_COLOR);
 	xLine->setLocalBoundingBox(xLine->getMesh()->calculateBBox());
-	xLine->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX() * 2.0);
+	xLine->setLineWidth(core->getRenderer()->getBackingResolutionScaleX() * 2.0);
 	transformAndScaleLines->addChild(xLine);
 	xLine->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	xLine->setForceMaterial(true);
@@ -314,11 +314,11 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	zLine->depthTest = false;
 	zLine->color.setColorHexFromString(TRANSGIZMO_Z_COLOR);
 	zLine->setLocalBoundingBox(zLine->getMesh()->calculateBBox());
-	zLine->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX() * 2.0);
+	zLine->setLineWidth(core->getRenderer()->getBackingResolutionScaleX() * 2.0);
 	transformAndScaleLines->addChild(zLine);
 	zLine->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	zLine->setForceMaterial(true);
-	
+	zLine->setMaterial(pool->getMaterial("UnlitUntextured"));
 	// MOVE
 	
 	yArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.05, 12);
@@ -327,6 +327,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	yArrow->depthTest = false;
 	trasnformDecorators->addChild(yArrow);
 	yArrow->setForceMaterial(true);
+	yArrow->setMaterial(pool->getMaterial("UnlitUntextured"));
 	
 	xArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.05, 12);
 	xArrow->color.setColorHexFromString(TRANSGIZMO_X_COLOR);
@@ -335,6 +336,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	xArrow->depthTest = false;
 	trasnformDecorators->addChild(xArrow);
 	xArrow->setForceMaterial(true);
+	xArrow->setMaterial(pool->getMaterial("UnlitUntextured"));
 	
 	zArrow = new ScenePrimitive(ScenePrimitive::TYPE_CONE, 0.2, 0.05, 12);
 	zArrow->color.setColorHexFromString(TRANSGIZMO_Z_COLOR);
@@ -343,6 +345,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	zArrow->depthTest = false;	
 	trasnformDecorators->addChild(zArrow);
 	zArrow->setForceMaterial(true);
+	zArrow->setMaterial(pool->getMaterial("UnlitUntextured"));
 	
 	// SCALE
 
@@ -352,6 +355,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	yBox->depthTest = false;
 	scaleDecorators->addChild(yBox);
 	yBox->setForceMaterial(true);
+	yBox->setMaterial(pool->getMaterial("UnlitUntextured"));
 	
 	xBox = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.08, 0.08, 0.08);
 	xBox->color.setColorHexFromString(TRANSGIZMO_X_COLOR);
@@ -360,6 +364,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	xBox->depthTest = false;
 	scaleDecorators->addChild(xBox);
 	xBox->setForceMaterial(true);
+	xBox->setMaterial(pool->getMaterial("UnlitUntextured"));
 	
 	zBox = new ScenePrimitive(ScenePrimitive::TYPE_BOX, 0.08, 0.08, 0.08);
 	zBox->color.setColorHexFromString(TRANSGIZMO_Z_COLOR);
@@ -368,6 +373,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	zBox->depthTest = false;	
 	scaleDecorators->addChild(zBox);
 	zBox->setForceMaterial(true);
+	zBox->setMaterial(pool->getMaterial("UnlitUntextured"));
 	
 	// ROTATE
 
@@ -376,26 +382,28 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	bgCircle->depthTest = false;
 //	bgCircle->billboardMode = true;
 	//rotateDectorators->addChild(bgCircle);
-	bgCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
+	bgCircle->setLineWidth(core->getRenderer()->getBackingResolutionScaleX());
 	bgCircle->setForceMaterial(true);
 	bgCircle->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+	bgCircle->setMaterial(pool->getMaterial("UnlitUntextured"));
 	
 	outerCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 3.0, 3.0, 32);
 	outerCircle->setColor(1.0, 1.0, 1.0, 1.0);
 	outerCircle->depthTest = false;
 	outerCircle->billboardMode = true;
 	rotateDectorators->addChild(outerCircle);
-	outerCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX() * 2.0);
+	outerCircle->setLineWidth(core->getRenderer()->getBackingResolutionScaleX() * 2.0);
 	outerCircle->setForceMaterial(true);
 	outerCircle->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+	outerCircle->setMaterial(pool->getMaterial("UnlitUntextured"));
 	
 	pitchCircle = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 1.55, 1.55, 64);
 	pitchCircle->color.setColorHexFromString(TRANSGIZMO_X_COLOR);
 	pitchCircle->depthTest = false;
 	pitchCircle->Yaw(90);	
 	rotateDectorators->addChild(pitchCircle);
-	pitchCircle->setMaterialByName("OneSidedLine");
-	pitchCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX() * 2.0);
+	pitchCircle->setMaterial(pool->getMaterial("OneSidedLine"));
+	pitchCircle->setLineWidth(core->getRenderer()->getBackingResolutionScaleX() * 2.0);
 	pitchCircle->setForceMaterial(true);
 	pitchCircle->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	
@@ -404,8 +412,8 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	yawCircle->depthTest = false;
 	yawCircle->Pitch(90);
 	rotateDectorators->addChild(yawCircle);
-	yawCircle->setMaterialByName("OneSidedLine");
-	yawCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX()* 2.0);
+	yawCircle->setMaterial(pool->getMaterial("OneSidedLine"));
+	yawCircle->setLineWidth(core->getRenderer()->getBackingResolutionScaleX()* 2.0);
 	yawCircle->setForceMaterial(true);
 	yawCircle->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	
@@ -413,8 +421,8 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	rollCircle->color.setColorHexFromString(TRANSGIZMO_Z_COLOR);
 	rollCircle->depthTest = false;
 	rotateDectorators->addChild(rollCircle);
-	rollCircle->setMaterialByName("OneSidedLine");
-	rollCircle->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX()* 2.0);
+	rollCircle->setMaterial(pool->getMaterial("OneSidedLine"));
+	rollCircle->setLineWidth(core->getRenderer()->getBackingResolutionScaleX()* 2.0);
 	rollCircle->setForceMaterial(true);
 	rollCircle->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	
@@ -501,7 +509,7 @@ TransformGizmo::TransformGizmo(Scene *targetScene, Camera *targetCamera) : Entit
 	visible = false;
 	enabled = false;
 	
-	coreInput = CoreServices::getInstance()->getCore()->getInput();
+	coreInput = core->getInput();
 	coreInput->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
 	coreInput->addEventListener(this, InputEvent::EVENT_MOUSEUP);
 	coreInput->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
@@ -1048,7 +1056,7 @@ Number TransformGizmo::getTransformPlaneAngle() {
 }
 
 Vector2 TransformGizmo::getCorrectedMousePosition() {
-	Vector2 localMouse = CoreServices::getInstance()->getInput()->getMousePosition();
+	Vector2 localMouse = core->getInput()->getMousePosition();
 	localMouse.x -= targetScene->sceneMouseRect.x;
 	localMouse.y -= targetScene->sceneMouseRect.y;
 	return localMouse;
@@ -1059,11 +1067,11 @@ Number TransformGizmo::get2dAngle() {
 	Polycode::Rectangle view = targetScene->sceneMouseRect;
 	Polycode::Rectangle camView = targetCamera->getViewport();
 	Vector2 origin = getScreenPosition(targetCamera->getProjectionMatrix(), targetCamera->getConcatenatedMatrix().Inverse(), camView);
-	origin.y = Services()->getCore()->getYRes() - origin.y;
+	origin.y = core->getYRes() - origin.y;
 	
 	
 	Vector2 localStart = mouseStart2d - origin;
-	Vector2 localMouse = CoreServices::getInstance()->getInput()->getMousePosition();
+	Vector2 localMouse = core->getInput()->getMousePosition();
 
 	
 	localMouse.x -= view.x;

@@ -22,6 +22,12 @@ function Resource:__getvar(name)
 		local __c = _G["size_t"]("__skip_ptr__")
 		__c.__ptr = retVal
 		return __c
+	elseif name == "platformData" then
+		local retVal = Polycode.Resource_get_platformData(self.__ptr)
+		if retVal == nil then return nil end
+		local __c = _G["RendererPlatformData"]("__skip_ptr__")
+		__c.__ptr = retVal
+		return __c
 	end
 	if EventDispatcher["__getvar"] ~= nil then
 		return EventDispatcher.__getvar(self, name)
@@ -34,6 +40,9 @@ function Resource:__setvar(name,value)
 		return true
 	elseif name == "resourceFileTime" then
 		Polycode.Resource_set_resourceFileTime(self.__ptr, value.__ptr)
+		return true
+	elseif name == "platformData" then
+		Polycode.Resource_set_platformData(self.__ptr, value.__ptr)
 		return true
 	end
 	if EventDispatcher["__setvar"] ~= nil then
@@ -60,10 +69,6 @@ function Resource:Resource(...)
 	if self.__ptr == nil and arg[1] ~= "__skip_ptr__" then
 		self.__ptr = Polycode.Resource(unpack(arg))
 	end
-end
-
-function Resource:reloadResource()
-	local retVal =  Polycode.Resource_reloadResource(self.__ptr)
 end
 
 function Resource:getResourceName()

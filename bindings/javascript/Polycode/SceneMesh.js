@@ -1,8 +1,8 @@
 require('Polycode/Entity')
 
-function SceneMesh(fileName) {
+function SceneMesh() {
 	if(arguments[0] != "__skip_ptr__") {
-		this.__ptr = Polycode.SceneMesh(fileName)
+		this.__ptr = Polycode.SceneMesh()
 	}
 	Object.defineProperties(this, {
 		'lineWidth': { enumerable: true, configurable: true, get: SceneMesh.prototype.__get_lineWidth, set: SceneMesh.prototype.__set_lineWidth},
@@ -105,12 +105,6 @@ SceneMesh.prototype.getMaterial = function() {
 	return retVal
 }
 
-SceneMesh.prototype.loadSkeleton = function(fileName) {
-	var retVal = new Skeleton("__skip_ptr__")
-	retVal.__ptr = Polycode.SceneMesh_loadSkeleton(this.__ptr, fileName)
-	return retVal
-}
-
 SceneMesh.prototype.clearMaterial = function() {
 	Polycode.SceneMesh_clearMaterial(this.__ptr)
 }
@@ -143,10 +137,6 @@ SceneMesh.prototype.getFilename = function() {
 
 SceneMesh.prototype.setFilename = function(fileName) {
 	Polycode.SceneMesh_setFilename(this.__ptr, fileName)
-}
-
-SceneMesh.prototype.loadFromFile = function(fileName) {
-	Polycode.SceneMesh_loadFromFile(this.__ptr, fileName)
 }
 
 SceneMesh.prototype.customHitDetection = function(ray) {

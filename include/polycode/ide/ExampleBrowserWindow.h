@@ -36,7 +36,7 @@ public:
 
 class ExampleBrowserWindow : public UIWindow {
 	public:
-	ExampleBrowserWindow();
+	ExampleBrowserWindow(Core *core, ResourcePool *pool);
 	~ExampleBrowserWindow();
 	
 	void parseTemplatesIntoTree(UITree *tree, OSFileEntry folder);

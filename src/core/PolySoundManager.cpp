@@ -101,28 +101,25 @@ Sound *SoundManager::stopRecording(bool generateFloatBuffer) {
 }
 
 void SoundManager::registerSound(Sound *sound) {
-	Services()->getCore()->lockMutex(mixer->mixerMutex);
+	mixer->mixerMutex.lock();
 	mixer->sounds.push_back(sound);
-	Services()->getCore()->unlockMutex(mixer->mixerMutex);
+	mixer->mixerMutex.unlock();
 }
 
 void SoundManager::unregisterSound(Sound *sound) {
-	Services()->getCore()->lockMutex(mixer->mixerMutex);
+	mixer->mixerMutex.lock();
 	for(int i=0; i < mixer->sounds.size(); i++) {
 		if(mixer->sounds[i] == sound) {
 			mixer->sounds.erase(mixer->sounds.begin()+i);
-			Services()->getCore()->unlockMutex(mixer->mixerMutex);
+			mixer->mixerMutex.unlock();
 			return;
 		}
 	}
-	Services()->getCore()->unlockMutex(mixer->mixerMutex);
+	mixer->mixerMutex.unlock();
 }
 
 void SoundManager::setAudioInterface(AudioInterface *audioInterface) {
 	this->audioInterface = audioInterface;
-	if (!mixer->mixerMutex) {
-		mixer->mixerMutex = Services()->getCore()->createMutex();
-	}
 	if(audioInterface) {
 		audioInterface->setMixer(mixer);
 	}
@@ -155,18 +152,16 @@ inline Number mixSamples(Number A, Number B) {
 }
 
 AudioMixer::AudioMixer() {
-	mixerMutex = NULL;
 }
 
 AudioMixer::~AudioMixer() {
-	delete mixerMutex;
 }
 
 void AudioMixer::mixIntoBuffer(int16_t *buffer, unsigned int numSamples) {
-	mixerMutex->lock();
+	mixerMutex.lock();
 	if (sounds.size() == 0) {
 		memset(buffer, 0, sizeof(int16_t) * numSamples * POLY_NUM_CHANNELS);
-		mixerMutex->unlock();
+		mixerMutex.unlock();
 		return;
 	}
 
@@ -204,7 +199,7 @@ void AudioMixer::mixIntoBuffer(int16_t *buffer, unsigned int numSamples) {
 			bufferPtr++;
 		}
 	}
-	 mixerMutex->unlock();
+	 mixerMutex.unlock();
 }
 
 void SoundManager::Update() {

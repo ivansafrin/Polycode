@@ -24,14 +24,13 @@
 #include "polycode/modules/ui/PolyUIVSizer.h"
 #include "polycode/core/PolyConfig.h"
 #include "polycode/core/PolyInputEvent.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyCore.h"
 #include "polycode/modules/ui/PolyUIEvent.h"
 
 using namespace Polycode;
 
-UIVSizer::UIVSizer(Number width, Number height, Number mainHeight, bool topSizer) : UIElement() {
-
+UIVSizer::UIVSizer(Core *core, ResourcePool *pool, Number width, Number height, Number mainHeight, bool topSizer) : UIElement(core)
+{
 	minimumSize = 100;
 	proportionalResize = false;
 
@@ -40,7 +39,7 @@ UIVSizer::UIVSizer(Number width, Number height, Number mainHeight, bool topSizer
 	this->topSizer = topSizer;
 	this->mainHeight = mainHeight;
 	
-	separatorBgShape = new UIRect(width,1);
+	separatorBgShape = new UIRect(core, pool, width,1);
 	separatorBgShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	separatorBgShape->setColor(0.0, 0.0, 0.0, 1.0); 
 	addChild(separatorBgShape);
@@ -52,7 +51,7 @@ UIVSizer::UIVSizer(Number width, Number height, Number mainHeight, bool topSizer
 	firstElement = NULL;
 	secondElement = NULL;
 	
-	separatorHitShape = new UIRect(width,8);
+	separatorHitShape = new UIRect(core, pool, width,8);
 	separatorHitShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	separatorHitShape->setColor(1.0, 0.0, 0.0, 0.5);	
 	addChild(separatorHitShape);
@@ -66,9 +65,7 @@ UIVSizer::UIVSizer(Number width, Number height, Number mainHeight, bool topSizer
 	separatorHitShape->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);			
 	separatorHitShape->visible = false;
 	
-	coreInput = CoreServices::getInstance()->getCore()->getInput();
-	
-	coreInput->addEventListener(this, InputEvent::EVENT_MOUSEMOVE); 
+	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
 	
 	separatorHitShape->processInputEvents = true;
 	
@@ -78,7 +75,7 @@ UIVSizer::UIVSizer(Number width, Number height, Number mainHeight, bool topSizer
 }
 
 UIVSizer::~UIVSizer() {
-	coreInput->removeAllHandlersForListener(this);
+	core->getInput()->removeAllHandlersForListener(this);
 			
 	childElements->ownsChildren = false;
 	if(!ownsChildren) {
@@ -103,15 +100,15 @@ void UIVSizer::handleEvent(Event *event) {
 			break;
 			case InputEvent::EVENT_MOUSEMOVE:			
 			case InputEvent::EVENT_MOUSEOVER:
-				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_RESIZE_UP_DOWN);
+				core->setCursor(Core::CURSOR_RESIZE_UP_DOWN);
 			break;
 			case InputEvent::EVENT_MOUSEOUT:
-				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);
+				core->setCursor(Core::CURSOR_ARROW);
 			break;							
 		}
 	}
 	
-	if(event->getDispatcher() == coreInput) {
+	if(event->getDispatcher() == core->getInput()) {
 		InputEvent *inputEvent = (InputEvent*)event;
 		switch (event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEMOVE:

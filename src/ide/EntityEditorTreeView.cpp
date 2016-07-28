@@ -22,8 +22,8 @@
 
 #include "polycode/ide/EntityEditorTreeView.h"
 
-EntityEditorTreeSheet::EntityEditorTreeSheet() : PropSheet("LIST VIEW", "list_view"){
-	treeContainer = new UITreeContainer("folder.png", "Root", 10, 10);
+EntityEditorTreeSheet::EntityEditorTreeSheet(Core *core, ResourcePool *pool) : PropSheet(core, pool, "LIST VIEW", "list_view"){
+	treeContainer = new UITreeContainer(core, pool, "folder.png", "Root", 10, 10);
 	contents->addChild(treeContainer);
 	treeContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
 	treeContainer->setPosition(-20, -5);
@@ -34,20 +34,19 @@ EntityEditorTreeSheet::EntityEditorTreeSheet() : PropSheet("LIST VIEW", "list_vi
 	dontSendSelectionEvent = false;
 }
 
-EntityEditorTreeView::EntityEditorTreeView() : UIElement() {
+EntityEditorTreeView::EntityEditorTreeView(Core *core, ResourcePool *pool) : UIElement(core) {
 
-	entityProps = new PropList("HIERARCHY");
+	entityProps = new PropList(core, pool, "HIERARCHY");
 	addChild(entityProps);
 	
-	layerSheet = new LayerSheet();
+	layerSheet = new LayerSheet(core, pool);
 	entityProps->addPropSheet(layerSheet);
 	layerSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 	
 	
-	treeSheet = new EntityEditorTreeSheet();
+	treeSheet = new EntityEditorTreeSheet(core, pool);
 	entityProps->addPropSheet(treeSheet);
 	
-
 }
 
 

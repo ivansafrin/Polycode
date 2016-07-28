@@ -23,19 +23,19 @@
 #include "polycode/modules/ui/PolyUICheckBox.h"
 #include "polycode/core/PolyInputEvent.h"
 #include "polycode/core/PolyLabel.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyConfig.h"
 #include "polycode/core/PolyRenderer.h"
 
 using namespace Polycode;
 
-UICheckBox::UICheckBox(String caption, bool checked) : UIElement() {
-
-	Config *conf = CoreServices::getInstance()->getConfig();	
+UICheckBox::UICheckBox(Core *core, ResourcePool *pool, String caption, bool checked) : UIElement(core) {
+	
+	ConfigRef conf = core->getConfig();
+	
 	Number uiScale = conf->getNumericValue("Polycode", "uiScale");
 	
 	String fontName = conf->getStringValue("Polycode", "uiCheckBoxFont");
-	int fontSize = conf->getNumericValue("Polycode", "uiCheckBoxFontSize"); 
+	int fontSize = conf->getNumericValue("Polycode", "uiCheckBoxFontSize");
 	String checkImage = conf->getStringValue("Polycode", "uiCheckBoxCheckedImage");
 	String uncheckImage = conf->getStringValue("Polycode", "uiCheckBoxUncheckedImage");
 	Number checkboxTextOffsetX = conf->getNumericValue("Polycode", "uiCheckBoxLabelOffsetX");
@@ -43,15 +43,15 @@ UICheckBox::UICheckBox(String caption, bool checked) : UIElement() {
 	
 	this->checked = checked;
 	
-	buttonImageChecked = new UIImage(checkImage);
+	buttonImageChecked = new UIImage(core, pool, checkImage);
 	buttonImageChecked->Resize(buttonImageChecked->getWidth() / uiScale, buttonImageChecked->getHeight() / uiScale);
 	buttonImageChecked->visible = checked;
 
-	buttonImageUnchecked = new UIImage(uncheckImage);
+	buttonImageUnchecked = new UIImage(core, pool, uncheckImage);
 	buttonImageUnchecked->visible = !checked;
 	buttonImageUnchecked->Resize(buttonImageUnchecked->getWidth() / uiScale, buttonImageUnchecked->getHeight() / uiScale);
 	
-	captionLabel = new UILabel(caption, fontSize, fontName, Label::ANTIALIAS_FULL);
+	captionLabel = new UILabel(core, pool, caption, fontSize, fontName, Label::ANTIALIAS_FULL);
 	captionLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);	   
 	addChild(captionLabel);
 	captionLabel->setPosition(buttonImageChecked->getWidth() + checkboxTextOffsetX, checkboxTextOffsetY);

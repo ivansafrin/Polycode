@@ -113,13 +113,13 @@ PropEvent::~PropEvent() {
 
 }
 
-PropList::PropList(String caption) : UIElement() {
+PropList::PropList(Core *core, ResourcePool *pool, const String &caption) : UIElement(core) {
 
 	setAnchorPoint(-1.0, -1.0, 0.0);
 
-	bg = new UIRect(10,10);
+	bg = new UIRect(core, pool, 10,10);
 	bg->setAnchorPoint(-1.0, -1.0, 0.0);
-	bg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiBgColor"));
+	bg->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiBgColor"));
 	
 	addFocusChild(bg);
 	bg->blockMouseInput = true;
@@ -127,21 +127,21 @@ PropList::PropList(String caption) : UIElement() {
 	
 	blockMouseInput = true;
 
-	bg2 = new UIRect(10,10);
+	bg2 = new UIRect(core, pool, 10,10);
 	bg2->setAnchorPoint(-1.0, -1.0, 0.0);
-	bg2->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+	bg2->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
 	addFocusChild(bg2);
 
-	label = new UILabel(caption, 18, "section", Label::ANTIALIAS_FULL);
-	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
+	label = new UILabel(core, pool, caption, 18, "section", Label::ANTIALIAS_FULL);
+	label->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addFocusChild(label);
 	label->setPosition(10, 3);
 
-	propContents = new UIElement();
+	propContents = new UIElement(core);
 	propContents->processInputEvents = true;
 		
-	scrollContainer = new UIScrollContainer(propContents, false, true, 100, 100);
+	scrollContainer = new UIScrollContainer(core, pool, propContents, false, true, 100, 100);
 	scrollContainer->setPosition(0, 30);
 	addFocusChild(scrollContainer);
 	
@@ -157,7 +157,7 @@ PropList::~PropList() {
 		
 void PropList::updateProps() {
 	for(int i=0; i < props.size(); i++) {
-		props[i]->Update();
+		props[i]->Update(0.0);
 	}
 	updateSize();
 }
@@ -211,34 +211,31 @@ void PropList::addPropSheet(PropSheet *sheet) {
 	sheet->addEventListener(this, Event::CHANGE_EVENT); 
 }
 
-PropSheet::PropSheet(String caption, String type) : UIElement() {
-	this->caption = caption;
-	this->type = type;
+PropSheet::PropSheet(Core *core, ResourcePool *pool, const String &caption, String type) : UIElement(core), caption(caption), type(type), customUndoHandler(false), resourcePool(pool)
+{
 	
-	customUndoHandler = false;
-	
-	bg = new UIRect(30,30);
+	bg = new UIRect(core, pool, 30,30);
 	addFocusChild(bg);
-	bg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiSmallHeaderBgColor"));
+	bg->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiSmallHeaderBgColor"));
 	bg->setAnchorPoint(-1.0, -1.0, 0.0);
 	
-	SceneLabel *label = new SceneLabel(caption, 16, "section", Label::ANTIALIAS_FULL);
-	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiSectionFontColor"));
+	SceneLabel *label = new SceneLabel(pool->getMaterial("Unlit"), caption, 16, pool->getFont("section"), Label::ANTIALIAS_FULL);
+	label->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiSectionFontColor"));
 	label->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	addChild(label);
 	label->setPosition(25, 5);
 	
-	contents = new UIElement();
+	contents = new UIElement(core);
 	contents->processInputEvents = true;
 	addFocusChild(contents);
 	contents->setPosition(20,35);
 	
-	collapseButton = new UIImageButton("main/collapse.png", 1.0, 12, 12);
+	collapseButton = new UIImageButton(core, pool, "main/collapse.png", 1.0, 12, 12);
 	addFocusChild(collapseButton);
 	collapseButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	collapseButton->setPosition(5, 9);
 
-	expandButton = new UIImageButton("main/expand.png", 1.0, 12, 12);
+	expandButton = new UIImageButton(core, pool, "main/expand.png", 1.0, 12, 12);
 	addFocusChild(expandButton);
 	expandButton->addEventListener(this, UIEvent::CLICK_EVENT); 
 	expandButton->setPosition(5, 9);
@@ -340,15 +337,14 @@ void PropProp::setPropName(String newName) {
 	label->setText(newName);
 }
 
-PropProp::PropProp(String caption, String type) : UIElement() {
-
+PropProp::PropProp(Core *core, ResourcePool *pool, const String &caption, String type) : UIElement(core), resourcePool(pool) {
 	suppressChangeEvent = false;
 	propType = type;
-	label = new UILabel(caption);
+	label = new UILabel(core, pool, caption);
 	label->setPosition(0, 5);
 	addFocusChild(label);
 	
-	propContents = new UIElement();
+	propContents = new UIElement(core);
 	propContents->processInputEvents = true;
 	addFocusChild(propContents);
 	propContents->setPosition(100, 0);
@@ -360,8 +356,8 @@ PropProp::~PropProp() {
 
 }
 
-ButtonProp::ButtonProp(const String &caption, UIElement *focusParent) : PropProp("", "ButtonProp") {
-	button = new UIButton(caption, 100);
+ButtonProp::ButtonProp(Core *core, ResourcePool *pool, const String &caption, UIElement *focusParent) : PropProp(core, pool, "", "ButtonProp") {
+	button = new UIButton(core, pool, caption, 100);
 	addChild(button);
 	focusParent->registerFocusChild(button);
 	setHeight(25);
@@ -380,28 +376,28 @@ void ButtonProp::setPropWidth(Number width) {
 }
 
 
-Vector3Prop::Vector3Prop(String caption, UIElement *focusParent) : PropProp(caption, "Vector3") {
+Vector3Prop::Vector3Prop(Core *core, ResourcePool *pool, const String &caption, UIElement *focusParent) : PropProp(core, pool, caption, "Vector3") {
 	
 	xInput = NULL;
 	yInput = NULL;
 	zInput = NULL;
 	
-	labelX = new UILabel("X:", 11);
+	labelX = new UILabel(core, pool, "X:", 11);
 	labelX->color.a = 1.0;
 	propContents->addChild(labelX);
 	labelX->setPosition(-20, 5);
 	
-	labelY = new UILabel("Y:", 11);
+	labelY = new UILabel(core, pool, "Y:", 11);
 	labelY->color.a = 1.0;
 	propContents->addChild(labelY);
 	labelY->setPosition(-20, 25);
 
-	labelZ = new UILabel("Z:", 11);
+	labelZ = new UILabel(core, pool, "Z:", 11);
 	labelZ->color.a = 1.0;
 	propContents->addChild(labelZ);
 	labelZ->setPosition(-20, 45);
 	
-	xInput = new UITextInput(false, 50, 12);
+	xInput = new UITextInput(core, pool, false, 50, 12);
 	xInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	xInput->setText("0");
 	xInput->setNumberOnly(true);
@@ -409,7 +405,7 @@ Vector3Prop::Vector3Prop(String caption, UIElement *focusParent) : PropProp(capt
 	focusParent->registerFocusChild(xInput);
 	xInput->setPosition(0, 0);
 
-	yInput = new UITextInput(false, 50, 12);
+	yInput = new UITextInput(core, pool, false, 50, 12);
 	yInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	yInput->setText("0");
 	yInput->setNumberOnly(true);
@@ -417,7 +413,7 @@ Vector3Prop::Vector3Prop(String caption, UIElement *focusParent) : PropProp(capt
 	focusParent->registerFocusChild(yInput);
 	yInput->setPosition(0, 20);
 
-	zInput = new UITextInput(false, 50, 12);
+	zInput = new UITextInput(core, pool, false, 50, 12);
 	zInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	zInput->setText("0");
 	zInput->setNumberOnly(true);
@@ -474,14 +470,14 @@ Vector3Prop::~Vector3Prop() {
 	
 }
 
-Vector2Prop::Vector2Prop(String caption, UIElement *focusParent) : PropProp(caption, "Vector2") {
+Vector2Prop::Vector2Prop(Core *core, ResourcePool *pool, const String &caption, UIElement *focusParent) : PropProp(core, pool, caption, "Vector2") {
 
-	labelX = new UILabel("X:", 11);
+	labelX = new UILabel(core, pool, "X:", 11);
 	labelX->color.a = 1.0;
 	propContents->addChild(labelX);
 	labelX->setPosition(-20, 6);	
 
-	labelY = new UILabel("Y:", 11);
+	labelY = new UILabel(core, pool, "Y:", 11);
 	labelY->color.a = 1.0;
 	propContents->addChild(labelY);
 	labelY->setPosition(60, 6); 
@@ -489,7 +485,7 @@ Vector2Prop::Vector2Prop(String caption, UIElement *focusParent) : PropProp(capt
 	positionX = NULL;
 	positionY = NULL;
 
-	positionX = new UITextInput(false, 50, 12);
+	positionX = new UITextInput(core, pool, false, 50, 12);
 	positionX->addEventListener(this, UIEvent::CHANGE_EVENT);
 	positionX->setText("0");
 	positionX->setNumberOnly(true);
@@ -497,7 +493,7 @@ Vector2Prop::Vector2Prop(String caption, UIElement *focusParent) : PropProp(capt
 	focusParent->registerFocusChild(positionX);
 	positionX->setPosition(0, 0);
 
-	positionY = new UITextInput(false, 50, 12);
+	positionY = new UITextInput(core, pool, false, 50, 12);
 	positionY->setText("0");
 	positionY->addEventListener(this, UIEvent::CHANGE_EVENT);	
 	positionY->setNumberOnly(true);
@@ -558,13 +554,13 @@ Vector2Prop::~Vector2Prop() {
 
 }
 
-RemovableStringProp::RemovableStringProp(const String &caption) : PropProp("", "RemovableStringProp") {
+RemovableStringProp::RemovableStringProp(Core *core, ResourcePool *pool, const String &caption) : PropProp(core, pool, "", "RemovableStringProp") {
 	
-	label = new UILabel(caption, 12);
+	label = new UILabel(core, pool, caption, 12);
 	addFocusChild(label);
 	label->setPositionX(30);
 	
-	removeButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
+	removeButton = new UIImageButton(core, pool, "main/remove_icon.png", 1.0, 12, 12);
 	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addFocusChild(removeButton);
 	removeButton->setPosition(0, 2);
@@ -586,11 +582,11 @@ void RemovableStringProp::handleEvent(Event *event) {
 	}
 }
 
-LayerProp::LayerProp(SceneEntityInstance *instance, SceneEntityInstanceLayer *layer) : PropProp("", "Layer") {
+LayerProp::LayerProp(Core *core, ResourcePool *pool, SceneEntityInstance *instance, SceneEntityInstanceLayer *layer) : PropProp(core, pool, "", "Layer") {
 	layerID = 0;
 
-	bgRect = new UIRect(1.0, 1.0);
-	bgRect->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+	bgRect = new UIRect(core, pool, 1.0, 1.0);
+	bgRect->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 
 	propContents->addFocusChild(bgRect);
 	
@@ -599,31 +595,31 @@ LayerProp::LayerProp(SceneEntityInstance *instance, SceneEntityInstanceLayer *la
 	
 	layerID = layer->layerID;
 	
-	removeLayerButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
+	removeLayerButton = new UIImageButton(core, pool, "main/remove_icon.png", 1.0, 12, 12);
 	propContents->addFocusChild(removeLayerButton);
 	removeLayerButton->setPosition(-95, 5.0);
 	removeLayerButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-	hideLayerButton = new UIImageButton("entityEditor/visible_button.png", 1.0, 24, 24);
+	hideLayerButton = new UIImageButton(core, pool, "entityEditor/visible_button.png", 1.0, 24, 24);
 	propContents->addFocusChild(hideLayerButton);
 	hideLayerButton->setPosition(-95, 0.0);
 	hideLayerButton->addEventListener(this, UIEvent::CLICK_EVENT);
 
 	
-	showLayerButton = new UIImageButton("entityEditor/invisible_button.png", 1.0, 24, 24);
+	showLayerButton = new UIImageButton(core, pool, "entityEditor/invisible_button.png", 1.0, 24, 24);
 	propContents->addFocusChild(showLayerButton);
 	showLayerButton->setPosition(-95, 0.0);
 	showLayerButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	showLayerButton->visible = false;
 	showLayerButton->enabled = false;
 	
-	moreButton = new UIImageButton("entityEditor/button_more.png", 1.0, 24, 24);
+	moreButton = new UIImageButton(core, pool, "entityEditor/button_more.png", 1.0, 24, 24);
 	propContents->addFocusChild(moreButton);
 	moreButton->setPosition(-70, 0.0);
 	moreButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
 	
-	layerName = new UILabel(layer->name, 12);
+	layerName = new UILabel(core, pool, layer->name, 12);
 	layerName->setColor(1.0, 1.0, 1.0, 1.0);
 	propContents->addFocusChild(layerName);
 	layerName->setPosition(-40, 5.0);
@@ -710,20 +706,20 @@ void LayerProp::setPropWidth(Number width) {
 	removeLayerButton->setPosition(width-PROP_PADDING-propContents->getPosition().x-20, 5.0);
 }
 
-CustomProp::CustomProp(String key, String value) : PropProp("", "Custom") {
-	keyEntry = new UITextInput(false, 120, 12);
+CustomProp::CustomProp(Core *core, ResourcePool *pool, String key, String value) : PropProp(core, pool, "", "Custom") {
+	keyEntry = new UITextInput(core, pool, false, 120, 12);
 	keyEntry->setText(key);
 	keyEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
 	propContents->addFocusChild(keyEntry);
 	keyEntry->setPosition(-90, 0);
 
-	valueEntry = new UITextInput(false, 120, 12);
+	valueEntry = new UITextInput(core, pool, false, 120, 12);
 	valueEntry->setText(value); 
 	valueEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
 	propContents->addFocusChild(valueEntry);
 	valueEntry->setPosition(45, 0);
 	
-	removeButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
+	removeButton = new UIImageButton(core, pool, "main/remove_icon.png", 1.0, 12, 12);
 	removeButton->addEventListener(this, UIEvent::CLICK_EVENT); 
 	propContents->addFocusChild(removeButton);
 	removeButton->setPosition(-110, 6);
@@ -771,9 +767,9 @@ String CustomProp::getKey() {
 }
 
 
-StringProp::StringProp(String caption, UIElement *focusParent) : PropProp(caption, "String") {
+StringProp::StringProp(Core *core, ResourcePool *pool, const String &caption, UIElement *focusParent) : PropProp(core, pool, caption, "String") {
 
-	stringEntry = new UITextInput(false, 150, 12);
+	stringEntry = new UITextInput(core, pool, false, 150, 12);
 	stringEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
 	stringEntry->setText("");
 	propContents->addChild(stringEntry);
@@ -821,15 +817,15 @@ StringProp::~StringProp() {
 
 }
 
-SliderProp::SliderProp(String caption, Number min, Number max) : PropProp(caption, "Slider") {
+SliderProp::SliderProp(Core *core, ResourcePool *pool, const String &caption, Number min, Number max) : PropProp(core, pool, caption, "Slider") {
 	
-	slider = new UIHSlider(min, max, 100);
+	slider = new UIHSlider(core, pool, min, max, 100);
 	slider->addEventListener(this, UIEvent::CHANGE_EVENT);
 	slider->setPosition(0, 8);
 	slider->setContinuous(false);
 	propContents->addFocusChild(slider);
 	
-	valueLabel = new UILabel("0.0", 10);
+	valueLabel = new UILabel(core, pool, "0.0", 10);
 	propContents->addFocusChild(valueLabel);
 	valueLabel->setPosition(120, 5);
 	valueLabel->color.a = 1.0;
@@ -880,9 +876,9 @@ SliderProp::~SliderProp() {
 
 }
 
-NumberProp::NumberProp(String caption, UIElement *focusParent) : PropProp(caption, "Number") {
+NumberProp::NumberProp(Core *core, ResourcePool *pool, const String &caption, UIElement *focusParent) : PropProp(core, pool, caption, "Number") {
 
-	numberEntry = new UITextInput(false, 50, 20);
+	numberEntry = new UITextInput(core, resourcePool, false, 50, 20);
 	numberEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
 	numberEntry->setText("0");
 	numberEntry->setNumberOnly(true);
@@ -938,9 +934,9 @@ NumberProp::~NumberProp() {
 
 }
 
-ColorProp::ColorProp(String caption) : PropProp(caption, "Color") {
+ColorProp::ColorProp(Core *core, ResourcePool *pool, const String &caption) : PropProp(core, pool, caption, "Color") {
 
-	colorEntry = new UIColorBox(globalColorPicker, Color(), 45, 25);
+	colorEntry = new UIColorBox(core, pool, globalColorPicker, Color(), 45, 25);
 	colorEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
 	colorEntry->setPosition(-2, 0);
 	propContents->addFocusChild(colorEntry);
@@ -985,8 +981,8 @@ ColorProp::~ColorProp() {
 
 }
 
-ComboProp::ComboProp(String caption) : PropProp(caption, "Combo") {
-	comboEntry = new UIComboBox(globalMenu, 150);
+ComboProp::ComboProp(Core *core, ResourcePool *pool, const String &caption) : PropProp(core, pool, caption, "Combo") {
+	comboEntry = new UIComboBox(core, pool, globalMenu, 150);
 	comboEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
 	propContents->addFocusChild(comboEntry);
 	comboEntry->setPosition(-3, 0);
@@ -1030,9 +1026,9 @@ ComboProp::~ComboProp() {
 
 }
 
-BoolProp::BoolProp(String caption) : PropProp(caption, "Bool") {
+BoolProp::BoolProp(Core *core, ResourcePool *pool, const String &caption) : PropProp(core, pool, caption, "Bool") {
 
-	checkEntry = new UICheckBox("", false);
+	checkEntry = new UICheckBox(core, pool, "", false);
 	checkEntry->addEventListener(this, UIEvent::CHANGE_EVENT);
 	checkEntry->setPosition(0, 4);
 	propContents->addFocusChild(checkEntry);
@@ -1072,20 +1068,20 @@ BoolProp::~BoolProp() {
 }
 
 
-SoundProp::SoundProp(String caption) : PropProp(caption, "Sound"){
+SoundProp::SoundProp(Core *core, ResourcePool *pool, const String &caption) : PropProp(core, pool, caption, "Sound"){
 
-	soundFile = new UILabel("", 11);
+	soundFile = new UILabel(core, pool, "", 11);
 	soundFile->setPosition(0, 5);
 	propContents->addFocusChild(soundFile); 
 	soundFile->color.a = 1.0;
 
-	playButton = new UIButton("Play", 50);
+	playButton = new UIButton(core, pool, "Play", 50);
 	propContents->addFocusChild(playButton);
 	playButton->setPosition(0, 25);
 	playButton->addEventListener(this, UIEvent::CLICK_EVENT);
 
 
-	changeButton = new UIButton("Change", 80);
+	changeButton = new UIButton(core, pool, "Change", 80);
 	propContents->addFocusChild(changeButton);
 	changeButton->setPosition(60, 25);
 	changeButton->addEventListener(this, UIEvent::CLICK_EVENT);
@@ -1144,7 +1140,7 @@ void SoundProp::set(String soundPath) {
 	lastData = currentData;
 	currentData = soundPath;
 	
-	previewSound = new Sound(soundPath);	
+	previewSound = new Sound(core, soundPath);
 	soundFile->setText(soundPath);
 }
 
@@ -1155,10 +1151,10 @@ String SoundProp::get() {
 	return "";
 }
 
-BezierRGBACurveProp::BezierRGBACurveProp(String caption) : PropProp(caption, "BezierRGBA") {
+BezierRGBACurveProp::BezierRGBACurveProp(Core *core, ResourcePool *pool, const String &caption) : PropProp(core, pool, caption, "BezierRGBA") {
 
 
-	changeButton = new UIButton("Edit", 120);
+	changeButton = new UIButton(core, pool, "Edit", 120);
 	propContents->addFocusChild(changeButton);
 	changeButton->setPosition(0, 0);
 	changeButton->addEventListener(this, UIEvent::CLICK_EVENT);
@@ -1188,11 +1184,11 @@ void BezierRGBACurveProp::handleEvent(Event *event) {
 	}
 }
 
-BezierCurveProp::BezierCurveProp(String caption, String curveName) : PropProp(caption, "BezierCurve") {
+BezierCurveProp::BezierCurveProp(Core *core, ResourcePool *pool, const String &caption, String curveName) : PropProp(core, pool, caption, "BezierCurve") {
 
 	this->curveName = curveName;
 
-	changeButton = new UIButton("Edit", 120);
+	changeButton = new UIButton(core, pool, "Edit", 120);
 	propContents->addFocusChild(changeButton);
 	changeButton->setPosition(0, 0);
 	changeButton->addEventListener(this, UIEvent::CLICK_EVENT);
@@ -1216,25 +1212,26 @@ void BezierCurveProp::handleEvent(Event *event) {
 	}
 }
 
-MaterialProp::MaterialProp(const String &caption) : PropProp(caption, "Material"){
+MaterialProp::MaterialProp(Core *core, ResourcePool *pool,
+const String &caption) : PropProp(core, pool, caption, "Material"){
 	currentMaterial = NULL;
 	
-	previewShape = new UIRect(48, 48);
+	previewShape = new UIRect(core, pool, 48, 48);
 	previewShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	previewShape->setPosition(2, 1);
 	propContents->addFocusChild(previewShape);
 	
-	changeButton = new UIButton("Change", 80);
+	changeButton = new UIButton(core, pool, "Change", 80);
 	propContents->addFocusChild(changeButton);
 	changeButton->setPosition(60, 5);
 	changeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-	materialLabel = new UILabel("", 12, "sans");
+	materialLabel = new UILabel(core, pool, "", 12, "sans");
 	propContents->addFocusChild(materialLabel);
 	materialLabel->setPosition(-100, 32);
 	materialLabel->color.a = 1.0;
 	
-	previewScene = new Scene(Scene::SCENE_3D);
+	previewScene = new Scene(core, Scene::SCENE_3D);
 	
 	previewScene->rootEntity.setOwnsChildrenRecursive(true);
 	
@@ -1242,10 +1239,9 @@ MaterialProp::MaterialProp(const String &caption) : PropProp(caption, "Material"
 	previewBg->Yaw(45.0);
 	previewBg->backfaceCulled = false;
 	
-	previewBg->setMaterialByName("Unlit");
-	
-	ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
-	std::shared_ptr<Texture> tex = std::static_pointer_cast<Texture>(pool->loadResource("materialEditor/material_grid.png"));
+	previewBg->setMaterial(pool->getMaterial("Unlit"));
+
+	std::shared_ptr<Texture> tex = pool->loadTexture("materialEditor/material_grid.png");
 	if(previewBg->getNumShaderPasses()) {
 		previewBg->getShaderPass(0).shaderBinding->setTextureForParam("diffuse", tex);
 	}
@@ -1314,7 +1310,7 @@ void MaterialProp::handleEvent(Event *event) {
 		globalFrame->assetBrowser->addEventListener(this, UIEvent::OK_EVENT);
 		
 		std::vector<ResourcePool*> pools;
-		pools.push_back(CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+		pools.push_back(core->getResourceManager()->getGlobalPool());
 		for(int i=0; i < entityInstance->getNumLinkedResourePools(); i++) {
 			pools.push_back(entityInstance->getLinkedResourcePoolAtIndex(i));
 		}
@@ -1340,18 +1336,18 @@ void MaterialProp::setPropWidth(Number width) {
 }
 
 
-TextureProp::TextureProp(String caption) : PropProp(caption, "Texture"){
-	previewShape = new UIRect(48, 48);
+TextureProp::TextureProp(Core *core, ResourcePool *pool, const String &caption) : PropProp(core, pool, caption, "Texture"){
+	previewShape = new UIRect(core, pool, 48, 48);
 	previewShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	previewShape->setPosition(2, 1);
 	propContents->addFocusChild(previewShape);
 
-	changeButton = new UIButton("Change", 80);
+	changeButton = new UIButton(core, pool, "Change", 80);
 	propContents->addFocusChild(changeButton);
 	changeButton->setPosition(60, 5);
 	changeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-	textureLabel = new UILabel("", 12, "sans");
+	textureLabel = new UILabel(core, pool, "", 12, "sans");
 	propContents->addFocusChild(textureLabel);
 	textureLabel->setPosition(-100, 32);
 	textureLabel->color.a = 1.0;
@@ -1370,7 +1366,7 @@ TextureProp::~TextureProp() {
 }
 
 void TextureProp::setPropData(PolycodeEditorPropActionData* data) {
-	ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
+	ResourcePool *pool = core->getResourceManager()->getGlobalPool();
 	set(std::static_pointer_cast<Texture>(pool->loadResource(data->stringVal)));
 	dispatchEvent(new Event(), Event::CHANGE_EVENT);
 }
@@ -1379,7 +1375,7 @@ void TextureProp::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == globalFrame->assetBrowser && event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
 		String texturePath = globalFrame->assetBrowser->getSelectedAssetPath();
-		ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
+		ResourcePool *pool = core->getResourceManager()->getGlobalPool();
 		set(std::static_pointer_cast<Texture>(pool->loadResource(texturePath)));
 		globalFrame->assetBrowser->removeAllHandlersForListener(this);
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
@@ -1421,17 +1417,17 @@ std::shared_ptr<Texture> TextureProp::get() {
 	return previewShape->getTexture();
 }
 
-SceneSpriteProp::SceneSpriteProp(String caption) : PropProp(caption, "SceneSprite"){
+SceneSpriteProp::SceneSpriteProp(Core *core, ResourcePool *pool, const String &caption) : PropProp(core, pool, caption, "SceneSprite"){
 
 	previewSprite = NULL;
 	
-	changeButton = new UIButton("Change", 80);
+	changeButton = new UIButton(core, pool, "Change", 80);
 	propContents->addFocusChild(changeButton);
 	changeButton->setPosition(60, 5);
 	changeButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	setHeight(55);
 	
-	spriteName = new UILabel("", 12, "sans");
+	spriteName = new UILabel(core, pool, "", 12, "sans");
 	propContents->addFocusChild(spriteName);
 	spriteName->setPosition(-100, 32);
 	spriteName->color.a = 1.0;
@@ -1481,7 +1477,7 @@ void SceneSpriteProp::handleEvent(Event *event) {
 		
 		globalFrame->assetBrowser->addEventListener(this, UIEvent::OK_EVENT);
 		std::vector<ResourcePool*> pools;
-		pools.push_back(CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+		pools.push_back(core->getResourceManager()->getGlobalPool());
 		for(int i=0; i < entityInstance->getNumLinkedResourePools(); i++) {
 			pools.push_back(entityInstance->getLinkedResourcePoolAtIndex(i));
 		}
@@ -1532,13 +1528,13 @@ std::shared_ptr<Sprite> SceneSpriteProp::get() {
 	return sprite;
 }
 
-SceneEntityInstanceProp::SceneEntityInstanceProp(String caption) : PropProp(caption, "SceneEntityInstance"){
+SceneEntityInstanceProp::SceneEntityInstanceProp(Core *core, ResourcePool *pool, const String &caption) : PropProp(core, pool, caption, "SceneEntityInstance"){
 //	previewInstance = new SceneEntityInstance("default/default.entity");
 	previewInstance->setAnchorPoint(-1.0, -1.0, 0.0);
 	previewInstance->setPosition(2, 1);
 	propContents->addChild(previewInstance);
 
-	changeButton = new UIButton("Change", 80);
+	changeButton = new UIButton(core, pool, "Change", 80);
 	propContents->addFocusChild(changeButton);
 	changeButton->setPosition(60, 5);
 	changeButton->addEventListener(this, UIEvent::CLICK_EVENT);
@@ -1597,17 +1593,17 @@ String SceneEntityInstanceProp::get() {
 	return previewInstance->getFileName();
 }
 
-ShaderPassProp::ShaderPassProp(std::shared_ptr<Material> material, int shaderIndex) : PropProp("", "ShaderPassProp") {
+ShaderPassProp::ShaderPassProp(Core *core, ResourcePool *pool, std::shared_ptr<Material> material, int shaderIndex) : PropProp(core, pool, "", "ShaderPassProp") {
 	this->material = material;
 	this->shader = material->getShader(shaderIndex);
 	this->shaderIndex = shaderIndex;
 	
-	removeButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
+	removeButton = new UIImageButton(core, pool, "main/remove_icon.png", 1.0, 12, 12);
 	removeButton->addEventListener(this, UIEvent::CLICK_EVENT); 
 	propContents->addFocusChild(removeButton);
 	removeButton->setPosition(-110, 6);
 	
-	shaderComboBox = new UIComboBox(globalMenu, 100);
+	shaderComboBox = new UIComboBox(core, pool, globalMenu, 100);
 	shaderComboBox->addEventListener(this, UIEvent::CHANGE_EVENT);
 	propContents->addFocusChild(shaderComboBox);
 	
@@ -1626,7 +1622,7 @@ ShaderPassProp::ShaderPassProp(std::shared_ptr<Material> material, int shaderInd
 	}	
 	*/
 	
-	editButton = new UIButton("Options", 30);
+	editButton = new UIButton(core, pool, "Options", 30);
 	editButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	propContents->addFocusChild(editButton);
 	setHeight(25);
@@ -1667,18 +1663,18 @@ void ShaderPassProp::setPropWidth(Number width) {
 	editButton->Resize(floor(adjustedWidth * 0.25), editButton->getHeight());
 }
 
-TargetBindingProp::TargetBindingProp(std::shared_ptr<Shader> shader, std::shared_ptr<Material> material, std::shared_ptr<ShaderBinding> binding, RenderTargetBinding *targetBinding) : PropProp("", "TargetBindingProp") {
+TargetBindingProp::TargetBindingProp(Core *core, ResourcePool *pool, std::shared_ptr<Shader> shader, std::shared_ptr<Material> material, std::shared_ptr<ShaderBinding> binding, RenderTargetBinding *targetBinding) : PropProp(core, pool, "", "TargetBindingProp") {
 	this->targetBinding = targetBinding;
 	this->material = material;
 	this->shader = shader;
 	this->binding = binding;
 		
-	removeButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
+	removeButton = new UIImageButton(core, pool, "main/remove_icon.png", 1.0, 12, 12);
 	removeButton->addEventListener(this, UIEvent::CLICK_EVENT); 
 	propContents->addFocusChild(removeButton);
 	removeButton->setPosition(-110, 6);
 
-	typeComboBox = new UIComboBox(globalMenu, 100);
+	typeComboBox = new UIComboBox(core, pool, globalMenu, 100);
 	typeComboBox->addComboItem("IN");		
 	typeComboBox->addComboItem("OUT");
 	typeComboBox->addComboItem("COLOR");
@@ -1687,7 +1683,7 @@ TargetBindingProp::TargetBindingProp(std::shared_ptr<Shader> shader, std::shared
 	typeComboBox->addEventListener(this, UIEvent::CHANGE_EVENT);
 	propContents->addFocusChild(typeComboBox);
 
-	targetComboBox = new UIComboBox(globalMenu, 100);	
+	targetComboBox = new UIComboBox(core, pool, globalMenu, 100);	
 	for(int i=0; i < material->getNumShaderRenderTargets(); i++) {
 		ShaderRenderTarget *target = material->getShaderRenderTarget(i);		
 		targetComboBox->addComboItem(target->id, (void*) target);
@@ -1795,37 +1791,37 @@ void TargetBindingProp::setPropWidth(Number width) {
 
 }
 
-RenderTargetProp::RenderTargetProp(ShaderRenderTarget *renderTarget, std::shared_ptr<Material> material) : PropProp("", "RenderTargetProp") {
+RenderTargetProp::RenderTargetProp(Core *core, ResourcePool *pool, ShaderRenderTarget *renderTarget, std::shared_ptr<Material> material) : PropProp(core, pool, "", "RenderTargetProp") {
 
 	this->material = material;
 	this->renderTarget = renderTarget;
 
-	removeButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
+	removeButton = new UIImageButton(core, pool, "main/remove_icon.png", 1.0, 12, 12);
 	removeButton->addEventListener(this, UIEvent::CLICK_EVENT); 
 	propContents->addFocusChild(removeButton);
 	removeButton->setPosition(-110, 6);
 	
-	nameInput = new UITextInput(false, 20, 12);
+	nameInput = new UITextInput(core, pool, false, 20, 12);
 	nameInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	propContents->addFocusChild(nameInput);
 	nameInput->setText(renderTarget->id);
 	nameInput->setCaretPosition(0);
 	
-	widthInput = new UITextInput(false, 20, 12);
+	widthInput = new UITextInput(core, pool, false, 20, 12);
 	widthInput->setNumberOnly(true);
 	widthInput->setText(String::NumberToString(renderTarget->width));
 	propContents->addFocusChild(widthInput);
 	widthInput->setCaretPosition(0);
 	widthInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 		
-	heightInput = new UITextInput(false, 20, 12);
+	heightInput = new UITextInput(core, pool, false, 20, 12);
 	heightInput->setNumberOnly(true);
 	heightInput->setText(String::NumberToString(renderTarget->height)); 
 	propContents->addFocusChild(heightInput);
 	heightInput->setCaretPosition(0);
 	heightInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 			
-	typeComboBox = new UIComboBox(globalMenu, 100);
+	typeComboBox = new UIComboBox(core, pool, globalMenu, 100);
 	typeComboBox->addComboItem("Pixels");		
 	typeComboBox->addComboItem("Norm.");
 	typeComboBox->setSelectedIndex(renderTarget->sizeMode); 
@@ -1855,7 +1851,7 @@ RenderTargetProp::~RenderTargetProp() {
 }
 
 void RenderTargetProp::recreateRenderTarget() {
-	material->recreateRenderTarget(renderTarget);
+	material->recreateRenderTarget(renderTarget, Vector2(core->getXRes(), core->getYRes()));
 }
 
 void RenderTargetProp::handleEvent(Event *event) {
@@ -1894,10 +1890,10 @@ void RenderTargetProp::handleEvent(Event *event) {
 	PropProp::handleEvent(event);
 }
 
-ShaderPassesSheet::ShaderPassesSheet(ResourcePool *resourcePool) : PropSheet("SHADER PASSES", "shaderPasses") {
-	this->resourcePool = resourcePool;
+ShaderPassesSheet::ShaderPassesSheet(Core *core, ResourcePool *pool, ResourcePool *resourcePool) : PropSheet(core, pool, "SHADER PASSES", "shaderPasses"), localPool(resourcePool) {
+
 	propHeight = 70;
-	addButton = new ButtonProp("Add Shader Pass", this);
+	addButton = new ButtonProp(core, pool, "Add Shader Pass", this);
 	addButton->getButton()->addEventListener(this, UIEvent::CLICK_EVENT);
 	addProp(addButton);
 	
@@ -1935,7 +1931,7 @@ void ShaderPassesSheet::refreshPasses() {
 	}
 
 	for(int i=0; i < material->getNumShaderPasses(); i++) {
-		ShaderPassProp *passProp = new ShaderPassProp(material, i);
+		ShaderPassProp *passProp = new ShaderPassProp(core, resourcePool, material, i);
 		passProp->addEventListener(this, Event::REMOVE_EVENT);
 		passProp->addEventListener(this, Event::CHANGE_EVENT);		
 		passProp->addEventListener(this, Event::SELECT_EVENT);
@@ -1947,7 +1943,7 @@ void ShaderPassesSheet::refreshPasses() {
 	
 }
 
-void ShaderPassesSheet::Update() {
+void ShaderPassesSheet::Update(Number elapsed) {
 	if(removeIndex != -1) {
 		material->removeShaderPass(removeIndex);
 		refreshPasses();
@@ -1959,7 +1955,9 @@ void ShaderPassesSheet::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == addButton->getButton()) {
 	
-		std::shared_ptr<Shader> defaultShader = std::static_pointer_cast<Shader>(resourcePool->getResource(Resource::RESOURCE_SHADER, "PassThrough"));
+		// NO_CORE_SERVICES_TODO: is this the right pool?
+		
+		std::shared_ptr<Shader> defaultShader = localPool->getShader("PassThrough");
 		if(defaultShader) { 
 			std::shared_ptr<ShaderBinding> newShaderBinding = std::make_shared<ShaderBinding>();
 			ShaderPass shaderPass;
@@ -1990,8 +1988,8 @@ void ShaderPassesSheet::handleEvent(Event *event) {
 	PropSheet::handleEvent(event);
 }
 
-TargetBindingsSheet::TargetBindingsSheet() : PropSheet("TEXTURE BINDINGS", "targetBindings") {
-	addButton = new ButtonProp("Add Render Target", this);
+TargetBindingsSheet::TargetBindingsSheet(Core *core, ResourcePool *pool) : PropSheet(core, pool, "TEXTURE BINDINGS", "targetBindings") {
+	addButton = new ButtonProp(core, pool, "Add Render Target", this);
 	addButton->getButton()->addEventListener(this, UIEvent::CLICK_EVENT);
 	addProp(addButton);
 	customUndoHandler = true;
@@ -2012,7 +2010,7 @@ void TargetBindingsSheet::setShader(std::shared_ptr<Shader> shader, std::shared_
 	refreshTargets();
 }
 
-void TargetBindingsSheet::Update() {
+void TargetBindingsSheet::Update(Number elapsed) {
 	if(bindingToRemove) {
 		binding->removeRenderTargetBinding(bindingToRemove);
 		bindingToRemove = NULL;
@@ -2037,7 +2035,7 @@ void TargetBindingsSheet::refreshTargets() {
 	
 	for(int i=0; i < binding->getNumRenderTargetBindings(); i++) {
 		RenderTargetBinding *targetBinding = binding->getRenderTargetBinding(i);
-		TargetBindingProp *bindingProp = new TargetBindingProp(shader, material, binding, targetBinding);
+		TargetBindingProp *bindingProp = new TargetBindingProp(core, resourcePool, shader, material, binding, targetBinding);
 		bindingProp->addEventListener(this, Event::REMOVE_EVENT);	
 		addProp(bindingProp);
 	}
@@ -2075,9 +2073,9 @@ void TargetBindingsSheet::handleEvent(Event *event) {
 }
 
 
-RenderTargetsSheet::RenderTargetsSheet() : PropSheet("RENDER TARGETS", "renderTargets") {
+RenderTargetsSheet::RenderTargetsSheet(Core *core, ResourcePool *pool) : PropSheet(core, pool, "RENDER TARGETS", "renderTargets") {
 	propHeight = 70;
-	addButton = new ButtonProp("Add Render Target", this);
+	addButton = new ButtonProp(core, pool, "Add Render Target", this);
 	addButton->getButton()->addEventListener(this, UIEvent::CLICK_EVENT);
 	addProp(addButton);
 	
@@ -2109,7 +2107,7 @@ void RenderTargetsSheet::refreshTargets() {
 	
 	for(int i=0; i < material->getNumShaderRenderTargets(); i++) {
 		ShaderRenderTarget *renderTarget  = material->getShaderRenderTarget(i);
-		RenderTargetProp *targetProp = new RenderTargetProp(renderTarget, material);		
+		RenderTargetProp *targetProp = new RenderTargetProp(core, resourcePool, renderTarget, material);
 		targetProp->addEventListener(this, Event::CANCEL_EVENT);	
 		addProp(targetProp);
 	}
@@ -2118,7 +2116,7 @@ void RenderTargetsSheet::refreshTargets() {
 	Resize(getWidth(), getHeight());	
 }
 
-void RenderTargetsSheet::Update() {
+void RenderTargetsSheet::Update(Number elapsed) {
 	if(material != lastMaterial) {
 		lastMaterial = material;
 		refreshTargets();
@@ -2165,9 +2163,9 @@ void RenderTargetsSheet::handleEvent(Event *event) {
 }
 
 
-EntityPropSheet::EntityPropSheet() : PropSheet("CUSTOM PROPERTIES", "entityProps"){
+EntityPropSheet::EntityPropSheet(Core *core, ResourcePool *pool) : PropSheet(core, pool, "CUSTOM PROPERTIES", "entityProps"){
 	
-	addButtonProp = new ButtonProp("Add Property", this);
+	addButtonProp = new ButtonProp(core, pool, "Add Property", this);
 	addProp(addButtonProp);
 	addButtonProp->getButton()->addEventListener(this, UIEvent::CLICK_EVENT);
 
@@ -2244,7 +2242,7 @@ void EntityPropSheet::refreshProps() {
 	
 	for(int i=0; i < entity->entityProps.size(); i++) {			
 		EntityProp prop = entity->entityProps[i];
-		CustomProp *newProp = new CustomProp(prop.propName, prop.propValue);
+		CustomProp *newProp = new CustomProp(core, resourcePool, prop.propName, prop.propValue);
 		newProp->addEventListener(this, Event::CANCEL_EVENT);
 		newProp->addEventListener(this, Event::CHANGE_EVENT);		
 		addProp(newProp);
@@ -2264,13 +2262,15 @@ void EntityPropSheet::setEntity(Entity *entity){
 	this->entity = entity;
 	if(entity) {
 		enabled = true;
+		visible = true;
 		refreshProps();
 	} else {
-		enabled = false;		
+		enabled = false;
+		visible = false;
 	}
 }
 
-void EntityPropSheet::Update() {
+void EntityPropSheet::Update(Number elapsed) {
 	if(entity) {
 		if(removeIndex != -1) {
 			PolycodeEditorPropActionData *beforeData = PropDataEntity(entity);
@@ -2287,7 +2287,7 @@ void EntityPropSheet::Update() {
 	}
 }
 
-ShaderOptionsSheet::ShaderOptionsSheet() : PropSheet("SHADER OPTIONS", "shader_options"){
+ShaderOptionsSheet::ShaderOptionsSheet(Core *core, ResourcePool *pool) : PropSheet(core, pool, "SHADER OPTIONS", "shader_options"){
 	shader = NULL;
 	propHeight = 40;
 	customUndoHandler = true;
@@ -2334,7 +2334,7 @@ void ShaderOptionsSheet::handleEvent(Event *event) {
 	PropSheet::handleEvent(event);
 }
 
-void ShaderOptionsSheet::Update() {
+void ShaderOptionsSheet::Update(Number elapsed) {
 
 }
 
@@ -2356,7 +2356,7 @@ void ShaderOptionsSheet::setOptionsFromParams(std::vector<ProgramParam> &params)
 				case ProgramParam::PARAM_TEXTURE:
 				{
 					String paramName = params[i].name;
-					TextureProp *textureProp = new TextureProp(paramName);
+					TextureProp *textureProp = new TextureProp(core, resourcePool, paramName);
 					addProp(textureProp);
 					
 					std::shared_ptr<LocalShaderParam> param = binding->getLocalParamByName(params[i].name);
@@ -2372,7 +2372,7 @@ void ShaderOptionsSheet::setOptionsFromParams(std::vector<ProgramParam> &params)
 				case ProgramParam::PARAM_NUMBER:
 				{
 					String paramName = params[i].name;
-					NumberProp *numberProp = new NumberProp(paramName, this);
+					NumberProp *numberProp = new NumberProp(core, resourcePool, paramName, this);
 					addProp(numberProp);
 											
 					std::shared_ptr<LocalShaderParam> param = binding->getLocalParamByName(params[i].name);
@@ -2390,7 +2390,7 @@ void ShaderOptionsSheet::setOptionsFromParams(std::vector<ProgramParam> &params)
 
 					std::shared_ptr<LocalShaderParam> param = binding->getLocalParamByName(params[i].name);
 
-					ColorProp *colorProp = new ColorProp(paramName);
+					ColorProp *colorProp = new ColorProp(core, resourcePool, paramName);
 					addProp(colorProp);
 					
 					Color colorValue;
@@ -2426,16 +2426,16 @@ void ShaderOptionsSheet::setShader(std::shared_ptr<Shader> shader, std::shared_p
 	Resize(getWidth(), getHeight());
 }
 
-TransformSheet::TransformSheet() : PropSheet("TRANSFORM", "entity_transform") {
+TransformSheet::TransformSheet(Core *core, ResourcePool *pool) : PropSheet(core, pool, "TRANSFORM", "entity_transform") {
 	entity = NULL;
 	
-	positionProp = new Vector3Prop("Position", this);
+	positionProp = new Vector3Prop(core, pool, "Position", this);
 	addProp(positionProp);
 	
-	scaleProp = new Vector3Prop("Scale", this);
+	scaleProp = new Vector3Prop(core, pool, "Scale", this);
 	addProp(scaleProp);
 	
-	rotationProp = new Vector3Prop("Rotation", this);
+	rotationProp = new Vector3Prop(core, pool, "Rotation", this);
 	addProp(rotationProp);
 	
 	propHeight = 235;
@@ -2457,7 +2457,7 @@ void TransformSheet::setEntity(Entity *entity) {
 	}
 }
 
-void TransformSheet::Update() {
+void TransformSheet::Update(Number elapsed) {
 	if(!entity) {
 		return;
 	}
@@ -2494,63 +2494,63 @@ void TransformSheet::handleEvent(Event *event) {
 	PropSheet::handleEvent(event);
 }
 
-ParticleEmitterSheet::ParticleEmitterSheet() : PropSheet("PARTICLE EMITTER", "particle_emitter") {
+ParticleEmitterSheet::ParticleEmitterSheet(Core *core, ResourcePool *pool) : PropSheet(core, pool, "PARTICLE EMITTER", "particle_emitter") {
 	emitter = NULL;
 
-	typeProp = new ComboProp("Type");
+	typeProp = new ComboProp(core, pool, "Type");
 	typeProp->comboEntry->addComboItem("Point");
 	typeProp->comboEntry->addComboItem("Quad");
 	addProp(typeProp);
 
-	countProp = new NumberProp("Count", this);
+	countProp = new NumberProp(core, pool, "Count", this);
 	addProp(countProp);
 	
-	lifetimeProp = new NumberProp("Lifetime", this);
+	lifetimeProp = new NumberProp(core, pool, "Lifetime", this);
 	addProp(lifetimeProp);
 
-	particleSizeProp = new NumberProp("Size", this);
+	particleSizeProp = new NumberProp(core, pool, "Size", this);
 	addProp(particleSizeProp);
 	
-	particleSpeedProp = new NumberProp("Speed", this);
+	particleSpeedProp = new NumberProp(core, pool, "Speed", this);
 	addProp(particleSpeedProp);
 	
-	worldParticlesProp = new BoolProp("World space");
+	worldParticlesProp = new BoolProp(core, pool, "World space");
 	addProp(worldParticlesProp);
 	
-	loopingProp = new BoolProp("Loop");
+	loopingProp = new BoolProp(core, pool, "Loop");
 	addProp(loopingProp);
 	
-	particleRotaionProp = new Vector3Prop("Rotation", this);
+	particleRotaionProp = new Vector3Prop(core, pool, "Rotation", this);
 	addProp(particleRotaionProp);
 	
-	gravityProp = new Vector3Prop("Gravity", this);
+	gravityProp = new Vector3Prop(core, pool, "Gravity", this);
 	addProp(gravityProp);
 	
-	directionProp = new Vector3Prop("Direction", this);
+	directionProp = new Vector3Prop(core, pool, "Direction", this);
 	addProp(directionProp);
 
-	deviationProp = new Vector3Prop("Deviation", this);
+	deviationProp = new Vector3Prop(core, pool, "Deviation", this);
 	addProp(deviationProp);
 
-	sizeProp = new Vector3Prop("Emitter size", this);
+	sizeProp = new Vector3Prop(core, pool, "Emitter size", this);
 	addProp(sizeProp);
 
-	perlinProp = new BoolProp("Movement noise");
+	perlinProp = new BoolProp(core, pool, "Movement noise");
 	addProp(perlinProp);
 	
-	perlinSizeProp = new Vector3Prop("Noise amount", this);
+	perlinSizeProp = new Vector3Prop(core, pool, "Noise amount", this);
 	addProp(perlinSizeProp);
 
-	useColorCurvesProp = new BoolProp("Use color curves");
+	useColorCurvesProp = new BoolProp(core, pool, "Use color curves");
 	addProp(useColorCurvesProp);
 	
-	colorCurveProp = new BezierRGBACurveProp("Color curves");
+	colorCurveProp = new BezierRGBACurveProp(core, pool, "Color curves");
 	addProp(colorCurveProp);
 
-	useScaleCurvesProp = new BoolProp("Use scale curve");
+	useScaleCurvesProp = new BoolProp(core, pool, "Use scale curve");
 	addProp(useScaleCurvesProp);
 	
-	scaleCurveProp = new BezierCurveProp("Scale curve", "Scale");
+	scaleCurveProp = new BezierCurveProp(core, pool, "Scale curve", "Scale");
 	addProp(scaleCurveProp);
 	
 	propHeight = 700;
@@ -2639,46 +2639,46 @@ void ParticleEmitterSheet::setParticleEmitter(SceneParticleEmitter *emitter) {
 	}
 }
 
-SceneLightSheet::SceneLightSheet() : PropSheet("LIGHT", "scene_light") {
-	typeProp = new ComboProp("Type");
+SceneLightSheet::SceneLightSheet(Core *core, ResourcePool *pool) : PropSheet(core, pool, "LIGHT", "scene_light") {
+	typeProp = new ComboProp(core, pool, "Type");
 	typeProp->comboEntry->addComboItem("Point");
 	typeProp->comboEntry->addComboItem("Spot");
 	addProp(typeProp);
 	
-	importanceProp = new NumberProp("Importance", this);
+	importanceProp = new NumberProp(core, pool, "Importance", this);
 	addProp(importanceProp);
 	
-	lightColorProp = new ColorProp("Light color");
+	lightColorProp = new ColorProp(core, pool, "Light color");
 	addProp(lightColorProp);
 	
-	specularColorProp = new ColorProp("Specular color");
+	specularColorProp = new ColorProp(core, pool, "Specular color");
 	addProp(specularColorProp);
 	
-	intensityProp = new NumberProp("Intensity", this);
+	intensityProp = new NumberProp(core, pool, "Intensity", this);
 	addProp(intensityProp);
 	
-	constantAttenuationProp = new SliderProp("Constant att.", 0.0, 1.0);
+	constantAttenuationProp = new SliderProp(core, pool, "Constant att.", 0.0, 1.0);
 	addProp(constantAttenuationProp);
 	
-	linearAttenuationProp = new SliderProp("Linear att.", 0.0, 1.0);
+	linearAttenuationProp = new SliderProp(core, pool, "Linear att.", 0.0, 1.0);
 	addProp(linearAttenuationProp);
 	
-	quadraticAttenuationProp = new SliderProp("Quadratic att.", 0.0, 1.0);
+	quadraticAttenuationProp = new SliderProp(core, pool, "Quadratic att.", 0.0, 1.0);
 	addProp(quadraticAttenuationProp);
 	
-	spotlightCutoffProp = new SliderProp("Spot angle", 0.0, 90.0);
+	spotlightCutoffProp = new SliderProp(core, pool, "Spot angle", 0.0, 90.0);
 	addProp(spotlightCutoffProp);
 	
-	spotlightExponentProp = new SliderProp("Spot softness", 0.0, 1.0);
+	spotlightExponentProp = new SliderProp(core, pool, "Spot softness", 0.0, 1.0);
 	addProp(spotlightExponentProp);
 	
-	castShadowsProp = new BoolProp("Cast shadows");
+	castShadowsProp = new BoolProp(core, pool, "Cast shadows");
 	addProp(castShadowsProp);
 	
-	shadowMapFOVProp = new SliderProp("Shadow FOV", 1.0, 180.0);
+	shadowMapFOVProp = new SliderProp(core, pool, "Shadow FOV", 1.0, 180.0);
 	addProp(shadowMapFOVProp);
 	
-	shadowResolutionProp = new NumberProp("Shadowmap res.", this);
+	shadowResolutionProp = new NumberProp(core, pool, "Shadowmap res.", this);
 	addProp(shadowResolutionProp);
 
 	propHeight = 365;
@@ -2785,17 +2785,17 @@ void SceneLightSheet::handleEvent(Event *event) {
 	PropSheet::handleEvent(event);
 }
 
-SceneMeshSheet::SceneMeshSheet() : PropSheet("SCENE MESH", "scene_mesh") {
+SceneMeshSheet::SceneMeshSheet(Core *core, ResourcePool *pool) : PropSheet(core, pool, "SCENE MESH", "scene_mesh") {
 	enabled = false;
 	sceneMesh = NULL;
 	
-	gpuSkinningProp = new BoolProp("GPU Skinning");
+	gpuSkinningProp = new BoolProp(core, pool, "GPU Skinning");
 	addProp(gpuSkinningProp);
 	
-	backfaceCullProp = new BoolProp("Backface culling");
+	backfaceCullProp = new BoolProp(core, pool, "Backface culling");
 	addProp(backfaceCullProp);
 
-	alphaTestProp = new BoolProp("Alpha test");
+	alphaTestProp = new BoolProp(core, pool, "Alpha test");
 	addProp(alphaTestProp);
 	
 }
@@ -2837,8 +2837,8 @@ void SceneMeshSheet::handleEvent(Event *event) {
 }
 
 
-ScenePrimitiveSheet::ScenePrimitiveSheet() : PropSheet("PRIMITIVE", "scene_primitive") {
-	typeProp = new ComboProp("Type");
+ScenePrimitiveSheet::ScenePrimitiveSheet(Core *core, ResourcePool *pool) : PropSheet(core, pool, "PRIMITIVE", "scene_primitive") {
+	typeProp = new ComboProp(core, pool, "Type");
 	typeProp->comboEntry->addComboItem("Box");
 	typeProp->comboEntry->addComboItem("Plane");
 	typeProp->comboEntry->addComboItem("Vert. Plane");
@@ -2853,19 +2853,19 @@ ScenePrimitiveSheet::ScenePrimitiveSheet() : PropSheet("PRIMITIVE", "scene_primi
 	
 	addProp(typeProp);
 	
-	option1Prop = new NumberProp("", this);
+	option1Prop = new NumberProp(core, pool, "", this);
 	addProp(option1Prop);
 	
-	option2Prop = new NumberProp("", this);
+	option2Prop = new NumberProp(core, pool, "", this);
 	addProp(option2Prop);
 	
-	option3Prop = new NumberProp("", this);
+	option3Prop = new NumberProp(core, pool, "", this);
 	addProp(option3Prop);
 	
-	option4Prop = new NumberProp("", this);
+	option4Prop = new NumberProp(core, pool, "", this);
 	addProp(option4Prop);
 
-	option5Prop = new NumberProp("", this);
+	option5Prop = new NumberProp(core, pool, "", this);
 	addProp(option5Prop);
 
 	propHeight = 240;
@@ -3116,9 +3116,9 @@ void ScenePrimitiveSheet::handleEvent(Event *event) {
 	PropSheet::handleEvent(event);
 }
 
-MaterialPropSheet::MaterialPropSheet() : PropSheet("MATERIAL", "material") {
+MaterialPropSheet::MaterialPropSheet(Core *core, ResourcePool *pool) : PropSheet(core, pool, "MATERIAL", "material") {
 	
-	materialProp = new MaterialProp("Material");
+	materialProp = new MaterialProp(core, pool, "Material");
 	addProp(materialProp);
 	
 	enabled = false;
@@ -3163,24 +3163,24 @@ void EntitySheet::setEntityInstance(SceneEntityInstance *instance) {
 	this->instance = instance;
 }
 
-EntitySheet::EntitySheet() : PropSheet("ENTITY", "entity"){
+EntitySheet::EntitySheet(Core *core, ResourcePool *pool) : PropSheet(core, pool, "ENTITY", "entity"){
 	
-	layersProp = new ComboProp("Layer");
+	layersProp = new ComboProp(core, pool, "Layer");
 	addProp(layersProp);
 	
-	idProp = new StringProp("ID", this);
+	idProp = new StringProp(core, pool, "ID", this);
 	addProp(idProp);
 
-	tagProp = new StringProp("Tags (foo,bar)", this);
+	tagProp = new StringProp(core, pool, "Tags (foo,bar)", this);
 	addProp(tagProp);
 
-	colorProp = new ColorProp("Color");
+	colorProp = new ColorProp(core, pool, "Color");
 	addProp(colorProp);
 	
-	blendingProp = new ComboProp("Blend mode");
+	blendingProp = new ComboProp(core, pool, "Blend mode");
 	addProp(blendingProp);
 	
-	bBoxProp = new Vector3Prop("Bounding box", this);
+	bBoxProp = new Vector3Prop(core, pool, "Bounding box", this);
 	addProp(bBoxProp);
 	
 	blendingProp->comboEntry->addComboItem("None");
@@ -3274,26 +3274,26 @@ void EntitySheet::setEntity(Entity *entity) {
 	}
 }
 
-CameraSheet::CameraSheet() : PropSheet("CAMERA", "camera") {
+CameraSheet::CameraSheet(Core *core, ResourcePool *pool) : PropSheet(core, pool, "CAMERA", "camera") {
 	enabled = false;
 	camera = NULL;
 	
-	exposureProp = new NumberProp("Exposure", this);
+	exposureProp = new NumberProp(core, pool, "Exposure", this);
 	addProp(exposureProp);
 
-	nearClipPlane = new NumberProp("Near clip", this);
+	nearClipPlane = new NumberProp(core, pool, "Near clip", this);
 	addProp(nearClipPlane);
 	
-	farClipPlane = new NumberProp("Far clip", this);
+	farClipPlane = new NumberProp(core, pool, "Far clip", this);
 	addProp(farClipPlane);
 	
-	orthoProp = new BoolProp("Orthographic");
+	orthoProp = new BoolProp(core, pool, "Orthographic");
 	addProp(orthoProp);
 
-	fovProp = new NumberProp("FOV", this);
+	fovProp = new NumberProp(core, pool, "FOV", this);
 	addProp(fovProp);
 
-	orthoSizeTypeProp = new ComboProp("Size mode");
+	orthoSizeTypeProp = new ComboProp(core, pool, "Size mode");
 	orthoSizeTypeProp->comboEntry->addComboItem("Manual");
 	orthoSizeTypeProp->comboEntry->addComboItem("Lock height");
 	orthoSizeTypeProp->comboEntry->addComboItem("Lock width");
@@ -3301,10 +3301,10 @@ CameraSheet::CameraSheet() : PropSheet("CAMERA", "camera") {
 	
 	addProp(orthoSizeTypeProp);
 	
-	orthoWidthProp = new NumberProp("Ortho width", this);
+	orthoWidthProp = new NumberProp(core, pool, "Ortho width", this);
 	addProp(orthoWidthProp);
 
-	orthoHeightProp = new NumberProp("Ortho height", this);
+	orthoHeightProp = new NumberProp(core, pool, "Ortho height", this);
 	addProp(orthoHeightProp);
 	
 	propHeight = 260;
@@ -3407,19 +3407,19 @@ void CameraSheet::setCamera(Camera *camera) {
 	}
 }
 
-SceneCurveSheet::SceneCurveSheet() : PropSheet("CURVE", "SceneCurve") {
+SceneCurveSheet::SceneCurveSheet(Core *core, ResourcePool *pool) : PropSheet(core, pool, "CURVE", "SceneCurve") {
 	curve = NULL;
 	enabled = false;
 	
-	addPointProp = new ButtonProp("Add Curve Point", this);
+	addPointProp = new ButtonProp(core, pool, "Add Curve Point", this);
 	addProp(addPointProp);
 	addPointProp->getButton()->addEventListener(this, UIEvent::CLICK_EVENT);
 
-	renderProp = new BoolProp("Render");
+	renderProp = new BoolProp(core, pool, "Render");
 	addProp(renderProp);
 	renderProp->addEventListener(this, Event::CHANGE_EVENT);
 
-	numPointsProp = new NumberProp("Resolution", this);
+	numPointsProp = new NumberProp(core, pool, "Resolution", this);
 	addProp(numPointsProp);
 	numPointsProp->addEventListener(this, Event::CHANGE_EVENT);
 
@@ -3472,19 +3472,19 @@ void SceneCurveSheet::setCurve(SceneCurve *curve) {
 }
 
 
-SceneSpriteSheet::SceneSpriteSheet() : PropSheet("SPRITE", "SceneSprite") {
+SceneSpriteSheet::SceneSpriteSheet(Core *core, ResourcePool *pool) : PropSheet(core, pool, "SPRITE", "SceneSprite") {
 	sprite = NULL;
 	enabled = false;
 	
-	spriteProp = new SceneSpriteProp("Sprite");
+	spriteProp = new SceneSpriteProp(core, pool, "Sprite");
 	spriteProp->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(spriteProp);
 	
-	defaultStateProp = new ComboProp("State");
+	defaultStateProp = new ComboProp(core, pool, "State");
 	defaultStateProp->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(defaultStateProp);
 
-	randomFrameProp = new BoolProp("Random start frame");
+	randomFrameProp = new BoolProp(core, pool, "Random start frame");
 	randomFrameProp->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(randomFrameProp);
 	
@@ -3562,10 +3562,10 @@ void SceneSpriteSheet::setSprite(SceneSprite *sprite) {
 	}
 }
 
-SceneEntityInstanceSheet::SceneEntityInstanceSheet() : PropSheet("ENTITY INSTANCE", "SceneEntityInstance") {
+SceneEntityInstanceSheet::SceneEntityInstanceSheet(Core *core, ResourcePool *pool) : PropSheet(core, pool, "ENTITY INSTANCE", "SceneEntityInstance") {
 	instance = NULL;
 	
-	instanceProp = new SceneEntityInstanceProp("Entity file");
+	instanceProp = new SceneEntityInstanceProp(core, pool, "Entity file");
 	instanceProp->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(instanceProp);
 	
@@ -3593,7 +3593,7 @@ void SceneEntityInstanceSheet::handleEvent(Event *event) {
 	PropSheet::handleEvent(event);
 }
 
-void SceneEntityInstanceSheet::Update() {
+void SceneEntityInstanceSheet::Update(Number elapsed) {
 	if(instance) {
 		enabled = true; 
 		instanceProp->set(instance->getFileName());
@@ -3602,28 +3602,28 @@ void SceneEntityInstanceSheet::Update() {
 	}
 }
 
-SceneLabelSheet::SceneLabelSheet() : PropSheet("LABEL", "UILabel") {
+SceneLabelSheet::SceneLabelSheet(Core *core, ResourcePool *pool) : PropSheet(core, pool, "LABEL", "UILabel") {
 	label = NULL;
 	enabled = false;
 	
-	caption = new StringProp("Contents", this);
+	caption = new StringProp(core, pool, "Contents", this);
 	caption->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(caption);
 
-	size = new NumberProp("Size (px)", this);
+	size = new NumberProp(core, pool, "Size (px)", this);
 	size->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(size);	
 
-	actualHeight = new NumberProp("Actual height", this);
+	actualHeight = new NumberProp(core, pool, "Actual height", this);
 	actualHeight->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(actualHeight);
 
-	font = new ComboProp("Font");
+	font = new ComboProp(core, pool, "Font");
 	font->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(font);	
 	
 	
-	enableAA = new BoolProp("Antialias");
+	enableAA = new BoolProp(core, pool, "Antialias");
 	enableAA->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(enableAA);	
 	
@@ -3634,7 +3634,7 @@ SceneLabelSheet::SceneLabelSheet() : PropSheet("LABEL", "UILabel") {
 
 void SceneLabelSheet::refreshFonts() {
 	
-	ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
+	ResourcePool *pool = core->getResourceManager()->getGlobalPool();
 	
 	font->comboEntry->clearItems();
 	
@@ -3688,7 +3688,7 @@ void SceneLabelSheet::handleEvent(Event *event) {
 
 	if(event->getDispatcher() == font) {
 		String fontName = font->comboEntry->getSelectedItem()->label;		 
-		ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
+		ResourcePool *pool = core->getResourceManager()->getGlobalPool();
 		std::shared_ptr<Font> font = std::static_pointer_cast<Font>(pool->getResource(Resource::RESOURCE_FONT, fontName));
 		label->getLabel()->setFont(font);
 		label->setText(caption->get());
@@ -3725,10 +3725,10 @@ void SceneLabelSheet::handleEvent(Event *event) {
 	PropSheet::handleEvent(event);
 }
 
-LayerSheet::LayerSheet() : PropSheet("VISIBILITY LAYERS", "layers") {
+LayerSheet::LayerSheet(Core *core, ResourcePool *pool) : PropSheet(core, pool, "VISIBILITY LAYERS", "layers") {
 	
 	
-	addLayerProp = new ButtonProp("Add new layer", this);
+	addLayerProp = new ButtonProp(core, pool, "Add new layer", this);
 	addProp(addLayerProp);
 	addLayerProp->getButton()->addEventListener(this, UIEvent::CLICK_EVENT);
 	
@@ -3752,7 +3752,7 @@ void LayerSheet::setFromEntity() {
 	
 	for(int i=0; i < instance->getNumLayers(); i++) {
 		SceneEntityInstanceLayer *layer = instance->getLayerAtIndex(i);
-		LayerProp *newProp = new LayerProp(this->instance, layer);
+		LayerProp *newProp = new LayerProp(core, resourcePool, this->instance, layer);
 		newProp->addEventListener(this, Event::REMOVE_EVENT);
 		addProp(newProp);
 	}
@@ -3764,7 +3764,7 @@ LayerSheet::~LayerSheet() {
 	
 }
 
-void LayerSheet::Update() {
+void LayerSheet::Update(Number elapsed) {
 	if(layerRemoveIndex != -1) {
 		
 		SceneEntityInstanceLayer *layer = instance->getLayerAtIndex(layerRemoveIndex);
@@ -3806,9 +3806,9 @@ void LayerSheet::handleEvent(Event *event) {
 	PropSheet::handleEvent(event);
 }
 
-LinkedMaterialsSheet::LinkedMaterialsSheet() : PropSheet("LINKED RESOURCE POOLS", "linked_materials") {
+LinkedMaterialsSheet::LinkedMaterialsSheet(Core *core, ResourcePool *pool) : PropSheet(core, pool, "LINKED RESOURCE POOLS", "linked_materials") {
 	
-	addMaterialProp = new ButtonProp("Link resource pool", this);
+	addMaterialProp = new ButtonProp(core, pool, "Link resource pool", this);
 	addProp(addMaterialProp);
 	addMaterialProp->getButton()->addEventListener(this, UIEvent::CLICK_EVENT);
 	
@@ -3819,7 +3819,7 @@ LinkedMaterialsSheet::~LinkedMaterialsSheet() {
 	
 }
 
-void LinkedMaterialsSheet::Update() {
+void LinkedMaterialsSheet::Update(Number elapsed) {
 	if(poolRemoveIndex > -1) {
 		if(instance) {
 			instance->unlinkResourcePool(instance->getLinkedResourcePoolAtIndex(poolRemoveIndex));
@@ -3856,24 +3856,24 @@ void LinkedMaterialsSheet::handleEvent(Event *event) {
 		globalFrame->assetBrowser->removeAllHandlersForListener(this);
 		globalFrame->hideModal();
 		
-		ResourcePool *newPool = CoreServices::getInstance()->getResourceManager()->getResourcePoolByName(resourcePath);
+		ResourcePool *newPool = core->getResourceManager()->getResourcePoolByName(resourcePath);
 		
 		if(!newPool) {
 			String extension = resourcePath.substr(resourcePath.find_last_of(".")+1, resourcePath.length());
 
 			if(extension == "mat") {				
-				newPool = new ResourcePool(resourcePath,  CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+				newPool = new ResourcePool(core, resourcePath, core->getResourceManager()->getGlobalPool());
 				newPool->reloadResourcesOnModify = true;
 				newPool->deleteOnUnsubscribe = true;
 				newPool->loadResourcesFromMaterialFile(fullResourcePath);
 			} else if( extension == "sprites") {
-				SpriteSet *spriteSet = new SpriteSet(resourcePath,	CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+				SpriteSet *spriteSet = new SpriteSet(core, resourcePath,	core->getResourceManager()->getGlobalPool());
 				spriteSet->reloadResourcesOnModify = true;
 				spriteSet->deleteOnUnsubscribe = true;
 				newPool = spriteSet;
 			}
 			
-			CoreServices::getInstance()->getResourceManager()->addResourcePool(newPool);
+			core->getResourceManager()->addResourcePool(newPool);
 			
 		}
 		
@@ -3899,7 +3899,7 @@ void LinkedMaterialsSheet::updateMaterials() {
 	
 	for(int i=0; i < instance->getNumLinkedResourePools(); i++) {
 		ResourcePool *pool = instance->getLinkedResourcePoolAtIndex(i);
-		RemovableStringProp *newProp = new RemovableStringProp(pool->getName());
+		RemovableStringProp *newProp = new RemovableStringProp(core, resourcePool, pool->getName());
 		newProp->addEventListener(this, Event::REMOVE_EVENT);
 		addProp(newProp);
 	}
@@ -3919,31 +3919,31 @@ void LinkedMaterialsSheet::setEntityInstance(SceneEntityInstance *instance) {
 }
 
 
-SoundSheet::SoundSheet() : PropSheet("SOUND", "sound") {
+SoundSheet::SoundSheet(Core *core, ResourcePool *pool) : PropSheet(core, pool, "SOUND", "sound") {
 	sound = NULL;
 	enabled = false;
 	
-	soundProp = new SoundProp("Sound file");
+	soundProp = new SoundProp(core, pool, "Sound file");
 	soundProp->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(soundProp);
 	
-	referenceDistance = new NumberProp("Reference dist", this);
+	referenceDistance = new NumberProp(core, pool, "Reference dist", this);
 	referenceDistance->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(referenceDistance);
 	
-	maxDistance = new NumberProp("Max dist", this);
+	maxDistance = new NumberProp(core, pool, "Max dist", this);
 	maxDistance->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(maxDistance);
 	
-	loopOnLoad = new BoolProp("Loop on load");
+	loopOnLoad = new BoolProp(core, pool, "Loop on load");
 	loopOnLoad->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(loopOnLoad);
 
-	volume = new SliderProp("Volume", 0.0, 1.0);
+	volume = new SliderProp(core, pool, "Volume", 0.0, 1.0);
 	volume->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(volume);
 	
-	pitch = new SliderProp("Pitch", 0.0, 2.0);
+	pitch = new SliderProp(core, pool, "Pitch", 0.0, 2.0);
 	pitch->addEventListener(this, Event::CHANGE_EVENT);
 	addProp(pitch);
 		
@@ -3978,7 +3978,7 @@ void SoundSheet::handleEvent(Event *event) {
 	}
 
 	if(event->getDispatcher() == soundProp	&& event->getEventCode() == Event::CHANGE_EVENT) {
-		sound->getSound()->loadFile(soundProp->get());
+		sound->getSound()->loadFile(core, soundProp->get());
 	}
 	
 	if(event->getDispatcher() == loopOnLoad && event->getEventCode() == Event::CHANGE_EVENT) {

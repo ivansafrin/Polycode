@@ -68,7 +68,6 @@
 
 #ifndef STB_VORBIS_NO_STDIO
 #include <stdio.h>
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyCore.h"
 #endif
 

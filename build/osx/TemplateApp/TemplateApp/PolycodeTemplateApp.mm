@@ -9,16 +9,16 @@ PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
     core = new CocoaCore(view, 1280/2,720/2,false,false, 0,0,60, 0, true);
     
     core->addFileSource("archive", "default.pak");
-    ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
+    ResourcePool *globalPool = core->getResourceManager()->getGlobalPool();
     globalPool->loadResourcesFromFolder("default", true);
 
     core->addFileSource("archive", "hdr.pak");
     globalPool->loadResourcesFromFolder("hdr", true);
 	
-	scene = new Scene(Scene::SCENE_2D);
+	scene = new Scene(core, Scene::SCENE_2D);
 	scene->useClearColor = true;
 	
-	SceneLabel *label = new SceneLabel("Hello World", 32, "mono", Label::ANTIALIAS_FULL, 0.1);
+	label = new SceneLabel(globalPool->getMaterial("Unlit"), "Hello World", 32, globalPool->getFont("mono"), Label::ANTIALIAS_FULL, 0.1);
 	scene->addChild(label);
 	/*
 	core->addFileSource("archive", "lua_Polycode.pak");
@@ -37,6 +37,8 @@ PolycodeTemplateApp::~PolycodeTemplateApp() {
 
 bool PolycodeTemplateApp::Update() {
 	bool res = core->Update();
+	
+	label->Roll(core->getElapsed() * 40.0);
 	
 	RenderFrame *frame = new RenderFrame(core->getViewport());
 	scene->Render(frame, NULL, NULL, NULL, false);

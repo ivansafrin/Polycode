@@ -29,23 +29,22 @@
 #include "polycode/modules/ui/PolyUIBox.h"
 #include "polycode/modules/ui/PolyUIElement.h"
 #include "polycode/core/PolyCoreInput.h"
+#include "polycode/core/PolyConfig.h"
 
 namespace Polycode {
 
 	class _PolyExport UIButton : public UIElement {
 		public:
-			UIButton(String text, Number width, Number height = 23);
+			UIButton(Core *core, ResourcePool *pool, String text, Number width, Number height = 23);
 			virtual ~UIButton();
 			void Resize(Number width, Number height);		
 			void handleEvent(Event *event);
 			void setCaption(String caption);
 		
-			void Update();
+			void Update(Number elapsed);
 				
 		private:
-		
-			CoreInput *coreInput;
-			
+
 			Number labelOffsetX;
 			Number labelOffsetY;
 			Number labelXPos;

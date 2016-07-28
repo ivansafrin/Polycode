@@ -23,37 +23,37 @@
 #include "polycode/modules/ui/PolyUIColorBox.h"
 #include "polycode/core/PolyInputEvent.h"
 #include "polycode/core/PolyLabel.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyConfig.h"
 #include "polycode/core/PolyRenderer.h"
 
 using namespace Polycode;
 
-UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
+UIColorPicker::UIColorPicker(Core *core, ResourcePool *pool) : UIWindow(core, pool, L"", 300, 240) {
 	closeOnEscape = true;
 	
 	continuous = true;
+	
+	ConfigRef conf = core->getConfig();
 
-	Config *conf = CoreServices::getInstance()->getConfig();	
 	Number uiScale = conf->getNumericValue("Polycode", "uiScale");
 		
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
 	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");
 
-	String mainBgImage = conf->getStringValue("Polycode", "uiColorPickerMainBg");		
+	String mainBgImage = conf->getStringValue("Polycode", "uiColorPickerMainBg");
 	String mainFrameImage = conf->getStringValue("Polycode", "uiColorPickerMainFrame");
 	String hueFrameImage = conf->getStringValue("Polycode", "uiColorPickerHueFrame");
 	String hueSelectorImage = conf->getStringValue("Polycode", "uiColorPickerHueSelector");
 	String mainSelectorImage = conf->getStringValue("Polycode", "uiColorPickerMainSelector");
 
-	mainBg = new UIImage(mainBgImage, 187, 187);
+	mainBg = new UIImage(core, pool, mainBgImage, 187, 187);
 	mainBg->setPosition(padding, topPadding+padding);
 	addChild(mainBg);
 
-	mainFrame = new UIImage(mainFrameImage, 187, 187);
+	mainFrame = new UIImage(core, pool, mainFrameImage, 187, 187);
 	mainFrame->setPosition(padding, topPadding+padding);
 	
-	alphaSlider = new UIHSlider(0, 1.0, mainFrame->getWidth());
+	alphaSlider = new UIHSlider(core, pool, 0, 1.0, mainFrame->getWidth());
 	alphaSlider->setPosition(padding, mainFrame->getHeight() + mainFrame->getPosition().y + 13);
 	addChild(alphaSlider);
 	alphaSlider->addEventListener(this, UIEvent::CHANGE_EVENT);
@@ -85,13 +85,13 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	addChild(mainColorRect);
 	addChild(mainFrame);
 	
-	mainColorRect->setMaterialByName("UnlitUntexturedVertexColor");
+	mainColorRect->setMaterial(pool->getMaterial("UnlitUntexturedVertexColor"));
 
-	hueFrame = new UIImage(hueFrameImage, 20, 187);
+	hueFrame = new UIImage(core, pool, hueFrameImage, 20, 187);
 	hueFrame->setPosition(mainFrame->getPosition().x + mainFrame->getWidth()+10, topPadding+padding);
 	addChild(hueFrame);
 	
-	hueSelector = new UIImage(hueSelectorImage);
+	hueSelector = new UIImage(core, pool, hueSelectorImage);
 	hueSelector->Resize(hueSelector->getWidth() / uiScale, hueSelector->getHeight() / uiScale);
 	hueSelector->setAnchorPoint(0.0, 0.0, 0.0);
 	hueSelector->setPosition(hueFrame->getPosition().x + (hueFrame->getWidth()/2.0), hueFrame->getPosition().y);
@@ -99,7 +99,7 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 
 	hueSelector->setDragLimits(Polycode::Rectangle(hueSelector->getPosition().x,hueSelector->getPosition().y,0,hueFrame->getHeight()));
 				
-	mainSelector = new UIImage(mainSelectorImage);
+	mainSelector = new UIImage(core, pool, mainSelectorImage);
 	mainSelector->Resize(mainSelector->getWidth() / uiScale, mainSelector->getHeight() / uiScale);
 	mainSelector->setAnchorPoint(0.0, 0.0, 0.0);
 	mainSelector->setPosition(mainFrame->getPosition());
@@ -117,42 +117,42 @@ UIColorPicker::UIColorPicker() : UIWindow(L"", 300, 240) {
 	hueFrame->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);
 	hueFrame->processInputEvents = true;	
 	
-	UILabel *label = new UILabel(L"R:", fontSize, fontName);
+	UILabel *label = new UILabel(core, pool, L"R:", fontSize, fontName);
 	label->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 15, topPadding+padding + 3);
 	addChild(label);
 	junkLabels.push_back(label);
 	
-	rTextInput = new UITextInput(false, 40, 12);
+	rTextInput = new UITextInput(core, pool, false, 40, 12);
 	rTextInput->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 30, topPadding+padding);
 	addFocusChild(rTextInput);
 	rTextInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 
-	label = new UILabel(L"G:", fontSize, fontName);
+	label = new UILabel(core, pool, L"G:", fontSize, fontName);
 	label->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 15, topPadding+padding + 33);
 	addChild(label);
 	junkLabels.push_back(label);
 	
-	gTextInput = new UITextInput(false, 40, 12);
+	gTextInput = new UITextInput(core, pool, false, 40, 12);
 	gTextInput->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 30, topPadding+padding + 30);
 	addFocusChild(gTextInput);
 	gTextInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
-	label = new UILabel(L"B:", fontSize, fontName);
+	label = new UILabel(core, pool, L"B:", fontSize, fontName);
 	label->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 15, topPadding+padding + 63);
 	addChild(label);
 	junkLabels.push_back(label);
 	
-	bTextInput = new UITextInput(false, 40, 12);
+	bTextInput = new UITextInput(core, pool, false, 40, 12);
 	bTextInput->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 30, topPadding+padding + 60);
 	addFocusChild(bTextInput);
 	bTextInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
-	label = new UILabel(L"A:", fontSize, fontName);
+	label = new UILabel(core, pool, L"A:", fontSize, fontName);
 	label->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 15, topPadding+padding + 93);
 	addChild(label);
 	junkLabels.push_back(label);
 	
-	aTextInput = new UITextInput(false, 40, 12);
+	aTextInput = new UITextInput(core, pool, false, 40, 12);
 	aTextInput->setPosition(hueFrame->getPosition().x+hueFrame->getWidth() + 30, topPadding+padding + 90);
 	addFocusChild(aTextInput);
 	aTextInput->addEventListener(this, UIEvent::CHANGE_EVENT);
@@ -432,7 +432,7 @@ void UIColorPicker::updateColorFromHueSelector() {
 	}
 }
 
-void UIColorPicker::Update() {	
+void UIColorPicker::Update(Number elapsed) {
 	if (continuous) {
 		if (mainSelector->isDragged())
 			updateColorFromMainSelector();
@@ -441,13 +441,13 @@ void UIColorPicker::Update() {
 			updateColorFromHueSelector();
 	}
 	
-	UIWindow::Update();
+	UIWindow::Update(elapsed);
 }
 
-UIColorBox::UIColorBox(UIColorPicker *colorPicker, Color initialColor, Number width, Number height) : UIElement() {
+UIColorBox::UIColorBox(Core *core, ResourcePool *resourcePool, UIColorPicker *colorPicker, Color initialColor, Number width, Number height) : UIElement(core) {
 
-	Config *conf = CoreServices::getInstance()->getConfig();	
-
+	ConfigRef conf = core->getConfig();
+	
 	String frameImageFile = conf->getStringValue("Polycode", "uiColorBoxFrameImage");
 	String bgImageFile = conf->getStringValue("Polycode", "uiColorBoxBgImage");
 	Number frameInset = conf->getNumericValue("Polycode", "uiColorBoxFrameInset");
@@ -458,7 +458,7 @@ UIColorBox::UIColorBox(UIColorPicker *colorPicker, Color initialColor, Number wi
 	Number sl = conf->getNumericValue("Polycode", "uiColorBoxFrameImageL");
 
 
-	bgImage = new UIRect(width-(frameInset*2), height-(frameInset*2));
+	bgImage = new UIRect(core, resourcePool, width-(frameInset*2), height-(frameInset*2));
 	bgImage->setAnchorPoint(-1.0, -1.0, 0.0);
 	bgImage->loadTexture(bgImageFile);
 	bgImage->setPosition(frameInset, frameInset);	
@@ -467,14 +467,14 @@ UIColorBox::UIColorBox(UIColorPicker *colorPicker, Color initialColor, Number wi
 	bgImage->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	bgImage->processInputEvents = true;
 
-	colorShape = new UIRect(width-(frameInset*2), height-(frameInset*2));
+	colorShape = new UIRect(core, resourcePool, width-(frameInset*2), height-(frameInset*2));
 	colorShape->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	colorShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	colorShape->setPosition(frameInset, frameInset);
 	addChild(colorShape);
 
 		
-	frameImage = new UIBox(frameImageFile, st,sr,sb,sl, width, height); 
+	frameImage = new UIBox(core, resourcePool, frameImageFile, st,sr,sb,sl, width, height);
 	addChild(frameImage);
 	
 	this->colorPicker = colorPicker;	

@@ -22,7 +22,7 @@
  
 #include "polycode/ide/PolycodeImageEditor.h"
 
-PolycodeImageEditor::PolycodeImageEditor() : PolycodeEditor(true){
+PolycodeImageEditor::PolycodeImageEditor(Core *core, ResourcePool *resourcePool) : PolycodeEditor(core, resourcePool, true){
 	
 }
 
@@ -32,7 +32,7 @@ PolycodeImageEditor::~PolycodeImageEditor() {
 
 bool PolycodeImageEditor::openFile(OSFileEntry filePath) {
 		
-	editorImage = new UIRect(filePath.fullPath);
+	editorImage = new UIRect(core, resourcePool, filePath.fullPath);
 	aspectRatio = ((Number)editorImage->getWidth()) / ((Number)editorImage->getHeight());
 	editorImage->setAnchorPoint(0.0, 0.0, 0.0);
 	addChild(editorImage);

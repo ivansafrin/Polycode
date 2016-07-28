@@ -103,6 +103,46 @@ function ResourcePool:getResource(resourceType, resourceName)
 	return __c
 end
 
+function ResourcePool:getFont(name)
+	local retVal = Polycode.ResourcePool_getFont(self.__ptr, name)
+	if retVal == nil then return nil end
+	local __c = _G["shared_ptr<Font>"]("__skip_ptr__")
+	__c.__ptr = retVal
+	return __c
+end
+
+function ResourcePool:getMaterial(name)
+	local retVal = Polycode.ResourcePool_getMaterial(self.__ptr, name)
+	if retVal == nil then return nil end
+	local __c = _G["shared_ptr<Material>"]("__skip_ptr__")
+	__c.__ptr = retVal
+	return __c
+end
+
+function ResourcePool:getShader(name)
+	local retVal = Polycode.ResourcePool_getShader(self.__ptr, name)
+	if retVal == nil then return nil end
+	local __c = _G["shared_ptr<Shader>"]("__skip_ptr__")
+	__c.__ptr = retVal
+	return __c
+end
+
+function ResourcePool:loadTexture(name)
+	local retVal = Polycode.ResourcePool_loadTexture(self.__ptr, name)
+	if retVal == nil then return nil end
+	local __c = _G["shared_ptr<Texture>"]("__skip_ptr__")
+	__c.__ptr = retVal
+	return __c
+end
+
+function ResourcePool:loadMesh(name)
+	local retVal = Polycode.ResourcePool_loadMesh(self.__ptr, name)
+	if retVal == nil then return nil end
+	local __c = _G["shared_ptr<Mesh>"]("__skip_ptr__")
+	__c.__ptr = retVal
+	return __c
+end
+
 function ResourcePool:getName()
 	local retVal =  Polycode.ResourcePool_getName(self.__ptr)
 	return retVal

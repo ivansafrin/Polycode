@@ -149,8 +149,8 @@ SceneParticleEmitter.prototype.fixedUpdate = function() {
 	Polycode.SceneParticleEmitter_fixedUpdate(this.__ptr)
 }
 
-SceneParticleEmitter.prototype.updateParticles = function() {
-	Polycode.SceneParticleEmitter_updateParticles(this.__ptr)
+SceneParticleEmitter.prototype.updateParticles = function(elapsed) {
+	Polycode.SceneParticleEmitter_updateParticles(this.__ptr, elapsed)
 }
 
 SceneParticleEmitter.prototype.triggerParticles = function(allAtOnce) {

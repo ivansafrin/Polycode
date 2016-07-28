@@ -15,11 +15,6 @@ function Data:Data(...)
 	end
 end
 
-function Data:loadFromFile(fileName)
-	local retVal = Polycode.Data_loadFromFile(self.__ptr, fileName)
-	return retVal
-end
-
 function Data:getAsString(encoding)
 	local retVal = Polycode.Data_getAsString(self.__ptr, encoding)
 	return retVal
@@ -27,11 +22,6 @@ end
 
 function Data:setFromString(str, encoding)
 	local retVal = Polycode.Data_setFromString(self.__ptr, str, encoding)
-end
-
-function Data:saveToFile(fileName)
-	local retVal = Polycode.Data_saveToFile(self.__ptr, fileName)
-	return retVal
 end
 
 function Data:__delete()

@@ -71,6 +71,7 @@ namespace Polycode {
 	
 	class _PolyExport GPUDrawCall {
 	public:
+		
 		std::shared_ptr<MeshGeometry> submesh;
 		GPUDrawOptions options;
 		Matrix4 modelMatrix;

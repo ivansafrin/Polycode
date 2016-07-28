@@ -352,7 +352,7 @@ namespace Polycode {
 			 * Construct from a mesh loaded from a file.
 			 * @param fileName Path to mesh file.
 			 */
-			explicit Mesh(const String& fileName);
+			explicit Mesh(Core *core, const String& fileName);
 		
 			~Mesh();
 		
@@ -360,7 +360,7 @@ namespace Polycode {
 			 * Construct from a mesh loaded from a file.
 			 * @param fileName Path to mesh file.
 			 */
-			static Mesh *MeshFromFileName(String& fileName);
+			static Mesh *MeshFromFileName(Core *core, String& fileName);
 		
 		
 			Mesh *Copy() const;
@@ -369,12 +369,12 @@ namespace Polycode {
 			 * Loads a mesh from a file.
 			 * @param fileName Path to mesh file.
 			 */
-			void loadMesh(const String& fileName);
+			void loadMesh(Core *core, const String& fileName);
 			/**
 			 * Saves mesh to a file.
 			 * @param fileName Path to file to save to.
 			 */
-			void saveToFile(const String& fileName, bool writeNormals = true, bool writeTangents = true, bool writeColors = true, bool writeBoneWeights = true, bool writeUVs = true, bool writeSecondaryUVs = false);
+			void saveToFile(Core *core, const String& fileName, bool writeNormals = true, bool writeTangents = true, bool writeColors = true, bool writeBoneWeights = true, bool writeUVs = true, bool writeSecondaryUVs = false);
 			
 			void loadFromFile(CoreFile *inFile);
 		

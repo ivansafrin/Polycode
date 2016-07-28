@@ -5,16 +5,16 @@
 
 using namespace Polycode;
 
-UIFileDialogEntry::UIFileDialogEntry(OSFileEntry entry, bool canSelect, int width, bool isPlace) : UIElement() {
+UIFileDialogEntry::UIFileDialogEntry(Core *core, ResourcePool *resourcePool, OSFileEntry entry, bool canSelect, int width, bool isPlace) : UIElement(core) {
 	this->canSelect = canSelect;
 	ownsChildren = true;
 
-	Config *conf = CoreServices::getInstance()->getConfig();	
+	ConfigRef conf = core->getConfig();
 	String fileIconName = conf->getStringValue("Polycode", "uiFileBrowserFileIcon");
 	String folderIconName = conf->getStringValue("Polycode", "uiFileBrowserFolderIcon");
 	String placeIconName = conf->getStringValue("Polycode", "uiFileBrowserPlaceIcon");
 
-	bg = new UIRect(width, 18);
+	bg = new UIRect(core, resourcePool, width, 18);
 	bg->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(bg);
 	bg->setColor(0.5, 0.5, 0.5, 1.0);
@@ -24,12 +24,12 @@ UIFileDialogEntry::UIFileDialogEntry(OSFileEntry entry, bool canSelect, int widt
 	this->fileEntry = entry;
 
 	if(isPlace) {
-		icon = new UIImage(placeIconName);
+		icon = new UIImage(core, resourcePool, placeIconName);
 	} else {
 		if(entry.type == OSFileEntry::TYPE_FILE) {
-			icon = new UIImage(fileIconName);
+			icon = new UIImage(core, resourcePool, fileIconName);
 		} else {
-			icon = new UIImage(folderIconName);
+			icon = new UIImage(core, resourcePool, folderIconName);
 		}
 	}
 
@@ -37,7 +37,7 @@ UIFileDialogEntry::UIFileDialogEntry(OSFileEntry entry, bool canSelect, int widt
 	addChild(icon);
 	icon->setPosition(3,1);
 
-	label = new UILabel(entry.name, 12, "sans");
+	label = new UILabel(core, resourcePool, entry.name, 12, "sans");
 	addChild(label);
 	label->setPosition(25, 2);
 
@@ -59,7 +59,8 @@ UIFileDialogEntry::~UIFileDialogEntry() {
 
 }
 
-UIFileDialog::UIFileDialog(String baseDir, bool foldersOnly, std::vector<String> extensions, bool allowMultiple) : UIWindow("", 500, 400) {
+UIFileDialog::UIFileDialog(Core *core, ResourcePool *resourcePool, String baseDir, bool foldersOnly, std::vector<String> extensions, bool allowMultiple) : UIWindow(core, resourcePool, "", 500, 400), resourcePool(resourcePool)
+{
 	this->foldersOnly = foldersOnly;
 	this->allowMultiple = allowMultiple;
 
@@ -77,15 +78,15 @@ UIFileDialog::UIFileDialog(String baseDir, bool foldersOnly, std::vector<String>
 		}
 	}
 
-	cancelButton = new UIButton("Cancel", 100);
+	cancelButton = new UIButton(core, resourcePool, "Cancel", 100);
 	addChild(cancelButton);
 	cancelButton->setPosition(500-210, 400 - 20);
 
-	okButton = new UIButton("OK",  100);
+	okButton = new UIButton(core, resourcePool, "OK",  100);
 	addChild(okButton);
 	okButton->setPosition(500-100, 400 - 20);
 
-	newFolderButton = new UIButton("New Folder", 100);
+	newFolderButton = new UIButton(core, resourcePool, "New Folder", 100);
 	addChild(newFolderButton);
 	newFolderButton->setPosition(25, 400-20);
 
@@ -93,18 +94,18 @@ UIFileDialog::UIFileDialog(String baseDir, bool foldersOnly, std::vector<String>
 	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
 
-	entryHolder = new UIElement();
+	entryHolder = new UIElement(core);
 	entryHolder->ownsChildren = true;
 	entryHolder->setWidth(1);
 	entryHolder->setHeight(1);
 	
-	scrollContainer = new UIScrollContainer(entryHolder, false, true, 500-140, 320);
+	scrollContainer = new UIScrollContainer(core, resourcePool, entryHolder, false, true, 500-140, 320);
 	addChild(scrollContainer);
 
 	scrollContainer->setPosition(160, 40);
 	showFolder(baseDir);
 
-	createFolderWindow = new CreateFolderWindow();
+	createFolderWindow = new CreateFolderWindow(core, resourcePool);
 	createFolderWindow->visible = false;
 	createFolderWindow->enabled = false;
 
@@ -117,7 +118,7 @@ UIFileDialog::UIFileDialog(String baseDir, bool foldersOnly, std::vector<String>
 
 	doChangeFolder = false;
 	addToSidebar("/", "Filesystem");
-	addToSidebar(CoreServices::getInstance()->getCore()->getUserHomeDirectory(), "Home");
+	addToSidebar(core->getUserHomeDirectory(), "Home");
 }
 
 bool UIFileDialog::canOpen(String extension) {
@@ -139,7 +140,7 @@ void UIFileDialog::addToSidebar(String path, String name) {
 	backEntry.name = name;
 	backEntry.fullPath = path;
 
-	UIFileDialogEntry *newEntry = new UIFileDialogEntry(backEntry, true, 140, true);
+	UIFileDialogEntry *newEntry = new UIFileDialogEntry(core, resourcePool, backEntry, true, 140, true);
 	addChild(newEntry);
 	newEntry->setPosition(10, 40 + (sideBarEntries.size() * 20));
 	sideBarEntries.push_back(newEntry);
@@ -181,7 +182,7 @@ void UIFileDialog::showFolder(String folderPath) {
 	currentEntry = NULL;
 	clearEntries();
 
-	std::vector<OSFileEntry> _entries = Services()->getCore()->parseFolder(folderPath, false);
+	std::vector<OSFileEntry> _entries = core->parseFolder(folderPath, false);
 	
 	int offset = 0;
 	if(folderPath != "/") {
@@ -192,7 +193,7 @@ void UIFileDialog::showFolder(String folderPath) {
 	backEntry.basePath = folderPath;
 	backEntry.fullPath = folderPath+"/..";
 
-	UIFileDialogEntry *newEntry = new UIFileDialogEntry(backEntry, true);
+	UIFileDialogEntry *newEntry = new UIFileDialogEntry(core, resourcePool, backEntry, true);
 	entryHolder->addChild(newEntry);
 	entries.push_back(newEntry);
 	newEntry->bg->addEventListener(this, InputEvent::EVENT_DOUBLECLICK);
@@ -213,7 +214,7 @@ void UIFileDialog::showFolder(String folderPath) {
 				canSelect = true;
 			}
 		}
-		UIFileDialogEntry *newEntry = new UIFileDialogEntry(_entries[i], canSelect);
+		UIFileDialogEntry *newEntry = new UIFileDialogEntry(core, resourcePool, _entries[i], canSelect);
 		entryHolder->addChild(newEntry);
 		newEntry->setPosition(0, (i+offset) * 20);
 		entries.push_back(newEntry);	
@@ -223,7 +224,7 @@ void UIFileDialog::showFolder(String folderPath) {
 	scrollContainer->setContentSize(500-160, (i+offset) * 20);
 }
 
-void UIFileDialog::Update() {
+void UIFileDialog::Update(Number elapsed) {
 	if(doChangeFolder) {
 		showFolder(newPath);
 		doChangeFolder = false;
@@ -287,7 +288,7 @@ void UIFileDialog::handleEvent(Event *event) {
 	}
 
 	if(event->getDispatcher() == createFolderWindow->okButton) {
-		CoreServices::getInstance()->getCore()->createFolder(currentFolderPath+"/"+createFolderWindow->nameInput->getText());
+		core->createFolder(currentFolderPath+"/"+createFolderWindow->nameInput->getText());
 		createFolderWindow->visible = false;
 		createFolderWindow->enabled = false;
 		showFolder(currentFolderPath);	
@@ -323,19 +324,19 @@ UIFileDialog::~UIFileDialog() {
 	}
 }
 
-CreateFolderWindow::CreateFolderWindow() : UIWindow("New folder name", 290, 80) {
+CreateFolderWindow::CreateFolderWindow(Core *core, ResourcePool *resourcePool) : UIWindow(core, resourcePool, "New folder name", 290, 80) {
 	closeBtn->visible = false;
 	closeBtn->enabled = false;
 
-	nameInput = new UITextInput(false, 270, 16);
+	nameInput = new UITextInput(core, resourcePool, false, 270, 16);
 	addChild(nameInput);
 	nameInput->setPosition(20, 34);
 
-	cancelButton = new UIButton("Cancel", 100);
+	cancelButton = new UIButton(core, resourcePool, "Cancel", 100);
 	addChild(cancelButton);
 	cancelButton->setPosition(300-210, 80 - 12);
 
-	okButton = new UIButton("OK",  100);
+	okButton = new UIButton(core, resourcePool, "OK",  100);
 	addChild(okButton);
 	okButton->setPosition(300-100, 80 - 12);
 }

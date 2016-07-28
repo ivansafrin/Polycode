@@ -20,10 +20,6 @@ function Sound:getSampleAsNumber(offset, channel, position, orientation)
 	return retVal
 end
 
-function Sound:loadFile(fileName)
-	local retVal = Polycode.Sound_loadFile(self.__ptr, fileName)
-end
-
 function Sound:Play(loop, restartSound)
 	local retVal = Polycode.Sound_Play(self.__ptr, loop, restartSound)
 end
@@ -133,16 +129,6 @@ end
 
 function Sound:getMaxDistance()
 	local retVal =  Polycode.Sound_getMaxDistance(self.__ptr)
-	return retVal
-end
-
-function Sound:loadWAV(fileName)
-	local retVal = Polycode.Sound_loadWAV(self.__ptr, fileName)
-	return retVal
-end
-
-function Sound:loadOGG(fileName)
-	local retVal = Polycode.Sound_loadOGG(self.__ptr, fileName)
 	return retVal
 end
 

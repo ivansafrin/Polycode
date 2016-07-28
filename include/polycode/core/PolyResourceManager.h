@@ -52,12 +52,15 @@ namespace Polycode {
 	class Shader;
 	class Cubemap;
 	class Material;
+	class Texture;
     class Font;
+	class Mesh;
 	
 	class _PolyExport ResourcePool : public EventDispatcher {
 		public:
-			ResourcePool();
-			ResourcePool(const String &name, ResourcePool *fallbackPool);
+            ResourcePool(){}
+			ResourcePool(Core *core);
+			ResourcePool(Core *core, const String &name, ResourcePool *fallbackPool);
 			~ResourcePool();
 		
 			void setFallbackPool(ResourcePool *pool);
@@ -72,6 +75,15 @@ namespace Polycode {
 			std::shared_ptr<Resource> loadResource(const String &path);
 			std::shared_ptr<Resource> loadResourceWithName(const String &path, const String &name);
 			std::shared_ptr<Resource> getResource(int resourceType, const String& resourceName) const;
+        
+            std::shared_ptr<Font> getFont(const String &name);
+            std::shared_ptr<Material> getMaterial(const String &name);
+			std::shared_ptr<Shader> getShader(const String &name);
+		
+			std::shared_ptr<Texture> loadTexture(const String &name);
+			std::shared_ptr<Mesh> loadMesh(const String &name);
+		
+		
 			String getName();
 			void setName(const String &name);
 		
@@ -92,8 +104,9 @@ namespace Polycode {
 		
 			static bool defaultReloadResourcesOnModify;
 		
-		private:
+		protected:
 		
+            Core *core;
 			void loadResourcesFromFolderWithLoader(const String &folder, bool recursive, ResourceLoader *loader, const String &containingFolder);
 		
 			void loadShadersFromFile(const String &fileName);
@@ -114,33 +127,33 @@ namespace Polycode {
 		public:
 			virtual ~ResourceLoader() {}
 			bool canHandleExtension(const String &extension);
-			virtual std::shared_ptr<Resource> loadResource(const String &path, ResourcePool *targetPool) = 0;
+			virtual std::shared_ptr<Resource> loadResource(Core *core, const String &path, ResourcePool *targetPool) = 0;
 			std::vector<String> extensions;
 	};
 	
 	class _PolyExport TextureResourceLoader : public ResourceLoader {
 		public:
 			TextureResourceLoader();
-			std::shared_ptr<Resource> loadResource(const String &path, ResourcePool *targetPool);
+			std::shared_ptr<Resource> loadResource(Core *core, const String &path, ResourcePool *targetPool);
 	};
 	
 	class _PolyExport ProgramResourceLoader : public ResourceLoader {
 	public:
 		ProgramResourceLoader();
-		std::shared_ptr<Resource> loadResource(const String &path, ResourcePool *targetPool);
+		std::shared_ptr<Resource> loadResource(Core *core, const String &path, ResourcePool *targetPool);
 	};
 
 	class _PolyExport MaterialResourceLoader : public ResourceLoader {
 	public:
 			MaterialResourceLoader();
-			std::shared_ptr<Resource> loadResource(const String &path, ResourcePool *targetPool);
+			std::shared_ptr<Resource> loadResource(Core *core, const String &path, ResourcePool *targetPool);
 	};
 	
 	class _PolyExport FontResourceLoader : public ResourceLoader {
 	public:
 		FontResourceLoader();
 		~FontResourceLoader();
-		std::shared_ptr<Resource> loadResource(const String &path, ResourcePool *targetPool);
+		std::shared_ptr<Resource> loadResource(Core *core, const String &path, ResourcePool *targetPool);
 	private:
 		FT_Library FTLibrary;
 	};
@@ -155,7 +168,7 @@ namespace Polycode {
 	public:
 		ScriptResourceLoader();
 		~ScriptResourceLoader();
-		std::shared_ptr<Resource> loadResource(const String &path, ResourcePool *targetPool);
+		std::shared_ptr<Resource> loadResource(Core *core, const String &path, ResourcePool *targetPool);
 	private:
 		
 		void initJavascript();
@@ -170,7 +183,7 @@ namespace Polycode {
 	class _PolyExport MeshResourceLoader : public ResourceLoader {
 	public:
 		MeshResourceLoader();
-		std::shared_ptr<Resource> loadResource(const String &path, ResourcePool *targetPool);
+		std::shared_ptr<Resource> loadResource(Core *core, const String &path, ResourcePool *targetPool);
 	};
 	
 	/**
@@ -178,7 +191,8 @@ namespace Polycode {
 	*/ 
 	class _PolyExport ResourceManager : public EventDispatcher {
 		public:
-			ResourceManager();
+            ResourceManager(){}
+			ResourceManager(Core *core);
 			~ResourceManager();
 		
 			ResourcePool *getGlobalPool();

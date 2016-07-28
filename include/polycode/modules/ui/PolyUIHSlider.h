@@ -30,15 +30,16 @@
 #include "polycode/modules/ui/PolyUIElement.h"
 #include "polycode/core/PolyInputEvent.h"
 #include "polycode/core/PolyFont.h"
+#include "polycode/core/PolyConfig.h"
 
 namespace Polycode {
 
 	class _PolyExport UIHSlider : public UIElement {
 		public:
-			UIHSlider(Number start, Number end, Number width);
+			UIHSlider(Core *core, ResourcePool *pool, Number start, Number end, Number width);
 			virtual ~UIHSlider();		
 			void handleEvent(Event *event);
-			void Update();
+			void Update(Number elapsed);
 			
 			void Resize(Number width, Number height);
 			

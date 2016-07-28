@@ -26,23 +26,23 @@
 #include "polycode/core/PolyInputEvent.h"
 #include "polycode/core/PolyLabel.h"
 #include "polycode/core/PolyCore.h"
-#include "polycode/core/PolyCoreServices.h"
-#include "polycode/core/PolyTweenManager.h"
 #include "polycode/core/PolyRenderer.h"
 
 using namespace Polycode;
 
 
-UIWindow::UIWindow(String windowName, Number width, Number height) : UIElement() {
-	closeOnEscape = false;
+UIWindow::UIWindow(Core *core, ResourcePool *resourcePool, const String &windowName, Number width, Number height) : UIElement(core)
+{
 	
+	closeOnEscape = false;
 	snapToPixels = true;
 	
-	Config *conf = CoreServices::getInstance()->getConfig();	
+	ConfigRef conf = core->getConfig();
+	
 	Number uiScale = conf->getNumericValue("Polycode", "uiScale");
 	
 	String fontName = conf->getStringValue("Polycode", "uiWindowTitleFont");
-	int fontSize = conf->getNumericValue("Polycode", "uiWindowTitleFontSize");	
+	int fontSize = conf->getNumericValue("Polycode", "uiWindowTitleFontSize");
 	
 	Number st = conf->getNumericValue("Polycode", "uiWindowSkinT");
 	Number sr = conf->getNumericValue("Polycode", "uiWindowSkinR");
@@ -51,12 +51,12 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : UIElement()
 	
 	topPadding = st;
 	
-	padding = conf->getNumericValue("Polycode", "uiWindowSkinPadding"); 
+	padding = conf->getNumericValue("Polycode", "uiWindowSkinPadding");
 	
 	width = width+(padding*2.0);
 	height = height+topPadding;
 	
-	windowRect = new UIBox(conf->getStringValue("Polycode", "uiWindowSkin"),
+	windowRect = new UIBox(core, resourcePool, conf->getStringValue("Polycode", "uiWindowSkin"),
 						  st,sr,sb,sl,
 						  width, height);	
 	
@@ -74,7 +74,7 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : UIElement()
 	titlebarRect->processInputEvents = true;
 	addChild(titlebarRect);
 	
-	titleLabel = new SceneLabel(windowName, fontSize, fontName, Label::ANTIALIAS_FULL);
+	titleLabel = new SceneLabel(resourcePool->getMaterial("Unlit"), windowName, fontSize, resourcePool->getFont(fontName), Label::ANTIALIAS_FULL);
 	titleLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	
 	titleLabel->setPosition(conf->getNumericValue("Polycode", "uiWindowTitleX"),conf->getNumericValue("Polycode", "uiWindowTitleY"));
@@ -83,7 +83,7 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : UIElement()
 	titleLabel->positionAtBaseline = false;
 	titleLabel->setAnchorPoint(-1.0, -1.0, 0.0);
 			
-	closeBtn = new UIImageButton(conf->getStringValue("Polycode", "uiWindowCloseIcon"), uiScale);
+	closeBtn = new UIImageButton(core, resourcePool, conf->getStringValue("Polycode", "uiWindowCloseIcon"), uiScale);
 	addChild(closeBtn);
 	closeIconX = conf->getNumericValue("Polycode", "uiCloseIconX");
 	closeIconY = conf->getNumericValue("Polycode", "uiCloseIconY");
@@ -95,7 +95,7 @@ UIWindow::UIWindow(String windowName, Number width, Number height) : UIElement()
 	titlebarRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	closeBtn->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 	
 	setWidth(width);
 	setHeight(height);
@@ -128,7 +128,7 @@ UIWindow::~UIWindow() {
 		delete titleLabel;
 		delete closeBtn;
 	}
-	CoreServices::getInstance()->getCore()->getInput()->removeAllHandlersForListener(this);
+	core->getInput()->removeAllHandlersForListener(this);
 }
 
 void UIWindow::onKeyDown(PolyKEY key) {	
@@ -174,7 +174,7 @@ void UIWindow::onClose() {
 
 void UIWindow::handleEvent(Event *event) {
 
-	if(event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {
+	if(event->getDispatcher() == core->getInput()) {
 		InputEvent *inputEvent = (InputEvent*)event;
 		if(event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
 			onKeyDown(inputEvent->key);

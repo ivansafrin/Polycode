@@ -21,7 +21,6 @@
 */
 
 #include "polycode/core/PolySceneLabel.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyLabel.h"
 #include "polycode/core/PolyMesh.h"
 #include "polycode/core/PolyTexture.h"
@@ -36,31 +35,18 @@ bool SceneLabel::defaultPositionAtBaseline = false;
 bool SceneLabel::defaultSnapToPixels = false;
 bool SceneLabel::createMipmapsForLabels = true;
 
-
-SceneLabel::SceneLabel(const String& text, int size, const String& fontName, int amode, Number actualHeight) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1){
-	setMaterialByName("Unlit");
-	
-	ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
-	std::shared_ptr<Font> font = std::static_pointer_cast<Font>(pool->getResource(Resource::RESOURCE_FONT, fontName));
-	
-	label = new Label(font, text, size * CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), amode, false, Color(0.0, 0.0, 0.0, 0.0), Color(1.0, 1.0, 1.0, 1.0));
-	
+SceneLabel::SceneLabel(std::shared_ptr<Material> material, const String& text, int size, std::shared_ptr<Font> font, int amode, Number actualHeight) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1){
+	setMaterial(material);
+	label = new Label(font, text, size, amode, false, Color(0.0, 0.0, 0.0, 0.0), Color(1.0, 1.0, 1.0, 1.0));
 	positionAtBaseline = SceneLabel::defaultPositionAtBaseline;
 	setAnchorPoint(SceneLabel::defaultAnchor);
 	snapToPixels = SceneLabel::defaultSnapToPixels;
 	setLabelActualHeight(actualHeight);
-
-	
 }
 
-SceneLabel::SceneLabel(const String& text, int size, const String& fontName, int amode, Number actualHeight, bool premultiplyAlpha, const Color &backgroundColor, const Color &foregroundColor) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1){
-
-	setMaterialByName("Unlit");
-	
-	ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
-	std::shared_ptr<Font> font = std::static_pointer_cast<Font>(pool->getResource(Resource::RESOURCE_FONT, fontName));
-	
-	label = new Label(font, text, size * CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), amode, premultiplyAlpha, backgroundColor, foregroundColor);
+SceneLabel::SceneLabel(std::shared_ptr<Material> material, const String& text, int size, std::shared_ptr<Font> font, int amode, Number actualHeight, bool premultiplyAlpha, const Color &backgroundColor, const Color &foregroundColor) : ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 1, 1){
+	setMaterial(material);
+	label = new Label(font, text, size, amode, premultiplyAlpha, backgroundColor, foregroundColor);
 	
 	positionAtBaseline = SceneLabel::defaultPositionAtBaseline;
 	setAnchorPoint(SceneLabel::defaultAnchor);	
@@ -69,7 +55,7 @@ SceneLabel::SceneLabel(const String& text, int size, const String& fontName, int
 }
 
 Entity *SceneLabel::Clone(bool deepClone, bool ignoreEditorOnly) const {
-	SceneLabel *newLabel = new SceneLabel(label->getText(), label->getSize(), label->getFont()->getFontName(), label->getAntialiasMode(), actualHeight, label->getPremultiplyAlpha(), label->getBackgroundColor(), label->getForegroundColor());
+	SceneLabel *newLabel = new SceneLabel(material, label->getText(), label->getSize(), label->getFont(), label->getAntialiasMode(), actualHeight, label->getPremultiplyAlpha(), label->getBackgroundColor(), label->getForegroundColor());
 	applyClone(newLabel, deepClone, ignoreEditorOnly);
 	return newLabel;
 }
@@ -107,9 +93,8 @@ String SceneLabel::getText() {
 
 void SceneLabel::setLabelActualHeight(Number actualHeight) {
 	this->actualHeight = actualHeight;
-	
 	if(actualHeight > 0.0) {
-		labelScale = actualHeight/((Number)label->getSize()) * CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX();
+		labelScale = actualHeight/((Number)label->getSize());
 	} else {
 		labelScale = 1.0;
 	}
@@ -130,10 +115,8 @@ void SceneLabel::updateFromLabel() {
 		texture = std::make_shared<Texture>(label, true, false);
 	}
 
-	setPrimitiveOptions(type, label->getWidth()*labelScale/CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(),label->getHeight()*labelScale/CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
-	
-	setLocalBoundingBox(label->getWidth()*labelScale / CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), label->getHeight()*labelScale/ CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX(), 0.001);
-	
+	setPrimitiveOptions(type, label->getWidth()*labelScale,label->getHeight()*labelScale);
+	setLocalBoundingBox(label->getWidth()*labelScale, label->getHeight()*labelScale, 0.001);
 	getShaderPass(0).shaderBinding->setTextureForParam("diffuse", texture);
 }
 
@@ -141,13 +124,13 @@ void SceneLabel::Render(GPUDrawBuffer *buffer) {
 	ScenePrimitive::Render(buffer);
 	if(positionAtBaseline) {
 		if(buffer->drawCalls.size() > 0) {
-			buffer->drawCalls[buffer->drawCalls.size()-1].modelMatrix.Translate(0.0, (((Number)label->getSize()*labelScale) * -1.0 / CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleY()) + (((Number)label->getBaselineAdjust())*labelScale/CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleY()), 0.0);
+			buffer->drawCalls[buffer->drawCalls.size()-1].modelMatrix.Translate(0.0, (((Number)label->getSize()*labelScale) * -1.0) + (((Number)label->getBaselineAdjust())*labelScale), 0.0);
 		}
 	}
 }
 
 int SceneLabel::getTextWidthForString(String text) {
-	return label->getTextWidthForString(text) / CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX();
+	return label->getTextWidthForString(text);
 }
 
 void SceneLabel::setText(const String& newText) {

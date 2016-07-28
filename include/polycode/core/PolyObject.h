@@ -29,6 +29,8 @@ class TiXmlElement;
 
 namespace Polycode {
 
+    class Core;
+    
 	/**
 	* Single entry in an Object. Object entries can be accessed as dictionaries or arrays.
 	*/
@@ -316,7 +318,7 @@ namespace Polycode {
 		* @param fileName Path to the XML file to load.
 		* @return Returns true is succesful, false if otherwise.
 		*/		
-		bool loadFromXML(const String& fileName);
+		bool loadFromXML(Polycode::Core *core, const String& fileName);
 
 		/**
 		* Loads data from XML string into the object. 
@@ -329,7 +331,7 @@ namespace Polycode {
 		* Saves the object to an XML file.
 		* @param fileName Path to the XML file to save to.
 		*/				
-		void saveToXML(const String& fileName);
+		void saveToXML(Polycode::Core *core, const String& fileName);
 
 		String saveToXMLString();
 
@@ -337,14 +339,14 @@ namespace Polycode {
 		* Saves the object to an optimized binary file
 		* @param fileName Path to the file to save to.
 		*/				
-		void saveToBinary(const String& fileName);
+		void saveToBinary(Core *core, const String& fileName);
 
 		/**
 		* Loads data from a binary file into the object. 
 		* @param fileName Path to the binary file to load.
 		* @return Returns true is succesful, false if otherwise.
 		*/		
-		bool loadFromBinary(const String& fileName);
+		bool loadFromBinary(Core *core, const String& fileName);
 
 		
 		void createFromXMLElement(TiXmlElement *element, ObjectEntry *entry);
@@ -359,7 +361,7 @@ namespace Polycode {
 
 	class _PolyExport BinaryObjectReader : public PolyBase {
 		public:
-			BinaryObjectReader(const String& fileName, Object *object);
+			BinaryObjectReader(Core *core, const String& fileName, Object *object);
 			~BinaryObjectReader();			
 			
 			bool success;				
@@ -387,7 +389,7 @@ namespace Polycode {
 			unsigned int addKey(const String &key);			
 			unsigned int getKeyIndex(const String &key);
 			
-			bool writeToFile(const String& fileName);			
+			bool writeToFile(Core *core, const String& fileName);
 			
 		protected:
 			Polycode::CoreFile *outFile;

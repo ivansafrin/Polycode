@@ -25,19 +25,19 @@
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyScenePrimitive.h"
 #include "polycode/core/PolySceneLabel.h"
+#include "polycode/core/PolyFont.h"
+#include "polycode/core/PolyInputKeys.h"
+#include "polycode/core/PolyConfig.h"
 #include "polycode/modules/ui/PolyUIElement.h"
 #include "polycode/modules/ui/PolyUIEvent.h"
 #include "polycode/modules/ui/PolyUIImageButton.h"
-#include "polycode/core/PolyFont.h"
-#include "polycode/core/PolyInputKeys.h"
 #include "polycode/modules/ui/PolyUIBox.h"
-#include "polycode/core/PolyTween.h"
 
 namespace Polycode {
 
 	class _PolyExport UIWindow : public UIElement {
 		public:
-			UIWindow(String windowName, Number width, Number height);
+			UIWindow(Core *core, ResourcePool *resourcePool, const String &windowName, Number width, Number height);
 			virtual ~UIWindow();
 			
 			void showWindow();
@@ -65,7 +65,6 @@ namespace Polycode {
 			Number closeIconY;
 			
 			SceneLabel *titleLabel;
-		
 			Font *font;
 			UIImageButton *closeBtn;
 			UIBox *windowRect;

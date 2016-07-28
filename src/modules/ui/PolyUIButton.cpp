@@ -25,18 +25,17 @@
 #include "polycode/core/PolyConfig.h"
 #include "polycode/core/PolyInputEvent.h"
 #include "polycode/core/PolyLabel.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyCore.h"
 #include "polycode/core/PolyRenderer.h"
 
 using namespace Polycode;
 
-UIButton::UIButton(String text, Number width, Number height) : UIElement() {
-
-	Config *conf = CoreServices::getInstance()->getConfig();	
+UIButton::UIButton(Core *core, ResourcePool *pool, String text, Number width, Number height) : UIElement(core) {
+	
+	ConfigRef conf = core->getConfig();
 	
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
-	int fontSize = conf->getNumericValue("Polycode", "uiButtonFontSize");	
+	int fontSize = conf->getNumericValue("Polycode", "uiButtonFontSize");
 	
 	Number st = conf->getNumericValue("Polycode", "uiButtonSkinT");
 	Number sr = conf->getNumericValue("Polycode", "uiButtonSkinR");
@@ -46,12 +45,12 @@ UIButton::UIButton(String text, Number width, Number height) : UIElement() {
 	labelOffsetX = conf->getNumericValue("Polycode", "uiButtonLabelOffsetX");
 	labelOffsetY = conf->getNumericValue("Polycode", "uiButtonLabelOffsetY");
 		
-	buttonRect = new UIBox(conf->getStringValue("Polycode", "uiButtonSkin"),
+	buttonRect = new UIBox(core, pool, conf->getStringValue("Polycode", "uiButtonSkin"),
 						   st,sr,sb,sl,
 						   width, height);	
 	
 	buttonRect->blockMouseInput	 = true;
-	buttonFocusedRect= new UIBox(conf->getStringValue("Polycode", "uiButtonFocusedSkin"),
+	buttonFocusedRect= new UIBox(core, pool, conf->getStringValue("Polycode", "uiButtonFocusedSkin"),
 								 st,sr,sb,sl,
 								 width, height);		
 	blockMouseInput = true;
@@ -66,12 +65,11 @@ UIButton::UIButton(String text, Number width, Number height) : UIElement() {
 	buttonRect->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);	
 	buttonRect->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	
-	coreInput = CoreServices::getInstance()->getCore()->getInput();
-	coreInput->addEventListener(this, InputEvent::EVENT_KEYDOWN);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 		
 	pressedDown = false;
 	
-	buttonLabel = new SceneLabel(text, fontSize, fontName, Label::ANTIALIAS_FULL);
+	buttonLabel = new SceneLabel(pool->getMaterial("Unlit"), text, fontSize, pool->getFont(fontName), Label::ANTIALIAS_FULL);
 	buttonLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	buttonLabel->color.setColorHexFromString(conf->getStringValue("Polycode", "uiButtonFontColor"));
 	addChild(buttonLabel);
@@ -106,7 +104,7 @@ void UIButton::Resize(Number width, Number height) {
 	UIElement::Resize(width, height);
 }
 
-void UIButton::Update() {
+void UIButton::Update(Number elapsed) {
 	if(hasFocus) {
 		buttonFocusedRect->visible = true;
 		buttonRect->visible = false;
@@ -117,7 +115,7 @@ void UIButton::Update() {
 }
 
 UIButton::~UIButton() {
-	coreInput->removeAllHandlersForListener(this);
+	core->getInput()->removeAllHandlersForListener(this);
 	if(!ownsChildren) {
 		delete buttonRect;
 		delete buttonFocusedRect;
@@ -127,7 +125,7 @@ UIButton::~UIButton() {
 		
 void UIButton::handleEvent(Event *event) {
 
-	if(event->getDispatcher() == coreInput) {
+	if(event->getDispatcher() == core->getInput()) {
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_KEYDOWN:
 				if(hasFocus) {

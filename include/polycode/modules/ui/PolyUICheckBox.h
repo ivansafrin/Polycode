@@ -25,15 +25,16 @@
 #include "polycode/core/PolySceneLabel.h"
 #include "polycode/core/PolyScenePrimitive.h"
 #include "polycode/core/PolyEntity.h"
-#include "polycode/modules/ui/PolyUIEvent.h"
 #include "polycode/core/PolyFont.h"
+#include "polycode/core/PolyConfig.h"
+#include "polycode/modules/ui/PolyUIEvent.h"
 #include "polycode/modules/ui/PolyUIElement.h"
 
 namespace Polycode {
 
 	class _PolyExport UICheckBox : public UIElement {
 		public:
-			UICheckBox(String caption, bool checked);
+			UICheckBox(Core *core, ResourcePool *pool, String caption, bool checked);
 			virtual ~UICheckBox();
 		
 			void setChecked(bool val);

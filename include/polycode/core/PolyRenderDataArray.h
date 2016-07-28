@@ -23,9 +23,12 @@
 #pragma once
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyString.h"
+#include "polycode/core/PolyRendererPlatformData.h"
 #include <vector>
 
 namespace Polycode {
+	
+	class RendererPlatformData;
 	
 	class RenderDataArray : public PolyBase {
 	public:
@@ -39,7 +42,7 @@ namespace Polycode {
 		virtual unsigned int getDataSize() const;
 		
 		String customArrayName;
-		void *platformData;
+		RendererPlatformData platformData;
 		
 		/**
 		 * Vertex position array.

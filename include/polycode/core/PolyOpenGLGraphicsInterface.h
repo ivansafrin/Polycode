@@ -28,6 +28,7 @@ THE SOFTWARE.
 #include "polycode/core/PolyRenderer.h"
 #include "polycode/core/PolyTexture.h"
 #include "polycode/core/PolyMesh.h"
+#include "polycode/core/PolyCore.h"
 
 #if PLATFORM == PLATFORM_MAC
 	
@@ -84,7 +85,7 @@ namespace Polycode {
 	class _PolyExport OpenGLGraphicsInterface : public GraphicsInterface {
 	public:
 		
-		OpenGLGraphicsInterface();
+		OpenGLGraphicsInterface(Core *core);
 		~OpenGLGraphicsInterface();
 
 		// implementation
@@ -134,6 +135,7 @@ namespace Polycode {
 		
 	protected:
 		
+        Core *core;
 		GLuint currentShaderID;
 		int textureIndex;
 		

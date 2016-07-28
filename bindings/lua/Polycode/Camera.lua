@@ -145,10 +145,6 @@ function Camera:setPostFilter(material)
 	local retVal = Polycode.Camera_setPostFilter(self.__ptr, material.__ptr)
 end
 
-function Camera:setPostFilterByName(shaderName)
-	local retVal = Polycode.Camera_setPostFilterByName(self.__ptr, shaderName)
-end
-
 function Camera:removePostFilter()
 	local retVal =  Polycode.Camera_removePostFilter(self.__ptr)
 end

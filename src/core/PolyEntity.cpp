@@ -21,7 +21,6 @@
 */
 #include "polycode/core/PolyEntity.h"
 #include "polycode/core/PolyRenderer.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyInputEvent.h"
 #include "polycode/core/PolyScript.h"
 
@@ -50,7 +49,6 @@ Entity::Entity(Number width, Number height, Number depth) : EventDispatcher() {
 void Entity::initEntity() {
 	userData = NULL;
 	scale.set(1,1,1);
-	renderer = NULL;
 	enabled = true;
 	depthTest = true;
 	visible = true;
@@ -137,7 +135,6 @@ void Entity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) co
 			clone->addTag((*tags)[i]);
 		}
 	}
-	clone->setRenderer(renderer);
 
 	if(deepClone) {
 		for(int i=0; i < children.size(); i++) {
@@ -320,7 +317,6 @@ void Entity::addChild(Entity *newChild) {
 	if(!newChild) {
 		return;
 	}
-	newChild->setRenderer(renderer);
 	newChild->setParentEntity(this);
 	newChild->setInverseY(getInverseY());
 	children.push_back(newChild);
@@ -408,11 +404,11 @@ void Entity::rebuildTransformMatrix() {
 	matrixDirty = false;
 }
 
-void Entity::doUpdates() {
+void Entity::doUpdates(Number elapsed) {
 	if (enabled) {
-		Update();
+		Update(elapsed);
 		for(int i=0; i < children.size(); i++) {
-			children[i]->doUpdates();
+			children[i]->doUpdates(elapsed);
 		}
 	}
 }
@@ -461,12 +457,8 @@ Matrix4 Entity::getConcatenatedRollMatrix() const {
 }
 
 Vector2 Entity::getScreenPosition(const Matrix4 &projectionMatrix, const Matrix4 &cameraMatrix, const Polycode::Rectangle &viewport) {
-	if(renderer){
-		Vector3 pos = Renderer::project(getConcatenatedMatrix().getPosition(), cameraMatrix, projectionMatrix, viewport);
-		return Vector2(pos.x, pos.y);
-	} else {
-		return Vector2();
-	}
+    Vector3 pos = Renderer::project(getConcatenatedMatrix().getPosition(), cameraMatrix, projectionMatrix, viewport);
+    return Vector2(pos.x, pos.y);
 }
 
 void Entity::setDepthOnly(bool val) {
@@ -490,9 +482,11 @@ Scene *Entity::getContainerScene() {
 }
 
 void Entity::transformAndRender(GPUDrawBuffer *buffer, Polycode::Rectangle *parentScissorBox) {
-	if(!renderer || !enabled)
+	
+	if(!enabled) {
 		return;
-
+	}
+	
 	if(matrixDirty) {
 		rebuildTransformMatrix();
 	}
@@ -555,14 +549,6 @@ void Entity::transformAndRender(GPUDrawBuffer *buffer, Polycode::Rectangle *pare
 	}
 
 }
-
-void Entity::setRenderer(Renderer *renderer) {
-	this->renderer = renderer;
-	for(int i=0;i<children.size();i++) {
-		children[i]->setRenderer(renderer);
-	}
-}
-
 
 void Entity::renderChildren(GPUDrawBuffer *buffer, Polycode::Rectangle *parentScissorBox) {
 	for(int i=0;i<children.size();i++) {
@@ -1199,9 +1185,9 @@ MouseEventResult Entity::onMouseWheelUp(const Ray &ray, int timestamp) {
 	return ret;
 }
 
-void Entity::Update() {
+void Entity::Update(Number elapsed) {
 	for(int i=0; i < scripts.size(); i++) {
-		scripts[i]->script->callUpdate(scripts[i], this, Services()->getCore()->getElapsed());
+		scripts[i]->script->callUpdate(scripts[i], this, elapsed);
 	}
 }
 

@@ -185,12 +185,6 @@ namespace Polycode {
 			void setPostFilter(std::shared_ptr<Material> material);
 			
 			/**
-			* Sets the post-processing shader for the camera by name. The material needs have been added as a resource.
-			* @param materialName The material name of the post-processing filter.
-			*/												
-			void setPostFilterByName(const String& shaderName);
-			
-			/**
 			* Removes the currently assigned post filter.
 			*/
 			void removePostFilter();
@@ -274,6 +268,7 @@ namespace Polycode {
 		
 			Mesh *screenQuadMesh;
 
+            void rebuildMaterialBindings();
 			void setOrthoMatrix(Matrix4 &matrix, Number xSize, Number ySize, Number _near, Number _far, bool centered);
 		
 			int projectionMode;		   

@@ -38,7 +38,7 @@ public:
 
 class AssetEntry : public UIElement {
 	public:
-		AssetEntry(String assetPath, String assetName, String extension, std::shared_ptr<Resource> resource);
+		AssetEntry(Core *core, ResourcePool *pool, String assetPath, String assetName, String extension, std::shared_ptr<Resource> resource);
 		~AssetEntry();
 		
 		UIRect *imageShape;
@@ -52,7 +52,7 @@ class AssetEntry : public UIElement {
 
 class AssetList : public UIElement {
 	public:
-		AssetList();
+		AssetList(Core *core, ResourcePool *pool);
 		~AssetList();
 		
 		void handleEvent(Event *event);
@@ -77,7 +77,8 @@ class AssetList : public UIElement {
 	
 		String currentFolderPath;
 	
-		AssetEntry *currentEntry;		
+		ResourcePool *resourcePool;
+		AssetEntry *currentEntry;
 		std::vector<AssetEntry*> assetEntries;
 		
 		std::vector<String> extensions;
@@ -85,7 +86,7 @@ class AssetList : public UIElement {
 
 class AssetBrowser : public UIWindow {
 	public:
-		AssetBrowser();
+		AssetBrowser(Core *core, ResourcePool *pool);
 		~AssetBrowser();
 	
 		String getSelectedAssetPath();

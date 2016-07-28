@@ -47,7 +47,7 @@ class DebuggerClient {
 
 class PolycodeRemoteDebugger : EventHandler {
 	public:
-		PolycodeRemoteDebugger(PolycodeProjectManager *projectManager);
+		PolycodeRemoteDebugger(Core *core, PolycodeProjectManager *projectManager);
 		~PolycodeRemoteDebugger();
 		
 		void injectCode(String code);
@@ -63,15 +63,13 @@ class PolycodeRemoteDebugger : EventHandler {
 		static const int EVENT_DEBUG_PRINT = 33;
 		static const int EVENT_DEBUG_RESIZE = 34;
 		static const int EVENT_DEBUG_REMOVE = 35;
-
-		static const int EVENT_INJECT_CODE = 36;
-			
+		static const int EVENT_INJECT_CODE = 36;			
 		static const int EVENT_DEBUG_BACKTRACE_INFO = 37;
 					
 	protected:
 		
 		bool hasErred;
-	
+		Core *core;
 		std::vector<RemoteBacktraceData> receivedBacktraceData;
 		
 		PolycodeProjectManager *projectManager;

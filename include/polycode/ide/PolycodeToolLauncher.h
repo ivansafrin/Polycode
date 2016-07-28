@@ -50,10 +50,10 @@ class PolycodeToolLauncher {
 		PolycodeToolLauncher();
 		~PolycodeToolLauncher();		
 		
-		static void openExternalEditor(String app, String file, String inFolder);
+		static void openExternalEditor(Core *core, String app, String file, String inFolder);
 		static String generateTempPath(PolycodeProject *project);
-		static void buildProject(PolycodeProject *project, String destinationPath, bool compileScripts);
-		static String importAssets(String sourceFile, String inFolder, bool addMeshes, String prefix, bool swapZY, bool generateNormals, bool generateTangents, bool listOnly,bool writeNormals, bool writeTangents, bool writeColors, bool writeBoneWeights, bool writeUVs, bool writeSecondaryUVs, bool exportScene, bool generateMaterialFile, bool overrideMaterials, String materialOverrideName, bool specifyBaseAssetPath, String baseAssetPath);
+		static void buildProject(Core *core, PolycodeProject *project, String destinationPath, bool compileScripts);
+		static String importAssets(Core *core, String sourceFile, String inFolder, bool addMeshes, String prefix, bool swapZY, bool generateNormals, bool generateTangents, bool listOnly,bool writeNormals, bool writeTangents, bool writeColors, bool writeBoneWeights, bool writeUVs, bool writeSecondaryUVs, bool exportScene, bool generateMaterialFile, bool overrideMaterials, String materialOverrideName, bool specifyBaseAssetPath, String baseAssetPath);
 
-		static void runPolyapp(String polyappPath);
+		static void runPolyapp(Core *core, String polyappPath);
 };

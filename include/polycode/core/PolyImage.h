@@ -29,7 +29,8 @@ THE SOFTWARE.
 namespace Polycode {
 
 	class String;
-	
+    class Core;
+    
 	#define HALF_FLOAT_MIN_BIASED_EXP_AS_SINGLE_FP_EXP 0x38000000
 	#define HALF_FLOAT_MAX_BIASED_EXP_AS_SINGLE_FP_EXP 0x47800000
 	#define FLOAT_MAX_BIASED_EXP (0xFF << 23)
@@ -52,7 +53,7 @@ namespace Polycode {
 			* Create image from file name.
 			* @param fileName Path to image file to load.
 			*/ 
-			explicit Image(const String& fileName);
+			explicit Image(Core *core, const String& fileName);
 			
 			/**
 			* Create a blank image of specified size and type.
@@ -92,7 +93,7 @@ namespace Polycode {
 			* @param fileName Path to image file to load.
 			* @return True if successfully loaded, false otherwise.
 			*/			
-			bool loadImage(const String& fileName);
+			bool loadImage(Core *core, const String& fileName);
 
 			bool POLYIGNORE loadFromMemory(const unsigned char *buffer, unsigned int length);
 
@@ -106,7 +107,7 @@ namespace Polycode {
 			* @param fileName Path to image file to load.	
 			* @return True if successfully loaded, false otherwise. 
 			*/
-			bool saveImage(const String &fileName);
+			bool saveImage(Core *core, const String &fileName);
 			
 			/**
 			* Pastes another image into the image using a blending mode
@@ -271,7 +272,7 @@ namespace Polycode {
 			 */
 			void premultiplyAlpha();
 		
-			bool savePNG(const String &fileName);
+			bool savePNG(Core *core, const String &fileName);
 		
 			static const int IMAGE_RGB = 0;
 			static const int IMAGE_RGBA = 1;
@@ -281,8 +282,8 @@ namespace Polycode {
 			
 		protected:
 		
-			bool loadHDR(const String &fileName);
-			bool loadSTB(const String &fileName);
+			bool loadHDR(Core *core, const String &fileName);
+			bool loadSTB(Core *core, const String &fileName);
 		
 		
 			static inline hfloat convertFloatToHFloat(float f);

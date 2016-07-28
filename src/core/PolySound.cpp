@@ -29,7 +29,6 @@
 #include "polycode/core/PolyLogger.h"
 #include "polycode/core/PolySoundManager.h"
 #include "polycode/core/PolyCore.h"
-#include "polycode/core/PolyCoreServices.h"
 #include <stdlib.h>
 #include <string>
 #include <vector>
@@ -66,28 +65,28 @@ unsigned int AudioStreamingSource::streamData(int16_t *buffer, unsigned int size
 	return 0;
 }
 
-Sound::Sound(const String& fileName) :	referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), numSamples(-1), streamingSound(false), playing(false), playbackOffset(0), streamingSource(NULL), frequencyAdjust(1.0) {
+Sound::Sound(Core *core, const String& fileName) :	referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), numSamples(-1), streamingSound(false), playing(false), playbackOffset(0), streamingSource(NULL), frequencyAdjust(1.0), core(core) {
 	soundLoaded = false;
 	setIsPositional(false);
-	loadFile(fileName);
+	loadFile(core, fileName);
 
     if(soundLoaded) {
-        Services()->getSoundManager()->registerSound(this);
+        core->getSoundManager()->registerSound(this);
     }
 }
 
-Sound::Sound(int size, const char *data, int channels, unsigned int freq, SoundFormat format) : referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), numSamples(-1), streamingSound(false), playing(false) , playbackOffset(0), streamingSource(NULL), frequencyAdjust(1.0) {
+Sound::Sound(Core *core, int size, const char *data, int channels, unsigned int freq, SoundFormat format) : referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1), numSamples(-1), streamingSound(false), playing(false) , playbackOffset(0), streamingSource(NULL), frequencyAdjust(1.0), core(core) {
 	setIsPositional(false);
 	soundLoaded = loadBytes(data, size, channels, freq, format);
 	if(soundLoaded) {
-		Services()->getSoundManager()->registerSound(this);
+		core->getSoundManager()->registerSound(this);
 	}
 }
 
-Sound::Sound(AudioStreamingSource *streamingSource) : referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1),  numSamples(-1), streamingSound(true), streamingSource(streamingSource), playing(false), playbackOffset(0), frequencyAdjust(1.0) {
+Sound::Sound(Core *core, AudioStreamingSource *streamingSource) : referenceDistance(1), maxDistance(MAX_FLOAT), pitch(1), volume(1),  numSamples(-1), streamingSound(true), streamingSource(streamingSource), playing(false), playbackOffset(0), frequencyAdjust(1.0) {
 
 	soundBuffer = (int16_t*) malloc(sizeof(int16_t) * streamingSource->getNumChannels() * POLY_MIX_BUFFER_SIZE);
-	Services()->getSoundManager()->registerSound(this);
+	core->getSoundManager()->registerSound(this);
 	numChannels = streamingSource->getNumChannels();
 }
 
@@ -99,18 +98,18 @@ void Sound::updateStream(unsigned int streamCount) {
 	}
 }
 
-void Sound::loadFile(String fileName) {
+void Sound::loadFile(Core *core, String fileName) {
 
 	if(soundLoaded) {
 		free(soundBuffer);
 	}
 
 	String actualFilename = fileName;
-	CoreFile *test = Services()->getCore()->openFile(fileName, "rb");
+	CoreFile *test = core->openFile(fileName, "rb");
 	if(!test) {
 		actualFilename = "default/default.wav";
 	} else {
-		Services()->getCore()->closeFile(test);
+		core->closeFile(test);
 	}
 	
 	String extension;
@@ -123,9 +122,9 @@ void Sound::loadFile(String fileName) {
 	}
 	
 	if(extension == "wav" || extension == "WAV") {
-		soundLoaded = loadWAV(actualFilename);
+		soundLoaded = loadWAV(core, actualFilename);
 	} else if(extension == "ogg" || extension == "OGG") {
-		soundLoaded = loadOGG(actualFilename);
+		soundLoaded = loadOGG(core, actualFilename);
 	}
 	
 	this->fileName = actualFilename;
@@ -145,7 +144,7 @@ Number Sound::getPitch() {
 
 Sound::~Sound() {
 	free(soundBuffer);
-	Services()->getSoundManager()->unregisterSound(this);
+	core->getSoundManager()->unregisterSound(this);
 }
 
 void Sound::soundCheck(bool result, const String& err) {
@@ -404,13 +403,13 @@ unsigned int Sound::getFrequency() {
 }
 
 
-bool Sound::loadOGG(const String& fileName) {
-	CoreFile *f = Services()->getCore()->openFile(fileName.c_str(), "rb");
+bool Sound::loadOGG(Core *core, const String& fileName) {
+	CoreFile *f = core->openFile(fileName.c_str(), "rb");
 	if (!f) {
 		Logger::log("Error loading OGG file!\n");
 		return false;
 	}
-	Services()->getCore()->closeFile(f);
+	core->closeFile(f);
 
 	short *decoded;
 	int channels, len, sample_rate;
@@ -428,7 +427,7 @@ bool Sound::loadOGG(const String& fileName) {
 	return true;
 }
 
-bool Sound::loadWAV(const String& fileName) {
+bool Sound::loadWAV(Core *core, const String& fileName) {
 	
 	long bytes;
 	vector <char> data;
@@ -438,7 +437,7 @@ bool Sound::loadWAV(const String& fileName) {
 	char *array = NULL;
 	
 	// Open for binary reading
-	f = Services()->getCore()->openFile(fileName.c_str(), "rb");
+	f = core->openFile(fileName.c_str(), "rb");
 	if (!f) {
 		Logger::log("LoadWav: Could not load wav from " + fileName);
 		return false;
@@ -531,7 +530,7 @@ bool Sound::loadWAV(const String& fileName) {
 	delete []array;
 	array = NULL;
 	
-	Services()->getCore()->closeFile(f);
+	core->closeFile(f);
 	f = NULL;
 
 	return loadBytes(&data[0], data.size(), channels, frequency, format);

@@ -32,7 +32,7 @@ using namespace Polycode;
 class EntityEditorPropertyView : public UIElement {
 	public:
 	
-		EntityEditorPropertyView();
+		EntityEditorPropertyView(Core *core, ResourcePool *pool);
 		~EntityEditorPropertyView();
 	
 		void setEntityInstance(SceneEntityInstance *instance);

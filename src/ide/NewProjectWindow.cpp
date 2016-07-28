@@ -25,18 +25,18 @@
 
 extern PolycodeFrame *globalFrame;
 
-NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 480, 280){
+NewProjectWindow::NewProjectWindow(Core *core, ResourcePool *pool) : UIWindow(core, pool, L"Create New Project", 480, 280){
 	
 	templateFolder = "";
 	
 	closeOnEscape = true;
 	defaultTemplateTree = NULL;
 	
-	Config *conf = CoreServices::getInstance()->getConfig();	
+	ConfigRef conf = core->getConfig();
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
 	
 	
-	templateContainer = new UITreeContainer("boxIcon.png", L"Templates", 200, 300-topPadding-padding-padding);	
+	templateContainer = new UITreeContainer(core, pool, "boxIcon.png", L"Templates", 200, 300-topPadding-padding-padding);
 	
 	TemplateUserData *data = new TemplateUserData();
 	data->type = 0;
@@ -49,7 +49,7 @@ NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 480, 280)
 	
 	templateContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
 	
-	vector<OSFileEntry> templates = Services()->getCore()->parseFolder(RESOURCE_PATH"ProjectTemplates", false);
+	vector<OSFileEntry> templates = core->parseFolder(RESOURCE_PATH"ProjectTemplates", false);
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {
@@ -64,38 +64,38 @@ NewProjectWindow::NewProjectWindow() : UIWindow(L"Create New Project", 480, 280)
 		}
 	}
 	
-	UILabel *label2 = new UILabel(L"PROJECT NAME", 18, "section", Label::ANTIALIAS_FULL);
+	UILabel *label2 = new UILabel(core, pool, L"PROJECT NAME", 18, "section", Label::ANTIALIAS_FULL);
 	label2->color.a = 1.0;
 	addChild(label2);
 	label2->setPosition(padding+220, templateContainer->getPosition().y-2);		
 
-	projectNameInput = new UITextInput(false, 500-padding-210-padding-padding, 12); 
+	projectNameInput = new UITextInput(core, pool, false, 500-padding-210-padding-padding, 12);
 	addFocusChild(projectNameInput);
 	projectNameInput->setPosition(label2->getPosition().x-6, label2->getPosition().y + 25);
 	
-	UILabel *label3 = new UILabel(L"PROJECT LOCATION", 18, "section", Label::ANTIALIAS_FULL);
+	UILabel *label3 = new UILabel(core, pool, L"PROJECT LOCATION", 18, "section", Label::ANTIALIAS_FULL);
 	label3->color.a = 1.0;
 	addChild(label3);
 	label3->setPosition(padding+220, templateContainer->getPosition().y+65);		
 	
-	projectLocationInput = new UITextInput(false, 500-padding-210-padding-padding, 12); 
+	projectLocationInput = new UITextInput(core, pool, false, 500-padding-210-padding-padding, 12);
 	addFocusChild(projectLocationInput);
 	projectLocationInput->setPosition(label3->getPosition().x-6, label3->getPosition().y+25);
 
 	
-	locationSelectButton = new UIButton(L"Choose...", 100);
+	locationSelectButton = new UIButton(core, pool, L"Choose...", 100);
 	locationSelectButton->addEventListener(this, UIEvent::CLICK_EVENT); 
 	addFocusChild(locationSelectButton);
 	locationSelectButton->setPosition(500-103-padding, projectLocationInput->getPosition().y+projectLocationInput->getHeight()+10);
 	
 	
-	cancelButton = new UIButton(L"Cancel", 100);
+	cancelButton = new UIButton(core, pool, L"Cancel", 100);
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addFocusChild(cancelButton);
 	cancelButton->setPosition(500-100-padding-100-10, 265);
 		
 	
-	okButton = new UIButton(L"Create Project", 100);
+	okButton = new UIButton(core, pool, L"Create Project", 100);
 	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addFocusChild(okButton);
 	okButton->setPosition(500-100-padding, 265);
@@ -119,7 +119,7 @@ void NewProjectWindow::ResetForm() {
 		defaultTemplateTree->setSelected();
 	focusChild(projectNameInput);	
 	projectNameInput->setText(L"Untitled");
-	projectLocationInput->setText(CoreServices::getInstance()->getCore()->getUserHomeDirectory()+"/Documents/Polycode");
+	projectLocationInput->setText(core->getUserHomeDirectory()+"/Documents/Polycode");
 }
 
 void NewProjectWindow::handleEvent(Event *event) {
@@ -145,10 +145,10 @@ void NewProjectWindow::handleEvent(Event *event) {
 			if(event->getDispatcher() == locationSelectButton) {
 #ifdef USE_POLYCODEUI_FILE_DIALOGS
 				std::vector<String> exts;
-				globalFrame->showFileBrowser(CoreServices::getInstance()->getCore()->getUserHomeDirectory(),  true, exts, false);
+				globalFrame->showFileBrowser(core->getUserHomeDirectory(),  true, exts, false);
 				globalFrame->fileDialog->addEventListener(this, UIEvent::OK_EVENT);
 #else
-				String pathName = CoreServices::getInstance()->getCore()->openFolderPicker();
+				String pathName = core->openFolderPicker();
 				if(pathName != "")
 					projectLocationInput->setText(pathName);
 #endif
@@ -172,7 +172,7 @@ void NewProjectWindow::handleEvent(Event *event) {
 }
 
 void NewProjectWindow::parseTemplatesIntoTree(UITree *tree, OSFileEntry folder) {
-	vector<OSFileEntry> templates = Services()->getCore()->parseFolder(folder.fullPath, false);
+	vector<OSFileEntry> templates = core->parseFolder(folder.fullPath, false);
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {

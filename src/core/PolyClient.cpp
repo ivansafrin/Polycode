@@ -23,32 +23,24 @@ THE SOFTWARE.
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyClient.h"
 #include <string.h>
-#include "polycode/core/PolyTimer.h"
 
 using namespace Polycode;
 
-Client::Client(unsigned int port, int rate) : Peer(port) {
-	rateTimer = new Timer(true, 1000/rate);
-	rateTimer->addEventListener(this, Timer::EVENT_TRIGGER);
+Client::Client(Core *core, unsigned int port, int rate) : Peer(core, port) {
 	connected = false;
-	DummyData *dummy = new DummyData;
-	dummy->dummy = 30;	
-	clientID = -1;	
-	setPersistentData((void*)dummy, sizeof(DummyData));
+	clientID = -1;
 }
 
 Client::~Client() {
 	
 }
 
-void Client::handleEvent(Event *event) {
-	if(connected) {		
-		if(event->getDispatcher() == rateTimer) {	
-			sendData(serverAddress, (char*)data, dataSize, PACKET_TYPE_CLIENT_DATA);
-		}
+void Client::sendClientData(char *data, uint32_t datasize) {
+	if(connected) {
+		sendData(serverAddress, (char*)data, dataSize, PACKET_TYPE_CLIENT_DATA);
 	}
-	Peer::handleEvent(event);
 }
+
 
 unsigned int Client::getClientID() {
 	return clientID;
@@ -86,11 +78,6 @@ void Client::handlePacket(Packet *packet, PeerConnection *connection) {
 	}
 }
 
-void Client::setPersistentData(void *data, unsigned int size) {
-	this->data = data;
-	dataSize = size;
-}
-
 void Client::Connect(std::string ipAddress, unsigned int port) {
 	serverAddress.setAddress(ipAddress, port);
 	connected = true;		
@@ -100,6 +87,3 @@ void Client::Disconnect() {
 	sendReliableData(serverAddress, (char*)&clientID, sizeof(unsigned short), PACKET_TYPE_DISONNECT);
 }
 
-void Client::updatePeer() {
-	
-}

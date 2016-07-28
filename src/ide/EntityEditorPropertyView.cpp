@@ -23,67 +23,67 @@
 #include "polycode/ide/EntityEditorPropertyView.h"
 
 
-EntityEditorPropertyView::EntityEditorPropertyView() : UIElement() {
+EntityEditorPropertyView::EntityEditorPropertyView(Core *core, ResourcePool *pool) : UIElement(core) {
 	
 	targetEntity = NULL;
 	
-	entityProps = new PropList();
+	entityProps = new PropList(core, pool);
 	addChild(entityProps);
 	
-	transformSheet = new TransformSheet();
+	transformSheet = new TransformSheet(core, pool);
 	entityProps->addPropSheet(transformSheet);
 	transformSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 	
-	materialSheet = new MaterialPropSheet();
+	materialSheet = new MaterialPropSheet(core, pool);
 	entityProps->addPropSheet(materialSheet);
 	materialSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 	materialSheet->addEventListener(this, Event::CHANGE_EVENT);
 
-	shaderOptionsSheet = new ShaderOptionsSheet();
+	shaderOptionsSheet = new ShaderOptionsSheet(core, pool);
 	entityProps->addPropSheet(shaderOptionsSheet);
 	shaderOptionsSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 	
-	labelSheet = new SceneLabelSheet();
+	labelSheet = new SceneLabelSheet(core, pool);
 	entityProps->addPropSheet(labelSheet);
 	labelSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 	
-	curveSheet = new SceneCurveSheet();
+	curveSheet = new SceneCurveSheet(core, pool);
 	entityProps->addPropSheet(curveSheet);
 	curveSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 	
-	lightSheet = new SceneLightSheet();
+	lightSheet = new SceneLightSheet(core, pool);
 	entityProps->addPropSheet(lightSheet);
 	lightSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 
-	particleSheet = new ParticleEmitterSheet();
+	particleSheet = new ParticleEmitterSheet(core, pool);
 	entityProps->addPropSheet(particleSheet);
 	particleSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 
-	spriteSheet = new SceneSpriteSheet();
+	spriteSheet = new SceneSpriteSheet(core, pool);
 	entityProps->addPropSheet(spriteSheet);
 	spriteSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 
-	primitiveSheet = new ScenePrimitiveSheet();
+	primitiveSheet = new ScenePrimitiveSheet(core, pool);
 	entityProps->addPropSheet(primitiveSheet);
 	primitiveSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 
-	sceneMeshSheet = new SceneMeshSheet();
+	sceneMeshSheet = new SceneMeshSheet(core, pool);
 	entityProps->addPropSheet(sceneMeshSheet);
 	sceneMeshSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 	
-	soundSheet = new SoundSheet();
+	soundSheet = new SoundSheet(core, pool);
 	entityProps->addPropSheet(soundSheet);
 	soundSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 
-	cameraSheet = new CameraSheet();
+	cameraSheet = new CameraSheet(core, pool);
 	entityProps->addPropSheet(cameraSheet);
 	cameraSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 	
-	entitySheet = new EntitySheet();
+	entitySheet = new EntitySheet(core, pool);
 	entityProps->addPropSheet(entitySheet);
 	entitySheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 	
-	propSheet = new EntityPropSheet();
+	propSheet = new EntityPropSheet(core, pool);
 	entityProps->addPropSheet(propSheet);
 	propSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 	

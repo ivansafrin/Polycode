@@ -27,7 +27,7 @@ THE SOFTWARE.
 #include "polycode/core/PolyVector2.h"
 #include "polycode/core/PolyEventDispatcher.h"
 #include "polycode/core/PolyCoreInput.h"
-#include "polycode/core/PolyCoreServices.h"
+#include "polycode/core/PolyConfig.h"
 #include "polycode/core/PolyThreaded.h"
 #include "polycode/core/PolyQuaternion.h"
 #include "polycode/core/PolyCoreFileProvider.h"
@@ -37,16 +37,9 @@ long getThreadID();
 namespace Polycode {
 
 	class Renderer;
-		  
-	class _PolyExport CoreMutex : public PolyBase {
-	public:
-		virtual ~CoreMutex(){}
-
-		virtual void lock() = 0;
-		virtual void unlock() = 0;
-
-		int mutexID;
-	};
+    class ResourceManager;
+    class SoundManager;
+    class Logger;
 	
 	class _PolyExport CoreFileExtension : public PolyBase {
 	public:
@@ -162,24 +155,6 @@ namespace Polycode {
 		* @see Threaded
 		*/		
 		virtual void createThread(Threaded *target);
-
-		/**
-		* Locks a mutex. Legacy method. Use the "lock" method of CoreMutex!
-		* @param mutex Mutex to lock.
-		*/
-		void lockMutex(CoreMutex *mutex);
-		
-		/**
-		* Unlocks a mutex.	Legacy method. Use the "unlock" method of CoreMutex!
-		* @param mutex Mutex to lock.
-		*/		
-		void unlockMutex(CoreMutex *mutex);
-		
-		/**
-		* Creates a mutex
-		* @return Newly created mutex.
-		*/				
-		virtual CoreMutex *createMutex() = 0;
 		
 		/**
 		* Copies the specified string to system clipboard.
@@ -193,12 +168,6 @@ namespace Polycode {
 		*/		
 		virtual String getClipboardString() = 0;
 		
-		/**
-		* Returns the core services. See CoreServices for a detailed explanation of services.
-		* @return Core services.
-		@see CoreServices
-		*/
-		CoreServices *getServices();
 		
 		/**
 		* Returns the current average frames per second.
@@ -415,8 +384,13 @@ namespace Polycode {
 		*/
 		virtual void makeApplicationMain() {}
 		
-		CoreMutex *getEventMutex();
-		CoreMutex *eventMutex;
+		ConfigRef getConfig();
+		
+        ResourceManager *getResourceManager();
+        SoundManager *getSoundManager();
+        Logger *getLogger();
+        
+        std::mutex POLYIGNORE eventMutex;
 		
 		void removeThread(Threaded *thread);
 		
@@ -442,9 +416,15 @@ namespace Polycode {
 		int defaultScreenHeight;
 		
 		Quaternion deviceAttitude;
-				
+        static double fixedTimestep;
+        
 	protected:	
 	
+        ResourceManager *resourceManager;
+        SoundManager *soundManager;
+        Logger *logger;
+		ConfigRef config;
+		
 		virtual bool checkSpecialKeyEvents(PolyKEY key) { return false; }
 		
 		std::vector<CoreFileProvider*> fileProviders;
@@ -476,7 +456,6 @@ namespace Polycode {
 		unsigned int elapsed;
 		
 		double fixedElapsed;
-		double fixedTimestep;
 		double timeLeftOver;
 		double maxFixedElapsed;
 		
@@ -486,7 +465,7 @@ namespace Polycode {
 		unsigned int lastSleepFrameTicks;
 		
 		std::vector<Threaded*> threads;
-		CoreMutex *threadedEventMutex;
+        std::mutex threadedEventMutex;
 		
 		int xRes;
 		int yRes;
@@ -500,7 +479,6 @@ namespace Polycode {
 		
 		CoreInput *input;
 		Renderer *renderer;
-		CoreServices *services;
 	};
 	
 	class _PolyExport DummyCore : public Core {
@@ -512,7 +490,6 @@ namespace Polycode {
 		bool systemUpdate();
 		void setCursor(int cursorType);
 		void createThread(Threaded *target);
-		CoreMutex *createMutex();
 		void copyStringToClipboard(const String& str);
 		String getClipboardString();
 		void createFolder(const String& folderPath);

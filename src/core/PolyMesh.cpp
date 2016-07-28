@@ -77,45 +77,6 @@ indexArray(RenderDataArray::INDEX_DATA_ARRAY)
 }
 
 MeshGeometry::~MeshGeometry() {
-	if(vertexPositionArray.platformData) {
-		Services()->getRenderer()->destroySubmeshPlatformData(vertexPositionArray.platformData);
-	}
-	if(vertexColorArray.platformData) {
-		Services()->getRenderer()->destroySubmeshPlatformData(vertexColorArray.platformData);
-	}
-	if(vertexNormalArray.platformData) {
-		Services()->getRenderer()->destroySubmeshPlatformData(vertexNormalArray.platformData);
-	}
-	if(vertexTexCoordArray.platformData) {
-		Services()->getRenderer()->destroySubmeshPlatformData(vertexTexCoordArray.platformData);
-	}
-	if(vertexTexCoord2Array.platformData) {
-		Services()->getRenderer()->destroySubmeshPlatformData(vertexTexCoord2Array.platformData);
-	}
-	if(vertexTangentArray.platformData) {
-		Services()->getRenderer()->destroySubmeshPlatformData(vertexTangentArray.platformData);
-	}
-	if(indexArray.platformData) {
-		Services()->getRenderer()->destroySubmeshPlatformData(indexArray.platformData);
-	}
-	if(vertexBoneWeightArray.platformData) {
-		Services()->getRenderer()->destroySubmeshPlatformData(vertexBoneWeightArray.platformData);
-	}
-	if(vertexBoneIndexArray.platformData) {
-		Services()->getRenderer()->destroySubmeshPlatformData(vertexBoneIndexArray.platformData);
-	}
-	if(customVertexArray1.platformData) {
-		Services()->getRenderer()->destroySubmeshPlatformData(customVertexArray1.platformData);
-	}
-	if(customVertexArray2.platformData) {
-		Services()->getRenderer()->destroySubmeshPlatformData(customVertexArray2.platformData);
-	}
-	if(customVertexArray3.platformData) {
-		Services()->getRenderer()->destroySubmeshPlatformData(customVertexArray3.platformData);
-	}
-	if(customVertexArray4.platformData) {
-		Services()->getRenderer()->destroySubmeshPlatformData(customVertexArray4.platformData);
-	}	
 }
 
 void MeshGeometry::clearMesh() {
@@ -1162,8 +1123,8 @@ void MeshGeometry::setMeshType(int newType) {
 Mesh::Mesh() : Resource(Resource::RESOURCE_MESH) {
 }
 
-Mesh::Mesh(const String& fileName) : Resource(Resource::RESOURCE_MESH) {
-	loadMesh(fileName);
+Mesh::Mesh(Core *core, const String& fileName) : Resource(Resource::RESOURCE_MESH) {
+	loadMesh(core, fileName);
 	setResourcePath(fileName);
 }
 
@@ -1171,8 +1132,8 @@ Mesh::~Mesh() {
 	clearMesh();
 }
 
-Mesh *Mesh::MeshFromFileName(String& fileName) {
-	return new Mesh(fileName);
+Mesh *Mesh::MeshFromFileName(Core *core, String& fileName) {
+	return new Mesh(core, fileName);
 }
 
 unsigned int Mesh::getNumSubmeshes() const {
@@ -1296,25 +1257,25 @@ void Mesh::loadFromFile(Polycode::CoreFile *inFile) {
 	}
 }
 
-void Mesh::saveToFile(const String& fileName, bool writeNormals, bool writeTangents, bool writeColors, bool writeBoneWeights, bool writeUVs, bool writeSecondaryUVs) {
-	CoreFile *outFile = Services()->getCore()->openFile(fileName, "wb");
+void Mesh::saveToFile(Core *core, const String& fileName, bool writeNormals, bool writeTangents, bool writeColors, bool writeBoneWeights, bool writeUVs, bool writeSecondaryUVs) {
+	CoreFile *outFile = core->openFile(fileName, "wb");
 	if(!outFile) {
 		Logger::log("Error opening mesh file for saving: %s\n", fileName.c_str());
 		return;
 	}
 	saveToFile(outFile, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs);
-	Services()->getCore()->closeFile(outFile);
+	core->closeFile(outFile);
 	
 }
 
-void Mesh::loadMesh(const String& fileName) {
-	CoreFile *inFile = Services()->getCore()->openFile(fileName, "rb");
+void Mesh::loadMesh(Core *core, const String& fileName) {
+	CoreFile *inFile = core->openFile(fileName, "rb");
 	if(!inFile) {
 		Logger::log("Error opening mesh file %s\n", fileName.c_str());
 		return;
 	}
 	loadFromFile(inFile);
-	Services()->getCore()->closeFile(inFile);
+	core->closeFile(inFile);
 }
 
 void Mesh::addSubmesh(const MeshGeometry &newSubmesh) {

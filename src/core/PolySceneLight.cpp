@@ -23,7 +23,6 @@
 #include "polycode/core/PolySceneLight.h"
 #include "polycode/core/PolyCamera.h"
 #include "polycode/core/PolyCore.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyMesh.h"
 #include "polycode/core/PolyResourceManager.h"
 #include "polycode/core/PolyRenderer.h"
@@ -33,7 +32,9 @@
 
 using namespace Polycode;
 
-SceneLight::SceneLight(int type, Number intensity, Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation) : Entity() {
+SceneLight::SceneLight(int type, Number intensity, Number constantAttenuation, Number linearAttenuation, Number quadraticAttenuation, std::shared_ptr<Material> depthMapMaterial) : Entity(),
+    depthMapMaterial(depthMapMaterial)
+{
 	lightInfo.type = type;
 	lightInfo.intensity = intensity;
 	lightInfo.constantAttenuation = constantAttenuation;
@@ -54,9 +55,7 @@ SceneLight::SceneLight(int type, Number intensity, Number constantAttenuation, N
 	lightInfo.shadowsEnabled = false;
 	lightInfo.diffuseColor.setColor(1.0f,1.0f,1.0f,1.0f);
 	setSpotlightProperties(40,0.1);
-	
-	unlitMaterial = std::static_pointer_cast<Material>(Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, "Unlit"));
-	
+		
 	lightInfo.importance = 0;
 }
 
@@ -127,12 +126,9 @@ unsigned int SceneLight::getShadowMapResolution() const {
 }
 
 void SceneLight::renderDepthMap(RenderFrame *frame, Scene *scene) {
-	if(!unlitMaterial) {
-		return;
-	}
 	spotCamera->setFOV(shadowMapFOV);
 	spotCamera->setViewport(Polycode::Rectangle(0, 0, shadowMapRes, shadowMapRes));
-	scene->Render(frame, spotCamera, shadowMapRenderBuffer, unlitMaterial, false);
+	scene->Render(frame, spotCamera, shadowMapRenderBuffer, depthMapMaterial, false);
 	
 	Matrix4 matTexAdj(0.5f, 0.0f,	0.0f,	0.0f,
 					  0.0f, 0.5f,	0.0f,	0.0f,

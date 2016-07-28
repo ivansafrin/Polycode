@@ -22,11 +22,11 @@
 
 #include "polycode/ide/EntityEditorSettingsView.h"
 
-EntityEditorSettingsView::EntityEditorSettingsView() : UIElement() {
-	entityProps = new PropList("ENTITY SETTINGS");
+EntityEditorSettingsView::EntityEditorSettingsView(Core *core, ResourcePool *pool) : UIElement(core) {
+	entityProps = new PropList(core, pool, "ENTITY SETTINGS");
 	addChild(entityProps);
 	
-	materialsSheet = new LinkedMaterialsSheet();
+	materialsSheet = new LinkedMaterialsSheet(core, pool);
 	entityProps->addPropSheet(materialsSheet);
 	materialsSheet->addEventListener(this, PropEvent::EVENT_PROP_CHANGE);
 

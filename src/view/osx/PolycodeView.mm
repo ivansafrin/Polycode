@@ -75,12 +75,12 @@
 	if(core == NULL)
 		return;	
 	
-	core->lockMutex(core->eventMutex);	
+	core->eventMutex.lock();	
 	CocoaEvent newEvent;
 	newEvent.eventGroup = CocoaEvent::FOCUS_EVENT;
 	newEvent.eventCode = Core::EVENT_LOST_FOCUS;	
 	core->cocoaEvents.push_back(newEvent);	
-	core->unlockMutex(core->eventMutex);		
+	core->eventMutex.unlock();		
 }
 
 - (void)windowDidBecomeMain:(NSNotification *)notification
@@ -88,12 +88,12 @@
 	if(core == NULL)
 		return;
 	
-	core->lockMutex(core->eventMutex);	
+	core->eventMutex.lock();	
 	CocoaEvent newEvent;
 	newEvent.eventGroup = CocoaEvent::FOCUS_EVENT;
 	newEvent.eventCode = Core::EVENT_GAINED_FOCUS;	
 	core->cocoaEvents.push_back(newEvent);	
-	core->unlockMutex(core->eventMutex);		
+	core->eventMutex.unlock();		
 }
 
 
@@ -334,7 +334,7 @@
 	if(core == NULL)
 		return;
 	
-	core->lockMutex(core->eventMutex);	
+	core->eventMutex.lock();	
 	NSPoint mouseLoc = [self convertPoint:[event locationInWindow] fromView:self];	
 	CocoaEvent newEvent;
 	newEvent.eventGroup = CocoaEvent::INPUT_EVENT;
@@ -343,7 +343,7 @@
 	newEvent.mouseX = mouseLoc.x;
 	newEvent.mouseY = core->getYRes() - mouseLoc.y;
 	core->cocoaEvents.push_back(newEvent);	
-	core->unlockMutex(core->eventMutex);		
+	core->eventMutex.unlock();		
 }
 
 - (void) otherMouseUp:(NSEvent *) event
@@ -351,7 +351,7 @@
 	if(core == NULL)
 		return;
 	
-	core->lockMutex(core->eventMutex);	
+	core->eventMutex.lock();	
 	NSPoint mouseLoc = [self convertPoint:[event locationInWindow] fromView:self];	
 	CocoaEvent newEvent;
 	newEvent.eventGroup = CocoaEvent::INPUT_EVENT;
@@ -360,7 +360,7 @@
 	newEvent.mouseX = mouseLoc.x;
 	newEvent.mouseY = core->getYRes() - mouseLoc.y;
 	core->cocoaEvents.push_back(newEvent);	
-	core->unlockMutex(core->eventMutex);		
+	core->eventMutex.unlock();		
 }
 
 
@@ -369,7 +369,7 @@
 	if(core == NULL)
 		return;
 	
-	core->lockMutex(core->eventMutex);	
+	core->eventMutex.lock();	
 	NSPoint mouseLoc = [self convertPoint:[event locationInWindow] fromView:self];	
 	CocoaEvent newEvent;
 	newEvent.eventGroup = CocoaEvent::INPUT_EVENT;
@@ -378,7 +378,7 @@
 	newEvent.mouseX = mouseLoc.x;
 	newEvent.mouseY = core->getYRes() - mouseLoc.y;
 	core->cocoaEvents.push_back(newEvent);	
-	core->unlockMutex(core->eventMutex);		
+	core->eventMutex.unlock();		
 }
 
 - (void) rightMouseUp:(NSEvent *) event
@@ -386,7 +386,7 @@
 	if(core == NULL)
 		return;
 	
-	core->lockMutex(core->eventMutex);	
+	core->eventMutex.lock();	
 	NSPoint mouseLoc = [self convertPoint:[event locationInWindow] fromView:self];	
 	CocoaEvent newEvent;
 	newEvent.eventGroup = CocoaEvent::INPUT_EVENT;
@@ -395,7 +395,7 @@
 	newEvent.mouseX = mouseLoc.x;
 	newEvent.mouseY = core->getYRes() - mouseLoc.y;
 	core->cocoaEvents.push_back(newEvent);	
-	core->unlockMutex(core->eventMutex);		
+	core->eventMutex.unlock();		
 }
 
 - (void)scrollWheel:(NSEvent*) event {
@@ -403,7 +403,7 @@
 	if(core == NULL || [event deltaY] == 0)
 		return;
 	
-	core->lockMutex(core->eventMutex);	
+	core->eventMutex.lock();	
 	NSPoint mouseLoc = [self convertPoint:[event locationInWindow] fromView:self];	
 	CocoaEvent newEvent;
 	newEvent.eventGroup = CocoaEvent::INPUT_EVENT;
@@ -415,7 +415,7 @@
 	newEvent.mouseX = mouseLoc.x;
 	newEvent.mouseY = core->getYRes() - mouseLoc.y;
 	core->cocoaEvents.push_back(newEvent);	
-	core->unlockMutex(core->eventMutex);	
+	core->eventMutex.unlock();	
 	
 }
 
@@ -424,7 +424,7 @@
     if(core == NULL)
         return;
     
-    core->lockMutex(core->eventMutex);
+    core->eventMutex.lock();
 
     NSSet *touches = [event touchesMatchingPhase:NSTouchPhaseAny inView:self];
     NSArray *touchArray = [touches allObjects];
@@ -452,7 +452,7 @@
         }
         index++;
     }
-    core->unlockMutex(core->eventMutex);	
+    core->eventMutex.unlock();	
 
 }
 
@@ -462,7 +462,7 @@
     if(core == NULL)
         return;
     
-    core->lockMutex(core->eventMutex);
+    core->eventMutex.lock();
     
     NSSet *touches = [event touchesMatchingPhase:NSTouchPhaseAny inView:self];
     NSArray *touchArray = [touches allObjects];
@@ -490,7 +490,7 @@
         }
         index++;
     }
-    core->unlockMutex(core->eventMutex);
+    core->eventMutex.unlock();
     
 }
 
@@ -499,7 +499,7 @@
     if(core == NULL)
         return;
     
-    core->lockMutex(core->eventMutex);
+    core->eventMutex.lock();
     
     NSSet *touches = [event touchesMatchingPhase:NSTouchPhaseAny inView:self];
     NSArray *touchArray = [touches allObjects];
@@ -527,7 +527,7 @@
         }
         index++;
     }
-    core->unlockMutex(core->eventMutex);
+    core->eventMutex.unlock();
     
 }
 
@@ -536,7 +536,7 @@
     if(core == NULL)
         return;
     
-    core->lockMutex(core->eventMutex);
+    core->eventMutex.lock();
     
     NSSet *touches = [event touchesMatchingPhase:NSTouchPhaseAny inView:self];
     NSArray *touchArray = [touches allObjects];
@@ -564,7 +564,7 @@
         }
         index++;
     }
-    core->unlockMutex(core->eventMutex);
+    core->eventMutex.unlock();
 }
 
 - (void) mouseDown:(NSEvent *) event
@@ -573,7 +573,7 @@
 	if(core == NULL)
 		return;
 	
-	core->lockMutex(core->eventMutex);	
+	core->eventMutex.lock();	
 	NSPoint mouseLoc = [self convertPoint:[event locationInWindow] fromView:self];	
 	CocoaEvent newEvent;
 	newEvent.eventGroup = CocoaEvent::INPUT_EVENT;
@@ -587,7 +587,7 @@
 	
 	
 	core->cocoaEvents.push_back(newEvent);	
-	core->unlockMutex(core->eventMutex);	
+	core->eventMutex.unlock();	
 }
 
 - (void) mouseUp:(NSEvent *) event
@@ -595,7 +595,7 @@
 	if(core == NULL)
 		return;
 	
-	core->lockMutex(core->eventMutex);	
+	core->eventMutex.lock();	
 	NSPoint mouseLoc = [self convertPoint:[event locationInWindow] fromView:self];	
 	CocoaEvent newEvent;
 	newEvent.eventGroup = CocoaEvent::INPUT_EVENT;
@@ -609,7 +609,7 @@
 	
 	
 	core->cocoaEvents.push_back(newEvent);	
-	core->unlockMutex(core->eventMutex);	
+	core->eventMutex.unlock();	
 }
 
 - (void)flagsChanged:(NSEvent *)theEvent
@@ -620,7 +620,7 @@
 	if([theEvent keyCode] == 0) {
 		return;
 	}
-	core->lockMutex(core->eventMutex);	
+	core->eventMutex.lock();	
 	CocoaEvent newEvent;	
 	newEvent.eventGroup = CocoaEvent::INPUT_EVENT;
 	newEvent.keyCode = keymap[[theEvent keyCode]];	
@@ -685,7 +685,7 @@
 	
 	
 	core->cocoaEvents.push_back(newEvent);	
-	core->unlockMutex(core->eventMutex);	
+	core->eventMutex.unlock();	
 
 }
 
@@ -694,7 +694,7 @@
 	if(core == NULL)
 		return;
 	
-	core->lockMutex(core->eventMutex);	
+	core->eventMutex.lock();	
 	CocoaEvent newEvent;
 	newEvent.eventGroup = CocoaEvent::INPUT_EVENT;
 	newEvent.eventCode = InputEvent::EVENT_KEYDOWN;
@@ -713,7 +713,7 @@
 		}
 	}
 	
-	core->unlockMutex(core->eventMutex);
+	core->eventMutex.unlock();
 	
 }
 
@@ -722,14 +722,14 @@
 	if(core == NULL)
 		return;
 	
-	core->lockMutex(core->eventMutex);	
+	core->eventMutex.lock();	
 	CocoaEvent newEvent;
 	newEvent.eventGroup = CocoaEvent::INPUT_EVENT;
 	newEvent.eventCode = InputEvent::EVENT_KEYUP;
 	newEvent.keyCode = keymap[[theEvent keyCode]];
     
 	core->cocoaEvents.push_back(newEvent);	
-	core->unlockMutex(core->eventMutex);		
+	core->eventMutex.unlock();		
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent
@@ -737,7 +737,7 @@
 	if(core == NULL)
 		return;
 	
-	core->lockMutex(core->eventMutex);	
+	core->eventMutex.lock();	
 	NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:self];	
 	CocoaEvent newEvent;
 	newEvent.eventGroup = CocoaEvent::INPUT_EVENT;
@@ -745,7 +745,7 @@
 	newEvent.mouseX = mouseLoc.x;
 	newEvent.mouseY = core->getYRes() - mouseLoc.y;
 	core->cocoaEvents.push_back(newEvent);	
-	core->unlockMutex(core->eventMutex);
+	core->eventMutex.unlock();
 }
 
 
@@ -754,7 +754,7 @@
 	if(core == NULL)
 		return;
 	
-	core->lockMutex(core->eventMutex);	
+	core->eventMutex.lock();	
 	NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:self];	
 	CocoaEvent newEvent;
 	newEvent.eventGroup = CocoaEvent::INPUT_EVENT;
@@ -766,7 +766,7 @@
 	mouseY = mouseLoc.y;
 	
 	core->cocoaEvents.push_back(newEvent);	
-	core->unlockMutex(core->eventMutex);
+	core->eventMutex.unlock();
 }
 
 

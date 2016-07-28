@@ -25,16 +25,16 @@ void Threaded::runThread(){
 }
 
 void Threaded::dispatchEvent(Event *event, int eventCode) {
-	core->lockMutex(eventMutex);
+	eventMutex.lock();
 	event->setEventCode(eventCode);
 	eventQueue.push_back(event);
-	core->unlockMutex(eventMutex);	
+	eventMutex.unlock();
 }
 		
 void Threaded::dispatchEventNoDelete(Event *event, int eventCode) {
-	core->lockMutex(eventMutex);
+    eventMutex.lock();
 	event->setEventCode(eventCode);
 	event->deleteOnDispatch = false;
 	eventQueue.push_back(event);	
-	core->unlockMutex(eventMutex);			
+    eventMutex.lock();
 }

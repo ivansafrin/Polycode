@@ -33,7 +33,7 @@ namespace Polycode {
 
 	class CreateFolderWindow : public UIWindow {
 		public:
-			CreateFolderWindow();
+			CreateFolderWindow(Core *core, ResourcePool *resourcePool);
 			virtual ~CreateFolderWindow();
 
 			UIButton *okButton;
@@ -44,7 +44,7 @@ namespace Polycode {
 
 	class UIFileDialogEntry : public UIElement {
 		public:
-			UIFileDialogEntry(OSFileEntry entry, bool canSelect, int width=340, bool isPlace=false);
+			UIFileDialogEntry(Core *core, ResourcePool *resourcePool, OSFileEntry entry, bool canSelect, int width=340, bool isPlace=false);
 			~UIFileDialogEntry();
 			void Select();
 			void Deselect();
@@ -70,7 +70,7 @@ namespace Polycode {
 			 * @param extensions A list of accepted file extensions.
 			 * @param allowMultiple If true, multiple entries can be selected at once.
 			 */
-			UIFileDialog(String baseDir, bool foldersOnly, std::vector<String> extensions, bool allowMultiple);
+			UIFileDialog(Core *core, ResourcePool *resourcePool, String baseDir, bool foldersOnly, std::vector<String> extensions, bool allowMultiple);
 			virtual ~UIFileDialog();
 
 			void onClose();
@@ -96,7 +96,7 @@ namespace Polycode {
 
 			void addToSidebar(String path, String name);
 
-			void Update();
+			void Update(Number elapsed);
 
 			/**
 			 * Get the selected entry.
@@ -109,6 +109,7 @@ namespace Polycode {
 			String action;
 		protected:
 
+			ResourcePool *resourcePool;
 			String selection;
 
 			String currentFolderPath;

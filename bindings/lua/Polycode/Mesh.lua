@@ -23,14 +23,6 @@ function Mesh:Mesh(...)
 	end
 end
 
-function Mesh:loadMesh(fileName)
-	local retVal = Polycode.Mesh_loadMesh(self.__ptr, fileName)
-end
-
-function Mesh:saveToFile(fileName, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs)
-	local retVal = Polycode.Mesh_saveToFile(self.__ptr, fileName, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs)
-end
-
 function Mesh:addSubmesh(newSubmesh)
 	local retVal = Polycode.Mesh_addSubmesh(self.__ptr, newSubmesh.__ptr)
 end

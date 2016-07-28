@@ -110,7 +110,7 @@ namespace Polycode {
 		
 			void Reset();
 		
-			void Update();
+			void Update(Number elapsed);
 
 			/**
 			* Sets the animation multiplier speed.
@@ -138,16 +138,18 @@ namespace Polycode {
 	class _PolyExport Skeleton : public Entity {
 		public:
 		
+        
+            /**
+             * Construct a blank skeleton.
+             */
+            Skeleton();
+        
 			/**
 			* Construct skeleton from a skeleton file.
 			* @param fileName Skeleton file to load.
 			*/
-			Skeleton(const String& fileName);
+			Skeleton(Core *core, const String& fileName);
 
-			/**
-			* Construct a blank skeleton.
-			*/			
-			Skeleton();
 
 			/**
 			* Construct a blank skeleton.
@@ -158,7 +160,7 @@ namespace Polycode {
 			* Loads a new skeleton from file.
 			* @param fileName Skeleton file to load.
 			*/ 
-			void loadSkeleton(const String& fileName);
+			void loadSkeleton(Core *core, const String& fileName);
 			
 			virtual ~Skeleton();
 		
@@ -184,7 +186,7 @@ namespace Polycode {
 			* @param name Name of the new animation.
 			* @param fileName File to load animation from.
 			*/			
-			void addAnimation(const String& name, const String& fileName);
+			void addAnimation(Core *core, const String& name, const String& fileName);
 			
 			/**
 			* Returns a SkeletonAnimation by its name.
@@ -196,7 +198,7 @@ namespace Polycode {
 			void stopAnimationByName(const String &name);
 			void stopAnimation(SkeletonAnimation *animation);
 		
-			void Update();
+			void Update(Number elapsed);
 			
 			/**
 			* Get bone instance by its name

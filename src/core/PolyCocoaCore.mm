@@ -33,20 +33,9 @@
 
 #include "polycode/core/PolyBasicFileProvider.h"
 #include "polycode/core/PolyPhysFSFileProvider.h"
-
 #include <ApplicationServices/ApplicationServices.h>
 
-
 using namespace Polycode;
-
-void PosixMutex::lock() {
-    pthread_mutex_lock(&pMutex);    
-}
-
-void PosixMutex::unlock() {
-    pthread_mutex_unlock(&pMutex);
-}
-
 
 static bool DisplayModeIs32Bit(CGDisplayModeRef displayMode)
 {
@@ -110,9 +99,7 @@ CocoaCore::CocoaCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, 
 	hidManager = NULL;
 	initGamepad();
 	this->fullScreen = false;
-	
-	eventMutex = createMutex();
-	
+		
 //	NSLog(@"BUNDLE: %@", [[NSBundle mainBundle] bundlePath]);
 	chdir([[[[NSBundle mainBundle] bundlePath] stringByAppendingString:@"/Contents/Resources"] UTF8String]);
 	
@@ -128,16 +115,15 @@ CocoaCore::CocoaCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, 
 	
 	initTime = mach_absolute_time();					
 
-    renderer = new Renderer();
+    renderer = new Renderer(this);
     
-    OpenGLGraphicsInterface *interface = new OpenGLGraphicsInterface();
+    OpenGLGraphicsInterface *interface = new OpenGLGraphicsInterface(this);
    // interface->lineSmooth = true;
     renderer->setGraphicsInterface(this, interface);
-    services->setRenderer(renderer);
     setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
 	
 	audioInterface = new PAAudioInterface();
-    services->getSoundManager()->setAudioInterface(audioInterface);
+    soundManager->setAudioInterface(audioInterface);
 }
 
 void CocoaCore::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, bool retinaSupport) {
@@ -358,12 +344,6 @@ void CocoaCore::createThread(Threaded *target) {
 	pthread_create( &thread, NULL, ManagedThreadFunc, (void*)target);
 }
 
-CoreMutex *CocoaCore::createMutex() {
-	PosixMutex *mutex = new PosixMutex();	
-	pthread_mutex_init(&mutex->pMutex, NULL);
-	return mutex;
-}
-
 unsigned int CocoaCore::getTicks() {
 	uint64_t time = mach_absolute_time();	
 	double conversion = 0.0;
@@ -467,7 +447,7 @@ bool CocoaCore::checkSpecialKeyEvents(PolyKEY key) {
 
 
 void CocoaCore::checkEvents() {
-	lockMutex(eventMutex);
+	eventMutex.lock();
 	CocoaEvent event;
 	for(int i=0; i < cocoaEvents.size(); i++) {
 		event = cocoaEvents[i];
@@ -528,7 +508,7 @@ void CocoaCore::checkEvents() {
 		}
 	}
 	cocoaEvents.clear();	
-	unlockMutex(eventMutex);		
+	eventMutex.unlock();
 }
 
 void CocoaCore::openURL(String url) {
@@ -556,7 +536,7 @@ void CocoaCore::makeApplicationMain() {
 }
 	
 String CocoaCore::openFolderPicker() {
-	unlockMutex(eventMutex);
+	eventMutex.unlock();
 	NSOpenPanel *attachmentPanel = [[NSOpenPanel openPanel] retain];
 	[attachmentPanel setCanChooseFiles:NO];
 	[attachmentPanel setCanCreateDirectories: YES];
@@ -575,7 +555,7 @@ String CocoaCore::openFolderPicker() {
 }
 
 String CocoaCore::saveFilePicker(std::vector<CoreFileExtension> extensions) {
-	unlockMutex(eventMutex);	    
+    eventMutex.unlock();
     String retString;
   	NSSavePanel *attachmentPanel = [NSSavePanel savePanel];
     
@@ -605,7 +585,7 @@ String CocoaCore::saveFilePicker(std::vector<CoreFileExtension> extensions) {
 }
 
 vector<String> CocoaCore::openFilePicker(vector<CoreFileExtension> extensions, bool allowMultiple) {
-	unlockMutex(eventMutex);	
+	eventMutex.unlock();
 	vector<String> retVector;
 	
 	NSOpenPanel *attachmentPanel = [NSOpenPanel openPanel];	

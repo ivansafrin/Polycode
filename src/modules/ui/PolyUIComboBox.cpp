@@ -23,7 +23,6 @@
 #include "polycode/modules/ui/PolyUIComboBox.h"
 #include "polycode/core/PolyInputEvent.h"
 #include "polycode/core/PolyLabel.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyConfig.h"
 #include "polycode/core/PolyRenderer.h"
 
@@ -38,32 +37,32 @@ UIComboBoxItem::~UIComboBoxItem() {
 
 }
 
-UIComboBox::UIComboBox(UIGlobalMenu *globalMenu, Number comboWidth) : UIElement() {
+UIComboBox::UIComboBox(Core *core, ResourcePool *resourcePool, UIGlobalMenu *globalMenu, Number comboWidth) : UIElement(core) {
+	
+	ConfigRef conf = core->getConfig();
 
 	this->globalMenu = globalMenu;
-
 	selectedIndex = -1;
 
-	Config *conf = CoreServices::getInstance()->getConfig();
 	Number uiScale = conf->getNumericValue("Polycode", "uiScale");
 	
 	String fontName = conf->getStringValue("Polycode", "uiComboBoxFont");
-	int fontSize = conf->getNumericValue("Polycode", "uiComboBoxFontSize"); 
+	int fontSize = conf->getNumericValue("Polycode", "uiComboBoxFontSize");
 	String dropDownImageFile = conf->getStringValue("Polycode", "uiComboBoxDropdownImage");
-	String bgImage = conf->getStringValue("Polycode", "uiComboBoxBgImage"); 
+	String bgImage = conf->getStringValue("Polycode", "uiComboBoxBgImage");
 
 	Number st = conf->getNumericValue("Polycode", "uiComboBoxBgT");
 	Number sr = conf->getNumericValue("Polycode", "uiComboBoxBgR");
 	Number sb = conf->getNumericValue("Polycode", "uiComboBoxBgB");
 	Number sl = conf->getNumericValue("Polycode", "uiComboBoxBgL");
 	
-	Number paddingX = conf->getNumericValue("Polycode", "uiComboBoxTextOffsetX");	
-	Number paddingY = conf->getNumericValue("Polycode", "uiComboBoxTextOffsetY");	
+	Number paddingX = conf->getNumericValue("Polycode", "uiComboBoxTextOffsetX");
+	Number paddingY = conf->getNumericValue("Polycode", "uiComboBoxTextOffsetY");
 
 	dropDownX = conf->getNumericValue("Polycode", "uiComboBoxDropX");
 	dropDownY = conf->getNumericValue("Polycode", "uiComboBoxDropY");
 		
-	dropDownImage = new UIImage(dropDownImageFile);
+	dropDownImage = new UIImage(core, resourcePool, dropDownImageFile);
 	dropDownImage->Resize(dropDownImage->getWidth() / uiScale, dropDownImage->getHeight() / uiScale);
 	
 	dropDownImage->setPosition(comboWidth - dropDownImage->getWidth() - dropDownX,dropDownY);
@@ -72,19 +71,19 @@ UIComboBox::UIComboBox(UIGlobalMenu *globalMenu, Number comboWidth) : UIElement(
 	this->comboWidth = comboWidth;
 	nextItemHeight = 0;
 	
-	bgBox = new UIBox(bgImage, st,sr,sb,sl, comboWidth, comboHeight);	
+	bgBox = new UIBox(core, resourcePool, bgImage, st,sr,sb,sl, comboWidth, comboHeight);
 
 	addChild(bgBox);
 	addChild(dropDownImage);
 	
-	selectedLabel = new UILabel("<None>", fontSize, fontName);
+	selectedLabel = new UILabel(core, resourcePool, "<None>", fontSize, fontName);
 	selectedLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	selectedLabel->setPosition(paddingX, paddingY);
 	addChild(selectedLabel);
 	
 	selectedLabel->setLabelColor(Color(0.0, 0.0, 0.0, 1.0));
 	
-	String selectorBgImage = conf->getStringValue("Polycode", "uiComboBoxSelectorBgImage"); 
+	String selectorBgImage = conf->getStringValue("Polycode", "uiComboBoxSelectorBgImage");
 	
 	st = conf->getNumericValue("Polycode", "uiComboBoxSelectorBgT");
 	sr = conf->getNumericValue("Polycode", "uiComboBoxSelectorBgR");

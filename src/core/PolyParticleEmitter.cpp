@@ -21,7 +21,6 @@
 */
 
 #include "polycode/core/PolyParticleEmitter.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyCore.h"
 #include "polycode/core/PolyMesh.h"
 #include "polycode/core/PolyRenderer.h"
@@ -31,7 +30,6 @@ using namespace Polycode;
 
 SceneParticleEmitter::SceneParticleEmitter(unsigned int particleCount, Number lifetime, Number speed) : particleCount(particleCount), particleSpeed(speed), lifetime(lifetime), directionVector(0.0, 1.0, 0.0), useFloorPlane(false), floorPlaneOffset(-1.0), floorDamping(0.5), particlesInWorldSpace(false), perlinEnabled(false), perlinValue(1.0,1.0,1.0), particleType(SceneParticleEmitter::PARTICLE_TYPE_QUAD), particleSize(0.1), particleRotationSpeed(0.0, 0.0, 0.0), useColorCurves(false), useScaleCurve(false), loopParticles(true){
 	
-	core = CoreServices::getInstance()->getCore();
 	motionPerlin = new Perlin(3,5,1.0,RANDOM_NUMBER);
 	depthWrite = false;
 	systemEnabled = true;
@@ -427,14 +425,14 @@ void SceneParticleEmitter::setPerlinValue(const Vector3 &perlinValue) {
 	this->perlinValue = perlinValue;
 }
 
-void SceneParticleEmitter::updateParticles() {
+void SceneParticleEmitter::updateParticles(Number elapsed) {
 	
 	Matrix4 inverseMatrix = systemTrasnformMatrix.Inverse();
 	
 	Number normLife;
 	Vector3 newBBox;
 	
-	Number timeStep = core->getFixedTimestep();
+	Number timeStep = elapsed;
 	
 	for(int i=0; i < particles.size(); i++) {
 		if(particles[i].lifetime < 0.0 && particles[i].lifetime + timeStep >= 0.0) {
@@ -512,6 +510,6 @@ void SceneParticleEmitter::Render(GPUDrawBuffer *buffer) {
 
 void SceneParticleEmitter::fixedUpdate() {
 	systemTrasnformMatrix = getConcatenatedMatrix();
-	updateParticles();
-	SceneMesh::Update();
+	updateParticles(Core::fixedTimestep);
+    SceneMesh::Update(Core::fixedTimestep);
 }

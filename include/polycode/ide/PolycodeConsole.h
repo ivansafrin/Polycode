@@ -44,7 +44,7 @@ class BackTraceEvent : public Event {
 
 class BackTraceEntry : public UIElement {
 	public:
-		BackTraceEntry(String fileName, int lineNumber, PolycodeProject *project);
+		BackTraceEntry(Core *core, ResourcePool *pool, String fileName, int lineNumber, PolycodeProject *project);
 		~BackTraceEntry();
 		
 		void Select();
@@ -67,7 +67,7 @@ class BackTraceEntry : public UIElement {
 
 class BackTraceWindow : public UIElement {
 	public:
-		BackTraceWindow();
+		BackTraceWindow(Core *core, ResourcePool *pool);
 		~BackTraceWindow();
 		
 		void handleEvent(Event *event);
@@ -80,7 +80,8 @@ class BackTraceWindow : public UIElement {
 		
 		void adjustEntries();
 		
-	protected:			
+	protected:
+		ResourcePool *resourcePool;
 		UIRect *labelBg;
 		std::vector<BackTraceEntry*> entries;
 		
@@ -89,14 +90,13 @@ class BackTraceWindow : public UIElement {
 
 class ConsoleWindow : public UIElement {
 	public:
-		ConsoleWindow();
+		ConsoleWindow(Core *core, ResourcePool *pool);
 		
 		void Resize(Number width, Number height);
 	
 		void clearBuffer();
-		void printToBuffer(String msg);
-		
-		void Update();
+		void printToBuffer(String msg);		
+		void Update(Number elapsed);
 	
 		UITextInput *consoleTextInput;
 		
@@ -116,7 +116,7 @@ class ConsoleWindow : public UIElement {
 
 class PolycodeConsole : public UIElement {
 	public:
-		PolycodeConsole();
+		PolycodeConsole(Core *core, ResourcePool *pool);
 		~PolycodeConsole();
 		
 		void _print(String msg);

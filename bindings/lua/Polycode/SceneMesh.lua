@@ -110,14 +110,6 @@ function SceneMesh:getMaterial()
 	return __c
 end
 
-function SceneMesh:loadSkeleton(fileName)
-	local retVal = Polycode.SceneMesh_loadSkeleton(self.__ptr, fileName)
-	if retVal == nil then return nil end
-	local __c = _G["shared_ptr<Skeleton>"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function SceneMesh:clearMaterial()
 	local retVal =  Polycode.SceneMesh_clearMaterial(self.__ptr)
 end
@@ -153,10 +145,6 @@ end
 
 function SceneMesh:setFilename(fileName)
 	local retVal = Polycode.SceneMesh_setFilename(self.__ptr, fileName)
-end
-
-function SceneMesh:loadFromFile(fileName)
-	local retVal = Polycode.SceneMesh_loadFromFile(self.__ptr, fileName)
 end
 
 function SceneMesh:customHitDetection(ray)

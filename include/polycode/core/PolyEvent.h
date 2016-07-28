@@ -90,7 +90,8 @@ namespace Polycode {
 			static const int SELECT_EVENT = EVENTBASE_EVENT+6;
 			static const int REMOVE_EVENT = EVENTBASE_EVENT+7;
 			static const int RESOURCE_CHANGE_EVENT = EVENTBASE_EVENT+8;
-																		
+			static const int RESOURCE_DESTROY_EVENT = EVENTBASE_EVENT+9;
+		
 			static const int EVENTBASE_NONPOLYCODE = 0x10000;
 		
 			bool deleteOnDispatch;

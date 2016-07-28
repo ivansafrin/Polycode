@@ -22,13 +22,13 @@
 
 #pragma once
 #include "polycode/core/PolyGlobals.h"
-#include "polycode/modules/ui/PolyUIElement.h"
 #include "polycode/core/PolySceneLabel.h"
 #include "polycode/core/PolyScenePrimitive.h"
 #include "polycode/core/PolyEntity.h"
+#include "polycode/core/PolyConfig.h"
+#include "polycode/modules/ui/PolyUIElement.h"
 #include "polycode/modules/ui/PolyUITreeEvent.h"
 #include "polycode/modules/ui/PolyUIBox.h"
-#include "polycode/core/PolyTween.h"
 #include <vector>
 
 using std::vector;
@@ -39,16 +39,16 @@ namespace Polycode {
 		public:
 			using UIElement::Resize;
 
-			UITree(String icon, String text, Number treeWidth, Number treeOffset=0);
+			UITree(Core *core, ResourcePool *pool, String icon, String text, Number treeWidth, Number treeOffset=0);
+		
 			virtual ~UITree();
-			
-			
+		
 			void handleEvent(Event *event);
 			void toggleCollapsed();
 			UITree *addTreeChild(String icon, String text, void *userData = NULL);
 			UITree *addTreeChildShared(String icon, String text, std::shared_ptr<void> userData);
 		
-			void Update();
+			void Update(Number elapsed);
 			void refreshTree();
 			Number getTreeHeight();
 			void setParent(UITree *parent);
@@ -85,10 +85,21 @@ namespace Polycode {
 			std::shared_ptr<void> getSharedUserData();
 		
 		private:
-
+		
 			bool willDrag;
 			bool isDragging;
 		
+			Number st;
+			Number sr;
+			Number sb;
+			Number sl;
+			Number padding;
+			String selectorString;
+			Number textOffsetX;
+			Number textOffsetY;
+			Color uiTreeFontColor;
+		
+			Number uiScale;
 			String labelText;
 			void *userData;
 			std::shared_ptr<void> sharedUserData;
@@ -96,7 +107,6 @@ namespace Polycode {
 			Number treeOffset;
 			UITree *selectedNode;
 			UITree *parent;
-			Number padding;
 			UIBox *selection;
 			Entity *bgBox;
 			SceneLabel *textLabel;
@@ -113,5 +123,6 @@ namespace Polycode {
 			Number cellHeight;
 			Number cellPadding;
 			bool selectedByKey;
+			ResourcePool *resourcePool;
 	};
 }

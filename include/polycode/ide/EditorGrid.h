@@ -32,9 +32,9 @@
 
 using namespace Polycode;
 
-class EditorGrid : public Entity {
+class EditorGrid : public UIElement {
 	public:
-		EditorGrid();
+		EditorGrid(Core *core);
 		~EditorGrid();
 		
 		void setGridMode(int mode);
@@ -77,7 +77,7 @@ class EditorGrid : public Entity {
 
 class EditorGridSettingsWindow : public UIWindow {
 public:
-	EditorGridSettingsWindow(EditorGrid *grid);
+	EditorGridSettingsWindow(Core *core, ResourcePool *pool, EditorGrid *grid);
 	~EditorGridSettingsWindow();
 	
 	void handleEvent(Event *event);

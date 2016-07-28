@@ -23,7 +23,6 @@ THE SOFTWARE.
 #pragma once
 
 #include "polycode/core/PolyGlobals.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyThreaded.h"
 #include "polycode/core/PolySocket.h"
 
@@ -79,11 +78,7 @@ namespace Polycode {
 	*
 	* @see PeerConnection
 	*/
-#if USE_THREADED_SOCKETS == 1		
 	class _PolyExport Peer : public Threaded {
-#else
-	class _PolyExport Peer : public EventDispatcher {
-#endif
 		public:
 			/**
 			* Create a peer. The peer will immediately start listening on the given 
@@ -93,7 +88,7 @@ namespace Polycode {
 			*			  this will be the actual port this peer will use to send
 			*			  and receive packets.
 			*/
-			Peer(unsigned int port);
+			Peer(Core *core, unsigned int port);
 			~Peer();
 
 			void handleEvent(Event *event);
@@ -159,8 +154,7 @@ namespace Polycode {
 		protected:
 		
 			int reliableRetransmissionInverval;
-		
-			Timer *updateTimer;
+            Core *core;
 			std::vector<PeerConnection*> peerConnections;
 			Socket *socket;
 	};

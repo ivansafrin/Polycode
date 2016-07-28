@@ -30,7 +30,7 @@ using namespace Polycode;
 
 class PolycodeImageEditor : public PolycodeEditor {
 	public:
-	PolycodeImageEditor();
+	PolycodeImageEditor(Core *core, ResourcePool *resourcePool);
 	virtual ~PolycodeImageEditor();
 	
 	bool openFile(OSFileEntry filePath);
@@ -39,12 +39,12 @@ class PolycodeImageEditor : public PolycodeEditor {
 	protected:
 	
 		UIRect *editorImage;
-		
+		ResourcePool *pool;
 		Number aspectRatio;
 };
 
 class PolycodeImageEditorFactory : public PolycodeEditorFactory {
 	public:
 		PolycodeImageEditorFactory() : PolycodeEditorFactory() { extensions.push_back("png"); extensions.push_back("hdr");	extensions.push_back("jpg");  extensions.push_back("tga");	extensions.push_back("psd");}
-		PolycodeEditor *createEditor() { return new PolycodeImageEditor(); }
+		PolycodeEditor *createEditor(Core *core, ResourcePool *pool) { return new PolycodeImageEditor(core, pool); }
 };

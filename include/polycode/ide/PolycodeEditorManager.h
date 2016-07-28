@@ -30,7 +30,7 @@ using namespace Polycode;
 
 class PolycodeEditorManager : public EventDispatcher { 
 	public:
-		PolycodeEditorManager();
+		PolycodeEditorManager(Core *core, ResourcePool *pool);
 		~PolycodeEditorManager();
 	
 		PolycodeEditor *getEditorForPath(String path);
@@ -63,6 +63,8 @@ class PolycodeEditorManager : public EventDispatcher {
 		
 protected:
 	
+	Core *core;
+	ResourcePool *pool;
 	PolycodeEditor *currentEditor;
 	PolycodeProjectManager *projectManager;
 	std::vector<PolycodeEditorFactory*> editorFactories;	

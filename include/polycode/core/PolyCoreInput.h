@@ -182,11 +182,7 @@ namespace Polycode {
 		 * If set to true, will fire mouse events on touch input. Defaults to false.
 		 */
 		bool simulateMouseWithTouch;
-		
-		/**
-		 * If set to true, will not send touch events outside of the screen as define by current core resolution. Defaults to false.
-		 */
-		bool ignoreOffScreenTouch;	
+
 		
 		void clearInput();
 		

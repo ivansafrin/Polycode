@@ -27,16 +27,15 @@ extern UIColorPicker *globalColorPicker;
 extern PolycodeFrame *globalFrame;
 extern UIGlobalMenu *globalMenu;
 
-SpriteSheetEditor::SpriteSheetEditor(SpriteSet *sprite) : UIElement() {
-	
-	   
+SpriteSheetEditor::SpriteSheetEditor(Core *core, ResourcePool *pool, SpriteSet *sprite) : UIElement(core), resourcePool(pool)
+{
 	this->sprite = sprite;
 	willCreateFrame = false;
 	zoomScale = 1.0;
 	drawCall.options.enableScissor = true;
 	
 	Texture::clampDefault = false;
-	previewBg = new UIImage("main/grid_dark.png");
+	previewBg = new UIImage(core, pool, "main/grid_dark.png");
 	addChild(previewBg);
 	previewBg->processInputEvents = true;
 	
@@ -49,7 +48,7 @@ SpriteSheetEditor::SpriteSheetEditor(SpriteSet *sprite) : UIElement() {
 	previewBg->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);
 	previewBg->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
 	
-	previewImage = new UIRect(10, 10);
+	previewImage = new UIRect(core, pool, 10, 10);
 	previewImage->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	addChild(previewImage);
 	
@@ -57,20 +56,20 @@ SpriteSheetEditor::SpriteSheetEditor(SpriteSet *sprite) : UIElement() {
 	frameVisualizerMesh->setColor(1.0, 1.0, 1.0, 1.0);
 	addChild(frameVisualizerMesh);
 	frameVisualizerMesh->setAnchorPoint(-1.0, -1.0, 0.0);
-	frameVisualizerMesh->getShaderPass(0).shaderBinding->loadTextureForParam("diffuse", "main/stipple.png");
+	frameVisualizerMesh->getShaderPass(0).shaderBinding->setTextureForParam("diffuse", pool->loadTexture("main/stipple.png"));
 	frameVisualizerMesh->lineWidth = 1; //CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX();
 
 	frameVisualizerMeshSelected = new SceneMesh();
 	frameVisualizerMeshSelected->setColor(1.0, 1.0, 0.0, 1.0);
 	addChild(frameVisualizerMeshSelected);
 	frameVisualizerMeshSelected->setAnchorPoint(-1.0, -1.0, 0.0);
-	frameVisualizerMeshSelected->getShaderPass(0).shaderBinding->loadTextureForParam("diffuse", "main/stipple.png");
+	frameVisualizerMeshSelected->getShaderPass(0).shaderBinding->setTextureForParam("diffuse", pool->loadTexture("main/stipple.png"));
 	frameVisualizerMeshSelected->lineWidth = 2;
 	
 	previewImage->setTexture(sprite->getTexture());
 	
 	
-	transformGrips = new TransformGrips();
+	transformGrips = new TransformGrips(core, pool);
 	transformGrips->addEventListener(this, Event::CHANGE_EVENT);
 	addChild(transformGrips);
 	
@@ -79,27 +78,27 @@ SpriteSheetEditor::SpriteSheetEditor(SpriteSet *sprite) : UIElement() {
 	
 	bottomMenu->processInputEvents = true;
 	
-	bottomMenuRect = new UIRect(100, 100);
+	bottomMenuRect = new UIRect(core, pool, 100, 100);
 	bottomMenu->addChild(bottomMenuRect);
 	bottomMenuRect->setAnchorPoint(-1.0, -1.0, 0.0);
-	bottomMenuRect->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+	bottomMenuRect->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
-	changeImageButton = new UIButton("Change image", 120);
+	changeImageButton = new UIButton(core, pool, "Change image", 120);
 	bottomMenu->addChild(changeImageButton);
 	changeImageButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	changeImageButton->setPosition(5.0, 3.0);
 	
-	clearFramesButton = new UIButton("Clear", 60);
+	clearFramesButton = new UIButton(core, pool, "Clear", 60);
 	bottomMenu->addChild(clearFramesButton);
 	clearFramesButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	clearFramesButton->setPosition(125.0, 3.0);
 	
-	generateFramesButton = new UIButton("Generate", 70);
+	generateFramesButton = new UIButton(core, pool, "Generate", 70);
 	bottomMenu->addChild(generateFramesButton);
 	generateFramesButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	generateFramesButton->setPosition(185.0, 3.0);
 	
-	generateTypeDropdown = new UIComboBox(globalMenu, 120);
+	generateTypeDropdown = new UIComboBox(core, pool, globalMenu, 120);
 	bottomMenu->addChild(generateTypeDropdown);
 	generateTypeDropdown->setPosition(255, 3.0);
 	
@@ -110,31 +109,31 @@ SpriteSheetEditor::SpriteSheetEditor(SpriteSet *sprite) : UIElement() {
 	
 	generateTypeDropdown->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
-	generateOptionsButton = new UIButton("Options", 80);
+	generateOptionsButton = new UIButton(core, pool, "Options", 80);
 	bottomMenu->addChild(generateOptionsButton);
 	generateOptionsButton->setPosition(375.0, 3.0);
 	generateOptionsButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-	optionsWindow = new UIWindow("Frame generation options", 230.0, 100.0);
+	optionsWindow = new UIWindow(core, pool, "Frame generation options", 230.0, 100.0);
 	addChild(optionsWindow);
 	optionsWindow->hideWindow();
 	optionsWindow->visible = false;
 	optionsWindow->enabled = false;
 	
-	uniformOptions = new UIElement();
+	uniformOptions = new UIElement(core);
 	optionsWindow->addChild(uniformOptions);
-	detectOptions = new UIElement();
+	detectOptions = new UIElement(core);
 	optionsWindow->addChild(detectOptions);
 	detectOptions->visible = false;
 	detectOptions->enabled = false;
 	
 	UILabel *label;
 	
-	label = new UILabel("Default anchor", 12);
+	label = new UILabel(core, pool, "Default anchor", 12);
 	optionsWindow->addChild(label);
 	label->setPosition(120.0 - label->getWidth(), 43.0);
 	
-	defaultAnchorCombo = new UIComboBox(globalMenu, 112.0);
+	defaultAnchorCombo = new UIComboBox(core, pool, globalMenu, 112.0);
 	optionsWindow->addChild(defaultAnchorCombo);
 	defaultAnchorCombo->setPosition(130.0, 40.0);
 	
@@ -161,48 +160,48 @@ SpriteSheetEditor::SpriteSheetEditor(SpriteSet *sprite) : UIElement() {
 	defaultAnchors.push_back(Vector2(0.0, 0.5));
 	defaultAnchors.push_back(Vector2(0.5, 0.5));
 	
-	label = new UILabel("Grid width (px)", 12);
+	label = new UILabel(core, pool, "Grid width (px)", 12);
 	uniformOptions->addChild(label);
 	label->setPosition(120.0 - label->getWidth(), 68.0);
 	
-	uniformGridWidthInput = new UITextInput(false, 100.0, 12);
+	uniformGridWidthInput = new UITextInput(core, pool, false, 100.0, 12);
 	uniformOptions->addFocusChild(uniformGridWidthInput);
 	uniformGridWidthInput->setPosition(130.0, 65.0);
 	uniformGridWidthInput->setText("32");
 	uniformGridWidthInput->setNumberOnly(true);
 
-	label = new UILabel("Grid height (px)", 12);
+	label = new UILabel(core, pool, "Grid height (px)", 12);
 	uniformOptions->addChild(label);
 	label->setPosition(120.0 - label->getWidth(), 93.0);
 	
-	uniformGridHeightInput = new UITextInput(false, 100, 12);
+	uniformGridHeightInput = new UITextInput(core, pool, false, 100, 12);
 	uniformOptions->addFocusChild(uniformGridHeightInput);
 	uniformGridHeightInput->setPosition(130.0, 90);
 	uniformGridHeightInput->setText("32");
 	uniformGridHeightInput->setNumberOnly(true);
 	
-	label = new UILabel("Min. distance (px)", 12);
+	label = new UILabel(core, pool, "Min. distance (px)", 12);
 	detectOptions->addChild(label);
 	label->setPosition(120.0 - label->getWidth(), 68.0);
 	
-	minimumDistanceInput = new UITextInput(false, 30, 12);
+	minimumDistanceInput = new UITextInput(core, pool, false, 30, 12);
 	detectOptions->addFocusChild(minimumDistanceInput);
 	minimumDistanceInput->setPosition(130.0, 65.0);
 	minimumDistanceInput->setText("0");
 	minimumDistanceInput->setNumberOnly(true);
    
-	headerBg = new UIRect(10,10);
+	headerBg = new UIRect(core, pool, 10,10);
 	addChild(headerBg);
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
-	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+	headerBg->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
-	label = new UILabel("SPRITE SHEET", 18, "section", Label::ANTIALIAS_FULL);
-	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
+	label = new UILabel(core, pool, "SPRITE SHEET", 18, "section", Label::ANTIALIAS_FULL);
+	label->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	
 	addChild(label);
 	label->setPosition(10, 3);
 	
-	bgSelector = new UIIconSelector();
+	bgSelector = new UIIconSelector(core, pool);
 	bgSelector->addIcon("spriteEditor/grid_icon_dark.png");
 	bgSelector->addIcon("spriteEditor/grid_icon_light.png");
 	bgSelector->selectIndex(0);
@@ -211,7 +210,7 @@ SpriteSheetEditor::SpriteSheetEditor(SpriteSet *sprite) : UIElement() {
 	
 	creatingFrame = false;
 	
-	Services()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 }
 
 bool SpriteSheetEditor::hasSelectedID(unsigned int frameID) {
@@ -223,7 +222,7 @@ bool SpriteSheetEditor::hasSelectedID(unsigned int frameID) {
 	return false;
 }
 
-void SpriteSheetEditor::Update() {
+void SpriteSheetEditor::Update(Number elapsed) {
 	std::shared_ptr<Mesh> mesh = frameVisualizerMesh->getMesh();
 	std::shared_ptr<Mesh> meshSelected = frameVisualizerMeshSelected->getMesh();
 	
@@ -374,9 +373,7 @@ void SpriteSheetEditor::handleEvent(Event *event) {
 		data->reverse = false;
 		editor->didAction("changed_image", beforeData, data);
 		
-		ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
-		
-		sprite->setTexture(std::static_pointer_cast<Texture>(pool->loadResource(globalFrame->assetBrowser->getSelectedAssetPath())));
+		sprite->setTexture(resourcePool->loadTexture(globalFrame->assetBrowser->getSelectedAssetPath()));
 		previewImage->setTexture(sprite->getTexture());
 		
 		globalFrame->assetBrowser->removeAllHandlersForListener(this);
@@ -384,7 +381,7 @@ void SpriteSheetEditor::handleEvent(Event *event) {
 		
 		Resize(getWidth(), getHeight());
 	  
-	} else if(event->getDispatcher() == Services()->getCore()->getInput()) {
+	} else if(event->getDispatcher() == core->getInput()) {
 		InputEvent *inputEvent = (InputEvent*) event;
 		
 		switch(inputEvent->getEventCode()) {
@@ -456,18 +453,18 @@ void SpriteSheetEditor::handleEvent(Event *event) {
 				willCreateFrame = true;
 				previewBg->focusSelf();
 				
-				if(Services()->getCore()->getInput()->getKeyState(KEY_LALT)) {
+				if(core->getInput()->getKeyState(KEY_LALT)) {
 					panning = true;
-					panMouseBase = Services()->getCore()->getInput()->getMousePosition();
+					panMouseBase = core->getInput()->getMousePosition();
 				} else {
 					
-					if(!Services()->getCore()->getInput()->getKeyState(KEY_LSHIFT) &&
-					   !Services()->getCore()->getInput()->getKeyState(KEY_LSHIFT)) {
+					if(!core->getInput()->getKeyState(KEY_LSHIFT) &&
+					   !core->getInput()->getKeyState(KEY_LSHIFT)) {
 						clearSelected();
 					}
 					
 					// check hit detection on frames
-					Vector2 mouseCoord = Services()->getCore()->getInput()->getMousePosition();
+					Vector2 mouseCoord = core->getInput()->getMousePosition();
 					clickBaseCoord = mouseCoord;
 					
 					for(int i=0; i < sprite->getNumFrames(); i++) {
@@ -488,8 +485,8 @@ void SpriteSheetEditor::handleEvent(Event *event) {
 								willCreateFrame = false;
 							} else {
 								
-								if(Services()->getCore()->getInput()->getKeyState(KEY_LSHIFT) ||
-								   Services()->getCore()->getInput()->getKeyState(KEY_LSHIFT)) {
+								if(core->getInput()->getKeyState(KEY_LSHIFT) ||
+								   core->getInput()->getKeyState(KEY_LSHIFT)) {
 									for(int f=0; f < selectedIDs.size(); f++) {
 										if(selectedIDs[f] == frame.frameID)
 										{
@@ -505,11 +502,11 @@ void SpriteSheetEditor::handleEvent(Event *event) {
 			break;
 			case InputEvent::EVENT_MOUSEMOVE:
 				if(panning) {
-					panOffset += Services()->getCore()->getInput()->getMousePosition() - panMouseBase;
-					panMouseBase = Services()->getCore()->getInput()->getMousePosition();
+					panOffset += core->getInput()->getMousePosition() - panMouseBase;
+					panMouseBase = core->getInput()->getMousePosition();
 					Resize(getWidth(), getHeight());
 				} else {
-					CoreInput *input = Services()->getCore()->getInput();
+					CoreInput *input = core->getInput();
 					
 					if(input->getMouseButtonState(CoreInput::MOUSE_BUTTON1) && willCreateFrame) {
 						if(clickBaseCoord.distance(input->getMousePosition()) > 2.0) {
@@ -616,7 +613,7 @@ void SpriteSheetEditor::clearSelected() {
 }
 
 SpriteSheetEditor::~SpriteSheetEditor() {
-	Services()->getCore()->getInput()->removeAllHandlersForListener(this);
+	core->getInput()->removeAllHandlersForListener(this);
 }
 
 std::vector<unsigned int> SpriteSheetEditor::getSelectedFrameIDs() {
@@ -697,35 +694,35 @@ void SpriteSheetEditor::Render(GPUDrawBuffer *buffer) {
 	}
 }
 
-SpriteBrowser::SpriteBrowser(SpriteSet *spriteSet) : UIElement () {
+SpriteBrowser::SpriteBrowser(Core *core, ResourcePool *pool, SpriteSet *spriteSet) : UIElement (core) {
 	this->spriteSet = spriteSet;
 	
-	headerBg = new UIRect(10,10);
+	headerBg = new UIRect(core, pool, 10,10);
 	addChild(headerBg);
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
-	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+	headerBg->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
-	UILabel *label = new UILabel("SPRITES", 18, "section", Label::ANTIALIAS_FULL);
-	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
+	UILabel *label = new UILabel(core, pool, "SPRITES", 18, "section", Label::ANTIALIAS_FULL);
+	label->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	
 	addChild(label);
 	label->setPosition(10, 3);
 	
 	
-	newSpriteButton = new UIImageButton("spriteEditor/button_add.png", 1.0, 24, 24);
+	newSpriteButton = new UIImageButton(core, pool, "spriteEditor/button_add.png", 1.0, 24, 24);
 	addChild(newSpriteButton);
 	newSpriteButton->addEventListener(this, UIEvent::CLICK_EVENT);
 
-	removeSpriteButton = new UIImageButton("spriteEditor/button_remove.png", 1.0, 24, 24);
+	removeSpriteButton = new UIImageButton(core, pool, "spriteEditor/button_remove.png", 1.0, 24, 24);
 	addChild(removeSpriteButton);
 	removeSpriteButton->addEventListener(this, UIEvent::CLICK_EVENT);
 
-	moreButton = new UIImageButton("spriteEditor/button_more.png", 1.0, 24, 24);
+	moreButton = new UIImageButton(core, pool, "spriteEditor/button_more.png", 1.0, 24, 24);
 	addChild(moreButton);
 	moreButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
 	
-	spriteTreeView = new UITreeContainer("boxIcon.png", "All Sprites", 10, 10);
+	spriteTreeView = new UITreeContainer(core, pool, "boxIcon.png", "All Sprites", 10, 10);
 	spriteTreeView->setPosition(0, 30);
 	addChild(spriteTreeView);
 	
@@ -861,104 +858,104 @@ void SpriteBrowser::Resize(Number width, Number height) {
 	spriteTreeView->Resize(width, height-30);
 }
 
-SpriteStateEditorDetails::SpriteStateEditorDetails(SpriteSet *spriteSet) : UIElement() {
+SpriteStateEditorDetails::SpriteStateEditorDetails(Core *core, ResourcePool *pool, SpriteSet *spriteSet) : UIElement(core) {
 	
 	this->spriteSet = spriteSet;
 	
-	headerBg = new UIRect(10,10);
+	headerBg = new UIRect(core, pool, 10,10);
 	addChild(headerBg);
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
-	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+	headerBg->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
-	UILabel *label = new UILabel("STATE DETAILS", 18, "section", Label::ANTIALIAS_FULL);
-	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
+	UILabel *label = new UILabel(core, pool, "STATE DETAILS", 18, "section", Label::ANTIALIAS_FULL);
+	label->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
 	label->setPosition(10, 3);
 	
-	editBar = new SpriteStateEditBar(spriteSet);
+	editBar = new SpriteStateEditBar(core, pool, spriteSet);
 	addChild(editBar);
 	editBar->setPosition(140.0, 80.0);
 	
-	playButton = new UIImageButton("spriteEditor/play_button.png", 1.0, 32, 32);
+	playButton = new UIImageButton(core, pool, "spriteEditor/play_button.png", 1.0, 32, 32);
 	addChild(playButton);
 	playButton->setPosition(140.0, 35.0);
 	playButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-	pauseButton = new UIImageButton("spriteEditor/pause_button.png", 1.0, 32, 32);
+	pauseButton = new UIImageButton(core, pool, "spriteEditor/pause_button.png", 1.0, 32, 32);
 	addChild(pauseButton);
 	pauseButton->setPosition(140.0, 35.0);
 	pauseButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-	appendFramesButton = new UIButton("Append", 80.0);
+	appendFramesButton = new UIButton(core, pool, "Append", 80.0);
 	addChild(appendFramesButton);
 	appendFramesButton->setPosition(180.0, 40.0);
 	appendFramesButton->addEventListener(this, UIEvent::CLICK_EVENT);
 
-	removeFramesButton = new UIButton("Remove", 80.0);
+	removeFramesButton = new UIButton(core, pool, "Remove", 80.0);
 	addChild(removeFramesButton);
 	removeFramesButton->setPosition(180.0 + 80.0 + 5.0, 40.0);
 	removeFramesButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-	clearFramesButton = new UIButton("Clear", 80.0);
+	clearFramesButton = new UIButton(core, pool, "Clear", 80.0);
 	addChild(clearFramesButton);
 	clearFramesButton->setPosition(180.0 + 160.0 + 10.0, 40.0);
 	clearFramesButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-	UIImage *divider = new UIImage("spriteEditor/divider.png", 4, 128);
+	UIImage *divider = new UIImage(core, pool, "spriteEditor/divider.png", 4, 128);
 	addChild(divider);
 	divider->setPosition(132.0, 30.0);
-	divider->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+	divider->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
-	label = new UILabel("FPS", 18, "section", Label::ANTIALIAS_FULL);
+	label = new UILabel(core, pool, "FPS", 18, "section", Label::ANTIALIAS_FULL);
 	label->setPosition(60.0-label->getWidth(), 40.0);
 	addChild(label);
 	
-	fpsInput = new UITextInput(false, 50.0, 12.0);
+	fpsInput = new UITextInput(core, pool, false, 50.0, 12.0);
 	addFocusChild(fpsInput);
 	fpsInput->setPosition(65.0, 40.0);
 	fpsInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
-	label = new UILabel("PPU", 18, "section", Label::ANTIALIAS_FULL);
+	label = new UILabel(core, pool, "PPU", 18, "section", Label::ANTIALIAS_FULL);
 	label->setPosition(60.0-label->getWidth(), 65.0);
 	addChild(label);
 	
-	scaleInput = new UITextInput(false, 50.0, 12.0);
+	scaleInput = new UITextInput(core, pool, false, 50.0, 12.0);
 	addFocusChild(scaleInput);
 	scaleInput->setPosition(65.0, 65.0);
 	scaleInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 
-	label = new UILabel("WIDTH", 18, "section", Label::ANTIALIAS_FULL);
+	label = new UILabel(core, pool, "WIDTH", 18, "section", Label::ANTIALIAS_FULL);
 	label->setPosition(60.0-label->getWidth(), 90.0);
 	addChild(label);
 	
-	bBoxWidthInput = new UITextInput(false, 50.0, 12.0);
+	bBoxWidthInput = new UITextInput(core, pool, false, 50.0, 12.0);
 	addFocusChild(bBoxWidthInput);
 	bBoxWidthInput->setPosition(65.0, 90.0);
 	bBoxWidthInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 
-	label = new UILabel("HEIGHT", 18, "section", Label::ANTIALIAS_FULL);
+	label = new UILabel(core, pool, "HEIGHT", 18, "section", Label::ANTIALIAS_FULL);
 	label->setPosition(60.0-label->getWidth(), 115.0);
 	addChild(label);
 	
-	bBoxHeightInput = new UITextInput(false, 50.0, 12.0);
+	bBoxHeightInput = new UITextInput(core, pool, false, 50.0, 12.0);
 	addFocusChild(bBoxHeightInput);
 	bBoxHeightInput->setPosition(65.0, 115.0);
 	bBoxHeightInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 
-	label = new UILabel("X OFF", 18, "section", Label::ANTIALIAS_FULL);
+	label = new UILabel(core, pool, "X OFF", 18, "section", Label::ANTIALIAS_FULL);
 	label->setPosition(60.0-label->getWidth(), 140.0);
 	addChild(label);
 	
-	offsetXInput = new UITextInput(false, 50.0, 12.0);
+	offsetXInput = new UITextInput(core, pool, false, 50.0, 12.0);
 	addFocusChild(offsetXInput);
 	offsetXInput->setPosition(65.0, 140.0);
 	offsetXInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
-	label = new UILabel("Y OFF", 18, "section", Label::ANTIALIAS_FULL);
+	label = new UILabel(core, pool, "Y OFF", 18, "section", Label::ANTIALIAS_FULL);
 	label->setPosition(60.0-label->getWidth(), 165.0);
 	addChild(label);
 	
-	offsetYInput = new UITextInput(false, 50.0, 12.0);
+	offsetYInput = new UITextInput(core, pool, false, 50.0, 12.0);
 	addFocusChild(offsetYInput);
 	offsetYInput->setPosition(65.0, 165.0);
 	offsetYInput->addEventListener(this, UIEvent::CHANGE_EVENT);
@@ -980,7 +977,7 @@ void SpriteStateEditorDetails::setSceneSprite(SceneSprite *sceneSprite) {
 	editBar->setSceneSprite(sceneSprite);
 }
 
-void SpriteStateEditorDetails::Update() {
+void SpriteStateEditorDetails::Update(Number elapsed) {
 	if(sceneSprite) {
 		if(sceneSprite->isPaused()) {
 			playButton->visible = true;
@@ -1322,7 +1319,7 @@ bool SpriteStateEditBar::isFrameSelected(unsigned int frameIndex) {
 	return false;
 }
 
-void SpriteStateEditBar::Update() {
+void SpriteStateEditBar::Update(Number elapsed) {
 	refreshBar();
 }
 
@@ -1332,7 +1329,7 @@ void SpriteStateEditBar::Resize(Number width, Number height) {
 	refreshBar();
 }
 
-SpriteStateEditBar::SpriteStateEditBar(SpriteSet *spriteSet) : UIElement() {
+SpriteStateEditBar::SpriteStateEditBar(Core *core, ResourcePool *pool, SpriteSet *spriteSet) : UIElement(core) {
 	
 	this->spriteSet = spriteSet;
 	sceneSprite = NULL;
@@ -1341,28 +1338,28 @@ SpriteStateEditBar::SpriteStateEditBar(SpriteSet *spriteSet) : UIElement() {
 	draggingFrames = false;
 	extendingFrame = false;
 	
-	barBase = new UIElement();
+	barBase = new UIElement(core);
 	
 	barMeshBg = new SceneMesh();
-	barMeshBg->setMaterialByName("UnlitVertexColor");
+	barMeshBg->setMaterial(pool->getMaterial("UnlitVertexColor"));
 	barBase->addChild(barMeshBg);
-	barMeshBg->getShaderPass(0).shaderBinding->loadTextureForParam("diffuse", "spriteEditor/sprite_frame_bg.png");
+	barMeshBg->getShaderPass(0).shaderBinding->setTextureForParam("diffuse", pool->loadTexture("spriteEditor/sprite_frame_bg.png"));
 	barMeshBg->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	
 	barMesh = new SceneMesh();
-	barMesh->setMaterialByName("Unlit");
+	barMesh->setMaterial(pool->getMaterial("Unlit"));
 	barBase->addChild(barMesh);
 	barMesh->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	
 	frameTicksMesh = new SceneMesh();
-	frameTicksMesh->setMaterialByName("UnlitUntexturedVertexColor");
+	frameTicksMesh->setMaterial(pool->getMaterial("UnlitUntexturedVertexColor"));
 	barBase->addChild(frameTicksMesh);
 	
 	frameGripsMesh = new SceneMesh();
 	barBase->addChild(frameGripsMesh);
 	frameGripsMesh->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
-	frameGripsMesh->setMaterialByName("Unlit");
-	frameGripsMesh->getShaderPass(0).shaderBinding->loadTextureForParam("diffuse", "spriteEditor/frame_grip.png");
+	frameGripsMesh->setMaterial(pool->getMaterial("Unlit"));
+	frameGripsMesh->getShaderPass(0).shaderBinding->setTextureForParam("diffuse", pool->loadTexture("spriteEditor/frame_grip.png"));
 	
 	this->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_UP);
 	this->addEventListener(this, InputEvent::EVENT_MOUSEWHEEL_DOWN);
@@ -1371,12 +1368,12 @@ SpriteStateEditBar::SpriteStateEditBar(SpriteSet *spriteSet) : UIElement() {
 	this->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
 	this->addEventListener(this, InputEvent::EVENT_MOUSEUP_OUTSIDE);
 	
-	Services()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 	
 	zoomScale = 1.0;
 	defaultFrameWidth = 50.0;
 	
-	scroller = new UIScrollContainer(barBase, true, false, 10, 10);
+	scroller = new UIScrollContainer(core, pool, barBase, true, false, 10, 10);
 	addChild(scroller);
 }
 
@@ -1398,9 +1395,9 @@ void SpriteStateEditBar::handleEvent(Event *event) {
 			{
 				
 				if(inputEvent->getMousePosition().y < getHeight()-scroller->getHScrollBar()->getHeight()) {						   
-					clickBaseCoord = Services()->getCore()->getInput()->getMousePosition();
+					clickBaseCoord = core->getInput()->getMousePosition();
 					focusSelf();
-					frameMoveBase = Services()->getCore()->getInput()->getMousePosition();
+					frameMoveBase = core->getInput()->getMousePosition();
 					
 					
 					Number offsetInFrame = fmod(inputEvent->getMousePosition().x - barBase->getPosition().x, defaultFrameWidth * zoomScale);
@@ -1429,8 +1426,8 @@ void SpriteStateEditBar::handleEvent(Event *event) {
 						unsigned int selectedFrameIndex = (inputEvent->getMousePosition().x - barBase->getPosition().x)/ defaultFrameWidth / zoomScale;
 						
 						if(!isFrameSelected(selectedFrameIndex)) {
-							if(!Services()->getCore()->getInput()->getKeyState(KEY_LSHIFT) &&
-							   !Services()->getCore()->getInput()->getKeyState(KEY_LSHIFT)) {
+							if(!core->getInput()->getKeyState(KEY_LSHIFT) &&
+							   !core->getInput()->getKeyState(KEY_LSHIFT)) {
 								selectedFrames.clear();
 							}
 							doSelectFrame(selectedFrameIndex);
@@ -1444,7 +1441,7 @@ void SpriteStateEditBar::handleEvent(Event *event) {
 				
 				if(extendingFrame) {
 					selectedFrames.clear();
-					Number distance = Services()->getCore()->getInput()->getMousePosition().x - frameMoveBase.x;
+					Number distance = core->getInput()->getMousePosition().x - frameMoveBase.x;
 					
 					if(fabs(distance) > defaultFrameWidth * zoomScale) {
 						if(distance > 0.0) {
@@ -1485,14 +1482,14 @@ void SpriteStateEditBar::handleEvent(Event *event) {
 								}
 							}
 						}
-						frameMoveBase =	 Services()->getCore()->getInput()->getMousePosition();
+						frameMoveBase =	 core->getInput()->getMousePosition();
 					}
 				} else {
-					if(Services()->getCore()->getInput()->getMousePosition().distance(clickBaseCoord) > 4.0 && Services()->getCore()->getInput()->getMouseButtonState(CoreInput::MOUSE_BUTTON1) && inputEvent->getMousePosition().y < getHeight()-scroller->getHScrollBar()->getHeight()) {
+					if(core->getInput()->getMousePosition().distance(clickBaseCoord) > 4.0 && core->getInput()->getMouseButtonState(CoreInput::MOUSE_BUTTON1) && inputEvent->getMousePosition().y < getHeight()-scroller->getHScrollBar()->getHeight()) {
 						
 						draggingFrames = true;
 						
-						Number distance = Services()->getCore()->getInput()->getMousePosition().x - frameMoveBase.x;
+						Number distance = core->getInput()->getMousePosition().x - frameMoveBase.x;
 						
 						if(fabs(distance) > defaultFrameWidth * zoomScale) {
 							
@@ -1515,16 +1512,16 @@ void SpriteStateEditBar::handleEvent(Event *event) {
 							data->reverse = false;
 							editor->didAction("changed_sprite_set_frames", beforeData, data);
 							
-							frameMoveBase =	 Services()->getCore()->getInput()->getMousePosition();
+							frameMoveBase =	 core->getInput()->getMousePosition();
 						}
 						
 					} else {
 						draggingFrames = false;
 						Number offsetInFrame = fmod(inputEvent->getMousePosition().x - barBase->getPosition().x, defaultFrameWidth * zoomScale);
 						if((offsetInFrame / (defaultFrameWidth * zoomScale)) > 0.8) {
-							Services()->getCore()->setCursor(Core::CURSOR_RESIZE_LEFT_RIGHT);
+							core->setCursor(Core::CURSOR_RESIZE_LEFT_RIGHT);
 						} else {
-							Services()->getCore()->setCursor(Core::CURSOR_ARROW);
+							core->setCursor(Core::CURSOR_ARROW);
 						}
 						
 						extendingIndex = (inputEvent->getMousePosition().x - barBase->getPosition().x)/ defaultFrameWidth / zoomScale;
@@ -1532,11 +1529,9 @@ void SpriteStateEditBar::handleEvent(Event *event) {
 						
 						if(extendingIndex < spriteState->getNumFrameIDs()-1) {
 							if(spriteState->getFrameIDAtIndex(extendingIndex+1) == extendingID) {
-								Services()->getCore()->setCursor(Core::CURSOR_ARROW);
+								core->setCursor(Core::CURSOR_ARROW);
 							}
 						}
-						
-						
 					}
 				}
 			break;
@@ -1544,11 +1539,11 @@ void SpriteStateEditBar::handleEvent(Event *event) {
 			case InputEvent::EVENT_MOUSEUP_OUTSIDE:
 				extendingFrame = false;
 				
-				if(Services()->getCore()->getInput()->getMousePosition().distance(clickBaseCoord) < 4.0) {
+				if(core->getInput()->getMousePosition().distance(clickBaseCoord) < 4.0) {
 					if(inputEvent->getMousePosition().y < getHeight()-scroller->getHScrollBar()->getHeight()) {
 						unsigned int selectedFrameIndex = (inputEvent->getMousePosition().x - barBase->getPosition().x)/ defaultFrameWidth / zoomScale;
-						if(!Services()->getCore()->getInput()->getKeyState(KEY_LSHIFT) &&
-						   !Services()->getCore()->getInput()->getKeyState(KEY_LSHIFT)) {
+						if(!core->getInput()->getKeyState(KEY_LSHIFT) &&
+						   !core->getInput()->getKeyState(KEY_LSHIFT)) {
 							selectedFrames.clear();
 						}
 						doSelectFrame(selectedFrameIndex);
@@ -1557,7 +1552,7 @@ void SpriteStateEditBar::handleEvent(Event *event) {
 				draggingFrames = false;
 			break;
 		}
-	} else if(event->getDispatcher() == Services()->getCore()->getInput()) {
+	} else if(event->getDispatcher() == core->getInput()) {
 		InputEvent *inputEvent = (InputEvent*) event;
 		
 		if(event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
@@ -1685,36 +1680,36 @@ void SpriteStateEditBar::deleteSelectedFrames() {
 }
 
 SpriteStateEditBar::~SpriteStateEditBar() {
-	Services()->getCore()->getInput()->removeAllHandlersForListener(this);
+	core->getInput()->removeAllHandlersForListener(this);
 }
 
-SpriteStateBrowser::SpriteStateBrowser() : UIElement() {
+SpriteStateBrowser::SpriteStateBrowser(Core *core, ResourcePool *pool) : UIElement(core) {
 	
-	headerBg = new UIRect(10,10);
+	headerBg = new UIRect(core, pool, 10,10);
 	addChild(headerBg);
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
-	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+	headerBg->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
-	UILabel *label = new UILabel("STATES", 18, "section", Label::ANTIALIAS_FULL);
-	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
+	UILabel *label = new UILabel(core, pool, "STATES", 18, "section", Label::ANTIALIAS_FULL);
+	label->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
 	label->setPosition(10, 3);
 	
 	
-	stateTreeView = new UITreeContainer("boxIcon.png", "All States", 10, 10);
+	stateTreeView = new UITreeContainer(core, pool, "boxIcon.png", "All States", 10, 10);
 	addChild(stateTreeView);
 	stateTreeView->getRootNode()->toggleCollapsed();
 	stateTreeView->setPosition(0.0, 30.0);
 	
-	newStateButton = new UIImageButton("spriteEditor/button_add.png", 1.0, 24, 24);
+	newStateButton = new UIImageButton(core, pool, "spriteEditor/button_add.png", 1.0, 24, 24);
 	addChild(newStateButton);
 	newStateButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-	removeStateButton = new UIImageButton("spriteEditor/button_remove.png", 1.0, 24, 24);
+	removeStateButton = new UIImageButton(core, pool, "spriteEditor/button_remove.png", 1.0, 24, 24);
 	addChild(removeStateButton);
 	removeStateButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-	moreButton = new UIImageButton("spriteEditor/button_more.png", 1.0, 24, 24);
+	moreButton = new UIImageButton(core, pool, "spriteEditor/button_more.png", 1.0, 24, 24);
 	addChild(moreButton);
 	moreButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
@@ -1733,16 +1728,16 @@ void SpriteStateBrowser::Resize(Number width, Number height) {
 	newStateButton->setPosition(width - 82.0, 3.0);
 }
 
-SpriteStateEditor::SpriteStateEditor(SpriteSet *spriteSet) : UIElement() {
+SpriteStateEditor::SpriteStateEditor(Core *core, ResourcePool *pool, SpriteSet *spriteSet) : UIElement(core) {
 	this->spriteSet = spriteSet;
 	
-	stateSizer = new UIHSizer(10, 10, 200, true);
+	stateSizer = new UIHSizer(core, pool, 10, 10, 200, true);
 	addChild(stateSizer);
 	
-	stateDetails = new SpriteStateEditorDetails(spriteSet);
+	stateDetails = new SpriteStateEditorDetails(core, pool, spriteSet);
 	stateSizer->addRightChild(stateDetails);
 	
-	stateBrowser = new SpriteStateBrowser();
+	stateBrowser = new SpriteStateBrowser(core, pool);
 	stateSizer->addLeftChild(stateBrowser);
 	
 	newStateButton = stateBrowser->newStateButton;
@@ -1922,9 +1917,9 @@ void SpriteStateEditor::Resize(Number width, Number height) {
 	stateSizer->Resize(width, height);
 }
 
-SpritePreview::SpritePreview(SpriteSet *spriteSet) : UIElement() {
+SpritePreview::SpritePreview(Core *core, ResourcePool *pool, SpriteSet *spriteSet) : UIElement(core) {
 	
-	previewBg = new UIImage("main/grid_dark.png");
+	previewBg = new UIImage(core, pool, "main/grid_dark.png");
 	addChild(previewBg);
 	previewBg->processInputEvents = true;
 	previewBg->setPosition(0.0, 30.0);
@@ -1933,25 +1928,24 @@ SpritePreview::SpritePreview(SpriteSet *spriteSet) : UIElement() {
 	addChild(sprite);
 	sprite->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	
-	headerBg = new UIRect(10,10);
+	headerBg = new UIRect(core, pool, 10,10);
 	addChild(headerBg);
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
-	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+	headerBg->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
-	UILabel *label = new UILabel("PREVIEW", 18, "section", Label::ANTIALIAS_FULL);
-	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
+	UILabel *label = new UILabel(core, pool, "PREVIEW", 18, "section", Label::ANTIALIAS_FULL);
+	label->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	
 	addChild(label);
 	label->setPosition(10, 3);
 	
 	boundingBoxPreview = new SceneMesh();
 	addChild(boundingBoxPreview);
-	boundingBoxPreview->getShaderPass(0).shaderBinding->loadTextureForParam("diffuse", "main/stipple_small.png");
+	boundingBoxPreview->getShaderPass(0).shaderBinding->setTextureForParam("diffuse", pool->loadTexture("main/stipple_small.png"));
 	boundingBoxPreview->lineWidth = 1;
+
 	
-	
-	
-	bgSelector = new UIIconSelector();
+	bgSelector = new UIIconSelector(core, pool);
 	bgSelector->addIcon("spriteEditor/grid_icon_dark.png");
 	bgSelector->addIcon("spriteEditor/grid_icon_light.png");
 	bgSelector->selectIndex(0);
@@ -1981,7 +1975,7 @@ void SpritePreview::handleEvent(Event *event) {
 	}
 }
 
-void SpritePreview::Update() {
+void SpritePreview::Update(Number elapsed) {
 	
 	SpriteState	 *state = sprite->getCurrentSpriteState();
 	
@@ -2046,7 +2040,7 @@ void SpritePreview::Resize(Number width, Number height) {
 	UIElement::Resize(width, height);
 }
 
-PolycodeSpriteEditor::PolycodeSpriteEditor() : PolycodeEditor(true){
+PolycodeSpriteEditor::PolycodeSpriteEditor(Core *core, ResourcePool *pool) : PolycodeEditor(core, pool, true){
 	
 }
 
@@ -2108,7 +2102,7 @@ void PolycodeSpriteEditor::handleEvent(Event *event) {
 }
 
 PolycodeSpriteEditor::~PolycodeSpriteEditor() {
-	CoreServices::getInstance()->getResourceManager()->unsubscibeFromResourcePool(sprite);
+	core->getResourceManager()->unsubscibeFromResourcePool(sprite);
 	delete mainSizer;
 	delete topSizer;
 	delete bottomSizer;
@@ -2122,37 +2116,37 @@ bool PolycodeSpriteEditor::openFile(OSFileEntry filePath) {
 	
 	String resourceName = filePath.fullPath.replace(parentProject->getRootFolder()+"/", "");
 	
-	sprite = (SpriteSet*) CoreServices::getInstance()->getResourceManager()->getResourcePoolByName(resourceName);
+	sprite = (SpriteSet*) core->getResourceManager()->getResourcePoolByName(resourceName);
 	
 	if(!sprite) {
-		sprite = new SpriteSet(filePath.fullPath, CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+		sprite = new SpriteSet(core, filePath.fullPath, resourcePool);
 		sprite->reloadResourcesOnModify = true;
 		sprite->deleteOnUnsubscribe = true;
 		
 	}
-	CoreServices::getInstance()->getResourceManager()->subscribeToResourcePool(sprite);
+	core->getResourceManager()->subscribeToResourcePool(sprite);
 	
-	mainSizer = new UIVSizer(100, 100, 200, false);
+	mainSizer = new UIVSizer(core, resourcePool, 100, 100, 200, false);
 	addChild(mainSizer);
 	
-	topSizer = new UIHSizer(100, 100, 400, false);
+	topSizer = new UIHSizer(core, resourcePool, 100, 100, 400, false);
 	mainSizer->addTopChild(topSizer);
 	
-	bottomSizer = new UIHSizer(100, 100, 200, true);
+	bottomSizer = new UIHSizer(core, resourcePool, 100, 100, 200, true);
 	mainSizer->addBottomChild(bottomSizer);
 	
 	
-	spriteSheetEditor = new SpriteSheetEditor(sprite);
+	spriteSheetEditor = new SpriteSheetEditor(core, resourcePool, sprite);
 	topSizer->addLeftChild(spriteSheetEditor);
 	spriteSheetEditor->addEventListener(this, Event::CHANGE_EVENT);
 	spriteSheetEditor->editor = this;
 	
-	spriteBrowser = new SpriteBrowser(sprite);
+	spriteBrowser = new SpriteBrowser(core, resourcePool, sprite);
 	spriteBrowser->editor = this;
 	bottomSizer->addLeftChild(spriteBrowser);
 	spriteBrowser->addEventListener(this, Event::CHANGE_EVENT);
 	
-	stateEditor = new SpriteStateEditor(sprite);
+	stateEditor = new SpriteStateEditor(core, resourcePool, sprite);
 	bottomSizer->addRightChild(stateEditor);
 	stateEditor->editor = this;
 	stateEditor->getDetailsEditor()->editor = this;
@@ -2161,7 +2155,7 @@ bool PolycodeSpriteEditor::openFile(OSFileEntry filePath) {
 	addFramesButton = stateEditor->getDetailsEditor()->getAppendFramesButton();
 	addFramesButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-	spritePreview = new SpritePreview(sprite);
+	spritePreview = new SpritePreview(core, resourcePool, sprite);
 	topSizer->addRightChild(spritePreview);
 	
 	stateEditor->getDetailsEditor()->setSceneSprite(spritePreview->getSceneSprite());
@@ -2326,7 +2320,7 @@ void PolycodeSpriteEditor::saveFile() {
 		}
 		
 	}
-	fileObject.saveToXML(filePath);
+	fileObject.saveToXML(core, filePath);
 	setHasChanges(false);
 }
 

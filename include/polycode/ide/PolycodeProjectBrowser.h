@@ -50,7 +50,7 @@ class PolycodeProjectBrowserEvent : public Event {
 
 class PolycodeProjectBrowser : public UIElement {
 	public:
-		PolycodeProjectBrowser(PolycodeProject *project);
+		PolycodeProjectBrowser(Core *core, ResourcePool *pool, PolycodeProject *project);
 		~PolycodeProjectBrowser();
 		
 		void Resize(Number width, Number height);

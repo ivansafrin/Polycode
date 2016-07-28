@@ -22,21 +22,18 @@
 
 #include "polycode/ide/PolycodeProject.h"
 
-PolycodeProject::PolycodeProject(String name, String path, String file) {
-	
+PolycodeProject::PolycodeProject(Core *core, String name, String path, String file) : core(core) {
 	printf("CREATING PROJECT %s %s\n", name.c_str(), path.c_str());
-	
 	projectName = name;
 	projectFolder = path;
 	projectFile = file;
-	
 	loadProjectFromFile();
 	
 }
 
 bool PolycodeProject::loadProjectFromFile() {
 
-	if(!configFile.loadFromXML(projectFile)) {
+	if(!configFile.loadFromXML(core, projectFile)) {
 		return false;
 	}
 	
@@ -93,7 +90,7 @@ bool PolycodeProject::loadProjectFromFile() {
 			data.modules.push_back(module->stringVal);
 			
 			// NOCMAKE_TODO:
-			//CoreServices::getInstance()->getResourceManager()->addArchive("Standalone/Modules/"+module->stringVal+"/API");
+			//core->getResourceManager()->addArchive("Standalone/Modules/"+module->stringVal+"/API");
 			
 		}
 	}
@@ -191,7 +188,7 @@ bool PolycodeProject::saveFile() {
 		configFile.root["packedItems"]->Clear();
 	}
 	
-	vector<OSFileEntry> files = Services()->getCore()->parseFolder(projectFolder, false);
+	vector<OSFileEntry> files = core->parseFolder(projectFolder, false);
 
 	for(int i=0; i < files.size(); i++) {
 		OSFileEntry entry = files[i];
@@ -218,7 +215,7 @@ bool PolycodeProject::saveFile() {
 	configFile.root["anisotropyLevel"]->intVal = data.anisotropy;
 	configFile.root["vSync"]->boolVal = data.vSync;
 	
-	configFile.saveToXML(projectFile);
+	configFile.saveToXML(core, projectFile);
 
 	return true;
 }

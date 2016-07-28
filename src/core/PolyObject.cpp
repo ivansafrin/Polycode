@@ -21,11 +21,11 @@
 */
  
 #include "polycode/core/PolyObject.h"
+#include "polycode/core/PolyCore.h"
 #include "tinyxml.h"
 #include <sstream>
 #include <stdio.h>
 #include <string.h>
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyCore.h"
 
 using namespace Polycode;
@@ -108,7 +108,7 @@ String Object::saveToXMLString() {
 	return String(printer.CStr());
 }
 
-void Object::saveToXML(const String& fileName) {
+void Object::saveToXML(Polycode::Core *core, const String& fileName) {
 	TiXmlDocument doc;		
 	TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "", "" );	 
 	doc.LinkEndChild( decl ); 
@@ -116,7 +116,7 @@ void Object::saveToXML(const String& fileName) {
 	TiXmlElement * rootElement = createElementFromObjectEntry(&root);
 	doc.LinkEndChild(rootElement);		
 	
-	doc.SaveFile(fileName.c_str()); 
+	doc.SaveFile(core, fileName.c_str());
 }
 
 
@@ -203,10 +203,10 @@ bool Object::loadFromXMLString(const String &xmlString) {
 	return true;	
 }
 		
-bool Object::loadFromXML(const String& fileName) {
+bool Object::loadFromXML(Polycode::Core *core, const String& fileName) {
 
 	TiXmlDocument doc(fileName.c_str());
-	doc.LoadFile();
+	doc.LoadFile(core);
 
 	if(doc.Error()) {
 		Logger::log("Error loading xml file: %s\n", doc.ErrorDesc());
@@ -321,19 +321,19 @@ void Object::createFromXMLElement(TiXmlElement *element, ObjectEntry *entry) {
 }
 
 
-bool Object::loadFromBinary(const String& fileName) {
-	BinaryObjectReader objectReader(fileName, this);	
+bool Object::loadFromBinary(Core *core, const String& fileName) {
+	BinaryObjectReader objectReader(core, fileName, this);
 	bool success = objectReader.success;
 	return success;
 }
 
-BinaryObjectReader::BinaryObjectReader(const String& fileName, Object *object) {
+BinaryObjectReader::BinaryObjectReader(Core *core, const String& fileName, Object *object) {
 	this->object = object;
 	success = false;
-	inFile = Services()->getCore()->openFile(fileName, "rb");
+	inFile = core->openFile(fileName, "rb");
 	if(inFile) {
 		success = readFile();
-		Services()->getCore()->closeFile(inFile);
+		core->closeFile(inFile);
 	}
 }
 
@@ -451,9 +451,9 @@ BinaryObjectReader::~BinaryObjectReader() {
 }
 
 
-void Object::saveToBinary(const String& fileName) {
+void Object::saveToBinary(Core *core, const String& fileName) {
 	BinaryObjectWriter objectWriter(this);
-	objectWriter.writeToFile(fileName);
+	objectWriter.writeToFile(core, fileName);
 }
 
 BinaryObjectWriter::BinaryObjectWriter(Object *object) {
@@ -541,8 +541,8 @@ void BinaryObjectWriter::writeEntryToFile(ObjectEntry *entry) {
 	numEntriesWritten++;
 }
 			
-bool BinaryObjectWriter::writeToFile(const String& fileName) {
-	outFile = Services()->getCore()->openFile(fileName, "wb");
+bool BinaryObjectWriter::writeToFile(Core *core, const String& fileName) {
+	outFile = core->openFile(fileName, "wb");
 	
 	outFile->write("PBOF", 1, 4);
 
@@ -568,7 +568,7 @@ bool BinaryObjectWriter::writeToFile(const String& fileName) {
 	data32 = numEntriesWritten;
 	outFile->write(&data32, sizeof(uint32_t), 1);	
 	
-	Services()->getCore()->closeFile(outFile);
+	core->closeFile(outFile);
 	return true;
 }
 

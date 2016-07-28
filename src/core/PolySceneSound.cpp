@@ -21,13 +21,12 @@ THE SOFTWARE.
 */
 
 #include "polycode/core/PolySceneSound.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolySound.h"
 #include "polycode/core/PolySoundManager.h"
 
 using namespace Polycode;
 
-SceneSoundListener::SceneSoundListener() : Entity() {
+SceneSoundListener::SceneSoundListener(SoundManager *soundManager) : Entity(), soundManager(soundManager) {
 
 }
 SceneSoundListener::~SceneSoundListener() {
@@ -36,10 +35,10 @@ SceneSoundListener::~SceneSoundListener() {
 
 void SceneSoundListener::Update() {
 	Matrix4 finalMatrix = getConcatenatedMatrix();
-	CoreServices::getInstance()->getSoundManager()->setListenerPosition(finalMatrix.getPosition());
+	soundManager->setListenerPosition(finalMatrix.getPosition());
 	Quaternion orientation;
 	orientation.setFromMatrix(finalMatrix);
-	CoreServices::getInstance()->getSoundManager()->setListenerOrientation(orientation);
+	soundManager->setListenerOrientation(orientation);
 }
 
 void SceneSound::setLoopOnLoad(bool val) {
@@ -52,7 +51,7 @@ bool SceneSound::getLoopOnLoad() {
 
 
 Entity *SceneSound::Clone(bool deepClone, bool ignoreEditorOnly) const {
-	SceneSound *newSound = new SceneSound(sound->getFileName(), sound->getReferenceDistance(), sound->getMaxDistance(), directionalSound);
+	SceneSound *newSound = new SceneSound(core, sound->getFileName(), sound->getReferenceDistance(), sound->getMaxDistance(), directionalSound);
 	applyClone(newSound, deepClone, ignoreEditorOnly);
 	return newSound;
 }
@@ -67,11 +66,11 @@ void SceneSound::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly
 	cloneSound->getSound()->setPitch(sound->getPitch());
 }
 
-SceneSound::SceneSound(const String& fileName, Number referenceDistance, Number maxDistance, bool directionalSound) : Entity() {
+SceneSound::SceneSound(Core *core, const String& fileName, Number referenceDistance, Number maxDistance, bool directionalSound) : Entity(), core(core) {
 
 	this->directionalSound = directionalSound;
 	loopOnLoad = false;
-	sound = new Sound(fileName);
+	sound = new Sound(core, fileName);
 	sound->setIsPositional(true);
 	sound->setPositionalProperties(referenceDistance, maxDistance);
 }

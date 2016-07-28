@@ -24,7 +24,7 @@
 
 using namespace Polycode;
 
-Config::Config() {
+Config::Config(Core *core) : core(core) {
 	
 }
 
@@ -37,7 +37,7 @@ void Config::loadConfig(const String& configNamespace, const String& fileName) {
 	
 	Logger::log("Loading config: %s\n", fileName.c_str());
 	
-	if(!doc.LoadFile()) {
+	if(!doc.LoadFile(core)) {
 		Logger::log("Error loading config file...\n");
 		Logger::log("Error: %s\n", doc.ErrorDesc());
 		return;
@@ -51,7 +51,7 @@ void Config::loadConfig(const String& configNamespace, const String& fileName) {
 		TiXmlElement *pChildElement = pChild->ToElement();
 		if (!pChildElement) continue; // Skip comment nodes
 		
-		entry = getEntry(configNamespace, pChild->Value());
+		entry = getEntryOrAdd(configNamespace, pChild->Value());
 		entry->stringVal = pChildElement->GetText();		
 		entry->numVal = atof(pChildElement->GetText());
 		entry->isString = true;
@@ -60,7 +60,7 @@ void Config::loadConfig(const String& configNamespace, const String& fileName) {
 	
 }
 
-void Config::saveConfig(const String& configNamespace, const String& fileName) {
+void Config::saveConfig(const String& configNamespace, const String& fileName) const {
 
 	TiXmlDocument doc;	
 	TiXmlElement* node;	 
@@ -82,54 +82,76 @@ void Config::saveConfig(const String& configNamespace, const String& fileName) {
 			root->LinkEndChild( node);		
 		}
 	}
-	doc.SaveFile(fileName.c_str());		
+	doc.SaveFile(core, fileName.c_str());
 }
 
-ConfigEntry *Config::getEntry(const String& configNamespace, const String& key) {
-	
+ConfigEntry *Config::getEntry(const String& configNamespace, const String& key) const {
 	for(int i=0; i < entries.size(); i++) {
 		ConfigEntry *entry = entries[i];
 		if(entry->key == key && entry->configNamespace == configNamespace) {
 			return entry;
 		}
 	}
-	ConfigEntry *newEntry = new ConfigEntry();
-	newEntry->key = key;
-	newEntry->isString = false;
-	newEntry->numVal = 0;
-	newEntry->configNamespace = configNamespace;
-	entries.push_back(newEntry);
-	return newEntry;
+	return NULL;
+}
+
+ConfigEntry *Config::getEntryOrAdd(const String& configNamespace, const String& key) {
+	ConfigEntry *entry = getEntry(configNamespace, key);
+	if(!entry) {
+		entry = new ConfigEntry();
+		entry->key = key;
+		entry->isString = false;
+		entry->numVal = 0;
+		entry->configNamespace = configNamespace;
+		entries.push_back(entry);
+	}
+	return entry;
 }
 
 void Config::setStringValue(const String& configNamespace, const String& key, const String& value) {
-	getEntry(configNamespace, key)->stringVal = value;
-	getEntry(configNamespace, key)->isString = true;	
+	getEntryOrAdd(configNamespace, key)->stringVal = value;
+	getEntryOrAdd(configNamespace, key)->isString = true;
 }
 
 void Config::setNumericValue(const String& configNamespace, const String& key, Number value) {
-	getEntry(configNamespace, key)->numVal = value; 
-	getEntry(configNamespace, key)->isString = false;		
+	getEntryOrAdd(configNamespace, key)->numVal = value;
+	getEntryOrAdd(configNamespace, key)->isString = false;
 }
 
-Number Config::getNumericValue(const String& configNamespace, const String& key) {
-	return getEntry(configNamespace, key)->numVal;
+Number Config::getNumericValue(const String& configNamespace, const String& key) const {
+	ConfigEntry *ret = getEntry(configNamespace, key);
+	if(ret) {
+		return ret->numVal;
+	} else {
+		return 0.0;
+	}
 }
 
-const String& Config::getStringValue(const String& configNamespace, const String& key) {
-	return getEntry(configNamespace, key)->stringVal;	
+const String& Config::getStringValue(const String& configNamespace, const String& key) const {
+	ConfigEntry *ret = getEntry(configNamespace, key);
+	if(ret) {
+		return ret->stringVal;
+	} else {
+		return "undefined";
+	}
 }
 
 void Config::setBoolValue(const String& configNamespace, const String& key, bool value) {
-	getEntry(configNamespace, key)->stringVal = (!value ? "false" : "true");
-	getEntry(configNamespace, key)->isString = true;
+	getEntryOrAdd(configNamespace, key)->stringVal = (!value ? "false" : "true");
+	getEntryOrAdd(configNamespace, key)->isString = true;
 }
 
-bool Config::getBoolValue(const String& configNamespace, const String& key) {
-	const String& str = getEntry(configNamespace, key)->stringVal;
-
-	if (str == "true" || str == "1") {
-		return true;
-	}		
-	return false;
+bool Config::getBoolValue(const String& configNamespace, const String& key) const {
+	
+	ConfigEntry *ret = getEntry(configNamespace, key);
+	if(ret) {
+		const String& str = ret->stringVal;
+		if (str == "true" || str == "1") {
+			return true;
+		} else {
+			return false;
+		}
+	} else {
+		return false;
+	}
 }

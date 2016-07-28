@@ -29,18 +29,18 @@ PolycodeConsole* PolycodeConsole::instance = NULL;
 extern SyntaxHighlightTheme *globalSyntaxTheme;
 extern PolycodeFrame *globalFrame;
 
-BackTraceEntry::BackTraceEntry(String fileName, int lineNumber, PolycodeProject *project) : UIElement() {
+BackTraceEntry::BackTraceEntry(Core *core, ResourcePool *pool, String fileName, int lineNumber, PolycodeProject *project) : UIElement(core) {
 
 
 	this->project = project;
 	this->fileName = fileName;
 	this->lineNumber = lineNumber;
 
-	Config *conf = CoreServices::getInstance()->getConfig();	
+	ConfigRef conf = core->getConfig();
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
 	int fontSize = conf->getNumericValue("Polycode", "uiDefaultFontSize");	
 
-	labelBg = new UIRect(20,20);
+	labelBg = new UIRect(core, pool, 20,20);
 	labelBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	labelBg->setColor(0.3, 0.3, 0.3, 1.0);
 	labelBg->processInputEvents = true;
@@ -48,7 +48,7 @@ BackTraceEntry::BackTraceEntry(String fileName, int lineNumber, PolycodeProject 
 	
 	labelBg->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	
-	label = new UILabel(fileName+" on line "+String::IntToString(lineNumber), fontSize, fontName);
+	label = new UILabel(core, pool, fileName+" on line "+String::IntToString(lineNumber), fontSize, fontName);
 	addChild(label);
 	label->setPosition(5,2);
 	
@@ -70,7 +70,7 @@ void BackTraceEntry::Select() {
 	
 	dispatchEvent(event, BackTraceEvent::EVENT_BACKTRACE_SELECTED);
 		
-	labelBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiAccentColor"));
+	labelBg->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiAccentColor"));
 	
 }
 
@@ -89,18 +89,18 @@ void BackTraceEntry::Resize(Number width, Number height) {
 
 }
 
-BackTraceWindow::BackTraceWindow() : UIElement() {
+BackTraceWindow::BackTraceWindow(Core *core, ResourcePool *pool) : UIElement(core), resourcePool(pool) {
 
-	Config *conf = CoreServices::getInstance()->getConfig();	
+	ConfigRef conf = core->getConfig();
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
 
-	labelBg = new UIRect(20,30);
+	labelBg = new UIRect(core, pool, 20,30);
 	labelBg->setAnchorPoint(-1.0, -1.0, 0.0);
-	labelBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+	labelBg->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	addChild(labelBg);
 	
-	UILabel *label = new UILabel("CRASH STACK", 18, "section");
-	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
+	UILabel *label = new UILabel(core, pool, "CRASH STACK", 18, "section");
+	label->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
 	label->setPosition(5,3);
 	
@@ -141,7 +141,7 @@ void BackTraceWindow::handleEvent(Event *event) {
 }
 
 void BackTraceWindow::addBackTrace(String fileName, int lineNumber, PolycodeProject *project) {
-	BackTraceEntry *entry = new BackTraceEntry(fileName, lineNumber, project);
+	BackTraceEntry *entry = new BackTraceEntry(core, resourcePool, fileName, lineNumber, project);
 	entry->addEventListener(this, BackTraceEvent::EVENT_BACKTRACE_SELECTED);
 	entries.push_back(entry);
 	addChild(entry);
@@ -165,28 +165,28 @@ BackTraceWindow::~BackTraceWindow() {
 	
 }
 
-ConsoleWindow::ConsoleWindow() : UIElement() {
+ConsoleWindow::ConsoleWindow(Core *core, ResourcePool *pool) : UIElement(core) {
 
 
-	labelBg = new UIRect(20,30);
+	labelBg = new UIRect(core, pool, 20,30);
 	labelBg->setAnchorPoint(-1.0, -1.0, 0.0);
-	labelBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+	labelBg->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	addChild(labelBg);
 	
-	UILabel *label = new UILabel("CONSOLE", 18, "section");
-	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
+	UILabel *label = new UILabel(core, pool, "CONSOLE", 18, "section");
+	label->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	addChild(label);
 	label->setPosition(35,3);
 
-	debugTextInput = new UITextInput(true, 100, 100);
-	consoleTextInput = new UITextInput(false, 100, 100);
+	debugTextInput = new UITextInput(core, pool, true, 100, 100);
+	consoleTextInput = new UITextInput(core, pool, false, 100, 100);
 	addChild(consoleTextInput); 
 	addChild(debugTextInput);	
 	
-	clearButton = new UIImageButton("main/clear_buffer_icon.png", 1.0, 16, 16);
+	clearButton = new UIImageButton(core, pool, "main/clear_buffer_icon.png", 1.0, 16, 16);
 	addChild(clearButton);
 	
-	hideConsoleButton = new UIImageButton("main/console_hide_button.png", 1.0, 20, 20);
+	hideConsoleButton = new UIImageButton(core, pool, "main/console_hide_button.png", 1.0, 20, 20);
 	addChild(hideConsoleButton);
 	hideConsoleButton->setPosition(7,5);
 	
@@ -210,8 +210,7 @@ void ConsoleWindow::Resize(Number width, Number height) {
 	consoleRefreshInterval = 0.3;
 }
 
-void ConsoleWindow::Update() {
-	consoleTimer += Services()->getCore()->getElapsed();
+void ConsoleWindow::Update(Number elapsed) {
 	if(consoleTimer > consoleRefreshInterval) {
 		consoleTimer = 0.0;
 		if(consoleDirty) {
@@ -240,25 +239,25 @@ void ConsoleWindow::printToBuffer(String msg) {
 }
 
 
-PolycodeConsole::PolycodeConsole() : UIElement() {
+PolycodeConsole::PolycodeConsole(Core *core, ResourcePool *pool) : UIElement(core) {
 
-	backtraceSizer = new UIHSizer(100,100,300,false);
+	backtraceSizer = new UIHSizer(core, pool, 100,100,300,false);
 	addChild(backtraceSizer);
 	
 	debugger = NULL;
 	
-	consoleWindow = new ConsoleWindow();
+	consoleWindow = new ConsoleWindow(core, pool);
 	
 	backtraceSizer->addLeftChild(consoleWindow);
 
-	backtraceWindow = new BackTraceWindow();
+	backtraceWindow = new BackTraceWindow(core, pool);
 	backtraceSizer->addRightChild(backtraceWindow);
 
 	debugTextInput = consoleWindow->debugTextInput;	   
 	consoleTextInput = consoleWindow->consoleTextInput;
 	
 	consoleTextInput->addEventListener(this, Event::COMPLETE_EVENT);
-	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
+	core->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 	consoleTextInput->setColor(0.95, 1.0, 0.647, 1.0);
 
 	consoleHistoryPosition = 0;
@@ -267,7 +266,7 @@ PolycodeConsole::PolycodeConsole() : UIElement() {
 	consoleWindow->clearButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	consoleWindow->hideConsoleButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-	CoreServices::getInstance()->getLogger()->addEventListener(this, Event::NOTIFY_EVENT);
+	core->getLogger()->addEventListener(this, Event::NOTIFY_EVENT);
 
 	PolycodeConsole::setInstance(this);
 }
@@ -291,7 +290,7 @@ void PolycodeConsole::setDebugger(PolycodeRemoteDebugger *debugger) {
 
 void PolycodeConsole::handleEvent(Event *event) {
 
-	if(event->getDispatcher() == CoreServices::getInstance()->getLogger()) {
+	if(event->getDispatcher() == core->getLogger()) {
 		if(event->getEventCode() == Event::NOTIFY_EVENT) {
 			LoggerEvent *loggerEvent = (LoggerEvent*)event;
 			_print(loggerEvent->message);
@@ -323,7 +322,7 @@ void PolycodeConsole::handleEvent(Event *event) {
 		}
 	}
 
-	if (event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {
+	if (event->getDispatcher() == core->getInput()) {
 		if (consoleTextInput->hasFocus && event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
 			InputEvent *inputEvent = (InputEvent*)event;
 			if (inputEvent->keyCode() == KEY_UP) { 

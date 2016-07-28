@@ -10,14 +10,6 @@ function Mesh() {
 Mesh.prototype = Object.create(Resource.prototype)
 
 
-Mesh.prototype.loadMesh = function(fileName) {
-	Polycode.Mesh_loadMesh(this.__ptr, fileName)
-}
-
-Mesh.prototype.saveToFile = function(fileName,writeNormals,writeTangents,writeColors,writeBoneWeights,writeUVs,writeSecondaryUVs) {
-	Polycode.Mesh_saveToFile(this.__ptr, fileName, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs)
-}
-
 Mesh.prototype.addSubmesh = function(newSubmesh) {
 	Polycode.Mesh_addSubmesh(this.__ptr, newSubmesh)
 }

@@ -30,7 +30,7 @@ EditorHolder *activeEditorHolder = NULL;
 extern PolycodeEditorManager *globalEditorManager;
 
 
-EditPoint::EditPoint(BezierPoint *point, unsigned int type) : Entity() {
+EditPoint::EditPoint(Core *core, ResourcePool *pool, BezierPoint *point, unsigned int type) : Entity(), core(core) {
 	this->point = point;
 	this->type = type;
 	processInputEvents = true;
@@ -38,7 +38,7 @@ EditPoint::EditPoint(BezierPoint *point, unsigned int type) : Entity() {
 	draggingPoint = NULL;
 	dragging = false;
 
-	controlHandle1 = new UIRect(5, 5);
+	controlHandle1 = new UIRect(core, pool, 5, 5);
 	controlHandle1->setColor(0.0, 1.0, 0.3, 1.0);
 	controlHandle1->setAnchorPoint(0.0, 0.0, 0.0);
 	
@@ -51,7 +51,7 @@ EditPoint::EditPoint(BezierPoint *point, unsigned int type) : Entity() {
 		
 	addChild(controlHandle1);
 	
-	controlHandle2 = new UIRect(5, 5);
+	controlHandle2 = new UIRect(core, pool, 5, 5);
 	controlHandle2->setColor(0.0, 1.0, 0.3, 1.0);
 	controlHandle2->setAnchorPoint(0.0, 0.0, 0.0);
 	controlHandle2->processInputEvents = true;
@@ -64,7 +64,7 @@ EditPoint::EditPoint(BezierPoint *point, unsigned int type) : Entity() {
 	
 	addChild(controlHandle2);
 	
-	pointHandle = new UIRect(8, 8);
+	pointHandle = new UIRect(core, pool, 8, 8);
 	pointHandle->setColor(1.0, 0.5, 0.2, 1.0);
 	pointHandle->processInputEvents = true;
 	pointHandle->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
@@ -100,7 +100,7 @@ EditPoint::EditPoint(BezierPoint *point, unsigned int type) : Entity() {
 		connectorLine2->lineSmooth = true;
 	}	
 	
-	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
 	
 	addChild(pointHandle);	
 	
@@ -126,13 +126,13 @@ void EditPoint::updateCurvePoint() {
 
 void EditPoint::handleEvent(Event *event) {
 
-	if(event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {
+	if(event->getDispatcher() == core->getInput()) {
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEMOVE:
 				if(dragging) {
 					if(draggingPoint) {
 					
-						Vector2 newPosition = CoreServices::getInstance()->getCore()->getInput()->getMousePosition();
+						Vector2 newPosition = core->getInput()->getMousePosition();
 						
 						Vector2 translateAmt = Vector2(basePosition.x - newPosition.x, basePosition.y - newPosition.y);
 						
@@ -167,7 +167,7 @@ void EditPoint::handleEvent(Event *event) {
 				if(mode == CurveEditor::MODE_SELECT) {
 					draggingPoint = (UIImage*)event->getDispatcher();
 					dragging = true;
-					basePosition = CoreServices::getInstance()->getCore()->getInput()->getMousePosition(); 
+					basePosition = core->getInput()->getMousePosition(); 
 					basePointPosition = draggingPoint->getPosition2D();
 				
 					baseControl1 = controlHandle1->getPosition2D();
@@ -213,7 +213,7 @@ EditPoint::~EditPoint() {
 
 }
 
-EditCurve::EditCurve(BezierCurve *targetCurve, Color curveColor) : UIElement() {
+EditCurve::EditCurve(Core *core, ResourcePool *pool, BezierCurve *targetCurve, Color curveColor) : UIElement(core), resourcePool(pool) {
 	
 	this->targetCurve = targetCurve;
 	
@@ -232,7 +232,7 @@ EditCurve::EditCurve(BezierCurve *targetCurve, Color curveColor) : UIElement() {
 	visMesh->setPosition(0, 100);	
 	visMesh->color = curveColor;
 	
-	pointsBase = new UIElement();
+	pointsBase = new UIElement(core);
 	addChild(pointsBase);
 	
 	pointToRemove = NULL;
@@ -260,7 +260,7 @@ void EditCurve::updatePoints() {
 			type = EditPoint::TYPE_END_POINT;
 
 
-		EditPoint *point = new EditPoint(targetCurve->getControlPoint(i), type);
+		EditPoint *point = new EditPoint(core, resourcePool, targetCurve->getControlPoint(i), type);
 		point->setMode(mode);
 		point->addEventListener(this, Event::CHANGE_EVENT);
 		point->addEventListener(this, Event::CANCEL_EVENT);		
@@ -289,7 +289,7 @@ void EditCurve::Deactivate() {
 	visMesh->color.a = 1.0; 
 }
 
-void EditCurve::Update() {
+void EditCurve::Update(Number elapsed) {
 	if(pointToRemove) {
 		targetCurve->removePoint(pointToRemove->point);
 		updatePoints();
@@ -337,31 +337,31 @@ EditCurve::~EditCurve() {
 
 }
 
-CurveEditor::CurveEditor() : UIWindow("", 440, 160) {
+CurveEditor::CurveEditor(Core *core, ResourcePool *pool) : UIWindow(core, pool, "", 440, 160), resourcePool(pool) {
 	
 	closeOnEscape = true;
 		
-	bg = new UIRect(300, 100);
+	bg = new UIRect(core, pool, 300, 100);
 	bg->setColor(0.1, 0.1, 0.1, 1.0);
 	addChild(bg);
 	bg->setPosition(160, 63);
 	bg->processInputEvents = true;
 	bg->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 	
-	selectorImage = new UIImage("main/selector.png", 24, 24);
+	selectorImage = new UIImage(core, pool, "main/selector.png", 24, 24);
 	addChild(selectorImage);
 		
-	selectButton = new UIImageButton("main/arrow.png", 1.0, 24, 24);
+	selectButton = new UIImageButton(core, pool, "main/arrow.png", 1.0, 24, 24);
 	addChild(selectButton);
 	selectButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	selectButton->setPosition(170, 33);
 
-	addButton = new UIImageButton("main/arrow_add.png", 1.0, 24, 24);
+	addButton = new UIImageButton(core, pool, "main/arrow_add.png", 1.0, 24, 24);
 	addChild(addButton);
 	addButton->addEventListener(this, UIEvent::CLICK_EVENT);	
 	addButton->setPosition(170 + 32, 33);
 
-	removeButton = new UIImageButton("main/arrow_remove.png", 1.0, 24, 24);
+	removeButton = new UIImageButton(core, pool, "main/arrow_remove.png", 1.0, 24, 24);
 	addChild(removeButton);
 	removeButton->addEventListener(this, UIEvent::CLICK_EVENT);		
 	removeButton->setPosition(170 + 64, 33);
@@ -372,7 +372,7 @@ CurveEditor::CurveEditor() : UIWindow("", 440, 160) {
 
 	setMode(0);
 	
-	treeContainer = new UITreeContainer("boxIcon.png", L"Curves", 145, 135);
+	treeContainer = new UITreeContainer(core, pool, "boxIcon.png", L"Curves", 145, 135);
 	treeContainer->getRootNode()->toggleCollapsed();
 	treeContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
 	treeContainer->setPosition(12, 33);
@@ -404,7 +404,7 @@ void CurveEditor::clearCurves() {
 void CurveEditor::addCurve(String name, BezierCurve *curve, Color curveColor) {
 
 	UITree *newNode = treeContainer->getRootNode()->addTreeChild("main/curve_icon.png", name);
-	EditCurve *editCurve = new EditCurve(curve, curveColor);
+	EditCurve *editCurve = new EditCurve(core, resourcePool, curve, curveColor);
 	addChild(editCurve);
 	editCurve->setPosition(160, 63);	
 	curves.push_back(editCurve);
@@ -486,40 +486,40 @@ CurveEditor::~CurveEditor() {
 
 }
 
-EditorHolder::EditorHolder(PolycodeProject *project, PolycodeEditorManager *editorManager, EditorHolder *parentHolder) : UIElement() {
+EditorHolder::EditorHolder(Core *core, ResourcePool *pool, PolycodeProject *project, PolycodeEditorManager *editorManager, EditorHolder *parentHolder) : UIElement(core), resourcePool(pool) {
 	this->editorManager = editorManager;
 	this->parentHolder = parentHolder;
 	this->project = project;
 	
 	currentEditor = NULL;
 	
-	holderBar = new UIElement();
+	holderBar = new UIElement(core);
 	addChild(holderBar);
 	
 	snapToPixels = true;
 	
-	headerBg = new UIRect(30, 30);
+	headerBg = new UIRect(core, pool, 30, 30);
 	holderBar->addChild(headerBg);
-	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+	headerBg->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
-	vSplitButton = new UIImageButton("main/editor_vsplit.png", 1.0, 19, 13);
+	vSplitButton = new UIImageButton(core, pool, "main/editor_vsplit.png", 1.0, 19, 13);
 	holderBar->addChild(vSplitButton);
 	vSplitButton->addEventListener(this, UIEvent::CLICK_EVENT);
 
-	hSplitButton = new UIImageButton("main/editor_hsplit.png", 1.0, 19, 13);
+	hSplitButton = new UIImageButton(core, pool, "main/editor_hsplit.png", 1.0, 19, 13);
 	holderBar->addChild(hSplitButton);
 	hSplitButton->addEventListener(this, UIEvent::CLICK_EVENT); 
 
-	mergeSplitButton = new UIImageButton("main/editor_mergesplit.png", 1.0, 19, 13);
+	mergeSplitButton = new UIImageButton(core, pool, "main/editor_mergesplit.png", 1.0, 19, 13);
 	holderBar->addChild(mergeSplitButton);
 	mergeSplitButton->addEventListener(this, UIEvent::CLICK_EVENT); 
 		
-	closeFileButton = new UIImageButton("main/remove_icon.png", 1.0, 12, 12);
+	closeFileButton = new UIImageButton(core, pool, "main/remove_icon.png", 1.0, 12, 12);
 	holderBar->addChild(closeFileButton);
 	closeFileButton->setPosition(10, 8);
 	closeFileButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-	currentFileSelector = new UIComboBox(globalMenu, 350);
+	currentFileSelector = new UIComboBox(core, pool, globalMenu, 350);
 	currentFileSelector->addEventListener(this, UIEvent::CHANGE_EVENT);
 	holderBar->addChild(currentFileSelector);
 	currentFileSelector->setPosition(30, 3);
@@ -640,14 +640,14 @@ void EditorHolder::setActive(bool val) {
 	}	
 	
 	if(val) {	
-		headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiAccentColor"));
+		headerBg->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiAccentColor"));
 		if(activeEditorHolder && activeEditorHolder != this) {
 			activeEditorHolder->setActive(false);
 		}
 		activeEditorHolder = this;
 		editorManager->setCurrentEditor(currentEditor);
 	} else {
-		headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+		headerBg->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	}
 }
 
@@ -739,18 +739,18 @@ void EditorHolder::makeVSplit() {
 	holderBar->visible = false;
 	holderBar->enabled = false;
 
-	vSizer = new UIVSizer(getWidth(), getHeight(), getHeight()/2.0, true);
+	vSizer = new UIVSizer(core, resourcePool, getWidth(), getHeight(), getHeight()/2.0, true);
 	vSizer->setMinimumSize(200);
 	vSizer->setProportionalResize(true);
 	
 	addChild(vSizer);
-	firstChildHolder = new EditorHolder(project, editorManager, this);
+	firstChildHolder = new EditorHolder(core, resourcePool, project, editorManager, this);
 	firstChildHolder->addEventListener(this, UIEvent::CLOSE_EVENT);
 	vSizer->addTopChild(firstChildHolder);		
 	if(isActive) {
 		firstChildHolder->setActive(true);
 	}		
-	secondChildHolder = new EditorHolder(project, editorManager, this);
+	secondChildHolder = new EditorHolder(core, resourcePool, project, editorManager, this);
 	secondChildHolder->addEventListener(this, UIEvent::CLOSE_EVENT);
 	vSizer->addBottomChild(secondChildHolder);
 
@@ -768,15 +768,15 @@ void EditorHolder::makeHSplit() {
 	holderBar->visible = false;
 	holderBar->enabled = false;
 	
-	hSizer = new UIHSizer(getWidth(), getHeight(), getWidth()/2.0, true);
+	hSizer = new UIHSizer(core, resourcePool, getWidth(), getHeight(), getWidth()/2.0, true);
 	hSizer->setMinimumSize(200);
 	hSizer->setProportionalResize(true);
 	
 	addChild(hSizer);
-	firstChildHolder = new EditorHolder(project, editorManager, this);
+	firstChildHolder = new EditorHolder(core, resourcePool, project, editorManager, this);
 	firstChildHolder->addEventListener(this, UIEvent::CLOSE_EVENT);		
 	hSizer->addLeftChild(firstChildHolder);
-	secondChildHolder = new EditorHolder(project, editorManager, this);
+	secondChildHolder = new EditorHolder(core, resourcePool, project, editorManager, this);
 	secondChildHolder->addEventListener(this, UIEvent::CLOSE_EVENT);		
 	hSizer->addRightChild(secondChildHolder);
 	if(isActive) {
@@ -826,7 +826,7 @@ void EditorHolder::handleEvent(Event *event) {
 	UIElement::handleEvent(event);
 }
 
-void EditorHolder::Update() {
+void EditorHolder::Update(Number elapsed) {
 	if(editorToMerge) {
 		_mergeSides(editorToMerge);
 		editorToMerge = NULL;
@@ -934,20 +934,20 @@ void EditorHolder::Resize(Number width, Number height) {
 	UIElement::Resize(width, height);
 }
 
-PolycodeProjectTab::PolycodeProjectTab(String caption, PolycodeProject *project, PolycodeEditorManager *editorManager) : UIElement() {
+PolycodeProjectTab::PolycodeProjectTab(Core *core, ResourcePool *pool, String caption, PolycodeProject *project, PolycodeEditorManager *editorManager) : UIElement(core) {
 
 	tabName = caption;
 	
 	this->editorManager = editorManager;
 
-	editorHolder = new EditorHolder(project, editorManager, NULL);
+	editorHolder = new EditorHolder(core, pool, project, editorManager, NULL);
 	editorHolder->setActive(true);
 	editorHolder->addEventListener(this, UIEvent::CLOSE_EVENT);
 	
-	mainSizer = new UIHSizer(100,100,200,true);
+	mainSizer = new UIHSizer(core, pool, 100,100,200,true);
 	mainSizer->setMinimumSize(100);
 	addChild(mainSizer);					
-	projectBrowser = new PolycodeProjectBrowser(project);
+	projectBrowser = new PolycodeProjectBrowser(core, pool, project);
 	mainSizer->addLeftChild(projectBrowser);
 	mainSizer->addRightChild(editorHolder);
 
@@ -1044,9 +1044,9 @@ PolycodeProjectTab::~PolycodeProjectTab() {
 
 }
 
-PolycodeTabButton::PolycodeTabButton(PolycodeProjectTab *tab) : UIElement() {
+PolycodeTabButton::PolycodeTabButton(Core *core, ResourcePool *pool, PolycodeProjectTab *tab) : UIElement(core) {
 	this->tab = tab;
-	bgRect = new UIImage("main/tab_bg.png", 150,30);
+	bgRect = new UIImage(core, pool, "main/tab_bg.png", 150,30);
 	addChild(bgRect);
 	bgRect->processInputEvents = true;
 	processInputEvents = true;
@@ -1055,12 +1055,12 @@ PolycodeTabButton::PolycodeTabButton(PolycodeProjectTab *tab) : UIElement() {
 	setWidth(150);
 	setHeight(30);
 	
-	tabLabel = new UILabel(tab->getTabName().toUpperCase(), 16, "section");
+	tabLabel = new UILabel(core, pool, tab->getTabName().toUpperCase(), 16, "section");
 	tabLabel->setColor(0.0, 0.0, 0.0, 1.0);
 	tabLabel->setPosition(getWidth()-tabLabel->getWidth()-10.0, ((getHeight()-tabLabel->getHeight())/2.0) - 3.0);
 	addChild(tabLabel);
 	
-	closeButton = new UIImageButton("main/tab_close_button.png", 1.0, 18, 18);
+	closeButton = new UIImageButton(core, pool, "main/tab_close_button.png", 1.0, 18, 18);
 	closeButton->setPosition(4.0, floor((30.0 - closeButton->getHeight()) / 2.0));
 	addChild(closeButton);
 	closeButton->blockMouseInput = true;
@@ -1125,18 +1125,19 @@ PolycodeTabButton::~PolycodeTabButton() {
 
 }
 
-PolycodeProjectFrame::PolycodeProjectFrame(PolycodeProject *project, PolycodeEditorManager *editorManager) {
+PolycodeProjectFrame::PolycodeProjectFrame(Core *core, ResourcePool *pool, PolycodeProject *project, PolycodeEditorManager *editorManager) : UIElement(core), resourcePool(pool)
+{
 	tabToClose = NULL;
 	this->editorManager = editorManager;
 	this->project = project;
 	lastActiveEditorHolder = NULL;
-	tabButtonAnchor = new UIElement();
+	tabButtonAnchor = new UIElement(core);
 	addChild(tabButtonAnchor);
 	tabButtonAnchor->setPosition(400, -30);
 	
 	activeTab = NULL;
 	
-	newTabButton = new UIImageButton("main/new_tab_button.png", 1.0, 27, 26);
+	newTabButton = new UIImageButton(core, pool, "main/new_tab_button.png", 1.0, 27, 26);
 	tabButtonAnchor->addChild(newTabButton);
 	newTabButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addNewTab("Default");
@@ -1183,10 +1184,10 @@ PolycodeProjectTab *PolycodeProjectFrame::getActiveTab() {
 }
 
 PolycodeProjectTab *PolycodeProjectFrame::addNewTab(String caption) {
-	PolycodeProjectTab *newTab = new PolycodeProjectTab(caption, project, editorManager);
+	PolycodeProjectTab *newTab = new PolycodeProjectTab(core, resourcePool, caption, project, editorManager);
 	tabs.push_back(newTab);
 	
-	PolycodeTabButton *newTabButton = new PolycodeTabButton(newTab);
+	PolycodeTabButton *newTabButton = new PolycodeTabButton(core, resourcePool, newTab);
 	tabButtonAnchor->addChild(newTabButton);
 	tabButtons.push_back(newTabButton);
 	newTabButton->addEventListener(this, Event::SELECT_EVENT);
@@ -1195,7 +1196,7 @@ PolycodeProjectTab *PolycodeProjectFrame::addNewTab(String caption) {
 	return newTab;
 }
 
-void PolycodeProjectFrame::Update() {
+void PolycodeProjectFrame::Update(Number elapsed) {
 	if(tabToClose) {
 	
 		// can't close the last tab
@@ -1315,7 +1316,7 @@ PolycodeProjectFrame::~PolycodeProjectFrame() {
 }
 
 
-PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement() {
+PolycodeFrame::PolycodeFrame(Core *core, ResourcePool *pool, PolycodeEditorManager *editorManager) : UIElement(core), resourcePool(pool) {
 
 	this->editorManager = editorManager;
 
@@ -1331,15 +1332,15 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 	welcomeEntity = new Entity();
 	welcomeEntity->processInputEvents = true;
 	addChild(welcomeEntity);
-	welcomeImage = new UIImage("main/welcome.png", 759, 207);
+	welcomeImage = new UIImage(core, pool, "main/welcome.png", 759, 207);
 	welcomeEntity->addChild(welcomeImage);
 	welcomeEntity->snapToPixels = true;
 	
-	newProjectButton = new UIButton("Create A New Project!", 220);	
+	newProjectButton = new UIButton(core, pool, "Create A New Project!", 220);	
 	newProjectButton->setPosition(260,120);
 	newProjectButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
-	examplesButton = new UIButton("Browse Example Projects!", 220); 
+	examplesButton = new UIButton(core, pool, "Browse Example Projects!", 220); 
 	examplesButton->setPosition(490,120);
 	examplesButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
@@ -1347,7 +1348,7 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 	welcomeEntity->addChild(examplesButton);
 	
 	
-	topBarBg = new UIRect(2,2);
+	topBarBg = new UIRect(core, pool, 2,2);
 	topBarBg->setColorInt(21, 18, 17, 255);
 	topBarBg->setAnchorPoint(-1.0, -1.0, 0.0);
 	topBarBg->processInputEvents = true;
@@ -1355,105 +1356,106 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 	topBarBg->blockMouseInput = true;
 	addChild(topBarBg);
 
-	consoleSizer = new UIVSizer(100,100,200, false);
-	console = new PolycodeConsole();	
+	consoleSizer = new UIVSizer(core, pool, 100,100,200, false);
+	console = new PolycodeConsole(core, pool);
 	consoleSizer->addBottomChild(console);
 	addChild(consoleSizer);
 	consoleSizer->setPosition(0.0, 45);
 	
-	logo = new UIImage("main/barLogo.png", 38, 38);
+	logo = new UIImage(core, pool, "main/barLogo.png", 38, 38);
 	addChild(logo);
 	
-	playButton = new UIImageButton("main/play_button.png", 1.0, 32, 32);
+	playButton = new UIImageButton(core, pool, "main/play_button.png", 1.0, 32, 32);
 	addChild(playButton);
 	playButton->setPosition(10,5);
 
-	stopButton = new UIImageButton("main/stop_button.png", 1.0, 32, 32);
+	stopButton = new UIImageButton(core, pool, "main/stop_button.png", 1.0, 32, 32);
 	addChild(stopButton);
 	stopButton->setPosition(10,5);
 
-	currentProjectSelector = new UIComboBox(globalMenu, 300);
+	currentProjectSelector = new UIComboBox(core, pool, globalMenu, 300);
 	currentProjectSelector->addEventListener(this, UIEvent::CHANGE_EVENT);
 	addChild(currentProjectSelector);
 	currentProjectSelector->setPosition(60, 10);
 	
-	resizer = new UIImage("main/corner_resize.png", 14, 14);
+	resizer = new UIImage(core, pool, "main/corner_resize.png", 14, 14);
 	addChild(resizer);
 	resizer->setColor(0,0,0,0.4);
 	
-	modalBlocker = new UIRect(10,10);
+	modalBlocker = new UIRect(core, pool, 10,10);
 	modalBlocker->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	modalBlocker->setColor(0,0,0,0.6);
 	modalBlocker->setAnchorPoint(-1.0, -1.0, 0.0);
-	modalBlocker->enabled = false;	
+	modalBlocker->enabled = false;
+	modalBlocker->visible= false;
 	modalBlocker->blockMouseInput = true;
 	modalBlocker->processInputEvents = true;
 	addChild(modalBlocker);
 	
-	assetBrowser = new AssetBrowser();
+	assetBrowser = new AssetBrowser(core, pool);
 	assetBrowser->visible = false;	
 	
-	newProjectWindow = new NewProjectWindow();
+	newProjectWindow = new NewProjectWindow(core, pool);
 	newProjectWindow->visible = false;
 	
-	exampleBrowserWindow = new ExampleBrowserWindow();
+	exampleBrowserWindow = new ExampleBrowserWindow(core, pool);
 	exampleBrowserWindow->visible = false;
 
-	settingsWindow = new SettingsWindow();
+	settingsWindow = new SettingsWindow(core, pool);
 	settingsWindow->visible = false;
 	
-	newFileWindow = new NewFileWindow();
+	newFileWindow = new NewFileWindow(core, pool);
 	newFileWindow->visible = false;
 	
-	exportProjectWindow = new ExportProjectWindow();
+	exportProjectWindow = new ExportProjectWindow(core, pool);
 	exportProjectWindow->visible = false;
 	
-	textInputPopup = new TextInputPopup();
+	textInputPopup = new TextInputPopup(core, pool);
 	textInputPopup->visible = false;
 	
-	yesNoPopup = new YesNoPopup();
+	yesNoPopup = new YesNoPopup(core, pool);
 	yesNoPopup->visible = false;
 	
-	messagePopup = new MessagePopup();
+	messagePopup = new MessagePopup(core, pool);
 	messagePopup->visible = false;
 	
-	yesNoCancelPopup = new YesNoCancelPopup();
+	yesNoCancelPopup = new YesNoCancelPopup(core, pool);
 	yesNoCancelPopup->visible = false;
 	
 	
-	aboutWindow = new UIWindow("", 800, 440);
+	aboutWindow = new UIWindow(core, pool, "", 800, 440);
 	aboutWindow->closeOnEscape = true;
-	UIImage *aboutImage = new UIImage("main/about.png", 321, 122);
+	UIImage *aboutImage = new UIImage(core, pool, "main/about.png", 321, 122);
 	aboutWindow->addChild(aboutImage);
 	aboutImage->setPosition(20, 40);
 	aboutWindow->visible = false;
-	aboutOKButton = new UIButton("OK", 100);
+	aboutOKButton = new UIButton(core, pool, "OK", 100);
 	aboutWindow->addChild(aboutOKButton);
 	aboutOKButton->setPosition(700, 420);
 	aboutOKButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	
 	String info1Text = "Polycode is developed by:\n\nProject lead:\nIvan Safrin\n\nTop project contributors in order of commits:\nCameron Hart, Andi McClure, samiamwork, Christian Bielert,\nChristopher Reed, TheCosmotect, Danny Warren, Paul Smith,\nDevin Stone, Jon Kristinsson, Henry Maddocks,\nJohan Klokkhammer Helsing, Chris Ledet, Per Bodin, Quinlan P.,\nLee-R, Guillaume Papin, Remi Gillig, ZenX2,\nMatt Tuttle, Alejandro Cámara, Jake Scott, tastymorsel";
 	
-	UIMultilineLabel *info1 = new UIMultilineLabel(info1Text, 12, 5);
+	UIMultilineLabel *info1 = new UIMultilineLabel(core, pool, info1Text, 12, 5);
 	aboutWindow->addChild(info1);
 	info1->setPosition(40, 200);
 	
 	String info2Text = "Polycode uses the following open-source libraries:\n\nAssimp (BSD license)\nBox2D (zlib license)\nBullet Physics (zlib license)\nFreetype (Freetype license)\nlibpng (libpng license)\nLua (MIT license),\nOggVorbis (BSD license)\nPhysFS (zlib license)\ntinyXML (zlib license)\nSDL (on Linux only) (zlib license)\n\nPolycode itself is distributed\nunder the MIT license.\n\n\n\nThank you for using Polycode!";
 	
-	UIMultilineLabel *info2 = new UIMultilineLabel(info2Text, 12, 5);
+	UIMultilineLabel *info2 = new UIMultilineLabel(core, pool, info2Text, 12, 5);
 	aboutWindow->addChild(info2);
 	info2->setPosition(450, 40);
 
-	UILabel *versionLabel = new UILabel("version " POLYCODE_VERSION_STRING, 12, "mono");
+	UILabel *versionLabel = new UILabel(core, pool, "version " POLYCODE_VERSION_STRING, 12, "mono");
 	aboutWindow->addChild(versionLabel);
 	versionLabel->setPosition(40, 430);
 	versionLabel->color.a = 1.0;
 	
-	assetImporterWindow = new AssetImporterWindow();
+	assetImporterWindow = new AssetImporterWindow(core, pool);
 	
 		
 	isDragging	= false;
-	dragLabel = new UILabel("NONE", 11, "sans");
+	dragLabel = new UILabel(core, pool, "NONE", 11, "sans");
 	dragLabel->setPosition(0,-15);
 	
 	dragEntity = new Entity();
@@ -1462,26 +1464,26 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 	dragEntity->visible = false;	
 	
 		
-	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEUP);
-	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
-	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEUP);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 	
-	curveEditor = new CurveEditor();
+	curveEditor = new CurveEditor(core, pool);
 	addChild(curveEditor);
 	curveEditor->setPosition(200,100);
 	curveEditor->visible = false;
 	curveEditor->enabled = false;
 	
 		
-	globalColorPicker = new UIColorPicker();
+	globalColorPicker = new UIColorPicker(core, pool);
 	globalColorPicker->setPosition(300,300);
 	globalColorPicker->setContinuous(false);
 	addChild(globalColorPicker);
 
-	modalRoot = new UIElement();
+	modalRoot = new UIElement(core);
 	addChild(modalRoot);
 	
-	fileDialogBlocker = new UIRect(100, 100);
+	fileDialogBlocker = new UIRect(core, pool, 100, 100);
 	fileDialogBlocker->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(fileDialogBlocker);
 	fileDialogBlocker->setColor(0.0, 0.0, 0.0, 0.5);
@@ -1490,7 +1492,7 @@ PolycodeFrame::PolycodeFrame(PolycodeEditorManager *editorManager) : UIElement()
 	fileDialogBlocker->visible = false;
 	fileDialogBlocker->enabled = false;
 
-	fileBrowserRoot = new UIElement();
+	fileBrowserRoot = new UIElement(core);
 	addChild(fileBrowserRoot);
 
 	fileDialog = NULL;
@@ -1503,7 +1505,7 @@ void PolycodeFrame::showFileBrowser(String baseDir, bool foldersOnly, std::vecto
 	if(fileDialog)
 		delete fileDialog;
 
-	fileDialog = new UIFileDialog(baseDir, foldersOnly, extensions, allowMultiple);
+	fileDialog = new UIFileDialog(core, resourcePool, baseDir, foldersOnly, extensions, allowMultiple);
 	fileDialog->addEventListener(this, UIEvent::CANCEL_EVENT);
 	fileDialog->addEventListener(this, UIEvent::OK_EVENT);
 	fileBrowserRoot->addChild(fileDialog);
@@ -1520,7 +1522,7 @@ void PolycodeFrame::showCurveEditor() {
 
 void PolycodeFrame::showModal(UIWindow *modalChild) {
 	modalBlocker->enabled = true;
-	
+	modalBlocker->visible = true;
 	focusChild(NULL);
 	
 	this->modalChild = modalChild;
@@ -1531,7 +1533,7 @@ void PolycodeFrame::showModal(UIWindow *modalChild) {
 	
 	modalChild->focusSelf();
 	
-	CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);	
+	core->setCursor(Core::CURSOR_ARROW);	
 }
 
 void PolycodeFrame::hideModal() {
@@ -1541,7 +1543,8 @@ void PolycodeFrame::hideModal() {
 		modalChild->hideWindow(); 
 		modalChild = NULL;
 	}
-	modalBlocker->enabled = false;		
+	modalBlocker->enabled = false;
+	modalBlocker->visible = false;
 }
 
 bool PolycodeFrame::isShowingConsole() {
@@ -1580,7 +1583,7 @@ Number PolycodeFrame::getConsoleSize() {
 	}
 }
 
-void PolycodeFrame::Update() {
+void PolycodeFrame::Update(Number elapsed) {
 	if(willHideModal) {
 		hideModal();
 		willHideModal = false;
@@ -1639,7 +1642,7 @@ void PolycodeFrame::handleEvent(Event *event) {
 	}
 	
 	if(event->getDispatcher() == topBarBg) {
-		CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);	
+		core->setCursor(Core::CURSOR_ARROW);	
 	}
 	
 	if(event->getDispatcher() == projectManager) {
@@ -1663,7 +1666,7 @@ void PolycodeFrame::handleEvent(Event *event) {
 		fileDialogBlocker->enabled = false;
 	}
 
-	if(event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {
+	if(event->getDispatcher() == core->getInput()) {
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEUP:
 				if(isDragging) {
@@ -1686,7 +1689,7 @@ void PolycodeFrame::handleEvent(Event *event) {
 			break;
 			// TODO: add in key combos to switch editors in reverse order
 			case InputEvent::EVENT_KEYDOWN:
-				CoreInput *input = CoreServices::getInstance()->getCore()->getInput();
+				CoreInput *input = core->getInput();
 				
 				if (input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER)) {
 					InputEvent *inEv = (InputEvent*)event;
@@ -1804,7 +1807,7 @@ UIVSizer *PolycodeFrame::getConsoleSizer() {
 }
 
 PolycodeProjectFrame *PolycodeFrame::createProjectFrame(PolycodeProject *project) {
-	PolycodeProjectFrame *newProjectFrame = new PolycodeProjectFrame(project, editorManager);
+	PolycodeProjectFrame *newProjectFrame = new PolycodeProjectFrame(core, resourcePool, project, editorManager);
 	projectFrames.push_back(newProjectFrame);	
 	switchToProjectFrame(newProjectFrame);
 	return newProjectFrame;

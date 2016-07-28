@@ -34,7 +34,7 @@ using namespace Polycode;
 
 class TransformGrips : public UIElement {
 public:
-	TransformGrips();
+	TransformGrips(Core *core, ResourcePool *pool);
 	~TransformGrips();
 	
 	void setGripRectangle(Polycode::Rectangle rectangle, Vector2 offset);
@@ -81,7 +81,7 @@ class TrasnformGizmoEvent : public Event {
 
 class TransformGizmo : public Entity {
 	public:
-		TransformGizmo(Scene *targetScene, Camera *targetCamera);
+		TransformGizmo(Core *core, ResourcePool *pool, Scene *targetScene, Camera *targetCamera);
 		~TransformGizmo();
 		
 		void handleEvent(Event *event);
@@ -139,6 +139,8 @@ class TransformGizmo : public Entity {
 		bool enableGizmo;
 	
 	private:
+	
+		Core *core;
 	
 		bool snapEnabled;
 		Number snapSize;
@@ -225,7 +227,7 @@ class TransformGizmo : public Entity {
 
 class TransformGizmoMenu : public UIElement {
 	public:
-		TransformGizmoMenu(TransformGizmo *gizmo);
+		TransformGizmoMenu(Core *core, ResourcePool *pool, TransformGizmo *gizmo);
 		~TransformGizmoMenu();
 		
 		void handleEvent(Event *event);

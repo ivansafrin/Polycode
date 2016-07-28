@@ -31,7 +31,7 @@ using namespace Polycode;
 
 class ExportProjectWindow : public UIWindow {
 	public:
-		ExportProjectWindow();
+		ExportProjectWindow(Core *core, ResourcePool *pool);
 		~ExportProjectWindow();
 	
 		void resetForm();

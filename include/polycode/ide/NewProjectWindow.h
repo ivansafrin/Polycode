@@ -36,7 +36,7 @@ public:
 
 class NewProjectWindow : public UIWindow {
 	public:
-	NewProjectWindow();
+	NewProjectWindow(Core *core, ResourcePool *pool);
 	~NewProjectWindow();
 	
 	void parseTemplatesIntoTree(UITree *tree, OSFileEntry folder);

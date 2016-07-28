@@ -132,8 +132,8 @@ function Scene:fixedUpdate()
 	local retVal =  Polycode.Scene_fixedUpdate(self.__ptr)
 end
 
-function Scene:Update()
-	local retVal =  Polycode.Scene_Update(self.__ptr)
+function Scene:Update(elapsed)
+	local retVal = Polycode.Scene_Update(self.__ptr, elapsed)
 end
 
 function Scene:isEnabled()

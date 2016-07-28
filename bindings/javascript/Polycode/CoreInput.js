@@ -8,7 +8,6 @@ function CoreInput() {
 		'simulateTouchWithMouse': { enumerable: true, configurable: true, get: CoreInput.prototype.__get_simulateTouchWithMouse, set: CoreInput.prototype.__set_simulateTouchWithMouse},
 		'simulateTouchAsPen': { enumerable: true, configurable: true, get: CoreInput.prototype.__get_simulateTouchAsPen, set: CoreInput.prototype.__set_simulateTouchAsPen},
 		'simulateMouseWithTouch': { enumerable: true, configurable: true, get: CoreInput.prototype.__get_simulateMouseWithTouch, set: CoreInput.prototype.__set_simulateMouseWithTouch},
-		'ignoreOffScreenTouch': { enumerable: true, configurable: true, get: CoreInput.prototype.__get_ignoreOffScreenTouch, set: CoreInput.prototype.__set_ignoreOffScreenTouch},
 		'keyRepeat': { enumerable: true, configurable: true, get: CoreInput.prototype.__get_keyRepeat, set: CoreInput.prototype.__set_keyRepeat},
 		'mousePosition': { enumerable: true, configurable: true, get: CoreInput.prototype.__get_mousePosition, set: CoreInput.prototype.__set_mousePosition},
 		'deltaMousePosition': { enumerable: true, configurable: true, get: CoreInput.prototype.__get_deltaMousePosition, set: CoreInput.prototype.__set_deltaMousePosition}
@@ -43,14 +42,6 @@ CoreInput.prototype.__get_simulateMouseWithTouch = function() {
 
 CoreInput.prototype.__set_simulateMouseWithTouch = function(val) {
 	Polycode.CoreInput__set_simulateMouseWithTouch(this.__ptr, val)
-}
-
-CoreInput.prototype.__get_ignoreOffScreenTouch = function() {
-	return Polycode.CoreInput__get_ignoreOffScreenTouch(this.__ptr)
-}
-
-CoreInput.prototype.__set_ignoreOffScreenTouch = function(val) {
-	Polycode.CoreInput__set_ignoreOffScreenTouch(this.__ptr, val)
 }
 
 CoreInput.prototype.__get_keyRepeat = function() {

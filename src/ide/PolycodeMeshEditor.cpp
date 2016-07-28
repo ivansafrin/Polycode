@@ -24,9 +24,9 @@
 
 extern UIGlobalMenu *globalMenu;
 
-PolycodeMeshEditor::PolycodeMeshEditor() : PolycodeEditor(true){
+PolycodeMeshEditor::PolycodeMeshEditor(Core *core, ResourcePool *pool) : PolycodeEditor(core, pool, true), localResourcePool(core, "", pool) {
 	
-	previewScene = new Scene(Scene::SCENE_3D);
+	previewScene = new Scene(core, Scene::SCENE_3D);
 	renderTexture = new SceneRenderTexture(512, 512, false);
 	
 	ownsChildren = true;
@@ -47,19 +47,16 @@ PolycodeMeshEditor::PolycodeMeshEditor() : PolycodeEditor(true){
 	secondLight->setPosition(-9999, -9999, -9999);
 
 	
-	previewShape = new UIRect(256, 256);
+	previewShape = new UIRect(core, pool, 256, 256);
 	previewShape->setAnchorPoint(-1.0, -1.0, 0.0);	
 	previewShape->setTexture(renderTexture->getTargetTexture());
 	addChild(previewShape);
 
 	previewBase = new Entity();
 	previewScene->addChild(previewBase);
-
-	CoreServices::getInstance()->getResourceManager()->getGlobalPool()->dispatchChangeEvents = true;
-	CoreServices::getInstance()->getResourceManager()->getGlobalPool()->addEventListener(this, Event::CHANGE_EVENT);
 	
 	previewMesh = NULL; 
-	trackballCamera = new TrackballCamera(previewScene->getDefaultCamera(), previewShape);
+	trackballCamera = new TrackballCamera(core->getInput(), previewScene->getDefaultCamera(), previewShape);
 	trackballCamera->getTargetCamera()->setClippingPlanes(0.1, 1000.0);
 	//trackballCamera->getTargetCamera()->setPosition(0.0, 0.0, 50.);
 	trackballCamera->setOrbitingCenter(Vector3(0.0, 0.0, 0.0));
@@ -84,7 +81,7 @@ void PolycodeMeshEditor::handleEvent(Event *event) {
 }
 
 PolycodeMeshEditor::~PolycodeMeshEditor() {
-	CoreServices::getInstance()->getResourceManager()->getGlobalPool()->removeAllHandlersForListener(this);
+	resourcePool->removeAllHandlersForListener(this);
 	previewScene->rootEntity.setOwnsChildrenRecursive(true);
 	delete previewScene;
 	delete renderTexture;
@@ -92,9 +89,9 @@ PolycodeMeshEditor::~PolycodeMeshEditor() {
 }
 
 bool PolycodeMeshEditor::openFile(OSFileEntry filePath) {
-	previewMesh = new SceneMesh(filePath.fullPath);
+	previewMesh = new SceneMesh(&localResourcePool, filePath.fullPath);
 	previewBase->addChild(previewMesh);
-	previewMesh->setMaterialByName("Default");
+	previewMesh->setMaterial(resourcePool->getMaterial("Default"));
 	PolycodeEditor::openFile(filePath);
 	trackballCamera->setCameraDistance(previewMesh->getMesh()->getRadius() * 3.0);
 	trackballCamera->setCameraPosition(trackballCamera->getOribitingCenter()+Vector3(0.0, 0.0, trackballCamera->getCameraDistance()));

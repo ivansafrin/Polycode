@@ -24,22 +24,22 @@
 
 extern UIGlobalMenu *globalMenu;
 
-PolycodeProjectBrowser::PolycodeProjectBrowser(PolycodeProject *project) : UIElement() {
+PolycodeProjectBrowser::PolycodeProjectBrowser(Core *core, ResourcePool *pool, PolycodeProject *project) : UIElement(core) {
 
 	this->project = project;	
-	headerBg = new UIRect(10,10);
+	headerBg = new UIRect(core, pool, 10,10);
 	addChild(headerBg);
 	headerBg->setAnchorPoint(-1.0, -1.0, 0.0);
-	headerBg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
+	headerBg->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiHeaderBgColor"));
 	
-	UILabel *label = new UILabel("PROJECT BROWSER", 18, "section", Label::ANTIALIAS_FULL);
-	label->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
+	UILabel *label = new UILabel(core, pool, "PROJECT BROWSER", 18, "section", Label::ANTIALIAS_FULL);
+	label->color.setColorHexFromString(core->getConfig()->getStringValue("Polycode", "uiHeaderFontColor"));
 	
 	addChild(label);
 	label->setPosition(10, 3);
 
 
-	treeContainer = new UITreeContainer("boxIcon.png", project->getProjectName(), 200, 555);
+	treeContainer = new UITreeContainer(core, pool, "boxIcon.png", project->getProjectName(), 200, 555);
 	treeContainer->getRootNode()->toggleCollapsed();
 	treeContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
 	treeContainer->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
@@ -234,7 +234,7 @@ String PolycodeProjectBrowser::getIconForExtension(String extension) {
 }
 
 void PolycodeProjectBrowser::parseFolderIntoNode(UITree *node, String spath) {
-	vector<OSFileEntry> files = Services()->getCore()->parseFolder(spath, false);
+	vector<OSFileEntry> files = core->parseFolder(spath, false);
 	
 	// check if files got deleted
 	for(int i=0; i < node->getNumTreeChildren(); i++) {

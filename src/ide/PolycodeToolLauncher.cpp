@@ -34,10 +34,10 @@ GenericRunner::GenericRunner(String app, String file, String inFolder) : Threade
 
 void GenericRunner::runThread() {
 #if defined(__APPLE__) && defined(__MACH__)
-	CocoaCore *cocoaCore = (CocoaCore*) CoreServices::getInstance()->getCore();
+	CocoaCore *cocoaCore = (CocoaCore*) core;
 	cocoaCore->openFileWithApplication(file.replace("\"", ""), app.replace("\"", ""));
 #else
-	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(app, file, inFolder);	
+	String ret = core->executeExternalCommand(app, file, inFolder);	
 #endif
 }
 
@@ -46,7 +46,7 @@ PolycodeRunner::PolycodeRunner(String polyappPath) : Threaded() {
 }
 
 void PolycodeRunner::runThread() {
-	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
+	String polycodeBasePath = core->getDefaultWorkingDirectory();
 
 #if defined(__APPLE__) && defined(__MACH__)
 	String command = "../MacOS/PolycodePlayer"; 
@@ -62,8 +62,8 @@ void PolycodeRunner::runThread() {
 	String args = "\""+polyappPath+"\"";
 #endif
 
-	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, inFolder);
-	CoreServices::getInstance()->getCore()->removeDiskItem(polyappPath);
+	String ret = core->executeExternalCommand(command, args, inFolder);
+	core->removeDiskItem(polyappPath);
 }
 
 PolycodeToolLauncher::PolycodeToolLauncher() {
@@ -86,7 +86,7 @@ String PolycodeToolLauncher::generateTempPath(PolycodeProject *project) {
 #endif
 }
 
-void PolycodeToolLauncher::buildProject(PolycodeProject *project, String destinationPath, bool compileScripts) {
+void PolycodeToolLauncher::buildProject(Core *core, PolycodeProject *project, String destinationPath, bool compileScripts) {
 
 	PolycodeConsole::print("Building project: "+project->getProjectName() + "\n");	
 
@@ -96,27 +96,27 @@ void PolycodeToolLauncher::buildProject(PolycodeProject *project, String destina
 	String projectPath = project->getProjectFile();
 	
 	
-	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
+	String polycodeBasePath = core->getDefaultWorkingDirectory();
 	
 #ifdef _WINDOWS
 	String targetFolder = projectBasePath;
 	String command = "\""+polycodeBasePath+"/bin/polybuild.exe\"";
 	String args =  "--config=\""+projectPath+"\" --out=\""+destinationPath+"\" --compileScripts=\""+((compileScripts)?"true":"false")+"\"";
-	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, targetFolder);
+	String ret = core->executeExternalCommand(command, args, targetFolder);
 #else
 	String command = polycodeBasePath+"/bin/polybuild";
 	String inFolder = projectBasePath; 
 	String args = "--config=\""+projectPath+"\" --out=\""+destinationPath+"\" --compileScripts=\""+((compileScripts)?"true":"false")+"\"";
-	String ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, inFolder);
+	String ret = core->executeExternalCommand(command, args, inFolder);
 //	PolycodeConsole::print(ret);
 #endif
 
 }
 
-String PolycodeToolLauncher::importAssets(String sourceFile, String inFolder, bool addMeshes, String prefix, bool swapZY, bool generateNormals, bool generateTangents, bool listOnly, bool writeNormals, bool writeTangents, bool writeColors, bool writeBoneWeights, bool writeUVs, bool writeSecondaryUVs, bool exportScene, bool generateMaterialFile, bool overrideMaterials, String materialOverrideName, bool specifyBaseAssetPath, String baseAssetPath) {
+String PolycodeToolLauncher::importAssets(Core *core, String sourceFile, String inFolder, bool addMeshes, String prefix, bool swapZY, bool generateNormals, bool generateTangents, bool listOnly, bool writeNormals, bool writeTangents, bool writeColors, bool writeBoneWeights, bool writeUVs, bool writeSecondaryUVs, bool exportScene, bool generateMaterialFile, bool overrideMaterials, String materialOverrideName, bool specifyBaseAssetPath, String baseAssetPath) {
 
 	String ret;
-	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
+	String polycodeBasePath = core->getDefaultWorkingDirectory();
 	
 	String args = "\""+sourceFile+"\"";
 	if(listOnly) {
@@ -172,33 +172,33 @@ String PolycodeToolLauncher::importAssets(String sourceFile, String inFolder, bo
 	
 #ifdef _WINDOWS
 	String command = "\""+polycodeBasePath+"/bin/polyimport.exe\"";
-	ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, inFolder);
+	ret = core->executeExternalCommand(command, args, inFolder);
 #else
 	String command = polycodeBasePath+"/bin/polyimport";
-	ret = CoreServices::getInstance()->getCore()->executeExternalCommand(command, args, inFolder);
+	ret = core->executeExternalCommand(command, args, inFolder);
 #endif
 	return ret;
 }
 
-void PolycodeToolLauncher::openExternalEditor(String app, String file, String inFolder) {
+void PolycodeToolLauncher::openExternalEditor(Core *core, String app, String file, String inFolder) {
 	GenericRunner *runner = new GenericRunner("\"" + app + "\"", "\"" + file + "\"", "\"" + inFolder + "\"");
-	CoreServices::getInstance()->getCore()->createThread(runner);
+	core->createThread(runner);
 }
 
-void PolycodeToolLauncher::runPolyapp(String polyappPath) {
+void PolycodeToolLauncher::runPolyapp(Core *core, String polyappPath) {
 
 	PolycodeConsole::clearBacktraces();
 							
 #if defined(__APPLE__) && defined(__MACH__)
-	CocoaCore *cocoaCore = (CocoaCore*) CoreServices::getInstance()->getCore();
+	CocoaCore *cocoaCore = (CocoaCore*) core;
 
-	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
+	String polycodeBasePath = core->getDefaultWorkingDirectory();
 	String command = polycodeBasePath+"/Standalone/Player/PolycodePlayer.app"; 
 	
 	cocoaCore->openFileWithApplication(polyappPath, command);
 #else
 	PolycodeRunner *runner = new PolycodeRunner(polyappPath);
-	CoreServices::getInstance()->getCore()->createThread(runner);
+	core->createThread(runner);
 
 #endif
 

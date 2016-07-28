@@ -38,7 +38,7 @@ namespace Polycode {
 
 	class _PolyExport UIColorPicker : public UIWindow {
 		public:
-			UIColorPicker();
+			UIColorPicker(Core *core, ResourcePool *pool);
 			virtual ~UIColorPicker();
 			
 			void updateSelectedColor(bool updateTextFields=true, bool updateHue = true, bool updateSV=true);
@@ -52,7 +52,7 @@ namespace Polycode {
 			
 			void cancelColorListeners();
 			
-			void Update();			
+			void Update(Number elapsed);			
 			void onClose();
 			
 			bool isContinuous();
@@ -63,6 +63,7 @@ namespace Polycode {
 			
 		protected:
 		
+			Core *core;
 			Vector2 lastMainSelectorPosition;
 			Number lastHueSelectorPosition;
 			
@@ -97,7 +98,7 @@ namespace Polycode {
 
 	class _PolyExport UIColorBox : public UIElement {
 		public:
-			UIColorBox(UIColorPicker *colorPicker, Color initialColor, Number width, Number height);
+			UIColorBox(Core *core, ResourcePool *resourcePool, UIColorPicker *colorPicker, Color initialColor, Number width, Number height);
 			virtual ~UIColorBox();
 			
 			Color getSelectedColor();

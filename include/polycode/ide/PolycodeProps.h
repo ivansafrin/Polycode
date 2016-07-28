@@ -35,7 +35,7 @@ class PolycodeEditorPropActionData;
 
 class PropProp : public UIElement {
 	public:
-		PropProp(String caption, String type);
+		PropProp(Core *core, ResourcePool *pool, const String &caption, String type);
 		~PropProp();
 
 		virtual void setPropData(PolycodeEditorPropActionData* data) {}
@@ -44,6 +44,7 @@ class PropProp : public UIElement {
 		virtual void updateFocusVisibility() {}
 		void setPropName(String newName);
 	
+		ResourcePool *resourcePool;
 		String propType;
 		UILabel *label;
 		UIElement *propContents;
@@ -54,7 +55,7 @@ class PropProp : public UIElement {
 
 class Vector3Prop : public PropProp {
 	public:
-		Vector3Prop(String caption, UIElement *focusParent);
+		Vector3Prop(Core *core, ResourcePool *pool, const String &caption, UIElement *focusParent);
 		~Vector3Prop();
 		void handleEvent(Event *event);
 		void set(const Vector3 &position);
@@ -80,7 +81,7 @@ class Vector3Prop : public PropProp {
 
 class Vector2Prop : public PropProp {
 	public:
-		Vector2Prop(String caption, UIElement *focusParent);
+		Vector2Prop(Core *core, ResourcePool *pool, const String &caption, UIElement *focusParent);
 		~Vector2Prop();		
 		void handleEvent(Event *event);
 		void set(Vector2 position);
@@ -102,7 +103,7 @@ class Vector2Prop : public PropProp {
 
 class SliderProp : public PropProp {
 	public:
-		SliderProp(String caption, Number min, Number max);
+		SliderProp(Core *core, ResourcePool *pool, const String &caption, Number min, Number max);
 		~SliderProp();		
 		void handleEvent(Event *event);
 		void set(Number number);
@@ -120,7 +121,7 @@ class SliderProp : public PropProp {
 
 class ButtonProp : public PropProp {
 	public:
-		ButtonProp(const String &caption, UIElement *focusParent);
+		ButtonProp(Core *core, ResourcePool *pool, const String &caption, UIElement *focusParent);
 		~ButtonProp();
 		void setPropWidth(Number width);
 		UIButton *getButton();
@@ -133,7 +134,7 @@ class ButtonProp : public PropProp {
 
 class NumberProp : public PropProp {
 	public:
-		NumberProp(String caption, UIElement *focusParent);
+		NumberProp(Core *core, ResourcePool *pool, const String &caption, UIElement *focusParent);
 		~NumberProp();		
 		void handleEvent(Event *event);
 		void set(Number number);
@@ -153,7 +154,7 @@ class NumberProp : public PropProp {
 class TargetBindingProp : public PropProp {
 	public:
 
-		TargetBindingProp(std::shared_ptr<Shader> shader, std::shared_ptr<Material> material, std::shared_ptr<ShaderBinding> binding, RenderTargetBinding *targetBinding);
+		TargetBindingProp(Core *core, ResourcePool *pool, std::shared_ptr<Shader> shader, std::shared_ptr<Material> material, std::shared_ptr<ShaderBinding> binding, RenderTargetBinding *targetBinding);
 		~TargetBindingProp();
 
 		void handleEvent(Event *event); 
@@ -173,7 +174,7 @@ class TargetBindingProp : public PropProp {
 
 class RenderTargetProp : public PropProp {
 	public:
-		RenderTargetProp(ShaderRenderTarget *renderTarget, std::shared_ptr<Material> material);
+		RenderTargetProp(Core *core, ResourcePool *pool, ShaderRenderTarget *renderTarget, std::shared_ptr<Material> material);
 		~RenderTargetProp();
 
 		void handleEvent(Event *event); 
@@ -193,7 +194,7 @@ class RenderTargetProp : public PropProp {
 
 class ShaderPassProp : public PropProp {
 	public:
-		ShaderPassProp(std::shared_ptr<Material> material, int shaderIndex);
+		ShaderPassProp(Core *core, ResourcePool *pool, std::shared_ptr<Material> material, int shaderIndex);
 		~ShaderPassProp();
 		
 		void handleEvent(Event *event); 
@@ -211,7 +212,7 @@ class ShaderPassProp : public PropProp {
 
 class RemovableStringProp : public PropProp {
 public:
-	RemovableStringProp(const String &caption);
+	RemovableStringProp(Core *core, ResourcePool *pool, const String &caption);
 	~RemovableStringProp();
 	void handleEvent(Event *event);
 	
@@ -224,7 +225,7 @@ public:
 
 class LayerProp : public PropProp {
 	public:
-		LayerProp(SceneEntityInstance *instance, SceneEntityInstanceLayer *layer);
+		LayerProp(Core *core, ResourcePool *pool, SceneEntityInstance *instance, SceneEntityInstanceLayer *layer);
 		~LayerProp();
 		void handleEvent(Event *event);
 		void setPropWidth(Number width);
@@ -251,7 +252,7 @@ class LayerProp : public PropProp {
 
 class CustomProp : public PropProp {
 	public:
-		CustomProp(String key, String value);
+		CustomProp(Core *core, ResourcePool *pool, String key, String value);
 		~CustomProp();
 		void handleEvent(Event *event);
 		void set(String key, String val);
@@ -266,7 +267,7 @@ class CustomProp : public PropProp {
 
 class StringProp : public PropProp {
 	public:
-		StringProp(String caption, UIElement *focusParent);
+		StringProp(Core *core, ResourcePool *pool, const String &caption, UIElement *focusParent);
 		~StringProp();		
 		void handleEvent(Event *event);
 		void set(String str);
@@ -284,7 +285,7 @@ class StringProp : public PropProp {
 
 class ColorProp : public PropProp {
 	public:
-		ColorProp(String caption);
+		ColorProp(Core *core, ResourcePool *pool, const String &caption);
 		~ColorProp();		
 		void handleEvent(Event *event);
 		
@@ -301,7 +302,7 @@ class ColorProp : public PropProp {
 
 class ComboProp : public PropProp {
 	public:
-		ComboProp(String caption);
+		ComboProp(Core *core, ResourcePool *pool, const String &caption);
 		~ComboProp();		
 		void handleEvent(Event *event);
 		
@@ -320,7 +321,7 @@ class ComboProp : public PropProp {
 
 class BoolProp : public PropProp {
 	public:
-		BoolProp(String caption);
+		BoolProp(Core *core, ResourcePool *pool, const String &caption);
 		~BoolProp();		
 		void handleEvent(Event *event);
 		
@@ -337,7 +338,7 @@ class BoolProp : public PropProp {
 
 class SoundProp : public PropProp {
 	public:
-		SoundProp(String caption);
+		SoundProp(Core *core, ResourcePool *pool, const String &caption);
 		~SoundProp();
 		void handleEvent(Event *event);			
 		
@@ -357,7 +358,7 @@ class SoundProp : public PropProp {
 
 class BezierRGBACurveProp : public PropProp {
 	public:
-		BezierRGBACurveProp(String caption);
+		BezierRGBACurveProp(Core *core, ResourcePool *pool, const String &caption);
 		~BezierRGBACurveProp();
 
 		void handleEvent(Event *event); 
@@ -371,7 +372,7 @@ class BezierRGBACurveProp : public PropProp {
 
 class BezierCurveProp : public PropProp {
 	public:
-		BezierCurveProp(String caption, String curveName);
+		BezierCurveProp(Core *core, ResourcePool *pool, const String &caption, String curveName);
 		~BezierCurveProp();
 
 		void handleEvent(Event *event); 
@@ -383,7 +384,7 @@ class BezierCurveProp : public PropProp {
 
 class MaterialProp : public PropProp {
 	public:
-		MaterialProp(const String &caption);
+		MaterialProp(Core *core, ResourcePool *pool, const String &caption);
 		~MaterialProp();
 	
 		void Render(GPUDrawBuffer *buffer);
@@ -413,7 +414,7 @@ class MaterialProp : public PropProp {
 
 class TextureProp : public PropProp {
 	public:
-		TextureProp(String caption);
+		TextureProp(Core *core, ResourcePool *pool, const String &caption);
 		~TextureProp();
 		void handleEvent(Event *event); 
 		void setPropWidth(Number width);
@@ -433,7 +434,7 @@ class TextureProp : public PropProp {
 
 class SceneSpriteProp : public PropProp {
 	public:
-		SceneSpriteProp(String caption);
+		SceneSpriteProp(Core *core, ResourcePool *pool, const String &caption);
 		~SceneSpriteProp();
 		void handleEvent(Event *event);
 		
@@ -457,7 +458,7 @@ class SceneSpriteProp : public PropProp {
 
 class SceneEntityInstanceProp : public PropProp {
 	public:
-		SceneEntityInstanceProp(String caption);
+		SceneEntityInstanceProp(Core *core, ResourcePool *pool, const String &caption);
 		~SceneEntityInstanceProp();
 		void handleEvent(Event *event);			
 		
@@ -476,7 +477,7 @@ class SceneEntityInstanceProp : public PropProp {
 
 class PropSheet : public UIElement {
 	public:
-		PropSheet(String caption, String type);
+		PropSheet(Core *core, ResourcePool *pool, const String &caption, String type);
 		~PropSheet();		
 		void Resize(Number width, Number height);
 		
@@ -503,19 +504,19 @@ class PropSheet : public UIElement {
 		
 		bool collapsed;
 		Number propTopPadding;
-		
 		bool customUndoHandler;
-		
 		std::vector<PropProp*> props;
+	
+		ResourcePool *resourcePool;
 };
 
 class ShaderOptionsSheet : public PropSheet {
 	public:
-		ShaderOptionsSheet();
+		ShaderOptionsSheet(Core *core, ResourcePool *pool);
 		~ShaderOptionsSheet();
 		
 		void handleEvent(Event *event);
-		void Update();
+		void Update(Number elapsed);
 		
 		void clearShader();
 		void setOptionsFromParams(std::vector<ProgramParam> &params);
@@ -530,7 +531,7 @@ class ShaderOptionsSheet : public PropSheet {
 
 class EntitySheet : public PropSheet {
 	public:
-		EntitySheet();
+		EntitySheet(Core *core, ResourcePool *pool);
 		~EntitySheet(); 
 	
 		void handleEvent(Event *event);
@@ -554,12 +555,12 @@ class EntitySheet : public PropSheet {
 
 class ShaderPassesSheet : public PropSheet {
 	public:
-		ShaderPassesSheet(ResourcePool *resourcePool);
+		ShaderPassesSheet(Core *core, ResourcePool *pool, ResourcePool *resourcePool);
 		~ShaderPassesSheet();
 		void handleEvent(Event *event);			
 		void refreshPasses();
 		
-		void Update();
+		void Update(Number elapsed);
 		
 		void setMaterial(std::shared_ptr<Material> material);
 
@@ -568,7 +569,7 @@ class ShaderPassesSheet : public PropSheet {
 
 		ShaderPassProp *selectedProp;
 
-		ResourcePool *resourcePool;
+		ResourcePool *localPool;
 	
 		ButtonProp *addButton;
 		int removeIndex;		
@@ -576,12 +577,12 @@ class ShaderPassesSheet : public PropSheet {
 
 class TargetBindingsSheet : public PropSheet {
 	public:
-		TargetBindingsSheet();
+		TargetBindingsSheet(Core *core, ResourcePool *pool);
 		~TargetBindingsSheet();
 		void handleEvent(Event *event);				
 		void setShader(std::shared_ptr<Shader> shader, std::shared_ptr<Material> material, std::shared_ptr<ShaderBinding> binding);
 		
-		void Update();
+		void Update(Number elapsed);
 		
 		void refreshTargets();
 		
@@ -597,9 +598,9 @@ class TargetBindingsSheet : public PropSheet {
 
 class RenderTargetsSheet : public PropSheet {
 	public:
-		RenderTargetsSheet();
+		RenderTargetsSheet(Core *core, ResourcePool *pool);
 		~RenderTargetsSheet();
-		void Update();
+		void Update(Number elapsed);
 		void handleEvent(Event *event);		
 		
 		void refreshTargets();
@@ -617,10 +618,10 @@ class RenderTargetsSheet : public PropSheet {
 
 class TransformSheet : public PropSheet {
 	public:
-		TransformSheet();
+		TransformSheet(Core *core, ResourcePool *pool);
 		~TransformSheet();
 	
-		void Update();
+		void Update(Number elapsed);
 	
 		void setEntity(Entity *entity);
 		void handleEvent(Event *event);
@@ -639,7 +640,7 @@ class TransformSheet : public PropSheet {
 
 class ParticleEmitterSheet : public PropSheet {
 	public:
-		ParticleEmitterSheet();
+		ParticleEmitterSheet(Core *core, ResourcePool *pool);
 		~ParticleEmitterSheet();
 	
 		void handleEvent(Event *event);
@@ -677,7 +678,7 @@ class ParticleEmitterSheet : public PropSheet {
 
 class SceneLightSheet : public PropSheet {
 	public:
-		SceneLightSheet();
+		SceneLightSheet(Core *core, ResourcePool *pool);
 		~SceneLightSheet();
 	
 		void updateOptionVisibility();
@@ -708,7 +709,7 @@ class SceneLightSheet : public PropSheet {
 
 class SceneMeshSheet : public PropSheet {
 	public:
-		SceneMeshSheet();
+		SceneMeshSheet(Core *core, ResourcePool *pool);
 		~SceneMeshSheet();
 	
 		void setSceneMesh(SceneMesh *mesh);
@@ -726,7 +727,7 @@ class SceneMeshSheet : public PropSheet {
 
 class ScenePrimitiveSheet : public PropSheet {
 public:
-	ScenePrimitiveSheet();
+	ScenePrimitiveSheet(Core *core, ResourcePool *pool);
 	~ScenePrimitiveSheet();
 	
 	void setScenePrimitive(ScenePrimitive *primitive);
@@ -748,7 +749,7 @@ protected:
 
 class MaterialPropSheet : public PropSheet {
 	public:
-		MaterialPropSheet();
+		MaterialPropSheet(Core *core, ResourcePool *pool);
 		~MaterialPropSheet();
 	
 		void setEntityInstance(SceneEntityInstance *instance);
@@ -757,15 +758,16 @@ class MaterialPropSheet : public PropSheet {
 	
 	protected:
 	
+	
 		MaterialProp *materialProp;
 		SceneMesh *sceneMesh;
 };
 
 class EntityPropSheet : public PropSheet {
 	public:
-		EntityPropSheet();		
+		EntityPropSheet(Core *core, ResourcePool *pool);
 		void handleEvent(Event *event);
-		void Update();
+		void Update(Number elapsed);
 		void refreshProps();
 		void applyPropActionData(PolycodeEditorPropActionData *data);
 		void setEntity(Entity *entity);
@@ -780,7 +782,7 @@ class EntityPropSheet : public PropSheet {
 
 class SceneLabelSheet : public PropSheet {
 	public:
-		SceneLabelSheet();
+		SceneLabelSheet(Core *core, ResourcePool *pool);
 		~SceneLabelSheet();
 		
 		void refreshFonts();
@@ -801,7 +803,7 @@ class SceneLabelSheet : public PropSheet {
 
 class SceneCurveSheet : public PropSheet {
 	public:
-		SceneCurveSheet();
+		SceneCurveSheet(Core *core, ResourcePool *pool);
 		~SceneCurveSheet();
 	
 		void handleEvent(Event *event);
@@ -816,7 +818,7 @@ class SceneCurveSheet : public PropSheet {
 
 class SceneSpriteSheet : public PropSheet {
 	public:
-		SceneSpriteSheet();
+		SceneSpriteSheet(Core *core, ResourcePool *pool);
 		~SceneSpriteSheet();
 		
 		void handleEvent(Event *event);
@@ -834,7 +836,7 @@ class SceneSpriteSheet : public PropSheet {
 
 class CameraSheet : public PropSheet {
 	public:
-		CameraSheet();
+		CameraSheet(Core *core, ResourcePool *pool);
 		~CameraSheet();
 	
 		void handleEvent(Event *event);
@@ -859,11 +861,11 @@ class CameraSheet : public PropSheet {
 
 class SceneEntityInstanceSheet : public PropSheet {
 	public:
-		SceneEntityInstanceSheet();
+		SceneEntityInstanceSheet(Core *core, ResourcePool *pool);
 		~SceneEntityInstanceSheet();
 		
 		void handleEvent(Event *event);
-		void Update();
+		void Update(Number elapsed);
 				
 		SceneEntityInstance *instance;
 		SceneEntityInstanceProp *instanceProp;
@@ -871,7 +873,7 @@ class SceneEntityInstanceSheet : public PropSheet {
 
 class SoundSheet : public PropSheet {
 	public:
-		SoundSheet();
+		SoundSheet(Core *core, ResourcePool *pool);
 		~SoundSheet();
 		
 		void handleEvent(Event *event);
@@ -889,7 +891,7 @@ class SoundSheet : public PropSheet {
 
 class LayerSheet : public PropSheet {
 	public:
-		LayerSheet();
+		LayerSheet(Core *core, ResourcePool *pool);
 		~LayerSheet();
 		
 		void handleEvent(Event *event);
@@ -897,7 +899,7 @@ class LayerSheet : public PropSheet {
 	
 		void setFromEntity();
 	
-		void Update();
+		void Update(Number elapsed);
 
 	private:
 		ButtonProp *addLayerProp;
@@ -907,13 +909,13 @@ class LayerSheet : public PropSheet {
 
 class LinkedMaterialsSheet : public PropSheet {
 	public:
-		LinkedMaterialsSheet();
+		LinkedMaterialsSheet(Core *core, ResourcePool *pool);
 		~LinkedMaterialsSheet();
 	
 		void handleEvent(Event *event);
 		void setEntityInstance(SceneEntityInstance *instance);
 	
-		void Update();
+		void Update(Number elapsed);
 	
 		void updateMaterials();
 	
@@ -928,7 +930,7 @@ class LinkedMaterialsSheet : public PropSheet {
 
 class PropList : public UIElement {
 	public:
-		PropList(String caption="PROPERTIES");
+		PropList(Core *core, ResourcePool *pool, const String &caption="PROPERTIES");
 		~PropList();
 		
 		void updateProps();

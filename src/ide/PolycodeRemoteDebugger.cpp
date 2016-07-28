@@ -23,8 +23,10 @@
 #include "polycode/ide/PolycodeRemoteDebugger.h"
 
 
-PolycodeRemoteDebugger::PolycodeRemoteDebugger(PolycodeProjectManager *projectManager) {
-	server = new Server(4630, 100);
+PolycodeRemoteDebugger::PolycodeRemoteDebugger(Core *core, PolycodeProjectManager *projectManager) : core(core) {
+	
+	// NO_CORE_SERVICES_TODO: update server manually
+	server = new Server(core, 4630);
 	
 	this->projectManager = projectManager;
 
@@ -84,7 +86,7 @@ void PolycodeRemoteDebugger::handleEvent(Event *event) {
 							PolycodeConsole::print(String(data->errorMessage)+"\n");
 							PolycodeConsole::print("Backtrace:\n");
 							
-							CoreServices::getInstance()->getCore()->makeApplicationMain();
+							core->makeApplicationMain();
 						}
 						hasErred = true;
 					}

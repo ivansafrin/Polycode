@@ -22,9 +22,9 @@
 
 #pragma once
 #include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyInputKeys.h"
 #include "polycode/modules/ui/PolyUITree.h"
 #include "polycode/modules/ui/PolyUIBox.h"
-#include "polycode/core/PolyInputKeys.h"
 #include "polycode/modules/ui/PolyUIElement.h"
 #include "polycode/modules/ui/PolyUIScrollContainer.h"
 
@@ -32,7 +32,7 @@ namespace Polycode {
 	
 	class _PolyExport UITreeContainer : public UIElement {
 	public:
-		UITreeContainer(String icon, String text, Number treeWidth, Number treeHeight);
+		UITreeContainer(Core *core, ResourcePool *resourcePool, String icon, String text, Number treeWidth, Number treeHeight);
 		virtual ~UITreeContainer();
 		
 		void handleEvent(Event *event);
@@ -62,7 +62,6 @@ namespace Polycode {
 	private:
 		
 		UIScrollContainer *mainContainer;
-		
 		UITree *rootNode;
 		UIBox *bgBox;
 	};

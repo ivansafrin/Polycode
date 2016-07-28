@@ -23,19 +23,19 @@
 
 #include "polycode/modules/ui/PolyUIHSlider.h"
 #include "polycode/core/PolyConfig.h"
-#include "polycode/core/PolyCoreServices.h"
 
 using namespace Polycode;
 
-UIHSlider::UIHSlider(Number start, Number end, Number width) : UIElement() {
+UIHSlider::UIHSlider(Core *core, ResourcePool *pool, Number start, Number end, Number width) : UIElement(core) {
 
 	continuous = true;
 	
-	Config *conf = CoreServices::getInstance()->getConfig();	
+	ConfigRef conf = core->getConfig();
+	
 	Number uiScale = conf->getNumericValue("Polycode", "uiScale");
 	
 	String bgImage = conf->getStringValue("Polycode", "uiHSliderBg");
-	String gripImage = conf->getStringValue("Polycode", "uiHSliderGrip");	
+	String gripImage = conf->getStringValue("Polycode", "uiHSliderGrip");
 	bgHeight = conf->getNumericValue("Polycode", "uiHSliderBgHeight");
 
 	sidePadding = conf->getNumericValue("Polycode", "uiHSliderSidePadding");
@@ -45,8 +45,7 @@ UIHSlider::UIHSlider(Number start, Number end, Number width) : UIElement() {
 	Number sb = conf->getNumericValue("Polycode", "uiHSliderBgB");
 	Number sl = conf->getNumericValue("Polycode", "uiHSliderBgL");
 	
-
-	bgRect = new UIBox(bgImage, st, sr, sb, sl, width, bgHeight);
+	bgRect = new UIBox(core, pool, bgImage, st, sr, sb, sl, width, bgHeight);
 	addChild(bgRect);
 	
 	sliderWidth = width - (sidePadding*2);
@@ -55,7 +54,7 @@ UIHSlider::UIHSlider(Number start, Number end, Number width) : UIElement() {
 	startValue = start;
 	endValue = end;
 		
-	gripRect = new UIImage(gripImage);
+	gripRect = new UIImage(core, pool, gripImage);
 	gripRect->Resize(gripRect->getWidth() / uiScale, gripRect->getHeight() / uiScale);
 	gripRect->setAnchorPoint(0.0, 0.0, 0.0);
 	gripRect->setPosition(0, floor(bgHeight/2.0));
@@ -126,7 +125,6 @@ void UIHSlider::Resize(Number width, Number height) {
 }
 			
 void UIHSlider::handleEvent(Event *event) {
-
 	if(event->getDispatcher() == bgHitBox) {
 		InputEvent *inputEvent = (InputEvent*)event;	
 		switch(event->getEventCode()) {
@@ -168,7 +166,7 @@ void UIHSlider::handleEvent(Event *event) {
 }
 
 
-void UIHSlider::Update() {
+void UIHSlider::Update(Number elapsed) {
 	if(gripRect->getPosition().x != gripPos) {
 		gripPos = gripRect->getPosition().x;
 		sliderValue = startValue+((endValue - startValue) * ((gripPos-sidePadding)/sliderWidth));

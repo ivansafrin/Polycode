@@ -74,10 +74,6 @@ Texture.prototype.__set_depthTexture = function(val) {
 }
 
 
-Texture.prototype.reloadResource = function() {
-	Polycode.Texture_reloadResource(this.__ptr)
-}
-
 Texture.prototype.getWidth = function() {
 	return Polycode.Texture_getWidth(this.__ptr)
 }

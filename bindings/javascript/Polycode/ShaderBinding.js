@@ -44,12 +44,6 @@ ShaderBinding.prototype.removeParam = function(name) {
 	Polycode.ShaderBinding_removeParam(this.__ptr, name)
 }
 
-ShaderBinding.prototype.loadTextureForParam = function(paramName,fileName) {
-	var retVal = new Texture("__skip_ptr__")
-	retVal.__ptr = Polycode.ShaderBinding_loadTextureForParam(this.__ptr, paramName, fileName)
-	return retVal
-}
-
 ShaderBinding.prototype.setTextureForParam = function(paramName,texture) {
 	Polycode.ShaderBinding_setTextureForParam(this.__ptr, paramName, texture)
 }

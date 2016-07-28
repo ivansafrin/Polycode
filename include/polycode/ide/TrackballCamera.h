@@ -28,7 +28,7 @@ using namespace Polycode;
 
 class TrackballCamera : public EventDispatcher {
 	public:
-		TrackballCamera(Camera *targetCamera, Entity *trackballShape);
+		TrackballCamera(CoreInput *coreInput, Camera *targetCamera, Entity *trackballShape);
 		~TrackballCamera();
 		
 		void handleEvent(Event *event);		

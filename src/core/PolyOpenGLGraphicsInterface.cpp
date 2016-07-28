@@ -23,12 +23,11 @@
 
 #include "polycode/core/PolyOpenGLGraphicsInterface.h"
 #include "polycode/core/PolyLogger.h"
-#include "polycode/core/PolyCoreServices.h"
 #include <stdlib.h>
 
 using namespace Polycode;
 
-OpenGLGraphicsInterface::OpenGLGraphicsInterface() {
+OpenGLGraphicsInterface::OpenGLGraphicsInterface(Core *core) : core(core) {
 	lineSmooth = false;
 }
 
@@ -51,7 +50,7 @@ void OpenGLGraphicsInterface::setUniformMatrix(GLint paramLocation, const Polyco
 
 void OpenGLGraphicsInterface::setParamInShader(Shader *shader, ProgramParam *param, LocalShaderParam *localParam) {
 	
-    localParam->accessMutex->lock();
+    localParam->accessMutex.lock();
 	GLuint paramLocation = *((GLuint*) param->platformData);
 	
 	switch(param->type) {
@@ -176,10 +175,10 @@ void OpenGLGraphicsInterface::setParamInShader(Shader *shader, ProgramParam *par
 			if(localParam) {
                 std::shared_ptr<Texture> texture = localParam->getTexture();
 				if(texture) {
-					if(!texture->platformData) {
+					if(!texture->platformData.data) {
 						createTexture(&*texture);
 					}
-					glBindTexture(GL_TEXTURE_2D, *((GLuint*) texture->platformData));
+					glBindTexture(GL_TEXTURE_2D, *((GLuint*) texture->platformData.data));
 				} else {
 					glBindTexture(GL_TEXTURE_2D, 0);					
 				}
@@ -192,15 +191,15 @@ void OpenGLGraphicsInterface::setParamInShader(Shader *shader, ProgramParam *par
 			// RENDERER_TODO
 		break;
 	}
-    localParam->accessMutex->unlock();
+    localParam->accessMutex.unlock();
 }
 
 void OpenGLGraphicsInterface::destroyBuffer(RenderDataArray *array) {
-	if(array->platformData) {
-		GLuint vboID = *((GLuint*)array->platformData);
+	if(array->platformData.data) {
+		GLuint vboID = *((GLuint*)array->platformData.data);
 		glDeleteBuffers(1, &vboID);
-		delete ((GLuint*)array->platformData);
-		array->platformData = NULL;
+		delete ((GLuint*)array->platformData.data);
+		array->platformData.data = NULL;
 	}
 }
 
@@ -216,8 +215,10 @@ void OpenGLGraphicsInterface::createIndexBuffer(IndexDataArray *dataArray) {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, dataArray->getDataSize() * sizeof(PolyRendererIndexType), dataArray->getArrayData(), GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	dataArray->platformData = (void*)(new GLuint);
-	*((GLuint*)dataArray->platformData) = bufferID;
+	dataArray->platformData.data = (void*)(new GLuint);
+	dataArray->platformData.renderer = core->getRenderer();
+	dataArray->platformData.type = RendererPlatformData::PLATFORM_DATA_SUBMESH;
+	*((GLuint*)dataArray->platformData.data) = bufferID;
 }
 
 void OpenGLGraphicsInterface::createVertexBuffer(VertexDataArray *array) {
@@ -229,8 +230,10 @@ void OpenGLGraphicsInterface::createVertexBuffer(VertexDataArray *array) {
 	glGenBuffers(1, &bufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, bufferID);
 	glBufferData(GL_ARRAY_BUFFER, array->getDataSize() * sizeof(PolyRendererVertexType), array->getArrayData(), GL_STATIC_DRAW);
-	array->platformData = (void*)(new GLuint);
-	*((GLuint*)array->platformData) = bufferID;
+	array->platformData.data = (void*)(new GLuint);
+	array->platformData.renderer = core->getRenderer();
+	array->platformData.type = RendererPlatformData::PLATFORM_DATA_SUBMESH;
+	*((GLuint*)array->platformData.data) = bufferID;
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
@@ -304,8 +307,8 @@ void OpenGLGraphicsInterface::drawSubmeshBuffers(MeshGeometry *submesh, Shader *
 		}
 		
 		if(targetArray) {
-			if(targetArray->platformData) {
-				int bufferIndex = *((GLuint*)targetArray->platformData);
+			if(targetArray->platformData.data) {
+				int bufferIndex = *((GLuint*)targetArray->platformData.data);
 				int attributeLocation = *((GLuint*)shader->expectedAttributes[i].platformData);
 				glBindBuffer(GL_ARRAY_BUFFER, bufferIndex);
 				glVertexAttribPointer(attributeLocation, targetArray->getCountPerVertex(), GL_FLOAT, GL_FALSE, 0, NULL);
@@ -317,8 +320,8 @@ void OpenGLGraphicsInterface::drawSubmeshBuffers(MeshGeometry *submesh, Shader *
 	}
 	
 	if(submesh->indexedMesh) {
-		if(submesh->indexArray.platformData) {
-		   glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, *((GLuint*)submesh->indexArray.platformData));
+		if(submesh->indexArray.platformData.data) {
+		   glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, *((GLuint*)submesh->indexArray.platformData.data));
 		   glDrawElements(getGLDrawMode(submesh->meshType), submesh->indexArray.getDataSize(), GL_UNSIGNED_INT, NULL);
 		   glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0);
 		}
@@ -379,7 +382,7 @@ void OpenGLGraphicsInterface::endDrawCall() {
 }
 
 void OpenGLGraphicsInterface::useShader(Shader *shader) {
-	ShaderPlatformData *platformData = (ShaderPlatformData*) shader->platformData;
+	ShaderPlatformData *platformData = (ShaderPlatformData*) shader->platformData.data;
 	if(platformData->shaderID != currentShaderID) {
 		glUseProgram(platformData->shaderID);
 		currentShaderID = platformData->shaderID;
@@ -389,8 +392,8 @@ void OpenGLGraphicsInterface::useShader(Shader *shader) {
 void OpenGLGraphicsInterface::setAttributeInShader(Shader *shader, ProgramAttribute *attribute, AttributeBinding *attributeBinding) {
 	GLuint attribLocation = *((GLuint*) attribute->platformData);
 	
-	if(attributeBinding->vertexData->platformData) {
-		GLuint bufferID = *((GLuint*) attributeBinding->vertexData->platformData);
+	if(attributeBinding->vertexData->platformData.data) {
+		GLuint bufferID = *((GLuint*) attributeBinding->vertexData->platformData.data);
 		glBindBuffer(GL_ARRAY_BUFFER, bufferID);
 		glVertexAttribPointer(attribLocation, attributeBinding->vertexData->countPerVertex, GL_FLOAT, false, 0, NULL);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -458,23 +461,28 @@ GLenum OpenGLGraphicsInterface::getGLDrawMode(int polycodeMode) {
 }
 
 void OpenGLGraphicsInterface::createRenderBuffer(RenderBuffer *renderBuffer) {
-	if(!renderBuffer->platformData) {
-		renderBuffer->platformData = (void*) new GLuint;
-		glGenFramebuffers(1, (GLuint*)renderBuffer->platformData);
-		glBindFramebuffer(GL_FRAMEBUFFER, *((GLuint*)renderBuffer->platformData));
+	if(!renderBuffer->platformData.data) {
+		renderBuffer->platformData.data = (void*) new GLuint;
+		renderBuffer->platformData.renderer = core->getRenderer();
+		renderBuffer->platformData.type = RendererPlatformData::PLATFORM_DATA_RENDER_BUFFER;
+		glGenFramebuffers(1, (GLuint*)renderBuffer->platformData.data);
+		glBindFramebuffer(GL_FRAMEBUFFER, *((GLuint*)renderBuffer->platformData.data));
 	}
 	
 	renderBuffer->colorTexture->framebufferTexture = true;
 	createTexture(&*renderBuffer->colorTexture);
 	
 	if(renderBuffer->depthTexture) {
-		renderBuffer->depthBufferPlatformData = (void*) new GLuint;
-		glGenRenderbuffers(1, (GLuint*)renderBuffer->depthBufferPlatformData);
-		glBindRenderbuffer(GL_FRAMEBUFFER, *((GLuint*)renderBuffer->depthBufferPlatformData));
+		renderBuffer->depthBufferPlatformData.data = (void*) new GLuint;
+		renderBuffer->depthBufferPlatformData.renderer = core->getRenderer();
+		renderBuffer->depthBufferPlatformData.type = RendererPlatformData::PLATFORM_DATA_RENDER_BUFFER;
+		
+		glGenRenderbuffers(1, (GLuint*)renderBuffer->depthBufferPlatformData.data);
+		glBindRenderbuffer(GL_FRAMEBUFFER, *((GLuint*)renderBuffer->depthBufferPlatformData.data));
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_COLOR_ATTACHMENT0, renderBuffer->getWidth(), renderBuffer->getHeight());
 	}
 	
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, *((GLuint*)renderBuffer->colorTexture->platformData), 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, *((GLuint*)renderBuffer->colorTexture->platformData.data), 0);
 	
 	
 	if(renderBuffer->depthTexture) {
@@ -494,7 +502,7 @@ void OpenGLGraphicsInterface::createRenderBuffer(RenderBuffer *renderBuffer) {
 #ifndef NO_FP16
 		}
 #endif
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, *((GLuint*)renderBuffer->depthTexture->platformData), 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, *((GLuint*)renderBuffer->depthTexture->platformData.data), 0);
 	}
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -507,10 +515,10 @@ void OpenGLGraphicsInterface::destroyRenderBufferData(void *platformData) {
 
 void OpenGLGraphicsInterface::bindRenderBuffer(RenderBuffer *renderBuffer) {
 	if(renderBuffer) {
-		if(!renderBuffer->platformData) {
+		if(!renderBuffer->platformData.data) {
 			createRenderBuffer(renderBuffer);
 		}
-		glBindFramebuffer(GL_FRAMEBUFFER, *((GLuint*) renderBuffer->platformData));
+		glBindFramebuffer(GL_FRAMEBUFFER, *((GLuint*) renderBuffer->platformData.data));
 	} else {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
@@ -523,13 +531,15 @@ void OpenGLGraphicsInterface::destroyTextureData(void *platformData) {
 
 void OpenGLGraphicsInterface::createTexture(Texture *texture) {
 	
-	if(!texture->platformData) {
-		texture->platformData = (void*) new GLuint;
-		glGenTextures(1, (GLuint*)texture->platformData);
+	if(!texture->platformData.data) {
+		texture->platformData.data = (void*) new GLuint;
+		texture->platformData.renderer = core->getRenderer();
+		texture->platformData.type = RendererPlatformData::PLATFORM_DATA_TEXTURE;
+		glGenTextures(1, (GLuint*)texture->platformData.data);
 	}
 	
 	
-	GLuint textureID = *((GLuint*)texture->platformData);
+	GLuint textureID = *((GLuint*)texture->platformData.data);
 	
 	glBindTexture(GL_TEXTURE_2D, textureID);
 	
@@ -657,20 +667,22 @@ void OpenGLGraphicsInterface::destroyProgramData(void *platformData) {
 
 void OpenGLGraphicsInterface::createProgram(ShaderProgram *program) {
 
-    if(!program->platformData) {
-        program->platformData = (void*) new GLuint;
-		*((GLuint*)program->platformData) = 0;
+    if(!program->platformData.data) {
+        program->platformData.data = (void*) new GLuint;
+		program->platformData.renderer = core->getRenderer();
+		program->platformData.type = RendererPlatformData::PLATFORM_DATA_PROGRAM;
+		*((GLuint*)program->platformData.data) = 0;
     }
 
-	GLuint programID = *((GLuint*)program->platformData);
+	GLuint programID = *((GLuint*)program->platformData.data);
 	if(programID != 0) {
 		glDeleteShader(programID);
 	}
 	
-	CoreFile *file = Services()->getCore()->openFile(program->getResourcePath(), "rb");
+	CoreFile *file = core->openFile(program->getResourcePath(), "rb");
 	if (!file) {
 		Logger::log("Error: shader file %s not found\n", program->getResourcePath().c_str());
-		*((GLuint*)program->platformData) = -1;
+		*((GLuint*)program->platformData.data) = -1;
 		return;
 	}
 	
@@ -681,7 +693,7 @@ void OpenGLGraphicsInterface::createProgram(ShaderProgram *program) {
 	memset(buffer, 0, progsize+1);
 	file->read(buffer, progsize, 1);
 	
-	Services()->getCore()->closeFile(file);
+	core->closeFile(file);
 	
 	if( program->type == ShaderProgram::TYPE_VERT) {
 		programID = glCreateShader(GL_VERTEX_SHADER);
@@ -703,12 +715,12 @@ void OpenGLGraphicsInterface::createProgram(ShaderProgram *program) {
 		log = (GLchar*)malloc(length);
 		glGetShaderInfoLog(programID, length, &length, log);
 		
-		Services()->getLogger()->logBroadcast("["+program->getResourcePath()+"] GLSL ERROR:" + String(log));
+		core->getLogger()->logBroadcast("["+program->getResourcePath()+"] GLSL ERROR:" + String(log));
 		free(log);
 	}	
 	free(buffer);
 	
-	*((GLuint*)program->platformData) = programID;
+	*((GLuint*)program->platformData.data) = programID;
 }
 
 void OpenGLGraphicsInterface::destroyShaderData(void *platformData) {
@@ -724,10 +736,10 @@ void OpenGLGraphicsInterface::destroyShaderData(void *platformData) {
 
 void OpenGLGraphicsInterface::createShader(Shader *shader) {
 	
-	if(!shader->fragmentProgram->platformData) {
+	if(!shader->fragmentProgram->platformData.data) {
 		createProgram(&*shader->fragmentProgram);
 	}
-	if(!shader->vertexProgram->platformData) {
+	if(!shader->vertexProgram->platformData.data) {
 		createProgram(&*shader->vertexProgram);
 	}
 	
@@ -735,22 +747,25 @@ void OpenGLGraphicsInterface::createShader(Shader *shader) {
 	shader->expectedAttributes.clear();
 	
 	ShaderPlatformData *platformData = new ShaderPlatformData();
-	shader->platformData = (void*) platformData;
+	shader->platformData.data = (void*) platformData;
+	shader->platformData.renderer = core->getRenderer();
+	shader->platformData.type = RendererPlatformData::PLATFORM_DATA_SHADER;
+	
 	platformData->shaderID = 0;
-	platformData->fragmentProgramID = *((GLuint*)shader->fragmentProgram->platformData);
-	platformData->vertexProgramID = *((GLuint*)shader->vertexProgram->platformData);
+	platformData->fragmentProgramID = *((GLuint*)shader->fragmentProgram->platformData.data);
+	platformData->vertexProgramID = *((GLuint*)shader->vertexProgram->platformData.data);
 	
 	platformData->shaderID = glCreateProgram();
 	
-	glAttachShader(platformData->shaderID, *((GLuint*)shader->fragmentProgram->platformData));
-	glAttachShader(platformData->shaderID, *((GLuint*)shader->vertexProgram->platformData));
+	glAttachShader(platformData->shaderID, *((GLuint*)shader->fragmentProgram->platformData.data));
+	glAttachShader(platformData->shaderID, *((GLuint*)shader->vertexProgram->platformData.data));
 	glLinkProgram(platformData->shaderID);
 
 	GLint result;
 	glGetProgramiv(platformData->shaderID, GL_LINK_STATUS, &result);
 	
 	if(result == GL_INVALID_VALUE || result == GL_INVALID_OPERATION) {
-		Services()->getLogger()->logBroadcast("ERROR: Error linking shader. Invalid shader program.");
+		core->getLogger()->logBroadcast("ERROR: Error linking shader. Invalid shader program.");
 	}
 
 	int total = -1;

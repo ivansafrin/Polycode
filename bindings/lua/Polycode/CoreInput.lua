@@ -13,8 +13,6 @@ function CoreInput:__getvar(name)
 		return Polycode.CoreInput_get_simulateTouchAsPen(self.__ptr)
 	elseif name == "simulateMouseWithTouch" then
 		return Polycode.CoreInput_get_simulateMouseWithTouch(self.__ptr)
-	elseif name == "ignoreOffScreenTouch" then
-		return Polycode.CoreInput_get_ignoreOffScreenTouch(self.__ptr)
 	elseif name == "keyRepeat" then
 		return Polycode.CoreInput_get_keyRepeat(self.__ptr)
 	elseif name == "mousePosition" then
@@ -44,9 +42,6 @@ function CoreInput:__setvar(name,value)
 		return true
 	elseif name == "simulateMouseWithTouch" then
 		Polycode.CoreInput_set_simulateMouseWithTouch(self.__ptr, value)
-		return true
-	elseif name == "ignoreOffScreenTouch" then
-		Polycode.CoreInput_set_ignoreOffScreenTouch(self.__ptr, value)
 		return true
 	elseif name == "keyRepeat" then
 		Polycode.CoreInput_set_keyRepeat(self.__ptr, value)

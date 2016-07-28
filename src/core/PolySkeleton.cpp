@@ -26,8 +26,6 @@
 #include "polycode/core/PolyLabel.h"
 #include "polycode/core/PolySceneLabel.h"
 #include "polycode/core/PolySceneLine.h"
-#include "polycode/core/PolyTween.h"
-#include "polycode/core/PolyTweenManager.h"
 
 using namespace Polycode;
 
@@ -35,12 +33,12 @@ Skeleton *Skeleton::BlankSkeleton() {
 	return new Skeleton();
 }
 
-Skeleton::Skeleton(const String& fileName) : Entity() {
+Skeleton::Skeleton(Core *core, const String& fileName) : Entity() {
 	baseAnimation = NULL;
 	bonesEntity = new Entity();
 	bonesEntity->visible = false;
 	addChild(bonesEntity);		  
-	loadSkeleton(fileName);
+	loadSkeleton(core, fileName);
 }
 
 Skeleton::Skeleton() {
@@ -124,7 +122,7 @@ SkeletonAnimation *Skeleton::getAnimation(const String& name) const {
 	return NULL;
 }
 
-void Skeleton::Update() {
+void Skeleton::Update(Number elapsed) {
     
 	for(int i=0; i < bones.size(); i++) {
 		if(!bones[i]->disableAnimation) {
@@ -135,11 +133,11 @@ void Skeleton::Update() {
 	}
 	
 	if(baseAnimation) {
-		baseAnimation->Update();
+		baseAnimation->Update(elapsed);
 	}
 	
 	for(int i=0; i < playingAnimations.size(); i++) {
-		playingAnimations[i]->Update();
+		playingAnimations[i]->Update(elapsed);
 	}
 	
 	for(int i=0; i < bones.size(); i++) {
@@ -174,8 +172,8 @@ unsigned int Skeleton::getBoneIndexByBone(std::shared_ptr<Bone> bone) {
 	return 0;
 }
 
-void Skeleton::loadSkeleton(const String& fileName) {
-	CoreFile *inFile = Services()->getCore()->openFile(fileName.c_str(), "rb");
+void Skeleton::loadSkeleton(Core *core, const String& fileName) {
+	CoreFile *inFile = core->openFile(fileName.c_str(), "rb");
 	if(!inFile) {
 		return;
 	}
@@ -251,7 +249,7 @@ void Skeleton::loadSkeleton(const String& fileName) {
 			bonesEntity->addChild(&*bones[i]);
 		}
 	}
-	Services()->getCore()->closeFile(inFile);
+	core->closeFile(inFile);
 }
 
 SkeletonAnimation *Skeleton::getBaseAnimation() {
@@ -282,9 +280,9 @@ void Skeleton::stopAnimation(SkeletonAnimation *animation) {
 	}
 }
 
-void Skeleton::addAnimation(const String& name, const String& fileName) {
+void Skeleton::addAnimation(Core *core, const String& name, const String& fileName) {
 
-	CoreFile *inFile = Services()->getCore()->openFile(fileName.c_str(), "rb");
+	CoreFile *inFile = core->openFile(fileName.c_str(), "rb");
 	
 	if(!inFile) {
 		return;
@@ -364,7 +362,7 @@ void Skeleton::addAnimation(const String& name, const String& fileName) {
 	}
 	
 	animations.push_back(newAnimation);
-	Services()->getCore()->closeFile(inFile);
+	core->closeFile(inFile);
 }
 
 void Skeleton::bonesVisible(bool val) {
@@ -514,8 +512,7 @@ void SkeletonAnimation::setSpeed(Number speed) {
 	}	
 }
 
-void SkeletonAnimation::Update() {
-	Number elapsed = CoreServices::getInstance()->getCore()->getElapsed();
+void SkeletonAnimation::Update(Number elapsed) {
 	for(int i=0; i < boneTracks.size(); i++) {
 		boneTracks[i]->weight = weight;
 		boneTracks[i]->Update(elapsed);

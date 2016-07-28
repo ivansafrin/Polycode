@@ -1,8 +1,8 @@
 require('Polycode/Entity')
 
-function SceneEntityInstance(fileName) {
+function SceneEntityInstance() {
 	if(arguments[0] != "__skip_ptr__") {
-		this.__ptr = Polycode.SceneEntityInstance(fileName)
+		this.__ptr = Polycode.SceneEntityInstance()
 	}
 	Object.defineProperties(this, {
 		'cloneUsingReload': { enumerable: true, configurable: true, get: SceneEntityInstance.prototype.__get_cloneUsingReload, set: SceneEntityInstance.prototype.__set_cloneUsingReload},

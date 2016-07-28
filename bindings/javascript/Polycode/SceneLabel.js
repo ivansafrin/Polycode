@@ -1,8 +1,8 @@
 require('Polycode/ScenePrimitive')
 
-function SceneLabel(text,size,fontName,amode,actualHeight) {
+function SceneLabel(material,text,size,font,amode,actualHeight) {
 	if(arguments[0] != "__skip_ptr__") {
-		this.__ptr = Polycode.SceneLabel(text,size,fontName,amode,actualHeight)
+		this.__ptr = Polycode.SceneLabel(material,text,size,font,amode,actualHeight)
 	}
 	Object.defineProperties(this, {
 		'positionAtBaseline': { enumerable: true, configurable: true, get: SceneLabel.prototype.__get_positionAtBaseline, set: SceneLabel.prototype.__set_positionAtBaseline}

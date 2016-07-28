@@ -30,7 +30,7 @@ using namespace Polycode;
 
 class EntityEditorTreeSheet : public PropSheet {
 	public:
-		EntityEditorTreeSheet();
+		EntityEditorTreeSheet(Core *core, ResourcePool *pool);
 		~EntityEditorTreeSheet();
 	
 		void refreshTree();
@@ -52,7 +52,7 @@ class EntityEditorTreeSheet : public PropSheet {
 
 class EntityEditorTreeView : public UIElement {
 	public:
-		EntityEditorTreeView();
+		EntityEditorTreeView(Core *core, ResourcePool *pool);
 
 		void setEntityInstance(SceneEntityInstance *instance);
 		EntityEditorTreeSheet *getTreeSheet();

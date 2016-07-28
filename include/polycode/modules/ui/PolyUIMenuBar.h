@@ -25,17 +25,18 @@
 #include "polycode/core/PolySceneLabel.h"
 #include "polycode/core/PolyScenePrimitive.h"
 #include "polycode/core/PolyEntity.h"
+#include "polycode/core/PolyInputEvent.h"
+#include "polycode/core/PolyConfig.h"
 #include "polycode/modules/ui/PolyUIEvent.h"
 #include "polycode/modules/ui/PolyUIBox.h"
 #include "polycode/modules/ui/PolyUIMenu.h"
 #include "polycode/modules/ui/PolyUIElement.h"
-#include "polycode/core/PolyInputEvent.h"
 
 namespace Polycode {
 
 	class UIMenuBarEntryItem {
 		public:
-			UIMenuBarEntryItem(String name, String code, PolyKEY shortCut1, PolyKEY shortCut2);
+			UIMenuBarEntryItem(CoreInput *input, String name, String code, PolyKEY shortCut1, PolyKEY shortCut2);
 			String name;	
 			String code;
 
@@ -43,12 +44,14 @@ namespace Polycode {
 
 			PolyKEY shortCut1;
 			PolyKEY shortCut2;
+		
+			CoreInput *input;
 
 	};
 
 	class _PolyExport UIMenuBarEntry : public UIElement {
 		public:
-			UIMenuBarEntry(String name);
+			UIMenuBarEntry(Core *core, ResourcePool *pool, String name, const Color &accentColor, const Color &bgColor);
 			virtual ~UIMenuBarEntry();		
 			void addItem(String name, String code, PolyKEY shortCut1 = KEY_UNKNOWN, PolyKEY shortCut2 = KEY_UNKNOWN);
 
@@ -59,12 +62,15 @@ namespace Polycode {
 			SceneLabel *label;
 
 			std::vector<UIMenuBarEntryItem> items;
+		
+			Color accentColor;
+			Color bgColor;
 
 	};
 	
 	class _PolyExport UIMenuBar : public UIElement {
 		public:
-			UIMenuBar(int width, UIGlobalMenu *globalMenu);
+			UIMenuBar(Core *core, ResourcePool *pool, CoreInput *input, int width, UIGlobalMenu *globalMenu);
 			virtual ~UIMenuBar();
 
 			void handleEvent(Event *event); 
@@ -78,12 +84,16 @@ namespace Polycode {
 			UIMenu *dropMenu;
 			UIGlobalMenu *globalMenu;
 			int entryOffset;
-			
+			CoreInput *input;
 			bool holdingMouse;
+			ResourcePool *resourcePool;
 
 			String selectedItem;
 			UIRect *bgShape;
 			std::vector<UIMenuBarEntry*> entries;
 			UIMenuBarEntry *currentEntry;
+		
+			Color accentColor;
+			Color bgColor;
 	};
 }

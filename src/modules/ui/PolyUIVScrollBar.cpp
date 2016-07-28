@@ -25,26 +25,25 @@
 #include "polycode/core/PolyConfig.h"
 #include "polycode/core/PolyInputEvent.h"
 #include "polycode/core/PolyLabel.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyCore.h"
 
 using namespace Polycode;
 
-UIVScrollBar::UIVScrollBar(Number width, Number height, Number initialRatio) : UIElement() {
+UIVScrollBar::UIVScrollBar(Core *core, ResourcePool *pool, Number width, Number height, Number initialRatio) : UIElement(core) {
 
 	scrollValue = 0;
 	
-	Config *conf = CoreServices::getInstance()->getConfig();	
-	
+	ConfigRef conf = core->getConfig();
+
 	minHandleSize = conf->getNumericValue("Polycode", "uiScrollHandleMinSize");
 	
 	Number st = conf->getNumericValue("Polycode", "uiScrollBgSkinT");
 	Number sr = conf->getNumericValue("Polycode", "uiScrollBgSkinR");
 	Number sb = conf->getNumericValue("Polycode", "uiScrollBgSkinB");
-	Number sl = conf->getNumericValue("Polycode", "uiScrollBgSkinL");	
-	padding = conf->getNumericValue("Polycode", "uiScrollBgSkinPadding");		
+	Number sl = conf->getNumericValue("Polycode", "uiScrollBgSkinL");
+	padding = conf->getNumericValue("Polycode", "uiScrollBgSkinPadding");
 		
-	bgBox = new UIBox(conf->getStringValue("Polycode", "uiScrollBgSkin"),
+	bgBox = new UIBox(core, pool, conf->getStringValue("Polycode", "uiScrollBgSkin"),
 					  st,sr,sb,sl,
 					  width, height);
 	
@@ -56,7 +55,7 @@ UIVScrollBar::UIVScrollBar(Number width, Number height, Number initialRatio) : U
 	st = conf->getNumericValue("Polycode", "uiScrollHandleSkinT");
 	sr = conf->getNumericValue("Polycode", "uiScrollHandleSkinR");
 	sb = conf->getNumericValue("Polycode", "uiScrollHandleSkinB");
-	sl = conf->getNumericValue("Polycode", "uiScrollHandleSkinL");	
+	sl = conf->getNumericValue("Polycode", "uiScrollHandleSkinL");
 	
 	if(initialRatio > 1)
 		initialRatio = 1;
@@ -66,7 +65,7 @@ UIVScrollBar::UIVScrollBar(Number width, Number height, Number initialRatio) : U
 	if(scrollHandleHeight < minHandleSize)
 		scrollHandleHeight = minHandleSize;
 	
-	handleBox = new UIBox(conf->getStringValue("Polycode", "uiScrollHandleSkin"),
+	handleBox = new UIBox(core, pool, conf->getStringValue("Polycode", "uiScrollHandleSkin"),
 					  st,sr,sb,sl,
 					  width-(padding*2),scrollHandleHeight);
 	handleBox->setPosition(padding, padding);	
@@ -98,7 +97,7 @@ void UIVScrollBar::Resize(int newHeight) {
 	handleBox->setDragLimits(Rectangle(padding,padding,getWidth()-(padding*2)-(getWidth()-(padding*2)), dragRectHeight));	
 }
 
-void UIVScrollBar::Update() {
+void UIVScrollBar::Update(Number elapsed) {
 	
 	if(lastPositionY != handleBox->getPosition().y) {
 		lastPositionY = handleBox->getPosition().y;
@@ -176,7 +175,7 @@ void UIVScrollBar::handleEvent(Event *event) {
 		InputEvent *inputEvent = (InputEvent*)event;
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEOVER:
-				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);
+				core->setCursor(Core::CURSOR_ARROW);
 			break;
 			case InputEvent::EVENT_MOUSEDOWN:
 				if(inputEvent->mousePosition.y < handleBox->getPosition().y)  {
@@ -198,7 +197,7 @@ void UIVScrollBar::handleEvent(Event *event) {
 		InputEvent *inputEvent = (InputEvent*)event;
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEOVER:
-				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);
+				core->setCursor(Core::CURSOR_ARROW);
 			break;		
 			case InputEvent::EVENT_MOUSEUP:
 			case InputEvent::EVENT_MOUSEUP_OUTSIDE:				

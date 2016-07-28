@@ -1,10 +1,10 @@
 /*
- Copyright (C) 2011 by Ivan Safrin
+ Copyright (C) 2016 by Ivan Safrin
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or se ll
  copies of the Software, and to permit persons to whom the Software is
  furnished to do so, subject to the following conditions:
  
@@ -18,38 +18,35 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
-*/
+ */
 
-#include "polycode/core/PolyTimerManager.h"
-#include "polycode/core/PolyCoreServices.h"
-#include "polycode/core/PolyCore.h"
-#include "polycode/core/PolyTimer.h"
+#include "polycode/core/PolyRendererPlatformData.h"
+#include "polycode/core/PolyRenderer.h"
 
 using namespace Polycode;
 
-TimerManager::TimerManager() {
-
+RendererPlatformData::RendererPlatformData()  : type(0), data(NULL), renderer(NULL) {
+	
 }
 
-TimerManager::~TimerManager() {
-
-}
-
-void TimerManager::removeTimer(Timer *timer) {
-	for(int i=0;i<timers.size();i++) {
-		if(timers[i] == timer) {
-			timers.erase(timers.begin()+i);
+RendererPlatformData::~RendererPlatformData() {
+	if(renderer) {
+		switch(type) {
+			case PLATFORM_DATA_TEXTURE:
+				renderer->destroyTexturePlatformData(data);
+				break;
+			case PLATFORM_DATA_RENDER_BUFFER:
+				renderer->destroyRenderBufferPlatformData(data);
+				break;
+			case PLATFORM_DATA_PROGRAM:
+				renderer->destroyProgramPlatformData(data);
+				break;
+			case PLATFORM_DATA_SHADER:
+				renderer->destroyShaderPlatformData(data);
+				break;
+			case PLATFORM_DATA_SUBMESH:
+				renderer->destroySubmeshPlatformData(data);
+				break;
 		}
-	}	
-}
-
-void TimerManager::addTimer(Timer *timer) {
-	timers.push_back(timer);		
-}
-
-void TimerManager::Update() {
-	int ticks = CoreServices::getInstance()->getCore()->getTicks();
-	for(int i=0;i<timers.size();i++) {
-		timers[i]->Update(ticks);
 	}
 }

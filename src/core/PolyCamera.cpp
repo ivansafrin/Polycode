@@ -22,7 +22,6 @@
 
 #include "polycode/core/PolyCamera.h"
 #include "polycode/core/PolyCore.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyMaterial.h"
 #include "polycode/core/PolyRenderer.h"
 #include "polycode/core/PolyResource.h"
@@ -37,7 +36,6 @@ using namespace Polycode;
 			
 Camera::Camera() : Entity() {
 	projectionMode = PERSPECTIVE_FOV;
-	renderer = CoreServices::getInstance()->getRenderer();
 	setFOV(45.0f);
 	filterShaderMaterial = NULL;
 	originalFramebuffer = NULL;
@@ -295,14 +293,6 @@ void Camera::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) co
 	cloneCamera->setClippingPlanes(nearClipPlane, farClipPlane);
 }
 
-
-void Camera::setPostFilterByName(const String& materialName) {
-	std::shared_ptr<Material> shaderMaterial = std::static_pointer_cast<Material>(Services()->getResourceManager()->getGlobalPool()->getResource(Resource::RESOURCE_MATERIAL, materialName));
-	if(shaderMaterial) {
-		setPostFilter(shaderMaterial);
-	}
-}
-
 void Camera::removePostFilter() {
 	if(_hasFilterShader) {
 		filterShaderMaterial = NULL;
@@ -320,10 +310,6 @@ void Camera::setPostFilter(std::shared_ptr<Material> material) {
 	}
 	this->filterShaderMaterial = material;
 
-	if(!originalFramebuffer) {
-		originalFramebuffer = std::make_shared<RenderBuffer>(Services()->getCore()->getXRes() * renderer->getBackingResolutionScaleX(), Services()->getCore()->getYRes() * renderer->getBackingResolutionScaleY(), true, material->fp16RenderTargets);
-	}
-	
 	if(!screenQuadMesh) {
 		screenQuadMesh = new Mesh();
 		
@@ -339,39 +325,6 @@ void Camera::setPostFilter(std::shared_ptr<Material> material) {
 		screenQuadMesh->addSubmesh(geometry);
 		
 	}
-	shaderPasses.clear();
-	
-	for(int i=0; i < material->getNumShaderPasses(); i++)  {
-		
-		std::shared_ptr<ShaderBinding> materialBinding = material->getShaderBinding(i);
-		
-		ShaderPass shaderPass = material->getShaderPass(i);
-		shaderPass.materialShaderBinding = shaderPass.shaderBinding;
-		shaderPass.shaderBinding = std::make_shared<ShaderBinding>();
-		shaderPass.shaderBinding->targetShader = shaderPass.shader;
-		
-		for(int j=0; j < materialBinding->getNumColorTargetBindings(); j++) {
-			RenderTargetBinding *colorBinding = materialBinding->getColorTargetBinding(j);
-			shaderPass.shaderBinding->setTextureForParam(colorBinding->name, originalFramebuffer->colorTexture);
-		}
-		
-		for(int j=0; j < materialBinding->getNumDepthTargetBindings(); j++) {
-			RenderTargetBinding *depthBinding = materialBinding->getDepthTargetBinding(j);
-			shaderPass.shaderBinding->setTextureForParam(depthBinding->name, originalFramebuffer->depthTexture);
-		}
-		
-		for(int j=0; j < materialBinding->getNumInTargetBindings(); j++) {
-			RenderTargetBinding *inBinding = materialBinding->getInTargetBinding(j);
-			if(inBinding->buffer) {
-				shaderPass.shaderBinding->setTextureForParam(inBinding->name, inBinding->buffer->colorTexture);
-			} else {
-				Logger::log("WARNING: Post filter IN target ["+ inBinding->name + "] does not exist!\n");
-			}
-		}
-		
-		shaderPasses.push_back(shaderPass);
-	}
-	
 	_hasFilterShader = true;
 }
 
@@ -406,10 +359,54 @@ void Camera::renderFullScreenQuad(GPUDrawBuffer *drawBuffer, int shaderPass) {
 	drawBuffer->drawCalls.push_back(drawCall);
 }
 
+void Camera::rebuildMaterialBindings() {
+    
+    if(!filterShaderMaterial) {
+        return;
+    }
+    
+    shaderPasses.clear();
+    for(int i=0; i < filterShaderMaterial->getNumShaderPasses(); i++)  {
+        
+        std::shared_ptr<ShaderBinding> materialBinding = filterShaderMaterial->getShaderBinding(i);
+        
+        ShaderPass shaderPass = filterShaderMaterial->getShaderPass(i);
+        shaderPass.materialShaderBinding = shaderPass.shaderBinding;
+        shaderPass.shaderBinding = std::make_shared<ShaderBinding>();
+        shaderPass.shaderBinding->targetShader = shaderPass.shader;
+        
+        for(int j=0; j < materialBinding->getNumColorTargetBindings(); j++) {
+            RenderTargetBinding *colorBinding = materialBinding->getColorTargetBinding(j);
+            shaderPass.shaderBinding->setTextureForParam(colorBinding->name, originalFramebuffer->colorTexture);
+        }
+        
+        for(int j=0; j < materialBinding->getNumDepthTargetBindings(); j++) {
+            RenderTargetBinding *depthBinding = materialBinding->getDepthTargetBinding(j);
+            shaderPass.shaderBinding->setTextureForParam(depthBinding->name, originalFramebuffer->depthTexture);
+        }
+        
+        for(int j=0; j < materialBinding->getNumInTargetBindings(); j++) {
+            RenderTargetBinding *inBinding = materialBinding->getInTargetBinding(j);
+            if(inBinding->buffer) {
+                shaderPass.shaderBinding->setTextureForParam(inBinding->name, inBinding->buffer->colorTexture);
+            } else {
+                Logger::log("WARNING: Post filter IN target ["+ inBinding->name + "] does not exist!\n");
+            }
+        }
+        
+        shaderPasses.push_back(shaderPass);
+    }
+}
+
 void Camera::drawFilter(RenderFrame *frame, std::shared_ptr<RenderBuffer> targetBuffer, Scene *targetScene) {
 	if(!filterShaderMaterial)
 		return;
-	
+    
+    if(!originalFramebuffer) {
+        originalFramebuffer = std::make_shared<RenderBuffer>(frame->viewport.w, frame->viewport.h, true, filterShaderMaterial->fp16RenderTargets);
+        rebuildMaterialBindings();
+    }
+    
 	targetScene->Render(frame, this, originalFramebuffer, NULL, true);
 	
 	for(int i=0; i < shaderPasses.size(); i++) {
@@ -518,7 +515,8 @@ Matrix4 Camera::createProjectionMatrix() {
 			setOrthoMatrix(retMatrix, orthoSizeX, orthoSizeX * (viewport.h/viewport.w), nearClipPlane, farClipPlane, !topLeftOrtho);
 			break;
 		case ORTHO_SIZE_VIEWPORT:
-			setOrthoMatrix(retMatrix, viewport.w / renderer->getBackingResolutionScaleX(), viewport.h / renderer->getBackingResolutionScaleY(), nearClipPlane, farClipPlane, !topLeftOrtho);
+            // NO_CORE_SERVICES_TODO: might need to divide the viewport size still
+			setOrthoMatrix(retMatrix, viewport.w, viewport.h, nearClipPlane, farClipPlane, !topLeftOrtho);
 			break;
 		case MANUAL_MATRIX:
 			retMatrix = projectionMatrix;

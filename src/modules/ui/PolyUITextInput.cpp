@@ -25,7 +25,6 @@
 #include "polycode/core/PolyConfig.h"
 #include "polycode/core/PolyInputEvent.h"
 #include "polycode/core/PolyLabel.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyEventHandler.h"
 #include "polycode/core/PolyRenderer.h"
 
@@ -37,7 +36,12 @@ void UITextInput::setMenuSingleton(UIGlobalMenu *_globalMenu) {
 	globalMenuSingleton = _globalMenu;
 }
 
-UITextInput::UITextInput(bool multiLine, Number width, Number height, int customFontSize, const String &customFont, int customLineSpacing) : UIElement(width, height) {
+UITextInput::UITextInput(Core *core, ResourcePool *resourcePool, bool multiLine, Number width, Number height, int customFontSize, const String &customFont, int customLineSpacing) : UIElement(core, width, height), resourcePool(resourcePool)
+{
+
+	ConfigRef conf = core->getConfig();
+	
+	labelMaterial = resourcePool->getMaterial("Unlit");
 	this->multiLine = multiLine;
 	processInputEvents = true;
 	isNumberOnly = false;
@@ -45,6 +49,8 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height, int custom
 	didMultilineResize = true;
 	actualLineOffset = -1;
 	actualCaretPosition = 0;
+	
+	blinkTimer = 0.0;
 	
 	resizeTimer = 0;
 	decoratorOffset = 0;
@@ -70,8 +76,6 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height, int custom
 	numLines = 0;
 	
 	setAnchorPoint(0.0, 0.0, 0.0);
-	Config *conf = CoreServices::getInstance()->getConfig();	
-	
 	if(customFont != "") {
 		fontName = customFont;
 	} else {
@@ -80,11 +84,14 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height, int custom
 	else
 		fontName = conf->getStringValue("Polycode", "uiTextInputFontName");
 	}
+	
+	labelFont = resourcePool->getFont(fontName);
+	
 	if(customFontSize != -1) {
 		fontSize = customFontSize;
 	} else {
 		if(multiLine)
-			fontSize = conf->getNumericValue("Polycode", "uiTextInputFontSizeMultiline");	
+			fontSize = conf->getNumericValue("Polycode", "uiTextInputFontSizeMultiline");
 		else
 			fontSize = conf->getNumericValue("Polycode", "uiTextInputFontSize");
 	}
@@ -116,21 +123,21 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height, int custom
 	
 	padding = conf->getNumericValue("Polycode", "textBgSkinPadding");
 	
-	textContainer = new UIElement();
+	textContainer = new UIElement(core);
 	textContainer->ownsChildren = true;
 
 	linesContainer->addChild(textContainer);
 	if(multiLine) {
-		inputRect = new UIBox(conf->getStringValue("Polycode", "textBgSkinMultiline"),
+		inputRect = new UIBox(core, resourcePool, conf->getStringValue("Polycode", "textBgSkinMultiline"),
 						  st,sr,sb,sl,
 						  width+(padding*2), height+(padding*2));
 		inputRect->setBlendingMode(Renderer::BLEND_MODE_NONE);
 	} else {
-		inputRect = new UIBox(conf->getStringValue("Polycode", "textBgSkin"),
+		inputRect = new UIBox(core, resourcePool, conf->getStringValue("Polycode", "textBgSkin"),
 						  st,sr,sb,sl,
 						  width+(padding*2), height+(padding*2));
 		
-		inputRectSelected = new UIBox(conf->getStringValue("Polycode", "textBgSkinFocus"),
+		inputRectSelected = new UIBox(core, resourcePool, conf->getStringValue("Polycode", "textBgSkinFocus"),
 							  st,sr,sb,sl,
 							  width+(padding*2), height+(padding*2));
 		inputRectSelected->visible = false;
@@ -140,7 +147,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height, int custom
 	addChild(inputRect);		
 	
 	if(multiLine) {
-		lineNumberBg = new UIRect(1,1);
+		lineNumberBg = new UIRect(core, resourcePool, 1,1);
 		lineNumberBg->setAnchorPoint(-1.0, -1.0, 0.0);
 		lineNumberBg->setColor(0.5, 0.5, 0.5, 1.0);
 		addChild(lineNumberBg);
@@ -170,34 +177,31 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height, int custom
 	
 	selectionColor = Color(181.0f/255.0f, 213.0f/255.0f, 255.0f/255.0f, 1.0f);
 	
-	selectorRectTop = new UIRect(1,1);
+	selectorRectTop = new UIRect(core, resourcePool, 1,1);
 //	selectorRectTop->setAnchorPoint(-1.0, -1.0, 0.0);
 	selectorRectTop->setColor(181.0f/255.0f, 213.0f/255.0f, 255.0f/255.0f, 1);
 	selectorRectTop->visible = false;
 	textContainer->addChild(selectorRectTop);
 
-	selectorRectMiddle = new UIRect(1,1);
+	selectorRectMiddle = new UIRect(core, resourcePool, 1,1);
 //	selectorRectMiddle->setAnchorPoint(-1.0, -1.0, 0.0);	
 	selectorRectMiddle->setColor(181.0f/255.0f, 213.0f/255.0f, 255.0f/255.0f, 1);
 	selectorRectMiddle->visible = false;
 	textContainer->addChild(selectorRectMiddle);
 
-	selectorRectBottom = new UIRect(1,1);
+	selectorRectBottom = new UIRect(core, resourcePool, 1,1);
 //	selectorRectBottom->setAnchorPoint(-1.0, -1.0, 0.0);	
 	selectorRectBottom->setColor(181.0f/255.0f, 213.0f/255.0f, 255.0f/255.0f, 1);
 	selectorRectBottom->visible = false;
 	textContainer->addChild(selectorRectBottom);
 		
 	
-	blinkerRect = new UIRect(1, fontSize+2);
+	blinkerRect = new UIRect(core, resourcePool, 1, fontSize+2);
 	blinkerRect->setAnchorPoint(-1.0, -1.0, 0.0);
 	blinkerRect->setColor(0,0,0,1);
 	textContainer->addChild(blinkerRect);
 	blinkerRect->visible = false;
 	blinkerRect->setPosition(-horizontalPixelScroll,3);
-	
-	blinkTimer = new Timer(true, 500);
-	blinkTimer->addEventListener(this, Timer::EVENT_TRIGGER);
 
 	focusable = true;
 	setWidth(width);
@@ -205,7 +209,7 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height, int custom
 	
 	scrollContainer = NULL;
 	if(multiLine) {
-		scrollContainer = new UIScrollContainer(linesContainer, false, true, width, height);
+		scrollContainer = new UIScrollContainer(core, resourcePool, linesContainer, false, true, width, height);
 		scrollContainer->addEventListener(this, Event::CHANGE_EVENT);
 		addChild(scrollContainer);
 	} else {
@@ -227,7 +231,6 @@ UITextInput::UITextInput(bool multiLine, Number width, Number height, int custom
 	insertLine();
 	updateCaretPosition();
 	
-	core = CoreServices::getInstance()->getCore();
 	core->addEventListener(this, Core::EVENT_COPY);
 	core->addEventListener(this, Core::EVENT_PASTE);
 	core->addEventListener(this, Core::EVENT_CUT);
@@ -254,7 +257,7 @@ void UITextInput::checkBufferLines() {
 
 	for(int i=0; i < neededBufferLines - currentBufferLines; i++) {
 		if(multiLine) {
-			SceneLabel *newNumberLine = new SceneLabel(L"", fontSize, fontName, aaMode);
+			SceneLabel *newNumberLine = new SceneLabel(labelMaterial, L"", fontSize, labelFont, aaMode);
 			newNumberLine->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 			newNumberLine->color = lineNumberColor;
 			newNumberLine->positionAtBaseline = true;
@@ -266,7 +269,7 @@ void UITextInput::checkBufferLines() {
 			}
 		}
 	
-		SceneLabel *newLine = new SceneLabel(L"", fontSize, fontName, aaMode);
+		SceneLabel *newLine = new SceneLabel(labelMaterial, L"", fontSize, labelFont, aaMode);
 		newLine->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 		newLine->positionAtBaseline = true;
 		newLine->color = textColor;
@@ -1011,8 +1014,8 @@ void UITextInput::updateCaretPosition() {
 	if(!hasSelection) {
 		blinkerRect->visible  = true;
 	}
-	
-	blinkTimer->Reset();
+
+	blinkTimer = 0.0;
 	
 	if(doSelectToCaret) {
 		doSelectToCaret = false;
@@ -1666,17 +1669,17 @@ void UITextInput::Cut() {
 
 void UITextInput::Copy() {
 	if(hasSelection) {
-		CoreServices::getInstance()->getCore()->copyStringToClipboard(getSelectionText());
+		core->copyStringToClipboard(getSelectionText());
 	} else {
 		if (getLineText(lineOffset) != "") {
-			CoreServices::getInstance()->getCore()->copyStringToClipboard(getLineText(lineOffset));
+			core->copyStringToClipboard(getLineText(lineOffset));
 		}
 	}
 }
 
 void UITextInput::Paste() {
 	saveUndoState();
-	String clip = CoreServices::getInstance()->getCore()->getClipboardString().replace("\r\n", "\n");
+	String clip = core->getClipboardString().replace("\r\n", "\n");
 	clip = clip.replace("\r", "\n");
 	insertText(clip);
 }
@@ -1723,7 +1726,7 @@ void UITextInput::onKeyDown(PolyKEY key) {
 	if(!hasFocus)
 		return;
 	
-	CoreInput *input = CoreServices::getInstance()->getCore()->getInput();
+	CoreInput *input = core->getInput();
 	
 	if(key == KEY_LEFT) {
 		if(input->getKeyState(KEY_LSUPER) || input->getKeyState(KEY_RSUPER)) {
@@ -2187,8 +2190,22 @@ void UITextInput::onTextInput(String newText){
 	
 }
 
-void UITextInput::Update() {
-	resizeTimer += core->getElapsed();
+void UITextInput::Update(Number elapsed) {
+	resizeTimer += elapsed;
+	
+	blinkTimer += elapsed;
+	
+	if(blinkTimer >= 0.5) {
+		if(hasSelection || draggingSelection) {
+			blinkerRect->visible  = false;
+		} else {
+			if(hasFocus)
+				blinkerRect->visible  = !blinkerRect->visible;
+			else
+				blinkerRect->visible  = false;
+		}
+		blinkTimer = 0.0;
+	}
 	
 	
 	if(!multiLine) {
@@ -2230,7 +2247,6 @@ void UITextInput::Update() {
 UITextInput::~UITextInput() {
 	core->removeAllHandlersForListener(this);
 	core->getInput()->removeAllHandlersForListener(this);
-	delete blinkTimer;
 
 	linesContainer->ownsChildren = true;
 	if(!ownsChildren) {
@@ -2624,28 +2640,17 @@ void UITextInput::handleEvent(Event *event) {
 				selectWordAtCaret();
 			break;
 			case InputEvent::EVENT_MOUSEMOVE:
-				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_TEXT);			
+				core->setCursor(Core::CURSOR_TEXT);
 				if(draggingSelection) {
 					selectionDragMouse = ((InputEvent*)event)->mousePosition;
 				}
 			break;
 			case InputEvent::EVENT_MOUSEOVER:
-				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_TEXT);
+				core->setCursor(Core::CURSOR_TEXT);
 			break;
 			case InputEvent::EVENT_MOUSEOUT:
-				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);
+				core->setCursor(Core::CURSOR_ARROW);
 			break;				
-		}
-	}
-	
-	if(event->getDispatcher() == blinkTimer) {
-		if(hasSelection || draggingSelection) {
-				blinkerRect->visible  = false;
-		} else {
-			if(hasFocus)
-				blinkerRect->visible  = !blinkerRect->visible;
-			else
-				blinkerRect->visible  = false;
 		}
 	}
 	
@@ -2654,7 +2659,7 @@ void UITextInput::handleEvent(Event *event) {
 
 void UITextInput::onGainFocus() {
 	blinkerRect->visible  = true;
-	blinkTimer->Reset();
+	blinkTimer = 0.0;
 	if(!multiLine) {
 		selectAll();
 	}

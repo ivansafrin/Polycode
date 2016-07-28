@@ -21,13 +21,15 @@
  */
 
 #include "polycode/core/PolyRenderDataArray.h"
+#include "polycode/core/PolyRenderer.h"
 
 using namespace Polycode;
 
-RenderDataArray::RenderDataArray(unsigned int type) : type(type), platformData(NULL) {
+RenderDataArray::RenderDataArray(unsigned int type) : type(type) {
+
 }
 
-RenderDataArray::RenderDataArray(const RenderDataArray &other) : platformData(NULL) {
+RenderDataArray::RenderDataArray(const RenderDataArray &other) {
 	type = other.type;
 	customArrayName = other.customArrayName;
 }

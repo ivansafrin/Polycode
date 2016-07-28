@@ -30,7 +30,7 @@ using namespace Polycode;
 
 class PolycodeFontEditor : public PolycodeEditor {
 public:
-	PolycodeFontEditor();
+	PolycodeFontEditor(Core *core, ResourcePool *pool);
 	virtual ~PolycodeFontEditor();
 	
 	bool openFile(OSFileEntry filePath);
@@ -49,5 +49,5 @@ protected:
 class PolycodeFontEditorFactory : public PolycodeEditorFactory {
 public:
 	PolycodeFontEditorFactory() : PolycodeEditorFactory() { extensions.push_back("otf"); extensions.push_back("ttf");}
-	PolycodeEditor *createEditor() { return new PolycodeFontEditor(); }
+	PolycodeEditor *createEditor(Core *core, ResourcePool *pool) { return new PolycodeFontEditor(core, pool); }
 };

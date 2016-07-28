@@ -23,6 +23,7 @@
 #pragma once
 
 #include "Polycode.h"
+#include "polycode/core/PolyCore.h"
 #include "polycode/modules/ui/PolyUIElement.h"
 #include "polycode/ide/PolycodeProject.h"
 #include "polycode/ide/PolycodeClipboard.h"
@@ -60,7 +61,7 @@ class PolycodeEditorAction	{
 
 class PolycodeEditor : public UIElement, public ClipboardProvider {
 public:
-	PolycodeEditor(bool _isReadOnly);
+	PolycodeEditor(Core *core, ResourcePool *resourcePool, bool _isReadOnly);
 	virtual ~PolycodeEditor();
 	
 	virtual bool openFile(OSFileEntry filePath){ this->filePath = filePath.fullPath; return true;}
@@ -99,9 +100,11 @@ public:
 	
 	void setEditorHolder(EditorHolder *holder);
 	EditorHolder *getEditorHolder();
-		
+	
 protected:
-
+	Core *core;	
+	ResourcePool *resourcePool;
+	
 	EditorHolder *editorHolder;
 	bool _hasChanges;
 
@@ -122,7 +125,7 @@ public:
 	PolycodeEditorFactory();
 	virtual ~PolycodeEditorFactory();
 
-	virtual PolycodeEditor *createEditor() = 0;
+	virtual PolycodeEditor *createEditor(Core *core, ResourcePool *pool) = 0;
 	
 	bool canHandleExtension(String extension);
 	

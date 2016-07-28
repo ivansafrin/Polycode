@@ -22,7 +22,6 @@
 
 #include "polycode/core/PolyData.h"
 #include "polycode/core/PolyCore.h"
-#include "polycode/core/PolyCoreServices.h"
 #include <string.h>
 #include <stdlib.h>
 
@@ -47,23 +46,23 @@ void Data::setFromString(const String& str, int encoding) {
 	memcpy(data, str.getDataWithEncoding(encoding), dataSize);
 }
 
-bool Data::saveToFile(const String& fileName) const {
+bool Data::saveToFile(Core *core, const String& fileName) const {
 	
-	Polycode::CoreFile *file = Services()->getCore()->openFile(fileName, "wb");
+	Polycode::CoreFile *file = core->openFile(fileName, "wb");
 	
 	if(!file) {
-		Services()->getCore()->closeFile(file);
+		core->closeFile(file);
 		return false;
 	}
 	
 	file->write(data, sizeof(char), dataSize);
-	Services()->getCore()->closeFile(file);
+	core->closeFile(file);
 	
 	return true;
 }
 
-bool Data::loadFromFile(const String& fileName) {
-	CoreFile *file = Services()->getCore()->openFile(fileName, "rb");
+bool Data::loadFromFile(Core *core, const String& fileName) {
+	CoreFile *file = core->openFile(fileName, "rb");
 	if(!file)
 		return false;
 	
@@ -76,12 +75,12 @@ bool Data::loadFromFile(const String& fileName) {
 	
 	data = (char*)malloc(dataSize);
 	if(!data) {
-		Services()->getCore()->closeFile(file);
+		core->closeFile(file);
 		return false;
 	}
 	
 	file->read(data, sizeof(char), dataSize);
-	Services()->getCore()->closeFile(file);
+	core->closeFile(file);
 
 	return true;
 }

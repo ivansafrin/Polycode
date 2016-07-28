@@ -41,7 +41,7 @@ using namespace Polycode;
 
 class EditPoint : public Entity {
 	public:
-		EditPoint(BezierPoint *point, unsigned int type);
+		EditPoint(Core *core, ResourcePool *pool, BezierPoint *point, unsigned int type);
 		~EditPoint();
 		
 		void handleEvent(Event *event);
@@ -76,11 +76,12 @@ class EditPoint : public Entity {
 				
 		unsigned int type;				
 		BezierPoint *point;
+		Core *core;
 };
 
 class EditCurve : public UIElement {
 	public:
-		EditCurve(BezierCurve *targetCurve, Color curveColor);
+		EditCurve(Core *core, ResourcePool *pool, BezierCurve *targetCurve, Color curveColor);
 		~EditCurve();
 		
 		void updateCurve();
@@ -91,7 +92,7 @@ class EditCurve : public UIElement {
 		void Activate();
 		void Deactivate();
 		
-		void Update();
+		void Update(Number elapsed);
 				
 		void handleEvent(Event *event);
 		
@@ -102,12 +103,13 @@ class EditCurve : public UIElement {
 		UIElement *pointsBase;
 		vector<EditPoint*> points;
 
+		ResourcePool *resourcePool;
 		unsigned int mode;
 };
 
 class CurveEditor : public UIWindow {
 	public:
-		CurveEditor();
+		CurveEditor(Core *core, ResourcePool *pool);
 		~CurveEditor();
 		
 		void handleEvent(Event *event);		
@@ -133,14 +135,15 @@ class CurveEditor : public UIWindow {
 		
 		unsigned int mode;
 		UIRect *bg;
-		
+		ResourcePool *resourcePool;
+	
 		EditCurve *selectedCurve;
 		std::vector<EditCurve*> curves;
 };
 
 class EditorHolder : public UIElement {
 	public:
-		EditorHolder(PolycodeProject *project, PolycodeEditorManager *editorManager, EditorHolder *parentHolder);
+		EditorHolder(Core *core, ResourcePool *pool, PolycodeProject *project, PolycodeEditorManager *editorManager, EditorHolder *parentHolder);
 		~EditorHolder();
 		
 		ObjectEntry *getEditorHolderConfig();
@@ -157,7 +160,7 @@ class EditorHolder : public UIElement {
 		void _mergeSides(EditorHolder *mainHolder);
 		void mergeSides(EditorHolder *mainHolder);
 		
-		void Update();
+		void Update(Number elapsed);
 		void setActive(bool val);
 				
 		void updateFileSelector();
@@ -191,7 +194,9 @@ class EditorHolder : public UIElement {
 		
 		UIImageButton *closeFileButton;		
 		UIComboBox *currentFileSelector;
-		
+	
+		ResourcePool *resourcePool;
+	
 		bool displayFilePathInSelector;
 		bool initialUpdate;
 		bool isActive;
@@ -199,7 +204,7 @@ class EditorHolder : public UIElement {
 
 class PolycodeProjectTab : public UIElement {
 	public:
-		PolycodeProjectTab(String caption, PolycodeProject *project, PolycodeEditorManager *editorManager);
+		PolycodeProjectTab(Core *core, ResourcePool *pool, String caption, PolycodeProject *project, PolycodeEditorManager *editorManager);
 		~PolycodeProjectTab();
 		
 		void handleEvent(Event *event);
@@ -231,7 +236,7 @@ class PolycodeProjectTab : public UIElement {
 
 class PolycodeTabButton : public UIElement {
 	public:
-		PolycodeTabButton(PolycodeProjectTab *tab);
+		PolycodeTabButton(Core *core, ResourcePool *pool, PolycodeProjectTab *tab);
 		~PolycodeTabButton();
 
 		void setActive(bool val);
@@ -253,7 +258,7 @@ class PolycodeTabButton : public UIElement {
 
 class PolycodeProjectFrame : public UIElement {
 	public:
-		PolycodeProjectFrame(PolycodeProject *project, PolycodeEditorManager *editorManager);
+		PolycodeProjectFrame(Core *core, ResourcePool *pool, PolycodeProject *project, PolycodeEditorManager *editorManager);
 		~PolycodeProjectFrame();
 		
 		PolycodeProject *getProject();
@@ -267,7 +272,7 @@ class PolycodeProjectFrame : public UIElement {
 		void showNextTab();
 		void showPreviousTab();
 		
-		void Update();
+		void Update(Number elapsed);
 								
 		PolycodeProjectTab *getActiveTab();
 		void handleEvent(Event *event);
@@ -294,17 +299,18 @@ class PolycodeProjectFrame : public UIElement {
 		std::vector<PolycodeTabButton*> tabButtons;
 		
 		PolycodeProjectTab *tabToClose;
+		ResourcePool *resourcePool;
 };
 
 class PolycodeFrame : public UIElement {
 public:
 	
-	PolycodeFrame(PolycodeEditorManager *editorManager);
+	PolycodeFrame(Core *core, ResourcePool *pool, PolycodeEditorManager *editorManager);
 	~PolycodeFrame();
 	
 	void Resize(int x, int y);
 
-	void Update();
+	void Update(Number elapsed);
 	
 	void showModal(UIWindow *modalChild);
 	void hideModal();
@@ -374,6 +380,7 @@ public:
 	bool isShowingConsole();
 	Number getConsoleSize();
 	
+	
 private:
 	
 	Number consoleSize;
@@ -408,5 +415,7 @@ private:
 	
 	PolycodeProjectFrame* activeProjectFrame;
 	std::vector<PolycodeProjectFrame*> projectFrames;
+	
+	ResourcePool *resourcePool;
 
 };

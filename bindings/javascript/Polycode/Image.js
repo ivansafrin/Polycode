@@ -1,6 +1,6 @@
-function Image(fileName) {
+function Image() {
 	if(arguments[0] != "__skip_ptr__") {
-		this.__ptr = Polycode.Image(fileName)
+		this.__ptr = Polycode.Image()
 	}
 }
 
@@ -8,14 +8,6 @@ Image.IMAGE_RGB = 0
 Image.IMAGE_RGBA = 1
 Image.IMAGE_FP16 = 2
 
-
-Image.prototype.loadImage = function(fileName) {
-	return Polycode.Image_loadImage(this.__ptr, fileName)
-}
-
-Image.prototype.saveImage = function(fileName) {
-	return Polycode.Image_saveImage(this.__ptr, fileName)
-}
 
 Image.prototype.createEmpty = function(width,height,fillColor) {
 	Polycode.Image_createEmpty(this.__ptr, width, height, fillColor)
@@ -97,8 +89,4 @@ Image.prototype.getHeight = function() {
 
 Image.prototype.premultiplyAlpha = function() {
 	Polycode.Image_premultiplyAlpha(this.__ptr)
-}
-
-Image.prototype.savePNG = function(fileName) {
-	return Polycode.Image_savePNG(this.__ptr, fileName)
 }

@@ -22,6 +22,7 @@
  
 #pragma once
 #include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyConfig.h"
 #include "polycode/modules/ui/PolyUIBox.h"
 #include "polycode/modules/ui/PolyUIElement.h"
 
@@ -29,10 +30,10 @@ namespace Polycode {
 	
 	class _PolyExport UIHScrollBar : public UIElement {
 	public:
-		UIHScrollBar(Number width, Number height, Number initialRatio);
+		UIHScrollBar(Core *core, ResourcePool *resourcePool, Number width, Number height, Number initialRatio);
 		virtual ~UIHScrollBar();
 		
-		void Update();
+		void Update(Number elapsed);
 		Number getScrollValue();
 		void handleEvent(Event *event);
 		void Resize(int newWidth);

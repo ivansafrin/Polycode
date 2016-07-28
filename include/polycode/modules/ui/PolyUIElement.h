@@ -24,6 +24,7 @@
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyEntity.h"
 #include "polycode/core/PolySceneLabel.h"
+#include "polycode/core/PolyConfig.h"
 #include <memory>
 
 namespace Polycode {
@@ -34,8 +35,8 @@ namespace Polycode {
 	 */
 	class _PolyExport UIElement : public Entity {
 		public:
-			UIElement();
-			UIElement(Number width, Number height);
+			UIElement(Core *core);
+			UIElement(Core *core, Number width, Number height);
 			virtual ~UIElement();
 			
 			virtual void Resize(Number width, Number height);
@@ -83,14 +84,15 @@ namespace Polycode {
 			
 			std::vector<UIElement*> focusChildren;
 			UIElement *focusParent;
-			
+		
+			Core *core;
 	};
 
 	class _PolyExport UIRect : public UIElement {
 		public:
-			UIRect(String fileName);
-			UIRect(String fileName, Number width, Number height);
-			UIRect(Number width, Number height);
+			UIRect(Core *core, ResourcePool *pool, String fileName);
+			UIRect(Core *core, ResourcePool *pool, String fileName, Number width, Number height);
+			UIRect(Core *core, ResourcePool *pool, Number width, Number height);
 			void initRect(Number width, Number height);
 			~UIRect();
 			void Resize(Number width, Number height);
@@ -105,6 +107,7 @@ namespace Polycode {
 			std::shared_ptr<Texture> getTexture();			
 		protected:
 		
+			ResourcePool *resourcePool;
 			Number imageWidth;
 			Number imageHeight;
 		
@@ -119,7 +122,8 @@ namespace Polycode {
 	
 	class _PolyExport UILabel : public UIElement {
 		public:
-			UILabel(const String& text, int size=-1, const String& fontName = "sans", int amode = 0);
+			UILabel(Core *core, ResourcePool *pool, const String& text, int size=-1, const String& fontName = "sans", int amode = 0);
+		
 			void setText(const String& text);
 			void setLabelColor(const Color &color);
 			Label *getLabel();
@@ -136,7 +140,7 @@ namespace Polycode {
 	
 	class _PolyExport UIMultilineLabel : public UIElement {
 	public:
-		UIMultilineLabel(const String& text, int size, int spacing, const String& fontName = "sans", int amode = 0);
+		UIMultilineLabel(Core *core, ResourcePool *resourcePool, const String& text, int size, int spacing, const String& fontName = "sans", int amode = 0);
 		void setText(const String& text);
 		String getText();
 		
@@ -177,6 +181,7 @@ namespace Polycode {
 		~UIMultilineLabel();
 	protected:
 		
+		ResourcePool *resourcePool;
 		int labelSize;
 		String labelFontName;
 		int labelAAMode;
@@ -189,8 +194,8 @@ namespace Polycode {
 		
 	class _PolyExport UIImage : public UIRect {
 		public:
-			UIImage(String imagePath);
-			UIImage(String imagePath, int width, int height);
+			UIImage(Core *core, ResourcePool *pool, String imagePath);
+			UIImage(Core *core, ResourcePool *pool, String imagePath, int width, int height);
 	};
 	
 }

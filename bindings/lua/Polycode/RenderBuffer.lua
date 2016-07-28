@@ -1,6 +1,32 @@
 class "RenderBuffer"
 
 
+function RenderBuffer:__getvar(name)
+	if name == "platformData" then
+		local retVal = Polycode.RenderBuffer_get_platformData(self.__ptr)
+		if retVal == nil then return nil end
+		local __c = _G["RendererPlatformData"]("__skip_ptr__")
+		__c.__ptr = retVal
+		return __c
+	elseif name == "depthBufferPlatformData" then
+		local retVal = Polycode.RenderBuffer_get_depthBufferPlatformData(self.__ptr)
+		if retVal == nil then return nil end
+		local __c = _G["RendererPlatformData"]("__skip_ptr__")
+		__c.__ptr = retVal
+		return __c
+	end
+end
+
+function RenderBuffer:__setvar(name,value)
+	if name == "platformData" then
+		Polycode.RenderBuffer_set_platformData(self.__ptr, value.__ptr)
+		return true
+	elseif name == "depthBufferPlatformData" then
+		Polycode.RenderBuffer_set_depthBufferPlatformData(self.__ptr, value.__ptr)
+		return true
+	end
+	return false
+end
 function RenderBuffer:RenderBuffer(...)
 	local arg = {...}
 	for k,v in pairs(arg) do

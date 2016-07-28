@@ -33,6 +33,7 @@ namespace Polycode {
 
 	class ServerClient;
 	class ServerWorld;
+    class Core;
 
 	class _PolyExport ServerClientEvent : public Event {
 	public:
@@ -92,14 +93,12 @@ namespace Polycode {
 			/**
 			* Constructor.
 			* @param port The local port to listen for client connections on.
-			* @param rate How many times per second to send out server data to clients.
 			* @param world An instance of the server data provider. @see ServerWorld
 			*/
-			Server(unsigned int port, unsigned int rate, ServerWorld *world = NULL);
+			Server(Core *core, unsigned int port, ServerWorld *world = NULL);
 			~Server();
 		
-			void handlePacket(Packet *packet, PeerConnection *connection);
-			void handleEvent(Event *event); 
+			void handlePacket(Packet *packet, PeerConnection *connection); 
 			void handlePeerConnection(PeerConnection *connection);
 			void DisconnectClient(ServerClient *client);
 
@@ -119,6 +118,8 @@ namespace Polycode {
 			* @see Peer::sendReliableData
 			*/
 			void sendReliableDataToClient(ServerClient *client, char *data, unsigned int size, unsigned short type);
+        
+            void updateServer(Number elapsed);
 
 			/**
 			* @see Peer::sendReliableDataToAll
@@ -127,7 +128,6 @@ namespace Polycode {
 		
 	protected:
 		
-		Timer *rateTimer;
 		ServerWorld *world;
 		vector<ServerClient*> clients;
 	};

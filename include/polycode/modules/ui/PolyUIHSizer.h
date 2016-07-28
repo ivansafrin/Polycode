@@ -31,7 +31,7 @@ namespace Polycode {
 	
 	class _PolyExport UIHSizer : public UIElement {
 		public:
-			UIHSizer(Number width, Number height, Number mainWidth, bool leftSizer);
+			UIHSizer(Core *core, ResourcePool *resourcePool, Number width, Number height, Number mainWidth, bool leftSizer);
 			virtual ~UIHSizer();
 			
 			void handleEvent(Event *event);
@@ -61,11 +61,10 @@ namespace Polycode {
 		
 			bool proportionalResize;
 		
+			ResourcePool *resourcePool;
+		
 			Entity *childElements;			
 			Number mainWidth;
-			
-			CoreInput *coreInput;
-			
 			Number minimumSize;
 			
 			bool resizing;

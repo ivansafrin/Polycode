@@ -24,7 +24,6 @@
 #include "polycode/core/PolyLogger.h"
 #include "polycode/core/PolyShader.h"
 #include "polycode/core/PolyRenderer.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyCore.h"
 #include "polycode/core/PolyTexture.h"
 #include "polycode/core/PolyMesh.h"
@@ -98,13 +97,13 @@ void Material::clearShaders() {
 	renderTargets.clear();		
 }
 
-void Material::recreateRenderTargets() {
+void Material::recreateRenderTargets(const Vector2 &screenSize) {
 	for(int i=0; i < renderTargets.size(); i++) {
-		recreateRenderTarget(renderTargets[i]);
+		recreateRenderTarget(renderTargets[i], screenSize);
 	}
 }
 
-void Material::recreateRenderTarget(ShaderRenderTarget *renderTarget) {
+void Material::recreateRenderTarget(ShaderRenderTarget *renderTarget, const Vector2 &screenSize) {
 	int textureWidth;
 	int textureHeight;
 	std::shared_ptr<RenderBuffer> newBuffer;
@@ -126,8 +125,8 @@ void Material::recreateRenderTarget(ShaderRenderTarget *renderTarget) {
 			textureWidth = (int) (renderTarget->normalizedWidth * safeWidth);
 			textureHeight = (int) (renderTarget->normalizedHeight * safeHeight);		
 		} else {
-			textureWidth = (int) (CoreServices::getInstance()->getCore()->getXRes() * safeWidth * Services()->getRenderer()->getBackingResolutionScaleX());
-			textureHeight = (int) (CoreServices::getInstance()->getCore()->getYRes() * safeHeight * Services()->getRenderer()->getBackingResolutionScaleY());
+			textureWidth = (int) (safeWidth * screenSize.x);
+			textureHeight = (int) (safeHeight * screenSize.y);
 		}
 	} else {
 		textureWidth = (int)renderTarget->width;

@@ -23,12 +23,11 @@
 #include "polycode/modules/ui/PolyUIIconSelector.h"
 #include "polycode/core/PolyConfig.h"
 #include "polycode/core/PolyInputEvent.h"
-#include "polycode/core/PolyCoreServices.h"
 
 
-UIIconSelector::UIIconSelector(Number height) : UIElement() {
+UIIconSelector::UIIconSelector(Core *core, ResourcePool *resourcePool, Number height) : UIElement(core), resourcePool(resourcePool) {
 	
-	Config *conf = CoreServices::getInstance()->getConfig();
+	ConfigRef conf = core->getConfig();
 	
 	Number st = conf->getNumericValue("Polycode", "uiIconSelectorBgT");
 	Number sr = conf->getNumericValue("Polycode", "uiIconSelectorBgR");
@@ -38,7 +37,7 @@ UIIconSelector::UIIconSelector(Number height) : UIElement() {
 	paddingX = conf->getNumericValue("Polycode", "uiIconSelectorPaddingX");
 	paddingY = conf->getNumericValue("Polycode", "uiIconSelectorPaddingY");
 	
-	bgRect = new UIBox(conf->getStringValue("Polycode", "uiIconSelectorBg"),
+	bgRect = new UIBox(core, resourcePool, conf->getStringValue("Polycode", "uiIconSelectorBg"),
 						   st,sr,sb,sl,
 						   10, 10);
 	addChild(bgRect);
@@ -53,7 +52,7 @@ UIIconSelector::UIIconSelector(Number height) : UIElement() {
 	sb = conf->getNumericValue("Polycode", "uiIconSelectorBoxB");
 	sl = conf->getNumericValue("Polycode", "uiIconSelectorBoxL");
 	
-	selectorRect = new UIBox(conf->getStringValue("Polycode", "uiIconSelectorBox"),
+	selectorRect = new UIBox(core, resourcePool, conf->getStringValue("Polycode", "uiIconSelectorBox"),
 							 st,sr,sb,sl,
 							 selectorSize, selectorSize);
 	addChild(selectorRect);
@@ -63,7 +62,7 @@ UIIconSelector::UIIconSelector(Number height) : UIElement() {
 }
 
 void UIIconSelector::addIcon(String fileName) {
-	UIImageButton *newIcon = new UIImageButton(fileName, 1.0, selectorSize, selectorSize);
+	UIImageButton *newIcon = new UIImageButton(core, resourcePool, fileName, 1.0, selectorSize, selectorSize);
 	icons.push_back(newIcon);
 	addChild(newIcon);
 	newIcon->addEventListener(this, UIEvent::CLICK_EVENT);

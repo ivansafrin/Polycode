@@ -23,7 +23,7 @@
 #include "polycode/ide/PolycodeProjectManager.h"
 #include "polycode/ide/PolycodeToolLauncher.h"
 
-PolycodeProjectManager::PolycodeProjectManager() : EventDispatcher() {
+PolycodeProjectManager::PolycodeProjectManager(Core *core) : core(core) {
 	activeProject = NULL;
 	activeFolder = "";
 	selectedFile = "";
@@ -64,14 +64,14 @@ PolycodeProject* PolycodeProjectManager::openProject(String path) {
 	vector<String> bits2 = bits[bits.size()-1].split(".");
 	String projectName = bits2[bits2.size()-2];
 	
-	PolycodeProject* newProject = new PolycodeProject(projectName, projectPath, path);
+	PolycodeProject* newProject = new PolycodeProject(core, projectName, projectPath, path);
 	projects.push_back(newProject);
 	
 	for(int i=0; i < newProject->data.fonts.size(); i++) {
 		String fontPath = projectPath+"/"+newProject->data.fonts[i].fontPath;
 		String fontName = newProject->data.fonts[i].fontName;
-		ResourcePool *pool = Services()->getResourceManager()->getGlobalPool();
-		pool->loadResourceWithName(fontPath, fontName);
+		// TODO: load into project's resource pool
+		core->getResourceManager()->getGlobalPool()->loadResourceWithName(fontPath, fontName);
 	}
 	
 	setActiveProject(newProject);
@@ -109,12 +109,12 @@ void PolycodeProjectManager::setActiveProject(PolycodeProject* project) {
 	if(project != activeProject) {
 		
 		if(activeProject != NULL) {
-			Services()->getCore()->removeFileSource("archive", activeProject->getRootFolder());
+			core->removeFileSource("archive", activeProject->getRootFolder());
 		}
 
 		activeProject = project;
 		if(project){
-			Services()->getCore()->addFileSource("archive", activeProject->getRootFolder());
+			core->addFileSource("archive", activeProject->getRootFolder());
 		}
 		
 		dispatchEvent(new Event(), Event::CHANGE_EVENT);
@@ -128,12 +128,12 @@ void PolycodeProjectManager::createNewFile(String templatePath, String newFileNa
 	std::vector<String> bits = templatePath.split(".");
 	String extension = bits[bits.size()-1];
 	
-	CoreServices::getInstance()->getCore()->copyDiskItem(templatePath, activeFolder+"/"+newFileName+"."+extension); 
+	core->copyDiskItem(templatePath, activeFolder+"/"+newFileName+"."+extension); 
 }
 
 void PolycodeProjectManager::createNewProject(String templateFolder, String projectName, String projectLocation) {	
 
-	CoreServices::getInstance()->getCore()->createFolder(projectLocation);		
+	core->createFolder(projectLocation);		
 	
 	// NOCMAKE_TODO:
 	/*
@@ -146,52 +146,52 @@ void PolycodeProjectManager::createNewProject(String templateFolder, String proj
 	}	
 	*/
 	
-	CoreServices::getInstance()->getCore()->copyDiskItem(CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory()+"/"+templateFolder, projectLocation+"/"+projectName);
-	CoreServices::getInstance()->getCore()->moveDiskItem(projectLocation+"/"+projectName+"/template.polyproject",  projectLocation+"/"+projectName+"/"+projectName+".polyproject");
+	core->copyDiskItem(core->getDefaultWorkingDirectory()+"/"+templateFolder, projectLocation+"/"+projectName);
+	core->moveDiskItem(projectLocation+"/"+projectName+"/template.polyproject",  projectLocation+"/"+projectName+"/"+projectName+".polyproject");
 	openProject(projectLocation+"/"+projectName+"/"+projectName+".polyproject");	
 }
 
 void PolycodeProjectManager::exportProject(PolycodeProject *project, String exportPath, bool macOS, bool windows, bool linux_, bool compileScripts) {
 
-	String polycodeBasePath = CoreServices::getInstance()->getCore()->getDefaultWorkingDirectory();
+	String polycodeBasePath = core->getDefaultWorkingDirectory();
 
 	String publishPath = polycodeBasePath+"/Standalone/Publish";
 	
 	String polyappPath = PolycodeToolLauncher::generateTempPath(project) + ".polyapp";
-	PolycodeToolLauncher::buildProject(project, polyappPath, compileScripts);	
+	PolycodeToolLauncher::buildProject(core, project, polyappPath, compileScripts);
 	
 	if(macOS) {
 		PolycodeConsole::print("Exporting Mac version to "+exportPath+"/Mac \n");
 		
-		CoreServices::getInstance()->getCore()->createFolder(exportPath+"/Mac");
+		core->createFolder(exportPath+"/Mac");
 		
 		String appPath = exportPath+"/Mac/"+project->getProjectName()+".app";
 		
-		CoreServices::getInstance()->getCore()->createFolder(appPath);
-		CoreServices::getInstance()->getCore()->createFolder(appPath+"/Contents");
-		CoreServices::getInstance()->getCore()->createFolder(appPath+"/Contents/MacOS");
-		CoreServices::getInstance()->getCore()->copyDiskItem(publishPath+"/Mac/StandalonePlayer.app/Contents/MacOS/StandalonePlayer", appPath+"/Contents/MacOS/"+project->getProjectName());
-		CoreServices::getInstance()->getCore()->copyDiskItem(publishPath+"/Mac/StandalonePlayer.app/Contents/Resources", appPath+"/Contents/Resources");
-		CoreServices::getInstance()->getCore()->copyDiskItem(publishPath+"/Mac/StandalonePlayer.app/Contents/Info.plist", appPath+"/Contents/Info.plist");
-		CoreServices::getInstance()->getCore()->removeDiskItem(appPath+"/Contents/Resources/main.polyapp");
-		CoreServices::getInstance()->getCore()->copyDiskItem(polyappPath, appPath+"/Contents/Resources/main.polyapp");
+		core->createFolder(appPath);
+		core->createFolder(appPath+"/Contents");
+		core->createFolder(appPath+"/Contents/MacOS");
+		core->copyDiskItem(publishPath+"/Mac/StandalonePlayer.app/Contents/MacOS/StandalonePlayer", appPath+"/Contents/MacOS/"+project->getProjectName());
+		core->copyDiskItem(publishPath+"/Mac/StandalonePlayer.app/Contents/Resources", appPath+"/Contents/Resources");
+		core->copyDiskItem(publishPath+"/Mac/StandalonePlayer.app/Contents/Info.plist", appPath+"/Contents/Info.plist");
+		core->removeDiskItem(appPath+"/Contents/Resources/main.polyapp");
+		core->copyDiskItem(polyappPath, appPath+"/Contents/Resources/main.polyapp");
 		
 	}
 
 	if(windows) {
 		PolycodeConsole::print("Exporting Windows version to "+exportPath+"/Win \n");
-		CoreServices::getInstance()->getCore()->copyDiskItem(publishPath+"/Win/*", exportPath+"/Win");
-		CoreServices::getInstance()->getCore()->moveDiskItem(exportPath+"/Win/StandalonePlayer.exe", exportPath+"/Win/"+project->getProjectName()+".exe");
-		CoreServices::getInstance()->getCore()->removeDiskItem(exportPath+"/Win/main.polyapp");
-		CoreServices::getInstance()->getCore()->copyDiskItem(polyappPath, exportPath+"/Win/main.polyapp");
+		core->copyDiskItem(publishPath+"/Win/*", exportPath+"/Win");
+		core->moveDiskItem(exportPath+"/Win/StandalonePlayer.exe", exportPath+"/Win/"+project->getProjectName()+".exe");
+		core->removeDiskItem(exportPath+"/Win/main.polyapp");
+		core->copyDiskItem(polyappPath, exportPath+"/Win/main.polyapp");
 	}
 
 	if(linux_) {
 		PolycodeConsole::print("Exporting Linux version to "+exportPath+"/Linux \n");
-		CoreServices::getInstance()->getCore()->copyDiskItem(publishPath+"/Linux", exportPath+"/Linux");
-		CoreServices::getInstance()->getCore()->moveDiskItem(exportPath+"/Linux/StandalonePlayer", exportPath+"/Linux/"+project->getProjectName());
-		CoreServices::getInstance()->getCore()->removeDiskItem(exportPath+"/Linux/main.polyapp");
-		CoreServices::getInstance()->getCore()->copyDiskItem(polyappPath, exportPath+"/Linux/main.polyapp");
+		core->copyDiskItem(publishPath+"/Linux", exportPath+"/Linux");
+		core->moveDiskItem(exportPath+"/Linux/StandalonePlayer", exportPath+"/Linux/"+project->getProjectName());
+		core->removeDiskItem(exportPath+"/Linux/main.polyapp");
+		core->copyDiskItem(polyappPath, exportPath+"/Linux/main.polyapp");
 	}
 }
 

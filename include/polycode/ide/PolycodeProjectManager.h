@@ -31,7 +31,7 @@ using namespace Polycode;
 
 class PolycodeProjectManager : public EventDispatcher {
 	public:
-		PolycodeProjectManager();
+		PolycodeProjectManager(Core *core);
 		~PolycodeProjectManager();
 		
 	void createNewFile(String templatePath, String newFileName);
@@ -57,7 +57,7 @@ class PolycodeProjectManager : public EventDispatcher {
 	
 protected:
 	
-	
+	Core *core;
 	PolycodeProject* activeProject;;
 	vector<PolycodeProject*> projects;
 	

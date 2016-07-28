@@ -22,7 +22,6 @@
 
 #include "polycode/core/PolyCoreInput.h"
 #include "polycode/core/PolyInputEvent.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyCore.h"
 
 namespace Polycode {
@@ -42,7 +41,6 @@ namespace Polycode {
 		simulateTouchWithMouse = false;
 		simulateTouchAsPen = false;
 		simulateMouseWithTouch = false;
-		ignoreOffScreenTouch = false;
 		keyRepeat = true;
 	}
 	
@@ -270,12 +268,6 @@ namespace Polycode {
 
 	
 	void CoreInput::touchesBegan(TouchInfo touch, std::vector<TouchInfo> touches, int ticks) {
-		if(ignoreOffScreenTouch) {
-			Core *core = CoreServices::getInstance()->getCore();
-			if(touch.position.x < 0 || touch.position.x > core->getXRes() || touch.position.y < 0 || touch.position.y > core->getYRes()) {
-				return;
-			}
-		}
 		InputEvent *evt = new InputEvent();
 		evt->touch = touch;		
 		evt->touches = touches;
@@ -288,12 +280,6 @@ namespace Polycode {
 	}
 	
 	void CoreInput::touchesMoved(TouchInfo touch, std::vector<TouchInfo> touches, int ticks) {
-		if(ignoreOffScreenTouch) {
-			Core *core = CoreServices::getInstance()->getCore();
-			if(touch.position.x < 0 || touch.position.x > core->getXRes() || touch.position.y < 0 || touch.position.y > core->getYRes()) {
-				return;
-			}
-		}	
 		InputEvent *evt = new InputEvent();
 		evt->touch = touch;
 		evt->touches = touches;
@@ -305,12 +291,6 @@ namespace Polycode {
 	}
 
 	void CoreInput::touchesEnded(TouchInfo touch, std::vector<TouchInfo> touches, int ticks) {
-		if(ignoreOffScreenTouch) {
-			Core *core = CoreServices::getInstance()->getCore();
-			if(touch.position.x < 0 || touch.position.x > core->getXRes() || touch.position.y < 0 || touch.position.y > core->getYRes()) {
-				return;
-			}
-		}	
 		InputEvent *evt = new InputEvent();
 		evt->touch = touch;		
 		evt->touches = touches;

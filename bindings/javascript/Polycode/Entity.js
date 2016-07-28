@@ -213,8 +213,8 @@ Entity.prototype.initEntity = function() {
 	Polycode.Entity_initEntity(this.__ptr)
 }
 
-Entity.prototype.Update = function() {
-	Polycode.Entity_Update(this.__ptr)
+Entity.prototype.Update = function(elapsed) {
+	Polycode.Entity_Update(this.__ptr, elapsed)
 }
 
 Entity.prototype.fixedUpdate = function() {
@@ -541,8 +541,8 @@ Entity.prototype.getInverseY = function() {
 	return Polycode.Entity_getInverseY(this.__ptr)
 }
 
-Entity.prototype.doUpdates = function() {
-	Polycode.Entity_doUpdates(this.__ptr)
+Entity.prototype.doUpdates = function(elapsed) {
+	Polycode.Entity_doUpdates(this.__ptr, elapsed)
 }
 
 Entity.prototype.doFixedUpdates = function() {

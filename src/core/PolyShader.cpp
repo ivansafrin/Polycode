@@ -22,7 +22,6 @@
 
 #include "polycode/core/PolyShader.h"
 #include "polycode/core/PolyMatrix4.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyRenderer.h"
 #include "polycode/core/PolyTexture.h"
 #include "polycode/core/PolyCore.h"
@@ -99,28 +98,23 @@ ShaderProgram::ShaderProgram(const String &fileName) : Resource(Resource::RESOUR
 }
 
 ShaderProgram::~ShaderProgram() {
-	if(platformData) {
-		Services()->getRenderer()->destroyProgramPlatformData(platformData);
-	}
 }
 
-void ShaderProgram::reloadResource() {
+void ShaderProgram::reloadResource(Core *core) {
 	reloadProgram();
-	Resource::reloadResource(); 
+	Resource::reloadResource(core);
 }
 
 
 ShaderBinding::ShaderBinding() : targetShader(NULL) {
-	accessMutex = Services()->getCore()->createMutex();
 }
 
 ShaderBinding::~ShaderBinding() {
-	accessMutex->lock();
+	accessMutex.lock();
 	for(int i=0; i < renderTargetBindings.size(); i++) {
 		delete renderTargetBindings[i];
 	}
-	accessMutex->unlock();
-	delete accessMutex;
+	accessMutex.unlock();
 }
 
 unsigned int ShaderBinding::getNumLocalParams() {
@@ -140,15 +134,15 @@ std::shared_ptr<LocalShaderParam> ShaderBinding::getLocalParam(unsigned int inde
 }
 
 std::shared_ptr<LocalShaderParam> ShaderBinding::getLocalParamByName(const String& name) {
-	accessMutex->lock();
+	accessMutex.lock();
 	for(int i=0; i < localParams.size(); i++) {
 		if(localParams[i]->name == name) {
 			std::shared_ptr<LocalShaderParam> retParam = localParams[i];
-			accessMutex->unlock();
+			accessMutex.unlock();
 			return retParam;
 		}
 	}
-	accessMutex->unlock();
+	accessMutex.unlock();
 	return NULL;
 }
 
@@ -173,9 +167,9 @@ std::shared_ptr<LocalShaderParam> ShaderBinding::addParam(int type, const String
 		newParam->ownsPointer = false;
 	}
 	
-	accessMutex->lock();
+	accessMutex.lock();
 	localParams.push_back(newParam);
-	accessMutex->unlock();
+	accessMutex.unlock();
 	
 	return newParam;
 }
@@ -218,9 +212,9 @@ std::shared_ptr<LocalShaderParam> ShaderBinding::addParamFromData(const String &
 	
 	newParam->setParamValueFromString(type, data);
 	
-	accessMutex->lock();
+	accessMutex.lock();
 	localParams.push_back(newParam);
-	accessMutex->unlock();
+	accessMutex.unlock();
 	
 	return newParam;
 }
@@ -232,9 +226,9 @@ std::shared_ptr<LocalShaderParam> ShaderBinding::addParamPointer(int type, const
 	newParam->type = type;
 	newParam->param = NULL;
 	newParam->ownsPointer = false;
-	accessMutex->lock();
+	accessMutex.lock();
 	localParams.push_back(newParam);
-	accessMutex->unlock();
+	accessMutex.unlock();
 	return newParam;
 }
 
@@ -292,12 +286,12 @@ void ShaderBinding::removeRenderTargetBinding(RenderTargetBinding *binding) {
 }
 
 void ShaderBinding::copyTo(ShaderBinding *targetBinding) {
-	targetBinding->accessMutex->lock();
+	targetBinding->accessMutex.lock();
 	for(int i=0; i < localParams.size(); i++) {
 		std::shared_ptr<LocalShaderParam> copyParam = localParams[i]->Copy();
 		targetBinding->localParams.push_back(copyParam);
 	}
-   targetBinding->accessMutex->unlock();
+   targetBinding->accessMutex.unlock();
 }
 
 unsigned int ShaderBinding::getNumRenderTargetBindings() {
@@ -340,12 +334,6 @@ RenderTargetBinding *ShaderBinding::getDepthTargetBinding(unsigned int index) {
 	return depthTargetBindings[index];
 }
 
-std::shared_ptr<Texture> ShaderBinding::loadTextureForParam(const String &paramName, const String &fileName) {
-	ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
-	std::shared_ptr<Texture> texture = std::static_pointer_cast<Texture>(globalPool->loadResource(fileName));
-	setTextureForParam(paramName, texture);
-	return texture;
-}
 
 void ShaderBinding::setTextureForParam(const String &paramName, std::shared_ptr<Texture> texture) {
 	if(!texture) {
@@ -370,9 +358,9 @@ void ShaderBinding::setCubemapForParam(const String &paramName, std::shared_ptr<
 void ShaderBinding::removeParam(const String &name) {
 	for(int i=0; i < localParams.size(); i++) {
 		if(localParams[i]->name == name) {
-			accessMutex->lock();
+			accessMutex.lock();
 			localParams.erase(localParams.begin()+i);
-			accessMutex->unlock();
+			accessMutex.unlock();
 			return;
 		}
 	}
@@ -421,9 +409,6 @@ int Shader::getExpectedParamType(String name) {
 }
 
 Shader::~Shader() {
-	if(platformData) {
-		Services()->getRenderer()->destroyShaderPlatformData(platformData);
-	}
 }
 
 int Shader::getType() const {
@@ -473,43 +458,43 @@ void LocalShaderParam::setNumber(Number x) {
 	if(type != ProgramParam::PARAM_NUMBER) {
 		return;
 	}
-    accessMutex->lock();
+    accessMutex.lock();
 	memcpy(data, &x, sizeof(x));
-    accessMutex->unlock();
+    accessMutex.unlock();
 }
 
 void LocalShaderParam::setVector2(Vector2 x) {
 	if(type != ProgramParam::PARAM_VECTOR2) {
 		return;
 	}
-    accessMutex->lock();
+    accessMutex.lock();
 	memcpy(data, &x, sizeof(x));
-    accessMutex->unlock();
+    accessMutex.unlock();
 }
 
 void LocalShaderParam::setVector3(Vector3 x) {
 	if(type != ProgramParam::PARAM_VECTOR3) {
 		return;
 	}
-    accessMutex->lock();
+    accessMutex.lock();
 	memcpy(data, &x, sizeof(x));
-    accessMutex->unlock();
+    accessMutex.unlock();
 }
 
 void LocalShaderParam::setMatrix4(Matrix4 x) {
 	if(type != ProgramParam::PARAM_MATRIX) {
 		return;
 	}
-    accessMutex->lock();
+    accessMutex.lock();
 	memcpy(data, &x, sizeof(x));
-    accessMutex->unlock();
+    accessMutex.unlock();
 }
 
 void LocalShaderParam::setMatrix4Array(std::vector<Matrix4> &x) {
     if(type != ProgramParam::PARAM_MATRIX) {
         return;
     }
-    accessMutex->lock();
+    accessMutex.lock();
     if(arraySize > 0) {
         delete[] ((Matrix4*) data);
     } else {
@@ -521,16 +506,16 @@ void LocalShaderParam::setMatrix4Array(std::vector<Matrix4> &x) {
         ((Matrix4*)data)[i] = x[i];
     }
 //    memcpy(data, &x[0], sizeof(x));
-    accessMutex->unlock();
+    accessMutex.unlock();
 }
 
 void LocalShaderParam::setColor(Color x) {
 	if(type != ProgramParam::PARAM_COLOR) {
 		return;
 	}
-    accessMutex->lock();
+    accessMutex.lock();
 	static_cast<Color*>(data)->setColor(&x);
-    accessMutex->unlock();
+    accessMutex.unlock();
 }
 
 const String& Shader::getName() const {
@@ -541,13 +526,12 @@ LocalShaderParam::LocalShaderParam() {
 	data = NULL;
 	arraySize = 0;
 	ownsPointer = true;
-    accessMutex = Services()->getCore()->createMutex();
 }
 
 void LocalShaderParam::setTexture(std::shared_ptr<Texture> texture) {
-    accessMutex->lock();
+    accessMutex.lock();
 	texturePtr = texture;
-    accessMutex->unlock();
+    accessMutex.unlock();
 }
 
 std::shared_ptr<Texture> LocalShaderParam::getTexture() {
@@ -555,9 +539,9 @@ std::shared_ptr<Texture> LocalShaderParam::getTexture() {
 }
 
 void LocalShaderParam::setCubemap(std::shared_ptr<Cubemap> cubemap) {
-    accessMutex->lock();
+    accessMutex.lock();
 	cubemapPtr = cubemap;
-    accessMutex->unlock();
+    accessMutex.unlock();
 }
 
 std::shared_ptr<Cubemap> LocalShaderParam::getCubemap() {
@@ -565,7 +549,7 @@ std::shared_ptr<Cubemap> LocalShaderParam::getCubemap() {
 }
 
 LocalShaderParam::~LocalShaderParam() {
-    accessMutex->lock();
+    accessMutex.lock();
 	if(ownsPointer) {
 		switch(type) {
 			case ProgramParam::PARAM_NUMBER:
@@ -589,8 +573,7 @@ LocalShaderParam::~LocalShaderParam() {
 			break;
 		}
 	}
-    accessMutex->unlock();
-    delete accessMutex;
+    accessMutex.unlock();
 }
 
 std::shared_ptr<LocalShaderParam> LocalShaderParam::Copy() {
@@ -681,9 +664,12 @@ void LocalShaderParam::setParamValueFromString(int type, String pvalue) {
 			}
 			break;
 			case ProgramParam::PARAM_TEXTURE:
-				ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
+                //NO_CORE_SERVICES_TODO
+                /*
+				ResourcePool *globalPool = core->getResourceManager()->getGlobalPool();
 				std::shared_ptr<Texture> texture = std::static_pointer_cast<Texture>(globalPool->loadResource(pvalue));
 				setTexture(texture);
+                 */
 			break;
 		}
 }

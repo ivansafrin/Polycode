@@ -22,6 +22,7 @@
 
 #pragma once
 #include "polycode/core/PolyGlobals.h"
+#include "polycode/core/PolyConfig.h"
 #include "polycode/modules/ui/PolyUIElement.h"
 #include "polycode/modules/ui/PolyUIBox.h"
 
@@ -31,10 +32,10 @@ namespace Polycode {
 	public:
 		using UIElement::Resize;
 
-		UIVScrollBar(Number width, Number height, Number initialRatio);
+		UIVScrollBar(Core *core, ResourcePool *pool, Number width, Number height, Number initialRatio);
 		virtual ~UIVScrollBar();
 		
-		void Update();
+		void Update(Number elapsed);
 		Number getScrollValue();
 		void handleEvent(Event *event);
 		
@@ -54,10 +55,8 @@ namespace Polycode {
 		Number minHandleSize;
 		
 		void setHandleRatio(Number newRatio);
-
 		
-	private:		
-		
+	private:
 		Number tickSize;
 		
 		Number padding;

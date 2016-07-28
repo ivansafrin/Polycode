@@ -21,7 +21,6 @@
 */
 
 #include "polycode/core/PolyResourceManager.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyCubemap.h"
 #include "polycode/core/PolyLogger.h"
 #include "polycode/core/PolyMaterial.h"
@@ -43,11 +42,10 @@ using namespace Polycode;
 
 bool ResourcePool::defaultReloadResourcesOnModify = false;
 
-ResourcePool::ResourcePool() : fallbackPool(NULL), resourceSubscribers(0), ticksSinceCheck(0), deleteOnUnsubscribe(false), dispatchChangeEvents(false) {
-	
+ResourcePool::ResourcePool(Core *core) : fallbackPool(NULL), resourceSubscribers(0), ticksSinceCheck(0), deleteOnUnsubscribe(false), dispatchChangeEvents(false), core(core) {
 }
 
-ResourcePool::ResourcePool(const String &name, ResourcePool *fallbackPool) {
+ResourcePool::ResourcePool(Core *core, const String &name, ResourcePool *fallbackPool) : core(core) {
 	this->name = name;
 	this->fallbackPool = fallbackPool;
 	dispatchChangeEvents = false;
@@ -58,7 +56,7 @@ ResourcePool::ResourcePool(const String &name, ResourcePool *fallbackPool) {
 }
 
 ResourcePool::~ResourcePool() {
-	CoreServices::getInstance()->getResourceManager()->removeResourcePool(this);
+	core->getResourceManager()->removeResourcePool(this);
 }
 
 String ResourcePool::getName() {
@@ -119,8 +117,8 @@ TextureResourceLoader::TextureResourceLoader() {
 	extensions.push_back("psd");
 }
 
-std::shared_ptr<Resource> TextureResourceLoader::loadResource(const String &path,  ResourcePool *targetPool) {
-	Image *image = new Image(path);
+std::shared_ptr<Resource> TextureResourceLoader::loadResource(Core *core, const String &path,  ResourcePool *targetPool) {
+	Image *image = new Image(core, path);
 	std::shared_ptr<Texture> texture = std::make_shared<Texture>(image, Texture::clampDefault, Texture::mipmapsDefault);
 	delete image;
 	return texture;
@@ -188,7 +186,7 @@ std::shared_ptr<Shader> ResourcePool::createShaderFromXMLNode(TiXmlNode *node) {
 void ResourcePool::loadShadersFromFile(const String &fileName) {
 	std::vector<Shader*> retVector;
 	TiXmlDocument doc(fileName.c_str());
-	doc.LoadFile();
+	doc.LoadFile(core);
 	if (doc.Error()) {
 		Logger::log("XML Error: %s\n", doc.ErrorDesc());
 	}
@@ -236,7 +234,7 @@ std::shared_ptr<Cubemap> ResourcePool::cubemapFromXMLNode(TiXmlNode *node) {
 
 void ResourcePool::loadCubemapsFromFile(const String &fileName) {
 	TiXmlDocument doc(fileName.c_str());
-	doc.LoadFile();
+	doc.LoadFile(core);
 
 	if (doc.Error()) {
 		Logger::log("XML Error: %s\n", doc.ErrorDesc());
@@ -299,8 +297,8 @@ std::shared_ptr<Material> ResourcePool::materialFromXMLNode(TiXmlNode *node) {
 					ShaderRenderTarget *newTarget = new ShaderRenderTarget;
 					newTarget->id = pChildElement->Attribute("id");
 
-					newTarget->width = CoreServices::getInstance()->getCore()->getXRes();
-					newTarget->height = CoreServices::getInstance()->getCore()->getYRes();
+					newTarget->width = core->getXRes();
+					newTarget->height = core->getYRes();
 
 					newTarget->sizeMode = ShaderRenderTarget::SIZE_MODE_PIXELS;
 					if (pChildElement->Attribute("width") && pChildElement->Attribute("height")) {
@@ -319,7 +317,8 @@ std::shared_ptr<Material> ResourcePool::materialFromXMLNode(TiXmlNode *node) {
 
 					newTarget->normalizedWidth = -1;
 					newTarget->normalizedHeight = -1;
-					newMaterial->recreateRenderTarget(newTarget);
+                    Vector2 screenSize(core->getBackingXRes(), core->getBackingYRes());
+					newMaterial->recreateRenderTarget(newTarget, screenSize);
 					renderTargets.push_back(newTarget);
 				}
 			}
@@ -444,7 +443,7 @@ void ResourcePool::loadMaterialsFromFile(const String &fileName) {
 	std::vector<Material*> retVector;
 
 	TiXmlDocument doc(fileName.c_str());
-	doc.LoadFile();
+	doc.LoadFile(core);
 
 	if (doc.Error()) {
 		Logger::log("XML Error: %s\n", doc.ErrorDesc());
@@ -472,13 +471,13 @@ void ResourcePool::loadResourcesFromMaterialFile(const String &path) {
 void ResourcePool::loadResourcesFromFolderWithLoader(const String &folder, bool recursive, ResourceLoader *loader, const String &containingFolder) {
 	vector<OSFileEntry> resourceDir;
 	
-	resourceDir = Services()->getCore()->parseFolder(folder, false);
+	resourceDir = core->parseFolder(folder, false);
 	
 	for(int i=0; i < resourceDir.size(); i++) {
 		if(resourceDir[i].type == OSFileEntry::TYPE_FILE) {
 			std::shared_ptr<Resource> newResource;
 			if(loader->canHandleExtension(resourceDir[i].extension)) {
-				newResource = loader->loadResource(resourceDir[i].fullPath, this);
+				newResource = loader->loadResource(core, resourceDir[i].fullPath, this);
 			}
 			if(newResource) {
 				if(newResource->getResourceName() == "") {
@@ -507,10 +506,10 @@ std::shared_ptr<Resource> ResourcePool::loadResource(const String &path) {
 	}
 	
 	OSFileEntry entry(path, OSFileEntry::TYPE_FILE);
-	for(int r = 0; r < Services()->getResourceManager()->getNumResourceLoaders(); r++) {
-		ResourceLoader *loader = Services()->getResourceManager()->getResourceLoaderAtIndex(r);
+	for(int r = 0; r < core->getResourceManager()->getNumResourceLoaders(); r++) {
+		ResourceLoader *loader = core->getResourceManager()->getResourceLoaderAtIndex(r);
 		if(loader->canHandleExtension(entry.extension)) {
-			newResource = loader->loadResource(entry.fullPath, this);
+			newResource = loader->loadResource(core, entry.fullPath, this);
 			if(newResource) {
 				newResource->setResourceName(entry.name);
 				newResource->setResourcePath(entry.fullPath);
@@ -529,10 +528,10 @@ std::shared_ptr<Resource> ResourcePool::loadResourceWithName(const String &path,
 	}
 	
 	OSFileEntry entry(path, OSFileEntry::TYPE_FILE);
-	for(int r = 0; r < Services()->getResourceManager()->getNumResourceLoaders(); r++) {
-		ResourceLoader *loader = Services()->getResourceManager()->getResourceLoaderAtIndex(r);
+	for(int r = 0; r < core->getResourceManager()->getNumResourceLoaders(); r++) {
+		ResourceLoader *loader = core->getResourceManager()->getResourceLoaderAtIndex(r);
 		if(loader->canHandleExtension(entry.extension)) {
-			newResource = loader->loadResource(entry.fullPath, this);
+			newResource = loader->loadResource(core, entry.fullPath, this);
 			if(newResource) {
 				newResource->setResourceName(name);
 				newResource->setResourcePath(entry.fullPath);
@@ -545,10 +544,30 @@ std::shared_ptr<Resource> ResourcePool::loadResourceWithName(const String &path,
 }
 
 void ResourcePool::loadResourcesFromFolder(const String &folder, bool recursive) {
-	for(int r = 0; r < Services()->getResourceManager()->getNumResourceLoaders(); r++) {
-		ResourceLoader *loader = Services()->getResourceManager()->getResourceLoaderAtIndex(r);
+	for(int r = 0; r < core->getResourceManager()->getNumResourceLoaders(); r++) {
+		ResourceLoader *loader = core->getResourceManager()->getResourceLoaderAtIndex(r);
 		loadResourcesFromFolderWithLoader(folder, recursive, loader, "");
 	}
+}
+
+std::shared_ptr<Font> ResourcePool::getFont(const String &name) {
+    return std::static_pointer_cast<Font>(getResource(Resource::RESOURCE_FONT, name));
+}
+
+std::shared_ptr<Material> ResourcePool::getMaterial(const String &name) {
+    return std::static_pointer_cast<Material>(getResource(Resource::RESOURCE_MATERIAL, name));
+}
+
+std::shared_ptr<Texture> ResourcePool::loadTexture(const String &name) {
+	return std::static_pointer_cast<Texture>(loadResource(name));
+}
+
+std::shared_ptr<Mesh> ResourcePool::loadMesh(const String &name) {
+	return std::static_pointer_cast<Mesh>(loadResource(name));
+}
+
+std::shared_ptr<Shader> ResourcePool::getShader(const String &name) {
+	return std::static_pointer_cast<Shader>(getResource(Resource::RESOURCE_SHADER, name));
 }
 
 
@@ -606,16 +625,15 @@ void ResourcePool::checkForChangedFiles() {
 			time_t newFileTime = 0; //OSBasics::getFileTime(resources[i]->getResourcePath());
 			//			printf("%s\n%lld %lld\n", resources[i]->getResourcePath().c_str(), newFileTime, resources[i]->resourceFileTime);
 			if((newFileTime != resources[i]->resourceFileTime) && newFileTime != 0) {
-				resources[i]->reloadResource();
+				resources[i]->reloadResource(core);
 				resources[i]->resourceFileTime = newFileTime;
 			}
 		}
 	}
 }
 
-ResourceManager::ResourceManager() : EventDispatcher() {
-	globalPool = new ResourcePool("Global", NULL);
-	
+ResourceManager::ResourceManager(Core *core) : EventDispatcher() {
+	globalPool = new ResourcePool(core, "Global", NULL);
 	resourceLoaders.push_back(new TextureResourceLoader());
 	resourceLoaders.push_back(new ProgramResourceLoader());
 	resourceLoaders.push_back(new MaterialResourceLoader());
@@ -685,7 +703,7 @@ MaterialResourceLoader::MaterialResourceLoader() {
 	extensions.push_back("mat");
 }
 
-std::shared_ptr<Resource> MaterialResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
+std::shared_ptr<Resource> MaterialResourceLoader::loadResource(Core *core, const String &path, ResourcePool *targetPool) {
 	targetPool->loadResourcesFromMaterialFile(path);
 	return nullptr;
 }
@@ -695,7 +713,7 @@ ProgramResourceLoader::ProgramResourceLoader() {
 	extensions.push_back("vert");
 }
 
-std::shared_ptr<Resource> ProgramResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
+std::shared_ptr<Resource> ProgramResourceLoader::loadResource(Core *core, const String &path, ResourcePool *targetPool) {
 	std::shared_ptr<ShaderProgram> newProgram = std::make_shared<ShaderProgram>(path);
 	OSFileEntry fileEntry(path, OSFileEntry::TYPE_FILE);
 	if(fileEntry.extension == "vert") {
@@ -772,10 +790,13 @@ int customLuaLoader(lua_State* pState)
 	const char* fullPath = module.c_str();
 	Logger::log("Loading custom class: %s\n", module.c_str());
 	
-	Polycode::CoreFile *inFile = Services()->getCore()->openFile(module, "r");
+    // NO_CORE_SERVICES_TODO: pass in core via Lua context
+    Core *core = NULL;
+    
+	Polycode::CoreFile *inFile = core->openFile(module, "r");
 	
 	if(!inFile) {
-		inFile =  Services()->getCore()->openFile(defaultPath, "r");
+		inFile =  core->openFile(defaultPath, "r");
 	}
 	
 	if(inFile) {
@@ -794,7 +815,7 @@ int customLuaLoader(lua_State* pState)
 			lua_pop(pState, 1);
 		}
 		free(buffer);
-		Services()->getCore()->closeFile(inFile);
+		core->closeFile(inFile);
 	} else {
 		std::string err = "\n\tError - Could could not find ";
 		err += module;
@@ -857,14 +878,17 @@ void ScriptResourceLoader::initLua() {
 
 void loadJSFile(duk_context *context, String fileName) {
 
+    // NO_CORE_SERVICES_TODO: pass in core via JS context
+    Core *core = NULL;
+    
 	String defaultPath = "default/";
 	defaultPath = defaultPath + fileName;
 	
 	const char* fullPath = fileName.c_str();
 	Logger::log("Loading custom class: %s\n", fileName.c_str());
-	Polycode::CoreFile *inFile = Services()->getCore()->openFile(fileName, "r");
+	Polycode::CoreFile *inFile = core->openFile(fileName, "r");
 	if(!inFile) {
-		inFile =  Services()->getCore()->openFile(defaultPath, "r");
+		inFile =  core->openFile(defaultPath, "r");
 	}
 	
 	if(inFile) {
@@ -880,7 +904,7 @@ void loadJSFile(duk_context *context, String fileName) {
 		}
 		
 		free(buffer);
-		Services()->getCore()->closeFile(inFile);
+		core->closeFile(inFile);
 	} else {
 		Logger::log("Javascript module not found: %s", fileName.c_str());
 	}
@@ -928,7 +952,7 @@ ScriptResourceLoader::~ScriptResourceLoader() {
 	}
 }
 
-std::shared_ptr<Resource> ScriptResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
+std::shared_ptr<Resource> ScriptResourceLoader::loadResource(Core *core, const String &path, ResourcePool *targetPool) {
 	OSFileEntry entry(path, OSFileEntry::TYPE_FILE);
 	std::shared_ptr<Script> newScript;
 
@@ -963,15 +987,15 @@ MeshResourceLoader::MeshResourceLoader() {
 	extensions.push_back("mesh");
 }
 
-std::shared_ptr<Resource> MeshResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
-	std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(path);
+std::shared_ptr<Resource> MeshResourceLoader::loadResource(Core *core, const String &path, ResourcePool *targetPool) {
+	std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(core, path);
 	return mesh;
 }
 
 
-std::shared_ptr<Resource> FontResourceLoader::loadResource(const String &path, ResourcePool *targetPool) {
+std::shared_ptr<Resource> FontResourceLoader::loadResource(Core *core, const String &path, ResourcePool *targetPool) {
 	OSFileEntry entry = OSFileEntry(path, OSFileEntry::TYPE_FILE);
-	std::shared_ptr<Font> font = std::make_shared<Font>(path, FTLibrary);
+	std::shared_ptr<Font> font = std::make_shared<Font>(core, path, FTLibrary);
 	font->setResourceName(entry.nameWithoutExtension);
 	return font;
 }

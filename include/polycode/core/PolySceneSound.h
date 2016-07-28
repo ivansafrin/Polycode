@@ -27,15 +27,20 @@ THE SOFTWARE.
 namespace Polycode {
 
 	class Sound;
-
+    class SoundManager;
+    
 	/**
 	* Creates a positional 3D sound listener. There can be only one listener active at any one time.
 	*/	
 	class _PolyExport SceneSoundListener : public Entity {
-		public:
-			SceneSoundListener();
+		public:        
+			SceneSoundListener() {}
+			SceneSoundListener(SoundManager *soundManager);
 			virtual ~SceneSoundListener();			
 			void Update();
+        
+        protected:
+            SoundManager *soundManager;
 	};
 
 
@@ -44,7 +49,8 @@ namespace Polycode {
 	*/	
 	class _PolyExport SceneSound : public Entity {
 		public:
-			SceneSound(const String& fileName, Number referenceDistance, Number maxDistance, bool directionalSound = false);
+            SceneSound(){}
+			SceneSound(Core *core, const String& fileName, Number referenceDistance, Number maxDistance, bool directionalSound = false);
 			virtual ~SceneSound();			
 			void Update();
 		
@@ -64,6 +70,7 @@ namespace Polycode {
 			
 		protected:
 		
+            Core *core;
 			bool loopOnLoad;
 			bool directionalSound;
 			Sound *sound;

@@ -112,7 +112,7 @@ class DummyTargetEntity : public Entity {
 
 class CurveDisplay : public DummyTargetEntity {
 	public:
-		CurveDisplay(Scene *parentScene, SceneCurve *curve);
+		CurveDisplay(CoreInput *input, ResourcePool *resourcePool, Scene *parentScene, SceneCurve *curve);
 		~CurveDisplay();
 	
 		void setDummyTransform(Entity *dummy);
@@ -120,7 +120,7 @@ class CurveDisplay : public DummyTargetEntity {
 		void handleDeselect();
 		void handleSelect();
 	
-		void Update();
+		void Update(Number elapsed);
 		void handleEvent(Event *event);
 
 		static const int SELECT_MODE_P1 = 0;
@@ -147,7 +147,7 @@ class LightDisplay : public Entity {
 public:
 	LightDisplay(SceneLight *light);
 	~LightDisplay();
-	void Update();
+	void Update(Number elapsed);
 	
 private:
 	ScenePrimitive *spotSpot;
@@ -161,7 +161,7 @@ class CameraDisplay : public Entity {
 	public:
 		CameraDisplay(Camera *camera);
 		~CameraDisplay();
-		void Update();
+		void Update(Number elapsed);
 	
 	
 	private:
@@ -172,7 +172,7 @@ class CameraDisplay : public Entity {
 
 class CameraPreviewWindow : public UIElement {
 	public:
-		CameraPreviewWindow();
+		CameraPreviewWindow(Core *core, ResourcePool *pool);
 		~CameraPreviewWindow();
 	
 		void handleEvent(Event *event);
@@ -217,7 +217,7 @@ class EntityDistanceSorter : public PolyBase {
 
 class EntityEditorMainView : public UIElement {
 		public:
-			EntityEditorMainView(PolycodeEditor *editor);
+			EntityEditorMainView(Core *core, ResourcePool *pool, PolycodeEditor *editor);
 			~EntityEditorMainView();
 			
 			void createIcon(Entity *entity, String iconFile);
@@ -228,7 +228,7 @@ class EntityEditorMainView : public UIElement {
 			void handleEvent(Event *event);
 			void Resize(Number width, Number height);
 			void fixedUpdate();
-			void Update();
+			void Update(Number elapsed);
 			void addEntityFromMenu(String command);
 	
 			void doEntityDeselect(Entity *targetEntity);
@@ -349,12 +349,13 @@ class EntityEditorMainView : public UIElement {
 	
 			Vector3 cursorPosition;
 			String assetSelectType;
+		ResourcePool *resourcePool;
 	
 };
 
 class EntityEditorPropertyContainer : public UIElement {
 	public:
-		EntityEditorPropertyContainer(PolycodeEditor *editor);
+		EntityEditorPropertyContainer(Core *core, ResourcePool *pool, PolycodeEditor *editor);
 		~EntityEditorPropertyContainer();
 		void Resize(Number width, Number height);
 	
@@ -373,7 +374,7 @@ class EntityEditorPropertyContainer : public UIElement {
 
 class PolycodeEntityEditor : public PolycodeEditor {
 	public:
-		PolycodeEntityEditor();
+		PolycodeEntityEditor(Core *core, ResourcePool *pool);
 		virtual ~PolycodeEntityEditor();
 		
 		bool openFile(OSFileEntry filePath);
@@ -416,5 +417,5 @@ class PolycodeEntityEditor : public PolycodeEditor {
 class PolycodeEntityEditorFactory : public PolycodeEditorFactory {
 	public:
 		PolycodeEntityEditorFactory() : PolycodeEditorFactory() { extensions.push_back("entity"); }
-		PolycodeEditor *createEditor() { return new PolycodeEntityEditor(); }
+		PolycodeEditor *createEditor(Core *core, ResourcePool *pool) { return new PolycodeEntityEditor(core, pool); }
 };

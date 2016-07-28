@@ -1,30 +1,26 @@
 
 #include "polycode/modules/ui/PolyUIMenuBar.h"
 #include "polycode/core/PolyLabel.h"
-#include <polycode/core/PolyCoreServices.h>
 #include <polycode/core/PolyCore.h>
 #include <polycode/core/PolyConfig.h>
 #include <polycode/core/PolyRenderer.h>
 
 using namespace Polycode;
 
-UIMenuBarEntryItem::UIMenuBarEntryItem(String name, String code, PolyKEY shortCut1, PolyKEY shortCut2) {
-	this->name = name;
-	this->code = code;
-	this->shortCut1 = shortCut1;
-	this->shortCut2 = shortCut2;
+UIMenuBarEntryItem::UIMenuBarEntryItem(CoreInput *input, String name, String code, PolyKEY shortCut1, PolyKEY shortCut2) : input(input), name(name), code(code), shortCut1(shortCut1), shortCut2(shortCut2)
+{
 }
 
 bool UIMenuBarEntryItem::checkShortCut(PolyKEY shortCut) {
 	if(shortCut1 == KEY_UNKNOWN && shortCut2 == KEY_UNKNOWN)
 		return false;
 
-	if(CoreServices::getInstance()->getCore()->getInput()->getKeyState(KEY_RCTRL) || CoreServices::getInstance()->getCore()->getInput()->getKeyState(KEY_LCTRL)) {
+	if(input->getKeyState(KEY_RCTRL) || input->getKeyState(KEY_LCTRL)) {
 		if(shortCut1 != KEY_UNKNOWN && shortCut2 != KEY_UNKNOWN) {
-			if(shortCut == shortCut1 && CoreServices::getInstance()->getCore()->getInput()->getKeyState(shortCut2)) {
+			if(shortCut == shortCut1 && input->getKeyState(shortCut2)) {
 				return true;
 			}
-			if(shortCut == shortCut2 && CoreServices::getInstance()->getCore()->getInput()->getKeyState(shortCut1)) {
+			if(shortCut == shortCut2 && input->getKeyState(shortCut1)) {
 				return true;
 			}
 		} else {
@@ -37,30 +33,30 @@ bool UIMenuBarEntryItem::checkShortCut(PolyKEY shortCut) {
 	return false;
 }
 
-UIMenuBarEntry::UIMenuBarEntry(String name): UIElement() {
-	
-	label = new SceneLabel(name, 14, "sans");
+UIMenuBarEntry::UIMenuBarEntry(Core *core, ResourcePool *pool, String name, const Color &accentColor, const Color &bgColor): UIElement(core), accentColor(accentColor), bgColor(bgColor)
+{
+	label = new SceneLabel(pool->getMaterial("Unlit"), name, 14, pool->getFont("sans"));
 	setWidth(label->getLabel()->getTextWidth() + 20);
 	label->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
-	bg = new UIRect(getWidth(), 25);
+	bg = new UIRect(core, pool, getWidth(), 25);
 	bg->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(bg);
 	bg->processInputEvents = true;
-	bg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiMenuBarBgColor"));
+	bg->color = bgColor;
 	addChild(label);
 	label->setPosition(10, 5);
 }
 
 void UIMenuBarEntry::Select() {
-	bg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiAccentColor"));
+	bg->color = accentColor;
 }
 
 void UIMenuBarEntry::Deselect() {
-	bg->color.setColorHexFromString(CoreServices::getInstance()->getConfig()->getStringValue("Polycode", "uiMenuBarBgColor"));
+	bg->color = bgColor;
 }
 
 void UIMenuBarEntry::addItem(String name, String code, PolyKEY shortCut1, PolyKEY shortCut2) {
-	items.push_back(UIMenuBarEntryItem(name,code, shortCut1, shortCut2));
+	items.push_back(UIMenuBarEntryItem(core->getInput(), name,code, shortCut1, shortCut2));
 }
 
 UIMenuBarEntry::~UIMenuBarEntry() {
@@ -68,12 +64,13 @@ UIMenuBarEntry::~UIMenuBarEntry() {
 	delete label;
 }
 
-UIMenuBar::UIMenuBar(int width, UIGlobalMenu *globalMenu) : UIElement() {
-	Config *conf = CoreServices::getInstance()->getConfig();
-
+UIMenuBar::UIMenuBar(Core *core, ResourcePool *resourcePool, CoreInput *input, int width, UIGlobalMenu *globalMenu) : UIElement(core), input(input), resourcePool(resourcePool)
+{
 	this->globalMenu = globalMenu;
 
-	bgShape = new UIRect(width, 25);
+	ConfigRef conf = core->getConfig();
+	
+	bgShape = new UIRect(core, resourcePool, width, 25);
 	addChild(bgShape);
 	Color bgColor = new Color();
 	bgColor.setColorHexFromString(conf->getStringValue("Polycode", "uiMenuBarBgColor"));
@@ -86,11 +83,15 @@ UIMenuBar::UIMenuBar(int width, UIGlobalMenu *globalMenu) : UIElement() {
 
 	holdingMouse = false;
 
-	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
+	
+	accentColor.setColorHexFromString(conf->getStringValue("Polycode", "uiAccentColor"));
+	bgColor.setColorHexFromString(conf->getStringValue("Polycode", "uiMenuBarBgColor"));
+	
+	input->addEventListener(this, InputEvent::EVENT_KEYDOWN);
 }
 
 UIMenuBarEntry *UIMenuBar::addMenuBarEntry(String name) {
-	UIMenuBarEntry *newEntry = new UIMenuBarEntry(name);
+	UIMenuBarEntry *newEntry = new UIMenuBarEntry(core, resourcePool, name, accentColor, bgColor);
 	entries.push_back(newEntry);
 	addChild(newEntry);
 	newEntry->setPosition(entryOffset, 0);
@@ -127,7 +128,7 @@ String UIMenuBar::getSelectedItem() {
 
 void UIMenuBar::handleEvent(Event *event) {
 
-	if(event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {
+	if(event->getDispatcher() == input) {
 		InputEvent *inputEvent = (InputEvent*) event;
 		if(event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
 			for(int i=0; i < entries.size(); i++) {
@@ -181,6 +182,7 @@ UIMenuBar::~UIMenuBar() {
 	if(!ownsChildren) {
 		delete bgShape;
 	}
+	input->removeAllHandlersForListener(this);
 }
 
 void UIMenuBar::Resize(Number width, Number height) {

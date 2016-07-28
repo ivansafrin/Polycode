@@ -34,7 +34,7 @@ using namespace Polycode;
 
 class SettingsWindow : public UIWindow {
 	public:
-		SettingsWindow();
+		SettingsWindow(Core *core, ResourcePool *pool);
 		~SettingsWindow();
 
 		void handleEvent(Event *event);

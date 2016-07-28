@@ -22,7 +22,7 @@
  
 #include "polycode/ide/TextureBrowser.h"
 
-AssetEntry::AssetEntry(String assetPath, String assetName, String extension, std::shared_ptr<Resource> resource) : UIElement() {
+AssetEntry::AssetEntry(Core *core, ResourcePool *pool, String assetPath, String assetName, String extension, std::shared_ptr<Resource> resource) : UIElement(core) {
 
 	this->resource = resource;
 	this->assetPath = assetPath;
@@ -30,7 +30,7 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension, std
 	if(assetName.length() > 20)
 		assetName = assetName.substr(0,20)+"...";
 
-	selectShape = new UIRect(120, 100);
+	selectShape = new UIRect(core, pool, 120, 100);
 	selectShape->visible = false;
 	selectShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(selectShape);
@@ -39,7 +39,7 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension, std
 	selectShape->loadTexture("browserIcons/large_selector.png");
 	selectShape->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 
-	imageShape = new UIRect(64,64);
+	imageShape = new UIRect(core, pool, 64,64);
 	imageShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	addChild(imageShape);
 	
@@ -68,7 +68,7 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension, std
 	} else if(extension == "sprite_resource") {
 		imageShape->visible = false;
 		
-		SpriteSet *spriteSet = (SpriteSet*) CoreServices::getInstance()->getResourceManager()->getResourcePoolByName(assetPath);
+		SpriteSet *spriteSet = (SpriteSet*) core->getResourceManager()->getResourcePoolByName(assetPath);
 		if(spriteSet) {
 			spritePreview = new SceneSprite(spriteSet);
 			spritePreview->setSpriteByName(assetName);
@@ -101,7 +101,7 @@ AssetEntry::AssetEntry(String assetPath, String assetName, String extension, std
 	if(name.length() > 15) {
 		name = name.substr(0, 15)+"...";
 	}
-	nameLabel = new UILabel(name, 11);
+	nameLabel = new UILabel(core, pool, name, 11);
 	addChild(nameLabel);
 	nameLabel->setPosition((120.0-nameLabel->getWidth())/2.0, 80);
 	
@@ -116,13 +116,11 @@ AssetEntry::~AssetEntry() {
 	}
 }
 
-AssetList::AssetList() : UIElement() {
-		
-	reloadButton = new UIImageButton("browserIcons/reload_icon.png", 1.0, 20, 20);
+AssetList::AssetList(Core *core, ResourcePool *pool) : UIElement(core), resourcePool(pool) {
+	reloadButton = new UIImageButton(core, pool, "browserIcons/reload_icon.png", 1.0, 20, 20);
 	reloadButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(reloadButton); 
-	reloadButton->setPosition(10, 5);		
-	
+	reloadButton->setPosition(10, 5);
 }
 
 AssetList::~AssetList() {
@@ -167,7 +165,7 @@ void AssetList::showResourcePool(ResourcePool *pool, int resourceFilter) {
 	}
 	
 	for(int i=0; i < resources.size(); i++) {
-		AssetEntry *newEntry = new AssetEntry(pool->getName(), resources[i]->getResourceName(), extension, resources[i]);
+		AssetEntry *newEntry = new AssetEntry(core, resourcePool, pool->getName(), resources[i]->getResourceName(), extension, resources[i]);
 		newEntry->selectShape->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 		assetEntries.push_back(newEntry);
 		newEntry->setPosition(xPos, yPos);
@@ -204,7 +202,7 @@ void AssetList::showFolder(String folderPath) {
 
 	clearList();
 	
-	vector<OSFileEntry> assets = Services()->getCore()->parseFolder(folderPath, false); 
+	vector<OSFileEntry> assets = core->parseFolder(folderPath, false);
 	
 	Number xPos = 20;
 	Number yPos = 30;
@@ -213,7 +211,7 @@ void AssetList::showFolder(String folderPath) {
 		OSFileEntry entry = assets[i];
 		if(entry.type != OSFileEntry::TYPE_FOLDER) {
 			if(hasExtension(entry.extension)) {
-				AssetEntry *newEntry = new AssetEntry(entry.fullPath, entry.name, entry.extension, NULL);
+				AssetEntry *newEntry = new AssetEntry(core, resourcePool, entry.fullPath, entry.name, entry.extension, NULL);
 				newEntry->selectShape->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
 				newEntry->selectShape->addEventListener(this, InputEvent::EVENT_DOUBLECLICK);
 				assetEntries.push_back(newEntry);
@@ -263,17 +261,17 @@ void AssetList::handleEvent(Event *event) {
 	}
 }
 
-AssetBrowser::AssetBrowser() : UIWindow(L"Asset Browser", 850, 500) {
+AssetBrowser::AssetBrowser(Core *core, ResourcePool *pool) : UIWindow(core, pool, L"Asset Browser", 850, 500) {
 	defaultTemplateTree = NULL;
 	
 	browseMode = BROWSE_MODE_FILES;
 	
-	Config *conf = CoreServices::getInstance()->getConfig();	
+	ConfigRef conf = core->getConfig();
 	String fontName = conf->getStringValue("Polycode", "uiDefaultFontName");
 	
 	closeOnEscape = true;	
 	
-	templateContainer = new UITreeContainer("boxIcon.png", L"Project", 200, 480-topPadding-padding-padding);	
+	templateContainer = new UITreeContainer(core, pool, "boxIcon.png", L"Project", 200, 480-topPadding-padding-padding);
 	
 	FolderUserData *data = new FolderUserData();
 	data->type = 0;
@@ -286,19 +284,19 @@ AssetBrowser::AssetBrowser() : UIWindow(L"Asset Browser", 850, 500) {
 	templateContainer->getRootNode()->addEventListener(this, UITreeEvent::SELECTED_EVENT);
 	
 		
-	assetList = new AssetList();
+	assetList = new AssetList(core, pool);
 	assetList->addEventListener(this, UIEvent::OK_EVENT);
 
-	listContainer = new UIScrollContainer(assetList, false, true, 640, 480-topPadding-padding-padding);
+	listContainer = new UIScrollContainer(core, pool, assetList, false, true, 640, 480-topPadding-padding-padding);
 	listContainer->setPosition(220,topPadding+padding);
 	addChild(listContainer);
 
-	cancelButton = new UIButton(L"Cancel", 100);
+	cancelButton = new UIButton(core, pool, L"Cancel", 100);
 	cancelButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(cancelButton);
 	cancelButton->setPosition(850-80-padding-100-10, 485);
 
-	okButton = new UIButton(L"OK", 100);
+	okButton = new UIButton(core, pool, L"OK", 100);
 	okButton->addEventListener(this, UIEvent::CLICK_EVENT);
 	addChild(okButton);
 	okButton->setPosition(850-80-padding, 485); 
@@ -345,7 +343,7 @@ void AssetBrowser::setProject(PolycodeProject *project) {
 	
 	templateContainer->getRootNode()->clearTree();
 
-	vector<OSFileEntry> templates = Services()->getCore()->parseFolder(project->getRootFolder(), false);
+	vector<OSFileEntry> templates = core->parseFolder(project->getRootFolder(), false);
 	templateContainer->getRootNode()->setLabelText(project->getProjectName());
 	
 	FolderUserData *userData = (FolderUserData*) templateContainer->getRootNode()->getUserData();
@@ -446,7 +444,7 @@ void AssetBrowser::handleEvent(Event *event) {
 
 
 void AssetBrowser::parseFolderIntoTree(UITree *tree, OSFileEntry folder) {
-	vector<OSFileEntry> templates = Services()->getCore()->parseFolder(folder.fullPath, false);
+	vector<OSFileEntry> templates = core->parseFolder(folder.fullPath, false);
 	for(int i=0; i < templates.size(); i++) {
 		OSFileEntry entry = templates[i];	
 		if(entry.type == OSFileEntry::TYPE_FOLDER) {

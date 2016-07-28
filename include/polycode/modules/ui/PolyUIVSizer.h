@@ -31,7 +31,7 @@ namespace Polycode {
 	
 	class _PolyExport UIVSizer : public UIElement {
 		public:
-			UIVSizer(Number width, Number height, Number mainHeight, bool topSizer);
+			UIVSizer(Core *core, ResourcePool *pool, Number width, Number height, Number mainHeight, bool topSizer);
 			virtual ~UIVSizer();
 			
 			void handleEvent(Event *event);
@@ -64,8 +64,6 @@ namespace Polycode {
 			Number minimumSize;
 			
 			bool topSizer;
-			
-			CoreInput *coreInput;
 			
 			bool resizing;
 			Number baseMouseY;

@@ -24,13 +24,13 @@
 #include "polycode/modules/ui/PolyUIHSizer.h"
 #include "polycode/core/PolyConfig.h"
 #include "polycode/core/PolyInputEvent.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyCore.h"
 #include "polycode/modules/ui/PolyUIEvent.h"
 
 using namespace Polycode;
 
-UIHSizer::UIHSizer(Number width, Number height, Number mainWidth, bool leftSizer) : UIElement() {
+UIHSizer::UIHSizer(Core *core, ResourcePool *resourcePool, Number width, Number height, Number mainWidth, bool leftSizer) : UIElement(core)
+{
 
 	minimumSize = 100;
 	proportionalResize = false;
@@ -40,12 +40,11 @@ UIHSizer::UIHSizer(Number width, Number height, Number mainWidth, bool leftSizer
 	this->leftSizer = leftSizer;
 	this->mainWidth = mainWidth;
 	
-	separatorBgShape = new UIRect(1,height);
+	separatorBgShape = new UIRect(core, resourcePool, 1,height);
 	separatorBgShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	separatorBgShape->setColor(0.0, 0.0, 0.0, 1.0); 
 	addChild(separatorBgShape);
 	
-
 	childElements = new Entity();
 	childElements->processInputEvents = true;
 	addChild(childElements);
@@ -53,7 +52,7 @@ UIHSizer::UIHSizer(Number width, Number height, Number mainWidth, bool leftSizer
 	firstElement = NULL;
 	secondElement = NULL;
 	
-	separatorHitShape = new UIRect(8,height);
+	separatorHitShape = new UIRect(core, resourcePool, 8,height);
 	separatorHitShape->setAnchorPoint(-1.0, -1.0, 0.0);
 	separatorHitShape->setColor(1.0, 0.0, 0.0, 0.5);	
 	separatorHitShape->blockMouseInput = true;	
@@ -67,8 +66,7 @@ UIHSizer::UIHSizer(Number width, Number height, Number mainWidth, bool leftSizer
 	separatorHitShape->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);			
 	separatorHitShape->visible = false;
 	
-	coreInput = CoreServices::getInstance()->getCore()->getInput(); 
-	coreInput->addEventListener(this, InputEvent::EVENT_MOUSEMOVE); 
+	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
 	
 	separatorHitShape->processInputEvents = true;
 	
@@ -78,7 +76,7 @@ UIHSizer::UIHSizer(Number width, Number height, Number mainWidth, bool leftSizer
 }
 
 UIHSizer::~UIHSizer() {
-	coreInput->removeAllHandlersForListener(this);
+	core->getInput()->removeAllHandlersForListener(this);
 
 	childElements->ownsChildren = false;
 	if(!ownsChildren) {
@@ -103,15 +101,15 @@ void UIHSizer::handleEvent(Event *event) {
 			break;
 			case InputEvent::EVENT_MOUSEMOVE:			
 			case InputEvent::EVENT_MOUSEOVER:
-				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_RESIZE_LEFT_RIGHT);
+				core->setCursor(Core::CURSOR_RESIZE_LEFT_RIGHT);
 			break;
 			case InputEvent::EVENT_MOUSEOUT:
-				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);
+				core->setCursor(Core::CURSOR_ARROW);
 			break;							
 		}
 	}
 	
-	if(event->getDispatcher() == coreInput) {
+	if(event->getDispatcher() == core->getInput()) {
 		InputEvent *inputEvent = (InputEvent*)event;
 		switch (event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEMOVE:

@@ -24,17 +24,16 @@
 #include "polycode/core/PolyConfig.h"
 #include "polycode/core/PolyInputEvent.h"
 #include "polycode/core/PolyLabel.h"
-#include "polycode/core/PolyCoreServices.h"
 #include <math.h>
 
 using namespace Polycode;
 
-UIScrollContainer::UIScrollContainer(Entity *scrolledEntity, bool hScroll, bool vScroll, Number width, Number height) : UIElement() {
+UIScrollContainer::UIScrollContainer(Core *core, ResourcePool *resourcePool, Entity *scrolledEntity, bool hScroll, bool vScroll, Number width, Number height) : UIElement(core) {
 	
 	scrolledEntity->setAnchorPoint(-1.0, -1.0, 0.0);
 	
 	scrolledEntity->rebuildTransformMatrix();
-	Config *conf = CoreServices::getInstance()->getConfig();
+	ConfigRef conf = core->getConfig();
 	
 	hasHScroll = hScroll;
 	hasVScroll = vScroll;	
@@ -52,23 +51,27 @@ UIScrollContainer::UIScrollContainer(Entity *scrolledEntity, bool hScroll, bool 
 	
 	enableScissor = true;
 	
-	vScrollBar = new UIVScrollBar(defaultScrollSize, height, height / scrolledEntity->getHeight());
+	vScrollBar = new UIVScrollBar(core, resourcePool, defaultScrollSize, height, height / scrolledEntity->getHeight());
 	addChild(vScrollBar);
 	vScrollBar->setPosition(width+uiScrollPanePadding,0);	
 	vScrollBar->addEventListener(this, Event::CHANGE_EVENT);
 	vScrollBar->blockMouseInput = true;
 	vScrollBar->processInputEvents = true;
 	
-	if(!vScroll)
+	if(!vScroll) {
 		vScrollBar->enabled = false;
+		vScrollBar->visible= false;
+	}
 	
-	hScrollBar = new UIHScrollBar(width, defaultScrollSize, width / scrolledEntity->getWidth());
+	hScrollBar = new UIHScrollBar(core, resourcePool, width, defaultScrollSize, width / scrolledEntity->getWidth());
 	addChild(hScrollBar);
 	hScrollBar->setPosition(0,height+uiScrollPanePadding);	
 	hScrollBar->addEventListener(this, Event::CHANGE_EVENT);
-	if(!hScroll)
+	if(!hScroll) {
 		hScrollBar->enabled = false;
-			
+		hScrollBar->visible= false;
+	}
+	
 	setContentSize(scrollChild->getWidth()*scrollChild->getScale().x, scrollChild->getHeight()*scrollChild->getScale().y);
 	Resize(width, height);	
 	
@@ -136,20 +139,24 @@ void UIScrollContainer::setContentSize(Number newContentWidth, Number newContent
 	if(hasVScroll) {
 		if((getHeight() / newContentHeight) >= 1) {
 			vScrollBar->enabled = false;
+			vScrollBar->visible = false;
 			vScrollBar->scrollTo(0);
 			scrollChild->setPositionY(0.0);
 		} else {
-			vScrollBar->enabled = true;		
+			vScrollBar->enabled = true;
+			vScrollBar->visible = true;
 		}
 	}
 	
 	if(hasHScroll) {
 		if((getWidth() / newContentWidth) >= 1) {
 			hScrollBar->enabled = false;
+			hScrollBar->visible = false;
 			hScrollBar->scrollTo(0);
 			scrollChild->setPositionX(0.0);
 		} else {
-			hScrollBar->enabled = true;		
+			hScrollBar->enabled = true;
+			hScrollBar->visible = true;
 		}
 	}	
 }
@@ -182,7 +189,7 @@ void UIScrollContainer::scrollHorizontal(Number amount) {
 }
 
 
-void UIScrollContainer::Update() {
+void UIScrollContainer::Update(Number elapsed) {
 	Vector2 pos = getScreenPositionForMainCamera();
 	scissorBox.setRect(pos.x, pos.y, getWidth(), getHeight());
 }

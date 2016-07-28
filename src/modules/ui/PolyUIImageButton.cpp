@@ -24,14 +24,13 @@
 #include "polycode/core/PolyConfig.h"
 #include "polycode/core/PolyInputEvent.h"
 #include "polycode/core/PolyLabel.h"
-#include "polycode/core/PolyCoreServices.h"
 
 using namespace Polycode;
 
-UIImageButton::UIImageButton(String imageName, Number scale, Number width, Number height) : UIElement() {
+UIImageButton::UIImageButton(Core *core, ResourcePool *pool, String imageName, Number scale, Number width, Number height) : UIElement(core) {
 	setAnchorPoint(-1.0, -1.0, 0.0);
 	
-	buttonImage = new UIImage(imageName);
+	buttonImage = new UIImage(core, pool, imageName);
 
 	Number buttonWidth = buttonImage->getWidth() / scale;
 	Number buttonHeight = buttonImage->getHeight() / scale;
@@ -50,7 +49,7 @@ UIImageButton::UIImageButton(String imageName, Number scale, Number width, Numbe
 		
 	buttonImage->setAnchorPoint(-1.0, -1.0, 0.0);
 	
-	buttonRect = new UIRect(buttonImage->getWidth(),buttonImage->getHeight());
+	buttonRect = new UIRect(core, pool, buttonImage->getWidth(),buttonImage->getHeight());
 					   
 	buttonRect->setColor(1,1,1,1);
 	buttonRect->visible = false;

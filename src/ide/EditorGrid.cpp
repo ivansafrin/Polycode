@@ -22,53 +22,53 @@
  
 #include "polycode/ide/EditorGrid.h"
 
-EditorGridSettingsWindow::EditorGridSettingsWindow(EditorGrid *grid) : UIWindow("Grid Settings", 100, 190) {
+EditorGridSettingsWindow::EditorGridSettingsWindow(Core *core, ResourcePool *pool, EditorGrid *grid) : UIWindow(core, pool, "Grid Settings", 100, 190) {
 	
 	visible = false;
 	enabled = false;
 	
 	this->grid = grid;
 	
-	visibleCheck = new UICheckBox("Enabled", grid->visible);
+	visibleCheck = new UICheckBox(core, pool, "Enabled", grid->visible);
 	addChild(visibleCheck);
 	visibleCheck->setPosition(10, 40);
 	visibleCheck->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
-	UILabel *label = new UILabel("Size:", 12);
+	UILabel *label = new UILabel(core, pool, "Size:", 12);
 	label->setColor(1.0, 1.0 ,1.0, 1.0);
 	addChild(label);
 	label->setPosition(10, 70);
 	
-	sizeInput = new UITextInput(false, 50, 10);
+	sizeInput = new UITextInput(core, pool, false, 50, 10);
 	addFocusChild(sizeInput);
 	sizeInput->setPosition(60, 68);
 	sizeInput->setNumberOnly(true);
 	sizeInput->setText(String::NumberToString(grid->getGridSize()));
 	sizeInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
-	label = new UILabel("Count:", 12);
+	label = new UILabel(core, pool, "Count:", 12);
 	label->setColor(1.0, 1.0 ,1.0, 1.0);
 	addChild(label);
 	label->setPosition(10, 100);
 
-	countInput = new UITextInput(false, 50, 10);
+	countInput = new UITextInput(core, pool, false, 50, 10);
 	addFocusChild(countInput);
 	countInput->setPosition(60, 98);
 	countInput->setNumberOnly(true);
 	countInput->setText(String::IntToString(grid->getGridLen()));
 	countInput->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
-	xAxisBox = new UICheckBox("X Axis", grid->isXAxisEnabled());
+	xAxisBox = new UICheckBox(core, pool, "X Axis", grid->isXAxisEnabled());
 	addChild(xAxisBox);
 	xAxisBox->setPosition(10, 130);
 	xAxisBox->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
-	yAxisBox = new UICheckBox("Y Axis", grid->isYAxisEnabled());
+	yAxisBox = new UICheckBox(core, pool, "Y Axis", grid->isYAxisEnabled());
 	addChild(yAxisBox);
 	yAxisBox->setPosition(10, 155);
 	yAxisBox->addEventListener(this, UIEvent::CHANGE_EVENT);
 	
-	zAxisBox = new UICheckBox("Z Axis", grid->isZAxisEnabled());
+	zAxisBox = new UICheckBox(core, pool, "Z Axis", grid->isZAxisEnabled());
 	addChild(zAxisBox);
 	zAxisBox->setPosition(10, 180);
 	zAxisBox->addEventListener(this, UIEvent::CHANGE_EVENT);
@@ -95,18 +95,19 @@ EditorGridSettingsWindow::~EditorGridSettingsWindow() {
 	
 }
 
-EditorGrid::EditorGrid() : Entity() {
+EditorGrid::EditorGrid(Core *core) : UIElement(core) {
 	grid = NULL;
 	gridMode = GRID_MODE_3D;
 	
 	std::shared_ptr<Mesh> gridMesh = std::make_shared<Mesh>();
 	
 	grid = new SceneMesh(gridMesh);
+	grid->setMaterial(core->getResourceManager()->getGlobalPool()->getMaterial("UnlitUntextured"));
 	grid->setForceMaterial(true);
 	grid->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	
 	grid->setColor(0.3, 0.3, 0.3, 1.0);
-	grid->setLineWidth(CoreServices::getInstance()->getRenderer()->getBackingResolutionScaleX());
+	grid->setLineWidth(core->getRenderer()->getBackingResolutionScaleX());
 	addChild(grid);
 	
 	yLine = new SceneLine(Vector3(), Vector3());

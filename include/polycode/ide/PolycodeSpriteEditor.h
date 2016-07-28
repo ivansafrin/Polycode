@@ -57,10 +57,10 @@ public:
 
 class SpritePreview : public UIElement {
 	public:
-		SpritePreview(SpriteSet *spriteSet);
+		SpritePreview(Core *core, ResourcePool *pool, SpriteSet *spriteSet);
 		~SpritePreview();
 	
-		void Update();
+		void Update(Number elapsed);
 	
 		void handleEvent(Event *event);
 	
@@ -80,12 +80,12 @@ class SpritePreview : public UIElement {
 
 class SpriteSheetEditor : public UIElement {
 	public:
-		SpriteSheetEditor(SpriteSet *sprite);
+		SpriteSheetEditor(Core *core, ResourcePool *pool, SpriteSet *sprite);
 		~SpriteSheetEditor();
 	
 		void handleEvent(Event *event);
 	
-		void Update();
+		void Update(Number elapsed);
 	
 		void Render(GPUDrawBuffer *buffer);
 	
@@ -107,6 +107,7 @@ class SpriteSheetEditor : public UIElement {
 	
 		UIRect *headerBg;
 	
+		ResourcePool *resourcePool;
 		UIIconSelector *bgSelector;
 	
 		bool creatingFrame;
@@ -159,7 +160,7 @@ class SpriteSheetEditor : public UIElement {
 
 class SpriteBrowser : public UIElement {
 	public:
-		SpriteBrowser(SpriteSet *spriteSet);
+		SpriteBrowser(Core *core, ResourcePool *pool, SpriteSet *spriteSet);
 		~SpriteBrowser();
 	
 		void Resize(Number width, Number height);
@@ -188,7 +189,7 @@ class SpriteBrowser : public UIElement {
 
 class SpriteStateEditBar : public UIElement {
 	public:
-		SpriteStateEditBar(SpriteSet *spriteSet);
+		SpriteStateEditBar(Core *core, ResourcePool *pool, SpriteSet *spriteSet);
 		~SpriteStateEditBar();
 	
 		void Resize(Number width, Number height);
@@ -205,7 +206,7 @@ class SpriteStateEditBar : public UIElement {
 		bool isFrameSelected(unsigned int frameID);
 		void deleteSelectedFrames();
 	
-		void Update();
+		void Update(Number elapsed);
 	
 		void setSceneSprite(SceneSprite *sprite);
 		void setSpriteState(SpriteState *state);
@@ -242,7 +243,7 @@ class SpriteStateEditBar : public UIElement {
 
 class SpriteStateBrowser : public UIElement {
 	public:
-		SpriteStateBrowser();
+		SpriteStateBrowser(Core *core, ResourcePool *pool);
 		~SpriteStateBrowser();
 	
 		void Resize(Number width, Number height);
@@ -259,13 +260,13 @@ class SpriteStateBrowser : public UIElement {
 
 class SpriteStateEditorDetails : public UIElement {
 	public:
-		SpriteStateEditorDetails(SpriteSet *spriteSet);
+		SpriteStateEditorDetails(Core *core, ResourcePool *pool, SpriteSet *spriteSet);
 		~SpriteStateEditorDetails();
 	
 		void Resize(Number width, Number height);
 		void handleEvent(Event *event);
 	
-		void Update();
+		void Update(Number elapsed);
 	
 		void setSpriteState(SpriteState *state);
 		SpriteState *getSpriteState();
@@ -309,7 +310,7 @@ class SpriteStateEditorDetails : public UIElement {
 
 class SpriteStateEditor : public UIElement {
 	public:
-		SpriteStateEditor(SpriteSet *spriteSet);
+		SpriteStateEditor(Core *core, ResourcePool *pool, SpriteSet *spriteSet);
 		~SpriteStateEditor();
 	
 		void setSpriteEntry(std::shared_ptr<Sprite> entry);
@@ -344,7 +345,7 @@ class SpriteStateEditor : public UIElement {
 
 class PolycodeSpriteEditor : public PolycodeEditor {
 	public:
-		PolycodeSpriteEditor();
+		PolycodeSpriteEditor(Core *core, ResourcePool *pool);
 		virtual ~PolycodeSpriteEditor();
 		
 		void handleEvent(Event *event);
@@ -378,5 +379,5 @@ class PolycodeSpriteEditor : public PolycodeEditor {
 class PolycodeSpriteEditorFactory : public PolycodeEditorFactory {
 	public:
 		PolycodeSpriteEditorFactory() : PolycodeEditorFactory() { extensions.push_back("sprites"); }
-		PolycodeEditor *createEditor() { return new PolycodeSpriteEditor(); }
+		PolycodeEditor *createEditor(Core *core, ResourcePool *pool) { return new PolycodeSpriteEditor(core, pool); }
 };

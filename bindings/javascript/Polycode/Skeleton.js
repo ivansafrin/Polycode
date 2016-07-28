@@ -1,8 +1,8 @@
 require('Polycode/Entity')
 
-function Skeleton(fileName) {
+function Skeleton() {
 	if(arguments[0] != "__skip_ptr__") {
-		this.__ptr = Polycode.Skeleton(fileName)
+		this.__ptr = Polycode.Skeleton()
 	}
 }
 
@@ -16,10 +16,6 @@ Duktape.fin(Skeleton.prototype, function (x) {
 	Polycode.Skeleton__delete(x.__ptr)
 })
 
-Skeleton.prototype.loadSkeleton = function(fileName) {
-	Polycode.Skeleton_loadSkeleton(this.__ptr, fileName)
-}
-
 Skeleton.prototype.playAnimationByName = function(animName,weight,once,restartIfPlaying) {
 	Polycode.Skeleton_playAnimationByName(this.__ptr, animName, weight, once, restartIfPlaying)
 }
@@ -32,16 +28,12 @@ Skeleton.prototype.stopAllAnimations = function() {
 	Polycode.Skeleton_stopAllAnimations(this.__ptr)
 }
 
-Skeleton.prototype.addAnimation = function(name,fileName) {
-	Polycode.Skeleton_addAnimation(this.__ptr, name, fileName)
-}
-
 Skeleton.prototype.stopAnimationByName = function(name) {
 	Polycode.Skeleton_stopAnimationByName(this.__ptr, name)
 }
 
-Skeleton.prototype.Update = function() {
-	Polycode.Skeleton_Update(this.__ptr)
+Skeleton.prototype.Update = function(elapsed) {
+	Polycode.Skeleton_Update(this.__ptr, elapsed)
 }
 
 Skeleton.prototype.getBoneByName = function(name) {

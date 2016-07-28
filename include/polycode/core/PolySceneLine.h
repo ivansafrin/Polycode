@@ -25,7 +25,6 @@ THE SOFTWARE.
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolySceneMesh.h"
 #include "polycode/core/PolyBezierCurve.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyMesh.h"
 
 namespace Polycode {

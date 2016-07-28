@@ -59,10 +59,10 @@ class ProjectData {
 
 class PolycodeProject {
 	public:
-		PolycodeProject(String name, String path, String file);
+		PolycodeProject(Core *core, String name, String path, String file);
 		~PolycodeProject(); 
 		
-		bool loadProjectFromFile(); 
+		bool loadProjectFromFile();
 		bool saveFile();
 	
 		String getProjectName() { return projectName; }
@@ -71,14 +71,14 @@ class PolycodeProject {
 	
 		ProjectData data;
 		
-private:
-
-
-	Object configFile;
+	private:
 	
-	String filPath;
+		Core *core;
+		Object configFile;
+	
+		String filPath;
 		
-	String projectFile;
-	String projectFolder;	
-	String projectName;
+		String projectFile;
+		String projectFolder;
+		String projectName;
 };

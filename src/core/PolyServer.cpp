@@ -22,7 +22,6 @@ THE SOFTWARE.
 
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyServer.h"
-#include "polycode/core/PolyTimer.h"
 #include "polycode/core/PolyLogger.h"
 #include "polycode/core/PolyServerWorld.h"
 
@@ -47,10 +46,8 @@ ServerClientEvent *ServerClient::handlePacket(Packet *packet) {
 	return event;
 }
 
-Server::Server(unsigned int port,  unsigned int rate, ServerWorld *world) : Peer(port) {
+Server::Server(Core *core, unsigned int port, ServerWorld *world) : Peer(core, port) {
 	this->world = world;
-	rateTimer = new Timer(true, 1000/rate);
-	rateTimer->addEventListener(this, Timer::EVENT_TRIGGER);	
 }
 
 Server::~Server() {
@@ -67,28 +64,23 @@ ServerClient *Server::getConnectedClient(PeerConnection *connection) {
 	return NULL;
 }
 
-void Server::handleEvent(Event *event) {
-	
-	ServerClient *client;		
-	if(event->getDispatcher() == rateTimer) {
-		if(world) {
-			world->updateWorld(rateTimer->getElapsedf());		
-			for(int i=0; i < clients.size(); i++) {
-				client = clients[i];
-				unsigned int worldDataSize;
-				char *worldData;
-				world->getWorldState(client, &worldData, &worldDataSize);			
-				sendData(client->connection->address, (char*)worldData, worldDataSize, PACKET_TYPE_SERVER_DATA);			
-			}
-		} else {
-			for(int i=0; i < clients.size(); i++) {
-				client = clients[i];
-				sendData(client->connection->address, 0, 0, PACKET_TYPE_SERVER_DATA);			
-			}
-		}
-	}	
-	
-	Peer::handleEvent(event);
+void Server::updateServer(Number elapsed) {
+    ServerClient *client;
+    if(world) {
+        world->updateWorld(elapsed);
+        for(int i=0; i < clients.size(); i++) {
+            client = clients[i];
+            unsigned int worldDataSize;
+            char *worldData;
+            world->getWorldState(client, &worldData, &worldDataSize);
+            sendData(client->connection->address, (char*)worldData, worldDataSize, PACKET_TYPE_SERVER_DATA);
+        }
+    } else {
+        for(int i=0; i < clients.size(); i++) {
+            client = clients[i];
+            sendData(client->connection->address, 0, 0, PACKET_TYPE_SERVER_DATA);			
+        }
+    }
 }
 
 void Server::sendReliableDataToAllClients(char *data, unsigned int size, unsigned short type) {

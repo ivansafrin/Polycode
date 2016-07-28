@@ -22,7 +22,6 @@
 
 #include "polycode/core/PolySceneEntityInstance.h"
 #include "polycode/core/PolyLogger.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyResourceManager.h"
 #include "polycode/core/PolyMaterial.h"
 #include "polycode/core/PolySceneLight.h"
@@ -48,19 +47,23 @@ SceneEntityInstance *SceneEntityInstanceResourceEntry::getInstance() {
 	return instance;
 }
 
-void SceneEntityInstanceResourceEntry::reloadResource() {
+SceneEntityInstance::SceneEntityInstance(Core *core) : core(core) {
+	
+}
+
+void SceneEntityInstanceResourceEntry::reloadResource(Core *core) {
 	instance->reloadEntityInstance();
-	Resource::reloadResource();
+	Resource::reloadResource(core);
 }
 
 SceneEntityInstance *SceneEntityInstance::BlankSceneEntityInstance() {
 	return new SceneEntityInstance();
 }
 
-SceneEntityInstance::SceneEntityInstance(const String& fileName) : Entity() {
+SceneEntityInstance::SceneEntityInstance(Core *core, const String& fileName) : core(core) {
 	createNewLayer("default");
 	resourceEntry = std::make_shared<SceneEntityInstanceResourceEntry>(this);
-	topLevelResourcePool = CoreServices::getInstance()->getResourceManager()->getGlobalPool();
+	topLevelResourcePool = core->getResourceManager()->getGlobalPool();
 	loadFromFile(fileName);
 	resourceEntry->setResourceName(fileName);
 	resourceEntry->setResourcePath(fileName);
@@ -72,7 +75,7 @@ SceneEntityInstance::SceneEntityInstance() : Entity() {
 	createNewLayer("default");
 	cloneUsingReload = true;
 	ownsChildren = true;
-	topLevelResourcePool = CoreServices::getInstance()->getResourceManager()->getGlobalPool();	  
+	topLevelResourcePool = core->getResourceManager()->getGlobalPool();	  
 	resourceEntry = std::make_shared<SceneEntityInstanceResourceEntry>(this);
 }
 
@@ -80,9 +83,9 @@ SceneEntityInstance::~SceneEntityInstance() {
 	for(int i=0; i < layers.size(); i++) {
 			delete layers[i];
 	}
-	CoreServices::getInstance()->getResourceManager()->removeResource(resourceEntry);
+	core->getResourceManager()->removeResource(resourceEntry);
 	for(int i=0; i < resourcePools.size(); i++) {
-		CoreServices::getInstance()->getResourceManager()->unsubscibeFromResourcePool(resourcePools[i]);
+		core->getResourceManager()->unsubscibeFromResourcePool(resourcePools[i]);
 	}
 }
 
@@ -97,9 +100,9 @@ std::shared_ptr<SceneEntityInstanceResourceEntry> SceneEntityInstance::getResour
 Entity *SceneEntityInstance::Clone(bool deepClone, bool ignoreEditorOnly) const {
 	SceneEntityInstance *newEntity;
 	if(cloneUsingReload) {
-		newEntity = new SceneEntityInstance(fileName);
+		newEntity = new SceneEntityInstance(core, fileName);
 	} else {
-		newEntity = new SceneEntityInstance();
+		newEntity = new SceneEntityInstance(core);
 	}
 	applyClone(newEntity, deepClone, ignoreEditorOnly);
 	return newEntity;
@@ -124,7 +127,7 @@ void SceneEntityInstance::linkResourcePool(ResourcePool *pool) {
 	}
 	pool->setFallbackPool(topLevelResourcePool);
 	topLevelResourcePool = pool;
-	CoreServices::getInstance()->getResourceManager()->subscribeToResourcePool(pool);
+	core->getResourceManager()->subscribeToResourcePool(pool);
 	resourcePools.push_back(pool);
 }
 
@@ -139,7 +142,7 @@ ResourcePool *SceneEntityInstance::getLinkedResourcePoolAtIndex(unsigned int ind
 void SceneEntityInstance::rebuildResourceLinks() {
 	for(int i=0; i < resourcePools.size(); i++) {
 		if(i == 0) {
-			resourcePools[i]->setFallbackPool(CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+			resourcePools[i]->setFallbackPool(core->getResourceManager()->getGlobalPool());
 		} else {
 			resourcePools[i]->setFallbackPool(resourcePools[i-1]);
 		}
@@ -148,7 +151,7 @@ void SceneEntityInstance::rebuildResourceLinks() {
 	if(resourcePools.size() > 0) {
 		topLevelResourcePool = resourcePools[resourcePools.size()-1];
 	} else {
-		topLevelResourcePool = CoreServices::getInstance()->getResourceManager()->getGlobalPool();
+		topLevelResourcePool = core->getResourceManager()->getGlobalPool();
 	}
 }
 
@@ -157,7 +160,7 @@ void SceneEntityInstance::unlinkResourcePool(ResourcePool *pool) {
 		if(resourcePools[i] == pool) {
 			resourcePools.erase(resourcePools.begin() + i);
 			rebuildResourceLinks();
-			CoreServices::getInstance()->getResourceManager()->unsubscibeFromResourcePool(pool);
+			core->getResourceManager()->unsubscibeFromResourcePool(pool);
 			return;
 		}
 	}
@@ -182,7 +185,9 @@ void SceneEntityInstance::applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMes
 	
 	ObjectEntry *materialName =(*entry)["material"];
 	if(materialName) {
-		sceneMesh->setMaterialByName(materialName->stringVal, topLevelResourcePool);
+        
+        std::shared_ptr<Material> material = topLevelResourcePool->getMaterial(materialName->stringVal);
+        sceneMesh->setMaterial(material);
 		if(sceneMesh->getMaterial()) {
 			ObjectEntry *optionsEntry =(*entry)["shader_options"];
 			if(optionsEntry) {
@@ -209,8 +214,8 @@ void SceneEntityInstance::applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMes
 											}
 											 */
 										} else {
-											
-											sceneMesh->getShaderPass(0).shaderBinding->loadTextureForParam(nameEntry->stringVal, textureEntry->stringVal);
+											std::shared_ptr<Texture> texture = core->getResourceManager()->getGlobalPool()->loadTexture(textureEntry->stringVal);
+											sceneMesh->getShaderPass(0).shaderBinding->setTextureForParam(nameEntry->stringVal, texture);
 										}
 									}
 								}
@@ -292,7 +297,7 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 		if(entityType->stringVal == "SceneEntityInstance") {
 			ObjectEntry *instanceEntry = (*entry)["SceneEntityInstance"];
 			String filePath = (*instanceEntry)["filePath"]->stringVal;
-			SceneEntityInstance *instance = new SceneEntityInstance(filePath);
+			SceneEntityInstance *instance = new SceneEntityInstance(core, filePath);
 			entity = instance;
 		 } else if(entityType->stringVal == "SceneCurve") {
 			ObjectEntry *curveEntry = (*entry)["SceneCurve"];
@@ -312,7 +317,7 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 			ObjectEntry *spriteEntry = (*entry)["SceneSprite"];
 			String spriteSetName = (*spriteEntry)["sprite_set"]->stringVal;
 
-			 SpriteSet *spriteSet = (SpriteSet*)CoreServices::getInstance()->getResourceManager()->getResourcePoolByName(spriteSetName);
+			 SpriteSet *spriteSet = (SpriteSet*)core->getResourceManager()->getResourcePoolByName(spriteSetName);
 			 
 			 if(spriteSet) {
 				 SceneSprite *sprite = new SceneSprite(spriteSet);
@@ -344,12 +349,14 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 			ObjectEntry *labelEntry = (*entry)["SceneLabel"];
 			
 			String text = (*labelEntry)["text"]->stringVal;
-			String font = (*labelEntry)["font"]->stringVal;
+			String fontName = (*labelEntry)["font"]->stringVal;
 			int size = (*labelEntry)["size"]->intVal;
 			Number actualHeight = (*labelEntry)["actualHeight"]->intVal;
 			int aaMode = (*labelEntry)["aaMode"]->intVal;
 			
-			SceneLabel *label = new SceneLabel(text, size, font, aaMode, actualHeight);
+            std::shared_ptr<Font> font = core->getResourceManager()->getGlobalPool()->getFont(fontName);
+			
+			SceneLabel *label = new SceneLabel(topLevelResourcePool->getMaterial("Unlit"), text, size, font, aaMode, actualHeight);
 			label->setAnchorPoint(0.0, 0.0, 0.0);
 			label->snapToPixels = false;
 			label->positionAtBaseline = false;
@@ -440,7 +447,7 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 			if(meshEntry) {
 				ObjectEntry *fileName = (*meshEntry)["file"];
 				if(fileName) {
-					SceneMesh *newMesh = new SceneMesh(fileName->stringVal);
+					SceneMesh *newMesh = new SceneMesh(topLevelResourcePool, fileName->stringVal);
 					applySceneMesh(meshEntry, newMesh);
 					entity = newMesh;
 				}
@@ -454,7 +461,7 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 			Number volume = (*soundEntry)["volume"]->NumberVal;
 			Number pitch = (*soundEntry)["pitch"]->NumberVal;
 			
-			SceneSound *sound = new SceneSound(filePath, refDistance, maxDistance);
+			SceneSound *sound = new SceneSound(core, filePath, refDistance, maxDistance);
 			sound->getSound()->setVolume(volume);
 			sound->getSound()->setPitch(pitch);
 			
@@ -575,7 +582,7 @@ ResourcePool *SceneEntityInstance::getTopLevelResourcePool() {
 void SceneEntityInstance::clearInstance() {
 	
 	resourcePools.clear();
-	topLevelResourcePool = CoreServices::getInstance()->getResourceManager()->getGlobalPool();
+	topLevelResourcePool = core->getResourceManager()->getGlobalPool();
 	for(int i=0; i < children.size(); i++) {
 		children[i]->setOwnsChildrenRecursive(true);
 		delete children[i];
@@ -656,8 +663,8 @@ bool SceneEntityInstance::loadFromFile(const String& fileName) {
 	this->ownsChildren = true;
 	this->fileName = fileName;
 	Object loadObject;
-	if(!loadObject.loadFromBinary(fileName)) {
-		if(!loadObject.loadFromXML(fileName)) {
+	if(!loadObject.loadFromBinary(core, fileName)) {
+		if(!loadObject.loadFromXML(core, fileName)) {
 			Logger::log("Error loading entity instance.\n");
 		}
 	}
@@ -696,24 +703,24 @@ bool SceneEntityInstance::loadFromFile(const String& fileName) {
 				if(resPool) {
 					ObjectEntry *path = (*resPool)["path"];
 					if(path) {
-						ResourcePool *newPool = CoreServices::getInstance()->getResourceManager()->getResourcePoolByName(path->stringVal);
+						ResourcePool *newPool = core->getResourceManager()->getResourcePoolByName(path->stringVal);
 						
 						if(!newPool) {
 							
 							String extension = path->stringVal.substr(path->stringVal.find_last_of(".")+1, path->stringVal.length());
 							
 							if(extension == "mat") {
-								newPool = new ResourcePool(path->stringVal, CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+								newPool = new ResourcePool(core, path->stringVal, core->getResourceManager()->getGlobalPool());
 								newPool->deleteOnUnsubscribe = true;
 								newPool->loadResourcesFromMaterialFile(path->stringVal);
 							} else if( extension == "sprites") {
-								SpriteSet *spriteSet = new SpriteSet(path->stringVal,  CoreServices::getInstance()->getResourceManager()->getGlobalPool());
+								SpriteSet *spriteSet = new SpriteSet(core, path->stringVal,  core->getResourceManager()->getGlobalPool());
 								spriteSet->deleteOnUnsubscribe = true;
 								newPool = spriteSet;
 								
 							}
 							
-							CoreServices::getInstance()->getResourceManager()->addResourcePool(newPool);
+							core->getResourceManager()->addResourcePool(newPool);
 						}
 						
 						linkResourcePool(newPool);

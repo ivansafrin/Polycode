@@ -1,8 +1,8 @@
 require('Polycode/Resource')
 
-function Font(fileName,FTLibrary) {
+function Font() {
 	if(arguments[0] != "__skip_ptr__") {
-		this.__ptr = Polycode.Font(fileName,FTLibrary)
+		this.__ptr = Polycode.Font()
 	}
 	Object.defineProperties(this, {
 		'loaded': { enumerable: true, configurable: true, get: Font.prototype.__get_loaded, set: Font.prototype.__set_loaded}

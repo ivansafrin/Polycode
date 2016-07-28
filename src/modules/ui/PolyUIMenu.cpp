@@ -24,7 +24,6 @@
 #include "polycode/modules/ui/PolyUIEvent.h"
 #include "polycode/core/PolyInputEvent.h"
 #include "polycode/core/PolyLabel.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyCore.h"
 #include "polycode/core/PolyConfig.h"
 #include "polycode/core/PolySceneLine.h"
@@ -32,18 +31,18 @@
 
 using namespace Polycode;
 
-UIMenuItem::UIMenuItem(String label, String _id, void *data, Number comboWidth, Number comboHeight) : UIElement() {
-
+UIMenuItem::UIMenuItem(Core *core, ResourcePool *pool, String label, String _id, void *data, Number comboWidth, Number comboHeight) : UIElement(core) {
+	
 	this->label = label;
-	Config *conf = CoreServices::getInstance()->getConfig();	
+	ConfigRef conf = core->getConfig();
 	
 	String fontName = conf->getStringValue("Polycode", "uiMenuFont");
-	int fontSize = conf->getNumericValue("Polycode", "uiMenuFontSize"); 
-
-	Number paddingX = conf->getNumericValue("Polycode", "uiMenuTextOffsetX");	
-	Number paddingY = conf->getNumericValue("Polycode", "uiMenuTextOffsetY");	
-
-	itemLabel = new SceneLabel(label, fontSize, fontName);
+	int fontSize = conf->getNumericValue("Polycode", "uiMenuFontSize");
+	
+	Number paddingX = conf->getNumericValue("Polycode", "uiMenuTextOffsetX");
+	Number paddingY = conf->getNumericValue("Polycode", "uiMenuTextOffsetY");
+	
+	itemLabel = new SceneLabel(pool->getMaterial("Unlit"), label, fontSize, pool->getFont(fontName));
 	itemLabel->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	itemLabel->setPosition(paddingX, floor(((comboHeight/2.0) - itemLabel->getHeight()/2.0) + paddingY));
 	addChild(itemLabel);
@@ -56,7 +55,7 @@ String UIMenuItem::getMenuItemID() {
 	return _id;
 }
 
-UIMenuItem::UIMenuItem() : UIElement(), data(NULL), itemLabel(NULL) {
+UIMenuItem::UIMenuItem(Core *core) : UIElement(core), data(NULL), itemLabel(NULL) {
 }
 
 bool UIMenuItem::isSelectable()
@@ -69,13 +68,13 @@ UIMenuItem::~UIMenuItem() {
 		delete itemLabel;
 }
 
-UIMenuDivider::UIMenuDivider(Number comboWidth, Number comboHeight) : UIMenuItem() {
-	Config *conf	= CoreServices::getInstance()->getConfig();
+UIMenuDivider::UIMenuDivider(Core *core, ResourcePool *pool, Number comboWidth, Number comboHeight) : UIMenuItem(core) {
+	ConfigRef conf = core->getConfig();
 	Number paddingX = conf->getNumericValue("Polycode", "uiMenuSelectorPadding");
-
+	
 	line = new SceneLine(Vector3(paddingX, comboHeight/2.0, 0.0), Vector3(comboWidth-paddingX, comboHeight/2.0, 0.0));
 	
-//	line->setLineWidth(1.0);
+	//	line->setLineWidth(1.0);
 	line->setColor(Color(0.0, 0.0, 0.0, 0.7));
 	addChild(line);
 }
@@ -89,29 +88,29 @@ bool UIMenuDivider::isSelectable()
 	return false;
 }
 
-UIMenu::UIMenu(Number menuWidth) : UIElement() {
-
-	Config *conf = CoreServices::getInstance()->getConfig();	
-				
+UIMenu::UIMenu(Core *core, ResourcePool *pool, Number menuWidth) : UIElement(core), resourcePool(pool)
+{
+	ConfigRef conf = core->getConfig();
+	
 	this->menuItemHeight = conf->getNumericValue("Polycode", "uiMenuItemHeight");
 	this->menuWidth = menuWidth;
 	nextItemHeight = 0;
-			
+	
 	paddingX = conf->getNumericValue("Polycode", "uiMenuPaddingX");
 	paddingY = conf->getNumericValue("Polycode", "uiMenuPaddingY");
-				
-	String dropdownBgImage = conf->getStringValue("Polycode", "uiMenuBgImage"); 
+	
+	String dropdownBgImage = conf->getStringValue("Polycode", "uiMenuBgImage");
 	
 	Number st = conf->getNumericValue("Polycode", "uiMenuBgT");
 	Number sr = conf->getNumericValue("Polycode", "uiMenuBgR");
 	Number sb = conf->getNumericValue("Polycode", "uiMenuBgB");
 	Number sl = conf->getNumericValue("Polycode", "uiMenuBgL");
 	
-	dropDownBox = new UIBox(dropdownBgImage, st,sr,sb,sl, menuWidth, menuItemHeight);
-	dropDownBox->setPosition(0,0);	
+	dropDownBox = new UIBox(core, pool, dropdownBgImage, st,sr,sb,sl, menuWidth, menuItemHeight);
+	dropDownBox->setPosition(0,0);
 	addChild(dropDownBox);
 	
-	String selectorBgImage = conf->getStringValue("Polycode", "uiMenuSelectorBgImage"); 
+	String selectorBgImage = conf->getStringValue("Polycode", "uiMenuSelectorBgImage");
 	
 	st = conf->getNumericValue("Polycode", "uiMenuSelectorBgT");
 	sr = conf->getNumericValue("Polycode", "uiMenuSelectorBgR");
@@ -122,24 +121,22 @@ UIMenu::UIMenu(Number menuWidth) : UIElement() {
 	
 	selectorPadding = conf->getNumericValue("Polycode", "uiMenuSelectorPadding");
 	
-	selectorBox = new UIBox(selectorBgImage, st,sr,sb,sl, menuWidth - (paddingX * 2.0), menuItemHeight + (selectorPadding * 2.0));
+	selectorBox = new UIBox(core, pool, selectorBgImage, st,sr,sb,sl, menuWidth - (paddingX * 2.0), menuItemHeight + (selectorPadding * 2.0));
 	dropDownBox->addChild(selectorBox);
 	selectorBox->blockMouseInput = true;
 	
-	selectorBox->visible = false;		
+	selectorBox->visible = false;
 	
 	selectedOffset = 0;
 	dropDownBox->addEventListener(this, InputEvent::EVENT_MOUSEMOVE);
-	dropDownBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);	
-	dropDownBox->addEventListener(this, InputEvent::EVENT_MOUSEOUT);		
+	dropDownBox->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	dropDownBox->addEventListener(this, InputEvent::EVENT_MOUSEOUT);
 	dropDownBox->processInputEvents = true;
 	
-	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);			
-	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEUP);			
-
-	CoreServices::getInstance()->getCore()->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);			
-
-	initialMouse = CoreServices::getInstance()->getCore()->getInput()->getMousePosition();
+	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEDOWN);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_MOUSEUP);
+	core->getInput()->addEventListener(this, InputEvent::EVENT_KEYDOWN);
+	core->getInput()->getMousePosition();
 	
 	setWidth(menuWidth);
 	setHeight(menuItemHeight);
@@ -149,15 +146,15 @@ UIMenu::UIMenu(Number menuWidth) : UIElement() {
 }
 
 UIMenuItem *UIMenu::getSelectedItem() {
-
+	
 	if(selectedOffset < 0) {
-		return items[0];	
+		return items[0];
 	}
-
+	
 	if(selectedOffset > items.size()-1) {
-		return items[items.size()-1];	
+		return items[items.size()-1];
 	}
-
+	
 	
 	if(selectedOffset >= 0 && selectedOffset < items.size()) {
 		return items[selectedOffset];
@@ -166,16 +163,16 @@ UIMenuItem *UIMenu::getSelectedItem() {
 	}
 }
 
-void UIMenu::Update() {
+void UIMenu::Update(Number elapsed) {
 	ignoreMouse = false;
 }
 
 void UIMenu::fitToScreenVertical() {
 	// Make sure the entity doesn't go past the bottom of the screen.
-	if(dropDownBox->getHeight() < CoreServices::getInstance()->getCore()->getYRes()) {
+	if(dropDownBox->getHeight() < core->getYRes()) {
 		// If the entity is as high as the screen, no point trying to fit it in vertically.
 		Vector2 screenPos = this->getScreenPositionForMainCamera();
-		Number exceedScreenBottom = screenPos.y + dropDownBox->getHeight() - CoreServices::getInstance()->getCore()->getYRes();
+		Number exceedScreenBottom = screenPos.y + dropDownBox->getHeight() - core->getYRes();
 		if(exceedScreenBottom > 0) {
 			this->setPosition(this->getPosition().x, this->getPosition().y - exceedScreenBottom);
 		} else if(screenPos.y < 0) {
@@ -186,14 +183,14 @@ void UIMenu::fitToScreenVertical() {
 
 
 void UIMenu::handleEvent(Event *event) {
-
-	if(event->getDispatcher() == CoreServices::getInstance()->getCore()->getInput()) {
 	
-		InputEvent *inputEvent = (InputEvent*) event;	
+	if(event->getDispatcher() == core->getInput()) {
+		
+		InputEvent *inputEvent = (InputEvent*) event;
 		
 		if(event->getEventCode() == InputEvent::EVENT_KEYDOWN) {
 			if(inputEvent->key == KEY_ESCAPE) {
-				dispatchEvent(new UIEvent(), UIEvent::CANCEL_EVENT);							
+				dispatchEvent(new UIEvent(), UIEvent::CANCEL_EVENT);
 			}
 		}
 		if((event->getEventCode() == InputEvent::EVENT_MOUSEDOWN || (event->getEventCode() == InputEvent::EVENT_MOUSEUP && initialMouse != inputEvent->getMousePosition())) && !ignoreMouse) {
@@ -209,50 +206,49 @@ void UIMenu::handleEvent(Event *event) {
 		switch(event->getEventCode()) {
 			case InputEvent::EVENT_MOUSEOUT:
 			{
-				selectorBox->visible = false;			
+				selectorBox->visible = false;
 			}
-			break;
+				break;
 			case InputEvent::EVENT_MOUSEMOVE:
 			{
-				CoreServices::getInstance()->getCore()->setCursor(Core::CURSOR_ARROW);				
+				core->setCursor(Core::CURSOR_ARROW);
 				InputEvent *inputEvent = (InputEvent*) event;
 				selectedOffset = floor(((inputEvent->getMousePosition().y-selectorPadding)-paddingY)/menuItemHeight);
-					
+				
 				if(selectedOffset >= 0 && selectedOffset < items.size() && items[selectedOffset]->isSelectable()) {
-					selectorBox->visible = true;				
+					selectorBox->visible = true;
 					selectorBox->setPosition(paddingX,paddingY+(selectedOffset*menuItemHeight) - selectorPadding);
 				} else {
 					selectorBox->visible = false;
 				}
-			}				
-			break;
-		}	
+			}
+				break;
+		}
 	}
 }
 
 
 UIMenu::~UIMenu() {
-	CoreServices::getInstance()->getCore()->getInput()->removeAllHandlersForListener(this);
-
+	core->getInput()->removeAllHandlersForListener(this);
 	dropDownBox->ownsChildren = true;
-	if(!ownsChildren) { 
+	if(!ownsChildren) {
 		delete dropDownBox;
 	}
 }
 
 UIMenuItem *UIMenu::addOption(String label, String _id, void *data) {
-	UIMenuItem *newItem = new UIMenuItem(label, _id, data, menuWidth, menuItemHeight);
-	items.push_back(newItem);	
+	UIMenuItem *newItem = new UIMenuItem(core, resourcePool, label, _id, data, menuWidth, menuItemHeight);
+	items.push_back(newItem);
 	dropDownBox->addChild(newItem);
 	newItem->setPosition(0,paddingY+nextItemHeight);
 	nextItemHeight += menuItemHeight;
 	dropDownBox->resizeBox(menuWidth, nextItemHeight + (paddingY * 2.0));
 	
-	Number difference = CoreServices::getInstance()->getCore()->getYRes() - (getPosition().y + dropDownBox->getHeight());
+	Number difference = core->getYRes() - (getPosition().y + dropDownBox->getHeight());
 	if(difference < 0) {
 		setPositionY(getPosition().y + difference);
 	}
-	difference = CoreServices::getInstance()->getCore()->getXRes() - (getPosition().x + dropDownBox->getWidth());
+	difference = core->getXRes() - (getPosition().x + dropDownBox->getWidth());
 	if(difference < 0) {
 		setPositionX(getPosition().x + difference);
 	}
@@ -263,7 +259,7 @@ UIMenuItem *UIMenu::addOption(String label, String _id, void *data) {
 UIMenuItem *UIMenu::addDivider()
 {
 	Number newItemHeight = menuItemHeight;
-	UIMenuItem *newItem = new UIMenuDivider(menuWidth, newItemHeight);
+	UIMenuItem *newItem = new UIMenuDivider(core, resourcePool, menuWidth, newItemHeight);
 	items.push_back(newItem);
 	dropDownBox->addChild(newItem);
 	newItem->setPosition(0, paddingY+nextItemHeight);
@@ -276,7 +272,7 @@ void UIMenu::Resize(Number width, Number height) {
 	UIElement::Resize(width, height);
 }
 
-UIGlobalMenu::UIGlobalMenu() : Entity() {
+UIGlobalMenu::UIGlobalMenu(Core *core, ResourcePool *pool) : UIElement(core), resourcePool(pool) {
 	currentMenu = NULL;
 	processInputEvents = true;
 	willHideMenu = false;
@@ -294,7 +290,7 @@ void UIGlobalMenu::hideMenu() {
 	willHideMenu = false;
 }
 
-void UIGlobalMenu::Update() {
+void UIGlobalMenu::Update(Number elapsed) {
 	if(willHideMenu) {
 		hideMenu();
 	}
@@ -304,17 +300,17 @@ void UIGlobalMenu::handleEvent(Event *event) {
 	if(event->getDispatcher() == currentMenu && event->getEventType() == "UIEvent") {
 		if(event->getEventCode() == UIEvent::OK_EVENT) {
 			willHideMenu = true;
-		} 
-
+		}
+		
 		if(event->getEventCode() == UIEvent::CANCEL_EVENT) {
-			willHideMenu = true;		
-		} 
-
+			willHideMenu = true;
+		}
+		
 	}
 }
 
 UIMenu *UIGlobalMenu::showMenuAtMouse(Number width) {
-	Vector2 pos = CoreServices::getInstance()->getCore()->getInput()->getMousePosition();
+	Vector2 pos = core->getInput()->getMousePosition();
 	return showMenu(pos.x, pos.y, width);
 }
 
@@ -322,14 +318,14 @@ UIMenu *UIGlobalMenu::showMenu(Number x, Number y, Number width) {
 	if(currentMenu) {
 		hideMenu();
 	}
-	currentMenu = new UIMenu(width);
+	currentMenu = new UIMenu(core, resourcePool, width);
 	
 	currentMenu->addEventListener(this, UIEvent::OK_EVENT);
 	currentMenu->addEventListener(this, UIEvent::CANCEL_EVENT);
-		
+	
 	addChild(currentMenu);
 	currentMenu->setPosition(x,y);
-
+	
 	return currentMenu;
 	
 }

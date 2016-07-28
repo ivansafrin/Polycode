@@ -28,8 +28,8 @@ SkeletonAnimation.prototype.Reset = function() {
 	Polycode.SkeletonAnimation_Reset(this.__ptr)
 }
 
-SkeletonAnimation.prototype.Update = function() {
-	Polycode.SkeletonAnimation_Update(this.__ptr)
+SkeletonAnimation.prototype.Update = function(elapsed) {
+	Polycode.SkeletonAnimation_Update(this.__ptr, elapsed)
 }
 
 SkeletonAnimation.prototype.setSpeed = function(speed) {

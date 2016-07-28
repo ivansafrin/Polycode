@@ -24,7 +24,6 @@
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyVector3.h"
 #include "polycode/core/PolyString.h"
-#include "polycode/core/PolyCoreServices.h"
 
 #define BUFFER_SIZE 32768
 #define STREAMING_BUFFER_SIZE
@@ -36,6 +35,7 @@ namespace Polycode {
 	class String;
 	class Vector3;
 	class Quaternion;
+    class Core;
 	
 	class  AudioStreamingSource {
 		public:
@@ -61,16 +61,17 @@ namespace Polycode {
 		/**
 		* Constructor.
 		* @param fileName Path to an OGG or WAV file to load.
-		*/ 
-		Sound(const String& fileName);
-		Sound(int size, const char *data, int channels, unsigned int freq, SoundFormat format);
-		Sound(AudioStreamingSource *streamingSource);
+		*/
+        Sound(){}
+		Sound(Core *core, const String& fileName);
+		Sound(Core *core, int size, const char *data, int channels, unsigned int freq, SoundFormat format);
+		Sound(Core *core, AudioStreamingSource *streamingSource);
 		
 		Number getSampleAsNumber(unsigned int offset, unsigned int channel, const Vector3 &position, const Quaternion &orientation);
 		
 		virtual ~Sound();
 		
-		void loadFile(String fileName);
+		void loadFile(Core *core, String fileName);
 		
 		/**
 		* Play the sound once or in a loop.
@@ -150,8 +151,8 @@ namespace Polycode {
 		
 
 		bool loadBytes(const char *data, int size, int channels, unsigned int freq, SoundFormat format);
-		bool loadWAV(const String& fileName);
-		bool loadOGG(const String& fileName);
+		bool loadWAV(Core *core, const String& fileName);
+		bool loadOGG(Core *core, const String& fileName);
 		
 		void soundCheck(bool result, const String& err);
 		static unsigned long readByte32(const unsigned char buffer[4]);		
@@ -184,6 +185,8 @@ namespace Polycode {
 	
 		bool playing;
 		bool looped;
+        
+        Core *core;
 		
 		bool isPositional;
 		unsigned int numSamples;

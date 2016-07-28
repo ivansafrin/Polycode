@@ -26,7 +26,6 @@
 #include "polycode/core/PolyLogger.h"
 #include "polycode/core/PolyPerlin.h"
 #include "polycode/core/PolyCore.h"
-#include "polycode/core/PolyCoreServices.h"
 #include <algorithm>
 #include <stdlib.h>
 #include "rgbe.h"
@@ -36,10 +35,10 @@
 
 using namespace Polycode;
 
-Image::Image(const String& fileName) : imageData(NULL) {
+Image::Image(Core *core, const String& fileName) : imageData(NULL) {
 	setPixelType(IMAGE_RGBA);
 	loaded = false;
-	if(!loadImage(fileName)) {
+	if(!loadImage(core, fileName)) {
 		Logger::log("Error loading %s\n", fileName.c_str());
 	} else {
 		loaded = true;
@@ -409,17 +408,17 @@ void Image::fill(const Color &color) {
 	}
 }
 
-bool Image::saveImage(const String &fileName) {
-	return savePNG(fileName);
+bool Image::saveImage(Core *core, const String &fileName) {
+	return savePNG(core, fileName);
 }
 
-bool Image::savePNG(const String &fileName) {
+bool Image::savePNG(Core *core, const String &fileName) {
 	unsigned char *png = NULL;
 	size_t pngsize;
 	
 	unsigned error = lodepng_encode32(&png, &pngsize, (const unsigned char*) imageData, width, height);
 	if(!error) {
-		CoreFile *file = Services()->getCore()->openFile(fileName, "wb");
+		CoreFile *file = core->openFile(fileName, "wb");
 		if(file) {
 			file->write(png, pngsize, 1);
 			free(png);
@@ -468,7 +467,7 @@ void Image::premultiplyAlpha() {
 	}
 }
 
-bool Image::loadImage(const String& fileName) {
+bool Image::loadImage(Core *core, const String& fileName) {
 	
 	String extension;
 	size_t found;
@@ -480,9 +479,9 @@ bool Image::loadImage(const String& fileName) {
 	}
 
 	if(extension == "hdr") {
-		return loadHDR(fileName);
+		return loadHDR(core, fileName);
 	} else if(extension == "png" || extension == "jpg" || extension == "tga" || extension == "psd") {
-		return loadSTB(fileName);
+		return loadSTB(core, fileName);
 	} else {
 		Logger::log("Error: Invalid image format.\n");
 		return false;
@@ -587,9 +586,9 @@ bool Image::loadFromMemory(const unsigned char *buffer, unsigned int length) {
 	return true;
 }
 
-bool Image::loadSTB(const String &fileName) {
+bool Image::loadSTB(Core *core, const String &fileName) {
 	
-	CoreFile *infile = Services()->getCore()->openFile(fileName.c_str(), "rb");
+	CoreFile *infile = core->openFile(fileName.c_str(), "rb");
 	
 	if(!infile) {
 		Logger::log("Error opening image file: %s\n", fileName.c_str());
@@ -620,16 +619,16 @@ bool Image::loadSTB(const String &fileName) {
 	
 	imageData = (char*)data;
 	
-	Services()->getCore()->closeFile(infile);
+	core->closeFile(infile);
 
 	return true;
 }
 
-bool Image::loadHDR(const String &fileName) {
+bool Image::loadHDR(Core *core, const String &fileName) {
 #ifndef NO_FP16
 	imageType = Image::IMAGE_FP16;
 	
-	CoreFile *infile = Services()->getCore()->openFile(fileName.c_str(), "rb");
+	CoreFile *infile = core->openFile(fileName.c_str(), "rb");
 	
 	if(!infile) {
 		Logger::log("Error opening HDR %s\n", fileName.c_str());
@@ -657,11 +656,9 @@ bool Image::loadHDR(const String &fileName) {
 	free(buffer);
 	
 	imageData = (char*)data;
-	
-	Services()->getCore()->closeFile(infile);
-	
-	
-	return true;
+	core->closeFile(infile);
+
+    return true;
 #else
 	Logger::log("HDR not supported!");
 	return false;
