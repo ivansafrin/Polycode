@@ -220,7 +220,6 @@ void Scene::Render(RenderFrame *frame, Camera *targetCamera, std::shared_ptr<Ren
 	}
 	
 	Matrix4 textureMatrix;
-	targetCamera->rebuildTransformMatrix();
 	
 	drawBuffer->projectionMatrix = targetCamera->createProjectionMatrix();
 	drawBuffer->viewMatrix = targetCamera->getConcatenatedMatrix().Inverse();

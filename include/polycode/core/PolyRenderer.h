@@ -130,6 +130,10 @@ namespace Polycode {
 		
 		std::queue<GPUDrawBuffer*> drawBuffers;
 		Polycode::Rectangle viewport;
+
+		void *customFrameFinalizerData;
+		void(*customFrameFinalizer)(void*);
+
 	};
 	
 	class _PolyExport RenderThread : public Threaded {
@@ -167,7 +171,7 @@ namespace Polycode {
 			static const int JOB_DESTROY_PROGRAM = 10;
 			static const int JOB_DESTROY_SUBMESH_BUFFER = 11;
 			static const int JOB_DESTROY_RENDER_BUFFER = 13;
-		
+
 		protected:
         
 			unsigned int frameStart;

@@ -33,7 +33,7 @@
 
 using namespace Polycode;
 
-RenderFrame::RenderFrame(const Polycode::Rectangle &viewport) : viewport(viewport) {
+RenderFrame::RenderFrame(const Polycode::Rectangle &viewport) : viewport(viewport), customFrameFinalizer(NULL), customFrameFinalizerData(NULL) {
 	
 }
 
@@ -138,6 +138,12 @@ void RenderThread::updateRenderThread() {
 		
 		endFrame();
 		
+
+		if (nextFrame->customFrameFinalizer) {
+			nextFrame->customFrameFinalizer(nextFrame->customFrameFinalizerData);
+		}
+
+
 		delete nextFrame;
 	}
 	
