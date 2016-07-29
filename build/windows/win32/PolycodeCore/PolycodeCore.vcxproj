@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -22,24 +22,25 @@
     <ProjectGuid>{92C7971A-F305-4B93-A9DC-6B01AF222FF9}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>PolycodeCore</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -168,7 +169,6 @@
     <ClCompile Include="..\..\..\..\src\core\PolyCore.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyCoreFileProvider.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyCoreInput.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyCoreServices.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyCubemap.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyData.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyEntity.cpp" />
@@ -197,6 +197,7 @@
     <ClCompile Include="..\..\..\..\src\core\PolyRectangle.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyRenderDataArray.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyRenderer.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyRendererPlatformData.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyResource.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyResourceManager.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyScene.cpp" />
@@ -219,10 +220,6 @@
     <ClCompile Include="..\..\..\..\src\core\PolyString.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyTexture.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyThreaded.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyTimer.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyTimerManager.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyTween.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyTweenManager.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyVector2.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyVector3.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyVector4.cpp" />
@@ -248,7 +245,6 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyCore.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyCoreFileProvider.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyCoreInput.h" />
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyCoreServices.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyCubemap.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyData.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyEntity.h" />
@@ -279,6 +275,7 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyRectangle.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyRenderDataArray.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyRenderer.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyRendererPlatformData.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyResource.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyResourceManager.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyScene.h" />
@@ -301,10 +298,6 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyString.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyTexture.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyThreaded.h" />
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyTimer.h" />
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyTimerManager.h" />
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyTween.h" />
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyTweenManager.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyVector2.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyVector3.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyVector4.h" />

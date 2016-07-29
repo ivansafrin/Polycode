@@ -54,6 +54,7 @@ namespace TemplateApp
 		bool m_windowVisible;
 		PropertySet^ surfaceCreationProperties;
 		PolycodeTemplateApp *app;
+		Polycode::Core *core;
 
 		EGLDisplay mEglDisplay;
 		EGLContext mEglContext;

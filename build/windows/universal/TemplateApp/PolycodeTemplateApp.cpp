@@ -6,35 +6,43 @@
 
 
 PolycodeTemplateApp::PolycodeTemplateApp(PolycodeView *view) {
-    core = new POLYCODE_CORE(view, 1280,720,false,false, 0,0,60);
-    
-    //core->addFileSource("archive", "default.pak");
-    ResourcePool *globalPool = Services()->getResourceManager()->getGlobalPool();
-    globalPool->loadResourcesFromFolder("default", true);
-    
-	SceneLabel::createMipmapsForLabels = false;
+	core = new POLYCODE_CORE(view, 1280 / 2, 720 / 2, false, false, 0, 0, 60, 0, true);
 
-	MaterialManager *materialManager = Services()->getMaterialManager();
+	core->addFileSource("archive", "default.pak");
+	ResourcePool *globalPool = core->getResourceManager()->getGlobalPool();
+	globalPool->loadResourcesFromFolder("default", true);
 
-	// Write your code here!
-    
-    Scene *scene = new Scene(Scene::SCENE_2D);
-    scene->useClearColor = true;
-    
-    ScenePrimitive *test = new ScenePrimitive(ScenePrimitive::TYPE_VPLANE, 0.5, 0.5);
-    test->setMaterialByName("Unlit");
-	test->getShaderPass(0).shaderBinding->loadTextureForParam("diffuse", "white.png");
-    scene->addChild(test);
+	core->addFileSource("archive", "hdr.pak");
+	globalPool->loadResourcesFromFolder("hdr", true);
 
-	Sound *bgSound = new Sound("bedlayer_main.wav");
+	scene = new Scene(core, Scene::SCENE_2D);
+	scene->useClearColor = true;
 
-	bgSound->Play(true);
+	label = new SceneLabel(globalPool->getMaterial("Unlit"), "Hello World", 32, globalPool->getFont("mono"), Label::ANTIALIAS_FULL, 0.1);
+	scene->addChild(label);
+	/*
+	core->addFileSource("archive", "lua_Polycode.pak");
+	core->addFileSource("archive", "js_Polycode.pak");
+	std::shared_ptr<Script>mainScript = std::static_pointer_cast<Script>(globalPool->loadResource("main.js"));
+	*/
+}
+
+Core *PolycodeTemplateApp::getCore() {
+	return core;
 }
 
 PolycodeTemplateApp::~PolycodeTemplateApp() {
-    
+	delete core;
 }
 
 bool PolycodeTemplateApp::Update() {
-    return core->updateAndRender();
+	bool res = core->Update();
+
+	label->Roll(core->getElapsed() * 40.0);
+
+	RenderFrame *frame = new RenderFrame(core->getViewport());
+	scene->Render(frame, NULL, NULL, NULL, false);
+	core->getRenderer()->submitRenderFrame(frame);
+
+	return res;
 }

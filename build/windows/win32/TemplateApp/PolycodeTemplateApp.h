@@ -18,5 +18,6 @@ public:
 private:
 	Core *core;
 	Scene *scene;
+	SceneLabel *label;
 
 };

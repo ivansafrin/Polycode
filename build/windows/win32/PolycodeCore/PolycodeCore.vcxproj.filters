@@ -42,18 +42,6 @@
     <ClCompile Include="..\..\..\..\src\core\PolyThreaded.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\core\PolyTimer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\core\PolyTimerManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\core\PolyTween.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\core\PolyTweenManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\core\PolyVector2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -112,9 +100,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\core\PolyCoreInput.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\core\PolyCoreServices.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\core\PolyCubemap.cpp">
@@ -258,6 +243,9 @@
     <ClCompile Include="..\..\..\..\src\core\stb_vorbis.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\core\PolyRendererPlatformData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyFont.h">
@@ -398,18 +386,6 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyThreaded.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyTimer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyTimerManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyTween.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyTweenManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyVector2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -452,9 +428,6 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyCoreInput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyCoreServices.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyCubemap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -477,6 +450,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\polycode\view\win32\PolycodeView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyRendererPlatformData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -40,7 +40,6 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyCore.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyCoreFileProvider.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyCoreInput.h" />
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyCoreServices.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyCubemap.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyData.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyEntity.h" />
@@ -69,6 +68,7 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyRectangle.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyRenderDataArray.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyRenderer.h" />
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyRendererPlatformData.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyResource.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyResourceManager.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyScene.h" />
@@ -76,7 +76,6 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneLabel.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneLight.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneLine.h" />
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneManager.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneMesh.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyScenePrimitive.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneRenderTexture.h" />
@@ -93,10 +92,6 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyString.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyTexture.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyThreaded.h" />
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyTimer.h" />
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyTimerManager.h" />
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyTween.h" />
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyTweenManager.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyUWPCore.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyVector2.h" />
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyVector3.h" />
@@ -121,7 +116,6 @@
     <ClCompile Include="..\..\..\..\src\core\PolyCore.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyCoreFileProvider.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyCoreInput.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyCoreServices.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyCubemap.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyData.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyEntity.cpp" />
@@ -148,6 +142,7 @@
     <ClCompile Include="..\..\..\..\src\core\PolyRectangle.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyRenderDataArray.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyRenderer.cpp" />
+    <ClCompile Include="..\..\..\..\src\core\PolyRendererPlatformData.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyResource.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyResourceManager.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyScene.cpp" />
@@ -155,7 +150,6 @@
     <ClCompile Include="..\..\..\..\src\core\PolySceneLabel.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolySceneLight.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolySceneLine.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolySceneManager.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolySceneMesh.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyScenePrimitive.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolySceneRenderTexture.cpp" />
@@ -171,10 +165,6 @@
     <ClCompile Include="..\..\..\..\src\core\PolyString.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyTexture.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyThreaded.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyTimer.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyTimerManager.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyTween.cpp" />
-    <ClCompile Include="..\..\..\..\src\core\PolyTweenManager.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyUWPCore.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyVector2.cpp" />
     <ClCompile Include="..\..\..\..\src\core\PolyVector3.cpp" />

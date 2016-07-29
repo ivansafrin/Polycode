@@ -42,9 +42,6 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyCoreInput.h">
       <Filter>Include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyCoreServices.h">
-      <Filter>Include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyCubemap.h">
       <Filter>Include</Filter>
     </ClInclude>
@@ -147,9 +144,6 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneLine.h">
       <Filter>Include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneManager.h">
-      <Filter>Include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\polycode\core\PolySceneMesh.h">
       <Filter>Include</Filter>
     </ClInclude>
@@ -195,18 +189,6 @@
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyThreaded.h">
       <Filter>Include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyTimer.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyTimerManager.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyTween.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\polycode\core\PolyTweenManager.h">
-      <Filter>Include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\polycode\core\PolyUWPCore.h">
       <Filter>Include</Filter>
     </ClInclude>
@@ -249,6 +231,9 @@
     <ClInclude Include="..\..\..\..\include\polycode\bindings\javascript\PolycodeJSWrappers.h">
       <Filter>Include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\include\polycode\core\PolyRendererPlatformData.h">
+      <Filter>Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\core\PolyBasicFileProvider.cpp">
@@ -279,9 +264,6 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\core\PolyCoreInput.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\core\PolyCoreServices.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\core\PolyCubemap.cpp">
@@ -380,9 +362,6 @@
     <ClCompile Include="..\..\..\..\src\core\PolySceneLine.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\core\PolySceneManager.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\core\PolySceneMesh.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -423,18 +402,6 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\core\PolyThreaded.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\core\PolyTimer.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\core\PolyTimerManager.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\core\PolyTween.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\core\PolyTweenManager.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\core\PolyUWPCore.cpp">
@@ -483,6 +450,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\core\stb_vorbis.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\core\PolyRendererPlatformData.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

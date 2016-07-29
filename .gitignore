@@ -3,6 +3,8 @@
 bin/polyimport
 bin/polybuild
 
+*.VC.db
+
 *.pyc
 
 *.o

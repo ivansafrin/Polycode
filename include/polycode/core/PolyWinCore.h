@@ -110,14 +110,6 @@
 
 namespace Polycode {
 
-	class _PolyExport Win32Mutex : public CoreMutex {
-	public:
-		void lock();
-		void unlock();
-
-		HANDLE winMutex; 
-	};
-
 	class _PolyExport Win32Event {
 	public:
 		int eventGroup;
@@ -216,8 +208,6 @@ public:
 		void createThread(Threaded *target);
 
 		PolyKEY mapKey(LPARAM lParam, WPARAM wParam);
-
-		CoreMutex *createMutex();
 
 		void checkEvents();
 		void initKeymap();

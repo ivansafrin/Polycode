@@ -350,7 +350,7 @@ Polycode::CoreFile *Core::openFile(const Polycode::String& fileName, const Polyc
     return NULL;
 }
 
-void Core::closeFile(CoreFile *file) {
+void Core::closeFile(Polycode::CoreFile *file) {
     for(int i=0; i < fileProviders.size(); i++) {
         if(file->provider == fileProviders[i]) {
             fileProviders[i]->closeFile(file);

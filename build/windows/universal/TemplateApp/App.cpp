@@ -340,6 +340,7 @@ void App::SetWindow(CoreWindow^ window)
 	view->mEglSurface = mEglSurface;
 
 	app = new PolycodeTemplateApp(view);
+	core = app->getCore();
 }
 
 // Initializes scene resources, or loads a previously saved app state.
@@ -369,7 +370,7 @@ void App::Run()
 		eglQuerySurface(mEglDisplay, mEglSurface, EGL_HEIGHT, &panelHeight);
 
 		if (panelWidth != lastPanelWidth || panelHeight != lastPanelHeight) {
-			Services()->getCore()->resizeTo(panelWidth, panelHeight);
+			core->resizeTo(panelWidth, panelHeight);
 		}
 
 		lastPanelWidth = panelWidth;

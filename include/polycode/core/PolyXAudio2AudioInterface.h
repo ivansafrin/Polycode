@@ -52,7 +52,7 @@ namespace Polycode {
 
 			AudioMixer *mixer;
 			std::queue<XAudioInterfaceBuffer*> bufferQueue;
-			CoreMutex *bufferMutex;
+			std::mutex bufferMutex;
 	};
 
 	class XAudio2Stream : public Threaded, IXAudio2VoiceCallback {
@@ -107,12 +107,12 @@ namespace Polycode {
 
 	class XAudio2AudioInterface : public Polycode::AudioInterface {
 		public:
-			XAudio2AudioInterface();
+			XAudio2AudioInterface(Core *core);
 			~XAudio2AudioInterface();
 			void setMixer(AudioMixer *mixer);
 
 		private:
-			
+			Core *core;
 			XAudio2Stream *xAudioStream;
 	};
 	

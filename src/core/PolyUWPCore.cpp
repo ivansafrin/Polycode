@@ -33,15 +33,6 @@ using namespace ABI::Windows::Storage;
 using namespace Microsoft::WRL;
 using namespace Microsoft::WRL::Wrappers;
 
-void UWPCoreMutex::lock() {
-	mutex.lock();
-}
-
-void UWPCoreMutex::unlock() {
-	mutex.unlock();
-}
-
-
 UWPCore::UWPCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex, bool retinaSupport) 
 	: Core(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
 
@@ -61,35 +52,25 @@ UWPCore::UWPCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool v
 
 	fileProviders.push_back(new BasicFileProvider());
 
-	renderer = new Renderer();
+	renderer = new Renderer(this);
 
 	renderer->setBackingResolutionScale(1.0, 1.0);
 
-	graphicsInterface = new OpenGLGraphicsInterface();
+	graphicsInterface = new OpenGLGraphicsInterface(this);
 	renderer->setGraphicsInterface(this, graphicsInterface);
-	services->setRenderer(renderer);
 	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
 
-	services->getSoundManager()->setAudioInterface(new XAudio2AudioInterface());
+	getSoundManager()->setAudioInterface(new XAudio2AudioInterface(this));
 
-	eventMutex = createMutex();
 }
 
 UWPCore::~UWPCore() {
 
 }
 
-void UWPCore::Render() {
-	renderer->beginFrame();
-	services->Render(Polycode::Rectangle(0, 0, xRes, yRes));
-	renderer->endFrame();
-	//eglSwapBuffers(mEglDisplay, mEglSurface);
-}
-
-
 void UWPCore::checkEvents() {
 
-	eventMutex->lock();
+	eventMutex.lock();
 
 	UWPEvent event;
 	for (int i = 0; i < systemInputEvents.size(); i++) {
@@ -149,7 +130,7 @@ void UWPCore::checkEvents() {
 	}
 
 	systemInputEvents.clear();
-	eventMutex->unlock();
+	eventMutex.unlock();
 
 }
 
@@ -177,11 +158,6 @@ void UWPCore::createThread(Threaded * target) {
 	Core::createThread(target);
 	std::thread *thread = new std::thread(launchThread, target);
 	 
-}
-
-CoreMutex *UWPCore::createMutex() {
-	UWPCoreMutex *mutex = new UWPCoreMutex();
-	return mutex;
 }
 
 void UWPCore::copyStringToClipboard(const String& str) {
@@ -315,9 +291,9 @@ bool UWPCore::systemParseFolder(const Polycode::String& pathString, bool showHid
 }
 
 void UWPCore::handleSystemEvent(UWPEvent systemEvent) {
-	eventMutex->lock();
+	eventMutex.lock();
 	systemInputEvents.push_back(systemEvent);
-	eventMutex->unlock();
+	eventMutex.unlock();
 }
 
 void Core::getScreenInfo(int *width, int *height, int *hz) {

@@ -73,14 +73,6 @@ namespace Polycode {
 		static const int SYSTEM_FOCUS_EVENT = EVENTBASE_PLATFORMEVENT + 1;
 	};
 
-
-	class UWPCoreMutex : public CoreMutex {
-	public:
-		void lock();
-		void unlock();
-		std::mutex mutex;
-	};
-
 	class OpenGLGraphicsInterface;
 
 	class _PolyExport UWPCore : public Core {
@@ -89,11 +81,9 @@ namespace Polycode {
 		UWPCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex = -1, bool retinaSupport = false);
 		~UWPCore();
 
-		void Render();
 		bool systemUpdate();
 		void setCursor(int cursorType);
 		void createThread(Threaded *target);
-		CoreMutex *createMutex();
 		void copyStringToClipboard(const String& str);
 		String getClipboardString();
 		void createFolder(const String& folderPath);

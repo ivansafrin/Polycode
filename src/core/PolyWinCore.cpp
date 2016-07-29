@@ -22,7 +22,6 @@
 
 #include "polycode/core/PolyWinCore.h"
 #include "polycode/core/PolyCoreInput.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyInputEvent.h"
 #include "polycode/core/PolyLogger.h"
 #include "polycode/core/PolyThreaded.h"
@@ -75,14 +74,6 @@ long getThreadID() {
 }
 
 extern Win32Core *core;
-
-void Win32Mutex::lock() {
-	WaitForSingleObject(winMutex, INFINITE);
-}
-
-void Win32Mutex::unlock() {
-	ReleaseMutex(winMutex);
-}
 
 void ClientResize(HWND hWnd, int nWidth, int nHeight)
 {
@@ -144,16 +135,13 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 	lastMouseX = -1;
 	lastMouseY = -1;
 
-	eventMutex = createMutex();
-
 	isFullScreen = fullScreen;
 	this->resizable = view->resizable;
 
-	renderer = new Renderer();
-	OpenGLGraphicsInterface *renderInterface = new OpenGLGraphicsInterface();
+	renderer = new Renderer(this);
+	OpenGLGraphicsInterface *renderInterface = new OpenGLGraphicsInterface(this);
 	renderInterface->lineSmooth = true;
 	renderer->setGraphicsInterface(this, renderInterface);
-	services->setRenderer(renderer);
 	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
 
 	WSADATA WsaData;
@@ -166,7 +154,7 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 	
 	setVSync(vSync);
 
-	services->getSoundManager()->setAudioInterface(new PAAudioInterface());
+	getSoundManager()->setAudioInterface(new PAAudioInterface());
 }
 
 Number Win32Core::getBackingXRes() {
@@ -653,23 +641,23 @@ PolyKEY Win32Core::mapKey(LPARAM lParam, WPARAM wParam) {
 }
 
 void Win32Core::handleKeyDown(LPARAM lParam, WPARAM wParam) {
-	lockMutex(eventMutex);
+	eventMutex.lock();
 	Win32Event newEvent;
 	newEvent.eventGroup = Win32Event::INPUT_EVENT;
 	newEvent.eventCode = InputEvent::EVENT_KEYDOWN;
 	newEvent.keyCode = mapKey(lParam, wParam);
 	win32Events.push_back(newEvent);
-	unlockMutex(eventMutex);
+	eventMutex.unlock();
 }
 
 void Win32Core::handleKeyUp(LPARAM lParam, WPARAM wParam) {
-	lockMutex(eventMutex);
+	eventMutex.lock();
 	Win32Event newEvent;
 	newEvent.eventGroup = Win32Event::INPUT_EVENT;
 	newEvent.eventCode = InputEvent::EVENT_KEYUP;
 	newEvent.keyCode = mapKey(lParam, wParam);
 	win32Events.push_back(newEvent);
-	unlockMutex(eventMutex);
+	eventMutex.unlock();
 }
 
 #ifndef NO_TOUCH_API
@@ -681,7 +669,7 @@ void Win32Core::handleTouchEvent(LPARAM lParam, WPARAM wParam) {
 			return;
 		}
 
-		lockMutex(eventMutex);
+		eventMutex.lock();
 
 		int iNumContacts = LOWORD(wParam);
 		HTOUCHINPUT hInput = (HTOUCHINPUT)lParam;
@@ -734,14 +722,14 @@ void Win32Core::handleTouchEvent(LPARAM lParam, WPARAM wParam) {
 				}
 			}
 		}
-		unlockMutex(eventMutex);
+		eventMutex.unlock();
 	}
 #endif
 
 #ifndef NO_PEN_API
 void Win32Core::handlePointerUpdate(LPARAM lParam, WPARAM wParam) {
 
-	lockMutex(eventMutex);
+	eventMutex.lock();
 
 	POINTER_PEN_INFO	penInfo;
 	POINTER_INFO		pointerInfo;
@@ -803,23 +791,23 @@ void Win32Core::handlePointerUpdate(LPARAM lParam, WPARAM wParam) {
 		win32Events.push_back(newEvent);
 	}
 
-	unlockMutex(eventMutex);
+	eventMutex.unlock();
 }
 #endif
 
 void Win32Core::handleMouseMove(LPARAM lParam, WPARAM wParam) {
-	lockMutex(eventMutex);
+	eventMutex.lock();
 	Win32Event newEvent;
 	newEvent.eventGroup = Win32Event::INPUT_EVENT;
 	newEvent.eventCode = InputEvent::EVENT_MOUSEMOVE;
 	newEvent.mouseX = GET_X_LPARAM(lParam);
 	newEvent.mouseY = GET_Y_LPARAM(lParam); 
 	win32Events.push_back(newEvent);
-	unlockMutex(eventMutex);
+	eventMutex.unlock();
 }
 
 void Win32Core::handleMouseWheel(LPARAM lParam, WPARAM wParam) {
-	lockMutex(eventMutex);
+	eventMutex.lock();
 	Win32Event newEvent;
 	newEvent.eventGroup = Win32Event::INPUT_EVENT;
 	newEvent.mouseX = GET_X_LPARAM(lParam);
@@ -830,11 +818,11 @@ void Win32Core::handleMouseWheel(LPARAM lParam, WPARAM wParam) {
 	else
 		newEvent.eventCode = InputEvent::EVENT_MOUSEWHEEL_UP;
 	win32Events.push_back(newEvent);
-	unlockMutex(eventMutex);
+	eventMutex.unlock();
 }
 
 void Win32Core::handleMouseDown(int mouseCode,LPARAM lParam, WPARAM wParam) {
-	lockMutex(eventMutex);
+	eventMutex.lock();
 	Win32Event newEvent;
 	newEvent.eventGroup = Win32Event::INPUT_EVENT;
 	newEvent.mouseX = GET_X_LPARAM(lParam);
@@ -842,11 +830,11 @@ void Win32Core::handleMouseDown(int mouseCode,LPARAM lParam, WPARAM wParam) {
 	newEvent.eventCode = InputEvent::EVENT_MOUSEDOWN;
 	newEvent.mouseButton = mouseCode;
 	win32Events.push_back(newEvent);
-	unlockMutex(eventMutex);
+	eventMutex.unlock();
 }
 
 void Win32Core::handleMouseUp(int mouseCode,LPARAM lParam, WPARAM wParam) {
-	lockMutex(eventMutex);
+	eventMutex.lock();
 	Win32Event newEvent;
 	newEvent.eventGroup = Win32Event::INPUT_EVENT;
 	newEvent.mouseX = GET_X_LPARAM(lParam);
@@ -854,7 +842,7 @@ void Win32Core::handleMouseUp(int mouseCode,LPARAM lParam, WPARAM wParam) {
 	newEvent.eventCode = InputEvent::EVENT_MOUSEUP;
 	newEvent.mouseButton = mouseCode;
 	win32Events.push_back(newEvent);
-	unlockMutex(eventMutex);
+	eventMutex.unlock();
 }
 
 void Win32Core::handleTextInput(LPARAM lParam, WPARAM wParam) {
@@ -865,9 +853,9 @@ void Win32Core::handleTextInput(LPARAM lParam, WPARAM wParam) {
 	if ((unsigned char) newEvent.text[0] < ' ' || newEvent.text[0] == 127) {
 		return;
 	}
-	lockMutex(eventMutex);
+	eventMutex.lock();
 	win32Events.push_back(newEvent);
-	unlockMutex(eventMutex);
+	eventMutex.unlock();
 }
 
 bool Win32Core::checkSpecialKeyEvents(PolyKEY key) {
@@ -906,7 +894,7 @@ bool Win32Core::checkSpecialKeyEvents(PolyKEY key) {
 }
 
 void Win32Core::checkEvents() {
-	lockMutex(eventMutex);
+	eventMutex.lock();
 	Win32Event event;
 	for(int i=0; i < win32Events.size(); i++) {
 		event = win32Events[i];
@@ -956,7 +944,7 @@ void Win32Core::checkEvents() {
 		}
 	}
 	win32Events.clear();	
-	unlockMutex(eventMutex);		
+	eventMutex.unlock();		
 }
 
 void Win32Core::handleAxisChange(GamepadDeviceEntry * device, int axisIndex, DWORD value) {
@@ -1219,12 +1207,6 @@ void Win32Core::createThread(Threaded *target) {
 
 void Win32Core::platformSleep(int msecs) {
 	Sleep(msecs);
-}
-
-CoreMutex *Win32Core::createMutex() {
-	Win32Mutex *newMutex = new Win32Mutex();
-	newMutex->winMutex = CreateMutex(  NULL, FALSE, NULL);	 
-	return newMutex;
 }
 		
 std::vector<Polycode::Rectangle> Win32Core::getVideoModes() {

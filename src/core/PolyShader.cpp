@@ -30,9 +30,6 @@
 
 using namespace Polycode;
 
-const int ShaderProgram::TYPE_VERT;
-const int ShaderProgram::TYPE_FRAG;
-
 ShaderRenderTarget::ShaderRenderTarget() : PolyBase() {
 	buffer = NULL;
 }

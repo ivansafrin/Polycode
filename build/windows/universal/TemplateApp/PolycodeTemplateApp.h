@@ -11,12 +11,12 @@ public:
     PolycodeTemplateApp(PolycodeView *view);
     ~PolycodeTemplateApp();
     
+	Core *getCore();
     bool Update();
     
 private:
 
-	Sound *sound1;
-	Sound *sound2;
-
+	SceneLabel *label;
+	Scene *scene;
     Core *core;
 };

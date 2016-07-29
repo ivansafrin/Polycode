@@ -23,7 +23,6 @@
 
 #include "polycode/core/PolyXAudio2AudioInterface.h"
 #include "polycode/core/PolyLogger.h"
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyCore.h"
 
 using namespace Polycode;
@@ -75,13 +74,13 @@ HRESULT XAudio2Stream::initXAudio2() {
 
 void XAudio2FillThread::runThread() {
 	while (threadRunning) {
-		bufferMutex->lock();
+		bufferMutex.lock();
 		if (bufferQueue.size() < MAX_XAUDIO_BUFFER_COUNT) {
 			XAudioInterfaceBuffer *buffer = new XAudioInterfaceBuffer();
 			mixer->mixIntoBuffer(&buffer->bufferData[0], POLY_FRAMES_PER_BUFFER);
 			bufferQueue.push(buffer);
 		}
-		bufferMutex->unlock();
+		bufferMutex.unlock();
 	}
 }
 
@@ -97,9 +96,8 @@ void XAudio2Stream::runThread() {
 
 	fillThread = new XAudio2FillThread();
 	fillThread->mixer = mixer;
-	fillThread->bufferMutex = Services()->getCore()->createMutex();
 
-	Services()->getCore()->createThread(fillThread);
+	core->createThread(fillThread);
 
 	lastBuffer = NULL; 
 
@@ -122,7 +120,7 @@ void XAudio2Stream::runThread() {
 			lastBuffer = NULL;
 		}
 		
-		fillThread->bufferMutex->lock();
+		fillThread->bufferMutex.lock();
 		if(fillThread->bufferQueue.size() > 0) {
 			XAUDIO2_BUFFER buf = { 0 };
 			buf.AudioBytes = POLY_FRAMES_PER_BUFFER*POLY_NUM_CHANNELS * 2;
@@ -135,7 +133,7 @@ void XAudio2Stream::runThread() {
 		//	delete lastBuffer; // FIXME!!
 			fillThread->bufferQueue.pop();
 		}
-		fillThread->bufferMutex->unlock();
+		fillThread->bufferMutex.unlock();
 	}
 
 	fillThread->killThread();
@@ -155,10 +153,10 @@ void XAudio2Stream::setMixer(AudioMixer *mixer) {
 void XAudio2AudioInterface::setMixer(AudioMixer *mixer) {
 	xAudioStream->setMixer(mixer);
 	AudioInterface::setMixer(mixer);
-	Services()->getCore()->createThread(xAudioStream);
+	core->createThread(xAudioStream);
 }
 
-XAudio2AudioInterface::XAudio2AudioInterface() {
+XAudio2AudioInterface::XAudio2AudioInterface(Core *core) : core(core) {
 	xAudioStream = new XAudio2Stream();
 }
 

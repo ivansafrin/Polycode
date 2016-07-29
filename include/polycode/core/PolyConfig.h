@@ -23,6 +23,7 @@ THE SOFTWARE.
 #pragma once
 #include "polycode/core/PolyGlobals.h"
 #include "polycode/core/PolyString.h"
+#include <memory>
 
 namespace Polycode {
     
