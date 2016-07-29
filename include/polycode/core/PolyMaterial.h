@@ -56,9 +56,11 @@ namespace Polycode {
 	class _PolyExport Material : public Resource {
 		public:
 			explicit Material(const String& name);
+			explicit Material(const String& name, std::shared_ptr<Shader> shader);
 			virtual ~Material();
 
 			void addShaderPass(const ShaderPass &pass);
+			void addShaderPassForShader(std::shared_ptr<Shader> shader);
 			void addShaderPassAtIndex(const ShaderPass &pass, unsigned int shaderIndex);	
 			unsigned int getNumShaderPasses() const;
 		

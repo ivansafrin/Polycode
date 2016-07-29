@@ -30,6 +30,9 @@
 
 using namespace Polycode;
 
+const int ShaderProgram::TYPE_VERT;
+const int ShaderProgram::TYPE_FRAG;
+
 ShaderRenderTarget::ShaderRenderTarget() : PolyBase() {
 	buffer = NULL;
 }
@@ -96,6 +99,12 @@ ShaderProgram::ShaderProgram(const String &fileName) : Resource(Resource::RESOUR
 	setResourcePath(fileName);
 	setResourceName(fileName);
 }
+
+ShaderProgram::ShaderProgram(const String &fileName, int type) : Resource(Resource::RESOURCE_PROGRAM), type(type) {
+	setResourcePath(fileName);
+	setResourceName(fileName);
+}
+
 
 ShaderProgram::~ShaderProgram() {
 }

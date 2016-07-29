@@ -65,12 +65,15 @@ std::shared_ptr<ShaderBinding> ShaderPass::getShaderBinding() {
 }
 
 
-Material::Material(const String& name) : Resource(Resource::RESOURCE_MATERIAL) {
-	this->name = name;
-	fp16RenderTargets = false;
-	blendingMode = Renderer::BLEND_MODE_NORMAL;
-	screenMaterial = false;
+Material::Material(const String& name) : Resource(Resource::RESOURCE_MATERIAL), name(name), fp16RenderTargets(false), blendingMode(Renderer::BLEND_MODE_NORMAL), screenMaterial(false)
+{
 }
+
+Material::Material(const String& name, std::shared_ptr<Shader> shader) : Resource(Resource::RESOURCE_MATERIAL), name(name), fp16RenderTargets(false), blendingMode(Renderer::BLEND_MODE_NORMAL), screenMaterial(false)
+{
+	addShaderPassForShader(shader);
+}
+
 
 Material::~Material() {
 	
@@ -165,6 +168,15 @@ void Material::removeShaderPass(int shaderIndex) {
 void Material::addShaderPass(const ShaderPass &pass) {
 	shaderPasses.push_back(pass);
 	pass.shader->addEventListener(this, Event::RESOURCE_RELOAD_EVENT);
+}
+
+void Material::addShaderPassForShader(std::shared_ptr<Shader> shader) {
+	ShaderPass shaderPass;
+	shaderPass.shader = shader;
+	shaderPass.shaderBinding = std::make_shared<ShaderBinding>();
+	shaderPass.shaderBinding->targetShader = shaderPass.shader;
+	shaderPass.blendingMode = Renderer::BLEND_MODE_NORMAL;
+	addShaderPass(shaderPass);
 }
 
 void Material::addShaderPassAtIndex(const ShaderPass &pass, unsigned int shaderIndex) {

@@ -87,6 +87,7 @@ namespace Polycode {
 	class _PolyExport ShaderProgram : public Resource {
 		public:
 			explicit ShaderProgram(const String &fileName);
+			explicit ShaderProgram(const String &fileName, int type);
 			virtual ~ShaderProgram();
 			
 			virtual void reloadProgram() {}
