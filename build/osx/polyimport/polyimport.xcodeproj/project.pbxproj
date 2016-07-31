@@ -8,8 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8AA42A941D135B5200007A63 /* polyimport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8AA42A931D135B5200007A63 /* polyimport.cpp */; };
-		8AA42AA21D135B6C00007A63 /* libarchive.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AA42A951D135B6C00007A63 /* libarchive.a */; };
-		8AA42AA31D135B6C00007A63 /* libassimp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AA42A961D135B6C00007A63 /* libassimp.a */; };
+		8AA42AA21D135B6C00007A63 /* libassimp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AA42A951D135B6C00007A63 /* libassimp.a */; };
 		8AA42AA41D135B6C00007A63 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AA42A971D135B6C00007A63 /* libfreetype.a */; };
 		8AA42AA51D135B6C00007A63 /* liblibogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AA42A981D135B6C00007A63 /* liblibogg.a */; };
 		8AA42AA61D135B6C00007A63 /* liblibvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AA42A991D135B6C00007A63 /* liblibvorbis.a */; };
@@ -43,19 +42,18 @@
 
 /* Begin PBXFileReference section */
 		8AA42A931D135B5200007A63 /* polyimport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = polyimport.cpp; path = ../../../src/tools/polyimport.cpp; sourceTree = SOURCE_ROOT; };
-		8AA42A951D135B6C00007A63 /* libarchive.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libarchive.a; path = ../../../../lib/osx/libarchive.a; sourceTree = "<group>"; };
-		8AA42A961D135B6C00007A63 /* libassimp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libassimp.a; path = ../../../../lib/osx/libassimp.a; sourceTree = "<group>"; };
-		8AA42A971D135B6C00007A63 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../../../../lib/osx/libfreetype.a; sourceTree = "<group>"; };
-		8AA42A981D135B6C00007A63 /* liblibogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibogg.a; path = ../../../../lib/osx/liblibogg.a; sourceTree = "<group>"; };
-		8AA42A991D135B6C00007A63 /* liblibvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibvorbis.a; path = ../../../../lib/osx/liblibvorbis.a; sourceTree = "<group>"; };
-		8AA42A9A1D135B6C00007A63 /* liblibvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibvorbisfile.a; path = ../../../../lib/osx/liblibvorbisfile.a; sourceTree = "<group>"; };
-		8AA42A9B1D135B6C00007A63 /* libLinearMath.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLinearMath.a; path = ../../../../lib/osx/libLinearMath.a; sourceTree = "<group>"; };
-		8AA42A9C1D135B6C00007A63 /* liblua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua.a; path = ../../../../lib/osx/liblua.a; sourceTree = "<group>"; };
-		8AA42A9D1D135B6C00007A63 /* libphysfs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libphysfs.a; path = ../../../../lib/osx/libphysfs.a; sourceTree = "<group>"; };
-		8AA42A9E1D135B6C00007A63 /* libPolycodeUI.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeUI.a; path = ../../../../lib/osx/libPolycodeUI.a; sourceTree = "<group>"; };
-		8AA42A9F1D135B6C00007A63 /* libPolycore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycore.a; path = ../../../../lib/osx/libPolycore.a; sourceTree = "<group>"; };
-		8AA42AA01D135B6C00007A63 /* libportaudio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libportaudio.a; path = ../../../../lib/osx/libportaudio.a; sourceTree = "<group>"; };
-		8AA42AA11D135B6C00007A63 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = ../../../../lib/osx/libz.a; sourceTree = "<group>"; };
+		8AA42A951D135B6C00007A63 /* libassimp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libassimp.a; path = ../../../lib/osx/libassimp.a; sourceTree = "<group>"; };
+		8AA42A971D135B6C00007A63 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../../../lib/osx/libfreetype.a; sourceTree = "<group>"; };
+		8AA42A981D135B6C00007A63 /* liblibogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibogg.a; path = ../../../lib/osx/liblibogg.a; sourceTree = "<group>"; };
+		8AA42A991D135B6C00007A63 /* liblibvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibvorbis.a; path = ../../../lib/osx/liblibvorbis.a; sourceTree = "<group>"; };
+		8AA42A9A1D135B6C00007A63 /* liblibvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblibvorbisfile.a; path = ../../../lib/osx/liblibvorbisfile.a; sourceTree = "<group>"; };
+		8AA42A9B1D135B6C00007A63 /* libLinearMath.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libLinearMath.a; path = ../../../lib/osx/libLinearMath.a; sourceTree = "<group>"; };
+		8AA42A9C1D135B6C00007A63 /* liblua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua.a; path = ../../../lib/osx/liblua.a; sourceTree = "<group>"; };
+		8AA42A9D1D135B6C00007A63 /* libphysfs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libphysfs.a; path = ../../../lib/osx/libphysfs.a; sourceTree = "<group>"; };
+		8AA42A9E1D135B6C00007A63 /* libPolycodeUI.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycodeUI.a; path = ../../../lib/osx/libPolycodeUI.a; sourceTree = "<group>"; };
+		8AA42A9F1D135B6C00007A63 /* libPolycore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPolycore.a; path = ../../../lib/osx/libPolycore.a; sourceTree = "<group>"; };
+		8AA42AA01D135B6C00007A63 /* libportaudio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libportaudio.a; path = ../../../lib/osx/libportaudio.a; sourceTree = "<group>"; };
+		8AA42AA11D135B6C00007A63 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = ../../../lib/osx/libz.a; sourceTree = "<group>"; };
 		8AA42AAF1D135BBF00007A63 /* polyimport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = polyimport.h; path = ../../../include/polycode/tools/polyimport.h; sourceTree = SOURCE_ROOT; };
 		8AE1F6AB1CB82FBD0001557D /* polyimport */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = polyimport; sourceTree = BUILT_PRODUCTS_DIR; };
 		8AE1F6ED1CB83C850001557D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -79,7 +77,7 @@
 				8AE1F6FA1CB83CE10001557D /* AudioUnit.framework in Frameworks */,
 				8AA42AAC1D135B6C00007A63 /* libPolycore.a in Frameworks */,
 				8AA42AA41D135B6C00007A63 /* libfreetype.a in Frameworks */,
-				8AA42AA21D135B6C00007A63 /* libarchive.a in Frameworks */,
+				8AA42AA21D135B6C00007A63 /* libassimp.a in Frameworks */,
 				8AE1F6F81CB83CD80001557D /* CoreAudio.framework in Frameworks */,
 				8AA42AAD1D135B6C00007A63 /* libportaudio.a in Frameworks */,
 				8AA42AA51D135B6C00007A63 /* liblibogg.a in Frameworks */,
@@ -87,7 +85,6 @@
 				8AE1F6F41CB83CC20001557D /* IOKit.framework in Frameworks */,
 				8AA42AA91D135B6C00007A63 /* liblua.a in Frameworks */,
 				8AE1F6F01CB83C8B0001557D /* OpenGL.framework in Frameworks */,
-				8AA42AA31D135B6C00007A63 /* libassimp.a in Frameworks */,
 				8AA42AAA1D135B6C00007A63 /* libphysfs.a in Frameworks */,
 				8AE1F6EE1CB83C850001557D /* Cocoa.framework in Frameworks */,
 			);
@@ -121,8 +118,7 @@
 		8AE1F6AD1CB82FBD0001557D /* polyimport */ = {
 			isa = PBXGroup;
 			children = (
-				8AA42A951D135B6C00007A63 /* libarchive.a */,
-				8AA42A961D135B6C00007A63 /* libassimp.a */,
+				8AA42A951D135B6C00007A63 /* libassimp.a */,
 				8AA42A971D135B6C00007A63 /* libfreetype.a */,
 				8AA42A981D135B6C00007A63 /* liblibogg.a */,
 				8AA42A991D135B6C00007A63 /* liblibvorbis.a */,
@@ -314,6 +310,7 @@
 		8AE1F6B31CB82FBD0001557D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SYMROOT = build;
 			};
@@ -322,6 +319,7 @@
 		8AE1F6B41CB82FBD0001557D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SYMROOT = build;
 			};
