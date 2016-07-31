@@ -65,7 +65,7 @@ aiMatrix4x4 getFullTransform(const struct aiNode *nd) {
 	}
 }
 
-void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, const struct aiNode* nd, bool swapZY, bool addSubmeshes, bool listOnly, ObjectEntry *parentSceneObject, String overrideMaterial, ObjectEntry *materialsParent, String assetPrefixPath, String baseFileName) {
+void addToMesh(Core* core, String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, const struct aiNode* nd, bool swapZY, bool addSubmeshes, bool listOnly, ObjectEntry *parentSceneObject, String overrideMaterial, ObjectEntry *materialsParent, String assetPrefixPath, String baseFileName) {
 	int i, nIgnoredPolygons = 0;
 	unsigned int n = 0, t;
 	// draw all meshes assigned to this node
@@ -205,7 +205,7 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
 			
 			Mesh *nmesh = new Polycode::Mesh();
 			nmesh->addSubmesh(geometry);
-			nmesh->saveToFile(fileNameMesh, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs);
+			nmesh->saveToFile(core, fileNameMesh, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs);
 			delete nmesh;
 			
 			ObjectEntry *meshEntry = parentSceneObject->addChild("child");
@@ -313,7 +313,7 @@ void addToMesh(String prefix, Polycode::Mesh *tmesh, const struct aiScene *sc, c
 	   
 	// draw all children
 	for (n = 0; n < nd->mNumChildren; ++n) {
-		addToMesh(prefix, tmesh, sc, nd->mChildren[n], swapZY, addSubmeshes, listOnly, parentSceneObject, overrideMaterial, materialsParent, assetPrefixPath, baseFileName);
+		addToMesh(core, prefix, tmesh, sc, nd->mChildren[n], swapZY, addSubmeshes, listOnly, parentSceneObject, overrideMaterial, materialsParent, assetPrefixPath, baseFileName);
 	}
 }
 
@@ -344,7 +344,7 @@ void addToISkeleton(ISkeleton *skel, IBone *parent, const struct aiScene *sc, co
 	skel->addIBone(bone, getBoneID(bone->name));
 }
 
-int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly, bool exportEntity, bool generateMaterialFile, String overrideMaterial, String assetPrefixPath, String baseFileName) {
+int exportToFile(Core* core, String prefix, bool swapZY, bool addSubmeshes, bool listOnly, bool exportEntity, bool generateMaterialFile, String overrideMaterial, String assetPrefixPath, String baseFileName) {
 
 	Object materialObject;
 	ObjectEntry *materialsParent = NULL;;
@@ -388,7 +388,7 @@ int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly, b
 
 		
 	Polycode::Mesh *mesh = new Polycode::Mesh();
-	addToMesh(prefix, mesh, scene, scene->mRootNode, swapZY, addSubmeshes, listOnly, children, overrideMaterial, materialsParent, assetPrefixPath, baseFileName);
+	addToMesh(core, prefix, mesh, scene, scene->mRootNode, swapZY, addSubmeshes, listOnly, children, overrideMaterial, materialsParent, assetPrefixPath, baseFileName);
 	
 	
 	if(addSubmeshes) {
@@ -402,7 +402,7 @@ int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly, b
 		if(listOnly) {
 			printf("%s\n", fileNameMesh.c_str());
 		} else {
-			mesh->saveToFile(fileNameMesh, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs);
+			mesh->saveToFile(core, fileNameMesh, writeNormals, writeTangents, writeColors, writeBoneWeights, writeUVs, writeSecondaryUVs);
 		}
 	}
 		
@@ -472,7 +472,7 @@ int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly, b
 	
 	String matFileName = baseFileName+".mat";
 	if(!listOnly && materialsParent) {
-		materialObject.saveToXML(matFileName);
+		materialObject.saveToXML(core, matFileName);
 	}
 	
 	if(!listOnly && exportEntity) {
@@ -486,7 +486,7 @@ int exportToFile(String prefix, bool swapZY, bool addSubmeshes, bool listOnly, b
 		}
 		
 		String entityFileName = baseFileName+".entity";
-		sceneObject.saveToXML(entityFileName);
+		sceneObject.saveToXML(core, entityFileName);
 	}
 
 	if(mesh) {
@@ -654,7 +654,7 @@ int main(int argc, char **argv) {
 			aiApplyPostProcessing(scene, aiProcess_GenSmoothNormals);
 		}
 		
-		exportToFile(prefix, swapZYAxis, addSubmeshes, listOnly, exportEntity, generateMaterialFile, overrideMaterial, assetPrefixPath, baseFileName);
+		exportToFile(core, prefix, swapZYAxis, addSubmeshes, listOnly, exportEntity, generateMaterialFile, overrideMaterial, assetPrefixPath, baseFileName);
 	} else {
 		printf("Error opening scene (%s)\n", aiGetErrorString());
 	}
