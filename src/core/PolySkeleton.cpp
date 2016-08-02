@@ -406,7 +406,7 @@ BoneTrack::~BoneTrack() {
 }
 
 void BoneTrack::Reset() {
-	time = 0.0;
+     Seek(0);
 }
 
 void BoneTrack::Stop() {
@@ -420,22 +420,44 @@ void BoneTrack::Play(bool once) {
 }
 
 
+void BoneTrack::FastForward(Number delta) {
+    time += delta * speed;
+    
+    while(time > length) {
+        if(playOnce) {
+            time = length;
+            return;
+        } else {
+            time = time - length;
+        }
+    }
+}
+
+void BoneTrack::Rewind(Number delta) {
+    time -= delta * speed;
+    
+    while(time < 0.0) {
+        if(playOnce) {
+            time = 0.0;
+        } else {
+            time += length;
+        }
+    }
+}
+
+void BoneTrack::Seek(Number pos) {
+    time = 0.0;
+    FastForward(pos);
+}
+
+
 void BoneTrack::Update(Number elapsed) {
 	if(!targetBone)
 		return;
 	
-//	  if(!paused) {
-		time += elapsed * speed;
-//	  }
-	
-	if(time > length) {
-		if(playOnce) {
-			time = length;
-			return;
-		} else {
-			time = time - length;
-		}
-	}
+    //	  if(!paused) {
+    FastForward(elapsed);
+    //    }
 	
 	if(LocX) {
 		position.x = LocX->getYValueAtX(time);
@@ -478,7 +500,6 @@ void BoneTrack::Update(Number elapsed) {
 	targetBone->setPosition((position * weight) + (targetBone->getPosition() * (1.0 - weight)));
 	
 	targetBone->setScale((scale * weight) + (targetBone->getScale() * (1.0 - weight)));
-	
 }
 
 void BoneTrack::setSpeed(Number speed) {
@@ -488,6 +509,7 @@ void BoneTrack::setSpeed(Number speed) {
 
 SkeletonAnimation::SkeletonAnimation(const String& name, Number duration) {
 	this->name = name;
+    this->time = 0.0;
 	this->duration = duration;
 	this->weight = 1.0;
 	this->playing = false;
@@ -517,12 +539,18 @@ void SkeletonAnimation::Update(Number elapsed) {
 		boneTracks[i]->weight = weight;
 		boneTracks[i]->Update(elapsed);
 	}
+    
+    //  if(!playing) {
+    time += elapsed;
+    //  }
 }
 
 void SkeletonAnimation::Reset() {
 	for(int i=0; i < boneTracks.size(); i++) {
 		boneTracks[i]->Reset();
 	}
+     
+    time = 0;
 }
 
 void SkeletonAnimation::Stop() {
@@ -537,6 +565,34 @@ void SkeletonAnimation::Play(bool once) {
 	for(int i=0; i < boneTracks.size(); i++) {
 		boneTracks[i]->Play(once);
 	}
+}
+
+void SkeletonAnimation::FastForward(Number delta) {
+    for(int i=0; i < boneTracks.size(); i++) {
+        boneTracks[i]->FastForward(delta);
+    }
+    
+    time += delta;
+}
+
+void SkeletonAnimation::Rewind(Number delta) {
+    for(int i=0; i < boneTracks.size(); i++) {
+        boneTracks[i]->Rewind(delta);
+    }
+    
+    time -= delta;
+}
+
+void SkeletonAnimation::setPlayhead(Number pos) {
+    for(int i=0; i < boneTracks.size(); i++) {
+        boneTracks[i]->Seek(pos);
+    }
+    
+    time = pos;
+}
+
+Number SkeletonAnimation::getPlayhead() {
+     return time;
 }
 
 SkeletonAnimation::~SkeletonAnimation() {
