@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		763EA67C1D55847F003CD4EB /* libarchive.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 763EA67B1D55847F003CD4EB /* libarchive.a */; };
 		8AA42A941D135B5200007A63 /* polyimport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8AA42A931D135B5200007A63 /* polyimport.cpp */; };
 		8AA42AA21D135B6C00007A63 /* libassimp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AA42A951D135B6C00007A63 /* libassimp.a */; };
 		8AA42AA41D135B6C00007A63 /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AA42A971D135B6C00007A63 /* libfreetype.a */; };
@@ -41,6 +42,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		763EA67B1D55847F003CD4EB /* libarchive.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libarchive.a; path = ../../../lib/osx/libarchive.a; sourceTree = "<group>"; };
 		8AA42A931D135B5200007A63 /* polyimport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = polyimport.cpp; path = ../../../src/tools/polyimport.cpp; sourceTree = SOURCE_ROOT; };
 		8AA42A951D135B6C00007A63 /* libassimp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libassimp.a; path = ../../../lib/osx/libassimp.a; sourceTree = "<group>"; };
 		8AA42A971D135B6C00007A63 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = ../../../lib/osx/libfreetype.a; sourceTree = "<group>"; };
@@ -69,6 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				763EA67C1D55847F003CD4EB /* libarchive.a in Frameworks */,
 				8AA42AA71D135B6C00007A63 /* liblibvorbisfile.a in Frameworks */,
 				8AA42AA81D135B6C00007A63 /* libLinearMath.a in Frameworks */,
 				8AA42AAB1D135B6C00007A63 /* libPolycodeUI.a in Frameworks */,
@@ -118,6 +121,7 @@
 		8AE1F6AD1CB82FBD0001557D /* polyimport */ = {
 			isa = PBXGroup;
 			children = (
+				763EA67B1D55847F003CD4EB /* libarchive.a */,
 				8AA42A951D135B6C00007A63 /* libassimp.a */,
 				8AA42A971D135B6C00007A63 /* libfreetype.a */,
 				8AA42A981D135B6C00007A63 /* liblibogg.a */,
