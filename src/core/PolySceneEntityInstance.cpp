@@ -60,15 +60,22 @@ SceneEntityInstance *SceneEntityInstance::BlankSceneEntityInstance() {
 	return new SceneEntityInstance();
 }
 
-SceneEntityInstance::SceneEntityInstance(Core *core, const String& fileName) : core(core) {
-	createNewLayer("default");
-	resourceEntry = std::make_shared<SceneEntityInstanceResourceEntry>(this);
-	topLevelResourcePool = core->getResourceManager()->getGlobalPool();
-	loadFromFile(fileName);
-	resourceEntry->setResourceName(fileName);
-	resourceEntry->setResourcePath(fileName);
-	cloneUsingReload = false;
-	ownsChildren = true;
+SceneEntityInstance::SceneEntityInstance(Core *core, const String& fileName) : SceneEntityInstance(core, nullptr, fileName) {
+
+}
+
+SceneEntityInstance::SceneEntityInstance(Core *core, Scene *newParentScene, const String& fileName) : core(core) {
+    
+    parentScene = newParentScene;
+    
+    createNewLayer("default");
+    resourceEntry = std::make_shared<SceneEntityInstanceResourceEntry>(this);
+    topLevelResourcePool = core->getResourceManager()->getGlobalPool();
+    loadFromFile(fileName);
+    resourceEntry->setResourceName(fileName);
+    resourceEntry->setResourcePath(fileName);
+    cloneUsingReload = false;
+    ownsChildren = true;
 }
 
 SceneEntityInstance::SceneEntityInstance() : Entity() {
@@ -427,7 +434,10 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 					}
 				}
 				
-				//parentScene->addLight(newLight);
+                if(parentScene) {
+                    parentScene->addLight(newLight);
+                }
+                
 				entity = newLight;
 			}
 		} else if(entityType->stringVal == "ScenePrimitive") {
