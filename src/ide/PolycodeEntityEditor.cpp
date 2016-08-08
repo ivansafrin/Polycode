@@ -2147,7 +2147,7 @@ PolycodeEntityEditor::~PolycodeEntityEditor() {
 bool PolycodeEntityEditor::openFile(OSFileEntry filePath) { 
 	PolycodeEditor::openFile(filePath);
 //	  return true;
-	loadedInstance = new SceneEntityInstance(core, filePath.fullPath);
+	loadedInstance = new SceneEntityInstance(core, mainView->getMainScene(), filePath.fullPath);
 	
 	// disable sounds :)
 	for(int i=0; i < loadedInstance->getNumChildren(); i++) {
