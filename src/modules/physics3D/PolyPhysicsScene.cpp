@@ -28,7 +28,6 @@ THE SOFTWARE.
 #include "polycode/modules/physics3D/PolyCollisionScene.h"
 #include "polycode/modules/physics3D/PolyPhysicsSceneEntity.h"
 
-#include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyVector3.h"
 #include "polycode/core/PolyCore.h"
 
@@ -47,7 +46,7 @@ PhysicsSceneEvent::~PhysicsSceneEvent() {
 }
 
 
-PhysicsScene::PhysicsScene(int maxSubSteps, Vector3 size, bool virtualScene) : CollisionScene(size, virtualScene, true), physicsWorld(NULL), solver(NULL), broadphase(NULL), ghostPairCallback(NULL) {
+PhysicsScene::PhysicsScene(Core* core, int maxSubSteps, Vector3 size) : CollisionScene(core, size, true), physicsWorld(NULL), solver(NULL), broadphase(NULL), ghostPairCallback(NULL) {
 	this->maxSubSteps = maxSubSteps;
 	pausePhysics = false;	
 	initPhysicsScene(size); 
