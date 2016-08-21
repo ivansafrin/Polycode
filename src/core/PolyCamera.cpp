@@ -349,7 +349,6 @@ void Camera::renderFullScreenQuad(GPUDrawBuffer *drawBuffer, int shaderPass) {
 	drawCall.options.enableScissor = false;
 	drawCall.options.depthOnly = false;
 	drawCall.options.blendingMode = Renderer::BLEND_MODE_NONE;
-	drawCall.options.alphaTest = false;
 	drawCall.options.backfaceCull = false;
 	drawCall.options.depthTest = false;
 	drawCall.options.depthWrite = false;

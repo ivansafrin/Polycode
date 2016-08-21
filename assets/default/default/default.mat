@@ -5,7 +5,7 @@
 			<vp source="default/DefaultShader.vert"/>
 			<fp source="default/DefaultShader.frag"/>
 		</shader>
-		<shader type="glsl" name="DefaultShaderAnimated" numPointLights="6" numSpotLights="2">
+		<shader type="glsl" name="	" numPointLights="6" numSpotLights="2">
 			<vp source="default/GPUSkinning.vert"/>
 			<fp source="default/DefaultShader.frag"/>
 		</shader>		
@@ -21,10 +21,18 @@
 			<vp source="default/Unlit.vert"/>
 			<fp source="default/Unlit.frag"/>
 		</shader>
+		<shader type="glsl" name="UnlitAlphaTest" numPointLights="0" numSpotLights="0">		
+			<vp source="default/Unlit.vert"/>
+			<fp source="default/UnlitAlphaTest.frag"/>
+		</shader>		
 		<shader type="glsl" name="UnlitVertexColor" numPointLights="0" numSpotLights="0">		
 			<vp source="default/UnlitVertexColor.vert"/>
 			<fp source="default/UnlitVertexColor.frag"/>
-		</shader>		
+		</shader>
+		<shader type="glsl" name="UnlitVertexColorAlphaTest" numPointLights="0" numSpotLights="0">		
+			<vp source="default/UnlitVertexColor.vert"/>
+			<fp source="default/UnlitVertexColorAlphaTest.frag"/>
+		</shader>	
 		<shader type="glsl" name="UnlitPointUntextured" numPointLights="0" numSpotLights="0">		
 			<vp source="default/UnlitPoint.vert"/>
 			<fp source="default/UnlitUntextured.frag"/>
@@ -125,6 +133,13 @@
 				</params>				
 			</shader>
 		</material>
+		<material name="UnlitAlphaTest">
+			<shader name="UnlitAlphaTest">
+				<params>
+					<param name="entityColor" value="1.0 1.0 1.0 1.0" />
+				</params>				
+			</shader>
+		</material>		
 		<material name="UnlitAdditive" blendingMode="2">
 			<shader name="Unlit">
 				<params>
@@ -160,6 +175,13 @@
 				</params>					
 			</shader>
 		</material>
+		<material name="UnlitVertexColorAlphaTest">
+			<shader name="UnlitVertexColorAlphaTest">
+				<params>
+					<param name="entityColor" value="1.0 1.0 1.0 1.0" />
+				</params>					
+			</shader>
+		</material>		
 		<material name="UnlitWireframe">
 			<shader name="UnlitWireframe" wireframe="true">
 				<params>

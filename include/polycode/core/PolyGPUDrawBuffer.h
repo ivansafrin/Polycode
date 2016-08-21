@@ -59,7 +59,6 @@ namespace Polycode {
 		bool depthTest;
 		bool depthWrite;
 		float linePointSize;
-		bool alphaTest;
 		bool backfaceCull;
 		bool depthOnly;
 		bool forceMaterial;

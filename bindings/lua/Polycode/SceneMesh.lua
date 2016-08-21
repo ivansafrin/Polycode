@@ -12,8 +12,6 @@ function SceneMesh:__getvar(name)
 		return Polycode.SceneMesh_get_pointSmooth(self.__ptr)
 	elseif name == "useGeometryHitDetection" then
 		return Polycode.SceneMesh_get_useGeometryHitDetection(self.__ptr)
-	elseif name == "alphaTest" then
-		return Polycode.SceneMesh_get_alphaTest(self.__ptr)
 	elseif name == "backfaceCulled" then
 		return Polycode.SceneMesh_get_backfaceCulled(self.__ptr)
 	elseif name == "sendBoneMatricesToMaterial" then
@@ -36,9 +34,6 @@ function SceneMesh:__setvar(name,value)
 		return true
 	elseif name == "useGeometryHitDetection" then
 		Polycode.SceneMesh_set_useGeometryHitDetection(self.__ptr, value)
-		return true
-	elseif name == "alphaTest" then
-		Polycode.SceneMesh_set_alphaTest(self.__ptr, value)
 		return true
 	elseif name == "backfaceCulled" then
 		Polycode.SceneMesh_set_backfaceCulled(self.__ptr, value)

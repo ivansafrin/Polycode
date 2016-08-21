@@ -6,7 +6,6 @@ function GPUDrawOptions() {
 		'depthTest': { enumerable: true, configurable: true, get: GPUDrawOptions.prototype.__get_depthTest, set: GPUDrawOptions.prototype.__set_depthTest},
 		'depthWrite': { enumerable: true, configurable: true, get: GPUDrawOptions.prototype.__get_depthWrite, set: GPUDrawOptions.prototype.__set_depthWrite},
 		'linePointSize': { enumerable: true, configurable: true, get: GPUDrawOptions.prototype.__get_linePointSize, set: GPUDrawOptions.prototype.__set_linePointSize},
-		'alphaTest': { enumerable: true, configurable: true, get: GPUDrawOptions.prototype.__get_alphaTest, set: GPUDrawOptions.prototype.__set_alphaTest},
 		'backfaceCull': { enumerable: true, configurable: true, get: GPUDrawOptions.prototype.__get_backfaceCull, set: GPUDrawOptions.prototype.__set_backfaceCull},
 		'depthOnly': { enumerable: true, configurable: true, get: GPUDrawOptions.prototype.__get_depthOnly, set: GPUDrawOptions.prototype.__set_depthOnly},
 		'forceMaterial': { enumerable: true, configurable: true, get: GPUDrawOptions.prototype.__get_forceMaterial, set: GPUDrawOptions.prototype.__set_forceMaterial},
@@ -40,14 +39,6 @@ GPUDrawOptions.prototype.__get_linePointSize = function() {
 
 GPUDrawOptions.prototype.__set_linePointSize = function(val) {
 	Polycode.GPUDrawOptions__set_linePointSize(this.__ptr, val)
-}
-
-GPUDrawOptions.prototype.__get_alphaTest = function() {
-	return Polycode.GPUDrawOptions__get_alphaTest(this.__ptr)
-}
-
-GPUDrawOptions.prototype.__set_alphaTest = function(val) {
-	Polycode.GPUDrawOptions__set_alphaTest(this.__ptr, val)
 }
 
 GPUDrawOptions.prototype.__get_backfaceCull = function() {

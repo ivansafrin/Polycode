@@ -4035,18 +4035,6 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_GPUDrawOptions__get_alphaTest(duk_context *context) {
-		std::shared_ptr<GPUDrawOptions> *inst = (std::shared_ptr<GPUDrawOptions>*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, (*inst)->alphaTest);
-		return 1;
-	}
-
-	duk_ret_t Polycode_GPUDrawOptions__set_alphaTest(duk_context *context) {
-		GPUDrawOptions *inst = (GPUDrawOptions*)duk_to_pointer(context, 0);
-		inst->alphaTest = duk_to_boolean(context, 1);
-		return 0;
-	}
-
 	duk_ret_t Polycode_GPUDrawOptions__get_backfaceCull(duk_context *context) {
 		std::shared_ptr<GPUDrawOptions> *inst = (std::shared_ptr<GPUDrawOptions>*)duk_to_pointer(context, 0);
 		duk_push_boolean(context, (*inst)->backfaceCull);
@@ -5034,6 +5022,13 @@ namespace Polycode {
 		std::shared_ptr<Material> *inst = (std::shared_ptr<Material>*)duk_to_pointer(context, 0);
 		ShaderPass pass = *(ShaderPass*)duk_to_pointer(context, 1);
 		(*inst)->addShaderPass(pass);
+		return 0;
+	}
+
+	duk_ret_t Polycode_Material_addShaderPassForShader(duk_context *context) {
+		std::shared_ptr<Material> *inst = (std::shared_ptr<Material>*)duk_to_pointer(context, 0);
+		shared_ptr<Shader> shader = *(shared_ptr<Shader>*)duk_to_pointer(context, 1);
+		(*inst)->addShaderPassForShader(shader);
 		return 0;
 	}
 
@@ -8707,18 +8702,6 @@ namespace Polycode {
 	duk_ret_t Polycode_SceneMesh__set_useGeometryHitDetection(duk_context *context) {
 		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
 		inst->useGeometryHitDetection = duk_to_boolean(context, 1);
-		return 0;
-	}
-
-	duk_ret_t Polycode_SceneMesh__get_alphaTest(duk_context *context) {
-		std::shared_ptr<SceneMesh> *inst = (std::shared_ptr<SceneMesh>*)duk_to_pointer(context, 0);
-		duk_push_boolean(context, (*inst)->alphaTest);
-		return 1;
-	}
-
-	duk_ret_t Polycode_SceneMesh__set_alphaTest(duk_context *context) {
-		SceneMesh *inst = (SceneMesh*)duk_to_pointer(context, 0);
-		inst->alphaTest = duk_to_boolean(context, 1);
 		return 0;
 	}
 

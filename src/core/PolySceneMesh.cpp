@@ -46,7 +46,6 @@ SceneMesh::SceneMesh() : material(NULL), skeleton(NULL) {
 	lineWidth = 1.0;
 	useGeometryHitDetection = false;
 	backfaceCulled = true;
-	alphaTest = false;
 	sendBoneMatricesToMaterial = false;
 }
 
@@ -59,7 +58,6 @@ SceneMesh::SceneMesh(ResourcePool *pool, const String& fileName) : material(NULL
 	pointSmooth = false;
 	useGeometryHitDetection = false;
 	backfaceCulled = true;
-	alphaTest = false;
 	sendBoneMatricesToMaterial = false;
 }
 
@@ -72,7 +70,6 @@ SceneMesh::SceneMesh(std::shared_ptr<Mesh> mesh) : material(NULL), skeleton(NULL
 	pointSmooth = false;
 	useGeometryHitDetection = false;
 	backfaceCulled = true;
-	alphaTest = false;
 	sendBoneMatricesToMaterial = false;
 }
 
@@ -106,7 +103,6 @@ void SceneMesh::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly)
 	_clone->lineWidth = lineWidth;
 	_clone->lineSmooth = lineSmooth;
 	_clone->pointSmooth = pointSmooth;
-	_clone->alphaTest = alphaTest;
 	_clone->backfaceCulled = backfaceCulled;
 	_clone->useGeometryHitDetection = useGeometryHitDetection;
 	_clone->setFilename(fileName);
@@ -300,7 +296,6 @@ void SceneMesh::Render(GPUDrawBuffer *buffer) {
     }
 
 	for(int i=0; i < mesh->getNumSubmeshes(); i++) {
-		drawCall.options.alphaTest = alphaTest;
 		drawCall.options.linePointSize = lineWidth;
 		drawCall.options.backfaceCull = backfaceCulled;
 		drawCall.options.depthTest = depthTest;

@@ -8,8 +8,6 @@ function GPUDrawOptions:__getvar(name)
 		return Polycode.GPUDrawOptions_get_depthWrite(self.__ptr)
 	elseif name == "linePointSize" then
 		return Polycode.GPUDrawOptions_get_linePointSize(self.__ptr)
-	elseif name == "alphaTest" then
-		return Polycode.GPUDrawOptions_get_alphaTest(self.__ptr)
 	elseif name == "backfaceCull" then
 		return Polycode.GPUDrawOptions_get_backfaceCull(self.__ptr)
 	elseif name == "depthOnly" then
@@ -44,9 +42,6 @@ function GPUDrawOptions:__setvar(name,value)
 		return true
 	elseif name == "linePointSize" then
 		Polycode.GPUDrawOptions_set_linePointSize(self.__ptr, value)
-		return true
-	elseif name == "alphaTest" then
-		Polycode.GPUDrawOptions_set_alphaTest(self.__ptr, value)
 		return true
 	elseif name == "backfaceCull" then
 		Polycode.GPUDrawOptions_set_backfaceCull(self.__ptr, value)

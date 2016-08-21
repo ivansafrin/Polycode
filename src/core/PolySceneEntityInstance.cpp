@@ -175,10 +175,6 @@ void SceneEntityInstance::applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMes
 		sceneMesh->sendBoneMatricesToMaterial = (*entry)["sendBoneMatricesToMaterial"]->boolVal;
 	}
 	
-	if((*entry)["alphaTest"]) {
-		sceneMesh->alphaTest = (*entry)["alphaTest"]->boolVal;
-	}
-	
 	if((*entry)["backfaceCulled"]) {
 		sceneMesh->backfaceCulled = (*entry)["backfaceCulled"]->boolVal;
 	}

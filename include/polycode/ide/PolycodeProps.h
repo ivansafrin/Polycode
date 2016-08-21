@@ -719,8 +719,6 @@ class SceneMeshSheet : public PropSheet {
 	
 		BoolProp *gpuSkinningProp;
 		BoolProp *backfaceCullProp;
-		BoolProp *alphaTestProp;
-	
 		SceneMesh *sceneMesh;
 };
 

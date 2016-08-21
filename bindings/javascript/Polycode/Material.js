@@ -43,6 +43,10 @@ Material.prototype.addShaderPass = function(pass) {
 	Polycode.Material_addShaderPass(this.__ptr, pass)
 }
 
+Material.prototype.addShaderPassForShader = function(shader) {
+	Polycode.Material_addShaderPassForShader(this.__ptr, shader)
+}
+
 Material.prototype.addShaderPassAtIndex = function(pass,shaderIndex) {
 	Polycode.Material_addShaderPassAtIndex(this.__ptr, pass, shaderIndex)
 }

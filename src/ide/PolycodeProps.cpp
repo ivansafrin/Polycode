@@ -2794,10 +2794,6 @@ SceneMeshSheet::SceneMeshSheet(Core *core, ResourcePool *pool) : PropSheet(core,
 	
 	backfaceCullProp = new BoolProp(core, pool, "Backface culling");
 	addProp(backfaceCullProp);
-
-	alphaTestProp = new BoolProp(core, pool, "Alpha test");
-	addProp(alphaTestProp);
-	
 }
 
 SceneMeshSheet::~SceneMeshSheet() {
@@ -2811,8 +2807,6 @@ void SceneMeshSheet::setSceneMesh(SceneMesh *mesh) {
 		
 		gpuSkinningProp->set(sceneMesh->sendBoneMatricesToMaterial);
 		backfaceCullProp->set(sceneMesh->backfaceCulled);
-		alphaTestProp->set(sceneMesh->alphaTest);
-		
 		enabled = true;
 	} else {
 		enabled = false;
@@ -2828,10 +2822,7 @@ void SceneMeshSheet::handleEvent(Event *event) {
 		sceneMesh->sendBoneMatricesToMaterial = gpuSkinningProp->get();
 	} else if(event->getDispatcher() == backfaceCullProp) {
 		sceneMesh->backfaceCulled = backfaceCullProp->get();
-	} else if(event->getDispatcher() == alphaTestProp) {
-		sceneMesh->alphaTest = alphaTestProp->get();
 	}
-
 	
 	PropSheet::handleEvent(event);
 }

@@ -2431,7 +2431,6 @@ void PolycodeEntityEditor::saveEntityToObjectEntry(Entity *entity, ObjectEntry *
 			meshEntry->addChild("file", sceneMesh->getFilename().replace(parentProject->getRootFolder()+"/", ""));
 		}
 
-		meshEntry->addChild("alphaTest", sceneMesh->alphaTest);
 		meshEntry->addChild("backfaceCulled", sceneMesh->backfaceCulled);
 		meshEntry->addChild("sendBoneMatricesToMaterial", sceneMesh->sendBoneMatricesToMaterial);
 		

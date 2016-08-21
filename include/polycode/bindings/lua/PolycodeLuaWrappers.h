@@ -4858,13 +4858,6 @@ static int Polycode_GPUDrawOptions_get_linePointSize(lua_State *L) {
 	return 1;
 }
 
-static int Polycode_GPUDrawOptions_get_alphaTest(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	GPUDrawOptions *inst = (GPUDrawOptions*) *((PolyBase**)lua_touserdata(L, 1));
-	lua_pushboolean(L, inst->alphaTest);
-	return 1;
-}
-
 static int Polycode_GPUDrawOptions_get_backfaceCull(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	GPUDrawOptions *inst = (GPUDrawOptions*) *((PolyBase**)lua_touserdata(L, 1));
@@ -4937,14 +4930,6 @@ static int Polycode_GPUDrawOptions_set_linePointSize(lua_State *L) {
 	GPUDrawOptions *inst = (GPUDrawOptions*) *((PolyBase**)lua_touserdata(L, 1));
 	Number param = lua_tonumber(L, 2);
 	inst->linePointSize = param;
-	return 0;
-}
-
-static int Polycode_GPUDrawOptions_set_alphaTest(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	GPUDrawOptions *inst = (GPUDrawOptions*) *((PolyBase**)lua_touserdata(L, 1));
-	bool param = lua_toboolean(L, 2) != 0;
-	inst->alphaTest = param;
 	return 0;
 }
 
@@ -6082,6 +6067,14 @@ static int Polycode_Material_set_screenMaterial(lua_State *L) {
 		luaL_checktype(L, 2, LUA_TUSERDATA);
 		ShaderPass pass = *(ShaderPass*) *((PolyBase**)lua_touserdata(L, 2));
 		inst->addShaderPass(pass);
+		return 0;
+	}
+	static int Polycode_Material_addShaderPassForShader(lua_State *L) {
+		luaL_checktype(L, 1, LUA_TUSERDATA);
+		Material *inst = (Material*) *((PolyBase**)lua_touserdata(L, 1));
+		luaL_checktype(L, 2, LUA_TUSERDATA);
+		shared_ptr<Shader> shader = *(shared_ptr<Shader>*) *((PolyBase**)lua_touserdata(L, 2));
+		inst->addShaderPassForShader(shader);
 		return 0;
 	}
 	static int Polycode_Material_addShaderPassAtIndex(lua_State *L) {
@@ -10595,13 +10588,6 @@ static int Polycode_SceneMesh_get_useGeometryHitDetection(lua_State *L) {
 	return 1;
 }
 
-static int Polycode_SceneMesh_get_alphaTest(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	SceneMesh *inst = (SceneMesh*) *((PolyBase**)lua_touserdata(L, 1));
-	lua_pushboolean(L, inst->alphaTest);
-	return 1;
-}
-
 static int Polycode_SceneMesh_get_backfaceCulled(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	SceneMesh *inst = (SceneMesh*) *((PolyBase**)lua_touserdata(L, 1));
@@ -10645,14 +10631,6 @@ static int Polycode_SceneMesh_set_useGeometryHitDetection(lua_State *L) {
 	SceneMesh *inst = (SceneMesh*) *((PolyBase**)lua_touserdata(L, 1));
 	bool param = lua_toboolean(L, 2) != 0;
 	inst->useGeometryHitDetection = param;
-	return 0;
-}
-
-static int Polycode_SceneMesh_set_alphaTest(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TUSERDATA);
-	SceneMesh *inst = (SceneMesh*) *((PolyBase**)lua_touserdata(L, 1));
-	bool param = lua_toboolean(L, 2) != 0;
-	inst->alphaTest = param;
 	return 0;
 }
 

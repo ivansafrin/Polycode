@@ -57,6 +57,10 @@ function Material:addShaderPass(pass)
 	local retVal = Polycode.Material_addShaderPass(self.__ptr, pass.__ptr)
 end
 
+function Material:addShaderPassForShader(shader)
+	local retVal = Polycode.Material_addShaderPassForShader(self.__ptr, shader.__ptr)
+end
+
 function Material:addShaderPassAtIndex(pass, shaderIndex)
 	local retVal = Polycode.Material_addShaderPassAtIndex(self.__ptr, pass.__ptr, shaderIndex)
 end
