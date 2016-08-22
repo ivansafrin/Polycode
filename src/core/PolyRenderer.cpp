@@ -190,7 +190,7 @@ void RenderThread::processDrawBufferLights(GPUDrawBuffer *buffer) {
 			
 			if(buffer->lights[i].shadowsEnabled) {
 				lightShadows[lightShadowIndex].shadowMatrix->setMatrix4(buffer->lights[i].lightViewMatrix);
-				lightShadows[lightShadowIndex].shadowBuffer->data = (void*) &*buffer->lights[i].shadowMapTexture;
+				lightShadows[lightShadowIndex].shadowBuffer->setTexture(buffer->lights[i].shadowMapTexture);
 				
 				lights[i].shadowEnabled->setNumber(1.0);
 				
@@ -199,6 +199,7 @@ void RenderThread::processDrawBufferLights(GPUDrawBuffer *buffer) {
 				}
 			} else {
 				lights[i].shadowEnabled->setNumber(0.0);
+                lightShadows[lightShadowIndex].shadowBuffer->setTexture(NULL);
 			}
 		} else {
 			lights[i].diffuse->setColor(Color(0.0, 0.0, 0.0, 0.0));

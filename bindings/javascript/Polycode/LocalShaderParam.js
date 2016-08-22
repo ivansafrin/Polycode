@@ -127,7 +127,3 @@ LocalShaderParam.prototype.getCubemap = function() {
 	retVal.__ptr = Polycode.LocalShaderParam_getCubemap(this.__ptr)
 	return retVal
 }
-
-LocalShaderParam.prototype.setParamValueFromString = function(type,pvalue) {
-	Polycode.LocalShaderParam_setParamValueFromString(this.__ptr, type, pvalue)
-}

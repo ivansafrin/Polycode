@@ -42,6 +42,8 @@ function GPUDrawBuffer:__getvar(name)
 		local __c = _G["Rectangle"]("__skip_ptr__")
 		__c.__ptr = retVal
 		return __c
+	elseif name == "shadowMapPass" then
+		return Polycode.GPUDrawBuffer_get_shadowMapPass(self.__ptr)
 	end
 end
 
@@ -69,6 +71,9 @@ function GPUDrawBuffer:__setvar(name,value)
 		return true
 	elseif name == "viewport" then
 		Polycode.GPUDrawBuffer_set_viewport(self.__ptr, value.__ptr)
+		return true
+	elseif name == "shadowMapPass" then
+		Polycode.GPUDrawBuffer_set_shadowMapPass(self.__ptr, value)
 		return true
 	end
 	return false

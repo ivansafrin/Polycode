@@ -1258,11 +1258,11 @@ const String &caption) : PropProp(core, pool, caption, "Material"){
 	
 	mainLight = new SceneLight(SceneLight::POINT_LIGHT, 290.0);
 	mainLight->setPosition(-10,10,10);
-	previewScene->addLight(mainLight);
+	previewScene->addChild(mainLight);
 	
 	secondLight = new SceneLight(SceneLight::POINT_LIGHT, 250.0);
 	secondLight->setPosition(10,-10,10);
-	previewScene->addLight(secondLight);
+	previewScene->addChild(secondLight);
 	
 	
 	previewScene->getDefaultCamera()->setPosition(0,5,8);

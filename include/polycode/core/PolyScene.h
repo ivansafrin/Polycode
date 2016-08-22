@@ -37,7 +37,6 @@ namespace Polycode {
 		
 	class Camera;
 	class Entity;
-	class SceneLight;
 	class Mesh;
 	class RenderFrame;
 	
@@ -123,7 +122,7 @@ namespace Polycode {
 		bool isEnabled();		
 		void setEnabled(bool enabled);
 		
-		void Render(RenderFrame *frame, Camera *targetCamera = NULL, std::shared_ptr<RenderBuffer> targetFramebuffer = nullptr, std::shared_ptr<Material> overrideMaterial = nullptr, bool sendLights = false);
+		void Render(RenderFrame *frame, Camera *targetCamera = NULL, std::shared_ptr<RenderBuffer> targetFramebuffer = nullptr, std::shared_ptr<Material> overrideMaterial = nullptr, bool shadowMapPass = false);
 		
 		
 		void setOverrideMaterial(std::shared_ptr<Material> material);
@@ -131,21 +130,6 @@ namespace Polycode {
 		void handleEvent(Event *event);
 		
 		Ray projectRayFromCameraAndViewportCoordinate(Camera *camera, Vector2 coordinate);
-		
-		/**
-		* Adds a light to the scene.
-		* @param light Light to add to the scene.
-		*/
-		void addLight(SceneLight *light);
-		
-		/**
-		* Removes a light from the scene.
-		* @param light Light to remove from the scene.
-		*/		
-		void removeLight(SceneLight *light);		
-				
-		int getNumLights();
-		SceneLight *getLight(int index);
 		
 		/**
 		* Scene clear color
@@ -204,11 +188,8 @@ namespace Polycode {
 		void setEntityVisibility(Entity *entity, Camera *camera);
 		void setEntityVisibilityBool(Entity *entity, bool val);
 		
-		bool hasLightmaps;
 		bool _doVisibilityChecking;
 
-		std::vector <SceneLight*> lights;
-		
 		Camera *defaultCamera;
 		Camera *activeCamera;
 		

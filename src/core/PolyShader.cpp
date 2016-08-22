@@ -180,7 +180,7 @@ std::shared_ptr<LocalShaderParam> ShaderBinding::addParam(int type, const String
 	return newParam;
 }
 
-std::shared_ptr<LocalShaderParam> ShaderBinding::addParamFromData(const String &name, const Polycode::String &data) {
+std::shared_ptr<LocalShaderParam> ShaderBinding::addParamFromData(ResourcePool *pool, const String &name, const Polycode::String &data) {
 	std::shared_ptr<LocalShaderParam> param = std::make_shared<LocalShaderParam>();
 	std::istringstream stream(data.contents);
 	
@@ -216,7 +216,7 @@ std::shared_ptr<LocalShaderParam> ShaderBinding::addParamFromData(const String &
 		newParam->ownsPointer = false;
 	}
 	
-	newParam->setParamValueFromString(type, data);
+	newParam->setParamValueFromString(pool, type, data);
 	
 	accessMutex.lock();
 	localParams.push_back(newParam);
@@ -632,7 +632,7 @@ AttributeBinding *ShaderBinding::addAttributeBinding(const String &name, VertexD
 	return binding;
 }
 
-void LocalShaderParam::setParamValueFromString(int type, String pvalue) {
+void LocalShaderParam::setParamValueFromString(ResourcePool *pool, int type, String pvalue) {
 		switch(type) {
 			case ProgramParam::PARAM_NUMBER:
 			{
@@ -670,12 +670,8 @@ void LocalShaderParam::setParamValueFromString(int type, String pvalue) {
 			}
 			break;
 			case ProgramParam::PARAM_TEXTURE:
-                //NO_CORE_SERVICES_TODO
-                /*
-				ResourcePool *globalPool = core->getResourceManager()->getGlobalPool();
-				std::shared_ptr<Texture> texture = std::static_pointer_cast<Texture>(globalPool->loadResource(pvalue));
+				std::shared_ptr<Texture> texture = std::static_pointer_cast<Texture>(pool->loadResource(pvalue));
 				setTexture(texture);
-                 */
 			break;
 		}
 }

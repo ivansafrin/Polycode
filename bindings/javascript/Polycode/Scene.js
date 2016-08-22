@@ -156,10 +156,6 @@ Scene.prototype.setOverrideMaterial = function(material) {
 	Polycode.Scene_setOverrideMaterial(this.__ptr, material)
 }
 
-Scene.prototype.getNumLights = function() {
-	return Polycode.Scene_getNumLights(this.__ptr)
-}
-
 Scene.prototype.doVisibilityChecking = function(val) {
 	Polycode.Scene_doVisibilityChecking(this.__ptr, val)
 }

@@ -359,7 +359,7 @@ std::shared_ptr<Material> ResourcePool::materialFromXMLNode(TiXmlNode *node) {
 
 								String pvalue = pChild2Element->Attribute("value");
 								int type = shaderPass.shader->getExpectedParamType(pname);
-								std::shared_ptr<LocalShaderParam> param = shaderPass.shaderBinding->addParamFromData(pname, pvalue);
+								std::shared_ptr<LocalShaderParam> param = shaderPass.shaderBinding->addParamFromData(this, pname, pvalue);
 							}
 						}
 					}

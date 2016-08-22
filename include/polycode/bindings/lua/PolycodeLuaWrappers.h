@@ -3343,6 +3343,13 @@ static int Polycode_Entity_get_layerID(lua_State *L) {
 	return 1;
 }
 
+static int Polycode_Entity_get_castShadows(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	Entity *inst = (Entity*) *((PolyBase**)lua_touserdata(L, 1));
+	lua_pushboolean(L, inst->castShadows);
+	return 1;
+}
+
 static int Polycode_Entity_set_ownsChildren(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	Entity *inst = (Entity*) *((PolyBase**)lua_touserdata(L, 1));
@@ -3512,6 +3519,14 @@ static int Polycode_Entity_set_layerID(lua_State *L) {
 	luaL_checktype(L, 2, LUA_TUSERDATA);
 	char *argInst = (char*) *((PolyBase**)lua_touserdata(L, 2));
 	inst->layerID = *argInst;
+	return 0;
+}
+
+static int Polycode_Entity_set_castShadows(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	Entity *inst = (Entity*) *((PolyBase**)lua_touserdata(L, 1));
+	bool param = lua_toboolean(L, 2) != 0;
+	inst->castShadows = param;
 	return 0;
 }
 
@@ -5061,6 +5076,13 @@ static int Polycode_GPUDrawBuffer_get_viewport(lua_State *L) {
 	return 1;
 }
 
+static int Polycode_GPUDrawBuffer_get_shadowMapPass(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	GPUDrawBuffer *inst = (GPUDrawBuffer*) *((PolyBase**)lua_touserdata(L, 1));
+	lua_pushboolean(L, inst->shadowMapPass);
+	return 1;
+}
+
 static int Polycode_GPUDrawBuffer_set_projectionMatrix(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	GPUDrawBuffer *inst = (GPUDrawBuffer*) *((PolyBase**)lua_touserdata(L, 1));
@@ -5128,6 +5150,14 @@ static int Polycode_GPUDrawBuffer_set_viewport(lua_State *L) {
 	luaL_checktype(L, 2, LUA_TUSERDATA);
 	Rectangle *argInst = (Rectangle*) *((PolyBase**)lua_touserdata(L, 2));
 	inst->viewport = *argInst;
+	return 0;
+}
+
+static int Polycode_GPUDrawBuffer_set_shadowMapPass(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TUSERDATA);
+	GPUDrawBuffer *inst = (GPUDrawBuffer*) *((PolyBase**)lua_touserdata(L, 1));
+	bool param = lua_toboolean(L, 2) != 0;
+	inst->shadowMapPass = param;
 	return 0;
 }
 
@@ -9898,12 +9928,6 @@ static int Polycode_Scene_set_constrainPickingToViewport(lua_State *L) {
 		inst->setOverrideMaterial(material);
 		return 0;
 	}
-	static int Polycode_Scene_getNumLights(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		Scene *inst = (Scene*) *((PolyBase**)lua_touserdata(L, 1));
-		lua_pushinteger(L, inst->getNumLights());
-		return 1;
-	}
 	static int Polycode_Scene_doVisibilityChecking(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		Scene *inst = (Scene*) *((PolyBase**)lua_touserdata(L, 1));
@@ -10503,12 +10527,6 @@ static int Polycode_SceneCurve_set_curveResolution(lua_State *L) {
 		lua_setmetatable(L, -2);
 		*userdataPtr = (PolyBase*)retInst;
 		return 1;
-	}
-	static int Polycode_SceneCurve_Update(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		SceneCurve *inst = (SceneCurve*) *((PolyBase**)lua_touserdata(L, 1));
-		inst->Update();
-		return 0;
 	}
 	static int Polycode_delete_SceneCurve(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
@@ -12211,16 +12229,6 @@ static int Polycode_LocalShaderParam_set_arraySize(lua_State *L) {
 		*userdataPtr = (PolyBase*)retInst;
 		return 1;
 	}
-	static int Polycode_LocalShaderParam_setParamValueFromString(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		LocalShaderParam *inst = (LocalShaderParam*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TNUMBER);
-		int type = lua_tointeger(L, 2);
-		luaL_checktype(L, 3, LUA_TSTRING);
-		String pvalue = String(lua_tostring(L, 3));
-		inst->setParamValueFromString(type, pvalue);
-		return 0;
-	}
 	static int Polycode_delete_LocalShaderParam(lua_State *L) {
 		luaL_checktype(L, 1, LUA_TUSERDATA);
 		PolyBase **inst = (PolyBase**)lua_touserdata(L, 1);
@@ -12331,21 +12339,6 @@ static int Polycode_AttributeBinding_set_enabled(lua_State *L) {
 		String name = String(lua_tostring(L, 3));
 		shared_ptr<LocalShaderParam> *retInst = new shared_ptr<LocalShaderParam>();
 		*retInst = inst->addParam(type, name);
-		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
-		luaL_getmetatable(L, "Polycode.shared_ptr<LocalShaderParam>");
-		lua_setmetatable(L, -2);
-		*userdataPtr = (PolyBase*)retInst;
-		return 1;
-	}
-	static int Polycode_ShaderBinding_addParamFromData(lua_State *L) {
-		luaL_checktype(L, 1, LUA_TUSERDATA);
-		ShaderBinding *inst = (ShaderBinding*) *((PolyBase**)lua_touserdata(L, 1));
-		luaL_checktype(L, 2, LUA_TSTRING);
-		String name = String(lua_tostring(L, 2));
-		luaL_checktype(L, 3, LUA_TSTRING);
-		String data = String(lua_tostring(L, 3));
-		shared_ptr<LocalShaderParam> *retInst = new shared_ptr<LocalShaderParam>();
-		*retInst = inst->addParamFromData(name, data);
 		PolyBase **userdataPtr = (PolyBase**)lua_newuserdata(L, sizeof(PolyBase*));
 		luaL_getmetatable(L, "Polycode.shared_ptr<LocalShaderParam>");
 		lua_setmetatable(L, -2);

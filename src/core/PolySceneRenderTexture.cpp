@@ -44,7 +44,7 @@ void SceneRenderTexture::Render(RenderFrame *frame, Scene *targetScene, Camera* 
 	if(targetCamera->hasFilterShader()) {
 		targetCamera->drawFilter(frame, targetFramebuffer, targetScene);
 	} else {
-		targetScene->Render(frame, targetCamera, targetFramebuffer, NULL, true);
+		targetScene->Render(frame, targetCamera, targetFramebuffer, NULL);
 	}
 }
 

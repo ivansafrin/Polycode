@@ -25,7 +25,8 @@ function Entity() {
 		'snapToPixels': { enumerable: true, configurable: true, get: Entity.prototype.__get_snapToPixels, set: Entity.prototype.__set_snapToPixels},
 		'mouseOver': { enumerable: true, configurable: true, get: Entity.prototype.__get_mouseOver, set: Entity.prototype.__set_mouseOver},
 		'rendererVis': { enumerable: true, configurable: true, get: Entity.prototype.__get_rendererVis, set: Entity.prototype.__set_rendererVis},
-		'layerID': { enumerable: true, configurable: true, get: Entity.prototype.__get_layerID, set: Entity.prototype.__set_layerID}
+		'layerID': { enumerable: true, configurable: true, get: Entity.prototype.__get_layerID, set: Entity.prototype.__set_layerID},
+		'castShadows': { enumerable: true, configurable: true, get: Entity.prototype.__get_castShadows, set: Entity.prototype.__set_castShadows}
 	})
 }
 
@@ -206,6 +207,14 @@ Entity.prototype.__get_layerID = function() {
 
 Entity.prototype.__set_layerID = function(val) {
 	Polycode.Entity__set_layerID(this.__ptr, val.__ptr)
+}
+
+Entity.prototype.__get_castShadows = function() {
+	return Polycode.Entity__get_castShadows(this.__ptr)
+}
+
+Entity.prototype.__set_castShadows = function(val) {
+	Polycode.Entity__set_castShadows(this.__ptr, val)
 }
 
 

@@ -2908,6 +2908,18 @@ namespace Polycode {
 		return 0;
 	}
 
+	duk_ret_t Polycode_Entity__get_castShadows(duk_context *context) {
+		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->castShadows);
+		return 1;
+	}
+
+	duk_ret_t Polycode_Entity__set_castShadows(duk_context *context) {
+		Entity *inst = (Entity*)duk_to_pointer(context, 0);
+		inst->castShadows = duk_to_boolean(context, 1);
+		return 0;
+	}
+
 	duk_ret_t Polycode_Entity__delete(duk_context *context) {
 		std::shared_ptr<Entity> *inst = (std::shared_ptr<Entity>*)duk_to_pointer(context, 0);
 		delete inst;
@@ -4249,6 +4261,18 @@ namespace Polycode {
 	duk_ret_t Polycode_GPUDrawBuffer__set_viewport(duk_context *context) {
 		GPUDrawBuffer *inst = (GPUDrawBuffer*)duk_to_pointer(context, 0);
 		inst->viewport = *(Rectangle*)duk_to_pointer(context, 1);
+		return 0;
+	}
+
+	duk_ret_t Polycode_GPUDrawBuffer__get_shadowMapPass(duk_context *context) {
+		std::shared_ptr<GPUDrawBuffer> *inst = (std::shared_ptr<GPUDrawBuffer>*)duk_to_pointer(context, 0);
+		duk_push_boolean(context, (*inst)->shadowMapPass);
+		return 1;
+	}
+
+	duk_ret_t Polycode_GPUDrawBuffer__set_shadowMapPass(duk_context *context) {
+		GPUDrawBuffer *inst = (GPUDrawBuffer*)duk_to_pointer(context, 0);
+		inst->shadowMapPass = duk_to_boolean(context, 1);
 		return 0;
 	}
 
@@ -8123,12 +8147,6 @@ namespace Polycode {
 		return 0;
 	}
 
-	duk_ret_t Polycode_Scene_getNumLights(duk_context *context) {
-		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
-		duk_push_int(context, (*inst)->getNumLights());
-		return 1;
-	}
-
 	duk_ret_t Polycode_Scene_doVisibilityChecking(duk_context *context) {
 		std::shared_ptr<Scene> *inst = (std::shared_ptr<Scene>*)duk_to_pointer(context, 0);
 		bool val = duk_to_boolean(context, 1);
@@ -8607,12 +8625,6 @@ namespace Polycode {
 		*(*retInst) = (*inst)->getWorldPointAt(t);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
-	}
-
-	duk_ret_t Polycode_SceneCurve_Update(duk_context *context) {
-		std::shared_ptr<SceneCurve> *inst = (std::shared_ptr<SceneCurve>*)duk_to_pointer(context, 0);
-		(*inst)->Update();
-		return 0;
 	}
 
 	duk_ret_t Polycode_SceneLine(duk_context *context) {
@@ -10000,14 +10012,6 @@ namespace Polycode {
 		return 1;
 	}
 
-	duk_ret_t Polycode_LocalShaderParam_setParamValueFromString(duk_context *context) {
-		std::shared_ptr<LocalShaderParam> *inst = (std::shared_ptr<LocalShaderParam>*)duk_to_pointer(context, 0);
-		int type = duk_to_int(context, 1);
-		String pvalue = duk_to_string(context, 2);
-		(*inst)->setParamValueFromString(type,pvalue);
-		return 0;
-	}
-
 	duk_ret_t Polycode_ShaderProgram(duk_context *context) {
 		String fileName = duk_to_string(context, 0);
 		std::shared_ptr<ShaderProgram> *inst = new std::shared_ptr<ShaderProgram>;
@@ -10096,16 +10100,6 @@ namespace Polycode {
 		String name = duk_to_string(context, 2);
 		std::shared_ptr<shared_ptr<LocalShaderParam>> *retInst = new std::shared_ptr<shared_ptr<LocalShaderParam>>;
 		*(*retInst) = (*inst)->addParam(type,name);
-		duk_push_pointer(context, (void*)retInst);
-		return 1;
-	}
-
-	duk_ret_t Polycode_ShaderBinding_addParamFromData(duk_context *context) {
-		std::shared_ptr<ShaderBinding> *inst = (std::shared_ptr<ShaderBinding>*)duk_to_pointer(context, 0);
-		String name = duk_to_string(context, 1);
-		String data = duk_to_string(context, 2);
-		std::shared_ptr<shared_ptr<LocalShaderParam>> *retInst = new std::shared_ptr<shared_ptr<LocalShaderParam>>;
-		*(*retInst) = (*inst)->addParamFromData(name,data);
 		duk_push_pointer(context, (void*)retInst);
 		return 1;
 	}

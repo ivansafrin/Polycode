@@ -231,7 +231,7 @@ void SceneEntityInstance::applySceneMesh(ObjectEntry *entry, SceneMesh *sceneMes
 											int type = materialShader->getExpectedParamType(nameEntry->stringVal);
 											
 											// RENDERER_TODO
-											std::shared_ptr<LocalShaderParam> param = sceneMesh->getShaderPass(0).shaderBinding->addParamFromData(nameEntry->stringVal, valueEntry->stringVal);
+											std::shared_ptr<LocalShaderParam> param = sceneMesh->getShaderPass(0).shaderBinding->addParamFromData(core->getResourceManager()->getGlobalPool(), nameEntry->stringVal, valueEntry->stringVal);
 										}
 									}
 								}
@@ -305,7 +305,7 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 				curve->curveResolution = (*curveEntry)["resolution"]->intVal;				 
 				parseObjectIntoCurve((*curveEntry)["curve"], curve->getCurve());
 			}
-			 
+			 applySceneMesh((*entry)["SceneMesh"], curve);
 			 entity = curve;
 			 
 		 } else if(entityType->stringVal == "SceneSprite") {
@@ -400,7 +400,7 @@ Entity *SceneEntityInstance::loadObjectEntryIntoEntity(ObjectEntry *entry, Entit
 			ObjectEntry *lightEntry = (*entry)["SceneLight"];
 			if(lightEntry) {
 				int lightType = (*lightEntry)["type"]->intVal;
-				SceneLight *newLight  = new SceneLight(lightType, 0);
+				SceneLight *newLight  = new SceneLight(lightType, 0, 1, 1, 1, core->getResourceManager()->getGlobalPool()->getMaterial("Unlit"));
 				
 				newLight->setIntensity((*lightEntry)["intensity"]->NumberVal);
 				

@@ -10,7 +10,8 @@ function GPUDrawBuffer() {
 		'clearDepthBuffer': { enumerable: true, configurable: true, get: GPUDrawBuffer.prototype.__get_clearDepthBuffer, set: GPUDrawBuffer.prototype.__set_clearDepthBuffer},
 		'clearColorBuffer': { enumerable: true, configurable: true, get: GPUDrawBuffer.prototype.__get_clearColorBuffer, set: GPUDrawBuffer.prototype.__set_clearColorBuffer},
 		'backingResolutionScale': { enumerable: true, configurable: true, get: GPUDrawBuffer.prototype.__get_backingResolutionScale, set: GPUDrawBuffer.prototype.__set_backingResolutionScale},
-		'viewport': { enumerable: true, configurable: true, get: GPUDrawBuffer.prototype.__get_viewport, set: GPUDrawBuffer.prototype.__set_viewport}
+		'viewport': { enumerable: true, configurable: true, get: GPUDrawBuffer.prototype.__get_viewport, set: GPUDrawBuffer.prototype.__set_viewport},
+		'shadowMapPass': { enumerable: true, configurable: true, get: GPUDrawBuffer.prototype.__get_shadowMapPass, set: GPUDrawBuffer.prototype.__set_shadowMapPass}
 	})
 }
 
@@ -89,6 +90,14 @@ GPUDrawBuffer.prototype.__get_viewport = function() {
 
 GPUDrawBuffer.prototype.__set_viewport = function(val) {
 	Polycode.GPUDrawBuffer__set_viewport(this.__ptr, val.__ptr)
+}
+
+GPUDrawBuffer.prototype.__get_shadowMapPass = function() {
+	return Polycode.GPUDrawBuffer__get_shadowMapPass(this.__ptr)
+}
+
+GPUDrawBuffer.prototype.__set_shadowMapPass = function(val) {
+	Polycode.GPUDrawBuffer__set_shadowMapPass(this.__ptr, val)
 }
 
 Duktape.fin(GPUDrawBuffer.prototype, function (x) {

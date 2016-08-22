@@ -128,7 +128,7 @@ unsigned int SceneLight::getShadowMapResolution() const {
 void SceneLight::renderDepthMap(RenderFrame *frame, Scene *scene) {
 	spotCamera->setFOV(shadowMapFOV);
 	spotCamera->setViewport(Polycode::Rectangle(0, 0, shadowMapRes, shadowMapRes));
-	scene->Render(frame, spotCamera, shadowMapRenderBuffer, depthMapMaterial, false);
+	scene->Render(frame, spotCamera, shadowMapRenderBuffer, depthMapMaterial, true);
 	
 	Matrix4 matTexAdj(0.5f, 0.0f,	0.0f,	0.0f,
 					  0.0f, 0.5f,	0.0f,	0.0f,
@@ -137,6 +137,36 @@ void SceneLight::renderDepthMap(RenderFrame *frame, Scene *scene) {
 	
 	lightInfo.lightViewMatrix = getConcatenatedMatrix().Inverse() *	 spotCamera->getProjectionMatrix() * matTexAdj;
 	lightInfo.shadowMapTexture = shadowMapRenderBuffer->depthTexture;
+}
+
+void SceneLight::Render(GPUDrawBuffer *buffer) {
+    
+    if(!enabled || buffer->shadowMapPass) {
+        return;
+    }
+    
+    Vector3 direction;
+    Vector3 position;
+            
+    direction.x = 0.0;
+    direction.y = 0.0;
+    direction.z = -1.0;
+            
+    direction = getConcatenatedMatrix().rotateVector(direction);
+    direction = buffer->viewMatrix.rotateVector(direction);
+            
+    if(areShadowsEnabled()) {
+        if(getType() == SceneLight::SPOT_LIGHT) {
+            renderDepthMap(buffer->renderFrame, (Scene*)buffer->userData);
+        }
+    }
+            
+    position = getConcatenatedMatrix().getPosition();
+    position = buffer->viewMatrix * position;
+            
+    buffer->lights.push_back(lightInfo);
+    buffer->lights[buffer->lights.size()-1].position = position;
+    buffer->lights[buffer->lights.size()-1].direction = direction;
 }
 
 LightInfo SceneLight::getLightInfo() const {

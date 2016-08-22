@@ -56,10 +56,6 @@ function SceneCurve:getWorldPointAt(t)
 	return __c
 end
 
-function SceneCurve:Update()
-	local retVal =  Polycode.SceneCurve_Update(self.__ptr)
-end
-
 function SceneCurve:__delete()
 	if self then Polycode.delete_SceneCurve(self.__ptr) end
 end

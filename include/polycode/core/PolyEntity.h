@@ -888,6 +888,8 @@ namespace Polycode {
 			void detachScript(Script *script);
 			unsigned int getNumScripts();
 			ScriptInstance *getScriptAtIndex(unsigned int index);
+        
+            bool castShadows;
 		
 		protected:
 

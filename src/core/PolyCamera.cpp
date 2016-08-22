@@ -406,7 +406,7 @@ void Camera::drawFilter(RenderFrame *frame, std::shared_ptr<RenderBuffer> target
         rebuildMaterialBindings();
     }
     
-	targetScene->Render(frame, this, originalFramebuffer, NULL, true);
+	targetScene->Render(frame, this, originalFramebuffer, NULL);
 	
 	for(int i=0; i < shaderPasses.size(); i++) {
 		

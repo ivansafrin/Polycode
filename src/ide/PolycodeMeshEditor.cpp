@@ -38,10 +38,10 @@ PolycodeMeshEditor::PolycodeMeshEditor(Core *core, ResourcePool *pool) : Polycod
 				
 	Number customFalloff = 0.006;
 	mainLight = new SceneLight(SceneLight::POINT_LIGHT, 999999, customFalloff, customFalloff, customFalloff);
-	previewScene->addLight(mainLight);
+	previewScene->addChild(mainLight);
 
 	secondLight = new SceneLight(SceneLight::POINT_LIGHT, 999999, customFalloff, customFalloff, customFalloff);
-	previewScene->addLight(secondLight);
+	previewScene->addChild(secondLight);
 	
 	mainLight->setPosition(9999, 9999, 9999);
 	secondLight->setPosition(-9999, -9999, -9999);

@@ -149,11 +149,6 @@ function Scene:setOverrideMaterial(material)
 	local retVal = Polycode.Scene_setOverrideMaterial(self.__ptr, material.__ptr)
 end
 
-function Scene:getNumLights()
-	local retVal =  Polycode.Scene_getNumLights(self.__ptr)
-	return retVal
-end
-
 function Scene:doVisibilityChecking(val)
 	local retVal = Polycode.Scene_doVisibilityChecking(self.__ptr, val)
 end

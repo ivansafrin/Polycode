@@ -62,6 +62,8 @@ function Entity:__getvar(name)
 		local __c = _G["char"]("__skip_ptr__")
 		__c.__ptr = retVal
 		return __c
+	elseif name == "castShadows" then
+		return Polycode.Entity_get_castShadows(self.__ptr)
 	end
 	if EventDispatcher["__getvar"] ~= nil then
 		return EventDispatcher.__getvar(self, name)
@@ -131,6 +133,9 @@ function Entity:__setvar(name,value)
 		return true
 	elseif name == "layerID" then
 		Polycode.Entity_set_layerID(self.__ptr, value.__ptr)
+		return true
+	elseif name == "castShadows" then
+		Polycode.Entity_set_castShadows(self.__ptr, value)
 		return true
 	end
 	if EventDispatcher["__setvar"] ~= nil then

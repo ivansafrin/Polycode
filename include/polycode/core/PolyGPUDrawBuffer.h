@@ -98,5 +98,7 @@ namespace Polycode {
 		Polycode::Rectangle viewport;
 		std::vector<GPUDrawCall> drawCalls;
 		RenderFrame *renderFrame;
+        bool shadowMapPass;
+        void *userData;
 	};
 }

@@ -41,7 +41,3 @@ SceneCurve.prototype.getWorldPointAt = function(t) {
 	retVal.__ptr = Polycode.SceneCurve_getWorldPointAt(this.__ptr, t)
 	return retVal
 }
-
-SceneCurve.prototype.Update = function() {
-	Polycode.SceneCurve_Update(this.__ptr)
-}

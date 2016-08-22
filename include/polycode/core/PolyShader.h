@@ -41,7 +41,8 @@ namespace Polycode {
 	class LocalShaderParam;
 	class RenderBuffer;
     class Core;
-	
+    class ResourcePool;
+    
 	class _PolyExport ProgramParam {
 		public:
 	
@@ -181,7 +182,7 @@ namespace Polycode {
 			void setCubemap(std::shared_ptr<Cubemap> cubemap);
 			std::shared_ptr<Cubemap> getCubemap();
 		
-			void setParamValueFromString(int type, String pvalue);
+			void setParamValueFromString(ResourcePool *pool, int type, String pvalue);
         
             std::mutex POLYIGNORE accessMutex;
 	};
@@ -217,7 +218,7 @@ namespace Polycode {
 			std::shared_ptr<LocalShaderParam> addParam(int type, const String& name);
 			std::shared_ptr<LocalShaderParam> addParamPointer(int type, const String& name, void *ptr);
 		
-			std::shared_ptr<LocalShaderParam> addParamFromData(const String &name, const String &data);
+			std::shared_ptr<LocalShaderParam> addParamFromData(ResourcePool *pool, const String &name, const String &data);
 		
 			unsigned int getNumLocalParams();
 			std::shared_ptr<LocalShaderParam> getLocalParam(unsigned int index);

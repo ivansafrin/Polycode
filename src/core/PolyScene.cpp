@@ -28,7 +28,6 @@
 #include "polycode/core/PolyRenderer.h"
 #include "polycode/core/PolyResource.h"
 #include "polycode/core/PolyResourceManager.h"
-#include "polycode/core/PolySceneLight.h"
 #include "polycode/core/PolyInputEvent.h"
 #include "polycode/core/PolySceneMesh.h"
 #include "polycode/core/PolyTexture.h"
@@ -52,7 +51,6 @@ void Scene::initScene(int sceneType) {
 	activeCamera = defaultCamera;
 	overrideMaterial = NULL;
 	enabled = true;
-	hasLightmaps = false;
 	clearColor.setColor(0.13f,0.13f,0.13f,1.0f); 
 	ambientColor.setColor(0.0,0.0,0.0,1.0); 
 	useClearColor = false;
@@ -189,20 +187,19 @@ void Scene::setEntityVisibility(Entity *entity, Camera *camera) {
 	}
 }
 
-void Scene::Render(RenderFrame *frame, Camera *targetCamera, std::shared_ptr<RenderBuffer> targetFramebuffer, std::shared_ptr<Material> overrideMaterial, bool sendLights) {
+void Scene::Render(RenderFrame *frame, Camera *targetCamera, std::shared_ptr<RenderBuffer> targetFramebuffer, std::shared_ptr<Material> overrideMaterial, bool shadowMapPass) {
 	if(!targetCamera && !activeCamera)
 		return;
 	
-	if(!targetCamera)
+    if(!targetCamera) {
 		targetCamera = activeCamera;
-	
-	
+    }
+    
 	if(targetFramebuffer) {
 		targetCamera->setViewport(Polycode::Rectangle(0.0, 0.0, targetFramebuffer->getWidth(), targetFramebuffer->getHeight()));
 	} else {
 		targetCamera->setViewport(frame->viewport);
 	}
-
 	
 	GPUDrawBuffer *drawBuffer = new GPUDrawBuffer();
 	drawBuffer->renderFrame = frame;
@@ -211,54 +208,20 @@ void Scene::Render(RenderFrame *frame, Camera *targetCamera, std::shared_ptr<Ren
 	drawBuffer->clearDepthBuffer = useClearDepth;
 	drawBuffer->targetFramebuffer = targetFramebuffer;
 	drawBuffer->viewport = targetCamera->getViewport();
-	drawBuffer->backingResolutionScale = Vector2(1.0, 1.0);
-	
+	drawBuffer->backingResolutionScale = Vector2(1.0, 1.0);	
+    drawBuffer->userData = (void*) this;
+    drawBuffer->shadowMapPass = shadowMapPass;
+    
 	if(overrideMaterial) {
 		drawBuffer->globalMaterial = overrideMaterial;
 	} else {
 		drawBuffer->globalMaterial = this->overrideMaterial;
 	}
-	
-	Matrix4 textureMatrix;
-	
+		
 	drawBuffer->projectionMatrix = targetCamera->createProjectionMatrix();
 	drawBuffer->viewMatrix = targetCamera->getConcatenatedMatrix().Inverse();
 	drawBuffer->cameraMatrix = targetCamera->getConcatenatedMatrix();
-	
-	if(sendLights) {
-		for(int i=0; i < lights.size(); i++) {
-			SceneLight *light = lights[i];
-			if(!light->enabled)
-				continue;
-				
-			Vector3 direction;
-			Vector3 position;
-			
-			direction.x = 0;
-			direction.y = 0.0;
-			direction.z = -1.0;
-			direction.Normalize();
-			
-			direction = light->getConcatenatedMatrix().rotateVector(direction);
-			direction = drawBuffer->viewMatrix.rotateVector(direction);
-			
-			if(light->areShadowsEnabled()) {
-				if(light->getType() == SceneLight::SPOT_LIGHT) {
-					light->renderDepthMap(frame, this);
-				}
-			}
-			
-			position = light->getPosition();
-			if(light->getParentEntity() != NULL) {
-				position = light->getParentEntity()->getConcatenatedMatrix() * position;
-			}
-			position = drawBuffer->viewMatrix * position;
-			
-			drawBuffer->lights.push_back(light->getLightInfo());
-			drawBuffer->lights[drawBuffer->lights.size()-1].position = position;
-			drawBuffer->lights[drawBuffer->lights.size()-1].direction = direction;
-		}
-	}
+
 	/*
 	if(_doVisibilityChecking) {
 		targetCamera->buildFrustumPlanes();
@@ -368,27 +331,5 @@ void Scene::handleEvent(Event *event) {
 			break;	
 		}
 	}
-}
-
-void Scene::addLight(SceneLight *light) {
-	lights.push_back(light);
-}
-
-void Scene::removeLight(SceneLight *light) {
-	removeEntity(light);
-	for(int i=0; i < lights.size(); i++) {
-		if(lights[i] == light) {
-			lights.erase(lights.begin()+i);
-			return;
-		}		
-	}
-}
-
-int Scene::getNumLights() {
-	return lights.size();
-}
-
-SceneLight *Scene::getLight(int index) {
-	return lights[index];
 }
 

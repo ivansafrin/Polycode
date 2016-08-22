@@ -317,7 +317,7 @@ class PolycodeMaterialEditor : public PolycodeEditor {
 	void saveFile();
 	void saveMaterials(ObjectEntry *materialsEntry, std::vector<std::shared_ptr<Material> > materials);
 	
-	static String createStringValue(unsigned int type, void *value);
+	static String createStringValue(std::shared_ptr<LocalShaderParam> param);
 	
 	protected:
 	

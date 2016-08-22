@@ -82,6 +82,8 @@ namespace Polycode {
 			int getType() const;
 			
 			void renderDepthMap(RenderFrame *frame, Scene *scene);
+        
+            void Render(GPUDrawBuffer *buffer);
 			
 			static const int POINT_LIGHT = 0;
 			static const int SPOT_LIGHT = 1;

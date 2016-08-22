@@ -18,12 +18,6 @@ ShaderBinding.prototype.addParam = function(type,name) {
 	return retVal
 }
 
-ShaderBinding.prototype.addParamFromData = function(name,data) {
-	var retVal = new LocalShaderParam("__skip_ptr__")
-	retVal.__ptr = Polycode.ShaderBinding_addParamFromData(this.__ptr, name, data)
-	return retVal
-}
-
 ShaderBinding.prototype.getNumLocalParams = function() {
 	return Polycode.ShaderBinding_getNumLocalParams(this.__ptr)
 }

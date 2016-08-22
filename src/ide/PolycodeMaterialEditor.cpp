@@ -563,11 +563,11 @@ PostPreviewBox::PostPreviewBox(Core *core, ResourcePool *pool) : UIElement(core)
 
 	mainLight = new SceneLight(SceneLight::POINT_LIGHT, 90.0);
 	mainLight->setPosition(-6,6,6);
-	previewScene->addLight(mainLight);
+	previewScene->addChild(mainLight);
 
 	secondLight = new SceneLight(SceneLight::POINT_LIGHT, 90.0);
 	secondLight->setPosition(6,-6,6);
-	previewScene->addLight(secondLight);
+	previewScene->addChild(secondLight);
 
 	previewPrimitive = new ScenePrimitive(ScenePrimitive::TYPE_PLANE, 10.0, 10.0);
 	previewScene->addChild(previewPrimitive);
@@ -743,11 +743,11 @@ MaterialPreviewBox::MaterialPreviewBox(Core *core, ResourcePool *pool) : UIEleme
 	
 	mainLight = new SceneLight(SceneLight::POINT_LIGHT, 290.0);
 	mainLight->setPosition(-10,10,10);
-	previewScene->addLight(mainLight);
+	previewScene->addChild(mainLight);
 
 	secondLight = new SceneLight(SceneLight::POINT_LIGHT,  250.0);
 	secondLight->setPosition(10,-10,10);
-	previewScene->addLight(secondLight);
+	previewScene->addChild(secondLight);
 
 	
 	previewScene->getDefaultCamera()->setPosition(0,7,9);
@@ -1248,35 +1248,36 @@ bool PolycodeMaterialEditor::openFile(OSFileEntry filePath) {
 	return true;
 }
 
-String PolycodeMaterialEditor::createStringValue(unsigned int type, void *value) {
+String PolycodeMaterialEditor::createStringValue(std::shared_ptr<LocalShaderParam> param) {
 	String retString;
 	
-	switch(type) {
+	switch(param->type) {
 		case ProgramParam::PARAM_NUMBER:
-			retString = String::NumberToString(*((Number*)value));
+			retString = String::NumberToString(*((Number*)param->data));
 		break;
 		case ProgramParam::PARAM_COLOR:
 		{
-			Color color = *((Color*)value);
+			Color color = *((Color*)param->data);
 			retString = String::NumberToString(color.r) + " " + String::NumberToString(color.g) + " " + String::NumberToString(color.b) + " " + String::NumberToString(color.a);
 		}
 		break;
 		case ProgramParam::PARAM_VECTOR2:
 		{
-			Vector2 vec = *((Vector2*)value);
+			Vector2 vec = *((Vector2*)param->data);
 			retString = String::NumberToString(vec.x) + " " + String::NumberToString(vec.y);
 		}
 		break;
 		case ProgramParam::PARAM_VECTOR3:
 		{
-			Vector3 vec = *((Vector3*)value);
+			Vector3 vec = *((Vector3*)param->data);
 			retString = String::NumberToString(vec.x) + " " + String::NumberToString(vec.y) + " " + String::NumberToString(vec.z);
 		}
 		break;
 		case ProgramParam::PARAM_TEXTURE:
 		{
-			Texture *tex = (Texture*) value;
-			retString = tex->getResourcePath();
+            if(param->getTexture()) {
+                retString = param->getTexture()->getResourcePath();
+            }
 		}
 		break;
 	}
@@ -1371,7 +1372,7 @@ void PolycodeMaterialEditor::saveMaterials(ObjectEntry *materialsEntry, std::vec
 						if(shaderBinding->getLocalParamByName(shader->expectedParams[j].name)) {
 							ObjectEntry *paramEntry = paramsEntry->addChild("param");
 							paramEntry->addChild("name", shader->expectedParams[j].name);
-							paramEntry->addChild("value", PolycodeMaterialEditor::createStringValue(shader->expectedParams[j].type, shaderBinding->getLocalParamByName(shader->expectedParams[j].name)->data));
+							paramEntry->addChild("value", PolycodeMaterialEditor::createStringValue(shaderBinding->getLocalParamByName(shader->expectedParams[j].name)));
 						}
 					}
 				}

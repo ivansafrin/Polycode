@@ -79,7 +79,7 @@ BezierCurve *SceneCurve::getCurve() {
 	return curve;
 }
 
-void SceneCurve::Update() {
+void SceneCurve::Render(GPUDrawBuffer *buffer) {
 	mesh->clearMesh();
 	Vector3 bBox;
 	
@@ -100,8 +100,8 @@ void SceneCurve::Update() {
 	}
 	
 	mesh->addSubmesh(geometry);
-	
 	setLocalBoundingBox(bBox * 2.0);
+    SceneMesh::Render(buffer);
 }
 
 SceneLine::SceneLine(const Vector3 &startp, const Vector3 &endp) : SceneMesh() {

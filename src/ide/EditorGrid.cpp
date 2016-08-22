@@ -105,6 +105,7 @@ EditorGrid::EditorGrid(Core *core) : UIElement(core) {
 	grid->setMaterial(core->getResourceManager()->getGlobalPool()->getMaterial("UnlitUntextured"));
 	grid->setForceMaterial(true);
 	grid->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    grid->castShadows = false;
 	
 	grid->setColor(0.3, 0.3, 0.3, 1.0);
 	grid->setLineWidth(core->getRenderer()->getBackingResolutionScaleX());
@@ -115,17 +116,20 @@ EditorGrid::EditorGrid(Core *core) : UIElement(core) {
 	yLine->color.setColorHexFromString(GRID_Y_COLOR);
 	yLine->visible = false;
 	yLine->setForceMaterial(true);
+    yLine->castShadows = false;
 	
 	xLine = new SceneLine(Vector3(), Vector3());
 	addChild(xLine);
 	xLine->color.setColorHexFromString(GRID_X_COLOR);
 	xLine->setForceMaterial(true);
-	
+	xLine->castShadows = false;
+    
 	zLine = new SceneLine(Vector3(), Vector3());
 	addChild(zLine);
 	zLine->color.setColorHexFromString(GRID_Z_COLOR);
 	zLine->setForceMaterial(true);
-	
+	zLine->castShadows = false;
+    
 	xLine->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	yLine->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	zLine->setBlendingMode(Renderer::BLEND_MODE_NORMAL);

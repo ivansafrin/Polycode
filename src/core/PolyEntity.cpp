@@ -78,6 +78,7 @@ void Entity::initEntity() {
 	rendererVis = true;
 	layerID = 0;
 	containerScene = NULL;
+    castShadows = true;
 }
 
 Entity *Entity::getEntityById(String id, bool recursive) const {
@@ -123,7 +124,7 @@ void Entity::applyClone(Entity *clone, bool deepClone, bool ignoreEditorOnly) co
 	clone->snapToPixels = snapToPixels;
 	clone->setAnchorPoint(anchorPoint);
 	clone->layerID = layerID;
-	
+	clone->castShadows = castShadows;
 	clone->drawCall.options = drawCall.options;
 	
 	clone->id = id;
@@ -541,7 +542,14 @@ void Entity::transformAndRender(GPUDrawBuffer *buffer, Polycode::Rectangle *pare
 	
 	
 	if(visible && rendererVis) {
-		Render(buffer);
+        if(buffer->shadowMapPass) {
+            if(castShadows) {
+                Render(buffer);
+            }
+        } else {
+            Render(buffer);
+        }
+        
 	}
 	
 	if(visible || (!visible && !visibilityAffectsChildren)) {

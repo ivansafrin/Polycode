@@ -61,7 +61,7 @@ namespace Polycode {
 
 		
 			virtual ~SceneCurve();
-			void Update();
+			void Render(GPUDrawBuffer *buffer);
 		
 		
 			virtual Entity *Clone(bool deepClone, bool ignoreEditorOnly) const;

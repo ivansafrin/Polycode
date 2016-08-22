@@ -99,6 +99,8 @@ CurveDisplay::CurveDisplay(CoreInput *input, ResourcePool *resourcePool, Scene *
 	controlPointLines->setColor(1.0, 1.0, 0.4, 1.0);
 	addChild(controlPointLines);
 	controlPointLines->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
+    controlPointLines->castShadows = false;
+    controlPointLines->setMaterial(resourcePool->getMaterial("UnlitUntextured"));
 	controlPointLines->setForceMaterial(true);
    
 	mainPoints = new SceneMesh();
@@ -106,10 +108,12 @@ CurveDisplay::CurveDisplay(CoreInput *input, ResourcePool *resourcePool, Scene *
 	addChild(mainPoints);
 	mainPoints->pointSmooth = true;
 	mainPoints->setForceMaterial(true);
+    mainPoints->castShadows = false;
 	mainPoints->setMaterial(resourcePool->getMaterial("UnlitPointUntextured"));
 	mainPoints->getShaderPass(0).shaderBinding->addParam(ProgramParam::PARAM_NUMBER, "pointSize")->setNumber(10.0);
 	
 	controlPoints = new SceneMesh();
+    controlPoints->castShadows = false;
 	controlPoints->setColor(1.0, 0.7, 0.0, 1.0);
 	addChild(controlPoints);
 	controlPoints->pointSmooth = true;
@@ -291,24 +295,29 @@ void CurveDisplay::Update(Number elapsed) {
 	
 }
 
-LightDisplay::LightDisplay(SceneLight *light) : Entity() {
+LightDisplay::LightDisplay(std::shared_ptr<Material> material, SceneLight *light) : Entity() {
 	editorOnly = true;
 	this->light = light;
 	spotSpot = new ScenePrimitive(ScenePrimitive::TYPE_LINE_CIRCLE, 1.0, 1.0, 32);
+    spotSpot->setMaterial(material);
 	addChild(spotSpot);
 	spotSpot->setColor(1.0, 0.8, 0.0, 1.0);
 	spotSpot->enabled = false;
 	spotSpot->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	spotSpot->setForceMaterial(true);
+    spotSpot->castShadows = false;
 	
 	fovSceneMesh = new SceneMesh();
+    fovSceneMesh->setMaterial(material);
 	fovSceneMesh->setColor(1.0, 0.8, 0.0, 1.0);
 	fovMesh = fovSceneMesh->getMesh();
 	addChild(fovSceneMesh);
 	fovSceneMesh->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	fovSceneMesh->setForceMaterial(true);
-	
+	fovSceneMesh->castShadows = false;
+    
 	MeshGeometry fovMeshGeometry;
+    fovMeshGeometry.indexedMesh = true;
 	fovMeshGeometry.setMeshType(MeshGeometry::LINE_MESH);
 	
 	fovMeshGeometry.addVertex(0.0, 0.0, 0.0);
@@ -361,11 +370,13 @@ void LightDisplay::Update(Number elapsed) {
 }
 
 
-CameraDisplay::CameraDisplay(Camera *camera) : Entity() {
+CameraDisplay::CameraDisplay(std::shared_ptr<Material> material, Camera *camera) : Entity() {
 	
 	editorOnly = true;
 	
 	fovSceneMesh = new SceneMesh();
+    fovSceneMesh->castShadows = false;
+    fovSceneMesh->setMaterial(material);
 	fovSceneMesh->setBlendingMode(Renderer::BLEND_MODE_NORMAL);
 	fovSceneMesh->setColor(1.0, 0.0, 1.0, 1.0);
 	fovMesh = fovSceneMesh->getMesh();
@@ -563,6 +574,7 @@ void CameraPreviewWindow::setCamera(Scene *scene, Camera *camera) {
 	
 	if(camera) {
 		enabled = true;
+        visible = true;
 		if(renderTexture) {
 			delete renderTexture;
 		}
@@ -572,6 +584,7 @@ void CameraPreviewWindow::setCamera(Scene *scene, Camera *camera) {
 	} else {
 		if(!pinned) {
 			enabled = false;
+            visible = false;
 		}
 	}
 }
@@ -605,13 +618,13 @@ EntityEditorMainView::EntityEditorMainView(Core *core, ResourcePool *pool, Polyc
 	customLight1 = new SceneLight(SceneLight::POINT_LIGHT, 999999, customFalloff, customFalloff, customFalloff);
 	customLight1->editorOnly = true;
 	customLight1->setPosition(-9999, 9999, 9999);
-	mainScene->addLight(customLight1);
+	mainScene->addChild(customLight1);
 	customLight1->enabled = false;
 
 	customLight2 = new SceneLight(SceneLight::POINT_LIGHT, 999999, customFalloff, customFalloff, customFalloff);
 	customLight2->editorOnly = true;
 	customLight2->setPosition(8999, -8999, -8999);
-	mainScene->addLight(customLight2);
+	mainScene->addChild(customLight2);
 	customLight2->enabled = false;
 	
 	renderTextureShape = new UIRect(core, pool, 256, 256);
@@ -815,10 +828,6 @@ void EntityEditorMainView::doAction(String actionName, PolycodeEditorActionData 
 				sceneData->entries[i].parentEntity->addChild(sceneData->entries[i].entity);
 				
 				SceneLight *sceneLight = dynamic_cast<SceneLight*>(sceneData->entries[i].entity);
-				if(sceneLight) {
-					mainScene->addLight(sceneLight);
-				}
-				
 				setEditorPropsRecursive(sceneData->entries[i].entity);
 				selectEntity(sceneData->entries[i].entity, true, false);
 			}
@@ -840,10 +849,6 @@ void EntityEditorMainView::doAction(String actionName, PolycodeEditorActionData 
 			sceneData->entries[0].parentEntity->addChild(sceneData->entries[0].entity);
 			
 			SceneLight *sceneLight = dynamic_cast<SceneLight*>(sceneData->entries[0].entity);
-			if(sceneLight) {
-				mainScene->addLight(sceneLight);
-			}
-			
 			
 			setEditorPropsRecursive(sceneData->entries[0].entity);
 			selectEntity(sceneData->entries[0].entity, true, false);
@@ -1121,15 +1126,9 @@ void EntityEditorMainView::setEditorProps(Entity *entity) {
 	SceneLight *sceneLight = dynamic_cast<SceneLight*>(entity);
 	if(sceneLight) {
 		createIcon(entity, "light_icon.png");
-		LightDisplay *lightVis = new LightDisplay(sceneLight);
-		
-		// TODO: fix this
-		/*
-		if(!sceneLight->getParentScene()) {
-			sceneLight->setParentScene(mainScene);
-			mainScene->addLight(sceneLight);
-		}
-		 */
+		LightDisplay *lightVis = new LightDisplay(core->getResourceManager()->getGlobalPool()->getMaterial("UnlitUntextured"), sceneLight);
+        
+
 	}
 	
 	SceneCurve *sceneCurve = dynamic_cast<SceneCurve*>(entity);
@@ -1153,7 +1152,7 @@ void EntityEditorMainView::setEditorProps(Entity *entity) {
 
 	Camera *camera = dynamic_cast<Camera*>(entity);
 	if(camera) {
-		CameraDisplay *camVis = new CameraDisplay(camera);
+		CameraDisplay *camVis = new CameraDisplay(core->getResourceManager()->getGlobalPool()->getMaterial("UnlitUntextured"), camera);
 		createIcon(entity, "camera_icon.png");
 	}
 	
@@ -1268,7 +1267,6 @@ void EntityEditorMainView::addEntityFromMenu(String command) {
 	if(command == "add_light") {
 		SceneLight *newLight = new SceneLight(SceneLight::POINT_LIGHT, 1.0);
 		sceneObjectRoot->addChild(newLight);
-		mainScene->addLight(newLight);
 		newLight->enabled = !lightsDisabled;		
 		setEditorProps(newLight);
 		newLight->setLocalBoundingBox(Vector3());
@@ -1375,9 +1373,6 @@ void EntityEditorMainView::deleteSelected(bool doAction) {
 	for(int i=0; i < selectedEntities.size(); i++) {
 		selectedEntities[i]->getParentEntity()->removeChild(selectedEntities[i]);
 		SceneLight *sceneLight = dynamic_cast<SceneLight*>(selectedEntities[i]);
-		if(sceneLight) {
-			mainScene->removeLight(sceneLight);
-		}
 	}
 	
 	for(int i=0; i < selectedEntities.size(); i++) {
@@ -1766,11 +1761,8 @@ void EntityEditorMainView::selectNone(bool doAction) {
 void EntityEditorMainView::disableLighting(bool disable) {
 	
 	lightsDisabled = disable;
-	
-	for(int i=0; i < mainScene->getNumLights(); i++) {
-		SceneLight *light = mainScene->getLight(i);
-		light->enabled = !disable;
-	}
+    
+    
 	
 	if(disable) {
 		customLight1->enabled = true;
@@ -2495,7 +2487,7 @@ void PolycodeEntityEditor::saveShaderOptionsToEntry(ObjectEntry *entry, Material
 					if(binding->getLocalParamByName(shader->expectedParams[j].name)) {
 						ObjectEntry *paramEntry = paramsEntry->addChild("param");
 						paramEntry->addChild("name", shader->expectedParams[j].name);
-						paramEntry->addChild("value", PolycodeMaterialEditor::createStringValue(shader->expectedParams[j].type, binding->getLocalParamByName(shader->expectedParams[j].name)->data));
+						paramEntry->addChild("value", PolycodeMaterialEditor::createStringValue(binding->getLocalParamByName(shader->expectedParams[j].name)));
 					}
 				}
 			}

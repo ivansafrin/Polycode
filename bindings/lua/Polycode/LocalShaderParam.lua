@@ -136,10 +136,6 @@ function LocalShaderParam:getCubemap()
 	return __c
 end
 
-function LocalShaderParam:setParamValueFromString(type, pvalue)
-	local retVal = Polycode.LocalShaderParam_setParamValueFromString(self.__ptr, type, pvalue)
-end
-
 function LocalShaderParam:__delete()
 	if self then Polycode.delete_LocalShaderParam(self.__ptr) end
 end

@@ -145,7 +145,7 @@ class CurveDisplay : public DummyTargetEntity {
 
 class LightDisplay : public Entity {
 public:
-	LightDisplay(SceneLight *light);
+    LightDisplay(std::shared_ptr<Material> material, SceneLight *light);
 	~LightDisplay();
 	void Update(Number elapsed);
 	
@@ -159,7 +159,7 @@ private:
 
 class CameraDisplay : public Entity {
 	public:
-		CameraDisplay(Camera *camera);
+		CameraDisplay(std::shared_ptr<Material> material, Camera *camera);
 		~CameraDisplay();
 		void Update(Number elapsed);
 	

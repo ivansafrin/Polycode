@@ -23,14 +23,6 @@ function ShaderBinding:addParam(type, name)
 	return __c
 end
 
-function ShaderBinding:addParamFromData(name, data)
-	local retVal = Polycode.ShaderBinding_addParamFromData(self.__ptr, name, data)
-	if retVal == nil then return nil end
-	local __c = _G["shared_ptr<LocalShaderParam>"]("__skip_ptr__")
-	__c.__ptr = retVal
-	return __c
-end
-
 function ShaderBinding:getNumLocalParams()
 	local retVal =  Polycode.ShaderBinding_getNumLocalParams(self.__ptr)
 	return retVal
