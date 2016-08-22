@@ -117,7 +117,9 @@ void SceneLabel::updateFromLabel() {
 
 	setPrimitiveOptions(type, label->getWidth()*labelScale,label->getHeight()*labelScale);
 	setLocalBoundingBox(label->getWidth()*labelScale, label->getHeight()*labelScale, 0.001);
-	getShaderPass(0).shaderBinding->setTextureForParam("diffuse", texture);
+    if(shaderPasses.size() > 0) {
+        getShaderPass(0).shaderBinding->setTextureForParam("diffuse", texture);
+    }
 }
 
 void SceneLabel::Render(GPUDrawBuffer *buffer) {
