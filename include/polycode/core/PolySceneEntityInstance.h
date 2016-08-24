@@ -42,7 +42,6 @@ class SceneEntityInstanceResourceEntry;
 class SceneEntityInstance : public Entity {
 	public:
 	
-        SceneEntityInstance(Core *core, Scene* parentScene, const String& fileName);
 		SceneEntityInstance(Core *core, const String& fileName);
 		SceneEntityInstance(Core *core);
 		explicit SceneEntityInstance();
@@ -78,6 +77,7 @@ class SceneEntityInstance : public Entity {
 		SceneEntityInstanceLayer *getLayerAtIndex(unsigned int index) const;
 		void removeLayer(SceneEntityInstanceLayer *layer);
 	
+	
 		SceneEntityInstanceLayer *createNewLayer(String name);
 		
 		String getFileName() const;
@@ -88,7 +88,6 @@ class SceneEntityInstance : public Entity {
 	protected:
 		
         Core *core;
-        Scene* parentScene;
     
 		std::vector<SceneEntityInstanceLayer*> layers;
 		void rebuildResourceLinks();
