@@ -11,6 +11,7 @@ FILE(GLOB HEADER_DEPENDENCIES_UI ${Polycode_SOURCE_DIR}/Modules/Contents/UI/Incl
 
 ADD_CUSTOM_COMMAND(
 OUTPUT doc_cmd
+COMMAND mkdir -p ${Polycode_SOURCE_DIR}/Documentation/Doxygen/output/standalone/{Polycode,Physics2D,Physics3D,PolycodeUI}
 COMMAND ${DOXYGEN_EXECUTABLE} ${Polycode_SOURCE_DIR}/Documentation/Doxygen/Polycode.doxygen
 COMMAND ${DOXYGEN_EXECUTABLE} ${Polycode_SOURCE_DIR}/Documentation/Doxygen/Physics2D.doxygen
 COMMAND ${DOXYGEN_EXECUTABLE} ${Polycode_SOURCE_DIR}/Documentation/Doxygen/Physics3D.doxygen
