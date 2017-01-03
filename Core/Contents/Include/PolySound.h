@@ -29,6 +29,9 @@
 #if defined(__APPLE__) && defined(__MACH__)
     #include <OpenAL/al.h>
     #include <OpenAL/alc.h>
+#elif defined(_WINDOWS)
+    #include "AL/al.h"
+    #include "AL/alc.h"
 #else
     #include "al.h"
     #include "alc.h"
