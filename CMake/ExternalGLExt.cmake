@@ -1,8 +1,8 @@
 # download some headers missing from Windows
 
 IF(NOT EXISTS ${POLYCODE_DEPS_DOWNLOAD_DIR}/glext.h)
-    MESSAGE("Downloading http://www.opengl.org/registry/api/glext.h")
-    FILE(DOWNLOAD http://www.opengl.org/registry/api/glext.h 
+    #MESSAGE("Downloading http://www.opengl.org/registry/api/glext.h")
+    FILE(DOWNLOAD https://dl.dropboxusercontent.com/s/zw6mj64gb8upmoh/glext.h 
         ${POLYCODE_DEPS_DOWNLOAD_DIR}/glext.h
         SHOW_PROGRESS)
 ENDIF()

@@ -24,7 +24,7 @@ ExternalProject_Add(box2d
 
     DOWNLOAD_DIR ${POLYCODE_DEPS_DOWNLOAD_DIR}
 
-    URL http://box2d.googlecode.com/files/Box2D_v2.1.2.zip
+    URL https://dl.dropboxusercontent.com/s/69trf1h7kiyn983/Box2D_v2.1.2.zip
     URL_MD5 59d142cd8d4d73e8832c7b67591f590c
 
     # Box2D's source isn't in the top level directory so add a dummy file to set cmake right
