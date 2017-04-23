@@ -96,7 +96,7 @@ namespace Polycode {
 		/**
 		* Main constructor.
 		*/
-		PhysicsScene(int maxSubSteps = 0, Vector3 size = Vector3(200), bool virtualScene = false);
+		PhysicsScene(Core* core, int maxSubSteps = 0, Vector3 size = Vector3(200));
 		virtual ~PhysicsScene();	
 		
 		void fixedUpdate();

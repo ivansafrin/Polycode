@@ -87,7 +87,7 @@ struct CollisionResult {
 			/**
 			* Creates a collision scene.
 			*/
-			CollisionScene(Vector3 size = Vector3(2000), bool virtualScene = false, bool deferInitCollision = false);		
+			CollisionScene(Core* core, Vector3 size = Vector3(2000), bool deferInitCollision = false);
 			virtual ~CollisionScene();
 		
 			void initCollisionScene(Vector3 size);
