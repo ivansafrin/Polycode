@@ -41,8 +41,7 @@ void registerFileType(String extension, String progId, String app, String defaul
 
 }
 
-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-{
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow){
 
 	ChangeWindowMessageFilter(WM_COPYDATA,MSGFLT_ADD);
 
@@ -55,6 +54,13 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	}
 
 	fileName = fileName.replace("\\", "/");
+
+	String arg;
+	for (int i = 1; i < nArgs; i++) {
+		arg = String(szArglist[i]);
+		if (arg == "-d" || arg == "--debug")
+			Logger::getInstance()->setLogToFile(true);
+	}
 
 	// check if an instance of Polycode is running and bring it up and open file if needed
 	HWND runningHwnd = FindWindow(L"POLYCODEAPPLICATION", L"Polycode");

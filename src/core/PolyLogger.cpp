@@ -126,13 +126,16 @@ void Logger::setLogToFile(bool val){
 		time_t t = time(NULL);
 		char mbstr[100];
 		if (strftime(mbstr, sizeof(mbstr), "%y_%m_%d.log", localtime(&t))) {
-			logFile = fopen((const char*)mbstr, "w");
+			logFile = fopen((const char*)mbstr, "a");
 		} else {
-			logFile = fopen("poly.log", "w");
+			logFile = fopen("poly.log", "a");
 		}
+		strftime(mbstr, sizeof(mbstr), "%y_%m_%d %H:%M", localtime(&t));
+		logToFile = val;
+		Logger::log("== Starting Logging %s ==\n\n", mbstr);
+	} else {
+		logToFile = val;
 	}
-
-	logToFile = val;
 }
 
 void Logger::setLogFile(FILE *f){
