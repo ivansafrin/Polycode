@@ -1,16 +1,16 @@
 /*
  Copyright (C) 2011 by Ivan Safrin
- 
+
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  copies of the Software, and to permit persons to whom the Software is
  furnished to do so, subject to the following conditions:
- 
+
  The above copyright notice and this permission notice shall be included in
  all copies or substantial portions of the Software.
- 
+
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -18,7 +18,7 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
-*/		
+*/
 
 #pragma once
 
@@ -37,17 +37,17 @@ namespace Polycode {
 
 	class PolycodeView;
 
-	class _PolyExport SDLCoreMutex : public CoreMutex {
-	public:
-		void lock();
-		void unlock();
-		SDL_mutex *pMutex;
-	};
+	// class _PolyExport SDLCoreMutex : public CoreMutex {
+	// public:
+	// 	void lock();
+	// 	void unlock();
+	// 	SDL_mutex *pMutex;
+	// };
 
 	class _PolyExport SDLCore : public Core {
-		
+
 	public:
-		
+
 		SDLCore(PolycodeView *view, int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex=-1, bool retinaSupport=false);
 		~SDLCore();
 
@@ -55,16 +55,16 @@ namespace Polycode {
 		void captureMouse(bool);
 		unsigned int getTicks();
 		bool systemUpdate();
-		void Render();
+		// void Render();
 		void flushRenderContext();
-		
+
 		void handleVideoModeChange(VideoModeChangeInfo *modeInfo);
 
 		void createThread(Threaded *target);
 		std::vector<Rectangle> getVideoModes();
-		
+
 		bool systemParseFolder(const String& pathString, bool showHidden, std::vector<OSFileEntry> &targetVector);
-				
+
 		void setCursor(int cursorType);
 		void warpCursor(int x, int y);
 
@@ -82,7 +82,7 @@ namespace Polycode {
 
 		String executeExternalCommand(String command, String args, String inDirectory="");
 		void openURL(String url);
-		
+
 		Number getBackingXRes();
 		Number getBackingYRes();
 
@@ -90,20 +90,20 @@ namespace Polycode {
 		void initKeymap();
 		PolyKEY mapKey(SDL_Scancode key);
 		bool checkSpecialKeyEvents(PolyKEY key);
-		
+
 		PolyKEY keyMap[512];
-		
+
 		int backingX;
 		int backingY;
-		
+
 		uint32_t flags;
 		bool resizableWindow;
-		
+
 		String* windowTitle;
-		
+
 		int lastMouseX;
 		int lastMouseY;
-		
+
 		SDL_GLContext sdlContext;
 		SDL_Window* sdlWindow;
 	};

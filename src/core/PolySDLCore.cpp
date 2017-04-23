@@ -1,16 +1,16 @@
 /*
  Copyright (C) 2011 by Ivan Safrin
- 
+
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  copies of the Software, and to permit persons to whom the Software is
  furnished to do so, subject to the following conditions:
- 
+
  The above copyright notice and this permission notice shall be included in
  all copies or substantial portions of the Software.
- 
+
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -18,13 +18,13 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
-*/		
+*/
 
 #include "polycode/core/PolySDLCore.h"
 #include "polycode/view/linux/PolycodeView.h"
-#include "polycode/core/PolyCoreServices.h"
+// #include "polycode/core/PolyCoreServices.h"
 #include "polycode/core/PolyCoreInput.h"
-#include "polycode/core/PolyMaterialManager.h"
+// #include "polycode/core/PolyMaterialManager.h"
 #include "polycode/core/PolyThreaded.h"
 #include "polycode/core/PolyLogger.h"
 
@@ -53,7 +53,7 @@
 namespace {
 	Display* XDisplay = nullptr;
 	Window XWindow;
-	
+
 	void set_cursor(int cursorType);
 	void free_cursors();
 } // namespace
@@ -64,14 +64,14 @@ namespace {
 using namespace Polycode;
 using std::vector;
 
-void SDLCoreMutex::lock()
-{
-	SDL_mutexP(pMutex);
-}
-
-void SDLCoreMutex::unlock() {
-	SDL_mutexV(pMutex);
-}
+// void SDLCoreMutex::lock()
+// {
+// 	SDL_mutexP(pMutex);
+// }
+//
+// void SDLCoreMutex::unlock() {
+// 	SDL_mutexV(pMutex);
+// }
 
 
 long getThreadID() {
@@ -90,12 +90,12 @@ void Core::getScreenInfo(int *width, int *height, int *hz) {
 }
 
 SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate, int monitorIndex, bool retinaSupport) : Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate, monitorIndex) {
- 
+
 	this->resizableWindow = view->resizable;
 
 	fileProviders.push_back(new BasicFileProvider());
 	fileProviders.push_back(new PhysFSFileProvider());
-	
+
 	char *buffer = getcwd(NULL, 0);
 	defaultWorkingDirectory = String(buffer);
 	free(buffer);
@@ -105,40 +105,39 @@ SDLCore::SDLCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool
 	userHomeDirectory = String(homedir);
 
 	initKeymap();
-	
+
 	windowTitle = (String*)view->windowData;
-	
+
 	if(resizableWindow) {
 		unsetenv("SDL_VIDEO_CENTERED");
 	} else {
 		setenv("SDL_VIDEO_CENTERED", "1", 1);
 	}
-		
+
 	int sdlerror = SDL_Init(SDL_INIT_VIDEO|SDL_INIT_JOYSTICK);
 	if(sdlerror < 0) {
 	  Logger::log("SDL_Init failed! Code: %d, %s\n", sdlerror, SDL_GetError());
 	}
-	
-	eventMutex = createMutex();
-	
-	renderer = new Renderer();
-	OpenGLGraphicsInterface *renderInterface = new OpenGLGraphicsInterface();
+
+	// eventMutex = createMutex();
+
+	renderer = new Renderer(this);
+	OpenGLGraphicsInterface *renderInterface = new OpenGLGraphicsInterface(this);
 	renderInterface->lineSmooth = true;
 	renderer->setGraphicsInterface(this, renderInterface);
-	services->setRenderer(renderer);
 	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel, retinaSupport);
-	
+
 	SDL_JoystickEventState(SDL_ENABLE);
-	
+
 	int numJoysticks = SDL_NumJoysticks();
-	
+
 	for(int i=0; i < numJoysticks; i++) {
 		SDL_JoystickOpen(i);
 		input->addJoystick(i);
 	}
-	
-	services->getSoundManager()->setAudioInterface(new PAAudioInterface());
-	
+
+	getSoundManager()->setAudioInterface(new PAAudioInterface());
+
 	lastMouseX = 0;
 	lastMouseY = 0;
 
@@ -153,14 +152,14 @@ void SDLCore::handleVideoModeChange(VideoModeChangeInfo* modeInfo){
 	this->aaLevel = modeInfo->aaLevel;
 	this->anisotropyLevel = modeInfo->anisotropyLevel;
 	this->vSync = modeInfo->vSync;
-	
+
 	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24);
 	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute( SDL_GL_RED_SIZE,	8);
 	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8);
 	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE,	8);
 	SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8);
-	
+
 	if(aaLevel > 0) {
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, aaLevel); //0, 2, 4
@@ -168,7 +167,7 @@ void SDLCore::handleVideoModeChange(VideoModeChangeInfo* modeInfo){
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
 	}
-	
+
 	flags = SDL_WINDOW_OPENGL;
 
 	if(fullScreen) {
@@ -178,11 +177,11 @@ void SDLCore::handleVideoModeChange(VideoModeChangeInfo* modeInfo){
 	if(resizableWindow) {
 		flags |= SDL_WINDOW_RESIZABLE;
 	}
-	
+
 	if(modeInfo->retinaSupport) {
 		flags |= SDL_WINDOW_ALLOW_HIGHDPI;
 	}
-	
+
 	if(vSync){
 		if(SDL_GL_SetSwapInterval(-1) == -1){
 			SDL_GL_SetSwapInterval(1);
@@ -190,7 +189,7 @@ void SDLCore::handleVideoModeChange(VideoModeChangeInfo* modeInfo){
 	} else {
 		SDL_GL_SetSwapInterval(0);
 	}
-	
+
 	if(!sdlWindow){
 		sdlWindow = SDL_CreateWindow(windowTitle->c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, xRes, yRes, flags);
 		sdlContext = SDL_GL_CreateContext(sdlWindow);
@@ -214,19 +213,19 @@ void SDLCore::handleVideoModeChange(VideoModeChangeInfo* modeInfo){
 	}else{
 		backingY = yRes;
 	}
-	
+
 	int glewcode = glewInit();
 	if (glewcode != GLEW_OK){
 	  Logger::log("glewInit failed! code: %d, %s\n", glewcode, glewGetErrorString(glewcode));
 	}
-	
+
 	renderer->setAnisotropyAmount(modeInfo->anisotropyLevel);
 
 #ifdef USE_X11
 	if(!XWindow){
 		SDL_SysWMinfo info;
 		SDL_VERSION(&info.version);
-		
+
 		if ( SDL_GetWindowWMInfo(sdlWindow, &info) == SDL_TRUE ){
 			if ( info.subsystem == SDL_SYSWM_X11 ){
 				XDisplay = info.info.x11.display;
@@ -239,7 +238,7 @@ void SDLCore::handleVideoModeChange(VideoModeChangeInfo* modeInfo){
 
 vector<Polycode::Rectangle> SDLCore::getVideoModes() {
 	vector<Polycode::Rectangle> retVector;
-	
+
 	SDL_DisplayMode modes;
 	for(int i=0;i<SDL_GetNumDisplayModes(0);++i) {
 		SDL_GetDisplayMode(0, i, &modes);
@@ -248,7 +247,7 @@ vector<Polycode::Rectangle> SDLCore::getVideoModes() {
 		res.h = modes.h;
 		retVector.push_back(res);
 	}
-	
+
 	return retVector;
 }
 
@@ -278,7 +277,7 @@ String SDLCore::executeExternalCommand(String command, String args, String inDir
 	FILE *fp = popen(finalCommand.c_str(), "r");
 	if(!fp) {
 		return "Unable to execute command";
-	}	
+	}
 
 	int fd = fileno(fp);
 
@@ -326,7 +325,7 @@ void SDLCore::captureMouse(bool newval) {
 }
 
 void SDLCore::initKeymap(){
-	
+
 	for (int i=0; i<512; ++i )
 		keyMap[i] = KEY_UNKNOWN;
 
@@ -455,33 +454,33 @@ PolyKEY SDLCore::mapKey(SDL_Scancode key){
 
 
 bool SDLCore::checkSpecialKeyEvents(PolyKEY key) {
-	
+
 	if(key == KEY_a && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
 		dispatchEvent(new Event(), Core::EVENT_SELECT_ALL);
 		return true;
 	}
-	
+
 	if(key == KEY_c && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
 		dispatchEvent(new Event(), Core::EVENT_COPY);
 		return true;
 	}
-	
+
 	if(key == KEY_x && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
 		dispatchEvent(new Event(), Core::EVENT_CUT);
 		return true;
 	}
-	
-	
+
+
 	if(key == KEY_z	 && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL)) && (input->getKeyState(KEY_LSHIFT) || input->getKeyState(KEY_RSHIFT))) {
 		dispatchEvent(new Event(), Core::EVENT_REDO);
 		return true;
 	}
-		
+
 	if(key == KEY_z	 && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
 		dispatchEvent(new Event(), Core::EVENT_UNDO);
 		return true;
 	}
-	
+
 	if(key == KEY_v && (input->getKeyState(KEY_LCTRL) || input->getKeyState(KEY_RCTRL))) {
 		dispatchEvent(new Event(), Core::EVENT_PASTE);
 		return true;
@@ -489,11 +488,11 @@ bool SDLCore::checkSpecialKeyEvents(PolyKEY key) {
 	return false;
 }
 
-void SDLCore::Render() {
-	renderer->beginFrame();
-	services->Render(Polycode::Rectangle(0, 0, getBackingXRes(), getBackingYRes()));
-	renderer->endFrame();
-}
+// void SDLCore::Render() {
+// 	renderer->beginFrame();
+// 	services->Render(Polycode::Rectangle(0, 0, getBackingXRes(), getBackingYRes()));
+// 	renderer->endFrame();
+// }
 
 void SDLCore::flushRenderContext(){
 	SDL_GL_SwapWindow(sdlWindow);
@@ -503,9 +502,9 @@ bool SDLCore::systemUpdate() {
 	if(!running)
 		return false;
 	doSleep();
-	
+
 	updateCore();
-	
+
 	SDL_Event event;
 	while ( SDL_PollEvent(&event) ) {
 			switch (event.type) {
@@ -522,9 +521,9 @@ bool SDLCore::systemUpdate() {
 							}
 							this->xRes = event.window.data1;
 							this->yRes = event.window.data2;
-							
+
 							SDL_SetWindowSize(sdlWindow, xRes, yRes);
-							
+
 							int x, y;
 							SDL_GL_GetDrawableSize(sdlWindow, &x, &y);
 							if(x >= xRes){
@@ -537,8 +536,8 @@ bool SDLCore::systemUpdate() {
 							}else{
 								backingY = yRes;
 							}
-							
-							dispatchEvent(new Event(), EVENT_CORE_RESIZE);	
+
+							dispatchEvent(new Event(), EVENT_CORE_RESIZE);
 						break;
 						case SDL_WINDOWEVENT_FOCUS_GAINED:
 							gainFocus();
@@ -598,7 +597,7 @@ bool SDLCore::systemUpdate() {
 					}
 				break;
 				case SDL_MOUSEMOTION:
-					input->setDeltaPosition(lastMouseX - event.motion.x, lastMouseY - event.motion.y);					
+					input->setDeltaPosition(lastMouseX - event.motion.x, lastMouseY - event.motion.y);
 					input->setMousePosition(event.motion.x, event.motion.y, getTicks());
 					lastMouseY = event.motion.y;
 					lastMouseX = event.motion.x;
@@ -625,11 +624,11 @@ void SDLCore::warpCursor(int x, int y) {
 	lastMouseY = y;
 }
 
-CoreMutex *SDLCore::createMutex() {
-	SDLCoreMutex *mutex = new SDLCoreMutex();
-	mutex->pMutex = SDL_CreateMutex();
-	return mutex;	
-}
+// CoreMutex *SDLCore::createMutex() {
+// 	SDLCoreMutex *mutex = new SDLCoreMutex();
+// 	mutex->pMutex = SDL_CreateMutex();
+// 	return mutex;
+// }
 
 void SDLCore::copyStringToClipboard(const String& str) {
 	SDL_SetClipboardText(str.c_str());
@@ -703,7 +702,7 @@ void SDLCore::resizeTo(int xRes, int yRes) {
 bool SDLCore::systemParseFolder(const String& pathString, bool showHidden, vector< OSFileEntry >& targetVector) {
 	DIR			  *d;
 	struct dirent *dir;
-	
+
 	d = opendir(pathString.c_str());
 	if(d) {
 		while ((dir = readdir(d)) != NULL) {
@@ -738,7 +737,7 @@ Cursor defined_cursors[CURSOR_COUNT] = {0};
 
 void set_cursor(int cursorType) {
 	Cursor cursor = 0;
-	
+
 	if(cursorType >= 0 && cursorType < CURSOR_COUNT) {
 		cursor = defined_cursors[cursorType];
 		if(!cursor) {
@@ -776,7 +775,7 @@ void set_cursor(int cursorType) {
 	} else {
 		XDefineCursor(XDisplay, XWindow, cursor);
 	}
-	
+
 	XFlush(XDisplay);
 }
 
