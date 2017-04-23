@@ -47,6 +47,10 @@ namespace Polycode {
 			void Stop();
 			void Update(Number elapsed);
 			void Reset();
+        
+            void FastForward(Number delta);
+            void Rewind(Number delta);
+            void Seek(Number pos);
 		
 			void setSpeed(Number speed);
 			
@@ -107,8 +111,28 @@ namespace Polycode {
 			* Stops the animation.
 			*/			
 			void Stop();
-		
+            /**
+            * Resets the animation to the start.
+            */
 			void Reset();
+        
+            /**
+            * Jump ahead in the animation.
+            */
+            void FastForward(Number delta);
+            /**
+            * Rewind the animation some amount of time.
+            */
+            void Rewind(Number delta);
+        
+            /**
+            * Set the playhead to a specific point in the animation.
+            */
+            void setPlayhead(Number pos);
+            /**
+            * Get the current position of the animation playhead.
+            */
+            Number getPlayhead();
 		
 			void Update(Number elapsed);
 
@@ -128,6 +152,7 @@ namespace Polycode {
 			Number weight;
 			bool playing;
 			String name;
+            Number time;
 			Number duration;
 			std::vector<BoneTrack*> boneTracks;
 	};
