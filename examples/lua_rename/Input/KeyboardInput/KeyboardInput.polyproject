@@ -1,8 +1,0 @@
-<?xml version="1.0" ?>
-<PolycodeProject defaultWidth="640" defaultHeight="480" antiAliasingLevel="0" entryPoint="Scripts/KeyboardInput.lua" vSync="true" anisotropyLevel="0" frameRate="60" textureFiltering="linear">
-    <backgroundColor red="0.25" green="0.25" blue="0.25" />
-    <polyarray:packedItems>
-        <item type="folder" path="Resources" />
-        <item type="folder" path="Scripts" />
-    </polyarray:packedItems>
-</PolycodeProject>
