@@ -286,6 +286,8 @@ public:
 		
 		// frequency of the windows performance counter
 		double pcFreq;
+		// Initial Value of the performance counter
+		int PerfInitial;
 
 		// Tracks whether the system supports multitouch at runtime
 		bool hasMultiTouch;

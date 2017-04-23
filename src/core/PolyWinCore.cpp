@@ -151,6 +151,7 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 	LARGE_INTEGER li;
 	QueryPerformanceFrequency(&li);
 	pcFreq = double(li.QuadPart)/1000.0;
+	PerfInitial = 0;
 	
 	setVSync(vSync);
 
@@ -219,6 +220,8 @@ void Win32Core::warpCursor(int x, int y) {
 unsigned int Win32Core::getTicks() {
 	LARGE_INTEGER li;
 	QueryPerformanceCounter(&li);
+	if (PerfInitial == 0)
+		PerfInitial = li.QuadPart;
 	return (unsigned int)(li.QuadPart / pcFreq);
 }
 
