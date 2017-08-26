@@ -46,6 +46,6 @@ endif()
 if (ASSIMP_FOUND)
   MESSAGE("-- Found Assimp ${ASSIMP_LIBRARIES}")
   mark_as_advanced (ASSIMP_INCLUDE_DIR ASSIMP_LIBRARY ASSIMP_LIBRARIES)
-endif()
-
-
+else (ASSIMP_FOUND)
+  MESSAGE("-- Could not find Assimp")
+endif()()
