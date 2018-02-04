@@ -125,6 +125,7 @@ OpenGLVertexBuffer::~OpenGLVertexBuffer() {
 	glDeleteBuffersARB(1, &indexBufferID);
 	glDeleteBuffersARB(1, &boneWeightBufferID);
 	glDeleteBuffersARB(1, &boneIndexBufferID);
+	glDeleteBuffersARB(1, &tangentBufferID);
 }
 
 GLuint OpenGLVertexBuffer::getBoneWeightBufferID() {
