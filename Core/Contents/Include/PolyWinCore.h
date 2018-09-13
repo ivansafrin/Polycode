@@ -273,6 +273,8 @@ public:
 		unsigned int nextDeviceID;
 		PolyKEY keyMap[1024];
 		unsigned int lastGamepadDetect;
+		// Initial variable for getTicks
+		long long PerfInitial;
 
 		std::vector<Win32Event> win32Events;
 
